@@ -70,8 +70,11 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .grp .ot{font-size:11px;color:var(--muted);margin-bottom:10px}
 
 /* ---------- the A4 paper ---------- */
-.paper{width:210mm;min-height:297mm;background:var(--paper);color:#1a1516;box-shadow:0 30px 80px rgba(0,0,0,.5);
-  padding:22mm 20mm 18mm;font-family:var(--serif);position:relative;transform-origin:top center}
+#paper{display:flex;flex-direction:column;align-items:center;gap:20px;transform-origin:top center}
+.page{width:210mm;height:297mm;background:var(--paper);color:#1a1516;box-shadow:0 30px 80px rgba(0,0,0,.5);
+  padding:20mm 20mm 14mm;font-family:var(--serif);position:relative;display:flex;flex-direction:column;overflow:hidden}
+.pg-header{flex:0 0 auto}
+.pg-content{flex:1 1 auto;overflow:hidden;min-height:0}
 .lh{display:flex;align-items:center;gap:16px}
 .lh img{height:60px;width:60px;object-fit:contain}
 .lh .nm{flex:1}
@@ -100,9 +103,11 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .sig .n{font-family:var(--serif);font-weight:700;font-size:13.5px;color:var(--burgundy)}
 .sig .d{font-family:var(--sans);font-size:11.5px;color:#5a5152}
 .sig .o{font-family:var(--sans);font-size:10.5px;color:#8a8082;margin-top:2px}
-.foot{position:absolute;left:20mm;right:20mm;bottom:13mm;border-top:1px solid var(--pink-line);padding-top:7px;
+.pgfoot{flex:0 0 auto;margin-top:10px;border-top:1px solid var(--pink-line);padding-top:7px;
   font-family:var(--sans);font-size:9.3px;color:#6a6162;text-align:center;line-height:1.55}
-.foot b{color:var(--burgundy);font-weight:600}
+.pgfoot b{color:var(--burgundy);font-weight:600}
+.pgfoot .pno{display:block;margin-top:3px;color:#8a8082;font-size:8.8px;letter-spacing:.04em}
+#__mpage{position:absolute!important;left:-9999px!important;top:0;visibility:hidden}
 
 .zoombar{position:fixed;right:22px;bottom:18px;display:flex;gap:6px;z-index:20}
 .zoombar .btn{padding:7px 11px}
@@ -111,7 +116,7 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
   .wrap{grid-template-columns:1fr}
   .panel{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)}
   .stage{padding:16px;overflow-x:auto}
-  .paper{transform:scale(.62)}
+  #paper{transform:scale(.62)}
 }
 
 /* ---------- print ---------- */
@@ -121,8 +126,11 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
   .top,.panel,.zoombar,.drawer{display:none!important}
   .wrap{display:block}
   .stage{padding:0;min-height:0}
-  .paper{box-shadow:none;width:210mm;min-height:297mm;transform:none!important;margin:0}
-  .rule,.rule::after,.doctitle::after,.sig .n,.lh .nm .s,.foot b{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #paper{gap:0;transform:none!important}
+  #__mpage{display:none!important}
+  .page{box-shadow:none;break-after:page;page-break-after:always}
+  .page:last-child{break-after:auto;page-break-after:auto}
+  .rule,.rule::after,.doctitle::after,.sig .n,.lh .nm .s,.pgfoot b{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 
@@ -380,57 +388,88 @@ function sigBlock(o){
   }
   return `<div class="sig">${seal}${(n||d)?'<div class="ln"></div>':''}${names}</div>`;
 }
+function pushParas(arr,txt){
+  String(txt||'').split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean).forEach(p=>{
+    arr.push(`<div class="body"><p>${esc(p).replace(/\n/g,'<br>')}</p></div>`);
+  });
+}
+const MM=96/25.4;
+function paginate(headerHTML, blocks, footContact){
+  const paper=$('paper');
+  let mp=$('__mpage');
+  if(!mp){ mp=document.createElement('div'); mp.id='__mpage'; mp.className='page'; document.body.appendChild(mp); }
+  mp.innerHTML=`<div class="pg-header">${headerHTML}</div><div class="pg-content" id="__mc"></div>`+
+               `<div class="pgfoot">${footContact}<span class="pno">Page 1 of 1</span></div>`;
+  const hdrH=mp.querySelector('.pg-header').getBoundingClientRect().height;
+  const ftrH=mp.querySelector('.pgfoot').getBoundingClientRect().height;
+  const pageInner=(297-20-14)*MM;                 // A4 height minus vertical padding
+  const availH=pageInner - hdrH - ftrH - 8;       // usable content height per page (safety buffer)
+  const mc=mp.querySelector('#__mc');
+  mc.innerHTML=blocks.join('');
+  const els=Array.from(mc.children);
+  const pages=[]; let cur=[]; let startTop=els.length?els[0].offsetTop:0;
+  els.forEach((el,i)=>{
+    const bottom=el.offsetTop+el.getBoundingClientRect().height;
+    if(cur.length && (bottom-startTop)>availH){ pages.push(cur); cur=[]; startTop=el.offsetTop; }
+    cur.push(blocks[i]);
+  });
+  if(cur.length||!pages.length) pages.push(cur);
+  const total=pages.length;
+  paper.innerHTML=pages.map((pg,idx)=>
+    `<div class="page"><div class="pg-header">${headerHTML}</div>`+
+    `<div class="pg-content">${pg.join('')}</div>`+
+    `<div class="pgfoot">${footContact}<span class="pno">Page ${idx+1} of ${total}</span></div></div>`
+  ).join('');
+}
 function render(){
   const o=CFG.offices[$('f_office').value]||{};
   const title=$('f_title').value.trim();
-  const body=paras($('f_body').value);
   const showSig=$('f_showSig')?$('f_showSig').checked:true;
-  let mid='';
 
+  const headerHTML=
+    `<div class="lh"><img src="${LOGO}" alt=""><div class="nm">`+
+      `<div class="s">${esc(CFG.name)}</div>`+
+      `<div class="t">${esc($('f_dept').value||o.label||'')}</div>`+
+      (CFG.subline?`<div class="a">${esc(CFG.subline)}</div>`:'')+
+    `</div></div><div class="rule"></div>`;
+
+  const blocks=[];
   if(TYPE!=='blank'){
-    mid+=`<div class="metaline"><span>${esc($('f_ref').value||'')}</span><span>${esc($('f_date').value||todayStr())}</span></div>`;
+    blocks.push(`<div class="metaline"><span>${esc($('f_ref').value||'')}</span><span>${esc($('f_date').value||todayStr())}</span></div>`);
   }
   if(TYPE==='letter'){
     const to=$('f_toName').value.trim(), addr=$('f_toAddr').value.trim();
-    if(to||addr) mid+=`<div class="recip">To,\n${esc(to)}${addr?'\n'+esc(addr):''}</div>`;
-    if(title) mid+=`<div class="subj">Subject: ${esc(title)}</div>`;
-    if($('f_salut').value.trim()) mid+=`<div class="body"><p>${esc($('f_salut').value.trim())}</p></div>`;
-    mid+=`<div class="body">${body}</div>`;
+    if(to||addr) blocks.push(`<div class="recip">To,\n${esc(to)}${addr?'\n'+esc(addr):''}</div>`);
+    if(title) blocks.push(`<div class="subj">Subject: ${esc(title)}</div>`);
+    if($('f_salut').value.trim()) blocks.push(`<div class="body"><p>${esc($('f_salut').value.trim())}</p></div>`);
+    pushParas(blocks,$('f_body').value);
+    if($('f_close').value.trim()) blocks.push(`<div class="close">${esc($('f_close').value.trim())}</div>`);
   } else if(TYPE==='memo'){
-    if(title) mid+=`<div class="doctitle">Office Memorandum</div>`;
-    mid+=`<div class="memo"><b>To</b><span>${esc($('f_memoTo').value)}</span>`+
+    blocks.push(`<div class="doctitle">Office Memorandum</div>`);
+    blocks.push(`<div class="memo"><b>To</b><span>${esc($('f_memoTo').value)}</span>`+
          `<b>From</b><span>${esc($('f_memoFrom').value)}</span>`+
          (title?`<b>Subject</b><span>${esc(title)}</span>`:'')+
-         `<b>Date</b><span>${esc($('f_date').value||todayStr())}</span></div>`;
-    mid+=`<div class="body">${body}</div>`;
+         `<b>Date</b><span>${esc($('f_date').value||todayStr())}</span></div>`);
+    pushParas(blocks,$('f_body').value);
   } else if(TYPE==='notice'){
-    mid+=`<div class="doctitle">${esc(title||'Notice')}</div>`;
-    mid+=`<div class="body">${body}</div>`;
+    blocks.push(`<div class="doctitle">${esc(title||'Notice')}</div>`);
+    pushParas(blocks,$('f_body').value);
   } else if(TYPE==='cert'){
-    mid+=`<div class="doctitle">${esc(title||'To Whomsoever It May Concern')}</div>`;
-    mid+=`<div class="body">${body}</div>`;
+    blocks.push(`<div class="doctitle">${esc(title||'To Whomsoever It May Concern')}</div>`);
+    pushParas(blocks,$('f_body').value);
   } else if(TYPE==='general'){
-    if(title) mid+=`<div class="doctitle">${esc(title)}</div>`;
-    mid+=`<div class="body">${body}</div>`;
+    if(title) blocks.push(`<div class="doctitle">${esc(title)}</div>`);
+    pushParas(blocks,$('f_body').value);
   }
-
-  if(TYPE==='letter'&&$('f_close').value.trim()) mid+=`<div class="close">${esc($('f_close').value.trim())}</div>`;
-
-  const sig=(showSig&&TYPE!=='blank')?sigBlock(o):'';
+  if(showSig&&TYPE!=='blank') blocks.push(sigBlock(o));
 
   const showReg=$('f_showReg')?$('f_showReg').checked:true;
   const footBits=[o.addr, o.phone, o.email, CFG.web].filter(Boolean).map(esc).join(' &nbsp;·&nbsp; ');
-  const foot=`<div class="foot"><b>${esc(CFG.name)}</b> — ${esc(o.label||'')}`+
+  const footContact=`<b>${esc(CFG.name)}</b> — ${esc(o.label||'')}`+
              (footBits?`<br>${footBits}`:'')+
-             ((CFG.reg&&showReg)?`<br>${esc(CFG.reg)}`:'')+`</div>`;
+             ((CFG.reg&&showReg)?`<br>${esc(CFG.reg)}`:'');
 
-  $('paper').innerHTML=
-    `<div class="lh"><img src="${LOGO}" alt=""><div class="nm">`+
-      `<div class="s">${esc(CFG.name)}</div>`+
-      `<div class="t">${esc($('f_dept').value||CFG.offices[$('f_office').value].label)}</div>`+
-      (CFG.subline?`<div class="a">${esc(CFG.subline)}</div>`:'')+
-    `</div></div>`+
-    `<div class="rule"></div>`+ mid + sig + foot;
+  paginate(headerHTML, blocks, footContact);
 }
 
 /* ---------- settings drawer ---------- */
