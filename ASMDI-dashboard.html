@@ -703,6 +703,7 @@
       <a data-dsec="sec-settings"><span class="ic">⊙</span><span class="navlab">Settings</span></a>
     </nav>
     <div class="side-foot">
+      <a id="idCardLink" href="alizon-idcard.html?type=student" title="Download your student ID card"><span class="ic">▤</span><span>ID Card</span></a>
       <a href="admin-portal.html" title="Admin / course management"><span class="ic">⚙</span><span>Admin Portal</span></a>
       <a id="logoutBtn"><span class="ic">↩</span><span>Log out</span></a>
     </div>
@@ -1907,6 +1908,8 @@ function moduleResultBadge(moduleUnit, progName){
   }
   function applyProfile(p){
     paintRoster(p);
+    const idc=el('idCardLink');
+    if(idc)idc.href='alizon-idcard.html?type=student'+(p&&p.reg?'&id='+encodeURIComponent(p.reg):'');
     if(!p.name)return;
     const h2=document.querySelector('.hello h2');
     if(h2){const h=new Date().getHours(),g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';

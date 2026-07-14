@@ -211,6 +211,7 @@
           <button class="abtn primary" id="dlCert">Salary certificate (.doc)</button>
           <button class="abtn primary" id="dlSlip">Salary slip — this month (.doc)</button>
           <button class="abtn" id="prCert">Print salary certificate</button>
+          <a class="abtn" id="dlIdCard" href="alizon-idcard.html?type=employee">Download ID card</a>
         </div>
         <div class="hintl" style="margin-top:12px">Need a signed original? Raise a request →</div>
       </div>
@@ -322,6 +323,7 @@ $('logoutBtn').addEventListener('click',()=>{ try{localStorage.removeItem('alizo
 function enter(e){
   ME=e;
   $('loginCard').style.display='none'; $('app').style.display='block'; $('logoutBtn').style.display='';
+  const idc=$('dlIdCard'); if(idc)idc.href='alizon-idcard.html?type=employee&id='+encodeURIComponent(ME.empid||'');
   render();
   setInterval(renderChat, 4000); /* pick up HR replies */
 }

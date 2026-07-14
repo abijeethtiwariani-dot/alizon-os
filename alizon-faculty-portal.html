@@ -214,7 +214,8 @@
 
   <!-- OVERVIEW -->
   <section class="asec on" id="sec-overview">
-    <div class="lead"><h1>Faculty Overview</h1><p>Everything you teach in one place — student evaluations, grievances, notes, videos and lab schedules, each in its own section.</p></div>
+    <div class="lead"><h1>Faculty Overview</h1><p>Everything you teach in one place — student evaluations, grievances, notes, videos and lab schedules, each in its own section.</p>
+      <div style="margin-top:14px"><a class="btn mini" id="idCardLink" href="alizon-idcard.html?type=faculty" style="text-decoration:none;display:inline-block">Download ID card</a></div></div>
     <div class="kpis" id="kpis"></div>
     <div class="panel">
       <h2>Recent activity</h2>
@@ -375,6 +376,7 @@ document.querySelectorAll('.anavv a[data-sec]').forEach(a=>a.addEventListener('c
 
 /* ---------- boot ---------- */
 function boot(){
+  const idc=$('idCardLink'); if(idc)idc.href='alizon-idcard.html?type=faculty&id='+encodeURIComponent(ME.email||ME.name||'');
   renderAll();
   fillPickers();
   let init='sec-overview'; try{ init=sessionStorage.getItem('alizonFacultySec')||init; }catch(e){}
