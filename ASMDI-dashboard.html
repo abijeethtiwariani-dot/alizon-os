@@ -391,6 +391,25 @@
   /* submission grade */
   .subrow .sgrade{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 10px;border-radius:100px;flex:none;color:#6fd0ab;background:rgba(46,139,106,.18)}
   .subrow .spend{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 10px;border-radius:100px;flex:none;color:var(--muted);background:var(--pill);border:1px solid var(--line)}
+  /* module result badge on cards + result section in module detail */
+  .modresult{font-size:10px;font-weight:800;letter-spacing:.03em;padding:3px 9px;border-radius:100px;flex:none}
+  .modresult.graded{color:#6fd0ab;background:rgba(46,139,106,.18);border:1px solid rgba(46,139,106,.42)}
+  .modresult.rejected{color:#ff8a90;background:rgba(212,24,32,.14);border:1px solid rgba(212,24,32,.5)}
+  .modresult.ai{color:var(--gold);background:var(--gold-soft);border:1px solid rgba(217,164,65,.5)}
+  .modresult.pending{color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--line)}
+  .resbox{display:flex;flex-direction:column;gap:9px}
+  .resrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 15px;border-radius:12px;background:var(--glass);border:1px solid var(--line)}
+  .resrow.graded{border-color:rgba(46,139,106,.5)}
+  .resrow.rejected{border-color:rgba(212,24,32,.5)}
+  .res-main{display:flex;flex-direction:column;min-width:0}
+  .res-main b{font-size:14px;color:var(--ink)}
+  .res-main span{font-size:11.5px;color:var(--muted)}
+  .res-badge{margin-left:auto;font-size:11px;font-weight:800;letter-spacing:.03em;padding:5px 12px;border-radius:100px;flex:none}
+  .res-badge.graded{color:#6fd0ab;background:rgba(46,139,106,.18)}
+  .res-badge.rejected{color:#ff8a90;background:rgba(212,24,32,.16)}
+  .res-badge.ai{color:var(--gold);background:var(--gold-soft)}
+  .res-badge.pending{color:var(--muted);background:rgba(255,255,255,.05)}
+  .res-fb{flex-basis:100%;font-size:12.5px;color:var(--muted);font-style:italic;border-top:1px dashed var(--line);padding-top:8px;margin-top:2px}
   /* new dashboard sections */
   .dgrid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
   @media(max-width:900px){.dgrid2{grid-template-columns:1fr}}
@@ -1177,8 +1196,10 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
       const nNotes=(m.notes||[]).length, nVid=(m.videos||[]).length;
       const meta=[]; if(nVid)meta.push(nVid+' video'+(nVid!==1?'s':'')); if(nNotes)meta.push(nNotes+' note'+(nNotes!==1?'s':''));
       if(m.units&&m.units.length)meta.unshift(m.units.length+' units');
+      const rb=moduleResultBadge(m.unit, prog.name);
       return `<div class="modcard ${isLive?'live':'soon'}" role="button" tabindex="0" data-i="${i}">
         <div class="modtop"><span class="modtag">${esc(m.unit)}</span>
+          ${rb?`<span class="modresult ${rb.kind}" title="Your result for this module">${esc(rb.text)}</span>`:''}
           <span class="modstatus ${isLive?'open':''}">${isLive?'Open ▸':'View ▸'}</span></div>
         ${icon?`<div class="modico">${icon}</div>`:''}
         ${prog.course?`<div class="modcourse">${esc(prog.course)}</div>`:''}
@@ -1223,6 +1244,32 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
   window.addEventListener('pageshow',()=>{ fillLoginSelect(); renderTabs(); });
 })();
 
+/* ===== shared: a student's own evaluated results for a given module ===== */
+function _normKey(x){ return String(x==null?'':x).toUpperCase().replace(/\s+/g,''); }
+function studentModuleSubs(moduleUnit, progName){
+  var reg=''; try{ reg=(JSON.parse(localStorage.getItem('alizonProfile')||'{}').reg)||''; }catch(e){}
+  var subs=[]; try{ subs=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]'); }catch(e){}
+  if(!Array.isArray(subs)) subs=[];
+  return subs.filter(function(s){
+    if(s.type!=='practical'&&s.type!=='self') return false;
+    if(_normKey(s.module)!==_normKey(moduleUnit)) return false;
+    if(progName && s.programme && _normKey(s.programme)!==_normKey(progName)) return false;
+    if(reg && s.reg && _normKey(s.reg)!==_normKey(reg)) return false;
+    return true;
+  }).sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+}
+/* compact badge for a module card: latest evaluated result / status, or null */
+function moduleResultBadge(moduleUnit, progName){
+  var subs=studentModuleSubs(moduleUnit, progName);
+  if(!subs.length) return null;
+  var g=subs.filter(function(s){return s.grade;});
+  if(g.length) return {kind:'graded', text:'✔ '+g[0].grade};
+  if(subs.some(function(s){return s.status==='rejected';})) return {kind:'rejected', text:'Redo'};
+  var ai=subs.filter(function(s){return s.ai&&s.ai.grade;});
+  if(ai.length) return {kind:'ai', text:ai[0].ai.grade+' · AI'};
+  return {kind:'pending', text:'Submitted'};
+}
+
 /* ================= MODULE DETAIL (notes + class videos) ================= */
 (function(){
   const overlay=document.getElementById('moduleDetail');
@@ -1247,6 +1294,29 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
     <div style="margin-top:28px;border-top:1px solid #e2d3d4;padding-top:9px;font-size:11px;color:#999;text-align:center">Official course note · ALIZON OS · ${new Date(n.ts||Date.now()).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>`;
   }
 
+  function fmtR(ts){ try{ const d=new Date(ts); return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return ''; } }
+  function resultsSectionHtml(prog,m){
+    const subs=studentModuleSubs(m.unit, prog.name);
+    if(!subs.length){
+      const hasPrac=(m.practicals&&m.practicals.length)||(m.status==='live'&&m.href);
+      return hasPrac
+        ? `<div class="md-sec"><h3>Your result</h3><div class="md-empty">Submit this module’s practical or self-assessment from <b>Assessments</b> — your evaluated result will appear here automatically once faculty grades it.</div></div>`
+        : '';
+    }
+    const rows=subs.map(s=>{
+      let cls,badge;
+      if(s.grade){ cls='graded'; badge='✔ '+esc(s.grade); }
+      else if(s.status==='rejected'){ cls='rejected'; badge='Redo requested'; }
+      else if(s.ai&&s.ai.grade){ cls='ai'; badge=esc(s.ai.grade)+' · provisional'; }
+      else { cls='pending'; badge='Awaiting evaluation'; }
+      const fb=s.feedback?`<div class="res-fb">“${esc(s.feedback)}”${s.gradedBy?' — '+esc(s.gradedBy):''}</div>`:'';
+      return `<div class="resrow ${cls}">
+        <div class="res-main"><b>${esc(s.typeLabel||(s.type==='self'?'Self-assessment':'Practical'))}</b>
+          <span>${esc(s.title||m.title)} · submitted ${fmtR(s.ts)}</span></div>
+        <span class="res-badge ${cls}">${badge}</span>${fb}</div>`;
+    }).join('');
+    return `<div class="md-sec"><h3>Your result <span class="c">${subs.length}</span></h3><div class="resbox">${rows}</div></div>`;
+  }
   function open(prog,i){
     const m=prog.modules[i]; if(!m) return;
     const notes=(m.notes||[]).filter(n=>n.published!==false), videos=m.videos||[], units=m.units||[];
@@ -1287,6 +1357,7 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
         <h2>${esc(m.title)}</h2>
         ${prog.course?`<div class="mdcourse">${esc(prog.course)}</div>`:''}
         <p>${esc(m.desc||'')}</p></div>
+      ${resultsSectionHtml(prog,m)}
       ${pracs.length?`<div class="md-sec"><h3>Practicals <span class="c">${pracs.length}</span></h3>${pracHtml}</div>`:''}
       <div class="md-sec"><h3>Units <span class="c">${units.length}</span></h3>${unitsHtml}</div>
       <div class="md-sec"><h3>Class videos <span class="c">${videos.length}</span></h3>${vidHtml}</div>
