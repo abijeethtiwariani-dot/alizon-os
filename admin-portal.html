@@ -323,6 +323,7 @@
     <a data-sec="adm-staff"><span class="aic"></span> Staff &amp; Faculty</a>
     <a data-sec="adm-access"><span class="aic"></span> Access &amp; Logins</a>
     <a data-sec="adm-fees"><span class="aic"></span> Fees <b class="cnt" id="cntFees" style="background:var(--success)"></b></a>
+    <a data-sec="adm-results"><span class="aic"></span> Results</a>
     <a data-sec="adm-eval"><span class="aic">✔</span> Evaluation <b class="cnt" id="cntEval"></b></a>
     <a data-sec="adm-griev"><span class="aic"></span> Grievances <b class="cnt" id="cntGriev"></b></a>
     <a data-sec="adm-faculty"><span class="aic"></span> Faculty</a>
@@ -458,6 +459,22 @@
     <details style="margin-top:14px"><summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--gold)">All transactions</summary>
       <div style="overflow-x:auto;max-height:46vh;overflow-y:auto"><table class="stt" id="feeTxTable"></table></div>
     </details>
+  </section>
+
+  <section class="apanel asec" id="adm-results">
+    <h2>Results</h2>
+    <div class="ahint">Publish module-wise results. Choose a course and module, then upload the results CSV. Students see them instantly on the public <b>Results</b> page (<span style="color:var(--gold)">/alizon-results</span>) by entering their registration number &amp; batch. Re-uploading a module replaces it.</div>
+
+    <h3 style="font-size:15px;margin:14px 0 8px;color:var(--gold)">Publish a module result</h3>
+    <div class="arow3" style="grid-template-columns:1fr 1fr auto;align-items:end">
+      <div><label class="hint" style="display:block;margin-bottom:4px">Course</label><input type="text" id="res-course" placeholder="e.g. Paramedical AI" list="res-courselist"><datalist id="res-courselist"></datalist></div>
+      <div><label class="hint" style="display:block;margin-bottom:4px">Module / exam</label><input type="text" id="res-module" placeholder="e.g. Module 1 — AI Foundations"></div>
+      <label class="cadd btn" style="cursor:pointer;text-align:center;white-space:nowrap">Upload results CSV<input type="file" id="resCsv" accept=".csv,text/csv" style="display:none"></label>
+    </div>
+    <div class="hint" id="res-note" style="margin-top:8px">CSV needs a registration-number column (header containing “reg”, “roll”, “admission” or “enroll”) and optionally a name column. Every other column (marks, grade, result…) is shown to the student.</div>
+
+    <h3 style="font-size:15px;margin:22px 0 8px;color:var(--gold)">Published results <span id="res-count" style="color:var(--muted);font-weight:400;font-size:13px"></span></h3>
+    <div style="overflow-x:auto;max-height:52vh;overflow-y:auto;margin-top:8px"><table class="stt" id="resTable"></table></div>
   </section>
 
   <section class="apanel asec" id="adm-eval">
@@ -1146,7 +1163,7 @@ function renderFees(){
 }
 
 /* ---- sidebar: section switching + badges ---- */
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-eval','adm-griev','adm-faculty','adm-schedule','adm-links','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-griev','adm-faculty','adm-schedule','adm-links','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -1154,6 +1171,7 @@ function showSec(id){
   const mw=document.getElementById('pickModWrap'); if(mw)mw.style.visibility=(id==='sec-courses')?'visible':'hidden';
   if(id==='adm-access') renderAccess();
   if(id==='adm-staff') renderStaff();
+  if(id==='adm-results') renderResultsAdmin();
   try{ localStorage.setItem('admSec',id); }catch(e){}
   window.scrollTo({top:0,behavior:'instant'});
 }
@@ -1325,7 +1343,67 @@ document.getElementById('stf-save').addEventListener('click',function(){
 });
 stfReset();
 
-renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderActivity(); renderStudents(); renderFees(); renderAccess(); renderStaff();
+/* ================= RESULTS (module-wise CSV publish) ================= */
+function loadResults(){ try{const d=JSON.parse(localStorage.getItem('alizonResults')||'{}'); return (d&&d.courses)?d:{courses:{}}; }catch(e){ return {courses:{}}; } }
+function saveResults(d){ try{ localStorage.setItem('alizonResults',JSON.stringify(d)); }catch(e){} }
+document.getElementById('resCsv').addEventListener('change',function(e){
+  const f=e.target.files[0]; if(!f) return;
+  const course=(document.getElementById('res-course').value||'').trim();
+  const module=(document.getElementById('res-module').value||'').trim();
+  if(!course||!module){ toast('Enter a course and module first'); e.target.value=''; return; }
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const rows=parseCSV(String(rd.result)).filter(r=>r.some(v=>String(v).trim()!==''));
+      if(rows.length<2){ toast('The CSV has no data rows'); e.target.value=''; return; }
+      const hdr=rows[0].map(h=>String(h).trim());
+      const ri=hdr.findIndex(h=>/reg|register|roll|admission|admn|enrol/i.test(h));
+      if(ri<0){ toast('No registration-number column found (header with “reg”, “roll” or “admission”)'); e.target.value=''; return; }
+      const ni=hdr.findIndex(h=>/name/i.test(h));
+      const cols=hdr.filter((h,i)=>i!==ri&&i!==ni);
+      const data=rows.slice(1).map(r=>{
+        const v={}; hdr.forEach((h,i)=>{ if(i!==ri&&i!==ni) v[h]=String(r[i]==null?'':r[i]).trim(); });
+        return { reg:String(r[ri]==null?'':r[ri]).trim(), name:ni>=0?String(r[ni]==null?'':r[ni]).trim():'', v };
+      }).filter(x=>x.reg);
+      if(!data.length){ toast('No student rows with a registration number'); e.target.value=''; return; }
+      const R=loadResults(); if(!R.courses[course]) R.courses[course]={modules:{}};
+      if(!R.courses[course].modules) R.courses[course].modules={};
+      R.courses[course].modules[module]={ at:Date.now(), cols:cols, rows:data };
+      R.updated=Date.now(); saveResults(R);
+      logAct('Results published — '+course+' · '+module+' ('+data.length+' students)','update');
+      toast('Published '+data.length+' results for '+module);
+      document.getElementById('res-module').value='';
+      renderResultsAdmin();
+    }catch(err){ toast('Could not read the CSV'); }
+    e.target.value='';
+  };
+  rd.readAsText(f);
+});
+function delResult(course,module){
+  if(!confirm('Remove the published result for '+course+' · '+module+'?')) return;
+  const R=loadResults();
+  if(R.courses[course]&&R.courses[course].modules){ delete R.courses[course].modules[module];
+    if(!Object.keys(R.courses[course].modules).length) delete R.courses[course]; }
+  R.updated=Date.now(); saveResults(R); renderResultsAdmin(); toast('Result removed');
+}
+function renderResultsAdmin(){
+  const R=loadResults(); const courses=Object.keys(R.courses||{});
+  const dl=document.getElementById('res-courselist');
+  if(dl){ const set={}; courses.forEach(c=>set[c]=1);
+    try{ (JSON.parse(localStorage.getItem('alizonPrograms')||'[]')||[]).forEach(p=>{ if(p&&p.name)set[p.name]=1; }); }catch(e){}
+    dl.innerHTML=Object.keys(set).map(c=>`<option value="${esc(c)}">`).join(''); }
+  let n=0, rowsHtml='';
+  courses.forEach(c=>{ Object.keys(R.courses[c].modules||{}).forEach(m=>{ const mod=R.courses[c].modules[m]; n++;
+    rowsHtml+=`<tr><td>${esc(c)}</td><td>${esc(m)}</td><td class="num">${(mod.rows||[]).length}</td><td>${esc((mod.cols||[]).join(', ')||'—')}</td><td class="num">${mod.at?fmt(mod.at):'—'}</td><td><button class="btn resDel" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px;border-color:var(--crimson);color:var(--crimson)">Remove</button></td></tr>`;
+  }); });
+  document.getElementById('res-count').textContent=n?'· '+n+' module'+(n>1?'s':'')+' published':'';
+  const tb=document.getElementById('resTable');
+  tb.innerHTML='<tr><th>Course</th><th>Module</th><th>Students</th><th>Columns</th><th>Published</th><th></th></tr>'+
+    (rowsHtml||'<tr><td colspan="6" style="color:var(--muted);padding:12px">No results published yet — upload a module CSV above.</td></tr>');
+  tb.querySelectorAll('.resDel').forEach(b=>b.onclick=()=>delResult(b.dataset.c,b.dataset.m));
+}
+
+renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderActivity(); renderStudents(); renderFees(); renderAccess(); renderStaff(); renderResultsAdmin();
 render();
 paintCounts();
 showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; }catch(e){ return 'sec-courses'; } })());
