@@ -280,7 +280,9 @@ $('lg-emp').addEventListener('change',()=>{ const e=findEmp($('lg-emp').value); 
 $('lg-emp').addEventListener('keydown',e=>{ if(e.key==='Enter')$('lg-go').click(); });
 $('lg-pw').addEventListener('keydown',e=>{ if(e.key==='Enter')$('lg-go').click(); });
 function accessOf(e){ return (e&&typeof e.access==='object')?e.access:{staff:true}; }
-$('lg-go').addEventListener('click',()=>{
+let lgWaiting=false;
+$('lg-go').addEventListener('click',()=>doLogin(false));
+function doLogin(retrying){
   const err=t=>{ $('lg-err').textContent=t; $('lg-err').style.display='block'; };
   /* master admin override — opens the first employee record (or a demo one) */
   if(($('lg-emp').value||'').trim().toLowerCase()==='admin' && $('lg-pw').value==='admin123'){
@@ -290,8 +292,20 @@ $('lg-go').addEventListener('click',()=>{
     try{ if(window.alizonAuth) window.alizonAuth.signIn('admin','admin123','admin'); }catch(x){}
     enter(e); return;
   }
+  /* staff records sync from the cloud a moment after load — if they aren't here
+     yet, wait for the sync and retry automatically instead of failing */
   if(!employees().length){
-    err('Staff records are not synced on this device yet — ask HR to open the HR Studio once (or upload the staff CSV there).'); return;
+    if(!retrying && !lgWaiting){
+      lgWaiting=true;
+      $('lg-err').textContent='Loading staff records from the server…'; $('lg-err').style.display='block';
+      let tries=0;
+      const iv=setInterval(()=>{
+        if(employees().length){ clearInterval(iv); lgWaiting=false; doLogin(true); }
+        else if(++tries>=16){ clearInterval(iv); lgWaiting=false;
+          err('Staff records could not be loaded on this device. Please refresh the page and try again in a moment, or ask HR to open the HR Studio once.'); }
+      }, 500);
+    }
+    return;
   }
   const e=findEmp($('lg-emp').value);
   if(!e){ err('Employee ID not found — accounts are provisioned by HR from the back end. Contact hr@alizongov.com.'); return; }
@@ -302,7 +316,7 @@ $('lg-go').addEventListener('click',()=>{
   try{ localStorage.setItem('alizonStaffSession',e.empid); }catch(x){}
   try{ if(window.alizonAuth) window.alizonAuth.signIn(e.empid, pw, 'staff'); }catch(x){}
   enter(e);
-});
+}
 $('logoutBtn').addEventListener('click',()=>{ try{localStorage.removeItem('alizonStaffSession');}catch(e){} location.reload(); });
 
 function enter(e){
