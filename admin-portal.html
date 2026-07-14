@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Admin Portal — Course Management</title>
+<link rel="icon" href="alizon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070810; --navy:#0D1024; --navy2:#1A1D2E; --navy3:#2A2E44;
+    --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.09);
+    --crimson:#D41820; --crimson-deep:#B1040E; --gold:#D9A441;
+    --gold-soft:rgba(217,164,65,.14); --crimson-soft:rgba(212,24,32,.14);
+    --pill:rgba(255,255,255,.05); --glass:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+    --success:#2E8B6A; --warn:#C6551F;
+  }
+  /* ===== LIQUID-WHITE GLASS TILES on the black canvas (match dashboard) ===== */
+  .prog,.apanel,.newprog,.pickbar{
+    --ink:#1c1a1f; --muted:#6b6570; --line:rgba(24,18,26,.12);
+    --crimson:#C40D16; --crimson-deep:#9E0C13; --gold:#A16207;
+    --gold-soft:rgba(217,164,65,.22); --crimson-soft:rgba(212,24,32,.09);
+    --pill:rgba(24,18,26,.05);
+    --glass:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,255,255,.72) 48%,rgba(255,255,255,.84));
+    color:var(--ink);
+  }
+  .prog input,.prog select,.prog textarea,.apanel input,.apanel select,.apanel textarea,.newprog input,.newprog select,.newprog textarea,.pickbar select{background:rgba(255,255,255,.72)}
+  .pickbar{display:grid;grid-template-columns:1fr 1.4fr auto;gap:14px;align-items:end;background:var(--glass);border-radius:18px;padding:16px 18px;margin-top:18px}
+  @media(max-width:720px){.pickbar{grid-template-columns:1fr}}
+  .pklbl{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .pkstat{font-size:12.5px;font-weight:600;color:var(--muted);padding-bottom:12px;white-space:nowrap}
+  .stt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
+  .stt th,.stt td{border:1px solid var(--line);padding:7px 9px;text-align:left;white-space:nowrap}
+  .stt th{background:#f1f2f6;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);position:sticky;top:0}
+  .stt td.num{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+  .prog .st.live,.apanel .st.live{color:#1E8E5A;background:rgba(46,139,106,.15)}
+  .apanel .badge2.new{color:#B1040E;background:rgba(212,24,32,.12)}
+  .apanel .badge2.done{color:#1E8E5A;background:rgba(46,139,106,.15)}
+  .apanel .badge2.ind{color:#A16207;background:rgba(217,164,65,.18)}
+  .apanel .badge2.usa{color:#3B5FCC;background:rgba(79,123,255,.14)}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;
+    font-size:15px;-webkit-font-smoothing:antialiased;line-height:1.55}
+  .bgwrap{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.08),transparent 60%),
+    radial-gradient(90% 60% at 90% 10%,rgba(217,164,65,.06),transparent 55%)}
+  .shell{position:relative;z-index:1;max-width:1340px;margin:0 auto;display:grid;grid-template-columns:225px minmax(0,1fr)}
+  .wrap{position:relative;z-index:1;padding:0 22px 70px;min-width:0}
+  .aside{position:sticky;top:62px;height:calc(100vh - 62px);padding:18px 13px;display:flex;flex-direction:column;
+    border-right:1px solid var(--line);background:linear-gradient(180deg,rgba(13,16,36,.85),rgba(7,8,16,.9));
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+  .anavv{display:flex;flex-direction:column;gap:4px;flex:1}
+  .anavv a{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:12px;color:var(--muted);
+    text-decoration:none;font-size:14px;cursor:pointer;transition:.2s;border:1px solid transparent;user-select:none}
+  .anavv a .aic{width:20px;text-align:center;flex:none}
+  .anavv a:hover{color:var(--ink);background:var(--pill)}
+  .anavv a.on{color:#fff;background:linear-gradient(120deg,var(--crimson-soft),var(--gold-soft));
+    border-color:rgba(212,24,32,.3);font-weight:600}
+  .anavv a .cnt{margin-left:auto;font-size:10.5px;font-weight:700;background:var(--crimson);color:#fff;
+    border-radius:100px;padding:2px 8px;display:none;line-height:1.4}
+  .anavv a .cnt.show{display:inline-block}
+  .asfoot{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:3px}
+  .asfoot a{display:flex;gap:9px;align-items:center;padding:9px 13px;border-radius:11px;color:var(--muted);
+    font-size:13px;text-decoration:none;transition:.2s}
+  .asfoot a:hover{color:var(--gold);background:var(--pill)}
+  .asec{display:none}
+  .asec.on{display:block}
+  @media(max-width:840px){
+    .shell{grid-template-columns:1fr}
+    .aside{position:static;height:auto;flex-direction:column;border-right:none;border-bottom:1px solid var(--line);padding:12px 16px}
+    .anavv{flex-direction:row;flex-wrap:wrap}
+    .asfoot{border-top:none;padding-top:6px;flex-direction:row;flex-wrap:wrap}
+  }
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;margin:0;letter-spacing:-.01em}
+
+  /* top bar */
+  .top{position:sticky;top:0;z-index:10;background:rgba(13,16,36,.82);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line)}
+  .top .in{max-width:1080px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:14px}
+  .top img.logo{width:34px;height:34px;object-fit:contain;flex:none}
+  .top .bt{line-height:1.15}
+  .top .bt b{font-family:'Source Serif Pro',serif;font-weight:600;font-size:17px;display:block}
+  .top .bt small{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .top .sp{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .top a.back,.top button.reset{font-size:13px;text-decoration:none;color:var(--ink);cursor:pointer;
+    border:1px solid var(--line);background:var(--pill);padding:8px 14px;border-radius:100px;
+    font-family:inherit;transition:.2s}
+  .top a.back:hover,.top button.reset:hover{background:rgba(255,255,255,.1);border-color:rgba(217,164,65,.4)}
+
+  .lead{margin:26px 0 6px}
+  .lead h1{font-size:clamp(22px,3vw,30px)}
+  .lead p{color:var(--muted);font-size:14px;margin:8px 0 0;max-width:70ch}
+  .note{margin-top:14px;background:var(--gold-soft);border:1px solid rgba(217,164,65,.3);
+    border-left:3px solid var(--gold);border-radius:10px;padding:11px 14px;font-size:13px;color:#ecd9ab}
+
+  .prog{background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:18px;
+    backdrop-filter:blur(14px)}
+  .prog>.ph{display:flex;align-items:center;gap:13px;margin-bottom:6px}
+  .prog .pico{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:22px;flex:none;
+    background:var(--gold-soft);border:1px solid var(--line)}
+  .prog .pname{flex:1;min-width:0}
+  .prog .pname h2{font-size:19px}
+  .prog .pname span{font-size:12.5px;color:var(--muted)}
+  .prog .delp{background:none;border:1px solid var(--line);color:var(--muted);cursor:pointer;
+    font-size:12px;padding:6px 11px;border-radius:100px;font-family:inherit;transition:.2s;flex:none}
+  .prog .delp:hover{color:#fff;border-color:var(--crimson);background:var(--crimson-soft)}
+
+  .mods{margin:14px 0 4px;display:flex;flex-direction:column;gap:8px}
+  .mrow{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:12px;
+    background:var(--pill);border:1px solid var(--line)}
+  .mrow .mu{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);
+    white-space:nowrap;flex:none}
+  .mrow .mt{flex:1;min-width:0}
+  .mrow .mt b{font-size:14px;font-weight:500;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mrow .mt small{font-size:12px;color:var(--muted)}
+  .mrow .st{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;flex:none;text-transform:uppercase;letter-spacing:.05em}
+  .st.live{color:#6fd0ab;background:rgba(46,139,106,.18)} .st.soon{color:var(--gold);background:var(--gold-soft)}
+  .mrow .delm{background:none;border:none;color:var(--muted);cursor:pointer;font-size:17px;line-height:1;flex:none;padding:2px 6px}
+  .mrow .delm:hover{color:var(--crimson)}
+  .nomods{font-size:13px;color:var(--muted);padding:8px 2px}
+  details.mcontent{margin:-2px 0 10px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02);overflow:hidden}
+  details.mcontent>summary{list-style:none;cursor:pointer;padding:9px 14px;font-size:12.5px;color:var(--gold);font-weight:600;user-select:none}
+  details.mcontent>summary::-webkit-details-marker{display:none}
+  details.mcontent>summary:hover{background:rgba(255,255,255,.03)}
+  .cbody{padding:2px 14px 14px}
+  .cblock{margin-top:14px}
+  .cblock .ct{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .clist{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+  .citem{display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 11px;border-radius:9px;background:var(--pill);border:1px solid var(--line)}
+  .citem .cinfo{flex:1;min-width:0}.citem .cinfo b{font-weight:500}.citem .cinfo small{color:var(--muted);display:block;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .citem .cx{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;flex:none}.citem .cx:hover{color:var(--crimson)}
+  .crow{display:grid;gap:8px;grid-template-columns:1fr auto;margin-bottom:8px}
+  .crow.n{grid-template-columns:1fr}
+  .cadd{cursor:pointer;font-family:inherit;font-weight:600;font-size:12.5px;border:1px solid rgba(217,164,65,.4);background:var(--gold-soft);color:var(--gold);border-radius:9px;padding:10px 14px;white-space:nowrap}
+  .cadd:hover{background:rgba(217,164,65,.2)}
+  .cnote{color:var(--muted);font-size:12px;padding:4px 0}
+  .anav{position:sticky;top:60px;z-index:9;display:flex;gap:7px;flex-wrap:wrap;margin:16px 0 4px;padding:10px 0}
+  .anav a{font-size:12.5px;text-decoration:none;color:#c9c4d4;padding:8px 13px;border-radius:100px;background:rgba(13,16,36,.88);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:.2s}
+  .anav a:hover{color:var(--gold);border-color:rgba(217,164,65,.4)}
+  .apanel{background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:20px;backdrop-filter:blur(14px);scroll-margin-top:120px}
+  .apanel>h2{font-size:19px;margin-bottom:3px}
+  .ahint{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  .arow3{display:grid;grid-template-columns:1fr 150px 1fr;gap:8px;margin-bottom:8px}
+  .arow4{display:grid;grid-template-columns:1fr 1fr 1fr 130px;gap:8px;margin-bottom:8px}
+  @media(max-width:720px){.arow3,.arow4{grid-template-columns:1fr}}
+  .egrade{display:flex;gap:8px;align-items:center;flex:none}
+  .egrade input{width:80px}
+  .badge2{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:100px;flex:none}
+  .badge2.new{color:#ff9aa0;background:var(--crimson-soft)} .badge2.done{color:#6fd0ab;background:rgba(46,139,106,.18)}
+  .badge2.ind{color:#ffca7a;background:rgba(217,164,65,.16)} .badge2.usa{color:#8fb2ff;background:rgba(79,123,255,.16)}
+  .citem textarea{min-height:44px;margin-top:6px}
+  .citem.col{flex-direction:column;align-items:stretch;gap:8px}
+  .actrow{display:flex;gap:11px;align-items:flex-start;padding:9px 2px;border-bottom:1px solid var(--line);font-size:13px}
+  .actrow:last-child{border-bottom:none}
+  .actrow .adot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none}
+  .adot.upload{background:var(--gold)} .adot.approve{background:var(--success)} .adot.update{background:var(--crimson)} .adot.eval{background:#8fb2ff} .adot.griev{background:#ff9aa0}
+  .actrow .atime{margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap;flex:none}
+  .eview{cursor:pointer;font-family:inherit;font-weight:600;font-size:12px;border:1px solid var(--line);background:var(--pill);color:var(--ink);border-radius:9px;padding:8px 13px;white-space:nowrap;flex:none}
+  .eview:hover{border-color:rgba(217,164,65,.5);color:var(--gold)}
+  /* student document viewer */
+  #docView{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;background:rgba(5,6,12,.92);backdrop-filter:blur(6px)}
+  #docView.open{display:flex}
+  .dv-top{display:flex;align-items:center;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line);background:rgba(13,16,36,.92)}
+  .dv-top .dv-ttl{flex:1;text-align:center;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dv-top button{font-size:13px;color:var(--ink);cursor:pointer;font-family:inherit;border:1px solid var(--line);background:var(--pill);padding:8px 14px;border-radius:100px}
+  .dv-top button:hover{background:rgba(255,255,255,.1)}
+  .dv-scroll{flex:1;overflow:auto;padding:26px 16px 60px;display:flex;justify-content:center}
+  .subdoc{background:#fff;color:#1a1a1a;width:100%;max-width:820px;height:max-content;padding:52px 56px;border-radius:8px;font-family:'Source Serif Pro',Georgia,'Times New Roman',serif;font-size:15px;line-height:1.7;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .subdoc .dh{text-align:center;border-bottom:2px solid #7A0309;padding-bottom:16px;margin-bottom:8px}
+  .subdoc .dh img{width:50px;height:50px;object-fit:contain;margin-bottom:8px}
+  .subdoc .dh .inm{font-family:'Source Serif Pro',serif;font-weight:700;font-size:19px;color:#7A0309}
+  .subdoc .dh .dep{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#666;margin-top:4px}
+  .subdoc .dt{text-align:center;margin:20px 0 6px;font-family:'Source Serif Pro',serif;font-weight:700;font-size:17px;text-transform:uppercase;letter-spacing:.05em}
+  .subdoc .dsub{text-align:center;font-size:14px;color:#444;margin-bottom:22px;font-style:italic}
+  .subdoc h3.sn{font-family:'Source Serif Pro',serif;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:#7A0309;margin:22px 0 9px;padding-bottom:5px;border-bottom:1px solid #e2d3d4}
+  .subdoc table{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0}
+  .subdoc table td,.subdoc table th{border:1px solid #e0dcd8;padding:6px 9px;text-align:left;vertical-align:top}
+  .subdoc table th{background:#faf6f2;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#555}
+  .subdoc table.info td.k{width:200px;font-weight:600;background:#faf6f2;color:#333}
+  .subdoc table.rate td.r{width:72px;text-align:center;font-weight:700}
+  .subdoc p.body{margin:0 0 12px;text-align:justify;white-space:pre-wrap}
+  .subdoc .tot{text-align:right;font-weight:700;margin-top:6px;color:#7A0309}
+  .subdoc .qa{margin:0 0 13px}.subdoc .qa .q{font-weight:600;color:#222;margin-bottom:3px}
+  .subdoc .pick{color:#222;font-weight:600}.subdoc .scalekey{font-size:12px;color:#555;font-style:italic;margin:2px 0 8px}
+  .subdoc h4.qn{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px;margin:16px 0 6px;color:#222}
+  .subdoc .sig{margin-top:22px;font-size:14px}.subdoc .sig .line{display:inline-block;border-bottom:1px solid #888;min-width:200px;margin-left:8px}
+  .subdoc .foot{margin-top:30px;border-top:1px solid #e2d3d4;padding-top:10px;font-size:11px;color:#999;text-align:center}
+  .subdoc .empty{color:#bbb;font-style:italic}
+  .np-fixhead{display:none}
+  @media print{body>*{display:none !important}#docView{display:block !important;position:static;background:#fff}.dv-top{display:none !important}.dv-scroll{padding:0;overflow:visible}.subdoc{box-shadow:none;max-width:100%;padding:0}
+    /* repeating letterhead band (logo + unit) on every printed page + page numbers */
+    @page{margin:30mm 15mm 20mm;
+      @bottom-right{content:"Page " counter(page) " of " counter(pages);font-family:Inter,-apple-system,sans-serif;font-size:9pt;color:#666}
+      @bottom-left{content:"ALIZON OS · Official document";font-family:Inter,-apple-system,sans-serif;font-size:8pt;color:#999}}
+    .np-fixhead{display:flex !important;position:fixed;top:0;left:0;right:0;height:24mm;
+      align-items:center;justify-content:center;gap:9px;background:#fff;border-bottom:1.5px solid #7A0309;padding:0 6mm}
+    .np-fixhead img{width:30px;height:30px;object-fit:contain;flex:none}
+    .np-fixhead .t b{display:block;font-family:'Source Serif Pro',Georgia,serif;font-size:11pt;color:#7A0309;line-height:1.2}
+    .np-fixhead .t span{display:block;font-size:7.5pt;letter-spacing:.1em;text-transform:uppercase;color:#666;margin-top:1px}
+  }
+
+  .addform{margin-top:14px;border-top:1px dashed var(--line);padding-top:14px}
+  .addform .lbl{font-size:12px;font-weight:600;color:var(--gold);letter-spacing:.05em;text-transform:uppercase;margin-bottom:9px}
+  .grid2{display:grid;grid-template-columns:170px 1fr;gap:10px}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink);background:rgba(255,255,255,.04);
+    border:1px solid var(--line);border-radius:10px;padding:10px 13px;width:100%;outline:none}
+  textarea{min-height:60px;resize:vertical;grid-column:1/-1}
+  input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  select option{background:#fff;color:#1c1a1f}
+  .addrow{display:grid;grid-template-columns:150px 1fr 140px auto;gap:10px;margin-top:10px;align-items:start}
+  @media(max-width:760px){.addrow{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.addrow{grid-template-columns:1fr}}
+  .btn{cursor:pointer;font-family:inherit;font-weight:600;font-size:13.5px;border:none;border-radius:10px;
+    padding:11px 18px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));
+    box-shadow:0 8px 22px rgba(212,24,32,.3);transition:transform .15s,box-shadow .15s;white-space:nowrap}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(212,24,32,.4)}
+  .btn.gold{background:linear-gradient(120deg,#a16207,var(--gold));box-shadow:0 8px 22px rgba(217,164,65,.28);color:#241a06}
+
+  .newprog{background:var(--glass);border:1px dashed rgba(217,164,65,.4);border-radius:18px;padding:20px;margin-top:22px}
+  .newprog h3{font-size:16px;margin-bottom:12px}
+  .nprow{display:grid;grid-template-columns:80px 1fr auto;gap:10px;align-items:center}
+  @media(max-width:560px){.nprow{grid-template-columns:1fr}}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(70px);z-index:50;
+    background:rgba(13,16,36,.95);border:1px solid rgba(217,164,65,.4);color:var(--gold);
+    padding:12px 22px;border-radius:100px;font-size:13.5px;font-weight:500;opacity:0;transition:.35s;
+    pointer-events:none;backdrop-filter:blur(10px)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:5px}
+
+  /* ===== LIQUID GLASS finish on the white tiles ===== */
+  .prog,.apanel,.newprog,.pickbar{
+    backdrop-filter:blur(28px) saturate(175%);
+    -webkit-backdrop-filter:blur(28px) saturate(175%);
+    box-shadow:0 26px 60px rgba(0,0,0,.52),
+      inset 0 1.5px 0 rgba(255,255,255,.95),
+      inset 0 -1px 0 rgba(255,255,255,.35),
+      inset 0 0 42px rgba(255,255,255,.16);
+  }
+  .prog,.apanel,.pickbar{border:1px solid rgba(255,255,255,.62)}
+  .newprog{border:1px dashed rgba(161,98,7,.55)}
+</style>
+</head>
+<body>
+<div class="bgwrap"></div>
+
+<style>
+  #adminGate{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.1),transparent 60%),var(--bg)}
+  #adminGate.hide{display:none}
+  .gate-card{width:100%;max-width:400px;color:var(--tink,#1c1a1f);border:1px solid rgba(255,255,255,.62);border-radius:20px;padding:34px 30px;
+    background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.78) 48%,rgba(255,255,255,.86));
+    backdrop-filter:blur(28px) saturate(175%);box-shadow:0 30px 70px rgba(0,0,0,.55),inset 0 1.5px 0 rgba(255,255,255,.95)}
+  .gate-card .gbrand{display:flex;align-items:center;gap:11px;justify-content:center;margin-bottom:16px}
+  .gate-card .gbrand img{width:34px;height:34px;object-fit:contain}
+  .gate-card .gbrand b{font-family:'Source Serif Pro',Georgia,serif;font-size:17px;color:#1c1a1f}
+  .gate-card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:20px;text-align:center;color:#1c1a1f;margin-bottom:4px}
+  .gate-card p.gsub{font-size:12.5px;color:#6b6570;text-align:center;margin-bottom:20px}
+  .gate-card label{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6b6570;margin:12px 0 6px}
+  .gate-card input{width:100%;font-family:inherit;font-size:15px;color:#1c1a1f;background:rgba(255,255,255,.85);
+    border:1px solid rgba(24,18,26,.14);border-radius:11px;padding:12px 14px;outline:none}
+  .gate-card input:focus{border-color:#A16207;box-shadow:0 0 0 3px rgba(161,98,7,.18)}
+  .gate-card button{width:100%;margin-top:18px;cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;border:none;
+    border-radius:100px;padding:13px;color:#fff;background:linear-gradient(120deg,#9E0C13,#C40D16);box-shadow:0 8px 22px rgba(212,24,32,.3)}
+  .gate-card .gerr{display:none;margin-top:12px;font-size:12.5px;color:#B1040E;background:rgba(196,13,22,.09);border:1px solid rgba(196,13,22,.3);border-radius:10px;padding:9px 12px}
+  .gate-card .gerr.show{display:block}
+  .gate-card .gfoot{margin-top:16px;font-size:12px;color:#6b6570;text-align:center}
+  .gate-card .gfoot a{color:#A16207;text-decoration:none}
+</style>
+<div id="adminGate">
+  <form class="gate-card" id="gateForm" autocomplete="off">
+    <div class="gbrand"><img src="alizon-logo.png" alt=""><b>ALIZON OS</b></div>
+    <h2>Admin Portal</h2>
+    <p class="gsub">Restricted — administrator sign-in required.</p>
+    <label for="ga-id">Login ID</label>
+    <input id="ga-id" placeholder="admin" autocomplete="username">
+    <label for="ga-pw">Password</label>
+    <input id="ga-pw" type="password" placeholder="••••••••" autocomplete="current-password">
+    <div class="gerr" id="ga-err">Incorrect login ID or password.</div>
+    <button type="submit">Sign in</button>
+    <div class="gfoot"><a href="ASMDI-dashboard.html">← Back to campus sign-in</a></div>
+  </form>
+</div>
+<script>
+(function(){
+  const gate=document.getElementById('adminGate');
+  function ok(){ gate.classList.add('hide'); document.body.style.overflow=''; }
+  try{ if(sessionStorage.getItem('alizonAdminAuth')==='1'){ ok(); return; } }catch(e){}
+  document.body.style.overflow='hidden';
+  document.getElementById('gateForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    const id=(document.getElementById('ga-id').value||'').trim().toLowerCase();
+    const pw=document.getElementById('ga-pw').value||'';
+    if(id==='admin'&&pw==='admin123'){ try{sessionStorage.setItem('alizonAdminAuth','1');}catch(x){} document.getElementById('ga-err').classList.remove('show'); ok(); }
+    else{ document.getElementById('ga-err').classList.add('show'); }
+  });
+})();
+</script>
+
+<header class="top">
+  <div class="in">
+    <img class="logo" src="alizon-logo.png" alt="Alizon">
+    <div class="bt"><b>ALIZON OS</b><small>Admin Portal</small></div>
+    <div class="sp">
+      <button class="reset" id="resetBtn" title="Restore the default programmes & courses">↺ Reset defaults</button>
+      <a class="back" href="ASMDI-dashboard.html">Student dashboard →</a>
+      <button class="reset" id="adminSignout" title="Sign out of the admin portal">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+<aside class="aside">
+  <nav class="anavv">
+    <a data-sec="sec-courses" class="on"><span class="aic"></span> Courses</a>
+    <a data-sec="adm-students"><span class="aic"></span> Students <b class="cnt" id="cntStud" style="background:var(--gold)"></b></a>
+    <a data-sec="adm-fees"><span class="aic"></span> Fees <b class="cnt" id="cntFees" style="background:var(--success)"></b></a>
+    <a data-sec="adm-eval"><span class="aic">✔</span> Evaluation <b class="cnt" id="cntEval"></b></a>
+    <a data-sec="adm-griev"><span class="aic"></span> Grievances <b class="cnt" id="cntGriev"></b></a>
+    <a data-sec="adm-faculty"><span class="aic"></span> Faculty</a>
+    <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
+    <a data-sec="adm-links"><span class="aic"></span> Links</a>
+    <a data-sec="adm-activity"><span class="aic"></span> History</a>
+  </nav>
+  <div class="asfoot">
+    <a href="alizon-hr-studio.html" title="Employee master sheet, salary slips, certificates & letters">HR Studio</a>
+    <a href="ASMDI-dashboard.html">↩ Student dashboard</a>
+  </div>
+</aside>
+
+<div class="wrap">
+  <div class="pickbar">
+    <div><label class="pklbl">Programme</label><select id="pickProg"></select></div>
+    <div id="pickModWrap"><label class="pklbl">Module / course</label><select id="pickMod"></select></div>
+    <div class="pkstat" id="pickInfo"></div>
+  </div>
+
+  <section class="asec on" id="sec-courses">
+    <div class="lead" id="adm-courses">
+      <h1>Course &amp; Programme Management</h1>
+      <p>Add, edit and remove practical courses across all AI programmes. Everything you save here appears
+        instantly on the student dashboard's <b>Virtual Practicals</b> section.</p>
+      <div class="note">Data is stored in this browser and shared with the dashboard on the same address.
+        To publish courses to every device, connect a real database later — the structure is already in place.</div>
+    </div>
+
+    <div id="programs"></div>
+
+    <div class="newprog">
+      <h3>＋ Add a new programme</h3>
+      <div class="nprow">
+        <input id="np-icon" placeholder="Icon " maxlength="4" value="">
+        <input id="np-name" placeholder="Programme name — e.g. Radiology AI">
+        <button class="btn gold" id="np-add">Add programme</button>
+      </div>
+      <div class="hint">A programme groups practical courses (e.g. Pharmacy AI → Unit 1, Unit 2…).</div>
+    </div>
+  </section>
+
+  <section class="apanel asec" id="adm-students">
+    <h2>Students</h2>
+    <div class="ahint">Master student roster — upload the CSV exported from the backend (same format as
+      <b>alizon-students-*.csv</b>) and it reflects instantly on every portal. Date of birth is stored in simple
+      number format <b>DDMMYYYY</b> (e.g. 08121996 — no spaces).</div>
+    <div class="arow3" style="grid-template-columns:auto 1fr auto;align-items:center">
+      <label class="cadd" style="cursor:pointer;text-align:center">Upload students CSV<input type="file" id="stCsv" accept=".csv,text/csv" style="display:none"></label>
+      <input id="stSearch" placeholder="Search name / reg no / batch / email…">
+      <button class="eview" id="stClear" style="color:var(--crimson)">Clear roster</button>
+    </div>
+    <div class="hint" id="stUpResult" style="display:none;margin:10px 0 0;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.45);font-size:13px"></div>
+    <div class="hint" id="stMeta" style="margin:10px 0 2px"></div>
+    <div style="overflow-x:auto;max-height:60vh;overflow-y:auto"><table class="stt" id="stTable"></table></div>
+  </section>
+
+  <section class="apanel asec" id="adm-fees">
+    <h2>Fees &amp; Payments</h2>
+    <div class="ahint">Upload the fees export from the backend (CSV with the same columns as the payment report).
+      Re-uploads <b>skip duplicate transactions automatically</b> and tell you how many were found.
+      Payments are matched to roster students by name.</div>
+    <div class="arow3" style="grid-template-columns:auto 1fr auto;align-items:center">
+      <label class="cadd" style="cursor:pointer;text-align:center">Upload fees CSV<input type="file" id="feeCsv" accept=".csv,text/csv" style="display:none"></label>
+      <input id="feeSearch" placeholder="Search student / reg / mode…">
+      <button class="eview" id="feeClear" style="color:var(--crimson)">Clear fees</button>
+    </div>
+    <div class="hint" id="feeUpResult" style="display:none;margin:10px 0 0;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.45);font-size:13px"></div>
+    <div id="feeSummary" style="display:flex;gap:9px;flex-wrap:wrap;margin:12px 0 4px"></div>
+    <h3 style="font-size:15px;margin:14px 0 4px">Paid per student</h3>
+    <div style="overflow-x:auto;max-height:46vh;overflow-y:auto"><table class="stt" id="feeByStudent"></table></div>
+    <details style="margin-top:14px"><summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--gold)">All transactions</summary>
+      <div style="overflow-x:auto;max-height:46vh;overflow-y:auto"><table class="stt" id="feeTxTable"></table></div>
+    </details>
+  </section>
+
+  <section class="apanel asec" id="adm-eval">
+    <h2>✔ Submissions &amp; Evaluation</h2>
+    <div class="ahint">Grade student practicals &amp; self-assessments. Grades &amp; feedback reflect on the student portal.</div>
+    <div class="clist" id="evalList"></div>
+  </section>
+
+  <section class="apanel asec" id="adm-griev">
+    <h2>Grievances</h2>
+    <div class="ahint">Grievances raised by students — institute-wide (not tied to a programme). Students see your reply on their portal.</div>
+    <div class="clist" id="grievList"></div>
+  </section>
+
+  <section class="apanel asec" id="adm-faculty">
+    <h2>Faculty</h2>
+    <div class="ahint">Faculty directory shown on the student dashboard. Indian &amp; USA faculty are pre-loaded — edit as needed.</div>
+    <div class="clist" id="facList"></div>
+    <div class="cblock"><div class="ct">Add faculty</div>
+      <div class="arow4">
+        <input id="fc-name" placeholder="Full name — e.g. Dr. Meera Nair">
+        <input id="fc-dept" placeholder="Department / specialisation">
+        <input id="fc-email" placeholder="Email">
+        <select id="fc-country"><option>India</option><option>USA</option><option>Other</option></select>
+      </div>
+      <div class="crow n"><button class="cadd" id="fc-add">＋ Add faculty</button></div>
+    </div>
+  </section>
+
+  <section class="apanel asec" id="adm-schedule">
+    <h2>Lab &amp; Module Schedules</h2>
+    <div class="ahint">Scheduled live labs, induction &amp; demo sessions — shown on the dashboard schedule for students to join.</div>
+    <div class="clist" id="schList"></div>
+    <div class="cblock"><div class="ct">Add schedule</div>
+      <div class="arow4">
+        <input id="sc-module" placeholder="Module — e.g. Module 1">
+        <input id="sc-title" placeholder="Session title">
+        <input id="sc-date" type="date">
+        <input id="sc-time" type="time">
+      </div>
+      <div class="crow"><input id="sc-link" placeholder="Meeting link (optional)"><select id="sc-mode"><option>Online</option><option>On-campus</option><option>Hybrid</option></select></div>
+      <div class="crow n"><button class="cadd" id="sc-add">＋ Add schedule</button></div>
+    </div>
+  </section>
+
+  <section class="apanel asec" id="adm-links">
+    <h2>Induction &amp; Assessment Links</h2>
+    <div class="ahint">Online induction, assessment and resource links students access from the portal.</div>
+    <div class="clist" id="lnkList"></div>
+    <div class="cblock"><div class="ct">Add link</div>
+      <div class="arow3">
+        <input id="lk-title" placeholder="Title — e.g. Programme Induction">
+        <select id="lk-type"><option>Induction</option><option>Assessment</option><option>Resource</option><option>Meeting</option></select>
+        <input id="lk-url" placeholder="https://…">
+      </div>
+      <div class="crow n"><button class="cadd" id="lk-add">＋ Add link</button></div>
+    </div>
+  </section>
+
+  <section class="apanel asec" id="adm-activity">
+    <h2>Activity History</h2>
+    <div class="ahint">Every upload, approval, evaluation and update is logged here (newest first).</div>
+    <div id="actList"></div>
+    <div class="crow n" style="margin-top:10px"><button class="cadd" id="act-clear" style="border-color:var(--line);background:var(--pill);color:var(--muted)">Clear history</button></div>
+  </section>
+</div>
+</div><!-- /shell -->
+
+<div id="docView">
+  <div class="dv-top">
+    <button id="dvClose">✕ Close</button>
+    <div class="dv-ttl" id="dvTitle">Student submission</div>
+    <button id="dvPrint">Print</button>
+  </div>
+  <div class="dv-scroll"><div class="subdoc" id="dvDoc"></div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---- shared data model (identical key to the dashboard) ---- */
+const DEFAULT_PROGRAMS=[
+  {id:'paramedical',name:'Paramedical AI',icon:'',course:'Certificate Course in Digital Health & Artificial Intelligence for Paramedical Sciences',modules:[
+    {unit:'Module 1',title:'Vital Signs Monitoring with AI',desc:'Interpret patient vitals and trigger AI early-warning alerts.',status:'soon',href:'',units:[]},
+    {unit:'Module 2',title:'AI Triage & Emergency Prioritisation',desc:'Rank incoming cases by acuity using an AI triage model.',status:'soon',href:'',units:[]}
+  ]},
+  {id:'pharmacy',name:'Pharmacy AI',icon:'',course:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',modules:[
+    {unit:'Module 1',title:'AI Foundations & Digital Systems for Pharmacy Practice',desc:'Fundamentals of AI, ML & digital systems — the foundation for clinical AI in pharmacy.',status:'live',href:'ALIZON-OS-Module1-AI-Drug-Discovery.html',practicals:[
+      {title:'Practical 1 · AI Drug Discovery Lab (Unit 1)',href:'ALIZON-OS-Module1-AI-Drug-Discovery.html'},
+      {title:'Practical 2 · Ethics, Regulation & Data Protection Lab (Unit 3)',href:'ALIZON-OS-Module1-Ethics-Lab.html'}],units:[
+      'Unit 1 – Foundations of Artificial Intelligence in Pharmacy',
+      'Unit 2 – Digital Pharmacy & Information Systems',
+      'Unit 3 – Ethics, Regulation & Data Protection in Digital Pharmacy',
+      'Unit 4 – Computer Applications & Digital Documentation']},
+    {unit:'Module 2',title:'Digital Pharmacy, EHR & Telepharmacy',desc:'e-Prescriptions, EHR integration and telepharmacy service delivery.',status:'soon',href:'',units:[
+      'Unit 1 – Digital Pharmacy & E-Prescription Systems',
+      'Unit 2 – Electronic Health Records (EHR) in Pharmacy Practice',
+      'Unit 3 – Telepharmacy & Remote Patient Care',
+      'Unit 4 – Digital Inventory, ADR & Compliance Systems']},
+    {unit:'Module 3',title:'AI-Based Clinical Decision Support in Pharmacy',desc:'AI decision support — interactions, dosing, pharmacogenomics & pharmacovigilance.',status:'soon',href:'',units:[
+      'Unit 1 – Clinical Decision Support Systems (CDSS)',
+      'Unit 2 – Drug Interaction & Dose Optimization Software Tools',
+      'Unit 3 – Pharmacogenomics & Antibiogram Analysis',
+      'Unit 4 – Predictive Pharmacovigilance']},
+    {unit:'Module 4',title:'AI in Drug Development, Vaccines & Injectables',desc:'AI in drug discovery, sterile products, injectables and vaccine cold-chain.',status:'soon',href:'',units:[
+      'Unit 1 – AI in Drug Discovery & Molecular Targeting',
+      'Unit 2 – AI Support in Scientific Research & Data Analysis',
+      'Unit 3 – Injectable Medicines & Sterile Products',
+      'Unit 4 – Vaccines & Cold-Chain Analytics']},
+    {unit:'Module 5',title:'Clinical Trials, Pharmacovigilance & Evidence-Based Pharmacy',desc:'Clinical trials, GCP, ADR reporting and evidence-based pharmacy.',status:'soon',href:'',units:[
+      'Unit 1 – Clinical Trials in Pharmacy',
+      'Unit 2 – Good Clinical Practice (GCP) & Ethics',
+      'Unit 3 – Pharmacovigilance & ADR Reporting',
+      'Unit 4 – Evidence-Based Pharmacy & AI-Driven Literature Analysis']},
+    {unit:'Module 6',title:'Pharmacy Data Analytics & Predictive Modelling',desc:'Pharmacy data, machine learning, prescription analytics and demand forecasting.',status:'soon',href:'',units:[
+      'Unit 1 – Introduction to Pharmacy Data & Analytics',
+      'Unit 2 – Machine Learning in Pharmacy Practice',
+      'Unit 3 – Prescription Analytics & Safety Monitoring',
+      'Unit 4 – Demand Forecasting & Inventory Analytics']},
+    {unit:'Module 7',title:'Robotics & Automation in Pharmacy Practice',desc:'Robotic dispensing, smart packaging and automated pharmacy workflows.',status:'soon',href:'',units:[
+      'Unit 1 – Introduction to Pharmacy Robotics',
+      'Unit 2 – Automated Dispensing & Storage Systems',
+      'Unit 3 – Smart Packaging & Medication Tracking',
+      'Unit 4 – Workflow Optimisation & Quality Assurance']},
+    {unit:'Module 8',title:'AI-Enabled Clinical Case Studies & Simulations',desc:'Advanced clinical simulation suite — virtual patients, interaction screening, renal dosing & Rx safety audits.',status:'live',href:'ALIZON-OS-Clinical-Simulation.html',units:[
+      'Unit 1 – AI-Based Prescription Review & Safety Audits',
+      'Unit 2 – Drug Interaction & Dose Optimisation Simulations',
+      'Unit 3 – Clinical & Pharmacogenomic Case Simulations',
+      'Unit 4 – Digital Patient Care & Pharmacy Operations']}
+  ]},
+  {id:'medical',name:'Medical AI',icon:'',course:'Certificate Course in Digital Health & Artificial Intelligence for Medicine',modules:[
+    {unit:'Module 1',title:'AI-Assisted Medical Imaging Diagnosis',desc:'Classify X-ray / CT findings with a convolutional neural network.',status:'soon',href:'',units:[]},
+    {unit:'Module 2',title:'Clinical Risk Prediction Models',desc:'Predict readmission and complication risk from patient data.',status:'soon',href:'',units:[]}
+  ]},
+  {id:'hospital',name:'Hospital Administration AI',icon:'',course:'Certificate Course in Digital Health & Artificial Intelligence for Hospital Administration',modules:[
+    {unit:'Module 1',title:'AI Bed & Resource Allocation',desc:'Optimise bed occupancy and staff rostering with an AI planner.',status:'soon',href:'',units:[]},
+    {unit:'Module 2',title:'Predictive Patient Flow & Queue Management',desc:'Forecast OPD load and reduce patient waiting times.',status:'soon',href:'',units:[]}
+  ]}
+];
+const PROG_VER='2026-07-13-pro';
+function load(){ try{
+    if(localStorage.getItem('alizonProgramsVer')!==PROG_VER){ localStorage.setItem('alizonProgramsVer',PROG_VER); return JSON.parse(JSON.stringify(DEFAULT_PROGRAMS)); }
+    const s=localStorage.getItem('alizonPrograms'); if(s){ const p=JSON.parse(s); if(Array.isArray(p)) return p; } }catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT_PROGRAMS)); }
+function save(p){ try{ localStorage.setItem('alizonPrograms',JSON.stringify(p)); localStorage.setItem('alizonProgramsVer',PROG_VER); }catch(e){} }
+let PROGRAMS=load(); save(PROGRAMS);
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2600); }
+function slug(name){ return (name||'prog').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,24)||'prog'; }
+
+/* ---- programme / module picker state ---- */
+let selP=0, selM=-1;
+try{ const sid=localStorage.getItem('admSelProg'); const i=PROGRAMS.findIndex(p=>p.id===sid); if(i>-1)selP=i; }catch(e){}
+function fillPickers(){
+  const pp=document.getElementById('pickProg'), pm=document.getElementById('pickMod');
+  if(!PROGRAMS.length)selP=-1; else if(selP>=PROGRAMS.length)selP=0;
+  pp.innerHTML='<option value="-1">All programmes</option>'+
+    PROGRAMS.map((p,i)=>`<option value="${i}">${esc(p.name)}</option>`).join('');
+  pp.value=String(selP);
+  const mods=selP>-1&&PROGRAMS[selP]?PROGRAMS[selP].modules:[];
+  if(selM>=mods.length)selM=-1;
+  pm.innerHTML='<option value="-1">All modules</option>'+
+    mods.map((m,i)=>`<option value="${i}">${esc(m.unit)} · ${esc(m.title)}</option>`).join('');
+  pm.value=String(selM);
+  pm.disabled=selP===-1;
+  const info=document.getElementById('pickInfo');
+  if(selP===-1) info.textContent=PROGRAMS.length+' programmes';
+  else{ const p=PROGRAMS[selP], live=p.modules.filter(m=>m.status==='live'&&m.href).length;
+    info.textContent=p.modules.length+' course'+(p.modules.length!==1?'s':'')+' · '+live+' live'; }
+}
+document.getElementById('pickProg').addEventListener('change',e=>{
+  selP=+e.target.value; selM=-1;
+  try{ localStorage.setItem('admSelProg',selP>-1&&PROGRAMS[selP]?PROGRAMS[selP].id:''); }catch(x){}
+  render(); renderEval();
+});
+document.getElementById('pickMod').addEventListener('change',e=>{ selM=+e.target.value; render(); });
+
+function render(){
+  fillPickers();
+  const host=document.getElementById('programs');
+  host.innerHTML=PROGRAMS.map((p,pi)=>({p,pi})).filter(x=>selP===-1||x.pi===selP).map(({p,pi})=>`
+    <div class="prog">
+      <div class="ph">
+        ${p.icon?`<div class="pico">${esc(p.icon)}</div>`:''}
+        <div class="pname"><h2>${esc(p.name)}</h2><span>${p.course?esc(p.course)+' · ':''}${p.modules.length} course${p.modules.length!==1?'s':''} · id: ${esc(p.id)}</span></div>
+        <button class="delp" data-p="${pi}">Delete programme</button>
+      </div>
+      <div class="mods">
+        ${p.modules.length?p.modules.map((m,mi)=>({m,mi})).filter(x=>selM===-1||selP===-1||x.mi===selM).map(({m,mi})=>{
+          const uopts='<option value="">Whole module</option>'+((m.units||[]).map(u=>`<option>${esc(u)}</option>`).join(''));
+          return `
+          <div class="mrow">
+            <span class="mu">${esc(m.unit)}</span>
+            <div class="mt"><b>${esc(m.title)}</b><small>${esc(m.desc)}</small></div>
+            <span class="st ${m.status==='live'&&m.href?'live':'soon'}">${m.status==='live'&&m.href?'Live':'Soon'}</span>
+            <button class="delm" data-p="${pi}" data-m="${mi}" title="Remove course">✕</button>
+          </div>
+          <details class="mcontent"><summary>⚙ Manage units · notes · videos (${(m.units||[]).length} units · ${(m.notes||[]).length} notes · ${(m.videos||[]).length} videos)</summary>
+            <div class="cbody">
+              <div class="cblock"><div class="ct">Units / subjects</div>
+                <div class="clist">${(m.units||[]).map((u,ui)=>`<div class="citem"><div class="cinfo"><b>${esc(u)}</b></div><button class="cx" data-du data-p="${pi}" data-m="${mi}" data-u="${ui}">✕</button></div>`).join('')||'<div class="cnote">No units yet.</div>'}</div>
+                <div class="crow"><input placeholder="Unit 1 – …" data-uin data-p="${pi}" data-m="${mi}"><button class="cadd" data-uadd data-p="${pi}" data-m="${mi}">Add unit</button></div>
+              </div>
+              <div class="cblock"><div class="ct">Class videos (YouTube)</div>
+                <div class="clist">${(m.videos||[]).map((v,vi)=>`<div class="citem"><div class="cinfo"><b>${esc(v.title)}</b><small>${v.unit?esc(v.unit)+' · ':''}${esc(v.url)}</small></div><button class="cx" data-dv data-p="${pi}" data-m="${mi}" data-v="${vi}">✕</button></div>`).join('')||'<div class="cnote">No class videos yet.</div>'}</div>
+                <div class="crow n"><input placeholder="Video title — e.g. Unit 1 Class Recording" data-vt data-p="${pi}" data-m="${mi}"></div>
+                <div class="crow"><input placeholder="YouTube link (https://youtu.be/… or watch?v=…)" data-vu data-p="${pi}" data-m="${mi}"><select data-vs data-p="${pi}" data-m="${mi}">${uopts}</select></div>
+                <div class="crow n"><button class="cadd" data-vadd data-p="${pi}" data-m="${mi}">＋ Add class video</button></div>
+              </div>
+              <div class="cblock"><div class="ct">Course notes — official letterhead</div>
+                <div class="clist">${(m.notes||[]).map((n,ni)=>`<div class="citem">
+                  <span class="badge2 ${n.published===false?'new':'done'}" style="flex:none">${n.published===false?'Revoked':'Published'}</span>
+                  <div class="cinfo"><b>${esc(n.title)}</b><small>${n.unit?esc(n.unit)+' · ':''}${(String(n.body||'').match(/\S+/g)||[]).length} words</small></div>
+                  <button class="eview" data-npv data-p="${pi}" data-m="${mi}" data-n="${ni}" style="padding:6px 11px;font-size:11.5px">Preview</button>
+                  <button class="eview" data-nrv data-p="${pi}" data-m="${mi}" data-n="${ni}" style="padding:6px 11px;font-size:11.5px;${n.published===false?'color:var(--success)':'color:var(--crimson)'}">${n.published===false?'▲ Publish':'⊘ Revoke'}</button>
+                  <button class="cx" data-dn data-p="${pi}" data-m="${mi}" data-n="${ni}">✕</button></div>`).join('')||'<div class="cnote">No notes yet — type one below; it publishes to the student portal on the official letterhead and can be revoked any time.</div>'}</div>
+                <div class="crow n"><input placeholder="Note title — e.g. Unit 1 Lecture Notes" data-nt data-p="${pi}" data-m="${mi}"></div>
+                <div class="crow n"><select data-ns data-p="${pi}" data-m="${mi}">${uopts}</select></div>
+                <textarea placeholder="Type/paste the note content — students read & download it on the official Alizon letterhead." data-nb data-p="${pi}" data-m="${mi}"></textarea>
+                <div class="crow n"><button class="cadd" data-nadd data-p="${pi}" data-m="${mi}">＋ Publish note (letterhead)</button></div>
+              </div>
+            </div>
+          </details>`;}).join(''):'<div class="nomods">No courses yet — add the first one below.</div>'}
+      </div>
+      <div class="addform">
+        <div class="lbl">＋ Add course / practical to ${esc(p.name)}</div>
+        <div class="addrow">
+          <input placeholder="Unit 1 · Practical 1" data-f="unit" data-p="${pi}">
+          <input placeholder="Course title" data-f="title" data-p="${pi}">
+          <select data-f="status" data-p="${pi}"><option value="soon">Coming soon</option><option value="live">Live (has link)</option></select>
+          <button class="btn" data-add="${pi}">Add course</button>
+        </div>
+        <div class="addrow" style="grid-template-columns:1fr;margin-top:8px">
+          <input placeholder="Practical file / URL (only if Live) — e.g. ALIZON-OS-Module1-AI-Drug-Discovery.html" data-f="href" data-p="${pi}">
+        </div>
+        <textarea placeholder="Short description of what students will do…" data-f="desc" data-p="${pi}" style="margin-top:8px"></textarea>
+      </div>
+    </div>`).join('') || '<div class="note">No programmes yet. Add one below.</div>';
+
+  host.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>addModule(+b.dataset.add)));
+  host.querySelectorAll('.delm').forEach(b=>b.addEventListener('click',()=>{
+    PROGRAMS[+b.dataset.p].modules.splice(+b.dataset.m,1); save(PROGRAMS); render(); toast('Course removed'); }));
+  host.querySelectorAll('.delp').forEach(b=>b.addEventListener('click',()=>{
+    const p=PROGRAMS[+b.dataset.p]; if(confirm('Delete the whole "'+p.name+'" programme and its courses?')){
+      PROGRAMS.splice(+b.dataset.p,1); save(PROGRAMS); render(); toast('Programme deleted'); } }));
+
+  /* ---- per-module content: units, videos, notes ---- */
+  const mm=(pi,mi)=>PROGRAMS[pi].modules[mi];
+  const q=(attr,pi,mi)=>document.querySelector(`[${attr}][data-p="${pi}"][data-m="${mi}"]`);
+  host.querySelectorAll('[data-uadd]').forEach(b=>b.addEventListener('click',()=>{
+    const pi=+b.dataset.p,mi=+b.dataset.m,v=q('data-uin',pi,mi).value.trim(); if(!v){toast('Enter a unit name');return;}
+    const m=mm(pi,mi); m.units=m.units||[]; m.units.push(v); save(PROGRAMS); render(); toast('Unit added'); }));
+  host.querySelectorAll('[data-du]').forEach(b=>b.addEventListener('click',()=>{ const m=mm(+b.dataset.p,+b.dataset.m); m.units.splice(+b.dataset.u,1); save(PROGRAMS); render(); }));
+  host.querySelectorAll('[data-vadd]').forEach(b=>b.addEventListener('click',()=>{
+    const pi=+b.dataset.p,mi=+b.dataset.m,t=q('data-vt',pi,mi).value.trim(),u=q('data-vu',pi,mi).value.trim(),s=q('data-vs',pi,mi).value;
+    if(!u){toast('Paste a YouTube link');return;}
+    const m=mm(pi,mi); m.videos=m.videos||[]; m.videos.push({title:t||'Class video',url:u,unit:s}); save(PROGRAMS); render(); toast('Class video added'); logAct('Added class video "'+(t||'Class video')+'" to '+m.title,'upload'); }));
+  host.querySelectorAll('[data-dv]').forEach(b=>b.addEventListener('click',()=>{ const m=mm(+b.dataset.p,+b.dataset.m); m.videos.splice(+b.dataset.v,1); save(PROGRAMS); render(); }));
+  host.querySelectorAll('[data-nadd]').forEach(b=>b.addEventListener('click',()=>{
+    const pi=+b.dataset.p,mi=+b.dataset.m,t=q('data-nt',pi,mi).value.trim(),bd=q('data-nb',pi,mi).value.trim(),s=q('data-ns',pi,mi).value;
+    if(!t&&!bd){toast('Enter a note title or content');return;}
+    const m=mm(pi,mi); m.notes=m.notes||[]; m.notes.push({title:t||'Notes',body:bd,unit:s,published:true,ts:Date.now()}); save(PROGRAMS); render(); toast('Note published on the student portal'); logAct('Published course note "'+(t||'Notes')+'" to '+m.title,'upload'); }));
+  /* note letterhead preview + revoke/publish */
+  function noteDocHtml(p,m,n){
+    return `<div class="np-fixhead"><img src="alizon-logo.png" alt="">
+      <div class="t"><b>Alizon School of Medical &amp; Digital Intelligence</b>
+      <span>${esc(p.name)} · ${esc(m.unit)}${n.unit?' · '+esc(n.unit):''} — ${esc(n.title||'Course Notes')}</span></div></div>
+    <div class="dh"><img src="alizon-logo.png"><div class="inm">Alizon School of Medical &amp; Digital Intelligence</div>
+      <div class="dep">${esc(p.name)} · ${esc(m.unit)}${n.unit?' · '+esc(n.unit):''}</div></div>
+      <div class="dt">${esc(n.title||'Course Notes')}</div>
+      <div class="dsub">${esc(m.title)}</div>
+      <p class="body">${esc(n.body||'')}</p>
+      <div class="foot">Official course note · ALIZON OS · ${new Date(n.ts||Date.now()).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}${n.published===false?' · CURRENTLY REVOKED (not visible to students)':''}</div>`;
+  }
+  host.querySelectorAll('[data-npv]').forEach(b=>b.addEventListener('click',()=>{
+    const p=PROGRAMS[+b.dataset.p], m=p.modules[+b.dataset.m], n=(m.notes||[])[+b.dataset.n]; if(!n)return;
+    document.getElementById('dvTitle').textContent='Letterhead preview — '+(n.title||'Notes');
+    document.getElementById('dvDoc').innerHTML=noteDocHtml(p,m,n);
+    document.getElementById('docView').classList.add('open');
+  }));
+  host.querySelectorAll('[data-nrv]').forEach(b=>b.addEventListener('click',()=>{
+    const m=mm(+b.dataset.p,+b.dataset.m), n=(m.notes||[])[+b.dataset.n]; if(!n)return;
+    const revoking=n.published!==false;
+    n.published=!revoking; save(PROGRAMS); render();
+    toast(revoking?'Note revoked — hidden from students':'Note republished');
+    logAct((revoking?'Revoked':'Republished')+' course note "'+(n.title||'Notes')+'" in '+m.title, revoking?'update':'approve');
+  }));
+  host.querySelectorAll('[data-dn]').forEach(b=>b.addEventListener('click',()=>{ const m=mm(+b.dataset.p,+b.dataset.m); m.notes.splice(+b.dataset.n,1); save(PROGRAMS); render(); }));
+}
+function field(pi,f){ return document.querySelector(`[data-f="${f}"][data-p="${pi}"]`); }
+function addModule(pi){
+  const unit=field(pi,'unit').value.trim(), title=field(pi,'title').value.trim(),
+        status=field(pi,'status').value, href=field(pi,'href').value.trim(), desc=field(pi,'desc').value.trim();
+  if(!title){ toast('Enter a course title'); field(pi,'title').focus(); return; }
+  if(status==='live' && !href){ toast('A Live course needs a practical link'); field(pi,'href').focus(); return; }
+  PROGRAMS[pi].modules.push({unit:unit||('Unit '+(PROGRAMS[pi].modules.length+1)),title,desc,status,href});
+  selM=-1; save(PROGRAMS); render(); toast('Course added to '+PROGRAMS[pi].name);
+  logAct('Uploaded module "'+title+'" to '+PROGRAMS[pi].name,'upload');
+}
+document.getElementById('np-add').addEventListener('click',()=>{
+  const name=document.getElementById('np-name').value.trim(), icon=document.getElementById('np-icon').value.trim()||'';
+  if(!name){ toast('Enter a programme name'); return; }
+  let id=slug(name); while(PROGRAMS.some(p=>p.id===id)) id+='-'+Math.floor(Math.random()*90+10);
+  PROGRAMS.push({id,name,icon,modules:[]});
+  selP=PROGRAMS.length-1; selM=-1;
+  try{ localStorage.setItem('admSelProg',id); }catch(x){}
+  save(PROGRAMS); render(); toast('Programme "'+name+'" added'); logAct('Added new programme (vertical) "'+name+'"','upload');
+  document.getElementById('np-name').value=''; document.getElementById('np-icon').value='';
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  if(confirm('Restore the default programmes and courses? This overwrites your changes.')){
+    PROGRAMS=JSON.parse(JSON.stringify(DEFAULT_PROGRAMS)); save(PROGRAMS); render(); toast('Reset to defaults'); }
+});
+document.getElementById('adminSignout').addEventListener('click',()=>{
+  try{ sessionStorage.removeItem('alizonAdminAuth'); }catch(e){} location.reload();
+});
+
+/* ============ EVALUATION · GRIEVANCES · FACULTY · SCHEDULE · LINKS · ACTIVITY ============ */
+function DB(key,def){ try{ const s=localStorage.getItem(key); if(s){const v=JSON.parse(s); if(Array.isArray(v))return v;} }catch(e){} if(def){ localStorage.setItem(key,JSON.stringify(def)); return JSON.parse(JSON.stringify(def)); } return []; }
+function setDB(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function logAct(text,type){ let a=[]; try{a=JSON.parse(localStorage.getItem('alizonActivity')||'[]');if(!Array.isArray(a))a=[];}catch(e){}
+  a.unshift({ts:Date.now(),text,type:type||'update',by:'Admin'}); if(a.length>200)a=a.slice(0,200); setDB('alizonActivity',a); if(typeof renderActivity==='function')renderActivity(); }
+function fmt(ts){ try{const d=new Date(ts);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}catch(e){return '';} }
+
+const FACULTY_SEED=[
+  {id:'f1',name:'Dr. Meera Nair',dept:'Cardiology & Clinical AI',email:'meera.nair@alizongov.com',country:'India'},
+  {id:'f2',name:'Prof. Devan Iyer',dept:'Medical AI & Imaging',email:'devan.iyer@alizongov.com',country:'India'},
+  {id:'f3',name:'Dr. Ananya Sharma',dept:'Digital Pharmacy & Telepharmacy',email:'ananya.sharma@alizongov.com',country:'India'},
+  {id:'f4',name:'Dr. Rajan Menon',dept:'Clinical Diagnostics & Safety',email:'rajan.menon@alizongov.com',country:'India'},
+  {id:'f5',name:'Dr. Emily Carter',dept:'Pharmacy Data Science',email:'emily.carter@alizon.us',country:'USA'},
+  {id:'f6',name:'Prof. James Anderson',dept:'AI in Drug Development',email:'james.anderson@alizon.us',country:'USA'},
+  {id:'f7',name:'Dr. Olivia Martinez',dept:'Pharmacovigilance & Safety',email:'olivia.martinez@alizon.us',country:'USA'},
+  {id:'f8',name:'Dr. William Brown',dept:'Robotics & Automation',email:'william.brown@alizon.us',country:'USA'}
+];
+const SCHED_SEED=[
+  {id:'sc2',module:'Induction',title:'Programme Induction & Orientation',date:'2026-07-12',time:'09:30',mode:'Online',link:'https://meet.jit.si/AlizonInduction'},
+  {id:'sc1',module:'Module 1',title:'AI Foundations — Live Lab',date:'2026-07-14',time:'10:00',mode:'Online',link:'https://meet.jit.si/AlizonModule1'},
+  {id:'sc3',module:'Module 2',title:'Digital Pharmacy & EHR — Demo',date:'2026-07-18',time:'11:00',mode:'Online',link:'https://meet.jit.si/AlizonModule2'}
+];
+const LINK_SEED=[
+  {id:'l1',title:'Programme Induction & Orientation',type:'Induction',url:'https://meet.jit.si/AlizonInduction'},
+  {id:'l2',title:'Digital Safety & Ethics Induction',type:'Induction',url:'https://alizongov.com/'},
+  {id:'l3',title:'Module 1 — Online Assessment',type:'Assessment',url:'https://forms.gle/'},
+  {id:'l4',title:'Mid-term Theory Assessment',type:'Assessment',url:'https://forms.gle/'}
+];
+if(!localStorage.getItem('alizonActivity')) setDB('alizonActivity',[
+  {ts:Date.now()-864e5,text:'Pharmacy AI curriculum updated to 8 modules & 32 units',type:'update',by:'Admin'},
+  {ts:Date.now()-72e5,text:'Module 1 — AI Foundations published to students',type:'approve',by:'Admin'}
+]);
+
+const rid=p=>p+Date.now()+Math.floor(Math.random()*900+100);
+function loadSubs(){ try{const a=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+function loadGriev(){ try{const a=JSON.parse(localStorage.getItem('alizonGrievances')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+
+/* ---- evaluation ---- */
+function renderEval(){
+  const el=document.getElementById('evalList');
+  const progName=(selP>-1&&PROGRAMS[selP])?PROGRAMS[selP].name:null;
+  const hint=document.querySelector('#adm-eval .ahint');
+  if(hint) hint.innerHTML=(progName
+    ?'Showing <b>'+esc(progName)+'</b> submissions only — use the programme dropdown above to switch.'
+    :'Showing submissions from <b>all programmes</b>.')+' Grades &amp; feedback reflect on the student portal.';
+  const subs=loadSubs().filter(s=>s.type==='practical'||s.type==='self')
+                       .filter(s=>!progName||s.programme===progName);
+  paintCounts();
+  if(!subs.length){ el.innerHTML='<div class="cnote">No '+(progName?esc(progName)+' ':'')+'submissions yet. Practicals & self-assessments submitted from Assessments appear here.</div>'; return; }
+  el.innerHTML=subs.map(s=>`<div class="citem col" data-id="${esc(s.id)}">
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="badge2 ${s.grade?'done':'new'}"${s.status==='rejected'?' style="color:#fff;background:var(--crimson)"':''}>${s.grade?'Evaluated':(s.status==='rejected'?'Rejected — redo':'Pending')}</span>
+      <div class="cinfo"><b>${esc(s.typeLabel||s.type)} — ${esc(s.module||s.title||'')}</b>
+        <small>${esc(s.name||'—')}${s.reg?' · '+esc(s.reg):''} · ${esc(s.programme||'')} · ${fmt(s.ts)}${s.score!=null?' · self-score '+s.score+'/60':''}</small></div>
+      <button class="eview" data-eview="${esc(s.id)}">View document</button>
+    </div>
+    ${s.ai?`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12.5px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.3);border-radius:10px;padding:8px 12px">
+      <b style="color:var(--gold);flex:none">AI suggests ${esc(s.ai.grade)}</b>
+      <span style="flex:1;min-width:200px;color:var(--muted)">${esc(s.ai.verdict)} — ${(s.ai.breakdown||[]).map(b=>esc(b.k)+' '+b.got+'/'+b.of).join(' · ')}</span>
+      ${s.grade?'':`<button class="cadd" data-eaccept="${esc(s.id)}" style="padding:6px 12px;font-size:12px;flex:none">✔ Accept AI mark</button>`}
+    </div>`:''}
+    <div class="egrade" style="width:100%;gap:8px">
+      <input placeholder="Grade / marks" value="${esc(s.grade||'')}" data-eg="${esc(s.id)}" style="width:130px">
+      <input placeholder="Feedback to student${s.status==='rejected'?' (rejection reason sent)':''}" value="${esc(s.feedback||'')}" data-ef="${esc(s.id)}" style="flex:1">
+      <button class="cadd" data-esave="${esc(s.id)}">Save</button>
+      ${s.status==='rejected'?'':`<button class="cadd" data-erej="${esc(s.id)}" style="background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">✘ Reject — redo</button>`}
+    </div></div>`).join('');
+  el.querySelectorAll('[data-erej]').forEach(b=>b.addEventListener('click',()=>{
+    const id=b.dataset.erej, f=el.querySelector(`[data-ef="${id}"]`).value.trim();
+    if(!f){toast('Write feedback first — the student needs to know what to redo');el.querySelector(`[data-ef="${id}"]`).focus();return;}
+    const subs2=loadSubs(); const s=subs2.find(x=>x.id===id); if(!s)return;
+    s.status='rejected'; s.grade=''; s.feedback=f; s.rejectedAt=Date.now();
+    setDB('alizonSubmissions',subs2); renderEval(); toast('Submission rejected — student asked to redo');
+    logAct('Rejected '+(s.typeLabel||'submission')+' by '+(s.name||'student')+' — redo requested','eval');
+  }));
+  el.querySelectorAll('[data-eaccept]').forEach(b=>b.addEventListener('click',()=>{
+    const subs2=loadSubs(); const s=subs2.find(x=>x.id===b.dataset.eaccept); if(!s||!s.ai)return;
+    s.grade=s.ai.grade; s.feedback=s.ai.feedback; s.status='evaluated'; s.evaluatedAt=Date.now(); s.gradedBy='AI (accepted by faculty)';
+    setDB('alizonSubmissions',subs2); renderEval(); toast('AI mark accepted — '+s.ai.grade);
+    logAct('Accepted AI mark '+s.ai.grade+' for '+(s.typeLabel||'submission')+' by '+(s.name||'student'),'eval');
+  }));
+  el.querySelectorAll('[data-eview]').forEach(b=>b.addEventListener('click',()=>{
+    const s=loadSubs().find(x=>x.id===b.dataset.eview); if(!s)return;
+    document.getElementById('dvTitle').textContent=(s.typeLabel||'Submission')+' — '+(s.name||'');
+    document.getElementById('dvDoc').innerHTML=s.html||'<p style="padding:30px">This submission has no stored document.</p>';
+    document.getElementById('docView').classList.add('open');
+  }));
+  el.querySelectorAll('[data-esave]').forEach(b=>b.addEventListener('click',()=>{
+    const id=b.dataset.esave, g=el.querySelector(`[data-eg="${id}"]`).value.trim(), f=el.querySelector(`[data-ef="${id}"]`).value.trim();
+    if(!g){toast('Enter a grade/marks');return;}
+    const subs=loadSubs(); const s=subs.find(x=>x.id===id); if(!s)return;
+    s.grade=g; s.feedback=f; s.status='evaluated'; s.evaluatedAt=Date.now();
+    setDB('alizonSubmissions',subs); renderEval(); toast('Evaluation saved'); logAct('Evaluated '+(s.typeLabel||'submission')+' by '+(s.name||'student')+' — grade '+g,'eval');
+  }));
+}
+/* ---- grievances ---- */
+function renderGriev(){
+  paintCounts();
+  const el=document.getElementById('grievList'); const gs=loadGriev();
+  if(!gs.length){ el.innerHTML='<div class="cnote">No grievances raised yet.</div>'; return; }
+  el.innerHTML=gs.map(g=>`<div class="citem col">
+    <div style="display:flex;gap:10px;align-items:center">
+      <span class="badge2 ${g.status==='resolved'?'done':'new'}">${g.status==='resolved'?'Resolved':'Open'}</span>
+      <div class="cinfo"><b>${esc(g.subject||'Grievance')} <small style="color:var(--gold)">· ${esc(g.category||'General')}</small></b>
+        <small>${esc(g.name||'Anonymous')}${g.reg?' · '+esc(g.reg):''} · ${fmt(g.ts)}</small></div>
+      <button class="cx" data-gdel="${esc(g.id)}">✕</button></div>
+    <div style="font-size:13px;color:#d7d7dd;white-space:pre-wrap">${esc(g.message||'')}</div>
+    <textarea placeholder="Reply to the student…" data-gr="${esc(g.id)}">${esc(g.response||'')}</textarea>
+    <div class="crow n"><button class="cadd" data-gresolve="${esc(g.id)}">${g.status==='resolved'?'Update reply':'Reply & resolve'}</button></div>
+  </div>`).join('');
+  el.querySelectorAll('[data-gresolve]').forEach(b=>b.addEventListener('click',()=>{
+    const id=b.dataset.gresolve, gs=loadGriev(); const g=gs.find(x=>x.id===id); if(!g)return;
+    g.response=el.querySelector(`[data-gr="${id}"]`).value.trim(); g.status='resolved'; g.resolvedAt=Date.now();
+    setDB('alizonGrievances',gs); renderGriev(); toast('Grievance resolved'); logAct('Responded to grievance "'+(g.subject||'')+'"','griev');
+  }));
+  el.querySelectorAll('[data-gdel]').forEach(b=>b.addEventListener('click',()=>{ setDB('alizonGrievances',loadGriev().filter(x=>x.id!==b.dataset.gdel)); renderGriev(); }));
+}
+/* ---- faculty ---- */
+function renderFaculty(){
+  const el=document.getElementById('facList'); const fs=DB('alizonFaculty',FACULTY_SEED);
+  el.innerHTML=fs.map(f=>`<div class="citem"><div class="cinfo"><b>${esc(f.name)}</b><small>${esc(f.dept)}${f.email?' · '+esc(f.email):''}</small></div>
+    <span class="badge2 ${f.country==='USA'?'usa':'ind'}">${esc(f.country||'—')}</span>
+    <button class="cx" data-fdel="${esc(f.id)}">✕</button></div>`).join('')||'<div class="cnote">No faculty.</div>';
+  el.querySelectorAll('[data-fdel]').forEach(b=>b.addEventListener('click',()=>{ setDB('alizonFaculty',DB('alizonFaculty',FACULTY_SEED).filter(x=>x.id!==b.dataset.fdel)); renderFaculty(); }));
+}
+document.getElementById('fc-add').addEventListener('click',()=>{
+  const n=document.getElementById('fc-name').value.trim(); if(!n){toast('Enter a name');return;}
+  const fs=DB('alizonFaculty',FACULTY_SEED); fs.push({id:rid('f'),name:n,dept:document.getElementById('fc-dept').value.trim(),email:document.getElementById('fc-email').value.trim(),country:document.getElementById('fc-country').value});
+  setDB('alizonFaculty',fs); renderFaculty(); toast('Faculty added'); logAct('Added faculty '+n,'update');
+  document.getElementById('fc-name').value=document.getElementById('fc-dept').value=document.getElementById('fc-email').value='';
+});
+/* ---- schedules ---- */
+function renderSched(){
+  const el=document.getElementById('schList'); const ss=DB('alizonSchedule',SCHED_SEED);
+  el.innerHTML=ss.map(s=>`<div class="citem"><div class="cinfo"><b>${esc(s.title)} <small style="color:var(--gold)">· ${esc(s.module||'')}</small></b>
+    <small>${esc(s.date||'')} ${esc(s.time||'')} · ${esc(s.mode||'')}${s.link?' · '+esc(s.link):''}</small></div>
+    <button class="cx" data-scdel="${esc(s.id)}">✕</button></div>`).join('')||'<div class="cnote">No schedules.</div>';
+  el.querySelectorAll('[data-scdel]').forEach(b=>b.addEventListener('click',()=>{ setDB('alizonSchedule',DB('alizonSchedule',SCHED_SEED).filter(x=>x.id!==b.dataset.scdel)); renderSched(); }));
+}
+document.getElementById('sc-add').addEventListener('click',()=>{
+  const t=document.getElementById('sc-title').value.trim(); if(!t){toast('Enter a session title');return;}
+  const ss=DB('alizonSchedule',SCHED_SEED); ss.push({id:rid('sc'),module:document.getElementById('sc-module').value.trim()||'General',title:t,date:document.getElementById('sc-date').value,time:document.getElementById('sc-time').value,mode:document.getElementById('sc-mode').value,link:document.getElementById('sc-link').value.trim()});
+  ss.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  setDB('alizonSchedule',ss); renderSched(); toast('Schedule added'); logAct('Scheduled "'+t+'"','upload');
+  document.getElementById('sc-title').value=document.getElementById('sc-link').value='';
+});
+/* ---- links ---- */
+function renderLinks(){
+  const el=document.getElementById('lnkList'); const ls=DB('alizonLinks',LINK_SEED);
+  el.innerHTML=ls.map(l=>`<div class="citem"><div class="cinfo"><b>${esc(l.title)}</b><small>${esc(l.url)}</small></div>
+    <span class="badge2 ${l.type==='Assessment'?'usa':'ind'}">${esc(l.type||'Link')}</span>
+    <button class="cx" data-lkdel="${esc(l.id)}">✕</button></div>`).join('')||'<div class="cnote">No links.</div>';
+  el.querySelectorAll('[data-lkdel]').forEach(b=>b.addEventListener('click',()=>{ setDB('alizonLinks',DB('alizonLinks',LINK_SEED).filter(x=>x.id!==b.dataset.lkdel)); renderLinks(); }));
+}
+document.getElementById('lk-add').addEventListener('click',()=>{
+  const t=document.getElementById('lk-title').value.trim(), u=document.getElementById('lk-url').value.trim(); if(!t||!u){toast('Enter title and URL');return;}
+  const ls=DB('alizonLinks',LINK_SEED); ls.push({id:rid('l'),title:t,type:document.getElementById('lk-type').value,url:u});
+  setDB('alizonLinks',ls); renderLinks(); toast('Link added'); logAct('Added '+document.getElementById('lk-type').value+' link "'+t+'"','upload');
+  document.getElementById('lk-title').value=document.getElementById('lk-url').value='';
+});
+/* ---- activity ---- */
+function renderActivity(){
+  const el=document.getElementById('actList'); let a=[]; try{a=JSON.parse(localStorage.getItem('alizonActivity')||'[]');}catch(e){}
+  el.innerHTML=a.length?a.map(x=>`<div class="actrow"><span class="adot ${esc(x.type||'update')}"></span><div>${esc(x.text)} <small style="color:var(--muted)">— ${esc(x.by||'Admin')}</small></div><span class="atime">${fmt(x.ts)}</span></div>`).join(''):'<div class="cnote">No activity yet.</div>';
+}
+document.getElementById('act-clear').addEventListener('click',()=>{ if(confirm('Clear the activity history?')){ setDB('alizonActivity',[]); renderActivity(); } });
+(function(){ const dv=document.getElementById('docView');
+  document.getElementById('dvClose').addEventListener('click',()=>dv.classList.remove('open'));
+  document.getElementById('dvPrint').addEventListener('click',()=>window.print());
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') dv.classList.remove('open'); });
+})();
+
+/* ================= STUDENT ROSTER (CSV upload → all portals) ================= */
+function parseCSV(text){
+  const rows=[]; let row=[],cur='',q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else if(c==='"') q=true;
+    else if(c===','){ row.push(cur); cur=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n')i++; row.push(cur); if(row.some(v=>v!==''))rows.push(row); row=[]; cur=''; }
+    else cur+=c;
+  }
+  row.push(cur); if(row.some(v=>v!==''))rows.push(row);
+  return rows;
+}
+function numDate(s){ return String(s||'').replace(/[^0-9]/g,''); } /* 21/06/2002 → 21062002 */
+function loadStudents(){ try{const a=JSON.parse(localStorage.getItem('alizonStudents')||'[]');return Array.isArray(a)?a:[];}catch(e){return[];} }
+document.getElementById('stCsv').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const rows=parseCSV(String(rd.result));
+      const hdr=rows[0].map(h=>String(h||'').trim().toLowerCase());
+      const col=n=>hdr.indexOf(n.toLowerCase());
+      const iReg=col('Registration ID');
+      if(iReg<0){ toast('That CSV has no "Registration ID" column',true); e.target.value=''; return; }
+      const g=(r,i)=>i>-1?String(r[i]||'').trim():'';
+      const iName=col('Name'),iFull=col('Full Name'),iSal=col('Salutation'),iGen=col('Gender'),
+            iMail=col('Email'),iPh=col('Phone'),iDob=col('Date of Birth'),iBatch=col('Assigned Batch'),
+            iCourse=col('Course'),iStat=col('Account Status'),iJoin=col('Joined Date'),
+            iRef=col('Reference By Name'),iSch=col('Scholarship %'),iPho=col('Profile Photo URL'),
+            iQual=col('Education Qualification Name'),
+            iMar=col('Marital Status'),iFat=col('Father/Guardian Name'),iMot=col('Mother Name'),
+            iCat=col('Category'),iAddr=col('Permanent Address'),iState=col('Permanent State'),
+            iDist=col('Permanent District'),iPin=col('Permanent PIN'),iCity=col('Permanent City'),
+            iTrain=col('Training Status'),iExpS=col('Previous Experience Sector'),iExpM=col('Months Experience'),
+            iEmp=col('Employed'),iEmpD=col('Employment Details');
+      const parsed=rows.slice(1).filter(r=>g(r,iReg)).map(r=>({
+        reg:g(r,iReg), name:g(r,iFull)||g(r,iName), salutation:g(r,iSal), gender:g(r,iGen),
+        email:g(r,iMail), phone:g(r,iPh), dob:numDate(g(r,iDob)), dobRaw:g(r,iDob),
+        batch:g(r,iBatch), course:g(r,iCourse), status:g(r,iStat), joined:g(r,iJoin),
+        college:g(r,iRef), scholarship:g(r,iSch), photo:g(r,iPho), qualification:g(r,iQual),
+        marital:g(r,iMar), father:g(r,iFat), mother:g(r,iMot), category:g(r,iCat),
+        address:g(r,iAddr), state:g(r,iState), district:g(r,iDist), pin:g(r,iPin), city:g(r,iCity),
+        training:g(r,iTrain), expSector:g(r,iExpS), expMonths:g(r,iExpM), employed:g(r,iEmp), empDetails:g(r,iEmpD)
+      }));
+      /* MERGE — never re-register existing students; count & skip duplicates */
+      const roster=loadStudents();
+      const byReg={}; roster.forEach(s=>{ byReg[String(s.reg||'').toUpperCase()]=s; });
+      let added=0, dups=0;
+      parsed.forEach(s=>{
+        const k=String(s.reg).toUpperCase();
+        if(byReg[k]){ dups++; if(!byReg[k].password) byReg[k].password=byReg[k].reg; } /* keep existing record untouched */
+        else{ s.password=s.reg; roster.push(s); byReg[k]=s; added++; } /* password auto = registration no. */
+      });
+      localStorage.setItem('alizonStudents',JSON.stringify(roster));
+      localStorage.setItem('alizonStudentsUpdated',String(Date.now()));
+      renderStudents();
+      const resEl=document.getElementById('stUpResult');
+      if(resEl){ resEl.style.display='block';
+        resEl.innerHTML='Upload processed — <b style="color:var(--success)">'+added+' new student'+(added!==1?'s':'')+' registered</b> · '+
+          '<b style="color:'+(dups?'var(--crimson)':'var(--muted)')+'">'+dups+' duplicate'+(dups!==1?'s':'')+' found &amp; skipped</b> — existing records kept unchanged. Passwords auto-set to each registration number.'; }
+      toast(added+' new · '+dups+' duplicates skipped ✓');
+      logAct('Roster CSV upload — '+added+' new students, '+dups+' duplicates skipped','upload');
+    }catch(err){ toast('Could not parse that CSV',true); }
+    e.target.value='';
+  };
+  rd.readAsText(f);
+});
+document.getElementById('stSearch').addEventListener('input',renderStudents);
+document.getElementById('stClear').addEventListener('click',()=>{
+  if(!confirm('Remove the whole student roster from the portals?'))return;
+  localStorage.removeItem('alizonStudents'); localStorage.removeItem('alizonStudentsUpdated');
+  renderStudents(); toast('Roster cleared'); logAct('Cleared student roster','update');
+});
+function renderStudents(){
+  const all=loadStudents(); const qy=(document.getElementById('stSearch').value||'').toLowerCase();
+  const list=qy?all.filter(s=>(s.reg+' '+s.name+' '+s.batch+' '+s.email).toLowerCase().includes(qy)):all;
+  const upd=localStorage.getItem('alizonStudentsUpdated');
+  document.getElementById('stMeta').innerHTML=all.length
+    ? '<b>'+all.length+'</b> students on the roster'+(qy?' · showing '+list.length:'')+(upd?' · last upload '+fmt(+upd):'')
+    : 'No students yet — upload the CSV exported from the backend.';
+  const stc=document.getElementById('cntStud');
+  if(stc){ stc.textContent=all.length; stc.classList.toggle('show',all.length>0); }
+  document.getElementById('stTable').innerHTML=list.length
+    ? '<tr><th>Reg No</th><th>Name</th><th>DOB (DDMMYYYY)</th><th>Password</th><th>Gender</th><th>Batch</th><th>Status</th><th>Phone</th><th>Email</th><th>Schol %</th><th>College / Ref</th></tr>'+
+      list.map(s=>`<tr><td class="num">${esc(s.reg)}</td><td>${esc((s.salutation?s.salutation+' ':'')+s.name)}</td><td class="num">${esc(s.dob||'—')}</td><td class="num">${esc(s.password||s.reg)}</td><td>${esc(s.gender||'—')}</td><td>${esc(s.batch||'—')}</td><td>${esc(s.status||'—')}</td><td class="num">${esc(s.phone||'—')}</td><td>${esc(s.email||'—')}</td><td>${esc(s.scholarship||'—')}</td><td>${esc(s.college||'—')}</td></tr>`).join('')
+    : '';
+}
+
+/* ================= FEES & PAYMENTS (CSV upload, duplicate-safe) ================= */
+function loadFees(){ try{const a=JSON.parse(localStorage.getItem('alizonFees')||'[]');return Array.isArray(a)?a:[];}catch(e){return[];} }
+function normName(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,''); }
+function lev(a,b){ if(Math.abs(a.length-b.length)>2)return 99;
+  const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>[i,...Array(n).fill(0)]);
+  for(let j=1;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)
+    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return d[m][n]; }
+function matchStudent(name){
+  const nn=normName(name); if(!nn)return null;
+  const all=loadStudents();
+  let hit=all.find(s=>normName(s.name)===nn);
+  if(!hit) hit=all.find(s=>{const r=normName(s.name);return r.length>4&&nn.length>4&&(r.includes(nn)||nn.includes(r));});
+  if(!hit) hit=all.find(s=>lev(normName(s.name),nn)<=2);
+  return hit||null;
+}
+function inr(v){ return '₹'+(+v||0).toLocaleString('en-IN',{maximumFractionDigits:2}); }
+/* backend exports carry broken encoding: � / non-breaking spaces in every cell, "?1500" for ₹1500 */
+function cleanCell(s){ return String(s||'').replace(/[� ]/g,' ').replace(/\s+/g,' ').trim(); }
+document.getElementById('feeCsv').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const rows=parseCSV(String(rd.result));
+      const hdr=rows[0].map(h=>cleanCell(h).toLowerCase());
+      const col=n=>hdr.indexOf(n.toLowerCase());
+      const iN=col('Student Name'), iA=col('Transaction Amount');
+      if(iN<0||iA<0){ toast('Fees CSV needs "Student Name" and "Transaction Amount" columns',true); e.target.value=''; return; }
+      const g=(r,i)=>i>-1?cleanCell(r[i]):'';
+      const iD=col('Transaction Date'), iT=col('Transaction Time'), iDT=col('Transaction Date & Time'),
+            iS=col('Status'), iM=col('Payment Mode'), iTy=col('Type'), iB=col('Batch'), iBr=col('Branch'), iC=col('Course Name');
+      const fees=loadFees(); const seen={}; fees.forEach(x=>seen[x.key]=1);
+      let added=0,dups=0,addedAmt=0,unmatched=0;
+      rows.slice(1).forEach(r=>{
+        const name=g(r,iN); if(!name)return;
+        let date=g(r,iD), time=g(r,iT);
+        if(!date&&iDT>-1){ const dt=g(r,iDT).split(/\s+/); date=dt[0]||''; time=dt.slice(1).join(' '); }
+        const amount=parseFloat(String(g(r,iA)).replace(/[^0-9.\-]/g,''))||0;
+        const key=normName(name)+'|'+amount+'|'+date+'|'+time;
+        if(seen[key]){ dups++; return; }
+        seen[key]=1;
+        const st=matchStudent(name); if(!st)unmatched++;
+        const status=g(r,iS)||'PAID';
+        fees.push({key,name,reg:st?st.reg:'',amount,date,time,
+          status,mode:g(r,iM)||'—',type:g(r,iTy)||'',batch:g(r,iB),branch:g(r,iBr),course:g(r,iC)});
+        added++; if(/paid/i.test(status)) addedAmt+=amount;
+      });
+      localStorage.setItem('alizonFees',JSON.stringify(fees));
+      renderFees();
+      const resEl=document.getElementById('feeUpResult');
+      if(resEl){ resEl.style.display='block';
+        resEl.innerHTML='Upload processed — <b style="color:var(--success)">'+added+' new payment'+(added!==1?'s':'')+' ('+inr(addedAmt)+')</b> · '+
+          '<b style="color:'+(dups?'var(--crimson)':'var(--muted)')+'">'+dups+' duplicate'+(dups!==1?'s':'')+' found &amp; skipped</b>'+
+          (unmatched?' · <b style="color:var(--warn)">'+unmatched+' name'+(unmatched!==1?'s':'')+' not on the roster</b>':''); }
+      toast(added+' new payments · '+dups+' duplicates skipped ✓');
+      logAct('Fees CSV upload — '+added+' new payments ('+inr(addedAmt)+'), '+dups+' duplicates skipped','upload');
+    }catch(err){ toast('Could not parse that fees CSV',true); }
+    e.target.value='';
+  };
+  rd.readAsText(f);
+});
+document.getElementById('feeSearch').addEventListener('input',renderFees);
+document.getElementById('feeClear').addEventListener('click',()=>{
+  if(!confirm('Remove ALL fee records from the portal?'))return;
+  localStorage.removeItem('alizonFees'); renderFees(); toast('Fees cleared'); logAct('Cleared fee records','update');
+});
+function renderFees(){
+  const all=loadFees();
+  const qy=(document.getElementById('feeSearch').value||'').toLowerCase();
+  const isPaid=x=>/paid/i.test(x.status);
+  const paid=all.filter(isPaid), failedN=all.length-paid.length;
+  const total=paid.reduce((a,x)=>a+x.amount,0);
+  const byMode={}; paid.forEach(x=>{ byMode[x.mode]=byMode[x.mode]||{n:0,amt:0}; byMode[x.mode].n++; byMode[x.mode].amt+=x.amount; });
+  /* aggregate per student — PAID only */
+  const agg={};
+  paid.forEach(x=>{ const k=x.reg||('?'+normName(x.name));
+    if(!agg[k])agg[k]={reg:x.reg,name:x.name,n:0,amt:0,last:'',modes:{},matched:!!x.reg};
+    const a=agg[k]; a.n++; a.amt+=x.amount; a.modes[x.mode]=1;
+    if(!a.last||x.date.split('/').reverse().join('')>a.last.split('/').reverse().join(''))a.last=x.date; });
+  let list=Object.values(agg).sort((a,b)=>b.amt-a.amt);
+  if(qy) list=list.filter(s=>(s.reg+' '+s.name+' '+Object.keys(s.modes).join(' ')).toLowerCase().includes(qy));
+  document.getElementById('feeSummary').innerHTML=all.length?[
+    '<span class="badge2 done" style="font-size:13px;padding:7px 14px">Total collected: '+inr(total)+'</span>',
+    '<span class="badge2 ind" style="font-size:12px;padding:6px 12px">'+paid.length+' paid transactions</span>',
+    '<span class="badge2 ind" style="font-size:12px;padding:6px 12px">'+Object.values(agg).length+' students paid</span>']
+    .concat(failedN?['<span class="badge2 new" style="font-size:12px;padding:6px 12px">'+failedN+' failed — not counted</span>']:[])
+    .concat(Object.keys(byMode).map(m=>'<span class="badge2" style="font-size:12px;padding:6px 12px;color:var(--muted);background:var(--pill)">'+esc(m)+': '+inr(byMode[m].amt)+' ('+byMode[m].n+')</span>')).join('')
+    :'<span class="cnote">No fee records yet — upload the fees CSV from the backend.</span>';
+  const fc=document.getElementById('cntFees');
+  if(fc){ fc.textContent=Object.values(agg).length; fc.classList.toggle('show',all.length>0); }
+  document.getElementById('feeByStudent').innerHTML=list.length
+    ? '<tr><th>Reg No</th><th>Name</th><th>Total paid</th><th>Payments</th><th>Modes</th><th>Last payment</th></tr>'+
+      list.map(s=>`<tr><td class="num">${s.reg?esc(s.reg):'<span style="color:var(--crimson)">not on roster</span>'}</td><td>${esc(s.name)}</td><td class="num"><b>${inr(s.amt)}</b></td><td class="num">${s.n}</td><td>${esc(Object.keys(s.modes).join(', '))}</td><td class="num">${esc(s.last)}</td></tr>`).join('')
+    : '';
+  const tx=all.slice().sort((a,b)=>(b.date.split('/').reverse().join('')+b.time).localeCompare(a.date.split('/').reverse().join('')+a.time));
+  document.getElementById('feeTxTable').innerHTML=tx.length
+    ? '<tr><th>#</th><th>Reg</th><th>Name</th><th>Amount</th><th>Date</th><th>Time</th><th>Status</th><th>Mode</th><th>Type</th></tr>'+
+      tx.map((x,i)=>`<tr><td class="num">${i+1}</td><td class="num">${esc(x.reg||'—')}</td><td>${esc(x.name)}</td><td class="num">${inr(x.amount)}</td><td class="num">${esc(x.date)}</td><td class="num">${esc(x.time)}</td><td class="${/paid/i.test(x.status)?'okc':'badc'}">${esc(x.status)}</td><td>${esc(x.mode)}</td><td>${esc(x.type)}</td></tr>`).join('')
+    : '';
+}
+
+/* ---- sidebar: section switching + badges ---- */
+const SECS=['sec-courses','adm-students','adm-fees','adm-eval','adm-griev','adm-faculty','adm-schedule','adm-links','adm-activity'];
+function showSec(id){
+  if(!SECS.includes(id)) id='sec-courses';
+  SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
+  document.querySelectorAll('.anavv a[data-sec]').forEach(a=>a.classList.toggle('on',a.dataset.sec===id));
+  const mw=document.getElementById('pickModWrap'); if(mw)mw.style.visibility=(id==='sec-courses')?'visible':'hidden';
+  try{ localStorage.setItem('admSec',id); }catch(e){}
+  window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('.anavv a[data-sec]').forEach(a=>a.addEventListener('click',()=>showSec(a.dataset.sec)));
+function paintCounts(){
+  const pend=loadSubs().filter(s=>(s.type==='practical'||s.type==='self')&&!s.grade&&s.status!=='rejected').length;
+  const open=loadGriev().filter(g=>g.status!=='resolved').length;
+  const ce=document.getElementById('cntEval'), cg=document.getElementById('cntGriev');
+  if(ce){ ce.textContent=pend; ce.classList.toggle('show',pend>0); }
+  if(cg){ cg.textContent=open; cg.classList.toggle('show',open>0); }
+}
+
+renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderActivity(); renderStudents(); renderFees();
+render();
+paintCounts();
+showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; }catch(e){ return 'sec-courses'; } })());
+</script>
+</body>
+</html>

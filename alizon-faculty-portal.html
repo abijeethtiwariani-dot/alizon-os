@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Faculty Portal</title>
+<style>
+  :root{
+    --bg:#070810; --navy:#0D1024; --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.09);
+    --crimson:#D41820; --crimson-deep:#B1040E; --gold:#D9A441; --gold-soft:rgba(217,164,65,.14);
+    --crimson-soft:rgba(212,24,32,.14); --pill:rgba(255,255,255,.05);
+    --success:#2E8B6A; --warn:#C6551F;
+    --tink:#1c1a1f; --tmut:#6b6570; --tline:rgba(24,18,26,.12); --tgold:#A16207; --tcrim:#C40D16;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-size:15px;-webkit-font-smoothing:antialiased;line-height:1.55}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;margin:0;letter-spacing:-.01em}
+  .bgwrap{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.08),transparent 60%),
+    radial-gradient(90% 60% at 90% 10%,rgba(217,164,65,.06),transparent 55%)}
+  a{color:inherit}
+  button,input,select,textarea{font-family:inherit}
+  button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:none;box-shadow:0 0 0 3px var(--gold-soft)}
+
+  /* top bar */
+  .top{position:sticky;top:0;z-index:10;background:rgba(13,16,36,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .top .in{max-width:1340px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:13px}
+  .top img.logo{width:32px;height:32px;object-fit:contain;flex:none}
+  .top .bt b{font-family:'Source Serif Pro',serif;font-size:16px;display:block;line-height:1.1}
+  .top .bt small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .top .sp{margin-left:auto;display:flex;gap:9px;align-items:center}
+  .top .who{font-size:12.5px;color:var(--muted);margin-right:4px}
+  .top button,.top a{font-size:13px;text-decoration:none;color:var(--ink);cursor:pointer;
+    border:1px solid var(--line);background:var(--pill);padding:8px 14px;border-radius:100px;transition:.2s}
+  .top button:hover,.top a:hover{border-color:rgba(217,164,65,.4)}
+
+  .shell{position:relative;z-index:1;max-width:1340px;margin:0 auto;display:grid;grid-template-columns:225px minmax(0,1fr)}
+  .wrap{padding:0 22px 70px;min-width:0}
+  .aside{position:sticky;top:62px;height:calc(100vh - 62px);padding:18px 13px;display:flex;flex-direction:column;
+    border-right:1px solid var(--line);background:linear-gradient(180deg,rgba(13,16,36,.85),rgba(7,8,16,.9));backdrop-filter:blur(18px)}
+  .anavv{display:flex;flex-direction:column;gap:4px;flex:1}
+  .anavv a{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:12px;color:var(--muted);
+    text-decoration:none;font-size:14px;cursor:pointer;transition:.2s;border:1px solid transparent;user-select:none}
+  .anavv a:hover{color:var(--ink);background:var(--pill)}
+  .anavv a.on{color:#fff;background:linear-gradient(120deg,var(--crimson-soft),var(--gold-soft));border-color:rgba(212,24,32,.3);font-weight:600}
+  .anavv a .cnt{margin-left:auto;font-size:10.5px;font-weight:700;background:var(--crimson);color:#fff;border-radius:100px;padding:2px 8px;display:none}
+  .anavv a .cnt.show{display:inline-block}
+  .asfoot{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:3px}
+  .asfoot a{display:flex;gap:9px;align-items:center;padding:9px 13px;border-radius:11px;color:var(--muted);font-size:13px;text-decoration:none;transition:.2s;cursor:pointer}
+  .asfoot a:hover{color:var(--gold);background:var(--pill)}
+  @media(max-width:840px){
+    .shell{grid-template-columns:1fr}
+    .aside{position:static;height:auto;flex-direction:column;border-right:none;border-bottom:1px solid var(--line);padding:12px 16px}
+    .anavv{flex-direction:row;flex-wrap:wrap}.asfoot{border-top:none;flex-direction:row;flex-wrap:wrap}
+  }
+
+  /* white liquid-glass content panels */
+  .lead{margin:26px 0 6px}
+  .lead h1{font-size:clamp(22px,3vw,28px)}
+  .lead p{color:var(--muted);font-size:14px;margin:8px 0 0;max-width:72ch}
+  .panel{color:var(--tink);border:1px solid rgba(255,255,255,.62);border-radius:18px;padding:20px;margin-top:18px;
+    background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,255,255,.72) 48%,rgba(255,255,255,.84));
+    backdrop-filter:blur(28px) saturate(175%);-webkit-backdrop-filter:blur(28px) saturate(175%);
+    box-shadow:0 26px 60px rgba(0,0,0,.52),inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),inset 0 0 42px rgba(255,255,255,.16)}
+  .panel h2{font-size:19px;margin-bottom:3px;color:var(--tink)}
+  .ahint{font-size:12.5px;color:var(--tmut);margin-bottom:14px}
+  .asec{display:none}.asec.on{display:block;animation:secIn .25s ease}
+  @keyframes secIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:18px}
+  .kpi{color:var(--tink);border:1px solid rgba(255,255,255,.62);border-radius:16px;padding:16px 18px;
+    background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,255,255,.74) 48%,rgba(255,255,255,.85));
+    backdrop-filter:blur(24px) saturate(170%);box-shadow:0 18px 44px rgba(0,0,0,.45),inset 0 1.5px 0 rgba(255,255,255,.95)}
+  .kpi .kl{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tmut)}
+  .kpi .kv{font-size:26px;font-weight:700;font-family:'Source Serif Pro',serif;color:var(--tgold);margin-top:4px}
+  .kpi .kd{font-size:11.5px;color:var(--tmut);margin-top:2px}
+
+  .clist{display:flex;flex-direction:column;gap:9px}
+  .citem{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:10px 12px;border-radius:11px;background:rgba(24,18,26,.05);border:1px solid var(--tline)}
+  .citem.col{flex-direction:column;align-items:stretch;gap:8px}
+  .cinfo{flex:1;min-width:0}.cinfo b{font-weight:600}.cinfo small{color:var(--tmut);display:block;font-size:11.5px}
+  .cnote{color:var(--tmut);font-size:13px;padding:6px 2px}
+  .badge2{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:100px;flex:none}
+  .badge2.new{color:#B1040E;background:rgba(212,24,32,.12)} .badge2.done{color:#1E8E5A;background:rgba(46,139,106,.15)}
+  .badge2.rej{color:#fff;background:var(--tcrim)}
+  input[type=text],input[type=date],input[type=time],select,textarea{width:100%;font-size:14px;color:var(--tink);
+    background:rgba(255,255,255,.75);border:1px solid var(--tline);border-radius:10px;padding:10px 12px;outline:none}
+  textarea{min-height:56px;resize:vertical}
+  input:focus,select:focus,textarea:focus{border-color:var(--tgold);box-shadow:0 0 0 3px rgba(161,98,7,.18)}
+  select option{background:#fff;color:#1c1a1f}
+  label.f{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tmut);margin:10px 0 6px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  @media(max-width:640px){.row2,.row3{grid-template-columns:1fr}}
+  .btn{cursor:pointer;font-weight:600;font-size:13.5px;border:none;border-radius:100px;padding:11px 18px;color:#fff;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));box-shadow:0 8px 22px rgba(212,24,32,.28);transition:transform .15s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.ghost{background:rgba(24,18,26,.05);color:var(--tink);border:1px solid var(--tline);box-shadow:none}
+  .btn.mini{padding:8px 13px;font-size:12.5px}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--tgold))}
+
+  .egrade{display:flex;gap:8px;align-items:center;flex-wrap:wrap;width:100%}
+  .pickbar{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;margin-bottom:14px}
+  @media(max-width:640px){.pickbar{grid-template-columns:1fr}}
+
+  /* login gate */
+  #gate{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.1),transparent 60%),var(--bg)}
+  #gate.hide{display:none}
+  .gate-card{width:100%;max-width:400px;color:var(--tink);border:1px solid rgba(255,255,255,.62);border-radius:20px;padding:34px 30px;
+    background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.78) 48%,rgba(255,255,255,.86));
+    backdrop-filter:blur(28px) saturate(175%);box-shadow:0 30px 70px rgba(0,0,0,.55),inset 0 1.5px 0 rgba(255,255,255,.95)}
+  .gate-card .gbrand{display:flex;align-items:center;gap:11px;justify-content:center;margin-bottom:16px}
+  .gate-card .gbrand img{width:34px;height:34px;object-fit:contain}
+  .gate-card .gbrand b{font-family:'Source Serif Pro',serif;font-size:17px;color:#1c1a1f}
+  .gate-card h2{font-family:'Source Serif Pro',serif;font-size:20px;text-align:center;color:#1c1a1f;margin-bottom:4px}
+  .gate-card p.gsub{font-size:12.5px;color:#6b6570;text-align:center;margin-bottom:20px}
+  .gate-card label{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6b6570;margin:12px 0 6px}
+  .gate-card input{width:100%;font-size:15px;color:#1c1a1f;background:rgba(255,255,255,.85);border:1px solid rgba(24,18,26,.14);border-radius:11px;padding:12px 14px;outline:none}
+  .gate-card button{width:100%;margin-top:18px;cursor:pointer;font-weight:600;font-size:14px;border:none;border-radius:100px;padding:13px;color:#fff;background:linear-gradient(120deg,#9E0C13,#C40D16);box-shadow:0 8px 22px rgba(212,24,32,.3)}
+  .gate-card .gerr{display:none;margin-top:12px;font-size:12.5px;color:#B1040E;background:rgba(196,13,22,.09);border:1px solid rgba(196,13,22,.3);border-radius:10px;padding:9px 12px}
+  .gate-card .gerr.show{display:block}
+  .gate-card .gfoot{margin-top:16px;font-size:12px;color:#6b6570;text-align:center}
+  .gate-card .gfoot a{color:#A16207;text-decoration:none}
+
+  /* doc viewer + note preview */
+  #docView{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;background:rgba(5,6,12,.92);backdrop-filter:blur(6px)}
+  #docView.open{display:flex}
+  .dv-top{display:flex;align-items:center;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line);background:rgba(13,16,36,.92)}
+  .dv-top .dv-ttl{flex:1;text-align:center;font-weight:600;font-size:15px}
+  .dv-top button{font-size:13px;color:var(--ink);cursor:pointer;border:1px solid var(--line);background:var(--pill);padding:8px 14px;border-radius:100px}
+  .dv-scroll{flex:1;overflow:auto;padding:26px 16px 60px;display:flex;justify-content:center}
+  .subdoc{background:#fff;color:#1a1a1a;width:100%;max-width:820px;height:max-content;padding:52px 56px;border-radius:8px;
+    font-family:'Source Serif Pro',Georgia,serif;font-size:15px;line-height:1.7;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .subdoc .dh{text-align:center;border-bottom:2px solid #7A0309;padding-bottom:16px;margin-bottom:8px}
+  .subdoc .dh img{width:50px;height:50px;object-fit:contain;margin-bottom:8px}
+  .subdoc .dh .inm{font-weight:700;font-size:19px;color:#7A0309}
+  .subdoc .dh .dep{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#666;margin-top:4px}
+  .subdoc .dt{text-align:center;margin:20px 0 6px;font-weight:700;font-size:17px;text-transform:uppercase;letter-spacing:.05em}
+  .subdoc .dsub{text-align:center;font-size:14px;color:#444;margin-bottom:22px;font-style:italic}
+  .subdoc p.body{margin:0 0 12px;text-align:justify;white-space:pre-wrap}
+  .subdoc .foot{margin-top:30px;border-top:1px solid #e2d3d4;padding-top:10px;font-size:11px;color:#999;text-align:center}
+  @media print{body>*{display:none!important}#docView{display:block!important;position:static;background:#fff}.dv-top{display:none!important}.dv-scroll{padding:0;overflow:visible}.subdoc{box-shadow:none;max-width:100%;padding:0}}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(70px);z-index:120;
+    background:rgba(13,16,36,.95);border:1px solid rgba(217,164,65,.4);color:var(--gold);padding:12px 22px;border-radius:100px;
+    font-size:13.5px;font-weight:500;opacity:0;transition:.35s;pointer-events:none;backdrop-filter:blur(10px)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="bgwrap"></div>
+
+<!-- LOGIN GATE -->
+<div id="gate">
+  <form class="gate-card" id="gateForm" autocomplete="off">
+    <div class="gbrand"><img src="alizon-logo.png" alt=""><b>ALIZON OS</b></div>
+    <h2>Faculty Portal</h2>
+    <p class="gsub">Sign in to grade, respond and manage your teaching.</p>
+    <label for="gf-id">Login ID (faculty email or admin)</label>
+    <input id="gf-id" placeholder="you@alizongov.com" autocomplete="username">
+    <label for="gf-pw">Password</label>
+    <input id="gf-pw" type="password" placeholder="••••••••" autocomplete="current-password">
+    <div class="gerr" id="gf-err">Incorrect login ID or password.</div>
+    <button type="submit">Sign in</button>
+    <div class="gfoot"><a href="ASMDI-dashboard.html">← Back to campus sign-in</a></div>
+  </form>
+</div>
+
+<header class="top">
+  <div class="in">
+    <img class="logo" src="alizon-logo.png" alt="Alizon">
+    <div class="bt"><b>ALIZON OS</b><small>Faculty Portal</small></div>
+    <div class="sp">
+      <span class="who" id="whoami"></span>
+      <a href="ASMDI-dashboard.html">Campus →</a>
+      <button id="signout">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+<aside class="aside">
+  <nav class="anavv">
+    <a data-sec="sec-overview" class="on">Overview</a>
+    <a data-sec="sec-eval">Evaluation <b class="cnt" id="cntEval"></b></a>
+    <a data-sec="sec-griev">Grievances <b class="cnt" id="cntGriev"></b></a>
+    <a data-sec="sec-notes">Course Notes</a>
+    <a data-sec="sec-videos">Class Videos</a>
+    <a data-sec="sec-schedule">Schedule</a>
+    <a data-sec="sec-announce">Announcements</a>
+  </nav>
+  <div class="asfoot">
+    <a href="admin-portal.html">Admin Portal</a>
+    <a href="alizon-hr-studio.html">HR Studio</a>
+  </div>
+</aside>
+
+<div class="wrap">
+
+  <!-- OVERVIEW -->
+  <section class="asec on" id="sec-overview">
+    <div class="lead"><h1>Faculty Overview</h1><p>Everything you teach in one place — student evaluations, grievances, notes, videos and lab schedules, each in its own section.</p></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="panel">
+      <h2>Recent activity</h2>
+      <div class="ahint">The latest uploads, approvals, evaluations and updates across the institute.</div>
+      <div id="actFeed"></div>
+    </div>
+  </section>
+
+  <!-- EVALUATION -->
+  <section class="panel asec" id="sec-eval" style="margin-top:26px">
+    <h2>Submissions &amp; Evaluation</h2>
+    <div class="ahint">Grade student practicals &amp; self-assessments. Accept the AI provisional mark, enter your own, or reject for redo — the result reflects on the student portal.</div>
+    <div class="clist" id="evalList"></div>
+  </section>
+
+  <!-- GRIEVANCES -->
+  <section class="panel asec" id="sec-griev" style="margin-top:26px">
+    <h2>Grievances</h2>
+    <div class="ahint">Grievances raised by students. Reply and resolve — students see your response on their portal.</div>
+    <div class="clist" id="grievList"></div>
+  </section>
+
+  <!-- NOTES -->
+  <section class="panel asec" id="sec-notes" style="margin-top:26px">
+    <h2>Course Notes — official letterhead</h2>
+    <div class="ahint">Publish notes to a module; they appear on the student portal on the official Alizon letterhead and can be revoked any time.</div>
+    <div class="pickbar">
+      <div><label class="f">Programme</label><select id="nProg"></select></div>
+      <div><label class="f">Module</label><select id="nMod"></select></div>
+    </div>
+    <div class="clist" id="notesList"></div>
+    <div style="margin-top:14px;border-top:1px dashed var(--tline);padding-top:14px">
+      <label class="f">Note title</label><input type="text" id="nTitle" placeholder="e.g. Unit 1 Lecture Notes">
+      <label class="f">Unit (optional)</label><select id="nUnit"></select>
+      <label class="f">Content</label><textarea id="nBody" placeholder="Type or paste the note; students read &amp; download it on the official letterhead." style="min-height:110px"></textarea>
+      <button class="btn" id="nAdd" style="margin-top:12px">Publish note</button>
+    </div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section class="panel asec" id="sec-videos" style="margin-top:26px">
+    <h2>Class Videos (YouTube)</h2>
+    <div class="ahint">Attach class recordings to a module; students watch them inside the module detail.</div>
+    <div class="pickbar">
+      <div><label class="f">Programme</label><select id="vProg"></select></div>
+      <div><label class="f">Module</label><select id="vMod"></select></div>
+    </div>
+    <div class="clist" id="videosList"></div>
+    <div style="margin-top:14px;border-top:1px dashed var(--tline);padding-top:14px">
+      <label class="f">Video title</label><input type="text" id="vTitle" placeholder="e.g. Unit 1 Class Recording">
+      <div class="row2"><div><label class="f">YouTube link</label><input type="text" id="vUrl" placeholder="https://youtu.be/…"></div>
+        <div><label class="f">Unit (optional)</label><select id="vUnit"></select></div></div>
+      <button class="btn" id="vAdd" style="margin-top:12px">Add class video</button>
+    </div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section class="panel asec" id="sec-schedule" style="margin-top:26px">
+    <h2>Lab &amp; Session Schedule</h2>
+    <div class="ahint">Scheduled live labs, inductions &amp; demos — shown on the student dashboard for them to join.</div>
+    <div class="clist" id="schList"></div>
+    <div style="margin-top:14px;border-top:1px dashed var(--tline);padding-top:14px">
+      <div class="row2"><div><label class="f">Module</label><input type="text" id="sMod" placeholder="e.g. Module 1"></div>
+        <div><label class="f">Session title</label><input type="text" id="sTitle" placeholder="e.g. Drug Discovery live demo"></div></div>
+      <div class="row3">
+        <div><label class="f">Date</label><input type="date" id="sDate"></div>
+        <div><label class="f">Time</label><input type="time" id="sTime"></div>
+        <div><label class="f">Mode</label><select id="sMode"><option>Online</option><option>On-campus</option><option>Hybrid</option></select></div>
+      </div>
+      <label class="f">Meeting link (optional)</label><input type="text" id="sLink" placeholder="https://meet.jit.si/…">
+      <button class="btn" id="sAdd" style="margin-top:12px">Add session</button>
+    </div>
+  </section>
+
+  <!-- ANNOUNCEMENTS -->
+  <section class="panel asec" id="sec-announce" style="margin-top:26px">
+    <h2>Post an Announcement</h2>
+    <div class="ahint">Announcements appear on every student's dashboard feed instantly.</div>
+    <label class="f">Announcement</label>
+    <textarea id="annText" placeholder="e.g. Module 3 assessment window opens Monday — submit your practical records by Friday." style="min-height:80px"></textarea>
+    <button class="btn" id="annAdd" style="margin-top:12px">Post announcement</button>
+    <h3 style="font-size:15px;margin:20px 0 8px;color:var(--tink)">Recent announcements</h3>
+    <div id="annList"></div>
+  </section>
+
+</div>
+</div>
+
+<!-- doc viewer -->
+<div id="docView">
+  <div class="dv-top">
+    <button id="dvClose">✕ Close</button>
+    <div class="dv-ttl" id="dvTitle">Document</div>
+    <button id="dvPrint">Print</button>
+  </div>
+  <div class="dv-scroll"><div class="subdoc" id="dvDoc"></div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function DB(k,d){ try{const v=JSON.parse(localStorage.getItem(k)); if(Array.isArray(v))return v;}catch(e){} if(d){try{localStorage.setItem(k,JSON.stringify(d));}catch(e){}return d.slice();} return []; }
+function setDB(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
+function fmt(ts){ try{const d=new Date(ts);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}catch(e){return '';} }
+function loadSubs(){ try{const a=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+function loadGriev(){ try{const a=JSON.parse(localStorage.getItem('alizonGrievances')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+function loadProgs(){ try{const a=JSON.parse(localStorage.getItem('alizonPrograms')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+function saveProgs(p){ setDB('alizonPrograms',p); }
+function logAct(text,type){ let a=DB('alizonActivity',[]); a.unshift({ts:Date.now(),text,type:type||'update',by:ME.name||'Faculty'}); if(a.length>200)a=a.slice(0,200); setDB('alizonActivity',a); }
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2600); }
+const BRAND='alizon-logo.png';
+
+let ME={name:'Faculty'};
+
+/* ---------- login gate ---------- */
+function faculty(){ try{const a=JSON.parse(localStorage.getItem('alizonFaculty')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+(function(){
+  const gate=$('gate');
+  function enter(who){ ME=who; $('whoami').textContent=who.name; gate.classList.add('hide'); document.body.style.overflow=''; boot(); }
+  let saved=''; try{ saved=sessionStorage.getItem('alizonFacultyAuth')||''; }catch(e){}
+  if(saved){ try{ enter(JSON.parse(saved)); return; }catch(e){} }
+  document.body.style.overflow='hidden';
+  $('gateForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const id=($('gf-id').value||'').trim(), pw=$('gf-pw').value||'';
+    let who=null;
+    if(id.toLowerCase()==='admin' && pw==='admin123') who={name:'Administrator',email:'admin',master:true};
+    else{
+      const f=faculty().find(x=>String(x.email||'').toLowerCase()===id.toLowerCase()||String(x.name||'').toLowerCase()===id.toLowerCase());
+      if(f && (pw===f.email || pw==='faculty123')) who={name:f.name,email:f.email,dept:f.dept};
+    }
+    if(!who){ $('gf-err').classList.add('show'); return; }
+    try{ sessionStorage.setItem('alizonFacultyAuth',JSON.stringify(who)); }catch(x){}
+    enter(who);
+  });
+})();
+$('signout').addEventListener('click',()=>{ try{sessionStorage.removeItem('alizonFacultyAuth');}catch(e){} location.reload(); });
+
+/* ---------- section switching ---------- */
+const SECS=['sec-overview','sec-eval','sec-griev','sec-notes','sec-videos','sec-schedule','sec-announce'];
+function showSec(id){
+  if(SECS.indexOf(id)<0)id='sec-overview';
+  SECS.forEach(s=>{const el=$(s);if(el)el.classList.toggle('on',s===id);});
+  document.querySelectorAll('.anavv a[data-sec]').forEach(a=>a.classList.toggle('on',a.dataset.sec===id));
+  try{sessionStorage.setItem('alizonFacultySec',id);}catch(e){}
+  window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('.anavv a[data-sec]').forEach(a=>a.addEventListener('click',()=>showSec(a.dataset.sec)));
+
+/* ---------- boot ---------- */
+function boot(){
+  renderAll();
+  fillPickers();
+  let init='sec-overview'; try{ init=sessionStorage.getItem('alizonFacultySec')||init; }catch(e){}
+  showSec(init);
+}
+function renderAll(){ renderKPIs(); renderActFeed(); renderEval(); renderGriev(); renderSched(); renderAnnounce(); paintCounts(); }
+
+function paintCounts(){
+  const pend=loadSubs().filter(s=>(s.type==='practical'||s.type==='self')&&!s.grade&&s.status!=='rejected').length;
+  const open=loadGriev().filter(g=>g.status!=='resolved').length;
+  const ce=$('cntEval'),cg=$('cntGriev');
+  if(ce){ce.textContent=pend;ce.classList.toggle('show',pend>0);}
+  if(cg){cg.textContent=open;cg.classList.toggle('show',open>0);}
+}
+
+/* ---------- overview ---------- */
+function renderKPIs(){
+  const subs=loadSubs().filter(s=>s.type==='practical'||s.type==='self');
+  const pend=subs.filter(s=>!s.grade&&s.status!=='rejected').length;
+  const griev=loadGriev().filter(g=>g.status!=='resolved').length;
+  let notes=0,videos=0; loadProgs().forEach(p=>p.modules.forEach(m=>{notes+=(m.notes||[]).length;videos+=(m.videos||[]).length;}));
+  const sched=DB('alizonSchedule',[]).length;
+  $('kpis').innerHTML=
+    kpi('Pending evaluations',pend,pend?'awaiting your grade':'all graded')+
+    kpi('Open grievances',griev,griev?'need a reply':'none open')+
+    kpi('Notes published',notes,'across all modules')+
+    kpi('Class videos',videos,sched+' scheduled sessions');
+}
+function kpi(l,v,d){ return '<div class="kpi"><div class="kl">'+l+'</div><div class="kv">'+v+'</div><div class="kd">'+esc(d)+'</div></div>'; }
+function renderActFeed(){
+  const a=DB('alizonActivity',[]).slice(0,12);
+  $('actFeed').innerHTML=a.length?a.map(x=>`<div class="citem"><div class="cinfo"><b>${esc(x.text)}</b><small>${esc(x.by||'Admin')} · ${fmt(x.ts)}</small></div></div>`).join(''):'<div class="cnote">No activity yet.</div>';
+}
+
+/* ---------- evaluation ---------- */
+function renderEval(){
+  const el=$('evalList'); const subs=loadSubs().filter(s=>s.type==='practical'||s.type==='self');
+  paintCounts();
+  if(!subs.length){ el.innerHTML='<div class="cnote">No student submissions yet. Practicals &amp; self-assessments submitted from Assessments appear here.</div>'; return; }
+  el.innerHTML=subs.map(s=>`<div class="citem col">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span class="badge2 ${s.status==='rejected'?'rej':(s.grade?'done':'new')}">${s.grade?'Evaluated':(s.status==='rejected'?'Rejected — redo':'Pending')}</span>
+      <div class="cinfo"><b>${esc(s.typeLabel||s.type)} — ${esc(s.module||s.title||'')}</b>
+        <small>${esc(s.name||'—')}${s.reg?' · '+esc(s.reg):''} · ${esc(s.programme||'')} · ${fmt(s.ts)}${s.score!=null?' · self-score '+s.score+'/60':''}</small></div>
+      <button class="btn mini ghost" data-eview="${esc(s.id)}">View document</button>
+    </div>
+    ${s.ai?`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12.5px;background:rgba(161,98,7,.12);border:1px solid rgba(161,98,7,.3);border-radius:10px;padding:8px 12px">
+      <b style="color:var(--tgold);flex:none">AI suggests ${esc(s.ai.grade)}</b>
+      <span style="flex:1;min-width:200px;color:var(--tmut)">${esc(s.ai.verdict)}</span>
+      ${s.grade?'':`<button class="btn mini" data-eaccept="${esc(s.id)}" style="padding:6px 12px">Accept AI mark</button>`}
+    </div>`:''}
+    <div class="egrade">
+      <input type="text" placeholder="Grade / marks" value="${esc(s.grade||'')}" data-eg="${esc(s.id)}" style="width:130px">
+      <input type="text" placeholder="Feedback to student" value="${esc(s.feedback||'')}" data-ef="${esc(s.id)}" style="flex:1;min-width:180px">
+      <button class="btn mini" data-esave="${esc(s.id)}">Save</button>
+      ${s.status==='rejected'?'':`<button class="btn mini" data-erej="${esc(s.id)}" style="background:var(--crimson-soft);color:var(--tcrim);border:1px solid rgba(196,13,22,.45)">Reject — redo</button>`}
+    </div></div>`).join('');
+  el.querySelectorAll('[data-eview]').forEach(b=>b.addEventListener('click',()=>{
+    const s=loadSubs().find(x=>x.id===b.dataset.eview); if(!s)return;
+    $('dvTitle').textContent=(s.typeLabel||'Submission')+' — '+(s.name||'');
+    $('dvDoc').innerHTML=s.html||'<p style="padding:30px">No stored document.</p>';
+    $('docView').classList.add('open');
+  }));
+  el.querySelectorAll('[data-esave]').forEach(b=>b.addEventListener('click',()=>{
+    const id=b.dataset.esave, g=el.querySelector(`[data-eg="${id}"]`).value.trim(), f=el.querySelector(`[data-ef="${id}"]`).value.trim();
+    if(!g){toast('Enter a grade/marks');return;}
+    const subs=loadSubs(); const s=subs.find(x=>x.id===id); if(!s)return;
+    s.grade=g; s.feedback=f; s.status='evaluated'; s.evaluatedAt=Date.now(); s.gradedBy=ME.name;
+    setDB('alizonSubmissions',subs); renderEval(); renderKPIs(); toast('Evaluation saved');
+    logAct('Evaluated '+(s.typeLabel||'submission')+' by '+(s.name||'student')+' — grade '+g,'eval');
+  }));
+  el.querySelectorAll('[data-eaccept]').forEach(b=>b.addEventListener('click',()=>{
+    const subs=loadSubs(); const s=subs.find(x=>x.id===b.dataset.eaccept); if(!s||!s.ai)return;
+    s.grade=s.ai.grade; s.feedback=s.ai.feedback; s.status='evaluated'; s.evaluatedAt=Date.now(); s.gradedBy=ME.name+' (accepted AI)';
+    setDB('alizonSubmissions',subs); renderEval(); renderKPIs(); toast('AI mark accepted — '+s.ai.grade);
+    logAct('Accepted AI mark '+s.ai.grade+' for '+(s.name||'student'),'eval');
+  }));
+  el.querySelectorAll('[data-erej]').forEach(b=>b.addEventListener('click',()=>{
+    const id=b.dataset.erej, f=el.querySelector(`[data-ef="${id}"]`).value.trim();
+    if(!f){toast('Write feedback first — the student needs to know what to redo');return;}
+    const subs=loadSubs(); const s=subs.find(x=>x.id===id); if(!s)return;
+    s.status='rejected'; s.grade=''; s.feedback=f; s.rejectedAt=Date.now();
+    setDB('alizonSubmissions',subs); renderEval(); renderKPIs(); toast('Submission rejected — student asked to redo');
+    logAct('Rejected '+(s.typeLabel||'submission')+' by '+(s.name||'student')+' — redo requested','eval');
+  }));
+}
+
+/* ---------- grievances ---------- */
+function renderGriev(){
+  paintCounts();
+  const el=$('grievList'); const gs=loadGriev();
+  if(!gs.length){ el.innerHTML='<div class="cnote">No grievances raised yet.</div>'; return; }
+  el.innerHTML=gs.map(g=>`<div class="citem col">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span class="badge2 ${g.status==='resolved'?'done':'new'}">${g.status==='resolved'?'Resolved':'Open'}</span>
+      <div class="cinfo"><b>${esc(g.subject||'Grievance')} <small style="color:var(--tgold)">· ${esc(g.category||'General')}</small></b>
+        <small>${esc(g.name||'Anonymous')}${g.reg?' · '+esc(g.reg):''} · ${fmt(g.ts)}</small></div></div>
+    <div style="font-size:13px;color:var(--tink);white-space:pre-wrap">${esc(g.message||'')}</div>
+    <textarea placeholder="Reply to the student…" data-gr="${esc(g.id)}">${esc(g.response||'')}</textarea>
+    <button class="btn mini" data-gresolve="${esc(g.id)}" style="align-self:flex-start">${g.status==='resolved'?'Update reply':'Reply &amp; resolve'}</button></div>`).join('');
+  el.querySelectorAll('[data-gresolve]').forEach(b=>b.addEventListener('click',()=>{
+    const id=b.dataset.gresolve, gs=loadGriev(); const g=gs.find(x=>x.id===id); if(!g)return;
+    g.response=el.querySelector(`[data-gr="${id}"]`).value.trim(); g.status='resolved'; g.resolvedAt=Date.now();
+    setDB('alizonGrievances',gs); renderGriev(); renderKPIs(); toast('Grievance resolved');
+    logAct('Responded to grievance from '+(g.name||'student'),'griev');
+  }));
+}
+
+/* ---------- programme pickers (notes + videos) ---------- */
+function fillProgSel(sel){ const ps=loadProgs(); sel.innerHTML=ps.map((p,i)=>`<option value="${i}">${esc(p.name)}</option>`).join(''); }
+function fillModSel(progSel,modSel){ const ps=loadProgs(); const p=ps[+progSel.value]; if(!p){modSel.innerHTML='';return;}
+  modSel.innerHTML=p.modules.map((m,i)=>`<option value="${i}">${esc(m.unit)} · ${esc(m.title)}</option>`).join(''); }
+function fillUnitSel(progSel,modSel,unitSel){ const ps=loadProgs(); const m=ps[+progSel.value]&&ps[+progSel.value].modules[+modSel.value];
+  unitSel.innerHTML='<option value="">Whole module</option>'+((m&&m.units||[]).map(u=>`<option>${esc(u)}</option>`).join('')); }
+function fillPickers(){
+  fillProgSel($('nProg')); fillProgSel($('vProg'));
+  fillModSel($('nProg'),$('nMod')); fillModSel($('vProg'),$('vMod'));
+  fillUnitSel($('nProg'),$('nMod'),$('nUnit')); fillUnitSel($('vProg'),$('vMod'),$('vUnit'));
+  renderNotes(); renderVideos();
+}
+$('nProg').addEventListener('change',()=>{fillModSel($('nProg'),$('nMod'));fillUnitSel($('nProg'),$('nMod'),$('nUnit'));renderNotes();});
+$('nMod').addEventListener('change',()=>{fillUnitSel($('nProg'),$('nMod'),$('nUnit'));renderNotes();});
+$('vProg').addEventListener('change',()=>{fillModSel($('vProg'),$('vMod'));fillUnitSel($('vProg'),$('vMod'),$('vUnit'));renderVideos();});
+$('vMod').addEventListener('change',()=>{fillUnitSel($('vProg'),$('vMod'),$('vUnit'));renderVideos();});
+
+/* ---------- notes ---------- */
+function curMod(progSel,modSel){ const ps=loadProgs(); const p=ps[+progSel.value]; const m=p&&p.modules[+modSel.value]; return {ps,p,m,pi:+progSel.value,mi:+modSel.value}; }
+function noteDocHtml(p,m,n){
+  return `<div class="dh"><img src="${BRAND}"><div class="inm">Alizon School of Medical &amp; Digital Intelligence</div>
+    <div class="dep">${esc(p.name)} · ${esc(m.unit)}${n.unit?' · '+esc(n.unit):''}</div></div>
+    <div class="dt">${esc(n.title||'Course Notes')}</div><div class="dsub">${esc(m.title)}</div>
+    <p class="body">${esc(n.body||'')}</p>
+    <div class="foot">Official course note · ALIZON OS · ${new Date(n.ts||Date.now()).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}${n.published===false?' · CURRENTLY REVOKED (not visible to students)':''}</div>`;
+}
+function renderNotes(){
+  const {p,m}=curMod($('nProg'),$('nMod')); const el=$('notesList');
+  if(!m){ el.innerHTML='<div class="cnote">Pick a programme and module.</div>'; return; }
+  const notes=m.notes||[];
+  el.innerHTML=notes.length?notes.map((n,ni)=>`<div class="citem">
+    <span class="badge2 ${n.published===false?'new':'done'}">${n.published===false?'Revoked':'Published'}</span>
+    <div class="cinfo"><b>${esc(n.title)}</b><small>${n.unit?esc(n.unit)+' · ':''}${(String(n.body||'').match(/\S+/g)||[]).length} words</small></div>
+    <button class="btn mini ghost" data-npv="${ni}">Preview</button>
+    <button class="btn mini ghost" data-nrv="${ni}" style="${n.published===false?'color:var(--success)':'color:var(--tcrim)'}">${n.published===false?'Publish':'Revoke'}</button>
+    <button class="btn mini ghost" data-ndel="${ni}">Delete</button></div>`).join(''):'<div class="cnote">No notes on this module yet.</div>';
+  el.querySelectorAll('[data-npv]').forEach(b=>b.addEventListener('click',()=>{
+    const {p,m}=curMod($('nProg'),$('nMod')); const n=(m.notes||[])[+b.dataset.npv]; if(!n)return;
+    $('dvTitle').textContent='Letterhead preview — '+(n.title||'Notes'); $('dvDoc').innerHTML=noteDocHtml(p,m,n); $('docView').classList.add('open');
+  }));
+  el.querySelectorAll('[data-nrv]').forEach(b=>b.addEventListener('click',()=>{
+    const c=curMod($('nProg'),$('nMod')); const n=(c.m.notes||[])[+b.dataset.nrv]; if(!n)return;
+    const rev=n.published!==false; n.published=!rev; c.ps[c.pi].modules[c.mi]=c.m; saveProgs(c.ps); renderNotes();
+    toast(rev?'Note revoked — hidden from students':'Note republished'); logAct((rev?'Revoked':'Republished')+' course note "'+(n.title||'Notes')+'" in '+c.m.title,rev?'update':'approve');
+  }));
+  el.querySelectorAll('[data-ndel]').forEach(b=>b.addEventListener('click',()=>{
+    if(!confirm('Delete this note?'))return;
+    const c=curMod($('nProg'),$('nMod')); c.m.notes.splice(+b.dataset.ndel,1); c.ps[c.pi].modules[c.mi]=c.m; saveProgs(c.ps); renderNotes();
+  }));
+}
+$('nAdd').addEventListener('click',()=>{
+  const c=curMod($('nProg'),$('nMod')); if(!c.m){toast('Pick a module');return;}
+  const t=$('nTitle').value.trim(), body=$('nBody').value.trim(); if(!t&&!body){toast('Enter a note title or content');return;}
+  c.m.notes=c.m.notes||[]; c.m.notes.push({title:t||'Notes',body,unit:$('nUnit').value,published:true,ts:Date.now()});
+  c.ps[c.pi].modules[c.mi]=c.m; saveProgs(c.ps); $('nTitle').value='';$('nBody').value='';
+  renderNotes(); renderKPIs(); toast('Note published on the student portal'); logAct('Published course note "'+(t||'Notes')+'" to '+c.m.title,'upload');
+});
+
+/* ---------- videos ---------- */
+function renderVideos(){
+  const {m}=curMod($('vProg'),$('vMod')); const el=$('videosList');
+  if(!m){ el.innerHTML='<div class="cnote">Pick a programme and module.</div>'; return; }
+  const vids=m.videos||[];
+  el.innerHTML=vids.length?vids.map((v,vi)=>`<div class="citem"><div class="cinfo"><b>${esc(v.title)}</b><small>${v.unit?esc(v.unit)+' · ':''}${esc(v.url)}</small></div>
+    <button class="btn mini ghost" data-vdel="${vi}">Delete</button></div>`).join(''):'<div class="cnote">No class videos on this module yet.</div>';
+  el.querySelectorAll('[data-vdel]').forEach(b=>b.addEventListener('click',()=>{
+    const c=curMod($('vProg'),$('vMod')); c.m.videos.splice(+b.dataset.vdel,1); c.ps[c.pi].modules[c.mi]=c.m; saveProgs(c.ps); renderVideos();
+  }));
+}
+$('vAdd').addEventListener('click',()=>{
+  const c=curMod($('vProg'),$('vMod')); if(!c.m){toast('Pick a module');return;}
+  const t=$('vTitle').value.trim(), u=$('vUrl').value.trim(); if(!u){toast('Paste a YouTube link');return;}
+  c.m.videos=c.m.videos||[]; c.m.videos.push({title:t||'Class video',url:u,unit:$('vUnit').value});
+  c.ps[c.pi].modules[c.mi]=c.m; saveProgs(c.ps); $('vTitle').value='';$('vUrl').value='';
+  renderVideos(); renderKPIs(); toast('Class video added'); logAct('Added class video "'+(t||'Class video')+'" to '+c.m.title,'upload');
+});
+
+/* ---------- schedule ---------- */
+function renderSched(){
+  const el=$('schList'); const ss=DB('alizonSchedule',[]);
+  el.innerHTML=ss.length?ss.map(s=>`<div class="citem"><div class="cinfo"><b>${esc(s.title)} <small style="color:var(--tgold)">· ${esc(s.module||'')}</small></b>
+    <small>${esc(s.date||'')} ${esc(s.time||'')} · ${esc(s.mode||'')}${s.link?' · '+esc(s.link):''}</small></div>
+    <button class="btn mini ghost" data-scdel="${esc(s.id)}">Delete</button></div>`).join(''):'<div class="cnote">No sessions scheduled yet.</div>';
+  el.querySelectorAll('[data-scdel]').forEach(b=>b.addEventListener('click',()=>{ setDB('alizonSchedule',DB('alizonSchedule',[]).filter(x=>x.id!==b.dataset.scdel)); renderSched(); renderKPIs(); }));
+}
+$('sAdd').addEventListener('click',()=>{
+  const t=$('sTitle').value.trim(); if(!t){toast('Enter a session title');return;}
+  const ss=DB('alizonSchedule',[]); ss.push({id:'sc'+Date.now(),module:$('sMod').value.trim()||'General',title:t,date:$('sDate').value,time:$('sTime').value,mode:$('sMode').value,link:$('sLink').value.trim()});
+  setDB('alizonSchedule',ss); $('sTitle').value='';$('sMod').value='';$('sLink').value='';
+  renderSched(); renderKPIs(); toast('Session scheduled'); logAct('Scheduled "'+t+'"','upload');
+});
+
+/* ---------- announcements ---------- */
+function renderAnnounce(){
+  const a=DB('alizonActivity',[]).filter(x=>x.type==='announce').slice(0,15);
+  $('annList').innerHTML=a.length?a.map(x=>`<div class="citem"><div class="cinfo"><b>${esc(x.text)}</b><small>${esc(x.by||'Faculty')} · ${fmt(x.ts)}</small></div></div>`).join(''):'<div class="cnote">No announcements yet.</div>';
+}
+$('annAdd').addEventListener('click',()=>{
+  const t=$('annText').value.trim(); if(!t){toast('Write an announcement');return;}
+  let a=DB('alizonActivity',[]); a.unshift({ts:Date.now(),text:t,type:'announce',by:ME.name||'Faculty'}); if(a.length>200)a=a.slice(0,200); setDB('alizonActivity',a);
+  $('annText').value=''; renderAnnounce(); renderActFeed(); toast('Announcement posted to all students');
+});
+
+/* ---------- doc viewer ---------- */
+$('dvClose').addEventListener('click',()=>$('docView').classList.remove('open'));
+$('dvPrint').addEventListener('click',()=>window.print());
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')$('docView').classList.remove('open'); });
+</script>
+</body>
+</html>

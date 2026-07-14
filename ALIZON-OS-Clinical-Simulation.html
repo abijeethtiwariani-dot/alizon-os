@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Module 8 · Clinical Simulation Suite</title>
+<script>try{if((localStorage.getItem('pracTheme')||'dark')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<style>
+  :root{
+    --bg:#f2f0ec; --panel:#ffffff; --panel2:#f7f5f1; --ink:#1c1a1f; --muted:#6b6570;
+    --line:rgba(24,18,26,.12); --crimson:#C40D16; --crimson-deep:#9E0C13; --gold:#A16207;
+    --gold-soft:rgba(161,98,7,.14); --crimson-soft:rgba(196,13,22,.08);
+    --success:#1E8E5A; --success-soft:rgba(30,142,90,.12); --warn:#C6551F; --warn-soft:rgba(198,85,31,.12);
+    --danger:#B1040E; --danger-soft:rgba(177,4,14,.10); --pill:rgba(24,18,26,.05);
+  }
+  html.dark{
+    --bg:#070810; --panel:#12142a; --panel2:#1A1D2E; --ink:#f5f4f6; --muted:#9a9db2;
+    --line:rgba(255,255,255,.1); --crimson:#D41820; --crimson-deep:#B1040E; --gold:#D9A441;
+    --gold-soft:rgba(217,164,65,.14); --crimson-soft:rgba(212,24,32,.14);
+    --success:#4ec78f; --success-soft:rgba(46,139,106,.18); --warn:#e58e3a; --warn-soft:rgba(198,85,31,.2);
+    --danger:#ff8a92; --danger-soft:rgba(212,24,32,.16); --pill:rgba(255,255,255,.05);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.55;padding:26px 20px 80px}
+  .wrap{max-width:1060px;margin:0 auto}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;letter-spacing:-.01em}
+
+  .hero{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .hero .mod{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-size:clamp(21px,3vw,28px);width:100%}
+  .hero p.sub{color:var(--muted);font-size:14px;max-width:75ch}
+  .scorebar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 4px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);
+    border:1px solid var(--line);color:var(--muted)}
+  .scorechip b{color:var(--gold)}
+
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 20px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:600;padding:10px 17px;border-radius:100px;
+    border:1px solid var(--line);background:var(--panel);color:var(--muted);transition:.2s}
+  .tab:hover{border-color:var(--gold)}
+  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent;
+    box-shadow:0 8px 22px rgba(212,24,32,.3)}
+  section.panel{display:none}
+  section.panel.on{display:block}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px;
+    box-shadow:0 14px 40px rgba(0,0,0,.12)}
+  html.dark .card{box-shadow:0 14px 40px rgba(0,0,0,.4)}
+  .card h2{font-size:19px;margin-bottom:4px}
+  .card h3{font-size:15.5px;margin:0 0 8px}
+  .hint{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+
+  /* patient chart */
+  .chart{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+  @media(max-width:720px){.chart{grid-template-columns:1fr}}
+  .cbox{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px}
+  .cbox .lbl{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+  .cbox ul{list-style:none}
+  .cbox li{padding:2px 0}
+  .ptag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;
+    background:var(--crimson-soft);color:var(--crimson);margin-left:8px;vertical-align:middle}
+
+  .q{margin:16px 0 8px;font-weight:600;font-size:15px}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:14px;color:var(--ink);
+    background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-bottom:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)}
+  .opt.right{border-color:var(--success);background:var(--success-soft)}
+  .opt.wrong{border-color:var(--danger);background:var(--danger-soft)}
+  .opt:disabled{cursor:default;opacity:.85}
+  .fb{border-radius:12px;padding:12px 15px;font-size:13.5px;margin:6px 0 4px;display:none}
+  .fb.show{display:block}
+  .fb.good{background:var(--success-soft);border:1px solid var(--success);color:var(--ink)}
+  .fb.bad{background:var(--danger-soft);border:1px solid var(--danger);color:var(--ink)}
+  .fb b{display:block;margin-bottom:2px}
+  .nextbtn,.btn{cursor:pointer;font-family:inherit;font-weight:600;font-size:13.5px;border:none;border-radius:100px;
+    padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));
+    box-shadow:0 8px 22px rgba(212,24,32,.28);transition:transform .15s;margin-top:8px}
+  .nextbtn:hover,.btn:hover{transform:translateY(-1px)}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold));color:#fff}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+  .casedone{font-size:14px;font-weight:600;color:var(--success);padding:10px 0}
+
+  .caselist{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+  .casecard{cursor:pointer;text-align:left;font-family:inherit;background:var(--panel2);border:1px solid var(--line);
+    border-radius:14px;padding:16px;transition:.2s;color:var(--ink)}
+  .casecard:hover{border-color:var(--gold);transform:translateY(-2px)}
+  .casecard .cn{font-weight:700;font-size:14.5px}
+  .casecard .cd{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .casecard .st{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    padding:3px 9px;border-radius:100px;margin-top:9px;background:var(--gold-soft);color:var(--gold)}
+  .casecard .st.done{background:var(--success-soft);color:var(--success)}
+
+  /* interaction lab */
+  .ddrow{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin:12px 0 4px}
+  @media(max-width:680px){.ddrow{grid-template-columns:1fr}}
+  label.f{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  select,input[type=number],input[type=text]{width:100%;font-family:inherit;font-size:14px;color:var(--ink);
+    background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;outline:none}
+  select:focus,input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  .ix{border-radius:14px;padding:16px 18px;margin-top:12px;display:none;border:1px solid var(--line)}
+  .ix.show{display:block}
+  .sev{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    padding:4px 12px;border-radius:100px;margin-bottom:8px}
+  .sev.major{background:var(--danger-soft);color:var(--danger);border:1px solid var(--danger)}
+  .sev.moderate{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
+  .sev.minor{background:var(--gold-soft);color:var(--gold);border:1px solid var(--gold)}
+  .sev.none{background:var(--success-soft);color:var(--success);border:1px solid var(--success)}
+  .ix .mech{font-size:13.5px;margin:4px 0}
+  .ix .mgmt{font-size:13.5px;margin-top:6px;padding-top:8px;border-top:1px dashed var(--line)}
+  .ix .mgmt b{color:var(--gold)}
+
+  .chal{margin-top:20px;padding-top:16px;border-top:1px dashed var(--line)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  .dchip{cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;padding:9px 16px;border-radius:100px;
+    background:var(--panel2);border:1px solid var(--line);color:var(--ink);transition:.15s}
+  .dchip.sel{border-color:var(--crimson);background:var(--crimson-soft);color:var(--crimson)}
+  .dchip.hit{border-color:var(--success);background:var(--success-soft);color:var(--success)}
+  .dchip.miss{border-color:var(--danger);background:var(--danger-soft)}
+
+  /* renal calc */
+  .calcgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+  .crclout{margin:14px 0;padding:16px 18px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);
+    display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+  .crclout .big{font-size:34px;font-weight:700;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .crclout .cat{font-size:13px;font-weight:700}
+  .doseline{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13.5px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .doseline:last-child{border:none}
+  .doseline b{min-width:170px}
+
+  /* rx audit */
+  .rx{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:18px;margin:12px 0}
+  .rx .rxh{font-size:13px;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:9px}
+  .rx .rxh b{color:var(--ink)}
+  .rxline{display:flex;gap:10px;align-items:center;cursor:pointer;padding:10px 12px;border-radius:10px;
+    border:1px solid transparent;font-size:14px;transition:.15s;user-select:none}
+  .rxline:hover{background:var(--pill)}
+  .rxline .flagic{width:22px;flex:none;text-align:center;opacity:.35}
+  .rxline.flag{border-color:var(--crimson);background:var(--crimson-soft)}
+  .rxline.flag .flagic{opacity:1}
+  .rxline.correct{border-color:var(--success);background:var(--success-soft)}
+  .rxline.missed{border-color:var(--warn);background:var(--warn-soft)}
+  .rxline.wrongflag{border-color:var(--danger);background:var(--danger-soft)}
+  .rxwhy{font-size:12.5px;color:var(--muted);margin:2px 0 8px 44px;display:none}
+  .rxwhy.show{display:block}
+
+  .copilot{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(120deg,var(--crimson-soft),var(--gold-soft));
+    border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:14px 0;font-size:13.5px}
+  .copilot .ai{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:17px;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));color:#fff}
+  .copilot b{color:var(--gold)}
+
+  /* report */
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+  .repbox .rv{font-size:30px;font-weight:700;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+
+  @media print{
+    body{background:#fff;color:#111;padding:0}
+    .tabs,.nextbtn,.btn,.opt,.copilot{display:none !important}
+    section.panel{display:block !important}
+    .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="mod">Module 8 · Advanced Practical · Pharmacy AI</div>
+      <h1>Clinical Simulation Suite</h1>
+      <p class="sub">Practise real pharmacist decision-making with AI-style clinical decision support: virtual patient cases,
+      drug-interaction screening, renal dose optimisation and prescription safety audits.</p>
+    </div>
+  </div>
+
+  <div class="scorebar">
+    <div class="scorechip">Cases <b id="scCases">0/3</b></div>
+    <div class="scorechip">Interactions <b id="scIx">0</b></div>
+    <div class="scorechip">Renal challenge <b id="scRenal">—</b></div>
+    <div class="scorechip">Rx audit <b id="scRx">—</b></div>
+    <div class="scorechip">Total score <b id="scTotal">0</b></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="cases">Patient Cases</button>
+    <button class="tab" data-p="ix">Interaction Lab</button>
+    <button class="tab" data-p="renal">Renal Dosing</button>
+    <button class="tab" data-p="audit">Rx Safety Audit</button>
+    <button class="tab" data-p="report">My Report</button>
+  </div>
+
+  <!-- ============ PATIENT CASES ============ -->
+  <section class="panel on" id="p-cases">
+    <div class="card" id="casePicker">
+      <h2>Virtual Patient Cases</h2>
+      <div class="hint">Work through each case as the clinical pharmacist. The AI co-pilot flags what a CDSS would surface — you make the call.</div>
+      <div class="caselist" id="caseList"></div>
+    </div>
+    <div class="card" id="caseRun" style="display:none">
+      <button class="btn ghost" id="caseBack">← All cases</button>
+      <div id="caseChart"></div>
+      <div class="copilot"><div class="ai"></div><div id="caseAI"></div></div>
+      <div id="caseQ"></div>
+    </div>
+  </section>
+
+  <!-- ============ INTERACTION LAB ============ -->
+  <section class="panel" id="p-ix">
+    <div class="card">
+      <h2>Drug–Drug Interaction Screener</h2>
+      <div class="hint">Select any two medicines and screen them the way an AI CDSS would — severity, mechanism and management.</div>
+      <div class="ddrow">
+        <div><label class="f">Drug A</label><select id="ixA"></select></div>
+        <div><label class="f">Drug B</label><select id="ixB"></select></div>
+        <button class="btn" id="ixGo">Screen ⚡</button>
+      </div>
+      <div class="ix" id="ixOut"></div>
+
+      <div class="chal">
+        <h3>Challenge — spot the dangerous pair</h3>
+        <div class="hint" id="chalHint">A discharge prescription contains one high-risk combination. Select the TWO drugs that interact, then check.</div>
+        <div class="chips" id="chalChips"></div>
+        <button class="btn gold" id="chalCheck">Check pair</button>
+        <button class="btn ghost" id="chalNew">New prescription ↺</button>
+        <div class="ix" id="chalOut"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RENAL DOSING ============ -->
+  <section class="panel" id="p-renal">
+    <div class="card">
+      <h2>Renal Dose Optimiser</h2>
+      <div class="hint">Estimate creatinine clearance (Cockcroft–Gault) and adjust doses — the daily bread of clinical pharmacy.</div>
+      <div class="calcgrid">
+        <div><label class="f">Age (years)</label><input type="number" id="rnAge" value="68" min="18" max="110"></div>
+        <div><label class="f">Weight (kg)</label><input type="number" id="rnWt" value="60" min="30" max="160"></div>
+        <div><label class="f">Serum creatinine (mg/dL)</label><input type="number" id="rnScr" value="1.6" step="0.1" min="0.3" max="12"></div>
+        <div><label class="f">Sex</label><select id="rnSex"><option value="M">Male</option><option value="F" selected>Female</option></select></div>
+      </div>
+      <div class="crclout">
+        <div><div class="big" id="crclVal">—</div><div style="font-size:11px;color:var(--muted);letter-spacing:.08em">mL/min CrCl</div></div>
+        <div class="cat" id="crclCat"></div>
+      </div>
+      <h3>Common renal dose adjustments at this CrCl</h3>
+      <div id="doseTable"></div>
+
+      <div class="chal">
+        <h3>Challenge patient</h3>
+        <div class="hint" id="renalCaseTxt"></div>
+        <div class="chips" id="renalOpts"></div>
+        <div class="ix" id="renalOut"></div>
+        <button class="btn ghost" id="renalNew">New challenge ↺</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RX AUDIT ============ -->
+  <section class="panel" id="p-audit">
+    <div class="card">
+      <h2>Prescription Safety Audit</h2>
+      <div class="hint">An AI pre-screen has passed this prescription to you for final verification.
+        Click every line you would <b>flag</b> as a problem, then run the audit. (Not every line is wrong!)</div>
+      <div class="rx">
+        <div class="rxh"><b>Patient:</b> Mr. Joseph Varghese · 68 y · 72 kg · <span class="ptag">PENICILLIN ALLERGY</span><br>
+          Dx: AF (on anticoagulation) · OA knee · T2DM · Recent dental infection · eGFR 55</div>
+        <div id="rxLines"></div>
+      </div>
+      <button class="btn" id="rxCheck">Run audit ✓</button>
+      <button class="btn ghost" id="rxReset">Reset ↺</button>
+      <div class="ix" id="rxOut"></div>
+    </div>
+  </section>
+
+  <!-- ============ REPORT ============ -->
+  <section class="panel" id="p-report">
+    <div class="card">
+      <h2>Simulation Report</h2>
+      <div class="hint">Your performance across the Clinical Simulation Suite. Print or save as PDF and attach it to your practical record.</div>
+      <div class="repgrid">
+        <div class="repbox"><div class="rv" id="repCases">0/3</div><div class="rl">Patient cases</div></div>
+        <div class="repbox"><div class="rv" id="repIx">0</div><div class="rl">Interactions screened</div></div>
+        <div class="repbox"><div class="rv" id="repRenal">—</div><div class="rl">Renal challenge</div></div>
+        <div class="repbox"><div class="rv" id="repRx">—</div><div class="rl">Rx audit accuracy</div></div>
+        <div class="repbox"><div class="rv" id="repTotal">0</div><div class="rl">Total score</div></div>
+      </div>
+      <div class="copilot"><div class="ai"></div><div id="repAI">Complete the sections to unlock your AI performance summary.</div></div>
+      <button class="btn gold" onclick="window.print()">Print / Save PDF</button>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ================= state & scoring ================= */
+const S={casesDone:{},casePts:0,ixCount:0,chalPts:0,renal:null,renalPts:0,rx:null,rxPts:0};
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function total(){return S.casePts+S.chalPts+S.renalPts+S.rxPts;}
+function paint(){
+  const done=Object.keys(S.casesDone).length;
+  document.getElementById('scCases').textContent=done+'/3';
+  document.getElementById('scIx').textContent=S.ixCount;
+  document.getElementById('scRenal').textContent=S.renal===null?'—':(S.renal?'✔':'✘');
+  document.getElementById('scRx').textContent=S.rx===null?'—':S.rx+'%';
+  document.getElementById('scTotal').textContent=total();
+  document.getElementById('repCases').textContent=done+'/3';
+  document.getElementById('repIx').textContent=S.ixCount;
+  document.getElementById('repRenal').textContent=S.renal===null?'—':(S.renal?'Correct':'Review');
+  document.getElementById('repRx').textContent=S.rx===null?'—':S.rx+'%';
+  document.getElementById('repTotal').textContent=total();
+  const ai=document.getElementById('repAI');
+  if(done===3&&S.rx!==null&&S.renal!==null){
+    const t=total();
+    ai.innerHTML=t>=80?'<b>Excellent clinical judgement.</b> You consistently caught renal, interaction and allergy risks — the exact checks an AI CDSS automates. You are ready to supervise one.'
+      :t>=50?'<b>Good foundation.</b> You caught most safety issues. Revisit the feedback on the ones you missed — especially interaction mechanisms.'
+      :'<b>Keep practising.</b> Re-run the cases and read each explanation; focus on renal cut-offs and MAJOR interactions first.';
+  }
+}
+/* parent portal calls update(false) on theme switch — nothing canvas-based to redraw */
+window.update=function(){};
+
+/* ================= tabs ================= */
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  document.querySelectorAll('section.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.p));
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+
+/* ================= PATIENT CASES ================= */
+const CASES=[
+ {id:'ckd',name:'Mrs. Lakshmi Menon',tag:'CKD · new UTI',age:'72 y · F · 58 kg',
+  dx:'T2DM · HTN · CKD stage 3B · new lower UTI',
+  meds:['Metformin 1 g BD','Telmisartan 40 mg OD','Glimepiride 2 mg OD','Aspirin 75 mg OD'],
+  labs:'HbA1c 8.2% · K⁺ 4.9 · SCr 1.8 · eGFR 32 mL/min',vitals:'BP 148/86 · HR 78 · Temp 38.1 °C',
+  ai:'CDSS alert: eGFR 32 mL/min — two renal-risk medicines detected on this chart, and the new prescription needs renal screening.',
+  steps:[
+   {q:'The GP prescribes nitrofurantoin 100 mg BD for her UTI. Your action?',opts:[
+     {t:'Dispense as written',ok:0,fb:'Nitrofurantoin needs adequate renal filtration to concentrate in urine — below eGFR ~45 it is ineffective AND accumulates (neuropathy, pulmonary risk).'},
+     {t:'Withhold & recommend a renally appropriate alternative (e.g. cefalexin, per culture)',ok:1,fb:'Correct. At eGFR 32 nitrofurantoin is contraindicated — suggest an agent that stays effective in renal impairment.'},
+     {t:'Halve the dose and dispense',ok:0,fb:'Dose reduction cannot fix the efficacy problem — the drug never reaches urinary concentration at this eGFR.'}]},
+   {q:'What should the AI CDSS flag about her metformin at eGFR 32?',opts:[
+     {t:'Continue full dose — no change',ok:0,fb:'At eGFR 30–45, metformin must be dose-reduced (max ~1 g/day) with 3-monthly renal monitoring.'},
+     {t:'Reduce to max 1 g/day and monitor renal function',ok:1,fb:'Correct. Halve the maximum dose in CKD 3B; stop completely if eGFR falls below 30.'},
+     {t:'Stop metformin immediately',ok:0,fb:'Not yet — full stop is for eGFR <30. Right now the evidence-based move is dose reduction + monitoring.'}]},
+   {q:'Her glimepiride worries you most because…',opts:[
+     {t:'It causes weight loss in the elderly',ok:0,fb:'Sulfonylureas cause weight GAIN — the real danger here is different.'},
+     {t:'Active metabolites accumulate in renal impairment → prolonged hypoglycaemia',ok:1,fb:'Correct. In CKD, sulfonylurea metabolites accumulate; elderly + eGFR 32 = high risk of severe, prolonged hypos. Suggest dose review / safer agent.'},
+     {t:'It interacts with telmisartan',ok:0,fb:'No clinically significant interaction — the renal accumulation of active metabolites is the key risk.'}]}
+  ]},
+ {id:'warf',name:'Mr. Thomas Chacko',tag:'Warfarin · antibiotic',age:'75 y · M · 70 kg',
+  dx:'AF on warfarin (target INR 2–3) · COPD · presents with acute bronchitis',
+  meds:['Warfarin 4 mg OD (INR last week: 2.4)','Tiotropium inhaler','Salbutamol PRN'],
+  labs:'INR 2.4 (7 days ago) · LFT normal',vitals:'BP 132/80 · HR 88 irregular · SpO₂ 94%',
+  ai:'CDSS alert: narrow-therapeutic-index anticoagulant on board. Any new medicine must be screened against warfarin first.',
+  steps:[
+   {q:'The prescriber wants ciprofloxacin 500 mg BD ×7 days. The AI flags it MAJOR. Why?',opts:[
+     {t:'Ciprofloxacin inhibits warfarin metabolism (CYP1A2/3A4) → INR rises → bleeding risk',ok:1,fb:'Correct. Fluoroquinolones potentiate warfarin — INR can climb within days; GI bleeds and haematuria are classic presentations.'},
+     {t:'Ciprofloxacin binds warfarin in the gut',ok:0,fb:'That chelation story belongs to ciprofloxacin + antacids/calcium. With warfarin the issue is CYP inhibition.'},
+     {t:'It causes warfarin resistance',ok:0,fb:'The opposite — it potentiates warfarin and raises the INR.'}]},
+   {q:'The prescriber insists on treating empirically today. Best pharmacist recommendation?',opts:[
+     {t:'Dispense ciprofloxacin, tell patient to eat more leafy greens',ok:0,fb:'Never “food-balance” a drug interaction — vitamin K self-dosing makes INR chaotic.'},
+     {t:'Suggest an alternative with lower interaction risk AND arrange INR check in 3–5 days if any antibiotic starts',ok:1,fb:'Correct. Choose the safer agent where clinically appropriate, and always re-check INR within 3–5 days of starting any antibiotic in a warfarin patient.'},
+     {t:'Halve the warfarin dose preemptively',ok:0,fb:'Unmonitored dose changes are dangerous — adjust only on INR results.'}]}
+  ]},
+ {id:'paeds',name:'Baby Anaya',tag:'Paediatric dosing',age:'18 mo · F · 11 kg',
+  dx:'Acute otitis media · febrile · no allergies',
+  meds:['(new Rx) Amoxicillin suspension','Paracetamol drops PRN'],
+  labs:'Weight 11 kg · No renal concerns',vitals:'Temp 38.9 °C · HR 138 · alert',
+  ai:'CDSS alert: paediatric patient — every dose must be verified per kilogram. Calculators, not habits.',
+  steps:[
+   {q:'Standard-dose amoxicillin for AOM is 80–90 mg/kg/day divided BD. What is the correct single dose for 11 kg (using 90 mg/kg/day)?',opts:[
+     {t:'≈ 250 mg BD',ok:0,fb:'That is under-dosing: 90 × 11 = 990 mg/day → ≈495 mg per dose BD.'},
+     {t:'≈ 495 mg BD',ok:1,fb:'Correct. 90 mg/kg/day × 11 kg = 990 mg/day ÷ 2 = 495 mg per dose — dispense as 5 mL of 400 mg/5 mL ≈ 400–500 mg with proper syringe markings.'},
+     {t:'≈ 990 mg BD',ok:0,fb:'That doubles the daily dose — 990 mg is the whole DAY, not one dose.'}]},
+   {q:'Mum asks about paracetamol drops for fever. Safe advice?',opts:[
+     {t:'15 mg/kg per dose, max 4 doses/day — ≈165 mg per dose for 11 kg',ok:1,fb:'Correct. 15 mg/kg = 165 mg per dose, minimum 4–6 h apart, never >60 mg/kg/day. Always show the parent the syringe measurement.'},
+     {t:'One full dropper whenever she feels hot',ok:0,fb:'“One dropper” is how paediatric overdoses happen — always mg/kg with a marked syringe.'},
+     {t:'Alternate paracetamol and ibuprofen every 2 hours',ok:0,fb:'Routine rapid alternation is not recommended and multiplies dosing-error risk.'}]}
+  ]}
+];
+const caseList=document.getElementById('caseList'),caseRun=document.getElementById('caseRun'),
+      casePicker=document.getElementById('casePicker'),caseChart=document.getElementById('caseChart'),
+      caseQ=document.getElementById('caseQ'),caseAI=document.getElementById('caseAI');
+function drawCases(){
+  caseList.innerHTML='';
+  CASES.forEach(c=>{
+    const b=document.createElement('button');b.className='casecard';
+    b.innerHTML='<div class="cn">'+esc(c.name)+'</div><div class="cd">'+esc(c.age)+' — '+esc(c.tag)+'</div>'+
+      '<span class="st'+(S.casesDone[c.id]?' done':'')+'">'+(S.casesDone[c.id]?'✔ completed':'▶ start case')+'</span>';
+    b.onclick=()=>openCase(c);caseList.appendChild(b);
+  });
+}
+function openCase(c){
+  casePicker.style.display='none';caseRun.style.display='block';
+  caseChart.innerHTML='<h2 style="margin:12px 0 2px">'+esc(c.name)+' <span class="ptag">'+esc(c.age)+'</span></h2>'+
+   '<div class="chart">'+
+   '<div class="cbox"><div class="lbl">Diagnosis</div>'+esc(c.dx)+'</div>'+
+   '<div class="cbox"><div class="lbl">Vitals</div>'+esc(c.vitals)+'</div>'+
+   '<div class="cbox"><div class="lbl">Current medicines</div><ul>'+c.meds.map(m=>'<li>• '+esc(m)+'</li>').join('')+'</ul></div>'+
+   '<div class="cbox"><div class="lbl">Labs</div>'+esc(c.labs)+'</div></div>';
+  caseAI.innerHTML='<b>AI co-pilot:</b> '+esc(c.ai);
+  let i=0,pts=0;
+  function step(){
+    if(i>=c.steps.length){
+      if(!S.casesDone[c.id]){S.casesDone[c.id]=true;S.casePts+=pts;}
+      caseQ.innerHTML='<div class="casedone">✔ Case complete — '+pts+'/'+(c.steps.length*10)+' points'+(pts===c.steps.length*10?' · flawless!':'')+'</div>'+
+        '<button class="nextbtn" id="caseFin">Back to case list</button>';
+      document.getElementById('caseFin').onclick=()=>{caseRun.style.display='none';casePicker.style.display='block';drawCases();};
+      paint();return;
+    }
+    const st=c.steps[i];
+    caseQ.innerHTML='<div class="q">Q'+(i+1)+'. '+esc(st.q)+'</div>'+
+      st.opts.map((o,k)=>'<button class="opt" data-k="'+k+'">'+esc(o.t)+'</button>').join('')+
+      '<div class="fb" id="fbx"></div>';
+    caseQ.querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+      const o=st.opts[+btn.dataset.k];
+      caseQ.querySelectorAll('.opt').forEach((b2,k2)=>{b2.disabled=true;if(st.opts[k2].ok)b2.classList.add('right');});
+      if(!o.ok)btn.classList.add('wrong');else pts+=10;
+      const fb=document.getElementById('fbx');
+      fb.className='fb show '+(o.ok?'good':'bad');
+      fb.innerHTML='<b>'+(o.ok?'✔ Correct':'✘ Not quite')+'</b>'+esc(o.fb);
+      const nx=document.createElement('button');nx.className='nextbtn';nx.textContent=(i+1<c.steps.length)?'Next question →':'Finish case ✓';
+      nx.onclick=()=>{i++;step();};caseQ.appendChild(nx);
+    });
+  }
+  step();
+}
+document.getElementById('caseBack').onclick=()=>{caseRun.style.display='none';casePicker.style.display='block';drawCases();};
+drawCases();
+
+/* ================= INTERACTION LAB ================= */
+const DRUGS=['Warfarin','Ciprofloxacin','Ibuprofen','Metformin','Clarithromycin','Atorvastatin','Sildenafil','Isosorbide dinitrate','Tramadol','Sertraline','Digoxin','Amiodarone','Clopidogrel','Omeprazole','Spironolactone','Ramipril','Levothyroxine','Calcium carbonate','Methotrexate','Furosemide'];
+const IX=[
+ {a:'Warfarin',b:'Ciprofloxacin',sev:'major',mech:'CYP1A2/3A4 inhibition ↓ warfarin clearance → INR climbs within days.',mgmt:'Prefer a non-interacting antibiotic; if unavoidable, re-check INR in 3–5 days and educate on bleeding signs.'},
+ {a:'Warfarin',b:'Ibuprofen',sev:'major',mech:'Dual mechanism: platelet inhibition + GI mucosal injury + protein-binding displacement → serious GI bleed risk.',mgmt:'Avoid NSAIDs on anticoagulation. Use paracetamol for analgesia; add PPI if an NSAID is truly unavoidable.'},
+ {a:'Atorvastatin',b:'Clarithromycin',sev:'major',mech:'Strong CYP3A4 inhibition → statin levels rise sharply → myopathy / rhabdomyolysis.',mgmt:'Pause the statin during the macrolide course, or switch to azithromycin (weak 3A4 effect).'},
+ {a:'Sildenafil',b:'Isosorbide dinitrate',sev:'major',mech:'Both drive the NO–cGMP pathway → profound, refractory hypotension.',mgmt:'Absolute contraindication. Separate by ≥24 h (sildenafil) / ≥48 h (tadalafil) — in practice, do not combine.'},
+ {a:'Tramadol',b:'Sertraline',sev:'major',mech:'Additive serotonergic activity → serotonin syndrome (agitation, clonus, hyperthermia); tramadol also lowers seizure threshold.',mgmt:'Prefer a non-serotonergic analgesic. If combined short-term, counsel on early serotonin-syndrome symptoms.'},
+ {a:'Digoxin',b:'Amiodarone',sev:'major',mech:'Amiodarone inhibits P-glycoprotein → digoxin accumulates → nausea, arrhythmia, visual haloes.',mgmt:'Empirically halve the digoxin dose when starting amiodarone and take levels at 1–2 weeks.'},
+ {a:'Methotrexate',b:'Ibuprofen',sev:'major',mech:'NSAIDs reduce renal clearance of methotrexate → marrow suppression and mucositis.',mgmt:'Avoid routine NSAIDs on weekly MTX, especially in renal impairment / high-dose regimens.'},
+ {a:'Clopidogrel',b:'Omeprazole',sev:'moderate',mech:'CYP2C19 inhibition blocks conversion of clopidogrel to its active metabolite → reduced antiplatelet effect.',mgmt:'Switch to pantoprazole (weak 2C19 inhibitor) — same class, minimal interaction.'},
+ {a:'Spironolactone',b:'Ramipril',sev:'moderate',mech:'Dual potassium retention (aldosterone antagonist + ACE inhibitor) → hyperkalaemia, worst with CKD.',mgmt:'Combination is often intentional in heart failure — monitor K⁺ and renal function within 1–2 weeks of any dose change.'},
+ {a:'Levothyroxine',b:'Calcium carbonate',sev:'moderate',mech:'Calcium chelates levothyroxine in the gut → reduced absorption → creeping TSH.',mgmt:'Separate administration by ≥4 hours (levothyroxine fasting, calcium later in the day).'},
+ {a:'Digoxin',b:'Furosemide',sev:'moderate',mech:'Diuretic-induced hypokalaemia sensitises the myocardium to digoxin toxicity.',mgmt:'Monitor K⁺/Mg²⁺; replace electrolytes; consider K⁺-sparing strategy.'},
+ {a:'Metformin',b:'Furosemide',sev:'minor',mech:'Loop diuretics can nudge renal function/volume status, indirectly affecting metformin clearance.',mgmt:'No routine change — keep an eye on renal function in the frail elderly.'}
+];
+function findIx(a,b){return IX.find(x=>(x.a===a&&x.b===b)||(x.a===b&&x.b===a));}
+const selA=document.getElementById('ixA'),selB=document.getElementById('ixB');
+DRUGS.forEach(d=>{selA.add(new Option(d,d));selB.add(new Option(d,d));});
+selB.selectedIndex=1;
+document.getElementById('ixGo').onclick=()=>{
+  const a=selA.value,b=selB.value,out=document.getElementById('ixOut');
+  if(a===b){out.className='ix show';out.innerHTML='<span class="sev none">Same drug</span><div class="mech">Pick two different medicines to screen.</div>';return;}
+  const hit=findIx(a,b);S.ixCount++;paint();
+  out.className='ix show';
+  out.innerHTML=hit
+    ?'<span class="sev '+hit.sev+'">'+hit.sev+' interaction</span><div class="mech"><b>'+esc(a)+' + '+esc(b)+':</b> '+esc(hit.mech)+'</div><div class="mgmt"><b>Pharmacist management:</b> '+esc(hit.mgmt)+'</div>'
+    :'<span class="sev none">No major interaction on file</span><div class="mech"><b>'+esc(a)+' + '+esc(b)+':</b> nothing significant in this teaching database — in practice, always confirm in a full reference (this sim covers 12 classic pairs).</div>';
+};
+/* challenge */
+let chalSet=[],chalPair=null,chalSel=[];
+function newChal(){
+  chalPair=IX[Math.floor(Math.random()*IX.length)];
+  const others=DRUGS.filter(d=>d!==chalPair.a&&d!==chalPair.b&&!findIx(d,chalPair.a)&&!findIx(d,chalPair.b));
+  const extra=[];while(extra.length<3){const d=others[Math.floor(Math.random()*others.length)];if(!extra.includes(d))extra.push(d);}
+  chalSet=[chalPair.a,chalPair.b,...extra].sort(()=>Math.random()-.5);
+  chalSel=[];
+  const box=document.getElementById('chalChips');box.innerHTML='';
+  chalSet.forEach(d=>{const c=document.createElement('button');c.className='dchip';c.textContent=d;
+    c.onclick=()=>{if(c.classList.contains('hit')||c.classList.contains('miss'))return;
+      if(chalSel.includes(d)){chalSel=chalSel.filter(x=>x!==d);c.classList.remove('sel');}
+      else if(chalSel.length<2){chalSel.push(d);c.classList.add('sel');}};
+    box.appendChild(c);});
+  document.getElementById('chalOut').className='ix';
+}
+document.getElementById('chalNew').onclick=newChal;
+document.getElementById('chalCheck').onclick=()=>{
+  const out=document.getElementById('chalOut');
+  if(chalSel.length!==2){out.className='ix show';out.innerHTML='<span class="sev minor">Pick two</span><div class="mech">Select exactly two drugs first.</div>';return;}
+  const ok=chalSel.includes(chalPair.a)&&chalSel.includes(chalPair.b);
+  document.querySelectorAll('#chalChips .dchip').forEach(c=>{
+    if(c.textContent===chalPair.a||c.textContent===chalPair.b)c.classList.add('hit');
+    else if(chalSel.includes(c.textContent))c.classList.add('miss');
+  });
+  if(ok){S.chalPts+=15;}
+  out.className='ix show';
+  out.innerHTML=(ok?'<span class="sev none">✔ Correct — +15 pts</span>':'<span class="sev major">✘ The risky pair was '+esc(chalPair.a)+' + '+esc(chalPair.b)+'</span>')+
+    '<div class="mech">'+esc(chalPair.mech)+'</div><div class="mgmt"><b>Management:</b> '+esc(chalPair.mgmt)+'</div>';
+  paint();
+};
+newChal();
+
+/* ================= RENAL ================= */
+function crcl(){
+  const age=+document.getElementById('rnAge').value||0,wt=+document.getElementById('rnWt').value||0,
+        scr=+document.getElementById('rnScr').value||0,sex=document.getElementById('rnSex').value;
+  if(!age||!wt||!scr)return 0;
+  let v=((140-age)*wt)/(72*scr);if(sex==='F')v*=0.85;return Math.round(v);
+}
+const DOSES=[
+ {d:'Metformin',r:v=>v>=45?'Full dose (max 2 g/day)':v>=30?'Max 1 g/day — monitor 3-monthly':'✘ Contraindicated — stop'},
+ {d:'Nitrofurantoin',r:v=>v>=45?'Usual dose':'✘ Avoid — ineffective & toxic'},
+ {d:'Enoxaparin (treatment)',r:v=>v>=30?'1 mg/kg BD':'Reduce to 1 mg/kg OD + anti-Xa monitoring'},
+ {d:'Apixaban (AF)',r:v=>v>=25?'5 mg BD (2.5 mg BD if 2 of: ≥80 y, ≤60 kg, SCr ≥1.5)':'Specialist review'},
+ {d:'Gabapentin',r:v=>v>=60?'Up to 3.6 g/day':v>=30?'Max ~1.4 g/day':'Max 600–700 mg/day'},
+ {d:'Aciclovir (zoster)',r:v=>v>=25?'800 mg 5×/day':v>=10?'800 mg TDS':'800 mg BD'}
+];
+function paintCrcl(){
+  const v=crcl();
+  document.getElementById('crclVal').textContent=v||'—';
+  const cat=document.getElementById('crclCat');
+  cat.innerHTML=v>=90?'<span class="sev none">Normal function (≥90)</span>':v>=60?'<span class="sev minor">Mild impairment (60–89)</span>':v>=30?'<span class="sev moderate">Moderate impairment (30–59)</span>':v>0?'<span class="sev major">Severe impairment (<30)</span>':'';
+  document.getElementById('doseTable').innerHTML=DOSES.map(x=>'<div class="doseline"><b>'+x.d+'</b><span>'+esc(x.r(v))+'</span></div>').join('');
+}
+['rnAge','rnWt','rnScr','rnSex'].forEach(id=>document.getElementById(id).addEventListener('input',paintCrcl));
+paintCrcl();
+/* renal challenge */
+const RCASES=[
+ {txt:'Mr. Pillai, 81 y male, 55 kg, SCr 2.1 mg/dL, prescribed treatment-dose enoxaparin for a DVT. Correct regimen?',
+  calc:'CrCl ≈ ((140−81)×55)/(72×2.1) ≈ 21 mL/min',
+  opts:['1 mg/kg BD (standard)','1 mg/kg OD with anti-Xa monitoring','Double dose loading then BD'],ans:1,
+  why:'CrCl ≈21 mL/min (<30) → enoxaparin treatment dose reduces to 1 mg/kg ONCE daily with anti-Xa monitoring.'},
+ {txt:'Mrs. D\'Souza, 78 y female, 82 y next month, 58 kg, SCr 1.6 mg/dL, on apixaban for AF. Which dose does she meet criteria for?',
+  calc:'She meets 2 of 3 criteria: age ≥80 (turning 82) is borderline — use ≥80 y, ≤60 kg, SCr ≥1.5.',
+  opts:['5 mg BD','2.5 mg BD','10 mg OD'],ans:1,
+  why:'She satisfies ≥2 dose-reduction criteria (weight ≤60 kg AND SCr ≥1.5) → apixaban 2.5 mg BD.'},
+ {txt:'Mr. Khan, 65 y male, 90 kg, SCr 1.1 mg/dL, needs metformin titration. What is the ceiling?',
+  calc:'CrCl ≈ ((140−65)×90)/(72×1.1) ≈ 85 mL/min',
+  opts:['Stop metformin','Max 1 g/day','Full dose — up to 2 g/day'],ans:2,
+  why:'CrCl ≈85 mL/min → normal metformin dosing applies (max 2 g/day) with routine annual renal checks.'}
+];
+let rc=null;
+function newRenal(){
+  rc=RCASES[Math.floor(Math.random()*RCASES.length)];
+  document.getElementById('renalCaseTxt').textContent=rc.txt;
+  const box=document.getElementById('renalOpts');box.innerHTML='';
+  rc.opts.forEach((o,k)=>{const c=document.createElement('button');c.className='dchip';c.textContent=o;
+    c.onclick=()=>{
+      const ok=k===rc.ans;
+      box.querySelectorAll('.dchip').forEach((x,j)=>{x.classList.add(j===rc.ans?'hit':(x===c?'miss':'sel'));x.style.pointerEvents='none';x.classList.remove(j!==rc.ans&&x!==c?'sel':'_');});
+      if(S.renal===null&&ok)S.renalPts+=15;
+      S.renal=ok;
+      const out=document.getElementById('renalOut');out.className='ix show';
+      out.innerHTML=(ok?'<span class="sev none">✔ Correct — +15 pts</span>':'<span class="sev major">✘ Review</span>')+
+        '<div class="mech">'+esc(rc.calc)+'</div><div class="mgmt">'+esc(rc.why)+'</div>';
+      paint();
+    };box.appendChild(c);});
+  document.getElementById('renalOut').className='ix';
+}
+document.getElementById('renalNew').onclick=newRenal;
+newRenal();
+
+/* ================= RX AUDIT ================= */
+const RXL=[
+ {t:'Amoxicillin–clavulanate 625 mg TDS × 5 days — dental infection',bad:1,why:'PENICILLIN ALLERGY documented in the header — amoxicillin is a penicillin. Needs clindamycin or a macrolide instead.'},
+ {t:'Warfarin 5 mg OD — continue, INR due next week',bad:0,why:'Legitimate — chronic AF anticoagulation with INR follow-up booked.'},
+ {t:'Ibuprofen 400 mg TDS × 10 days — knee pain',bad:1,why:'NSAID + warfarin = MAJOR bleed risk (platelet inhibition + GI injury). Recommend paracetamol.'},
+ {t:'Paracetamol 1 g QID PRN — pain/fever',bad:0,why:'Safe at ≤4 g/day in a 72 kg adult — appropriate NSAID alternative.'},
+ {t:'Dolo-650 two tablets TDS — fever',bad:1,why:'Duplicate paracetamol! Dolo-650 IS paracetamol — combined with line 4 this exceeds 4 g/day → hepatotoxicity.'},
+ {t:'Glimepiride 20 mg OD — diabetes',bad:1,why:'Dose typo — glimepiride maxes at 8 mg/day (usual 1–4 mg). 20 mg would cause profound hypoglycaemia.'},
+ {t:'Metformin 500 mg BD — diabetes',bad:0,why:'Fine — eGFR 55 permits metformin (≤2 g/day).'},
+ {t:'Pantoprazole 40 mg OD — gastroprotection',bad:0,why:'Reasonable — and unlike omeprazole it doesn\'t blunt clopidogrel (not that he takes any).'}
+];
+const rxBox=document.getElementById('rxLines');
+function drawRx(){
+  rxBox.innerHTML='';
+  RXL.forEach((l,i)=>{
+    const d=document.createElement('div');d.className='rxline';d.dataset.i=i;
+    d.innerHTML='<span class="flagic"></span><span>'+(i+1)+'. '+esc(l.t)+'</span>';
+    d.onclick=()=>{if(S.rx===null)d.classList.toggle('flag');};
+    rxBox.appendChild(d);
+    const w=document.createElement('div');w.className='rxwhy';w.id='rxwhy'+i;w.textContent=l.why;rxBox.appendChild(w);
+  });
+}
+drawRx();
+document.getElementById('rxReset').onclick=()=>{S.rx=null;S.rxPts=0;drawRx();document.getElementById('rxOut').className='ix';paint();};
+document.getElementById('rxCheck').onclick=()=>{
+  if(S.rx!==null)return;
+  let right=0,wrongflags=0;const badTotal=RXL.filter(x=>x.bad).length;
+  document.querySelectorAll('.rxline').forEach(d=>{
+    const l=RXL[+d.dataset.i],flagged=d.classList.contains('flag');
+    d.style.pointerEvents='none';
+    if(l.bad&&flagged){d.classList.remove('flag');d.classList.add('correct');right++;}
+    else if(l.bad&&!flagged){d.classList.add('missed');}
+    else if(!l.bad&&flagged){d.classList.remove('flag');d.classList.add('wrongflag');wrongflags++;}
+    document.getElementById('rxwhy'+d.dataset.i).classList.add('show');
+  });
+  const acc=Math.max(0,Math.round(((right-wrongflags*0.5)/badTotal)*100));
+  S.rx=acc;S.rxPts=Math.round(acc*0.4);
+  const out=document.getElementById('rxOut');out.className='ix show';
+  out.innerHTML='<span class="sev '+(acc>=75?'none':acc>=50?'moderate':'major')+'">Audit accuracy '+acc+'%</span>'+
+    '<div class="mech">You caught <b>'+right+'/'+badTotal+'</b> real problems'+(wrongflags?' and flagged '+wrongflags+' safe line(s) unnecessarily (–½ each)':'')+'.</div>'+
+    '<div class="mgmt"><b>The four planted errors:</b> penicillin allergy vs co-amoxiclav · ibuprofen on warfarin · duplicate paracetamol (Dolo-650) · glimepiride 20 mg overdose.</div>';
+  paint();
+};
+
+paint();
+</script>
+</body>
+</html>

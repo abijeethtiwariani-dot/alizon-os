@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>try{document.documentElement.classList.toggle('dark',(localStorage.getItem('pracTheme')||'dark')!=='light');}catch(e){document.documentElement.classList.add('dark');}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 1 · AI in Drug Discovery — ALIZON OS</title>
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+Pro:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4EFEA; --surface:#FFFFFF; --surface-2:#FBF7F3;
+    --ink:#241A1C; --ink-soft:#6A5F61; --ink-faint:#9A8F8F;
+    --brand:#B1040E; --brand-2:#7A0309; --brand-tint:#FBE9EA; --brand-line:#F0D3D4; --brand-bright:#D41820;
+    --gold:#A16207; --gold-soft:#F6ECD9; --gold-line:#EAD9B0; --gold-bright:#D9A441;
+    --line:#E7E0DA; --line-strong:#D8CFC8;
+    --good:#2E8B6A; --good-soft:#E3F3EA;
+    --warn:#C6551F; --warn-soft:#FBEBE0;
+    --bad:#AF2626;
+    --r:14px; --shadow:0 1px 2px rgba(36,26,28,.05), 0 8px 30px -18px rgba(36,26,28,.25);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0}
+  .mono{font-family:'JetBrains Mono',monospace}
+  a{color:var(--brand)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+
+  /* ---------- top identity bar ---------- */
+  .topbar{background:linear-gradient(120deg,var(--brand-2),var(--brand));color:#fff}
+  .topbar .wrap{display:flex;align-items:center;gap:15px;padding:14px 22px}
+  .orb{width:32px;height:32px;border-radius:50%;flex:none;
+    background:conic-gradient(from 210deg,var(--brand-bright),var(--gold-bright),var(--brand-2),var(--brand-bright));
+    box-shadow:0 0 16px rgba(217,164,65,.5)}
+  .brandtext{display:flex;flex-direction:column;line-height:1.15}
+  .brandtext .name{font-family:'Source Serif Pro',serif;font-weight:700;font-size:19px;letter-spacing:.01em}
+  .brandtext .sub{font-size:12px;opacity:.85;letter-spacing:.13em;text-transform:uppercase}
+  .topbar a.site{color:#fff;text-decoration:none;font-size:13px;
+    border:1px solid rgba(255,255,255,.4);padding:7px 13px;border-radius:999px;white-space:nowrap;transition:.2s}
+  .topbar a.site:hover{background:rgba(255,255,255,.14)}
+  .topbar a.back{margin-left:auto}
+
+  /* ---------- experiment header ---------- */
+  .exphead{background:var(--surface);border-bottom:1px solid var(--line)}
+  .exphead .wrap{padding:22px 22px 0}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--gold);
+    font-size:12px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;margin-bottom:6px}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+  .exphead h1{font-size:clamp(24px,4vw,36px);line-height:1.08;max-width:20ch}
+  .exphead .lede{color:var(--ink-soft);margin:10px 0 0;max-width:64ch;font-size:15px}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
+  .tag{font-size:12px;padding:5px 11px;border-radius:999px;background:var(--brand-tint);
+    color:var(--brand-2);font-weight:500;border:1px solid var(--brand-line)}
+  /* sticky nav */
+  nav.pills{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);margin-top:18px}
+  nav.pills .wrap{display:flex;gap:6px;padding:9px 22px;overflow-x:auto}
+  nav.pills a{white-space:nowrap;text-decoration:none;color:var(--ink-soft);font-size:13.5px;font-weight:500;
+    padding:7px 14px;border-radius:999px;transition:.15s}
+  nav.pills a:hover{background:var(--paper);color:var(--ink)}
+  nav.pills a .n{font-family:'JetBrains Mono';font-size:11px;color:var(--ink-faint);margin-right:6px}
+
+  section{padding:34px 0}
+  .sec-title{display:flex;align-items:baseline;gap:12px;margin-bottom:18px}
+  .sec-title .idx{font-family:'JetBrains Mono';font-size:13px;color:var(--brand);font-weight:700;
+    border:1px solid var(--brand-line);background:var(--brand-tint);border-radius:8px;padding:3px 8px}
+  .sec-title h2{font-size:23px}
+
+  /* ---------- accordion manual ---------- */
+  .acc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+  .acc details{border-bottom:1px solid var(--line)}
+  .acc details:last-child{border-bottom:none}
+  .acc summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:12px;
+    font-family:'Source Serif Pro';font-weight:600;font-size:16.5px;transition:background .15s}
+  .acc summary::-webkit-details-marker{display:none}
+  .acc summary:hover{background:var(--surface-2)}
+  .acc summary .chev{margin-left:auto;color:var(--ink-faint);transition:transform .2s;flex:none}
+  .acc details[open] summary .chev{transform:rotate(90deg)}
+  .acc summary .badge{font-family:'JetBrains Mono';font-size:11px;color:var(--gold);
+    background:var(--gold-soft);border-radius:6px;padding:2px 7px;font-weight:700}
+  .acc .body{padding:2px 20px 20px 20px;color:var(--ink);font-size:14.5px}
+  .acc .body p{margin:0 0 11px}
+  .acc .body ol,.acc .body ul{margin:6px 0 12px;padding-left:20px}
+  .acc .body li{margin:6px 0}
+  .acc .body strong{color:var(--brand-2)}
+  .callout{background:var(--gold-soft);border:1px solid var(--gold-line);border-left:3px solid var(--gold);
+    border-radius:10px;padding:12px 14px;font-size:13.5px;color:#5c4310;margin:8px 0}
+  .eqn{background:var(--brand-2);color:#fff;border-radius:10px;padding:13px 15px;font-family:'JetBrains Mono';
+    font-size:13px;overflow-x:auto;margin:10px 0}
+  .eqn .c{color:#f0c9c0}
+
+  /* ---------- workbench layout ---------- */
+  .bench{display:grid;grid-template-columns:1fr 1.15fr;gap:18px;align-items:start}
+  @media(max-width:920px){.bench{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+  .card .hd{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .card .hd h3{font-size:16px}
+  .card .hd .k{font-family:'JetBrains Mono';font-size:11px;color:var(--ink-faint);margin-left:auto}
+  .card .bd{padding:16px 18px}
+
+  .goal{display:flex;gap:12px;align-items:flex-start;background:var(--brand-tint);border:1px solid var(--brand-line);
+    border-radius:12px;padding:13px 15px;margin-bottom:16px}
+  .goal .ic{flex:none;width:30px;height:30px;border-radius:8px;background:var(--brand);color:#fff;
+    display:grid;place-items:center;font-family:'Source Serif Pro';font-weight:700}
+  .goal b{color:var(--brand-2)}
+  .goal small{color:var(--ink-soft)}
+
+  /* preset chips */
+  .presets{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+  .chip{cursor:pointer;border:1px solid var(--line-strong);background:var(--surface-2);color:var(--ink);
+    font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:999px;transition:.14s;font-family:Inter}
+  .chip:hover{border-color:var(--brand);color:var(--brand)}
+  .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .chip.exc{border-style:dashed}
+  .hint{font-size:12px;color:var(--ink-faint);margin:8px 0 16px}
+
+  /* sliders */
+  .ctrl{margin:14px 0}
+  .ctrl .row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:5px}
+  .ctrl .lab{font-size:13.5px;font-weight:600}
+  .ctrl .lab small{font-weight:400;color:var(--ink-faint);font-size:11.5px;margin-left:6px}
+  .ctrl .val{font-family:'JetBrains Mono';font-size:14px;font-weight:700}
+  .ctrl .limit{font-family:'JetBrains Mono';font-size:11px;color:var(--ink-faint);margin-left:7px;font-weight:400}
+  input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:6px;background:var(--line);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--brand);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+  input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--brand);
+    cursor:pointer;border:3px solid #fff}
+  input[type=range].over::-webkit-slider-thumb{background:var(--warn)}
+  input[type=range].over::-moz-range-thumb{background:var(--warn)}
+  .btnrow{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+  button.btn{cursor:pointer;font-family:Inter;font-weight:600;font-size:13.5px;border-radius:10px;padding:10px 16px;
+    border:1px solid var(--brand);background:var(--brand);color:#fff;transition:.15s}
+  button.btn:hover{background:var(--brand-2)}
+  button.btn.ghost{background:transparent;color:var(--brand)}
+  button.btn.ghost:hover{background:var(--brand-tint)}
+  button.btn.teal{background:var(--gold);border-color:var(--gold);color:#fff}
+  button.btn.teal:hover{filter:brightness(1.08)}
+
+  /* molecule synth */
+  .synth{position:relative;background:radial-gradient(120% 120% at 50% 0%,#221016 0%,#160a0e 60%,#0f070a 100%);
+    border-radius:12px;overflow:hidden;border:1px solid #3a1e22}
+  .synth canvas{display:block;width:100%;height:230px}
+  .synth .molname{position:absolute;left:14px;top:12px;color:#fff;font-family:'Source Serif Pro';font-weight:600;font-size:15px}
+  .synth .molsub{position:absolute;left:14px;top:34px;color:#e8bfbf;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.03em}
+  .synth .scan{position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,transparent,rgba(217,164,65,.20),transparent);
+    height:60px;opacity:0;}
+  .synth.scanning .scan{animation:scan 1s ease}
+  @keyframes scan{0%{opacity:1;transform:translateY(-60px)}100%{opacity:0;transform:translateY(230px)}}
+  .synth .legend{position:absolute;right:12px;bottom:10px;display:flex;gap:12px;font-size:10.5px;color:#d8c7c9;font-family:'JetBrains Mono'}
+  .synth .legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
+
+  /* gauges */
+  .gauges{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .gauge{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .gauge .lab{font-size:11.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em}
+  .gauge svg{display:block;margin:2px auto -6px}
+  .gauge .big{font-family:'JetBrains Mono';font-weight:700;font-size:26px}
+  .gauge .tier{font-size:11.5px;font-weight:600;margin-top:2px}
+
+  /* checklist */
+  .checks{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  @media(max-width:560px){.checks{grid-template-columns:1fr}}
+  .chk{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:8px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2)}
+  .chk .mk{flex:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700}
+  .chk.pass .mk{background:var(--good)} .chk.fail .mk{background:var(--warn)}
+  .chk .v{margin-left:auto;font-family:'JetBrains Mono';font-size:11.5px;color:var(--ink-soft)}
+  .chk.fail{background:var(--warn-soft);border-color:#eecdba}
+
+  .verdict{margin-top:14px;border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:12px;font-size:14px}
+  .verdict .ic{flex:none;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-family:'Source Serif Pro';font-weight:700;color:#fff}
+  .verdict.ok{background:var(--good-soft);border:1px solid #bfe6ce} .verdict.ok .ic{background:var(--good)}
+  .verdict.warn{background:var(--warn-soft);border:1px solid #eecdba} .verdict.warn .ic{background:var(--warn)}
+  .verdict b{display:block}
+  .verdict small{color:var(--ink-soft)}
+
+  .radarwrap{display:flex;justify-content:center;padding:6px 0 2px}
+
+  /* challenge mode */
+  .cchip{border-color:#e6c3ae;background:var(--warn-soft);color:var(--warn)}
+  .cchip:hover{border-color:var(--warn);color:var(--warn)}
+  .cchip.on{background:var(--warn);border-color:var(--warn);color:#fff}
+  .cstatus{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--surface-2)}
+  .cdiag{font-size:13.5px;margin-bottom:11px;line-height:1.5}
+  .cgoals{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  @media(max-width:560px){.cgoals{grid-template-columns:1fr}}
+  .chintline{font-size:12.5px;color:var(--ink-soft);margin-top:11px}
+  .csolved{margin-top:12px}
+  .cmethod{margin-top:10px;font-size:12.5px;border-top:1px dashed var(--line);padding-top:9px}
+  .cmethod summary{cursor:pointer;color:var(--gold);font-weight:600;list-style:none}
+  .cmethod summary::-webkit-details-marker{display:none}
+  .cmethod ol{margin:8px 0 2px;padding-left:20px}
+  .cmethod li{margin:4px 0;color:var(--ink)}
+
+  /* question paper */
+  .paper{margin-top:16px;border:1px solid var(--line-strong);border-radius:var(--r);background:#fff;
+    padding:22px 24px;box-shadow:var(--shadow)}
+  .paper .ph{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--brand);padding-bottom:12px;margin-bottom:14px}
+  .paper .ph .pt{font-family:'Source Serif Pro';font-weight:700;color:var(--brand);font-size:16px;line-height:1.2}
+  .paper .ph .pc{margin-left:auto;font-family:'JetBrains Mono';font-size:12px;color:var(--ink-soft);text-align:right}
+  .paper h4{font-family:'Source Serif Pro';font-size:14px;color:var(--brand-2);margin:16px 0 7px;border-bottom:1px solid var(--line);padding-bottom:4px}
+  .paper ol{margin:6px 0;padding-left:22px}
+  .paper ol li{margin:7px 0;font-size:13.5px;line-height:1.5}
+  .paper .task{background:var(--warn-soft);border:1px solid #eecdba;border-radius:9px;padding:9px 12px;margin:7px 0;font-size:13px}
+  .paper .task b{color:var(--warn)}
+  .paper .vals{font-family:'JetBrains Mono';font-size:12px;color:var(--ink-soft)}
+  .rpaper{border:none;box-shadow:none;padding:0;margin-top:4px}
+  .wordcount{font-size:12.5px;font-weight:600;margin-top:4px}
+  .wordcount.ok{color:var(--good)} .wordcount.no{color:var(--warn)}
+  .warnline{background:var(--warn-soft);border:1px solid #eecdba;border-radius:9px;padding:9px 12px;
+    font-size:13px;color:var(--warn);margin-top:10px;display:none}
+
+  /* observations */
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:13px;min-width:720px}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{background:var(--surface-2);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+  td.mono{font-family:'JetBrains Mono';font-size:12.5px}
+  tr:last-child td{border-bottom:none}
+  .pill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px}
+  .pill.g{background:var(--good-soft);color:var(--good)} .pill.w{background:var(--warn-soft);color:var(--warn)}
+  .empty{padding:26px;text-align:center;color:var(--ink-faint);font-size:13.5px}
+  .xbtn{cursor:pointer;border:none;background:none;color:var(--ink-faint);font-size:16px;line-height:1}
+  .xbtn:hover{color:var(--bad)}
+
+  /* report form + output */
+  .rform{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.rform{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field.full{grid-column:1/-1}
+  .field label{font-size:12.5px;font-weight:600;color:var(--ink-soft)}
+  .field input,.field textarea{font-family:Inter;font-size:14px;border:1px solid var(--line-strong);border-radius:10px;
+    padding:10px 12px;background:var(--surface);color:var(--ink);resize:vertical;width:100%}
+  .field textarea{min-height:90px}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-tint)}
+
+  /* the printable report */
+  #report{display:none;margin-top:22px}
+  .doc{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+    padding:34px 40px;max-width:820px;margin:0 auto;color:#211}
+  .doc .rhead{display:flex;align-items:center;gap:16px;border-bottom:2px solid var(--brand);padding-bottom:16px}
+  .doc .rhead .t .nm{font-family:'Source Serif Pro';font-weight:700;font-size:20px;color:var(--brand)}
+  .doc .rhead .t .sb{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+  .doc .rhead .t a{font-size:12px;color:var(--brand);text-decoration:none}
+  .doc .rmeta{display:flex;flex-wrap:wrap;gap:6px 26px;font-size:12.5px;color:#444;margin:14px 0 2px}
+  .doc .rmeta b{color:#211}
+  .doc h3.rt{font-family:'Source Serif Pro';font-size:15px;color:var(--brand-2);margin:20px 0 7px;
+    padding-bottom:5px;border-bottom:1px solid var(--line)}
+  .doc p.rp{font-size:13.5px;line-height:1.6;margin:0 0 8px;white-space:pre-wrap}
+  .doc table.rtab{font-size:12px;min-width:0}
+  .doc .sign{display:flex;justify-content:space-between;margin-top:34px;font-size:12.5px;color:#555}
+  .doc .sign .line{border-top:1px solid #999;padding-top:5px;width:180px;text-align:center}
+  .doc .foot{margin-top:22px;border-top:1px solid var(--line);padding-top:10px;font-size:11px;color:var(--ink-faint);text-align:center}
+
+  footer.pg{padding:26px 0 40px;color:var(--ink-faint);font-size:12.5px;text-align:center}
+  footer.pg b{color:var(--brand)}
+
+  @media print{
+    body{background:#fff}
+    .topbar,.exphead,nav.pills,#manual,#workbench,#observations,#paper,.rform,#wordCount,#wordWarn,.sec-title,footer.pg,.noprint{display:none !important}
+    section{padding:0}
+    #report{display:block !important}
+    .doc{border:none;box-shadow:none;border-radius:0;max-width:100%;padding:0}
+    .wrap{padding:0;max-width:100%}
+  }
+
+  /* ============================================================
+     THEME — dark is the default (html.dark). The portal's toggle
+     removes .dark to reveal the original light theme above.
+     ============================================================ */
+  .topbar,footer.pg{display:none !important} /* portal provides chrome in BOTH themes */
+
+  html.dark{
+    --paper:#0b0c16; --surface:rgba(255,255,255,.045); --surface-2:rgba(255,255,255,.03);
+    --ink:#f5f4f6; --ink-soft:#b9bccb; --ink-faint:#7f8397;
+    --brand:#D41820; --brand-2:#ff8a90; --brand-tint:rgba(212,24,32,.15); --brand-line:rgba(212,24,32,.32); --brand-bright:#ff5a63;
+    --gold:#D9A441; --gold-soft:rgba(217,164,65,.16); --gold-line:rgba(217,164,65,.4); --gold-bright:#e9bd6a;
+    --line:rgba(255,255,255,.1); --line-strong:rgba(255,255,255,.18);
+    --good:#3fbf90; --good-soft:rgba(46,139,106,.22);
+    --warn:#e0813f; --warn-soft:rgba(198,85,31,.22);
+    --bad:#ff6b6b;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 18px 44px -22px rgba(0,0,0,.75);
+  }
+  html.dark body{background:radial-gradient(130% 90% at 50% 0%,#161126 0%,#0b0c16 55%,#070810 100%);color:var(--ink)}
+  html.dark .exphead{background:transparent}
+  html.dark .exphead .wrap{padding-top:26px}
+  html.dark nav.pills{background:rgba(13,16,36,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  html.dark nav.pills a:hover{background:rgba(255,255,255,.06);color:var(--ink)}
+  html.dark .eqn{background:#2a0e12;border:1px solid rgba(212,24,32,.28)}
+  html.dark .callout{color:#ead8ac}
+  html.dark .acc summary:hover{background:rgba(255,255,255,.035)}
+  html.dark input[type=range]{background:rgba(255,255,255,.13)}
+  html.dark input[type=range]::-webkit-slider-thumb{border:3px solid #12101d;box-shadow:0 0 0 1px rgba(255,255,255,.25),0 2px 6px rgba(0,0,0,.5)}
+  html.dark input[type=range]::-moz-range-thumb{border:3px solid #12101d}
+  html.dark .btn:hover{background:var(--brand);filter:brightness(1.12)}
+  html.dark .btn.ghost{color:var(--brand-bright);border-color:var(--brand-line)}
+  html.dark .btn.teal{color:#241a06}
+  html.dark .verdict.ok{border-color:rgba(63,191,144,.4)}
+  html.dark .verdict.warn{border-color:rgba(224,129,63,.4)}
+  html.dark .chk.fail{border-color:rgba(224,129,63,.35)}
+  html.dark .cchip{border-color:rgba(224,129,63,.42)}
+  html.dark .warnline{border-color:rgba(224,129,63,.4);color:#f0b48c}
+  html.dark .field input::placeholder,html.dark .field textarea::placeholder{color:var(--ink-faint)}
+  /* ===== PORTAL TEMPLATE: liquid-white glass tiles on the black canvas ===== */
+  html.dark .card,html.dark .acc,html.dark .tablewrap{
+    --surface:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,255,255,.72) 48%,rgba(255,255,255,.84));
+    --surface-2:rgba(24,18,26,.05);
+    --ink:#1c1a1f; --ink-soft:#5f5966; --ink-faint:#8a8494;
+    --line:rgba(24,18,26,.12); --line-strong:rgba(24,18,26,.22);
+    --brand:#C40D16; --brand-2:#9E0C13; --brand-tint:rgba(196,13,22,.09); --brand-line:rgba(196,13,22,.3); --brand-bright:#9E0C13;
+    --gold:#A16207; --gold-soft:rgba(161,98,7,.16); --gold-line:rgba(161,98,7,.42); --gold-bright:#7c4c06;
+    --good:#1E8E5A; --good-soft:rgba(30,142,90,.14);
+    --warn:#C6551F; --warn-soft:rgba(198,85,31,.14);
+    --bad:#B1040E;
+    --shadow:none;
+    color:var(--ink);
+    border:1px solid rgba(255,255,255,.62);
+    backdrop-filter:blur(28px) saturate(175%);
+    -webkit-backdrop-filter:blur(28px) saturate(175%);
+    box-shadow:0 26px 60px rgba(0,0,0,.52),
+      inset 0 1.5px 0 rgba(255,255,255,.95),
+      inset 0 -1px 0 rgba(255,255,255,.35),
+      inset 0 0 42px rgba(255,255,255,.16);
+  }
+  html.dark .card input[type=range]{background:rgba(24,18,26,.16)}
+  html.dark .card input[type=range]::-webkit-slider-thumb{border:3px solid #fff;box-shadow:0 0 0 1px rgba(24,18,26,.2),0 2px 6px rgba(0,0,0,.25)}
+  html.dark .card input[type=range]::-moz-range-thumb{border:3px solid #fff}
+  html.dark .card .eqn,html.dark .acc .eqn{background:var(--brand-tint);border:1px solid rgba(196,13,22,.25)}
+  html.dark .card .callout,html.dark .acc .callout{color:#7c4c06}
+  html.dark .card .warnline,html.dark .acc .warnline{color:#a4491c}
+  html.dark .card .btn.ghost,html.dark .acc .btn.ghost{color:#9E0C13;border-color:rgba(196,13,22,.35)}
+
+  /* white document sheets stay light in dark mode too — force their text dark */
+  html.dark .paper{color:#241a1c}
+  html.dark .paper h4{color:#8f0d15}
+  html.dark .paper .vals{color:#6b6b6b}
+  html.dark .paper .task b{color:#b5541c}
+  html.dark .doc h3.rt{color:#8f0d15}
+  html.dark .doc .foot{color:#8a8a8a}
+  html.dark .doc .rtab th{background:#f3efe9;color:#555}
+  html.dark .doc .rtab th,html.dark .doc .rtab td{border-color:#e4e0da;color:#241a1c}
+</style>
+</head>
+<body>
+
+<!-- IDENTITY -->
+<header class="topbar">
+  <div class="wrap">
+    <span class="orb"></span>
+    <div class="brandtext">
+      <span class="name">ALIZON OS</span>
+      <span class="sub">School of Medical &amp; Digital Intelligence</span>
+    </div>
+    <a class="site back" href="ASMDI-dashboard.html">&#8592; Back to Alizon OS</a>
+    <a class="site" href="https://alizongov.com/" target="_blank" rel="noopener">alizongov.com &#8599;</a>
+  </div>
+</header>
+
+<!-- EXPERIMENT HEADER -->
+<div class="exphead">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span>Module 1 &middot; Unit 1 &middot; Foundations of AI in Pharmacy</div>
+    <h1>Designing a Drug-like Candidate using Machine Learning</h1>
+    <p class="lede">A hands-on virtual experiment: build a drug molecule by tuning its physicochemical
+      properties, then use an AI classifier to predict its <b>drug-likeness</b> and <b>oral bioavailability</b>
+      in real time — the same screening idea used in modern computer-aided drug discovery.</p>
+    <div class="tags">
+      <span class="tag">Machine Learning</span>
+      <span class="tag">Lipinski's Rule of Five</span>
+      <span class="tag">Veber's Rules</span>
+      <span class="tag">ADME / Bioavailability</span>
+      <span class="tag">In-silico Screening</span>
+    </div>
+  </div>
+  <nav class="pills">
+    <div class="wrap">
+      <a href="#manual"><span class="n">01</span>Lab Manual</a>
+      <a href="#workbench"><span class="n">02</span>Workbench</a>
+      <a href="#observations"><span class="n">03</span>Observations</a>
+      <a href="#paper"><span class="n">04</span>Question Paper</a>
+      <a href="#report-section"><span class="n">05</span>Report</a>
+    </div>
+  </nav>
+</div>
+
+<!-- 01 MANUAL -->
+<section id="manual"><div class="wrap">
+  <div class="sec-title"><span class="idx">01</span><h2>Lab Manual</h2></div>
+  <div class="acc">
+    <details open>
+      <summary>Aim <span class="badge">objective</span><span class="chev">&#9656;</span></summary>
+      <div class="body">
+        <p>To design a candidate drug molecule <em>in-silico</em> by adjusting its molecular descriptors, and to
+        evaluate it with a machine-learning model that predicts <strong>drug-likeness</strong> and
+        <strong>predicted oral bioavailability</strong>, thereby understanding how AI accelerates early drug discovery.</p>
+        <div class="goal">
+          <div class="ic">&#9873;</div>
+          <div><b>Formulation goal.</b> Tune the molecule until it has <b>0 rule violations</b> and a
+          <b>predicted oral bioavailability &ge; 70%</b>. Log at least three different candidates for comparison.</div>
+        </div>
+      </div>
+    </details>
+    <details>
+      <summary>Principle &amp; Theory <span class="badge">concept</span><span class="chev">&#9656;</span></summary>
+      <div class="body">
+        <p><strong>Artificial Intelligence (AI)</strong> is the branch of computer science that builds systems able to
+        perform tasks needing human-like reasoning. <strong>Machine Learning (ML)</strong> is a subset of AI in which a
+        model <em>learns patterns from data</em> instead of being explicitly programmed, and <strong>Deep Learning</strong>
+        is a further subset that uses multi-layered neural networks.</p>
+        <p>In early drug discovery, screening real molecules in the lab is slow and expensive. AI models are trained on
+        thousands of known drugs and non-drugs, learning which physicochemical properties make a molecule a good oral
+        drug. New candidate molecules can then be screened in seconds — this is called <strong>in-silico screening</strong>.</p>
+        <p>The most famous rule set is <strong>Lipinski's Rule of Five</strong>. A molecule is likely to be an orally
+        active drug if it does <em>not</em> violate more than one of:</p>
+        <ul>
+          <li>Molecular weight (MW) &le; 500 Da</li>
+          <li>Lipophilicity (LogP) &le; 5</li>
+          <li>Hydrogen-bond donors (HBD) &le; 5</li>
+          <li>Hydrogen-bond acceptors (HBA) &le; 10</li>
+        </ul>
+        <p><strong>Veber's rules</strong> add two absorption-related limits: <strong>topological polar surface area
+        (TPSA) &le; 140 &Aring;&sup2;</strong> and <strong>rotatable bonds &le; 10</strong>.</p>
+        <p>In this tool the AI verdict is produced by a <strong>logistic-regression classifier</strong> — one of the
+        simplest ML models. It combines the descriptors with learned weights and passes the sum through a sigmoid
+        function to output a probability between 0 and 1:</p>
+        <div class="eqn">P(drug-like) = 1 / ( 1 + e<span class="c">^-(</span> w&#8320; + w&#8321;&middot;MW + w&#8322;&middot;LogP + &hellip; <span class="c">)</span> )</div>
+        <div class="callout"><b>Important teaching point:</b> these rules are <em>guidelines, not laws.</em> Some real,
+        successful drugs (e.g. erythromycin, cyclosporine) break several rules. AI screening narrows the search — it does
+        not replace laboratory and clinical testing.</div>
+      </div>
+    </details>
+    <details>
+      <summary>Requirements <span class="badge">setup</span><span class="chev">&#9656;</span></summary>
+      <div class="body">
+        <ul>
+          <li>A computer / tablet with a modern web browser (this virtual e-lab tool).</li>
+          <li>The molecular-descriptor control panel (built in).</li>
+          <li>The trained AI drug-likeness &amp; bioavailability model (built in).</li>
+          <li>A reference set of known drugs (provided as "starting scaffolds").</li>
+          <li>Your lab notebook — or use the built-in report generator.</li>
+        </ul>
+      </div>
+    </details>
+    <details>
+      <summary>Procedure <span class="badge">steps</span><span class="chev">&#9656;</span></summary>
+      <div class="body">
+        <ol>
+          <li>Go to the <strong>Formulation Workbench</strong>. Note the formulation goal.</li>
+          <li>Choose a <strong>starting scaffold</strong> (a known drug). Watch the molecule build itself on the
+          synthesizer panel and read its baseline scores.</li>
+          <li><strong>Adjust the six sliders</strong> (MW, LogP, HBD, HBA, TPSA, rotatable bonds). The molecule morphs
+          live and the AI re-scores instantly. Sliders turn amber when a value breaks a rule.</li>
+          <li>Work toward the goal: keep the <strong>drug-likeness</strong> gauge high and push
+          <strong>predicted bioavailability &ge; 70%</strong> with <strong>no violations</strong>. Tip: moderate LogP
+          (about 1&ndash;3) and low TPSA (below 90 &Aring;&sup2;) improve absorption.</li>
+          <li>When satisfied, click <strong>"Log this candidate"</strong> to record it in the observation table.</li>
+          <li>Repeat with different scaffolds and settings — log at least <strong>three</strong> candidates.</li>
+          <li>Go to <strong>Generate Report</strong>, write your observation and conclusion, and produce a printable
+          report with your results.</li>
+        </ol>
+      </div>
+    </details>
+    <details>
+      <summary>Guided Method &mdash; how to fix any molecule <span class="badge">method</span><span class="chev">&#9656;</span></summary>
+      <div class="body">
+        <p>Use this <strong>five-step method</strong> whenever a candidate fails screening. Fix the biggest problem first,
+        then re-check the AI gauges after every change.</p>
+        <ol>
+          <li><strong>Read the diagnosis.</strong> Look at which rule checks are red and whether bioavailability is low.
+          The red boxes tell you exactly which property is out of range.</li>
+          <li><strong>Fix violations first.</strong> Bring any red property back inside its limit &mdash; MW&nbsp;&le;&nbsp;500,
+          LogP&nbsp;&le;&nbsp;5, HBD&nbsp;&le;&nbsp;5, HBA&nbsp;&le;&nbsp;10, TPSA&nbsp;&le;&nbsp;140, rotatable bonds&nbsp;&le;&nbsp;10.</li>
+          <li><strong>Tune LogP into 1&ndash;3.</strong> Too low = poor permeability, too high = poor solubility. The 1&ndash;3
+          window gives the best balance.</li>
+          <li><strong>Drop TPSA below 90&nbsp;&Aring;&sup2;.</strong> This is the single strongest lever for oral absorption.
+          Reducing polar donors/acceptors lowers TPSA.</li>
+          <li><strong>Trim size &amp; flexibility.</strong> Lower MW toward 250&ndash;450 and keep rotatable bonds low so the
+          molecule is compact and rigid enough to absorb well.</li>
+        </ol>
+        <div class="callout"><b>Golden rule:</b> change one slider, watch both gauges, then decide the next move.
+        Small steps beat big jumps.</div>
+      </div>
+    </details>
+  </div>
+</div></section>
+<section id="workbench"><div class="wrap">
+  <div class="sec-title"><span class="idx">02</span><h2>Formulation Workbench</h2></div>
+
+  <div class="goal" style="margin-bottom:16px">
+    <div class="ic">&#9873;</div>
+    <div><b>Your target:</b> a molecule with <b>0 rule violations</b> and <b>predicted oral bioavailability &ge; 70%</b>.
+    <small>&nbsp;Pick a scaffold, then tune the sliders. Log your best candidates below.</small></div>
+  </div>
+
+  <!-- FIX THE MEDICINE CHALLENGES -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="hd"><h3>Fix the Medicine &mdash; Clinical Challenges</h3><span class="k">rectify &amp; correct</span></div>
+    <div class="bd">
+      <p class="hint" style="margin-top:0">Each case is a <b>faulty drug candidate</b> that failed AI screening. Load a case, read the
+        diagnosis, then <b>adjust the sliders below to correct it</b> until every target turns green &mdash; then log your fix.</p>
+      <div class="presets" id="challenges"></div>
+      <div id="challengeStatus"></div>
+    </div>
+  </div>
+
+  <div class="bench">
+    <!-- controls -->
+    <div class="card">
+      <div class="hd"><h3>Molecule Builder</h3><span class="k">inputs</span></div>
+      <div class="bd">
+        <div style="font-size:12.5px;font-weight:600;margin-bottom:7px;color:var(--ink-soft)">Starting scaffold</div>
+        <div class="presets" id="presets"></div>
+        <div class="hint" id="presetNote">Pick a known drug to load its real properties — dashed chips are famous rule-breakers.</div>
+
+        <div id="sliders"></div>
+
+        <div class="btnrow">
+          <button class="btn teal" id="logBtn">&#43; Log this candidate</button>
+          <button class="btn ghost" id="resetBtn">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- results -->
+    <div class="card">
+      <div class="hd"><h3>AI Analysis</h3><span class="k" id="engineTag">logistic-regression &middot; live</span></div>
+      <div class="bd">
+        <div class="synth" id="synth">
+          <div class="molname" id="molName">Custom molecule</div>
+          <div class="molsub" id="molSub">MW 300 &middot; LogP 2.0</div>
+          <div class="scan"></div>
+          <canvas id="molCanvas"></canvas>
+          <div class="legend">
+            <span><i style="background:#c0392b"></i>O</span>
+            <span><i style="background:#3f6fd0"></i>N</span>
+            <span><i style="background:#5a5054"></i>C</span>
+          </div>
+        </div>
+
+        <div class="gauges">
+          <div class="gauge">
+            <div class="lab">Drug-likeness</div>
+            <svg width="120" height="78" viewBox="0 0 120 78" id="g1"></svg>
+            <div class="big" id="g1val">0%</div>
+            <div class="tier" id="g1tier">&nbsp;</div>
+          </div>
+          <div class="gauge">
+            <div class="lab">Oral bioavailability</div>
+            <svg width="120" height="78" viewBox="0 0 120 78" id="g2"></svg>
+            <div class="big" id="g2val">0%</div>
+            <div class="tier" id="g2tier">&nbsp;</div>
+          </div>
+        </div>
+
+        <div class="checks" id="checks"></div>
+
+        <div class="radarwrap"><svg width="260" height="220" viewBox="0 0 260 220" id="radar"></svg></div>
+
+        <div class="verdict" id="verdict"><div class="ic">?</div><div><b>Awaiting input</b><small>Adjust the builder to begin.</small></div></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 03 OBSERVATIONS -->
+<section id="observations"><div class="wrap">
+  <div class="sec-title"><span class="idx">03</span><h2>Observation Table</h2></div>
+  <div class="tablewrap">
+    <table id="obsTable">
+      <thead><tr>
+        <th>#</th><th>Candidate</th><th>MW</th><th>LogP</th><th>HBD</th><th>HBA</th><th>TPSA</th><th>RotB</th>
+        <th>Violations</th><th>Drug-like</th><th>Bioavail.</th><th>Verdict</th><th></th>
+      </tr></thead>
+      <tbody id="obsBody">
+        <tr><td colspan="13" class="empty">No candidates logged yet. Design a molecule above and click "Log this candidate".</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="btnrow"><button class="btn ghost" id="clearObs">Clear table</button></div>
+</div></section>
+
+<!-- 04 QUESTION PAPER -->
+<section id="paper"><div class="wrap">
+  <div class="sec-title"><span class="idx">04</span><h2>Practical Question Paper</h2></div>
+  <div class="card"><div class="bd">
+    <p class="hint" style="margin-top:0">Generate a <b>shuffled, unique paper</b> for each student. Every paper draws different
+      correction tasks, a different design task and different viva questions from the same syllabus &mdash; so no two students
+      get the same set. The paper code lets a teacher reproduce any paper.</p>
+    <div class="field" style="max-width:280px"><label>Student name (optional)</label><input id="pName" placeholder="Name to print on the paper"></div>
+    <div class="btnrow">
+      <button class="btn" id="genPaper">&#127922; Generate shuffled paper</button>
+      <button class="btn ghost" id="addPaper" style="display:none">&#43; Attach this paper to my report</button>
+    </div>
+    <div id="paperOut"></div>
+  </div></div>
+</div></section>
+
+<!-- 05 REPORT -->
+<section id="report-section"><div class="wrap">
+  <div class="sec-title"><span class="idx">05</span><h2>Generate Report</h2></div>
+  <div class="card"><div class="bd">
+    <div class="rform">
+      <div class="field"><label>Student name</label><input id="rName" placeholder="Your full name"></div>
+      <div class="field"><label>Class / Roll no.</label><input id="rRoll" placeholder="e.g. B.Pharm II &middot; 21"></div>
+      <div class="field"><label>Batch / Date</label><input id="rDate" placeholder="e.g. 09 Jul 2026"></div>
+      <div class="field"><label>Name your best designed molecule</label><input id="rMol" placeholder="e.g. Candidate-A"></div>
+      <div class="field full"><label>Principle (in your own words)</label>
+        <textarea id="rPrin" placeholder="Explain AI/ML/DL, Lipinski's Rule of Five, Veber's rules and how they relate to drug-likeness and bioavailability..."></textarea></div>
+      <div class="field full"><label>Method / procedure you followed</label>
+        <textarea id="rMethod" placeholder="Describe how you loaded scaffolds, tuned the sliders, corrected faulty candidates and read the AI gauges..."></textarea></div>
+      <div class="field full"><label>Observation — what did you notice while tuning the molecule?</label>
+        <textarea id="rObs" placeholder="e.g. Lowering TPSA below 90 and keeping LogP near 2 raised predicted bioavailability sharply, while MW beyond 500 triggered a Lipinski violation..."></textarea></div>
+      <div class="field full"><label>Result</label>
+        <textarea id="rResult" placeholder="State the properties, drug-likeness % and bioavailability % of your best candidate, and which faulty candidates you corrected..."></textarea></div>
+      <div class="field full"><label>Discussion</label>
+        <textarea id="rDisc" placeholder="Discuss which property affected bioavailability the most, why some real drugs break the rules, and the limitations of AI screening..."></textarea></div>
+      <div class="field full"><label>Conclusion</label>
+        <textarea id="rConc" placeholder="e.g. An AI classifier can rapidly screen candidate molecules for drug-likeness and oral bioavailability, guiding formulation before any wet-lab work..."></textarea></div>
+    </div>
+    <div id="wordCount" class="wordcount no">Your writing: 0 / 400 words minimum</div>
+    <div id="wordWarn" class="warnline">Please write at least <b>400 words</b> across the sections above before generating your report.</div>
+    <div class="btnrow">
+      <button class="btn" id="genBtn">Generate report</button>
+      <button class="btn ghost noprint" id="printBtn" style="display:none">&#128424; Print / Save as PDF</button>
+    </div>
+  </div></div>
+
+  <!-- printable document -->
+  <div id="report">
+    <div class="doc">
+      <div class="rhead">
+        <img src="data:image/png;base64,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" alt="Alizon OS" width="52" height="52" style="flex:none;object-fit:contain">
+        <div class="t">
+          <div class="nm">ALIZON OS</div>
+          <div class="sb">School of Medical &amp; Digital Intelligence &middot; Pharmacy AI</div>
+          <a href="https://alizongov.com/">alizongov.com</a>
+        </div>
+      </div>
+      <div class="rmeta" id="docMeta"></div>
+      <h3 class="rt">Experiment</h3>
+      <p class="rp"><b>Module 1 &middot; Unit 1 &middot; Foundations of AI in Pharmacy</b> — Designing and correcting drug-like candidates using a machine-learning classifier.</p>
+      <h3 class="rt">Aim</h3>
+      <p class="rp">To design a candidate drug molecule in-silico, to correct faulty candidates, and to evaluate drug-likeness and predicted oral bioavailability using an AI (logistic-regression) model, relating physicochemical properties to Lipinski's and Veber's rules.</p>
+      <h3 class="rt">Principle</h3>
+      <p class="rp" id="docPrin"></p>
+      <h3 class="rt">Best Designed Candidate</h3>
+      <p class="rp" id="docBest"></p>
+      <img id="docMol" alt="molecule structure" style="display:none;max-width:300px;margin:8px auto;border-radius:10px;background:#160a0e">
+      <div id="docMolCap" style="display:none;text-align:center;font-size:11px;color:#888;margin-top:-2px">Structure shown on the AI synthesizer at report time.</div>
+      <h3 class="rt">Method</h3>
+      <p class="rp" id="docMethod"></p>
+      <h3 class="rt">Observation Table</h3>
+      <div id="docTable"></div>
+      <h3 class="rt">Observation</h3>
+      <p class="rp" id="docObs"></p>
+      <h3 class="rt">Result</h3>
+      <p class="rp" id="docResult"></p>
+      <h3 class="rt">Discussion</h3>
+      <p class="rp" id="docDisc"></p>
+      <h3 class="rt">Conclusion</h3>
+      <p class="rp" id="docConc"></p>
+      <div id="docPaperWrap" style="display:none">
+        <h3 class="rt">Assigned Question Paper &mdash; Code <span id="docPaperCode" class="mono"></span></h3>
+        <div id="docPaper"></div>
+      </div>
+      <div class="sign">
+        <div class="line">Student signature</div>
+        <div class="line">Faculty signature</div>
+      </div>
+      <div class="foot">Generated with the ALIZON OS Virtual Practical E-Lab &middot; alizongov.com &middot; AI predictions are for educational screening only.</div>
+    </div>
+  </div>
+</div></section>
+
+<footer class="pg"><b>ALIZON OS</b> &middot; Pharmacy AI Virtual Practical &middot; Module 1 &middot; Unit 1 &middot;
+  <a href="https://alizongov.com/" target="_blank" rel="noopener">alizongov.com</a></footer>
+
+<script>
+/* ---------------- data model ---------------- */
+const LIMITS = { mw:500, logp:5, hbd:5, hba:10, tpsa:140, rotb:10 };
+const RANGE = { mw:[50,1300], logp:[-3,8], hbd:[0,12], hba:[0,18], tpsa:[0,320], rotb:[0,20] };
+const LABELS = {
+  mw:['Molecular weight','Da'], logp:['LogP (lipophilicity)',''], hbd:['H-bond donors',''],
+  hba:['H-bond acceptors',''], tpsa:['Polar surface area (TPSA)','&Aring;&sup2;'], rotb:['Rotatable bonds','']
+};
+const PRESETS = [
+  {name:'Aspirin', mw:180, logp:1.2, hbd:1, hba:3, tpsa:63, rotb:2},
+  {name:'Paracetamol', mw:151, logp:0.5, hbd:2, hba:2, tpsa:49, rotb:1},
+  {name:'Ibuprofen', mw:206, logp:3.5, hbd:1, hba:2, tpsa:37, rotb:4},
+  {name:'Caffeine', mw:194, logp:-0.1,hbd:0, hba:3, tpsa:58, rotb:0},
+  {name:'Metformin', mw:129, logp:-1.4,hbd:3, hba:2, tpsa:91, rotb:2},
+  {name:'Atorvastatin', mw:558, logp:5.0, hbd:4, hba:5, tpsa:112, rotb:12},
+  {name:'Erythromycin', mw:733, logp:3.1, hbd:5, hba:14, tpsa:194, rotb:7, exc:true},
+  {name:'Cyclosporine', mw:1202,logp:3.0, hbd:5, hba:12, tpsa:279, rotb:15, exc:true},
+];
+let state = {mw:300, logp:2.0, hbd:2, hba:4, tpsa:70, rotb:4};
+let activePreset = null;
+let activeChallenge = null;
+let obs = [];
+
+/* ---- accurate 2D skeletal structures of real drugs (x,y in bond-length units, y up) ---- */
+const STRUCT = {
+  'Aspirin':{atoms:[
+    {el:'C',x:1,y:0},{el:'C',x:0.5,y:0.866},{el:'C',x:-0.5,y:0.866},{el:'C',x:-1,y:0},
+    {el:'C',x:-0.5,y:-0.866},{el:'C',x:0.5,y:-0.866},{el:'C',x:2,y:0},{el:'O',x:2.5,y:0.866},
+    {el:'O',x:2.5,y:-0.866},{el:'O',x:0,y:1.732},{el:'C',x:0,y:2.732},{el:'O',x:-0.866,y:3.232},{el:'C',x:0.866,y:3.232}],
+    bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,2],[6,8,1],[1,9,1],[9,10,1],[10,11,2],[10,12,1]]},
+  'Paracetamol':{atoms:[
+    {el:'C',x:1,y:0},{el:'C',x:0.5,y:0.866},{el:'C',x:-0.5,y:0.866},{el:'C',x:-1,y:0},
+    {el:'C',x:-0.5,y:-0.866},{el:'C',x:0.5,y:-0.866},{el:'O',x:-2,y:0},{el:'N',x:2,y:0},
+    {el:'C',x:2.5,y:-0.866},{el:'O',x:2,y:-1.732},{el:'C',x:3.5,y:-0.866}],
+    bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[3,6,1],[0,7,1],[7,8,1],[8,9,2],[8,10,1]]},
+  'Ibuprofen':{atoms:[
+    {el:'C',x:1,y:0},{el:'C',x:0.5,y:0.866},{el:'C',x:-0.5,y:0.866},{el:'C',x:-1,y:0},
+    {el:'C',x:-0.5,y:-0.866},{el:'C',x:0.5,y:-0.866},{el:'C',x:-2,y:0},{el:'C',x:-2.866,y:-0.5},
+    {el:'C',x:-2.866,y:-1.5},{el:'C',x:-3.732,y:0},{el:'C',x:2,y:0},{el:'C',x:2.5,y:0.866},
+    {el:'C',x:2.5,y:-0.866},{el:'O',x:3.5,y:-0.866},{el:'O',x:2,y:-1.732}],
+    bonds:[[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[3,6,1],[6,7,1],[7,8,1],[7,9,1],[0,10,1],[10,11,1],[10,12,1],[12,13,2],[12,14,1]]},
+  'Caffeine':{atoms:[
+    {el:'N',x:0,y:1},{el:'C',x:-0.87,y:0.5},{el:'N',x:-0.87,y:-0.5},{el:'C',x:0,y:-1},
+    {el:'C',x:0.87,y:-0.5},{el:'C',x:0.87,y:0.5},{el:'O',x:-1.74,y:1.0},{el:'O',x:1.74,y:1.0},
+    {el:'C',x:0,y:2},{el:'C',x:-1.74,y:-1.0},{el:'N',x:1.74,y:-1.0},{el:'C',x:1.5,y:-2.0},
+    {el:'N',x:0.5,y:-1.9},{el:'C',x:2.7,y:-0.7}],
+    bonds:[[0,1,1],[1,2,1],[2,3,1],[3,4,2],[4,5,1],[5,0,1],[1,6,2],[5,7,2],[0,8,1],[2,9,1],[4,10,1],[10,11,1],[11,12,2],[12,3,1],[10,13,1]]},
+  'Metformin':{atoms:[
+    {el:'N',x:0,y:0},{el:'C',x:-0.87,y:0.5},{el:'C',x:-0.87,y:-0.5},{el:'C',x:0.87,y:0.5},
+    {el:'N',x:0.87,y:1.5},{el:'N',x:1.74,y:0},{el:'C',x:2.6,y:0.5},{el:'N',x:2.6,y:1.5},{el:'N',x:3.47,y:0}],
+    bonds:[[0,1,1],[0,2,1],[0,3,1],[3,4,2],[3,5,1],[5,6,1],[6,7,2],[6,8,1]]}
+};
+
+/* ---- Fix the Medicine: faulty candidates students must correct ---- */
+const CHALLENGES = [
+  {id:'heavy', title:'Case 1 · Overweight', drug:'Candidate BX-21',
+   fault:'Molecular weight and acceptor count are too high — it breaks Lipinski’s rules and is absorbed poorly.',
+   start:{mw:648, logp:4.2, hbd:4, hba:12, tpsa:132, rotb:9},
+   hint:'Bring MW under 500 and HBA down to 10 or fewer.',
+   method:['Note the two red boxes: MW and HBA.','Slide MW down below 500.','Reduce HBA to 10 or fewer.','Watch bioavailability climb past 60%.'],
+   goals:[{label:'MW ≤ 500',ok:s=>s.mw<=500},{label:'HBA ≤ 10',ok:s=>s.hba<=10},
+          {label:'0 rule violations',ok:(s,d)=>d.viol===0},{label:'Bioavailability ≥ 60%',ok:(s,d)=>d.ba>=60}]},
+  {id:'greasy', title:'Case 2 · Too greasy', drug:'Candidate LX-7',
+   fault:'Very high LogP — the molecule is too lipophilic, so it dissolves poorly and risks toxicity.',
+   start:{mw:430, logp:6.6, hbd:1, hba:4, tpsa:55, rotb:6},
+   hint:'Lower LogP into the ideal 1–3 window.',
+   method:['LogP is the only red box here.','Slide LogP down below 5 to clear the violation.','Keep going until LogP sits between 1 and 3.','Confirm bioavailability rises above 70%.'],
+   goals:[{label:'LogP ≤ 5',ok:s=>s.logp<=5},{label:'LogP in ideal 1–3 range',ok:s=>s.logp>=1&&s.logp<=3},
+          {label:'Bioavailability ≥ 70%',ok:(s,d)=>d.ba>=70}]},
+  {id:'polar', title:'Case 3 · Poor absorption', drug:'Candidate PR-9',
+   fault:'Polar surface area and H-bond donors are too high, so the drug cannot cross the gut wall.',
+   start:{mw:410, logp:0.6, hbd:6, hba:9, tpsa:172, rotb:7},
+   hint:'Get TPSA below 90 Å² and HBD to 5 or fewer.',
+   method:['TPSA and HBD are the problems.','Cut HBD to 5 or fewer.','Slide TPSA down below 90 Å².','Nudge LogP up toward 1–2 for permeability.'],
+   goals:[{label:'TPSA ≤ 140',ok:s=>s.tpsa<=140},{label:'TPSA < 90 (well absorbed)',ok:s=>s.tpsa<90},
+          {label:'HBD ≤ 5',ok:s=>s.hbd<=5},{label:'Bioavailability ≥ 70%',ok:(s,d)=>d.ba>=70}]},
+  {id:'floppy', title:'Case 4 · Too flexible', drug:'Candidate FL-3',
+   fault:'Too many rotatable bonds — the chain is floppy, which hurts oral absorption (Veber’s rule).',
+   start:{mw:470, logp:2.4, hbd:3, hba:7, tpsa:85, rotb:15},
+   hint:'Reduce rotatable bonds to 10 or fewer.',
+   method:['Rotatable bonds are the single red box.','Slide rotatable bonds down to 10 or fewer.','The other properties are already good.','Verify 0 violations and bioavailability ≥ 70%.'],
+   goals:[{label:'Rotatable bonds ≤ 10',ok:s=>s.rotb<=10},{label:'0 rule violations',ok:(s,d)=>d.viol===0},
+          {label:'Bioavailability ≥ 70%',ok:(s,d)=>d.ba>=70}]},
+  {id:'multi', title:'Case 5 · Multiple faults', drug:'Candidate MX-12',
+   fault:'This candidate breaks several rules at once. Correct them all into a clean oral drug.',
+   start:{mw:560, logp:5.8, hbd:6, hba:11, tpsa:150, rotb:12},
+   hint:'Fix MW, LogP, HBD/HBA, TPSA and rotatable bonds together.',
+   method:['Fix the red boxes one at a time, biggest first.','MW below 500, then LogP into 1–3.','HBD ≤ 5, HBA ≤ 10, TPSA below 90.','Finally rotatable bonds ≤ 10; aim BA ≥ 75%.'],
+   goals:[{label:'0 rule violations',ok:(s,d)=>d.viol===0},{label:'LogP in 1–3 range',ok:s=>s.logp>=1&&s.logp<=3},
+          {label:'Bioavailability ≥ 75%',ok:(s,d)=>d.ba>=75}]},
+  {id:'border', title:'Case 6 · Borderline', drug:'Candidate BD-4',
+   fault:'No single violation, but every property sits at its limit, so predicted bioavailability is weak.',
+   start:{mw:498, logp:4.9, hbd:5, hba:10, tpsa:138, rotb:10},
+   hint:'Pull the whole profile inward — especially LogP and TPSA — to lift bioavailability.',
+   method:['Everything is legal but marginal.','Lower LogP from 4.9 toward 2.','Drop TPSA well below 90.','Ease MW and HBA down; push BA past 75%.'],
+   goals:[{label:'LogP in 1–3 range',ok:s=>s.logp>=1&&s.logp<=3},{label:'TPSA < 90',ok:s=>s.tpsa<90},
+          {label:'Bioavailability ≥ 75%',ok:(s,d)=>d.ba>=75}]},
+  {id:'toxic', title:'Case 7 · Big & lipophilic', drug:'Candidate TX-8',
+   fault:'Large and very greasy — breaks the MW and LogP rules and would be hard to formulate.',
+   start:{mw:612, logp:6.2, hbd:2, hba:6, tpsa:70, rotb:8},
+   hint:'Attack both MW and LogP; get each inside its limit.',
+   method:['Two red boxes: MW and LogP.','Bring MW under 500.','Bring LogP under 5, ideally to 2–3.','Confirm BA ≥ 70% with 0 violations.'],
+   goals:[{label:'MW ≤ 500',ok:s=>s.mw<=500},{label:'LogP ≤ 5',ok:s=>s.logp<=5},
+          {label:'0 rule violations',ok:(s,d)=>d.viol===0},{label:'Bioavailability ≥ 70%',ok:(s,d)=>d.ba>=70}]},
+  {id:'peptide', title:'Case 8 · Peptide-like', drug:'Candidate PP-15',
+   fault:'Behaves like a peptide — huge, highly polar, many donors and acceptors. Very poor oral absorption.',
+   start:{mw:726, logp:1.2, hbd:8, hba:13, tpsa:210, rotb:14},
+   hint:'This one needs work on almost every property.',
+   method:['Nearly all boxes are red.','Cut MW under 500 and HBA ≤ 10.','Reduce HBD ≤ 5 and TPSA below 90.','Lower rotatable bonds ≤ 10; aim BA ≥ 65%.'],
+   goals:[{label:'0 rule violations',ok:(s,d)=>d.viol===0},{label:'TPSA < 90',ok:s=>s.tpsa<90},
+          {label:'HBD ≤ 5',ok:s=>s.hbd<=5},{label:'Bioavailability ≥ 65%',ok:(s,d)=>d.ba>=65}]},
+  {id:'almost', title:'Case 9 · Almost there', drug:'Candidate AL-2',
+   fault:'A promising candidate that just tips over the weight limit — one small fix needed.',
+   start:{mw:524, logp:3.1, hbd:2, hba:5, tpsa:72, rotb:6},
+   hint:'Only molecular weight is over the line.',
+   method:['A single red box: MW.','Slide MW just under 500.','Everything else is already ideal.','Confirm 0 violations and BA ≥ 80%.'],
+   goals:[{label:'MW ≤ 500',ok:s=>s.mw<=500},{label:'0 rule violations',ok:(s,d)=>d.viol===0},
+          {label:'Bioavailability ≥ 80%',ok:(s,d)=>d.ba>=80}]}
+];
+
+/* ---- viva / theory question bank (shuffled per student) ---- */
+const QBANK = [
+  'Differentiate between Artificial Intelligence, Machine Learning and Deep Learning with one example of each.',
+  'State Lipinski’s Rule of Five. What is concluded if a molecule violates two or more of the rules?',
+  'What are Veber’s rules and which two additional properties do they consider?',
+  'Define topological polar surface area (TPSA). How does a high TPSA affect oral absorption?',
+  'Why is a LogP value between 1 and 3 considered ideal for an orally active drug?',
+  'Define oral bioavailability and list three molecular properties that reduce it.',
+  'Explain how a logistic-regression classifier converts molecular descriptors into a probability.',
+  'Name two marketed drugs that violate Lipinski’s rules and explain why they are still effective.',
+  'What is in-silico screening and how does it accelerate early drug discovery?',
+  'How does the number of rotatable bonds influence a molecule’s oral absorption?',
+  'Distinguish between hydrogen-bond donors and hydrogen-bond acceptors, with examples.',
+  'Give two roles of AI in pharmacovigilance and medication safety.',
+  'Describe the role of AI in formulation development and stability studies.',
+  'Why are AI predictions treated as a screening tool rather than a replacement for laboratory testing?',
+  'How would you chemically reduce the LogP of an over-lipophilic drug candidate?',
+  'What is the significance of the molecular-weight cut-off (500 Da) for membrane permeability?'
+];
+const DESIGN = [
+  'Design a molecule with 0 rule violations and predicted oral bioavailability ≥ 80%.',
+  'Design a molecule with MW between 250–450 Da and predicted bioavailability ≥ 75%.',
+  'Starting from Ibuprofen, modify its properties to reach ≥ 90% predicted bioavailability.',
+  'Design a molecule with TPSA below 75 Å² and LogP within the 1–3 range.',
+  'Design the smallest molecule (lowest MW) you can that still reaches ≥ 85% bioavailability.'
+];
+let currentPaper = null;
+
+/* ---------------- models ---------------- */
+function lipinski(s){
+  return [
+    {k:'MW ≤ 500', pass:s.mw<=LIMITS.mw, v:s.mw.toFixed(0)+' Da'},
+    {k:'LogP ≤ 5', pass:s.logp<=LIMITS.logp, v:s.logp.toFixed(1)},
+    {k:'HBD ≤ 5', pass:s.hbd<=LIMITS.hbd, v:s.hbd},
+    {k:'HBA ≤ 10', pass:s.hba<=LIMITS.hba, v:s.hba},
+    {k:'TPSA ≤ 140', pass:s.tpsa<=LIMITS.tpsa, v:s.tpsa.toFixed(0)},
+    {k:'RotB ≤ 10', pass:s.rotb<=LIMITS.rotb, v:s.rotb},
+  ];
+}
+function violations(s){ return lipinski(s).filter(r=>!r.pass).length; }
+
+// logistic-regression style drug-likeness probability
+function drugLikeness(s){
+  let z = 2.6;
+  z -= Math.max(0,(s.mw-500)/100)*1.25;
+  z -= Math.max(0,(s.logp-5))*1.05;
+  z -= Math.max(0,(s.logp<-1?(-1-s.logp):0))*0.5;
+  z -= Math.max(0,(s.hbd-5))*0.8;
+  z -= Math.max(0,(s.hba-10)/2)*0.85;
+  z -= Math.max(0,(s.tpsa-140)/40)*1.1;
+  z -= Math.max(0,(s.rotb-10)/3)*0.7;
+  return 1/(1+Math.exp(-z));
+}
+// predicted oral bioavailability (0-100)
+function bioavailability(s){
+  let ba = 100;
+  ba -= Math.min(1,Math.max(0,(s.tpsa-90)/50))*35;
+  if(s.tpsa>140) ba -= 14;
+  ba -= Math.min(20,Math.max(0,(s.mw-500)/12));
+  if(s.logp<1) ba -= Math.min(16,(1-s.logp)*5);
+  if(s.logp>3) ba -= Math.min(26,(s.logp-3)*7);
+  ba -= Math.min(15,Math.max(0,(s.rotb-10)*3));
+  ba -= Math.min(10,Math.max(0,(s.hbd-5)*3));
+  ba -= Math.min(10,Math.max(0,(s.hba-10)*2));
+  return Math.max(3,Math.min(100,ba));
+}
+function baTier(v){ return v>=70?['Excellent','var(--good)']:v>=50?['Good','var(--good)']:v>=30?['Moderate','var(--warn)']:['Poor','var(--bad)']; }
+function dlTier(v){ return v>=0.7?['Drug-like','var(--good)']:v>=0.5?['Borderline','var(--warn)']:['Not drug-like','var(--bad)']; }
+
+/* ---------------- build sliders ---------------- */
+const slidersEl = document.getElementById('sliders');
+Object.keys(LABELS).forEach(key=>{
+  const [r0,r1]=RANGE[key];
+  const step = (key==='logp')?0.1:(key==='tpsa'||key==='mw')?1:1;
+  const el=document.createElement('div'); el.className='ctrl';
+  el.innerHTML=`<div class="row"><div class="lab">${LABELS[key][0]} <small>${LABELS[key][1]}</small></div>
+      <div><span class="val" id="v_${key}"></span><span class="limit">max ${LIMITS[key]}</span></div></div>
+      <input type="range" id="s_${key}" min="${r0}" max="${r1}" step="${step}" value="${state[key]}">`;
+  slidersEl.appendChild(el);
+  el.querySelector('input').addEventListener('input',e=>{
+    state[key]= (key==='logp')?parseFloat(e.target.value):parseFloat(e.target.value);
+    activePreset=null; renderPresetChips(); update(true);
+  });
+});
+
+/* ---------------- preset chips ---------------- */
+const presetsEl=document.getElementById('presets');
+function renderPresetChips(){
+  presetsEl.innerHTML='';
+  PRESETS.forEach(p=>{
+    const b=document.createElement('button');
+    b.className='chip'+(p.exc?' exc':'')+(activePreset===p.name?' on':'');
+    b.textContent=p.name;
+    b.onclick=()=>{ Object.keys(state).forEach(k=>state[k]=p[k]); activePreset=p.name; activeChallenge=null; renderChallengeChips();
+      document.getElementById('presetNote').innerHTML = p.exc
+        ? `<b style="color:var(--warn)">${p.name}</b> is a real drug that <b>breaks several rules</b> — proof that Lipinski is a guideline, not a law.`
+        : `Loaded <b>${p.name}</b>. Now tune the sliders to explore how properties change the AI verdict.`;
+      renderPresetChips(); syncSliders(); update(true); };
+    presetsEl.appendChild(b);
+  });
+}
+function syncSliders(){ Object.keys(LABELS).forEach(k=>{ document.getElementById('s_'+k).value=state[k]; }); }
+
+/* ---------------- gauges (270° arc) ---------------- */
+function drawGauge(svg,frac,color){
+  const cx=60,cy=60,r=44, start=135, sweep=270;
+  function pt(a){const rad=(a)*Math.PI/180;return[cx+r*Math.cos(rad),cy+r*Math.sin(rad)];}
+  function arc(a0,a1){const[x0,y0]=pt(a0),[x1,y1]=pt(a1);const large=(a1-a0)>180?1:0;
+    return `M ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1}`;}
+  const end=start+sweep*Math.max(0,Math.min(1,frac));
+  svg.innerHTML=`<path d="${arc(start,start+sweep)}" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round"/>
+    <path d="${arc(start,end)}" fill="none" stroke="${color}" stroke-width="10" stroke-linecap="round"/>`;
+}
+
+/* ---------------- radar ---------------- */
+function drawRadar(s){
+  const svg=document.getElementById('radar');
+  const cx=130,cy=110,R=78;
+  const axes=[['MW',s.mw/LIMITS.mw],['LogP',Math.max(0,s.logp)/LIMITS.logp],['HBD',s.hbd/LIMITS.hbd],
+              ['HBA',s.hba/LIMITS.hba],['TPSA',s.tpsa/LIMITS.tpsa],['RotB',s.rotb/LIMITS.rotb]];
+  const n=axes.length; let g='';
+  function P(i,rad){const a=-90+i*360/n;const r=a*Math.PI/180;return[cx+rad*Math.cos(r),cy+rad*Math.sin(r)];}
+  // rings
+  [0.5,1].forEach(f=>{let pts=axes.map((_,i)=>P(i,R*f).join(',')).join(' ');
+    g+=`<polygon points="${pts}" fill="none" stroke="${f===1?'#d98a8a':'var(--line)'}" stroke-width="${f===1?1.4:1}" ${f===1?'stroke-dasharray="4 3"':''}/>`;});
+  // axes + labels
+  axes.forEach((ax,i)=>{const[x,y]=P(i,R);g+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
+    const[lx,ly]=P(i,R+15);g+=`<text x="${lx}" y="${ly}" font-size="10" font-family="'JetBrains Mono',monospace" fill="var(--ink-soft)" text-anchor="middle" dominant-baseline="middle">${ax[0]}</text>`;});
+  // molecule polygon
+  const mpts=axes.map((ax,i)=>P(i,R*Math.min(1.5,ax[1])).join(',')).join(' ');
+  const anyOver=axes.some(a=>a[1]>1);
+  const dark=document.documentElement.classList.contains('dark');
+  const col=anyOver?(dark?'#e0813f':'#c6551f'):(dark?'#D9A441':'#A16207');
+  g+=`<polygon points="${mpts}" fill="${col}22" stroke="${col}" stroke-width="1.8"/>`;
+  axes.forEach((ax,i)=>{const[x,y]=P(i,R*Math.min(1.5,ax[1]));g+=`<circle cx="${x}" cy="${y}" r="2.6" fill="${col}"/>`;});
+  g+=`<text x="${cx}" y="${cy+R+34}" font-size="9.5" fill="var(--ink-faint)" text-anchor="middle" font-family="'JetBrains Mono'">dashed ring = rule limit</text>`;
+  svg.innerHTML=g;
+}
+
+/* ---------------- molecule synthesizer (HD canvas) ---------------- */
+const canvas=document.getElementById('molCanvas');
+const ctx=canvas.getContext('2d');
+let CW=340, CH=230, DPR=1;
+let t=0, seed=12345, renderMode='proc';
+let atoms=[], bonds=[]; // procedural state
+let sAtoms=[], sBonds=[], drawProg=0, lastStructKey=null; // real-structure state
+
+function resizeCanvas(){
+  const r=canvas.getBoundingClientRect();
+  CW=Math.max(300, Math.round(r.width || (canvas.parentElement&&canvas.parentElement.clientWidth) || 340));
+  CH=230; DPR=Math.min(2, window.devicePixelRatio||1);
+  canvas.width=Math.round(CW*DPR); canvas.height=Math.round(CH*DPR);
+  canvas.style.height=CH+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+/* -- build a real skeletal structure, scaled to the canvas -- */
+function buildStruct(def){
+  const A=def.atoms;
+  const xs=A.map(a=>a.x), ys=A.map(a=>a.y);
+  const minx=Math.min(...xs),maxx=Math.max(...xs),miny=Math.min(...ys),maxy=Math.max(...ys);
+  const bw=Math.max(0.6,maxx-minx), bh=Math.max(0.6,maxy-miny);
+  const sc=Math.min((CW*0.60)/bw,(CH*0.58)/bh, 44);
+  const ox=CW/2-((minx+maxx)/2)*sc, oy=CH/2+((miny+maxy)/2)*sc;
+  sAtoms=A.map(a=>({el:a.el, x:ox+a.x*sc, y:oy-a.y*sc})); // flip y: chem-up -> screen-up
+  sBonds=def.bonds.slice();
+  drawProg=0;
+}
+/* -- build a procedural molecule from descriptors (for custom / candidate molecules) -- */
+function buildProc(s){
+  const rnd=mulberry32(seed>>>0);
+  const N=Math.max(6,Math.min(46,Math.round(s.mw/16)));
+  let nO=Math.min(N-2,Math.round(s.hba*0.55));
+  let nN=Math.min(N-2-nO,Math.round(s.hbd*0.5+s.hba*0.15));
+  const L=30, pos=[], bd=[];
+  pos.push({x:0,y:0}); let dir=rnd()*360;
+  for(let i=1;i<N;i++){
+    let from=(rnd()<0.22 && i>3)?Math.floor(rnd()*i):i-1;
+    let placed=false,px=0,py=0;
+    for(let tryi=0;tryi<8 && !placed;tryi++){
+      const opts=[60,-60,120,-120,0];
+      const a=dir+opts[Math.floor(rnd()*opts.length)]+(rnd()*16-8);
+      px=pos[from].x+L*Math.cos(a*Math.PI/180); py=pos[from].y+L*Math.sin(a*Math.PI/180);
+      let ok=true; for(const q of pos){ if(Math.hypot(q.x-px,q.y-py)<L*0.72){ok=false;break;} }
+      if(ok){dir=a;placed=true;}
+    }
+    pos.push({x:px,y:py}); bd.push([from,i,1]);
+  }
+  let rings=0;
+  for(let i=0;i<N && rings<Math.floor(N/5)+1;i++)for(let j=i+2;j<N;j++){
+    if(Math.hypot(pos[i].x-pos[j].x,pos[i].y-pos[j].y)<L*1.18){
+      if(!bd.some(b=>(b[0]===i&&b[1]===j)||(b[0]===j&&b[1]===i))){bd.push([i,j,1]);rings++;}
+    }
+  }
+  const type=new Array(N).fill('C');
+  const idxs=[...Array(N).keys()].sort(()=>rnd()-0.5);
+  let oi=0; for(let k=0;k<idxs.length&&oi<nO;k++){ if(idxs[k]!==0){type[idxs[k]]='O';oi++;} }
+  let ni=0; for(let k=0;k<idxs.length&&ni<nN;k++){ if(type[idxs[k]]==='C'&&idxs[k]!==0){type[idxs[k]]='N';ni++;} }
+  const xs=pos.map(p=>p.x),ys=pos.map(p=>p.y);
+  const minx=Math.min(...xs),maxx=Math.max(...xs),miny=Math.min(...ys),maxy=Math.max(...ys);
+  const bw=Math.max(1,maxx-minx),bh=Math.max(1,maxy-miny);
+  const sc=Math.min((CW*0.72)/bw,(CH*0.66)/bh, 1.15);
+  const ox=CW/2-((minx+maxx)/2)*sc, oy=CH/2-((miny+maxy)/2)*sc;
+  atoms=pos.map((p,i)=>({tx:ox+p.x*sc,ty:oy+p.y*sc,type:type[i],
+      x:(atoms[i]?atoms[i].x:CW/2),y:(atoms[i]?atoms[i].y:CH/2),
+      alpha:(atoms[i]?atoms[i].alpha:0),talpha:1,ph:i*0.7}));
+  bonds=bd;
+}
+/* -- choose which molecule to show -- */
+function setMolecule(){
+  const key = (activePreset && STRUCT[activePreset]) ? activePreset : null;
+  if(key){ renderMode='struct'; if(key!==lastStructKey){ buildStruct(STRUCT[key]); lastStructKey=key; } }
+  else { renderMode='proc'; lastStructKey=null;
+    if(!activePreset) seed=Math.floor((state.mw*7+state.hba*13+state.hbd*29+31));
+    buildProc(state); }
+}
+
+/* -- drawing -- */
+const ATOMCOL={C:'#5a5054',O:'#c0392b',N:'#3f6fd0'};
+const HET={O:'#ff6f61',N:'#6ea0ff'};
+function line(x1,y1,x2,y2){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+function drawStruct(){
+  drawProg+=(1-drawProg)*0.055;
+  const prog=Math.min(1,drawProg*1.06);
+  const cx=CW/2, cy=CH/2, sway=Math.sin(t*0.6)*0.05, bob=Math.sin(t*0.9)*2;
+  const cos=Math.cos(sway), sin=Math.sin(sway);
+  function tp(p){const dx=p.x-cx,dy=p.y-cy;return[cx+dx*cos-dy*sin, cy+dx*sin+dy*cos+bob];}
+  const nB=sBonds.length, shown=prog*nB;
+  ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='rgba(235,224,226,0.95)';
+  sBonds.forEach((b,idx)=>{
+    if(idx>shown) return;
+    let f=1; if(idx>shown-1) f=Math.max(0,shown-idx);
+    const A=sAtoms[b[0]],B=sAtoms[b[1]],order=b[2]||1;
+    let [ax,ay]=tp(A); let [bx,by]=tp(B);
+    bx=ax+(bx-ax)*f; by=ay+(by-ay)*f;
+    ctx.lineWidth=2.4;
+    if(order===2){
+      const dx=bx-ax,dy=by-ay,len=Math.hypot(dx,dy)||1,ox=-dy/len*2.8,oy=dx/len*2.8;
+      line(ax+ox,ay+oy,bx+ox,by+oy); line(ax-ox,ay-oy,bx-ox,by-oy);
+    } else line(ax,ay,bx,by);
+  });
+  const la=Math.max(0,Math.min(1,(prog-0.5)/0.5));
+  sAtoms.forEach(a=>{ if(a.el==='C') return;
+    const [x,y]=tp(a);
+    ctx.globalAlpha=la;
+    ctx.fillStyle='#160a0e'; ctx.beginPath(); ctx.arc(x,y,9,0,7); ctx.fill(); // knockout disc
+    ctx.fillStyle=HET[a.el]; ctx.font='700 13px "JetBrains Mono",monospace';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(a.el,x,y+0.5);
+    ctx.globalAlpha=1;
+  });
+}
+function drawProc(){
+  atoms.forEach(a=>{a.x+=(a.tx-a.x)*0.12;a.y+=(a.ty-a.y)*0.12;a.alpha+=(a.talpha-a.alpha)*0.08;});
+  ctx.lineWidth=3; ctx.lineCap='round';
+  bonds.forEach(([i,j])=>{const A=atoms[i],B=atoms[j];if(!A||!B)return;
+    const fx=Math.sin(t+A.ph)*1.2,fy=Math.cos(t+A.ph)*1.2;
+    ctx.strokeStyle='rgba(220,205,208,'+(0.55*Math.min(A.alpha,B.alpha))+')';
+    line(A.x+fx,A.y+fy,B.x+Math.sin(t+B.ph)*1.2,B.y+Math.cos(t+B.ph)*1.2);});
+  atoms.forEach(a=>{const fx=Math.sin(t+a.ph)*1.2,fy=Math.cos(t+a.ph)*1.2;
+    const R=a.type==='C'?6:7.5,x=a.x+fx,y=a.y+fy;
+    const g=ctx.createRadialGradient(x-2,y-2,1,x,y,R),base=ATOMCOL[a.type];
+    g.addColorStop(0,'#ffffff'); g.addColorStop(0.25,base); g.addColorStop(1,base);
+    ctx.globalAlpha=a.alpha; ctx.fillStyle=g;
+    ctx.beginPath();ctx.arc(x,y,R,0,7);ctx.fill(); ctx.globalAlpha=1;});
+}
+function drawMol(){
+  t+=0.016;
+  ctx.clearRect(0,0,CW,CH);
+  if(renderMode==='struct') drawStruct(); else drawProc();
+  requestAnimationFrame(drawMol);
+}
+
+/* ---------------- render all ---------------- */
+function update(fromInput){
+  // slider read-outs + over styling
+  Object.keys(LABELS).forEach(k=>{
+    const val=state[k];
+    document.getElementById('v_'+k).textContent=(k==='logp')?val.toFixed(1):Math.round(val);
+    const sl=document.getElementById('s_'+k); sl.value=val;
+    sl.classList.toggle('over', val>LIMITS[k]);
+  });
+  const dl=drugLikeness(state), ba=bioavailability(state), viol=violations(state);
+  // gauges
+  drawGauge(document.getElementById('g1'),dl, dlTier(dl)[1]);
+  drawGauge(document.getElementById('g2'),ba/100, baTier(ba)[1]);
+  document.getElementById('g1val').textContent=Math.round(dl*100)+'%';
+  document.getElementById('g2val').textContent=Math.round(ba)+'%';
+  const dt=dlTier(dl),bt=baTier(ba);
+  document.getElementById('g1tier').textContent=dt[0]; document.getElementById('g1tier').style.color=dt[1];
+  document.getElementById('g2tier').textContent=bt[0]; document.getElementById('g2tier').style.color=bt[1];
+  // checks
+  const checksEl=document.getElementById('checks');
+  checksEl.innerHTML=lipinski(state).map(r=>`<div class="chk ${r.pass?'pass':'fail'}">
+      <span class="mk">${r.pass?'✓':'✕'}</span><span>${r.k}</span><span class="v">${r.v}</span></div>`).join('');
+  // radar
+  drawRadar(state);
+  // verdict
+  const goalMet = viol===0 && ba>=70;
+  const vEl=document.getElementById('verdict');
+  if(goalMet){ vEl.className='verdict ok';
+    vEl.innerHTML=`<div class="ic">✓</div><div><b>Goal met — strong oral drug candidate.</b>
+      <small>0 violations &middot; ${Math.round(dl*100)}% drug-like &middot; ${Math.round(ba)}% bioavailability. Log it!</small></div>`;
+  } else { vEl.className='verdict warn';
+    let why=[]; if(viol>0)why.push(`${viol} rule violation${viol>1?'s':''}`); if(ba<70)why.push(`bioavailability ${Math.round(ba)}% (<70%)`);
+    vEl.innerHTML=`<div class="ic">!</div><div><b>Not there yet.</b><small>${why.join(' &middot; ')} — keep tuning (aim LogP ~1&ndash;3, TPSA &lt;90).</small></div>`;
+  }
+  // molecule label + build
+  const label = activePreset || (activeChallenge? activeChallenge.drug : 'Custom molecule');
+  const sub = activePreset && STRUCT[activePreset] ? 'real structure' : (activeChallenge?'candidate to correct':'AI-built candidate');
+  document.getElementById('molName').textContent=label;
+  document.getElementById('molSub').innerHTML=`${sub} &middot; MW ${Math.round(state.mw)} &middot; ${viol} viol.`;
+  setMolecule();
+  renderChallengeStatus();
+  if(fromInput){ const sy=document.getElementById('synth'); sy.classList.remove('scanning'); void sy.offsetWidth; sy.classList.add('scanning'); }
+}
+
+/* ---------------- challenges ---------------- */
+const challengesEl=document.getElementById('challenges');
+function renderChallengeChips(){
+  challengesEl.innerHTML='';
+  CHALLENGES.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='chip cchip'+(activeChallenge&&activeChallenge.id===c.id?' on':'');
+    b.textContent=c.title;
+    b.onclick=()=>loadChallenge(c);
+    challengesEl.appendChild(b);
+  });
+}
+function loadChallenge(c){
+  activeChallenge=c; activePreset=null;
+  Object.keys(state).forEach(k=>state[k]=c.start[k]);
+  renderChallengeChips(); renderPresetChips(); syncSliders(); update(true);
+}
+function renderChallengeStatus(){
+  const el=document.getElementById('challengeStatus');
+  if(!activeChallenge){ el.innerHTML=''; return; }
+  const c=activeChallenge;
+  const d={viol:violations(state), ba:bioavailability(state), dl:drugLikeness(state)};
+  const results=c.goals.map(g=>({label:g.label, ok:g.ok(state,d)}));
+  const solved=results.every(r=>r.ok);
+  let html=`<div class="cstatus">
+    <div class="cdiag"><b style="color:var(--warn)">Diagnosis — ${c.drug}:</b> ${c.fault}</div>
+    <div class="cgoals">`+
+    results.map(r=>`<div class="chk ${r.ok?'pass':'fail'}"><span class="mk">${r.ok?'✓':'✕'}</span><span>${r.label}</span></div>`).join('')+
+    `</div><div class="chintline"><b>Hint:</b> ${c.hint}</div>`+
+    (c.method?`<details class="cmethod"><summary>&#9656; Show step-by-step method</summary><ol>${c.method.map(m=>`<li>${m}</li>`).join('')}</ol></details>`:'');
+  if(solved){
+    html+=`<div class="verdict ok csolved"><div class="ic">✓</div><div>
+      <b>Corrected! ${c.drug} now passes AI screening.</b>
+      <small>All targets met — ${Math.round(d.ba)}% bioavailability, ${d.viol} violations. Log your fix.</small></div></div>
+      <div class="btnrow"><button class="btn teal" id="logChall">&#43; Log corrected drug</button></div>`;
+  }
+  el.innerHTML=html;
+  if(solved){ const lb=document.getElementById('logChall'); if(lb) lb.onclick=()=>{
+    const dl=drugLikeness(state),ba=bioavailability(state),viol=violations(state);
+    obs.push({name:c.drug+' (corrected)', ...state, dl, ba, viol});
+    renderObs(); document.getElementById('observations').scrollIntoView({behavior:'smooth'});
+  };}
+}
+
+/* ---------------- observations ---------------- */
+function renderObs(){
+  const body=document.getElementById('obsBody');
+  if(obs.length===0){ body.innerHTML='<tr><td colspan="13" class="empty">No candidates logged yet. Design a molecule above and click "Log this candidate".</td></tr>'; return; }
+  body.innerHTML=obs.map((o,i)=>{
+    const g=o.viol===0&&o.ba>=70;
+    return `<tr>
+      <td class="mono">${i+1}</td><td>${o.name}</td>
+      <td class="mono">${Math.round(o.mw)}</td><td class="mono">${o.logp.toFixed(1)}</td>
+      <td class="mono">${o.hbd}</td><td class="mono">${o.hba}</td><td class="mono">${Math.round(o.tpsa)}</td><td class="mono">${o.rotb}</td>
+      <td class="mono">${o.viol}</td><td class="mono">${Math.round(o.dl*100)}%</td><td class="mono">${Math.round(o.ba)}%</td>
+      <td><span class="pill ${g?'g':'w'}">${g?'Drug candidate':'Needs work'}</span></td>
+      <td><button class="xbtn" data-i="${i}">&times;</button></td></tr>`;
+  }).join('');
+  body.querySelectorAll('.xbtn').forEach(b=>b.onclick=()=>{obs.splice(+b.dataset.i,1);renderObs();});
+}
+document.getElementById('logBtn').onclick=()=>{
+  const dl=drugLikeness(state),ba=bioavailability(state),viol=violations(state);
+  obs.push({name:activePreset?activePreset+' (tuned)':'Candidate-'+String.fromCharCode(65+obs.length),
+    ...state, dl, ba, viol});
+  renderObs();
+  document.getElementById('observations').scrollIntoView({behavior:'smooth'});
+};
+document.getElementById('clearObs').onclick=()=>{obs=[];renderObs();};
+document.getElementById('resetBtn').onclick=()=>{state={mw:300,logp:2.0,hbd:2,hba:4,tpsa:70,rotb:4};activePreset=null;activeChallenge=null;renderChallengeChips();renderPresetChips();syncSliders();update(true);};
+
+/* ---------------- report ---------------- */
+document.getElementById('genBtn').onclick=()=>{
+  if(studentWords()<400){ const w=document.getElementById('wordWarn'); w.style.display='block';
+    w.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  document.getElementById('wordWarn').style.display='none';
+  const name=document.getElementById('rName').value||'________________';
+  const roll=document.getElementById('rRoll').value||'—';
+  const date=document.getElementById('rDate').value||new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('docMeta').innerHTML=
+    `<span><b>Student:</b> ${name}</span><span><b>Class/Roll:</b> ${roll}</span><span><b>Date:</b> ${date}</span>`;
+  // best candidate = highest (dl*ba) among logged, else current
+  let best=null;
+  if(obs.length){ best=obs.reduce((a,b)=>(a.dl*a.ba>=b.dl*b.ba?a:b)); }
+  else { const dl=drugLikeness(state),ba=bioavailability(state); best={name:document.getElementById('rMol').value||'current molecule',...state,dl,ba,viol:violations(state)}; }
+  const bn=document.getElementById('rMol').value||best.name;
+  document.getElementById('docBest').innerHTML=
+    `<b>${bn}</b> — MW ${Math.round(best.mw)} Da, LogP ${best.logp.toFixed(1)}, HBD ${best.hbd}, HBA ${best.hba}, TPSA ${Math.round(best.tpsa)} Å², rotatable bonds ${best.rotb}. `+
+    `Predicted drug-likeness <b>${Math.round(best.dl*100)}%</b>, predicted oral bioavailability <b>${Math.round(best.ba)}%</b>, with <b>${best.viol}</b> rule violation(s).`;
+  // table
+  if(obs.length){
+    document.getElementById('docTable').innerHTML=
+      `<div class="tablewrap"><table class="rtab"><thead><tr><th>#</th><th>Candidate</th><th>MW</th><th>LogP</th><th>HBD</th><th>HBA</th><th>TPSA</th><th>RotB</th><th>Viol.</th><th>Drug-like</th><th>Bioavail.</th></tr></thead><tbody>`+
+      obs.map((o,i)=>`<tr><td>${i+1}</td><td>${o.name}</td><td>${Math.round(o.mw)}</td><td>${o.logp.toFixed(1)}</td><td>${o.hbd}</td><td>${o.hba}</td><td>${Math.round(o.tpsa)}</td><td>${o.rotb}</td><td>${o.viol}</td><td>${Math.round(o.dl*100)}%</td><td>${Math.round(o.ba)}%</td></tr>`).join('')+
+      `</tbody></table></div>`;
+  } else { document.getElementById('docTable').innerHTML='<p class="rp" style="color:#888">No candidates were logged in the observation table.</p>'; }
+  const gv=id=>document.getElementById(id).value.trim()||'—';
+  document.getElementById('docPrin').textContent=gv('rPrin');
+  document.getElementById('docMethod').textContent=gv('rMethod');
+  document.getElementById('docObs').textContent=gv('rObs');
+  document.getElementById('docResult').textContent=gv('rResult');
+  document.getElementById('docDisc').textContent=gv('rDisc');
+  document.getElementById('docConc').textContent=gv('rConc');
+  // molecule snapshot (composited onto the dark synthesizer panel)
+  try{ document.getElementById('docMol').src=molImage();
+       document.getElementById('docMol').style.display='block';
+       document.getElementById('docMolCap').style.display='block'; }catch(e){}
+  // attached question paper
+  if(paperAdded && currentPaper){
+    document.getElementById('docPaperCode').textContent=currentPaper.code;
+    document.getElementById('docPaper').innerHTML=buildPaperHTML(true);
+    document.getElementById('docPaperWrap').style.display='block';
+  } else { document.getElementById('docPaperWrap').style.display='none'; }
+  document.getElementById('report').style.display='block';
+  document.getElementById('printBtn').style.display='inline-block';
+  document.getElementById('report').scrollIntoView({behavior:'smooth'});
+};
+document.getElementById('printBtn').onclick=()=>window.print();
+
+/* ---------------- word count (min 400 from student) ---------------- */
+const WRITE_IDS=['rPrin','rMethod','rObs','rResult','rDisc','rConc'];
+function studentWords(){
+  const txt=WRITE_IDS.map(id=>document.getElementById(id).value).join(' ').trim();
+  return (txt.match(/\S+/g)||[]).length;
+}
+function updateWordCount(){
+  const w=studentWords(), el=document.getElementById('wordCount');
+  el.textContent=`Your writing: ${w} / 400 words minimum`+(w>=400?' ✓ reached':'');
+  el.className='wordcount '+(w>=400?'ok':'no');
+  if(w>=400) document.getElementById('wordWarn').style.display='none';
+}
+WRITE_IDS.forEach(id=>document.getElementById(id).addEventListener('input',updateWordCount));
+
+/* ---------------- molecule snapshot for the report ---------------- */
+function molImage(){
+  const off=document.createElement('canvas'); off.width=canvas.width; off.height=canvas.height;
+  const octx=off.getContext('2d');
+  octx.fillStyle='#160a0e'; octx.fillRect(0,0,off.width,off.height);
+  octx.drawImage(canvas,0,0);
+  return off.toDataURL('image/png');
+}
+
+/* ---------------- shuffled question paper ---------------- */
+let paperAdded=false;
+function shuffle(arr,rnd){arr=arr.slice();for(let i=arr.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+function buildPaperHTML(forReport){
+  const p=currentPaper; if(!p) return '';
+  const tasks=p.tasks.map((c,i)=>{const s=c.start;
+    return `<div class="task"><b>${String.fromCharCode(65+i)}. Correct ${c.drug}.</b> ${c.fault}
+      <div class="vals">Given &rarr; MW ${s.mw}, LogP ${s.logp}, HBD ${s.hbd}, HBA ${s.hba}, TPSA ${s.tpsa}, RotB ${s.rotb}.
+      Targets &rarr; ${c.goals.map(g=>g.label).join('; ')}.</div></div>`;}).join('');
+  const qs=p.qs.map(q=>`<li>${q}</li>`).join('');
+  const head = forReport ? `<div class="vals" style="margin:0 0 8px">Paper code ${p.code}${p.name?(' · '+p.name):''} · Max marks 20</div>`
+    : `<div class="ph"><img src="data:image/png;base64,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" alt="Alizon OS" width="40" height="40" style="flex:none;object-fit:contain">
+        <div><div class="pt">Practical Examination &mdash; AI in Drug Discovery</div>
+          <div class="vals">Module 1 &middot; Unit 1 &middot; Foundations of AI in Pharmacy</div></div>
+        <div class="pc">Paper code: <b>${p.code}</b><br>${p.name?('Name: '+p.name+'<br>'):''}Max marks: 20</div></div>`;
+  return `<div class="${forReport?'paper rpaper':'paper'}">${head}
+    <p class="vals" style="margin:0 0 6px">Instructions: attempt all three parts using the Alizon OS Virtual E-Lab; log your candidates in the observation table.</p>
+    <h4>Part A &mdash; Correct the faulty candidates (2 &times; 5 = 10 marks)</h4>${tasks}
+    <h4>Part B &mdash; Design task (5 marks)</h4><ol><li>${p.design}</li></ol>
+    <h4>Part C &mdash; Viva / theory (5 marks)</h4><ol>${qs}</ol></div>`;
+}
+function renderPaper(){
+  document.getElementById('paperOut').innerHTML=buildPaperHTML(false);
+  const ap=document.getElementById('addPaper'); ap.style.display='inline-block';
+  ap.textContent=paperAdded?'✓ Paper attached to report':'+ Attach this paper to my report';
+}
+document.getElementById('genPaper').onclick=()=>{
+  const code=Math.floor(1000+Math.random()*9000);
+  const rnd=mulberry32((code*2654435761)>>>0);
+  currentPaper={code, name:document.getElementById('pName').value.trim(),
+    tasks:shuffle(CHALLENGES,rnd).slice(0,2), qs:shuffle(QBANK,rnd).slice(0,6), design:shuffle(DESIGN,rnd)[0]};
+  paperAdded=false; renderPaper();
+};
+document.getElementById('addPaper').onclick=()=>{ if(!currentPaper) return; paperAdded=true;
+  document.getElementById('addPaper').textContent='✓ Paper attached to report'; };
+
+/* ---------------- init ---------------- */
+renderPresetChips(); renderChallengeChips();
+resizeCanvas(); window.addEventListener('resize',()=>{resizeCanvas();lastStructKey=null;setMolecule();});
+setMolecule(); drawMol(); update(false); renderObs();
+// re-measure after layout/fonts settle so the molecule always paints crisply (mobile-safe)
+function remeasure(){ resizeCanvas(); lastStructKey=null; setMolecule(); update(false); }
+window.addEventListener('load', remeasure);
+setTimeout(remeasure, 300); setTimeout(remeasure, 1200);
+</script>
+</body>
+</html>

@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alizon HR · Document Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ALIZON OS dark chrome */
+  --bg:#070810; --navy:#0D1024; --navy2:#1A1D2E;
+  --ink:#f5f4f6; --muted:#9a9db2;
+  --line:rgba(255,255,255,.09); --line-soft:rgba(255,255,255,.06);
+  --crimson:#D41820; --crimson-deep:#B1040E; --gold:#D9A441;
+  --gold-soft:rgba(217,164,65,.14); --crimson-soft:rgba(212,24,32,.14);
+  --pill:rgba(255,255,255,.05);
+  --glass:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+  --ui:'Inter',system-ui,sans-serif;
+  --display:'Source Serif Pro',Georgia,serif;
+  /* printed document palette — stays light, prints on white */
+  --burgundy:#702225; --burgundy-dark:#571A1C; --burgundy-tint:#F4E9E9;
+  --paper:#FFFFFF;
+  --serif:'Spectral',Georgia,serif;
+  --sans:'Archivo',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--ui);background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
+
+/* ── App shell ─────────────────────────────── */
+.app{display:flex;flex-direction:column;height:100vh}
+header.topbar{
+  background:rgba(13,16,36,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:14px;padding:10px 20px;flex-shrink:0
+}
+.brandmark{height:30px;width:auto}
+.brand-name{line-height:1.15}
+.brand-name b{display:block;font-family:var(--display);font-weight:600;letter-spacing:.01em;font-size:14.5px}
+.brand-name span{font-size:10px;color:var(--gold);letter-spacing:.16em;text-transform:uppercase}
+.topbar .spacer{flex:1}
+.actions{display:flex;gap:8px}
+button{font-family:var(--sans);cursor:pointer}
+.btn{
+  border:1px solid var(--line);background:var(--pill);color:var(--ink);
+  padding:9px 16px;border-radius:10px;font-size:13px;font-weight:600;
+  display:inline-flex;align-items:center;gap:7px;transition:background .15s,border-color .15s
+}
+.btn:hover{background:rgba(255,255,255,.1);border-color:rgba(217,164,65,.4)}
+.btn.primary{background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent;color:#fff;box-shadow:0 8px 22px rgba(212,24,32,.3)}
+.btn.primary:hover{background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));filter:brightness(1.12)}
+.btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn:focus-visible,.doc-tab:focus-visible,.nav-tab:focus-visible{
+  outline:2px solid var(--gold);outline-offset:2px
+}
+a.btn{text-decoration:none}
+
+main{display:flex;flex:1;min-height:0}
+
+/* ── Form panel ────────────────────────────── */
+.panel{
+  width:400px;min-width:340px;background:var(--navy);border-right:1px solid var(--line);
+  display:flex;flex-direction:column;flex-shrink:0
+}
+.doc-tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+.doc-tab{
+  background:none;border:none;border-bottom:1px solid var(--line-soft);
+  padding:12px 6px;font-size:12.5px;font-weight:600;color:var(--muted);
+  letter-spacing:.01em
+}
+.doc-tab:nth-child(odd){border-right:1px solid var(--line-soft)}
+.doc-tab:nth-last-child(-n+2){border-bottom:none}
+.doc-tab.active{color:var(--gold);box-shadow:inset 0 -2px 0 var(--gold)}
+.form-scroll{overflow-y:auto;padding:18px 20px 40px;flex:1}
+fieldset{border:none;margin-bottom:22px}
+legend{
+  font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;width:100%
+}
+legend::after{content:'';flex:1;height:1px;background:var(--line-soft)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:5px}
+.field input,.field select,.field textarea{
+  width:100%;border:1px solid var(--line);border-radius:10px;padding:8px 10px;
+  font-family:var(--ui);font-size:13.5px;color:var(--ink);background:rgba(255,255,255,.04);outline:none
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+select option{background:var(--navy)}
+.field textarea{resize:vertical;min-height:64px;line-height:1.5}
+.hint{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.4}
+.money-note{
+  background:var(--gold-soft);border:1px solid rgba(217,164,65,.3);border-radius:10px;padding:8px 10px;
+  font-size:12px;color:#ecd9ab;line-height:1.45;margin-top:2px
+}
+.polgrid{display:grid;gap:7px;margin-top:2px}
+.polgrid label.pol{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--ink);font-weight:400;margin:0}
+.polgrid label.pol input{width:auto;margin-top:2px}
+
+/* ── Preview desk ──────────────────────────── */
+.desk{flex:1;overflow:auto;padding:34px;display:flex;justify-content:center;align-items:flex-start;
+  background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.08),transparent 60%),
+  radial-gradient(90% 60% at 90% 10%,rgba(217,164,65,.06),transparent 55%)}
+.paper-wrap{flex-shrink:0}
+
+/* ── The document (A4) ─────────────────────── */
+.paper{
+  width:794px;min-height:1123px;background:var(--paper);
+  box-shadow:0 0 0 1px rgba(255,255,255,.07),0 24px 60px rgba(0,0,0,.6);
+  padding:58px 72px 56px;position:relative;
+  font-family:var(--serif);font-size:15px;line-height:1.75;color:#1E1A1B;
+  display:flex;flex-direction:column
+}
+.watermark{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  pointer-events:none
+}
+.watermark img{width:420px;opacity:.035}
+.letterhead{display:flex;align-items:center;gap:18px;position:relative}
+.letterhead img{height:58px}
+.lh-name{flex:1}
+.lh-name .school{
+  font-family:var(--serif);font-weight:600;font-size:21.5px;letter-spacing:.015em;
+  color:var(--burgundy-dark);line-height:1.2
+}
+.lh-name .tag{
+  font-family:var(--sans);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:#8A8384;margin-top:4px
+}
+.lh-rule{margin-top:16px;border-top:2.5px solid var(--burgundy);position:relative}
+.lh-rule::after{content:'';display:block;border-top:1px solid var(--burgundy);margin-top:2px;opacity:.55}
+.meta-line{
+  display:flex;justify-content:space-between;font-family:var(--sans);
+  font-size:12.5px;color:#4A4546;margin:22px 0 6px;position:relative
+}
+.doc-title{
+  text-align:center;font-weight:600;font-size:17px;letter-spacing:.14em;
+  text-transform:uppercase;margin:26px 0 6px;color:#231D1E;position:relative
+}
+.doc-title::after{
+  content:'';display:block;width:64px;margin:10px auto 0;border-top:1.5px solid var(--burgundy)
+}
+.doc-body{position:relative;flex:1;margin-top:16px}
+.doc-body p{margin-bottom:15px;text-align:justify}
+.doc-body .salute{margin-bottom:15px}
+strong{font-weight:600}
+
+/* payslip table */
+table.slip{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0 14px;font-family:var(--sans)}
+table.slip th,table.slip td{border:1px solid #CFC8C8;padding:7px 12px;text-align:left}
+table.slip th{
+  background:#F7F1F1;font-weight:600;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--burgundy-dark)
+}
+table.slip td.num{text-align:right;font-variant-numeric:tabular-nums}
+table.slip tr.total td{font-weight:700;background:#FBF8F8}
+table.info{width:100%;border-collapse:collapse;font-size:13.5px;margin:4px 0 16px;font-family:var(--sans)}
+table.info td{padding:4.5px 0;vertical-align:top}
+table.info td.k{width:172px;color:#6B6465;font-size:12.5px}
+table.info td.v{font-weight:500}
+
+.sig-block{margin-top:44px;display:flex;justify-content:space-between;align-items:flex-end;position:relative}
+.sig .line{width:220px;border-top:1px solid #9B9394;margin-bottom:7px}
+.sig .name{font-weight:600}
+.sig .title,.sig .org{font-family:var(--sans);font-size:12.5px;color:#4A4546}
+.sysgen{max-width:250px;border:1.5px dashed #C9A96A;border-radius:10px;padding:11px 14px;font-family:var(--sans)}
+.sysgen .sg-b{font-size:9.5px;font-weight:700;letter-spacing:.14em;color:#7A0309;text-transform:uppercase}
+.sysgen .sg-t{font-size:9.5px;color:#8A8384;line-height:1.55;margin-top:4px;letter-spacing:.03em}
+.doc-footer{
+  margin-top:40px;padding-top:12px;border-top:1px solid #E2DBDB;
+  font-family:var(--sans);font-size:10.5px;color:#8A8384;text-align:center;
+  letter-spacing:.03em;line-height:1.6;position:relative
+}
+
+/* ── Views, dashboard, employee table ─────── */
+.nav-tabs{display:flex;gap:2px;margin-left:18px}
+.nav-tab{
+  border:1px solid transparent;background:none;padding:8px 13px;border-radius:100px;
+  font-size:13px;font-weight:600;color:var(--muted);transition:.2s
+}
+.nav-tab:hover{color:var(--gold)}
+.nav-tab.active{background:var(--gold-soft);color:var(--gold);border-color:rgba(217,164,65,.3)}
+.view{flex:1;overflow:auto;padding:26px 30px;display:none}
+.view.on{display:block}
+.view h2{font-family:var(--display);font-size:20px;font-weight:600;margin-bottom:4px}
+.view .sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:22px}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.card .big{font-size:26px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums}
+.card .lbl{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.panel-box{background:var(--glass);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px}
+.panel-box h3{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px}
+.bar-row .bl{width:210px;color:var(--ink)}
+.bar-row .bar{flex:1;height:9px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden}
+.bar-row .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--crimson),var(--gold));border-radius:5px}
+.bar-row .bn{width:34px;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+table.emp{width:100%;border-collapse:collapse;font-size:13px;background:transparent}
+table.emp th,table.emp td{padding:9px 11px;border-bottom:1px solid var(--line-soft);text-align:left;white-space:nowrap}
+table.emp th{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:var(--navy2);position:sticky;top:0}
+table.emp tr:hover td{background:rgba(255,255,255,.03)}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.pill.active{background:rgba(46,139,106,.18);color:#6fd0ab}.pill.former{background:var(--pill);color:var(--muted)}
+.pill.intern{background:var(--gold-soft);color:var(--gold)}
+.mini{padding:5px 10px;font-size:12px;border-radius:6px}
+.emp-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.emp-toolbar input[type=search]{border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:13px;min-width:220px;font-family:var(--ui);background:rgba(255,255,255,.04);color:var(--ink);outline:none}
+.emp-toolbar input[type=search]:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+.table-wrap{border:1px solid var(--line);border-radius:10px;overflow:auto;max-height:calc(100vh - 300px)}
+.modal-bg{position:fixed;inset:0;background:rgba(4,6,16,.65);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal-bg.on{display:flex}
+.modal{background:var(--navy2);border:1px solid var(--line);border-radius:16px;padding:22px 24px;width:640px;max-width:100%;max-height:90vh;overflow:auto}
+.modal h3{font-size:15px;font-weight:700;margin-bottom:14px}
+.modal .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.log-item{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--line-soft)}
+.log-item .t{color:var(--muted)}
+.empty{color:var(--muted);font-size:13px;padding:14px 0}
+
+
+@media (max-width:1120px){
+  .paper-wrap{transform:scale(.72);transform-origin:top center}
+}
+@media (max-width:900px){
+  main{flex-direction:column}
+  .panel{width:100%;min-width:0;max-height:52vh;border-right:none;border-bottom:1px solid var(--line)}
+  .desk{padding:20px 8px}
+  .paper-wrap{transform:scale(.44);transform-origin:top center}
+}
+
+/* ── Print: only the document ──────────────── */
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff}
+  header.topbar,.panel,.view,.modal-bg{display:none!important}
+  main{display:block}
+  .desk{padding:0;overflow:visible;display:block}
+  .paper-wrap{transform:none!important}
+  .paper{width:210mm;min-height:296mm;box-shadow:none;padding:18mm 19mm 16mm}
+  .watermark{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .lh-rule,.doc-title::after{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  table.slip th,table.slip tr.total td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (prefers-reduced-motion:no-preference){
+  .paper{transition:opacity .2s}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <img class="brandmark" id="brandLogo" alt="Alizon logo">
+  <div class="brand-name">
+    <b>Alizon School of Medical &amp; Digital Intelligence</b>
+    <span>HR Document Studio</span>
+  </div>
+  <nav class="nav-tabs">
+    <button class="nav-tab" data-view="dash">Dashboard</button>
+    <button class="nav-tab" data-view="emp">Employees</button>
+    <button class="nav-tab" data-view="inbox">Inbox <span id="inboxBadge" style="display:none;background:var(--crimson);color:#fff;border-radius:100px;padding:1px 8px;font-size:10.5px;font-weight:700;margin-left:4px"></span></button>
+    <button class="nav-tab active" data-view="docs">Document Studio</button>
+  </nav>
+  <div class="spacer"></div>
+  <div class="actions">
+    <a class="btn" href="alizon-staff-portal.html" title="Employee self-service portal">Staff Portal</a>
+    <a class="btn" href="admin-portal.html" title="Back to the ALIZON OS admin portal">← Admin Portal</a>
+    <button class="btn" id="btnWord" title="Download an editable Word file">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      Word (.doc)
+    </button>
+    <button class="btn primary" id="btnPdf" title="Opens print dialog — choose 'Save as PDF'">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+      Download PDF
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- ── DASHBOARD ── -->
+  <section class="view" id="view-dash">
+    <h2>HR Dashboard</h2>
+    <div class="sub">Alizon School of Medical &amp; Digital Intelligence — Indian Chapter (HQ Thiruvananthapuram) &amp; USA Chapter</div>
+    <div class="cards" id="dashCards"></div>
+    <div class="two-col">
+      <div class="panel-box"><h3>Headcount by office</h3><div id="dashOffice"></div></div>
+      <div class="panel-box"><h3>Headcount by employment type</h3><div id="dashType"></div></div>
+    </div>
+    <div class="panel-box"><h3>Recent documents generated</h3><div id="dashLog"><div class="empty">No documents generated yet in this session. Downloads from the Document Studio appear here.</div></div></div>
+  </section>
+
+  <!-- ── EMPLOYEE MASTER ── -->
+  <section class="view" id="view-emp">
+    <h2>Employee Master Sheet</h2>
+    <div class="sub">The single source of truth for every employee and intern. Export it as CSV to open in Excel, or import an existing sheet.</div>
+    <div class="emp-toolbar">
+      <input type="search" id="empSearch" placeholder="Search name, ID, department…">
+      <select id="empFilterOffice" class="mini" style="border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);border-radius:10px;font-family:inherit;padding:8px 10px">
+        <option value="">All offices</option>
+        <option value="tvm">Thiruvananthapuram (HQ)</option>
+        <option value="delhi">New Delhi</option>
+        <option value="blr">Bengaluru</option>
+        <option value="usa">USA Chapter</option>
+      </select>
+      <div style="flex:1"></div>
+      <button class="btn mini" id="btnImportCsv">Import CSV</button>
+      <input type="file" id="csvFile" accept=".csv" style="display:none">
+      <button class="btn mini" id="btnExportCsv">Download master sheet (CSV)</button>
+      <button class="btn primary mini" id="btnAddEmp">+ Add employee</button>
+    </div>
+    <div class="table-wrap">
+      <table class="emp">
+        <thead><tr>
+          <th>ID</th><th>Name</th><th>Office</th><th>Department</th><th>Designation</th>
+          <th>Type</th><th>Status</th><th>Access</th><th>Joined</th><th>Gross / mo</th><th></th>
+        </tr></thead>
+        <tbody id="empRows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── INBOX: staff requests & messages ── -->
+  <section class="view" id="view-inbox">
+    <h2>Staff Inbox</h2>
+    <div class="sub">Document requests and internal messages from the Staff Portal. Approving a request? Generate the document in the Document Studio, then mark it Ready.</div>
+
+    <h3 style="margin:18px 0 8px;font-size:15px;color:var(--gold)">Document requests</h3>
+    <div class="table-wrap">
+      <table class="emp">
+        <thead><tr><th>Date</th><th>Employee</th><th>Request</th><th>Note</th><th>Status</th><th style="min-width:280px">Action</th></tr></thead>
+        <tbody id="reqRows"></tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:26px 0 8px;font-size:15px;color:var(--gold)">Messages</h3>
+    <div style="display:grid;grid-template-columns:260px 1fr;gap:14px;align-items:start">
+      <div id="threadList" style="border:1px solid var(--line);border-radius:12px;overflow:hidden"></div>
+      <div style="border:1px solid var(--line);border-radius:12px;padding:14px;min-height:220px;display:flex;flex-direction:column">
+        <div id="threadView" style="flex:1;overflow-y:auto;max-height:320px;display:flex;flex-direction:column;gap:8px"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <input type="text" id="hrReply" placeholder="Reply as HR Office…" style="flex:1;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);border-radius:10px;font-family:inherit;padding:9px 12px;outline:none">
+          <button class="btn primary mini" id="hrReplyGo">Send</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EMPLOYEE MODAL ── -->
+  <div class="modal-bg" id="empModalBg">
+    <div class="modal">
+      <h3 id="empModalTitle">Add employee</h3>
+      <div class="row3">
+        <div class="field"><label>Employee ID</label><input id="m_empid"></div>
+        <div class="field"><label>Salutation</label>
+          <select id="m_salut"><option>Mr.</option><option>Ms.</option><option>Mrs.</option><option>Dr.</option></select></div>
+        <div class="field"><label>Pronouns</label>
+          <select id="m_pronoun"><option value="he">he/him</option><option value="she">she/her</option><option value="they">they/them</option></select></div>
+      </div>
+      <div class="field"><label>Full name</label><input id="m_name"></div>
+      <div class="row3">
+        <div class="field"><label>Office</label>
+          <select id="m_office"><option value="tvm">Thiruvananthapuram (HQ)</option><option value="delhi">New Delhi</option><option value="blr">Bengaluru</option><option value="usa">USA Chapter</option></select></div>
+        <div class="field"><label>Employment type</label>
+          <select id="m_emptype"><option value="fulltime">Full-time</option><option value="contract">Contract</option><option value="intern_paid">Intern (paid)</option><option value="intern_unpaid">Intern (unpaid)</option></select></div>
+        <div class="field"><label>Status</label>
+          <select id="m_status"><option value="current">Current</option><option value="former">Former</option></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Department</label><input id="m_dept"></div>
+        <div class="field"><label>Designation</label><input id="m_desig"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Reporting manager</label><input id="m_manager"></div>
+        <div class="field"><label>Date of joining</label><input id="m_doj" type="date"></div>
+      </div>
+      <div class="row3">
+        <div class="field"><label>Basic / stipend</label><input id="m_basic" type="number" value="0"></div>
+        <div class="field"><label>DA</label><input id="m_da" type="number" value="0"></div>
+        <div class="field"><label>HRA</label><input id="m_hra" type="number" value="0"></div>
+      </div>
+      <div class="row3">
+        <div class="field"><label>Special allowance</label><input id="m_spl" type="number" value="0"></div>
+        <div class="field"><label>Bank (last 4)</label><input id="m_bank"></div>
+        <div class="field"><label>PAN / SSN</label><input id="m_pan"></div>
+      </div>
+      <div class="field"><label>Email (optional — can be added later)</label><input id="m_email" type="email" placeholder="name@alizongov.com"></div>
+      <div style="border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:4px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">Portal access — grant only what this employee needs</div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13px">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac_staff" checked> Staff Portal (self-service)</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac_courses"> Courses &amp; content</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac_students"> Students &amp; fees</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac_eval"> Evaluation &amp; grievances</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac_hr"> HR Studio</label>
+        </div>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:9px" id="credNote">
+          Login credentials are auto-generated: <b style="color:var(--ink)">login = employee ID · password = employee ID</b>.
+          The employee can change the password later; enforcement switches on when portal sign-in is locked.
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="btnEmpCancel">Cancel</button>
+        <button class="btn primary" id="btnEmpSave">Save employee</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FORM PANEL ── -->
+  <aside class="panel">
+    <div class="doc-tabs" role="tablist">
+      <button class="doc-tab active" data-doc="salcert" role="tab">Salary Certificate</button>
+      <button class="doc-tab" data-doc="slip" role="tab">Salary Slip</button>
+      <button class="doc-tab" data-doc="expcert" role="tab">Experience Certificate</button>
+      <button class="doc-tab" data-doc="recletter" role="tab">Recommendation Letter</button>
+      <button class="doc-tab" data-doc="callletter" role="tab">Call Letter (Interview / Joining)</button>
+      <button class="doc-tab" data-doc="joinletter" role="tab">Appointment Letter (with Policies)</button>
+    </div>
+
+    <div class="form-scroll">
+      <fieldset>
+        <legend>Employee</legend>
+        <div class="row">
+          <div class="field"><label>Office / chapter</label>
+            <select id="f_office">
+              <option value="tvm" selected>India — Thiruvananthapuram (HQ, Indian Chapter)</option>
+              <option value="delhi">India — New Delhi</option>
+              <option value="blr">India — Bengaluru</option>
+              <option value="usa">USA Chapter</option>
+            </select>
+          </div>
+          <div class="field"><label>Employment type</label>
+            <select id="f_emptype">
+              <option value="fulltime" selected>Full-time employee</option>
+              <option value="contract">Contract staff</option>
+              <option value="intern_paid">Intern (paid stipend)</option>
+              <option value="intern_unpaid">Intern (unpaid)</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Salutation</label>
+            <select id="f_salut"><option>Mr.</option><option>Ms.</option><option>Mrs.</option><option>Dr.</option></select>
+          </div>
+          <div class="field"><label>Pronouns</label>
+            <select id="f_pronoun">
+              <option value="he">he / him / his</option>
+              <option value="she">she / her / her</option>
+              <option value="they">they / them / their</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label id="lbl_name">Full name</label><input id="f_name" value="Anjali Menon" autocomplete="off"></div>
+        <div class="field" id="wrap_candaddr"><label>Candidate address (call / appointment letter)</label>
+          <textarea id="f_candaddr">14/223, Sree Nivas, Pattom P.O., Thiruvananthapuram, Kerala 695004</textarea>
+        </div>
+        <div class="row" id="row_id_dept">
+          <div class="field"><label>Employee ID</label><input id="f_empid" value="ASMDI-0142"></div>
+          <div class="field"><label>Department</label><input id="f_dept" value="Digital Health Sciences"></div>
+        </div>
+        <div class="row" id="row_desig_mgr">
+          <div class="field"><label id="lbl_desig">Designation</label><input id="f_desig" value="Assistant Professor"></div>
+          <div class="field" id="wrap_manager"><label>Reporting manager</label><input id="f_manager" value="Dr. Meera Nair, Dean of Faculty"></div>
+        </div>
+        <div class="row" id="row_dates">
+          <div class="field"><label>Date of joining</label><input id="f_doj" type="date" value="2021-06-01"></div>
+          <div class="field" id="wrap_dol"><label>Last working day</label><input id="f_dol" type="date" value="2026-05-31"></div>
+        </div>
+        <div class="field" id="wrap_current">
+          <label>Employment status</label>
+          <select id="f_current">
+            <option value="current">Currently employed</option>
+            <option value="former">Formerly employed (relieved)</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset id="fs_salary">
+        <legend>Salary</legend>
+        <div class="row">
+          <div class="field"><label>Currency</label>
+            <select id="f_currency">
+              <option value="INR" selected>INR ₹ (Indian words)</option>
+              <option value="USD">USD $</option>
+              <option value="AED">AED</option>
+              <option value="EUR">EUR €</option>
+              <option value="GBP">GBP £</option>
+            </select>
+          </div>
+          <div class="field" id="wrap_month"><label>Salary month</label><input id="f_month" type="month" value="2026-06"></div>
+        </div>
+        <div class="field" id="wrap_autotax">
+          <label>Statutory deductions (India)</label>
+          <select id="f_autotax">
+            <option value="auto" selected>Auto-calculate — PF, PT &amp; TDS</option>
+            <option value="manual">Enter manually</option>
+          </select>
+          <div class="hint" id="autotaxHint"></div>
+        </div>
+        <div class="field" id="wrap_pfcap">
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="checkbox" id="f_pfcap" style="width:auto" checked>
+            <label for="f_pfcap" style="margin:0">Cap EPF at statutory ceiling (₹1,800 on ₹15,000 basic)</label>
+          </div>
+        </div>
+        <div id="grp_slip_rows">
+          <div class="row">
+            <div class="field"><label id="lbl_basic">Basic pay</label><input id="f_basic" type="number" value="52000"></div>
+            <div class="field" id="wrap_da"><label>Dearness allowance</label><input id="f_da" type="number" value="8000"></div>
+          </div>
+          <div class="row" id="row_hra_spl">
+            <div class="field"><label>House rent allowance</label><input id="f_hra" type="number" value="15600"></div>
+            <div class="field"><label>Special allowance</label><input id="f_spl" type="number" value="9400"></div>
+          </div>
+          <div class="row" id="row_pf">
+            <div class="field"><label id="lbl_pf">Provident fund (EPF)</label><input id="f_pf" type="number" value="1800"></div>
+            <div class="field" id="wrap_pt"><label>Professional tax</label><input id="f_pt" type="number" value="208"></div>
+          </div>
+          <div class="row" id="row_tds">
+            <div class="field"><label id="lbl_tds">Income tax (TDS)</label><input id="f_tds" type="number" value="4300"></div>
+            <div class="field"><label>Other deductions</label><input id="f_othded" type="number" value="0"></div>
+          </div>
+          <div class="row" id="row_days">
+            <div class="field"><label>Paid days</label><input id="f_paiddays" type="number" value="30"></div>
+            <div class="field"><label>LOP days</label><input id="f_lop" type="number" value="0"></div>
+          </div>
+          <div class="row" id="row_bank">
+            <div class="field"><label>Bank (last 4 digits)</label><input id="f_bank" value="XXXX 4821"></div>
+            <div class="field" id="wrap_pan"><label>PAN</label><input id="f_pan" value="ABCPM1234K"></div>
+          </div>
+        </div>
+        <div class="money-note" id="netPreview"></div>
+      </fieldset>
+
+      <fieldset id="fs_purpose">
+        <legend>Purpose &amp; content</legend>
+        <div class="field" id="wrap_purpose"><label>Purpose of certificate</label>
+          <select id="f_purpose">
+            <option value="visa">Visa / embassy submission</option>
+            <option value="bank">Bank loan application</option>
+            <option value="university">University / higher-studies application</option>
+            <option value="general">General purpose</option>
+          </select>
+        </div>
+        <div class="field" id="wrap_duties"><label>Key duties &amp; responsibilities</label>
+          <textarea id="f_duties">teaching and curriculum development, clinical-informatics research supervision, and coordination of the digital health simulation lab</textarea>
+        </div>
+        <div class="field" id="wrap_projects"><label>Key projects / achievements</label>
+          <textarea id="f_projects">led the rollout of the institution's electronic assessment platform across three departments; co-authored two peer-reviewed publications with final-year students</textarea>
+        </div>
+        <div class="field" id="wrap_skills"><label>Skills demonstrated</label>
+          <textarea id="f_skills">clinical data analysis, academic mentoring, cross-departmental coordination, and scientific writing</textarea>
+        </div>
+        <div class="field" id="wrap_conduct"><label>Conduct remark</label>
+          <select id="f_conduct">
+            <option>excellent</option><option>very good</option><option>good</option><option>satisfactory</option>
+          </select>
+        </div>
+        <div class="field" id="wrap_relation"><label>Recommender's relationship</label>
+          <input id="f_relation" value="direct reporting manager and Head of Department">
+        </div>
+        <div class="field" id="wrap_strengths"><label>Strengths to highlight (recommendation)</label>
+          <textarea id="f_strengths">strong analytical ability, dedication to evidence-based teaching, excellent rapport with students, and a consistent record of delivering research outcomes on schedule</textarea>
+        </div>
+        <div class="field" id="wrap_recfor"><label>Recommended for</label>
+          <select id="f_recfor">
+            <option value="higher">Higher studies abroad</option>
+            <option value="employment">Employment</option>
+            <option value="research">Research position / fellowship</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset id="fs_call">
+        <legend>Call letter details</legend>
+        <div class="row">
+          <div class="field"><label>Letter type</label>
+            <select id="f_calltype">
+              <option value="interview" selected>Interview call</option>
+              <option value="joining">Joining / appointment call</option>
+            </select>
+          </div>
+          <div class="field"><label>Mode</label>
+            <select id="f_callmode">
+              <option value="inperson" selected>In person</option>
+              <option value="online">Online (video)</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field"><label id="lbl_calldate">Interview date</label><input id="f_calldate" type="date" value="2026-07-24"></div>
+          <div class="field"><label>Reporting time</label><input id="f_calltime" type="time" value="10:00"></div>
+        </div>
+        <div class="field"><label id="lbl_venue">Venue / meeting link</label>
+          <input id="f_venue" value="HR Conference Room, Alizon Campus, Thiruvananthapuram">
+        </div>
+        <div class="field"><label>Contact person &amp; phone</label>
+          <input id="f_callcontact" value="Ms. Rekha S., HR Executive · +91 471 000 0000">
+        </div>
+        <div class="field"><label>Documents to bring / keep ready</label>
+          <textarea id="f_calldocs">a printed copy of this letter, updated résumé, original educational certificates with one set of photocopies, valid government-issued photo ID, and two recent passport-size photographs</textarea>
+        </div>
+        <div class="field" id="wrap_offerpay"><label>Offered salary line (joining letter, optional)</label>
+          <input id="f_offerpay" value="as per the terms communicated in your offer of appointment">
+          <div class="hint">Shown only in the joining letter. Write the exact CTC here if you want it stated.</div>
+        </div>
+      </fieldset>
+
+      <fieldset id="fs_join">
+        <legend>Joining letter &amp; policies</legend>
+        <div class="row">
+          <div class="field"><label>Date of joining</label><input id="f_jdate" type="date" value="2026-08-03"></div>
+          <div class="field"><label>Probation (months)</label><input id="f_probation" type="number" value="6"></div>
+        </div>
+        <div class="field"><label>Notice period</label>
+          <input id="f_notice" value="thirty (30) days during probation and sixty (60) days after confirmation">
+        </div>
+        <div class="field"><label>Working hours</label>
+          <input id="f_workhours" value="9:00 AM to 5:00 PM, Monday to Saturday, with second Saturdays off">
+        </div>
+        <div class="field"><label>Leave entitlement</label>
+          <textarea id="f_leaves">12 days casual leave, 10 days sick leave and 15 days earned leave per completed year of service, besides notified institutional holidays</textarea>
+        </div>
+        <div class="field"><label>Documents to submit at joining</label>
+          <textarea id="f_joindocs">the signed duplicate copy of this letter, original educational and experience certificates with one set of photocopies, relieving letter from the previous employer (if applicable), PAN and Aadhaar copies, bank account details, and four recent passport-size photographs</textarea>
+        </div>
+        <div class="field"><label>Accept &amp; return within (working days)</label><input id="f_acceptdays" type="number" value="7"></div>
+        <div class="field"><label>Company policies to include</label>
+          <div class="polgrid">
+            <label class="pol"><input type="checkbox" id="p_conduct" checked> Code of conduct &amp; discipline</label>
+            <label class="pol"><input type="checkbox" id="p_confid" checked> Confidentiality &amp; intellectual property</label>
+            <label class="pol"><input type="checkbox" id="p_it" checked> IT, data &amp; acceptable use</label>
+            <label class="pol"><input type="checkbox" id="p_posh" checked> Anti-harassment (POSH / EEO)</label>
+            <label class="pol"><input type="checkbox" id="p_coi" checked> Conflict of interest &amp; outside work</label>
+            <label class="pol"><input type="checkbox" id="p_transfer" checked> Place of posting &amp; transfer</label>
+            <label class="pol"><input type="checkbox" id="p_bgv" checked> Background verification</label>
+            <label class="pol"><input type="checkbox" id="p_media" checked> Social media &amp; public statements</label>
+          </div>
+          <div class="hint">All company policies are included by default — untick a clause to leave it out. Working hours, leave and notice period always appear as terms.</div>
+        </div>
+        <div class="field"><label class="pol" style="font-weight:600"><input type="checkbox" id="p_handbook" checked> Append the full <b>Institutional Policy Handbook</b> (Part B — makes the letter 7+ pages)</label>
+          <div class="hint">A complete code-of-conduct &amp; HR policy handbook (attendance, probation, confidentiality, POSH, IT/data security, performance, exit &amp; more), an onboarding-support directory, and a signed employee declaration page.</div>
+        </div>
+        <div class="field"><label>Onboarding &amp; support contacts (one per line — Role · Name · email · phone)</label>
+          <textarea id="f_onboard">Systems &amp; ID card · IT Helpdesk · it@alizongov.com · +91 471 000 0011
+Payroll, attendance &amp; bank setup · HR Assistant · hr@alizongov.com · +91 471 000 0022
+Academic induction · Office of the Dean · dean@alizongov.com · +91 471 000 0033</textarea>
+        </div>
+        <div class="field"><label>Additional custom clause (optional)</label>
+          <textarea id="f_custompolicy" placeholder="e.g. You will be required to serve a minimum commitment period of two years…"></textarea>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Issue details</legend>
+        <div class="row">
+          <div class="field"><label>Reference no.</label><input id="f_ref"></div>
+          <div class="field"><label>Date of issue</label><input id="f_date" type="date"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Signatory name</label><input id="f_signame" value="Dr. Thomas K. Varghese"></div>
+          <div class="field"><label>Signatory title</label><input id="f_sigtitle" value="Head — Human Resources"></div>
+        </div>
+        <div class="field"><label>Place</label><input id="f_place" value="Thiruvananthapuram, Kerala"></div>
+        <div class="field"><label>Seal / signature</label>
+          <div class="hint" style="margin-top:5px">Not required — every document carries a <b>“✓ System-Generated Document”</b> validation mark
+            beside the signatory, and the footer adds: <i>valid without seal or signature · for any clarification contact hr@alizongov.com</i>.</div>
+        </div>
+        <div class="field"><label>Footer line (address · phone · email)</label>
+          <input id="f_footer" value="Alizon School of Medical & Digital Intelligence · Head Office (Indian Chapter), Thiruvananthapuram, Kerala 695001, India · +91 471 000 0000 · hr@alizongov.com">
+          <div class="hint">Auto-fills when you change the office; you can still edit it.</div>
+        </div>
+      </fieldset>
+    </div>
+  </aside>
+
+  <!-- ── PREVIEW ── -->
+  <section class="desk">
+    <div class="paper-wrap">
+      <div class="paper" id="paper">
+        <div class="watermark"><img id="wmLogo" alt=""></div>
+        <div class="letterhead">
+          <img id="lhLogo" alt="Alizon logo">
+          <div class="lh-name">
+            <div class="school">Alizon School of Medical &amp; Digital Intelligence</div>
+            <div class="tag">Office of Human Resources</div>
+          </div>
+        </div>
+        <div class="lh-rule"></div>
+        <div class="meta-line"><span id="pRef"></span><span id="pDate"></span></div>
+        <div class="doc-title" id="pTitle"></div>
+        <div class="doc-body" id="pBody"></div>
+        <div class="sig-block">
+          <div class="sysgen">
+            <div class="sg-b">✓ System-Generated Document</div>
+            <div class="sg-t">Issued electronically via ALIZON OS.<br>Valid without a physical seal or signature.</div>
+          </div>
+          <div class="sig">
+            <div class="line"></div>
+            <div class="name" id="pSigName"></div>
+            <div class="title" id="pSigTitle"></div>
+            <div class="org">Alizon School of Medical &amp; Digital Intelligence</div>
+          </div>
+        </div>
+        <div class="doc-footer" id="pFooter"></div>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+<script>
+/* ── Logo (embedded) ── */
+const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANwAAADFCAMAAAAIXWzgAAAAP1BMVEUAAABsHB/9/f2WWV2zi46srKzj19fKsLH/f398fHywYmKzlZirfYGCNjuGPUL2qqoAAAAAAAAAAAAAAAAAAADqn5KUAAAAEHRSTlMA/g772gNcoAICA0ja/v4F0uOpRgAACC9JREFUeNrdXQl72yAMxQKMoT7+/78d+FicJnHgGUNlfVvXY1v7LPR0oghRUkhrcVMhF97cE5tXGrWtsHdUm/9lpFR0Q3Reba2STSPN/cDZoLYmiCTR3Q1dq5pFBkO3Up1nyVY2m3jV6VthEw9szWjudC71Xm9Bde19VGd/YWsaQd1NXDm9YLuP6vSDJx9yE0/u/dsrtuDJ78ApTpixeYOuFdMdDW7x5Io/p9DbQ3kTTrHCDO/BBU7hrTr94VDOqgv2yFm8WX1SXNP0vFV3pLgQYhJzq/usOOacMgk6UJx3Bz7E5Oy/D8EF1XG1us8+7gYhpv6muBBisuWUr4rjyyn6C51saau9JZ0wVh3FnMqZUxhmBzbqVM4hpmZ4KtsocMEd6Hua3FJx4Hcu40yOZQGaIk1uyQ7cbcHxcwcUyydMKw7x4CSzg6lTNBc4hViBS9BcCDEdK3AmBRwvTkkEx4tTUsFJcV+b41XFdKngvDug22qOUyksKUL5X8UkLuAoERyjfiTFpzwc3QGZIVV1hiwPdDaZURjFKemMwqiK6e2nbwDVcSHMZEYJnMLD6jRgdIyyA5KI6ng0texx0/hjFZOJ6gC+5FNxQChlYNI7sJjqeHAKQaoL7oADpzhMdTw4xXtkRHVMblVMkOp8iKmJBaeYAeIUDlanoTAlcAqPKpjB3AGH8jqhqmNyMEF3wEJ1HeoO9G1Vx6XioFFO4aC6Dg0xWeQ+UMHh/iEmB9XRrTlFvL+KdZu0tcdCTA4HEwwxedRTOkLdAQ9PDoaYPKrrhKStPZcQE8l9wk0t+lvUaEnPQvvpi457iEmTe0nDnFuevUVDzD+hOasXYF5f7SJEm+4CwAkLMf9AP3IB4VH9GCV30vvPtvPXHBZiDqY2tmUrVGsCnJefzn9OrbNPDHsHnV6Rfeb60eNrQ5SPEGbFWlEI3Uko+c2LDVJ5I5SQr6uFbpoXXsXF/B4ekB1UizDJ+2YhE+bQhQJisDp53bTu8kpgB4BTVK2QKjHq8C5ZJYeYkqrwPymZaj6AO6jgDPzjbPvkWMra9BDTJz7lsQlgXFQDjfJBFK6DUbK5zT+kJaQAXbg+i2BbbQfojJQdy/caALCt1/nTZxzKTgBMSOK5PX9KdgdF6RIaUvCcN4HFopIB2ATl1DvKS61iFuyJYC2p/dHSlFaALunokKxMPpWxujQfWQ4cWAp5YvPEikOxY2mh+uPvHy/xSmshQgGHE15iDE0JaWspVwBOGb48+qSmlpyKOHG40faSTKfEAYUayDlr4vHnu0zg3EGHcnzbiErglCLgQsaSb6LExf5nZbat66wzy9EDfUV8OGUeBdKRMw5FeiEuc4ct9mGVIEt4LtSdPOaqiP8GFTedC3dKBF8TpLjhcFVgVNZbYq7UQeMIX+wlZsahwBzRdMnVlQg7LnA3ntw1E6Hfq5gFwhOHduv1Sd9ZYE4dnrP4ai7f3EGBguyFQ9jHIWaBjngHpXFxpY9jprreD9DhmvCzVHDkYwqElRodIImigiNOuZ4q4WwgcjPN52dXwMdNF7mBBxd/6IwUWPMMKi5hMfqnWcwC/ru7/n6f/5t1ypWEjrgmPPS3ZewSqQ5dkQ28HswXsw5LL/9oNiDSaO7Vrj22y2OTXL2BVHcQsF1eONFXu4FdEFQaW4fVFlT6otGn71QEG5gN9AiH775VGWxdlk5jKqcEbNe3rLwhGCwbQBzUluzLtkhTB7/APk3OS7eImN9ap50Lb7rOf0kLZ7tN3Py+m1UXXkHX6cfX3kiWahh41/TEvbBWep6NU7O2NRTXCPEjjDBG/KyyvSPE9oFZ3v8l4R+K6eebzDdN5qDtFEBMcU83QnYy+l/jOP+eP5zfWd5uf8hBRokypp0BwgEamMYJ5ImkB+ZyuYYRitbQoYT8N6ZuTGQ/4wPgWch/q1aIppyM4ZpJempEaDYAFcrOqC/4xcQcBL8ejNx3PwcvHJeUswlX88BtWCfhiVbERzVYUWiYewO6PLhmCGdTX8omIY0Dl2GdV56hSMPTYDYQbsBUAteMKq7e5tnEYGzSzS8/2tSRPsrwNOoGHDz0kOdoxqCzZzqNVIMu42s3+tSt4GpGF9U5OdnUCdd8mj+LDqvmea7qzpRxc9rdoeJ6iE30qeZCNjksBGD7NvdrDbH/ISc6ypsN7I+6rqu6z5VFOBugJ1dSVXUfHUKWxdJdXdV9Wv1p0blD96u+aiofzPdVX4PdQtI5XGU+dO84Bc4GdJ6SZzYR9NK1Dp/JdMQtsKbgWk7RmW4hLU+qsupy9QYs5QrirlNd1hYxeDUmW1Hl1xIVm3enWmXG/EWYTuTtNOqq6J4nmLBg/ij39dGOqkkpdk/eiI2Yo7nDqSa6/UIHzA2o49a8rohu96IHhF7bpy89vmp2Nz722BG4S+J7sYnUWAXcoE7xdtRc3bwYrK4zQCaFIud8kEVMuYyO0KJQ9MwgiTrK22Jem15qTJnP8kez7WUFcBNWaUybPaOEbYM58/EJygZS5+pCGcLDkzWOZaLiBpnSpd3DUwXVNy5dp0TFSQ8MGN2Zt3y2YeVssawn2eKWyQ9s3GpdPRsGqMbh+mNJSwAY/Z1GFZ4HPOpJ8zrksAzZCCPULP0iUi5/rp9U76R/Fbn/4Okvi2VBXLStS2m8tU2nxh1Ju0c96lLZKsRR8KQKis7xsn620+76V0yiLa38RmWDXNfrs3kt+n0Q0f039XfA1DrfqAVPmavGtAJ8ntxcF4RrEnyF9Naxb9u5+Tovd9/yBuIMbSUw94YvJs0e2B6i0I4mD4q7vv4BQ+9toYDBBmYAAAAASUVORK5CYII=";
+['brandLogo','lhLogo','wmLogo'].forEach(id=>document.getElementById(id).src=LOGO);
+
+/* ── Helpers ── */
+const $ = id => document.getElementById(id);
+const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CUR = {INR:'₹',USD:'$',AED:'AED ',EUR:'€',GBP:'£'};
+const fmtNum = n => (+n||0).toLocaleString($('f_currency').value==='INR'?'en-IN':'en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const money = n => CUR[$('f_currency').value] + fmtNum(n);
+
+function longDate(iso){
+  if(!iso) return '—';
+  const d = new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+}
+function monthLabel(ym){
+  if(!ym) return '—';
+  const [y,m]=ym.split('-');
+  return new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+}
+
+/* Number → words (Indian system for INR, Western otherwise) */
+const ONES=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+const TENS=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+function two(n){return n<20?ONES[n]:TENS[Math.floor(n/10)]+(n%10?' '+ONES[n%10]:'');}
+function three(n){return (n>=100?ONES[Math.floor(n/100)]+' Hundred'+(n%100?' ':''):'')+(n%100?two(n%100):'');}
+function wordsIndian(n){
+  n=Math.round(+n||0); if(n===0)return 'Zero';
+  let out='';
+  const cr=Math.floor(n/1e7); n%=1e7;
+  const lk=Math.floor(n/1e5); n%=1e5;
+  const th=Math.floor(n/1e3); n%=1e3;
+  if(cr)out+=three(cr)+' Crore ';
+  if(lk)out+=three(lk)+' Lakh ';
+  if(th)out+=three(th)+' Thousand ';
+  if(n)out+=three(n);
+  return out.trim();
+}
+function wordsWestern(n){
+  n=Math.round(+n||0); if(n===0)return 'Zero';
+  const parts=[],units=['','Thousand','Million','Billion'];let i=0;
+  while(n>0){const c=n%1000;if(c)parts.unshift(three(c)+(units[i]?' '+units[i]:''));n=Math.floor(n/1000);i++;}
+  return parts.join(' ');
+}
+function amountWords(n){
+  const cur=$('f_currency').value;
+  const names={INR:'Rupees',USD:'US Dollars',AED:'UAE Dirhams',EUR:'Euros',GBP:'Pounds Sterling'};
+  const w = cur==='INR'?wordsIndian(n):wordsWestern(n);
+  return `${names[cur]} ${w} Only`;
+}
+
+/* ── State: which document ── */
+let doc='salcert';
+
+function isIntern(){return $('f_emptype').value.startsWith('intern');}
+function isUnpaid(){return $('f_emptype').value==='intern_unpaid';}
+function isUSA(){return $('f_office').value==='usa';}
+function payWord(){return isIntern()?'stipend':'salary';}
+
+function TITLE(){
+  if(doc==='slip') return isIntern()?'Stipend Slip':'Salary Slip';
+  if(doc==='salcert') return isIntern()?'Stipend Certificate':'Salary Certificate';
+  if(doc==='expcert') return isIntern()?'Internship Certificate':'Experience Certificate';
+  if(doc==='callletter') return $('f_calltype').value==='interview'?'Interview Call Letter':'Joining Call Letter';
+  if(doc==='joinletter') return isIntern()?'Internship Appointment Letter':'Letter of Appointment';
+  return 'Letter of Recommendation';
+}
+
+/* ── Offices ── */
+const OFFICES={
+  tvm:{label:'Thiruvananthapuram Campus (HQ — Indian Chapter)',place:'Thiruvananthapuram, Kerala',state:'kerala',cur:'INR',
+    footer:'Alizon School of Medical & Digital Intelligence · Head Office (Indian Chapter), Thiruvananthapuram, Kerala 695001, India · +91 471 000 0000 · hr@alizongov.com'},
+  delhi:{label:'New Delhi Campus',place:'New Delhi',state:'delhi',cur:'INR',
+    footer:'Alizon School of Medical & Digital Intelligence · Connaught Place, New Delhi 110001, India · +91 11 0000 0000 · hr@alizongov.com'},
+  blr:{label:'Bengaluru Campus',place:'Bengaluru, Karnataka',state:'karnataka',cur:'INR',
+    footer:'Alizon School of Medical & Digital Intelligence · Koramangala, Bengaluru, Karnataka 560034, India · +91 80 0000 0000 · hr@alizongov.com'},
+  usa:{label:'USA Chapter',place:'Newark, Delaware, USA',state:'usa',cur:'USD',
+    footer:'Alizon School of Medical & Digital Intelligence — USA Chapter · Newark, DE 19702, USA · +1 (302) 000-0000 · hr@alizongov.com'}
+};
+const HR_EMAIL='hr@alizongov.com';
+
+function refPrefix(){return {salcert:'SC',slip:'PS',expcert:'EC',recletter:'RL',callletter:'CL',joinletter:'AL'}[doc];}
+function autoRef(){
+  const y=new Date().getFullYear();
+  const off={tvm:'TVM',delhi:'DEL',blr:'BLR',usa:'USA'}[$('f_office').value];
+  const n=String(Math.floor(1000+Math.random()*9000));
+  return `ASMDI/${off}/HR/${refPrefix()}/${y}/${n}`;
+}
+
+/* pronouns */
+function pn(){
+  const p=$('f_pronoun').value;
+  return {he:{s:'he',o:'him',p:'his',S:'He',P:'His'},
+          she:{s:'she',o:'her',p:'her',S:'She',P:'Her'},
+          they:{s:'they',o:'them',p:'their',S:'They',P:'Their'}}[p];
+}
+
+/* ── Earnings / deductions ── */
+function gross(){
+  if(isIntern()) return isUnpaid()?0:(+$('f_basic').value||0);
+  return (+$('f_basic').value||0)+(+$('f_da').value||0)+(+$('f_hra').value||0)+(+$('f_spl').value||0);
+}
+function dedTotal(){return (+$('f_pf').value||0)+(+$('f_pt').value||0)+(+$('f_tds').value||0)+(+$('f_othded').value||0);}
+function net(){return gross()-dedTotal();}
+
+/* ── India statutory auto-calculation ──
+   EPF: 12% of (basic + DA); optional cap at ₹1,800 (₹15,000 wage ceiling).
+   Professional tax by state:
+     Kerala — ₹208/month for gross above ₹20,833 (₹1,250 per half-year), slabbed below.
+     Karnataka — ₹200/month for gross ₹25,000 and above (FY 2024-25 revision).
+     Delhi — no professional tax.
+   TDS: estimated under the new regime (FY 2025-26): std. deduction ₹75,000,
+   slabs 0-4L nil, 4-8L 5%, 8-12L 10%, 12-16L 15%, 16-20L 20%, 20-24L 25%, 24L+ 30%,
+   §87A rebate up to ₹12L taxable, plus 4% cess. Estimate only — actuals depend on
+   investments and declarations. */
+function calcPF(){
+  if(isIntern()) return 0; /* interns are typically outside EPF */
+  const base=(+$('f_basic').value||0)+(+$('f_da').value||0);
+  let pf=Math.round(base*0.12);
+  if($('f_pfcap').checked) pf=Math.min(pf,1800);
+  return pf;
+}
+function calcPT(){
+  const g=gross(), st=OFFICES[$('f_office').value].state;
+  if(st==='kerala'){
+    if(g<12000) return 0;
+    if(g<18000) return 100;
+    if(g<20834) return 167;
+    return 208;
+  }
+  if(st==='karnataka') return g>=25000?200:0;
+  return 0; /* delhi & others */
+}
+function calcTDS(){
+  const annual=gross()*12;
+  let taxable=Math.max(0, annual-75000);
+  if(taxable<=1200000) return 0; /* §87A rebate */
+  const slabs=[[400000,0],[800000,.05],[1200000,.10],[1600000,.15],[2000000,.20],[2400000,.25],[Infinity,.30]];
+  let tax=0, prev=0;
+  for(const [cap,rate] of slabs){
+    if(taxable>prev) tax+=(Math.min(taxable,cap)-prev)*rate;
+    prev=cap; if(taxable<=cap) break;
+  }
+  tax*=1.04; /* 4% health & education cess */
+  return Math.round(tax/12);
+}
+function applyAutoTax(){
+  if(isUSA()||$('f_autotax').value!=='auto'||isUnpaid()) return;
+  $('f_pf').value=calcPF();
+  $('f_pt').value=calcPT();
+  $('f_tds').value=calcTDS();
+}
+
+const PURPOSE={
+  visa:'for submission to the concerned embassy / visa authorities',
+  bank:'for submission to the concerned bank in support of a loan application',
+  university:'for submission to the concerned university in support of an application for higher studies',
+  general:'for whatever official purpose it may serve'
+};
+
+function orgName(){return 'Alizon School of Medical &amp; Digital Intelligence'+(isUSA()?' — USA Chapter':'');}
+function empNoun(){
+  return {fulltime:'a full-time employee',contract:'a member of the contract staff',
+          intern_paid:'an intern',intern_unpaid:'an intern'}[$('f_emptype').value];
+}
+
+/* ── Body builders ── */
+function bodySalCert(){
+  const g=pn(), full=`${esc($('f_salut').value)} ${esc($('f_name').value)}`;
+  const isCur=$('f_current').value==='current';
+  const tenure=isCur
+    ? `has been engaged as ${empNoun()} of ${orgName()} since <strong>${longDate($('f_doj').value)}</strong>`
+    : `was engaged as ${empNoun()} of ${orgName()} from <strong>${longDate($('f_doj').value)}</strong> to <strong>${longDate($('f_dol').value)}</strong>`;
+  const pay=isIntern()?'stipend':'salary';
+  const statutory=isUSA()
+    ? `${g.P} ${pay} is paid monthly by direct deposit, and all applicable withholdings are remitted as required under U.S. federal and state law.`
+    : `${g.P} ${pay} is paid monthly by direct bank transfer, and all statutory deductions (EPF, professional tax and income tax, where applicable) are remitted as required under Indian law.`;
+  return `
+  <p class="salute"><strong>TO WHOMSOEVER IT MAY CONCERN</strong></p>
+  <p>This is to certify that <strong>${full}</strong> (ID: <strong>${esc($('f_empid').value)}</strong>) ${tenure}, serving as <strong>${esc($('f_desig').value)}</strong> in the Department of ${esc($('f_dept').value)}, ${esc($('f_place').value)}.</p>
+  <table class="info">
+    <tr><td class="k">Monthly gross ${pay}</td><td class="v">${money(gross())} (${amountWords(gross())})</td></tr>
+    <tr><td class="k">Monthly net ${pay}</td><td class="v">${money(net())} (${amountWords(net())})</td></tr>
+    <tr><td class="k">Annual gross</td><td class="v">${money(gross()*12)} (${amountWords(gross()*12)})</td></tr>
+  </table>
+  <p>${statutory}</p>
+  <p>This certificate is issued at the request of the ${isIntern()?'intern':'employee'} ${PURPOSE[$('f_purpose').value]}. It does not constitute a contract of employment or a guarantee of future earnings.</p>`;
+}
+
+function bodySlip(){
+  const usa=isUSA();
+  const dPF=usa?'Retirement / 401(k)':'Provident fund (EPF)';
+  const dPT=usa?'State tax withholding':'Professional tax';
+  const dTDS=usa?'Federal tax withholding':'Income tax (TDS)';
+  let earnRows;
+  if(isIntern()){
+    earnRows=[['Monthly stipend',gross(),dTDS,+$('f_tds').value||0],
+              ['','',dPT,+$('f_pt').value||0],
+              ['','', 'Other deductions',+$('f_othded').value||0]];
+  }else{
+    earnRows=[
+      ['Basic pay',+$('f_basic').value||0,dPF,+$('f_pf').value||0],
+      ['Dearness allowance',+$('f_da').value||0,dPT,+$('f_pt').value||0],
+      ['House rent allowance',+$('f_hra').value||0,dTDS,+$('f_tds').value||0],
+      ['Special allowance',+$('f_spl').value||0,'Other deductions',+$('f_othded').value||0],
+    ];
+  }
+  const tr=earnRows.map(r=>`<tr><td>${r[0]}</td><td class="num">${r[1]===''?'':fmtNum(r[1])}</td><td>${r[2]}</td><td class="num">${fmtNum(r[3])}</td></tr>`).join('');
+  const idRow = usa
+    ? `<tr><td class="k">Bank account · SSN</td><td class="v">${esc($('f_bank').value)} · ${esc($('f_pan').value)}</td></tr>`
+    : `<tr><td class="k">Bank account · PAN</td><td class="v">${esc($('f_bank').value)} · ${esc($('f_pan').value)}</td></tr>`;
+  return `
+  <table class="info">
+    <tr><td class="k">${isIntern()?'Intern':'Employee'}</td><td class="v">${esc($('f_salut').value)} ${esc($('f_name').value)}</td></tr>
+    <tr><td class="k">ID · Type</td><td class="v">${esc($('f_empid').value)} · ${$('f_emptype').options[$('f_emptype').selectedIndex].text}</td></tr>
+    <tr><td class="k">Designation / Dept.</td><td class="v">${esc($('f_desig').value)} · ${esc($('f_dept').value)}</td></tr>
+    <tr><td class="k">Office</td><td class="v">${OFFICES[$('f_office').value].label} — ${esc($('f_place').value)}</td></tr>
+    <tr><td class="k">Pay period</td><td class="v">${monthLabel($('f_month').value)}</td></tr>
+    <tr><td class="k">Paid days / LOP</td><td class="v">${esc($('f_paiddays').value)} / ${esc($('f_lop').value)}</td></tr>
+    ${idRow}
+  </table>
+  <table class="slip">
+    <tr><th>Earnings</th><th style="width:110px;text-align:right">Amount</th><th>Deductions</th><th style="width:110px;text-align:right">Amount</th></tr>
+    ${tr}
+    <tr class="total"><td>Gross earnings</td><td class="num">${fmtNum(gross())}</td><td>Total deductions</td><td class="num">${fmtNum(dedTotal())}</td></tr>
+    <tr class="total"><td colspan="2">Net pay</td><td colspan="2" class="num">${money(net())}</td></tr>
+  </table>
+  <p><strong>Net pay in words:</strong> ${amountWords(net())}.</p>
+  <p style="font-size:13px;color:#4A4546">This is a system-generated ${isIntern()?'stipend':'salary'} slip issued by the Office of Human Resources. ${usa?'':'Statutory deductions are computed as per applicable Indian regulations. '}Pay is credited by direct bank transfer to the account on record.</p>`;
+}
+
+function bodyExpCert(){
+  const g=pn(), full=`${esc($('f_salut').value)} ${esc($('f_name').value)}`;
+  const isCur=$('f_current').value==='current';
+  const span=isCur
+    ? `from <strong>${longDate($('f_doj').value)}</strong> to date`
+    : `from <strong>${longDate($('f_doj').value)}</strong> to <strong>${longDate($('f_dol').value)}</strong>`;
+  const emptype=$('f_emptype').options[$('f_emptype').selectedIndex].text;
+  const stipendNote=isUnpaid()
+    ? ` The internship was undertaken on an unpaid, learning-oriented basis, and no salary or stipend was drawn during this period.`
+    : (isIntern()? ` The internship carried a monthly stipend as per institutional norms.`:'');
+  const closer=isCur
+    ? `${g.S} continue${g.s==='they'?'':'s'} to be associated with the institution.`
+    : (isIntern()
+       ? `${g.S} completed the internship in full, and ${g.p} conduct throughout was found to be <strong>${esc($('f_conduct').value)}</strong>.`
+       : `${g.S} ${g.s==='they'?'were':'was'} relieved of ${g.p} duties at ${g.p} own request, and ${g.p} conduct during the period of employment was found to be <strong>${esc($('f_conduct').value)}</strong>.`);
+  return `
+  <p class="salute"><strong>TO WHOMSOEVER IT MAY CONCERN</strong></p>
+  <p>This is to certify that <strong>${full}</strong> (ID: <strong>${esc($('f_empid').value)}</strong>) ${g.s==='they'?'have':'has'} been associated with ${orgName()} ${span} in the capacity noted below.${stipendNote}</p>
+  <table class="info">
+    <tr><td class="k">Engagement type</td><td class="v">${emptype}</td></tr>
+    <tr><td class="k">Designation</td><td class="v">${esc($('f_desig').value)}</td></tr>
+    <tr><td class="k">Department</td><td class="v">${esc($('f_dept').value)}</td></tr>
+    <tr><td class="k">Office</td><td class="v">${OFFICES[$('f_office').value].label} — ${esc($('f_place').value)}</td></tr>
+    <tr><td class="k">Reporting to</td><td class="v">${esc($('f_manager').value)}</td></tr>
+    <tr><td class="k">Period</td><td class="v">${longDate($('f_doj').value)} ${isCur?'— present':'— '+longDate($('f_dol').value)}</td></tr>
+  </table>
+  <p><strong>Duties &amp; responsibilities.</strong> During ${g.p} ${isIntern()?'internship':'tenure'}, ${g.p} responsibilities included ${esc($('f_duties').value)}.</p>
+  <p><strong>Key projects &amp; achievements.</strong> ${g.S} ${esc($('f_projects').value)}.</p>
+  <p><strong>Skills demonstrated.</strong> Over this period ${g.s} demonstrated ${esc($('f_skills').value)}, and ${g.p} overall performance was rated <strong>${esc($('f_conduct').value)}</strong>.</p>
+  <p>${closer}</p>
+  <p>We wish ${g.o} continued success in ${g.p} future endeavours. This certificate is issued at the request of the ${isIntern()?'intern':'employee'} ${PURPOSE[$('f_purpose').value]}.</p>`;
+}
+
+function bodyRecLetter(){
+  const g=pn(), full=`${esc($('f_salut').value)} ${esc($('f_name').value)}`;
+  const forWhat={higher:'admission to a programme of higher studies',employment:'employment',research:'a research position or fellowship'}[$('f_recfor').value];
+  const isCur=$('f_current').value==='current';
+  const span=isCur
+    ? `since <strong>${longDate($('f_doj').value)}</strong>`
+    : `from <strong>${longDate($('f_doj').value)}</strong> to <strong>${longDate($('f_dol').value)}</strong>`;
+  const role=isIntern()?`an intern`:`<strong>${esc($('f_desig').value)}</strong>`;
+  return `
+  <p class="salute"><strong>TO WHOMSOEVER IT MAY CONCERN</strong></p>
+  <p>It is my pleasure to recommend <strong>${full}</strong> (ID: <strong>${esc($('f_empid').value)}</strong>) for ${forWhat}. I write in my capacity as ${g.p} ${esc($('f_relation').value)} at ${orgName()}, where ${g.s} ${g.s==='they'?'have':'has'} served as ${role} in the Department of ${esc($('f_dept').value)} ${span}.</p>
+  <p>Over this period I have had close and regular opportunity to observe ${g.p} work. ${g.S} ${g.s==='they'?'have':'has'} consistently demonstrated ${esc($('f_strengths').value)}.</p>
+  <p>${g.S} ${g.s==='they'?'combine':'combines'} professional competence with integrity and a genuine willingness to support colleagues and students alike. I am confident that ${g.s} will bring the same commitment and quality to any institution ${g.s} ${g.s==='they'?'join':'joins'}.</p>
+  <p>I recommend ${g.o} without reservation, and I would be glad to provide any further information that may be required.</p>`;
+}
+
+function bodyCallLetter(){
+  const g=pn(), full=`${esc($('f_salut').value)} ${esc($('f_name').value)}`;
+  const isJoin=$('f_calltype').value==='joining';
+  const online=$('f_callmode').value==='online';
+  const timeStr=(()=>{const t=$('f_calltime').value;if(!t)return '—';
+    const [h,m]=t.split(':');const d=new Date();d.setHours(h,m);
+    return d.toLocaleTimeString('en-GB',{hour:'numeric',minute:'2-digit',hour12:true}).toUpperCase();})();
+  const addr=esc($('f_candaddr').value).replace(/\n/g,'<br>');
+  const opening=isJoin
+    ? `Further to your interview and subsequent selection, we are pleased to inform you that you have been appointed to the position of <strong>${esc($('f_desig').value)}</strong> in the Department of ${esc($('f_dept').value)} at ${orgName()}. You are requested to report for joining as per the schedule below.`
+    : `With reference to your application for the position of <strong>${esc($('f_desig').value)}</strong> in the Department of ${esc($('f_dept').value)} at ${orgName()}, we are pleased to invite you to attend an interview as per the schedule below.`;
+  const payLine=isJoin
+    ? `<p>Your remuneration will be ${esc($('f_offerpay').value)}. Detailed terms of employment will be provided in your appointment order at the time of joining.</p>`
+    : '';
+  const modeRow=online
+    ? `<tr><td class="k">Mode</td><td class="v">Online (video conference)</td></tr>
+       <tr><td class="k">Meeting link</td><td class="v">${esc($('f_venue').value)}</td></tr>`
+    : `<tr><td class="k">Mode</td><td class="v">In person</td></tr>
+       <tr><td class="k">Venue</td><td class="v">${esc($('f_venue').value)}</td></tr>`;
+  const docsLead=isJoin?'Please bring the following at the time of joining:':'Please bring the following to the interview:';
+  const closing=isJoin
+    ? `Kindly confirm your acceptance and joining date by replying to <strong>${HR_EMAIL}</strong> within five working days of receiving this letter. Should you be unable to join on the scheduled date, please write to us in advance so an alternative may be considered.`
+    : `Kindly confirm your attendance by replying to <strong>${HR_EMAIL}</strong> at least two working days before the scheduled date. If the schedule is inconvenient, write to us and we will try to offer an alternative slot. Please note that no travel allowance is payable for attending the interview unless expressly stated.`;
+  return `
+  <p class="salute">To,<br><strong>${full}</strong><br>${addr}</p>
+  <p>Dear ${esc($('f_salut').value)} ${esc($('f_name').value.split(' ').slice(-1)[0])},</p>
+  <p>${opening}</p>
+  <table class="info">
+    <tr><td class="k">Position</td><td class="v">${esc($('f_desig').value)}</td></tr>
+    <tr><td class="k">Department</td><td class="v">${esc($('f_dept').value)}</td></tr>
+    <tr><td class="k">Office</td><td class="v">${OFFICES[$('f_office').value].label} — ${esc($('f_place').value)}</td></tr>
+    <tr><td class="k">${isJoin?'Joining date':'Interview date'}</td><td class="v">${longDate($('f_calldate').value)}</td></tr>
+    <tr><td class="k">Reporting time</td><td class="v">${timeStr}</td></tr>
+    ${modeRow}
+    <tr><td class="k">Contact</td><td class="v">${esc($('f_callcontact').value)}</td></tr>
+  </table>
+  <p><strong>${docsLead}</strong> ${esc($('f_calldocs').value)}.</p>
+  ${payLine}
+  <p>${closing}</p>
+  <p>We look forward to meeting you.</p>`;
+}
+
+function bodyJoinLetter(){
+  const full=`${esc($('f_salut').value)} ${esc($('f_name').value)}`;
+  const usa=isUSA(), intern=isIntern(), unpaid=isUnpaid();
+  const roleWord=intern?'internship':'employment';
+  const addr=esc($('f_candaddr').value).replace(/\n/g,'<br>');
+  const office=OFFICES[$('f_office').value];
+  const clauses=[];
+  clauses.push(['Appointment & probation',
+    `You are appointed as <strong>${esc($('f_desig').value)}</strong> in the Department of ${esc($('f_dept').value)}, ${office.label}, with effect from <strong>${longDate($('f_jdate').value)}</strong>. You will report to ${esc($('f_manager').value)}. You will be on probation for <strong>${esc($('f_probation').value)} months</strong> from the date of joining; on satisfactory completion, your appointment will be confirmed in writing. Probation may be extended at the discretion of the management.`]);
+  if(unpaid){
+    clauses.push(['Nature of engagement',
+      `This is an unpaid, learning-oriented ${roleWord}. No salary or stipend is payable, and this engagement does not constitute an offer of employment or create any right to future employment.`]);
+  }else if(intern){
+    clauses.push(['Stipend',
+      `You will be paid a consolidated monthly stipend of <strong>${money(gross())}</strong> (${amountWords(gross())}) by bank transfer, subject to statutory deductions as applicable.`]);
+  }else{
+    clauses.push(['Remuneration',
+      `Your remuneration will be as set out in <strong>Annexure A</strong> to this letter, payable monthly by bank transfer and subject to ${usa?'all withholdings required under U.S. federal and state law':'statutory deductions (EPF, professional tax and income tax, as applicable) under Indian law'}. Increments and revisions are at the discretion of the management and linked to performance.`]);
+  }
+  clauses.push(['Working hours & attendance',
+    `Your normal working hours will be ${esc($('f_workhours').value)}. You are required to record your attendance as per institutional procedure; punctuality and regular attendance are essential conditions of ${roleWord}.`]);
+  if(!intern) clauses.push(['Leave & holidays',
+    `You will be entitled to ${esc($('f_leaves').value)}, in accordance with the institution's Leave Policy as amended from time to time. Leave must be applied for and sanctioned in advance, except in emergencies.`]);
+  if($('p_conduct').checked) clauses.push(['Code of conduct & discipline',
+    `You shall devote your whole time and attention to the duties assigned to you, comply with all rules, regulations and policies of the institution as notified from time to time, and maintain the highest standards of professional and ethical conduct in your dealings with students, colleagues and the public. Any act of misconduct, insubordination or wilful negligence may attract disciplinary action, up to and including termination.`]);
+  if($('p_confid').checked) clauses.push(['Confidentiality & intellectual property',
+    `You shall not, during or after your ${roleWord}, disclose any confidential information of the institution — including academic material, student records, research data, financial information and business plans — except in the proper discharge of your duties. All work products, course material, research output and intellectual property created by you in the course of your ${roleWord} shall vest exclusively in the institution.`]);
+  if($('p_it').checked) clauses.push(['IT, data & acceptable use',
+    `You shall use the institution's IT systems, e-mail and internet facilities strictly in accordance with the Acceptable Use & Data Security Policy. Student and clinical data must be handled in compliance with applicable data-protection requirements; access credentials are personal and must not be shared.`]);
+  if($('p_posh').checked) clauses.push([usa?'Equal opportunity & anti-harassment':'Prevention of sexual harassment (POSH)', usa
+    ? `The institution is an equal-opportunity employer and has zero tolerance for harassment or discrimination of any kind. You will be governed by the institution's anti-harassment and equal-employment-opportunity policies.`
+    : `The institution has zero tolerance for sexual harassment. You will be governed by the institution's policy framed under the Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act, 2013; complaints may be raised before the Internal Committee constituted under the Act.`]);
+  if($('p_coi').checked) clauses.push(['Conflict of interest & outside work',
+    `You shall not, without prior written consent of the management, engage in any other employment, business or consultancy — whether or not remunerated — or accept any gift, benefit or position that creates, or appears to create, a conflict with the interests of the institution.`]);
+  if($('p_transfer').checked) clauses.push(['Place of posting & transfer',
+    `Your initial place of posting will be ${office.label}, ${esc($('f_place').value)}. Your services are transferable, at the institution's discretion, to any department, campus or chapter of the institution, in India or abroad, on the same or equivalent terms.`]);
+  if($('p_bgv').checked) clauses.push(['Background verification',
+    `This appointment is made on the basis of the information and documents furnished by you and is subject to satisfactory verification of your credentials, references and antecedents. Any information found false, incomplete or misleading will render this appointment liable to withdrawal or termination without notice.`]);
+  if($('p_media').checked) clauses.push(['Social media & public statements',
+    `You shall not make public statements or publish content on behalf of, or in a manner attributable to, the institution without prior authorisation, and shall refrain from any content that could reasonably harm the institution's reputation.`]);
+  clauses.push(['Notice period & termination',
+    `This appointment may be terminated by either party by giving ${esc($('f_notice').value)} notice in writing, or payment in lieu thereof at the discretion of the management. The institution may terminate the appointment without notice or payment in lieu in cases of proven misconduct or breach of the terms herein.`]);
+  const custom=$('f_custompolicy').value.trim();
+  if(custom) clauses.push(['Other terms', esc(custom)]);
+  clauses.push(['General',
+    `In all matters not specifically covered by this letter, you will be governed by the institution's HR policies, service rules and administrative orders, as amended from time to time, which shall be deemed to form part of your terms of ${roleWord}.`]);
+
+  const clauseHtml=clauses.map((c,i)=>`<p style="margin-bottom:11px"><strong>${i+1}. ${c[0]}.</strong> ${c[1]}</p>`).join('');
+
+  const annexure=(!intern&&!unpaid)?`
+  <p style="margin-top:24px;page-break-inside:avoid"><strong>Annexure A — Remuneration structure</strong></p>
+  <table class="slip">
+    <tr><th>Component</th><th style="width:130px;text-align:right">Per month</th><th style="width:130px;text-align:right">Per annum</th></tr>
+    <tr><td>Basic pay</td><td class="num">${fmtNum(+$('f_basic').value||0)}</td><td class="num">${fmtNum((+$('f_basic').value||0)*12)}</td></tr>
+    <tr><td>Dearness allowance</td><td class="num">${fmtNum(+$('f_da').value||0)}</td><td class="num">${fmtNum((+$('f_da').value||0)*12)}</td></tr>
+    <tr><td>House rent allowance</td><td class="num">${fmtNum(+$('f_hra').value||0)}</td><td class="num">${fmtNum((+$('f_hra').value||0)*12)}</td></tr>
+    <tr><td>Special allowance</td><td class="num">${fmtNum(+$('f_spl').value||0)}</td><td class="num">${fmtNum((+$('f_spl').value||0)*12)}</td></tr>
+    <tr class="total"><td>Gross remuneration</td><td class="num">${fmtNum(gross())}</td><td class="num">${fmtNum(gross()*12)}</td></tr>
+  </table>
+  <p style="font-size:13px;color:#4A4546">Gross per annum: ${money(gross()*12)} (${amountWords(gross()*12)}). Statutory deductions and withholdings, as applicable, will be made from the above.</p>`:'';
+
+  return `
+  <p class="salute">To,<br><strong>${full}</strong><br>${addr}</p>
+  <p><strong>Subject: ${intern?'Internship appointment':'Letter of appointment'} — ${esc($('f_desig').value)}</strong></p>
+  <p>Dear ${esc($('f_salut').value)} ${esc($('f_name').value.split(' ').slice(-1)[0])},</p>
+  <p>With reference to your application and the subsequent selection process, we are pleased to appoint you in the service of ${orgName()} on the following terms and conditions:</p>
+  ${clauseHtml}
+  <p>Please report to the Office of Human Resources on your date of joining with the following: ${esc($('f_joindocs').value)}.</p>
+  <p>Kindly sign and return the duplicate copy of this letter within <strong>${esc($('f_acceptdays').value)} working days</strong> as a token of your acceptance of the above terms. We welcome you to ${orgName()} and look forward to a long and rewarding association.</p>
+  ${annexure}
+  ${companyPoliciesHtml()}
+  ${($('p_handbook')&&$('p_handbook').checked)?'':`<div style="margin-top:26px;padding-top:14px;border-top:1px dashed #C9BFBF;page-break-inside:avoid">
+    <p><strong>ACCEPTANCE</strong></p>
+    <p>I have read and understood the terms, conditions and company policies stated above, and I accept the appointment on these terms.</p>
+    <table class="info">
+      <tr><td class="k">Signature of appointee</td><td class="v">______________________________</td></tr>
+      <tr><td class="k">Name</td><td class="v">${full}</td></tr>
+      <tr><td class="k">Date &amp; place</td><td class="v">______________________________</td></tr>
+    </table>
+  </div>`}`;
+}
+
+/* ── Full institutional policy handbook (Part B) — makes the appointment letter 7+ pages ── */
+function onboardTableHtml(){
+  const lines=($('f_onboard')?$('f_onboard').value:'').split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return '';
+  const rows=lines.map(l=>{
+    const p=l.split('·').map(s=>s.trim());
+    return `<tr><td class="k" style="width:38%">${esc(p[0]||'')}</td><td class="v">${esc(p.slice(1).join(' · '))}</td></tr>`;
+  }).join('');
+  return `<table class="info" style="margin-top:6px">${rows}</table>`;
+}
+function policySection(title, items){
+  return `<p style="margin:16px 0 6px;font-family:var(--serif);font-weight:700;font-size:14px;color:var(--burgundy)">${title}</p>`+
+    items.map(it=>`<p style="margin:0 0 9px;text-align:justify"><strong>${it[0]}.</strong> ${it[1]}</p>`).join('');
+}
+function companyPoliciesHtml(){
+  if(!$('p_handbook') || !$('p_handbook').checked) return '';
+  const org=orgName(), usa=isUSA();
+  const S=[];
+  S.push(policySection('B1 · Attendance, working hours &amp; conduct of duty',[
+    ['Working hours &amp; punctuality','Employees observe a six-day working pattern as notified for their role and campus. Regular office hours are as stated in the terms above; those under probation may be required to report earlier for structured induction. Punctuality is a condition of service — habitual late attendance, unauthorised absence or early departure may attract counselling, warnings and, in persistent cases, disciplinary action.'],
+    ['Attendance recording','You must record your attendance daily through the institution\'s approved attendance system. Failure to mark attendance without a genuine reason may be treated as absence for that day. Supervisors review attendance periodically for payroll and performance purposes.'],
+    ['Absconding','Absence for more than five (5) consecutive working days without approved leave and without intimation will be presumed to indicate that you no longer wish to continue in service, and your record may be marked as “abandonment of service”, forfeiting related dues and benefits.'],
+  ]));
+  S.push(policySection('B2 · Probation, identity &amp; training',[
+    ['Probation &amp; confirmation','During probation your performance, conduct and suitability are assessed continuously. Confirmation is not automatic; it follows a satisfactory review and is communicated in writing. Probation may be extended where performance requires further development.'],
+    ['Identity card &amp; access','You will be issued an identity card and system credentials at joining and must display/carry the identity card on the premises. The card and any assets issued to you remain the property of the institution and must be returned on separation. Loss of the identity card must be reported immediately.'],
+    ['Training &amp; development','You are expected to complete the induction and role-specific training assigned to you, acknowledge its completion, and continually update your skills. Participation in training, workshops and academic-quality initiatives is part of your responsibilities.'],
+  ]));
+  S.push(policySection('B3 · Compensation, exclusivity &amp; posting',[
+    ['Confidentiality of compensation','Your remuneration is personal and confidential. You shall not disclose or discuss your salary, allowances or incentives with colleagues or third parties. Salary for a month is ordinarily credited by the stated date of the following month; where that date is a holiday, it is credited on the next working day.'],
+    ['Exclusivity of service','While in the service of the institution you shall not, directly or indirectly, take up any other employment, business, tuition, consultancy or assignment — whether or not remunerated — and shall not accept money, gifts, commissions or benefits from any party in connection with your duties.'],
+    ['Place of posting &amp; transfer','Your services are transferable across departments, campuses and chapters of the institution, in India or abroad, at management discretion and in the interests of the institution, on the same or equivalent terms.'],
+  ]));
+  S.push(policySection('B4 · Leave, holidays &amp; well-being',[
+    ['Leave &amp; holidays','Leave accrues and is availed strictly as per the institution\'s Leave Policy and notified holiday calendar. Planned leave must be applied for and sanctioned in advance; medical leave beyond the notified limit requires a valid medical certificate. Leave during a notice period is not ordinarily approved.'],
+    ['Health, safety &amp; substance policy','You shall maintain a safe workplace and shall not bring hazardous articles onto the premises. Consumption of alcohol, tobacco, drugs or similar substances on the premises or during working hours is strictly prohibited and constitutes misconduct.'],
+    ['Remote / work-from-home','Work-from-home may be permitted only in specific circumstances (for example, certified medical need) and solely at management discretion; where granted on such grounds, applicable pay adjustments may apply as per policy.'],
+  ]));
+  S.push(policySection('B5 · Professional conduct &amp; workplace standards',[
+    ['Professionalism &amp; communication','You shall conduct yourself with courtesy, integrity and professionalism in all verbal, written and electronic communication with students, colleagues, partners and the public, and shall uphold the reputation and academic standards of the institution at all times.'],
+    ['Dress code &amp; grooming','You shall present yourself in neat, clean and professional business attire appropriate to an academic and clinical environment, and maintain a well-groomed appearance, particularly when representing the institution at events, inductions and public engagements.'],
+    ['Personal devices &amp; focus','Use of personal mobile phones and social applications during working hours must not interfere with your duties or the learning environment. Personal use should be kept to a minimum and to designated breaks.'],
+    ['Clean &amp; orderly workspace','Your workstation, cabin and shared spaces must be kept clean, organised and free of clutter and food; institutional resources (power, water, stationery, equipment and infrastructure) must be used responsibly.'],
+  ]));
+  S.push(policySection('B6 · Performance, systems &amp; reporting',[
+    ['Performance targets &amp; KPIs','You will be assigned clear objectives and key performance indicators (KPIs) appropriate to your role — which may include teaching, academic delivery, student outcomes, documentation, and quality or enrolment targets — and your performance is assessed against their consistent achievement.'],
+    ['Performance management &amp; increments','Your performance is evaluated periodically (typically quarterly, half-yearly and annually). Increments, incentives, promotions and role changes are linked to these outcomes; sustained under-performance, despite feedback and support, may lead to a performance-improvement plan and, if unresolved, disciplinary action.'],
+    ['Systems, LMS &amp; data access','You are granted access to institutional systems (including the learning-management and student-record systems) containing confidential data. Credentials are personal and must not be shared; every record you own must be updated accurately, promptly and with proper notes. Negligence in handling student data or records is treated seriously.'],
+    ['Work reports','You shall submit daily, weekly and monthly reports as directed, through the approved channels, and keep your trackers and records current for management review.'],
+  ]));
+  S.push(policySection('B7 · Confidentiality, information security &amp; representation',[
+    ['Confidentiality &amp; intellectual property','During and after your engagement you shall not disclose or misuse confidential information of the institution — including academic material, research, student records, financial and strategic information. All content, courseware, databases, research output and creations produced in the course of your duties vest exclusively in the institution, together with all related rights.'],
+    ['Cybersecurity &amp; information security','Institutional networks and internet facilities are for official use. You shall safeguard passwords and credentials, avoid phishing and unsafe attachments, and handle sensitive and clinical data in compliance with applicable data-protection requirements.'],
+    ['Social media &amp; public representation','You shall not make public statements or publish content on behalf of, or attributable to, the institution without authorisation, and shall ensure that any official content you handle is accurate, professional and respectful. Media captured for institutional purposes remains the property of the institution.'],
+    ['Handling of fees &amp; payments','Where your role involves collecting fees or payments, you shall follow approved processes, issue valid receipts, and route all amounts only through the institution\'s designated accounts within the stipulated timelines. Any delay, diversion or misappropriation is treated as gross misconduct.'],
+  ]));
+  S.push(policySection('B8 · Equal opportunity, harassment &amp; discipline',[
+    [usa?'Equal opportunity &amp; anti-harassment':'Prevention of sexual harassment (POSH)', usa
+      ? 'The institution is an equal-opportunity employer with zero tolerance for harassment or discrimination on any protected ground. You will be governed by its anti-harassment and equal-employment-opportunity policies, and any violation attracts serious disciplinary action.'
+      : 'The institution maintains zero tolerance for sexual harassment and is governed by a policy framed under the Sexual Harassment of Women at Workplace (Prevention, Prohibition and Redressal) Act, 2013. Complaints may be raised before the Internal Committee; any violation attracts serious disciplinary action up to termination.'],
+    ['Diversity, equity &amp; inclusion','The institution is committed to a respectful, inclusive culture offering equal opportunity to all regardless of background, gender, religion, community or ability, and expects every employee to uphold these values.'],
+    ['Discipline &amp; misconduct','Any act or omission that violates the institution\'s policies, code of conduct or lawful directions renders you liable to disciplinary action, up to and including termination, and — for serious matters such as fraud, forgery, theft, harassment or breach of confidentiality — action without notice, without prejudice to legal remedies.'],
+  ]));
+  S.push(policySection('B9 · Exit, service letters &amp; validity',[
+    ['Resignation &amp; exit process','Resignations must be submitted in writing to your reporting authority with a copy to Human Resources, serving the notice period stated in your terms. On your last working day, obtain clearance from all concerned departments and hand over all duties, records and assets; a no-dues/clearance record is issued on completion of formalities.'],
+    ['Service letters &amp; final settlement','Eligibility for an experience or relieving certificate and for full-and-final settlement is subject to completion of the applicable minimum tenure, proper serving of notice, satisfactory clearance and the absence of any pending enquiry or disciplinary action. Improper or unnotified separation may forfeit these benefits.'],
+    ['Verification, contract validity &amp; governing law','This appointment is contingent on satisfactory verification of your credentials, references and antecedents; any false, suppressed or misleading information renders it liable to termination without notice. The terms are governed by the institution\'s policies as amended from time to time, and disputes, as far as possible, are settled amicably and otherwise referred to the jurisdiction applicable to the issuing office.'],
+    ['Amendments','The institution reserves the right to amend, modify or update its policies, procedures and rules at any time in the interests of the institution and its employees; it is your responsibility to remain informed of such changes.'],
+  ]));
+
+  const onboard=onboardTableHtml();
+  return `
+  <div style="page-break-before:always"></div>
+  <p style="font-family:var(--serif);font-weight:700;font-size:16px;text-align:center;color:var(--burgundy);letter-spacing:.04em;margin-bottom:2px">PART B — INSTITUTIONAL POLICY HANDBOOK</p>
+  <p style="text-align:center;font-size:12.5px;color:#4A4546;font-style:italic;margin-bottom:14px">Code of conduct, service rules &amp; HR policies of ${org}</p>
+  <p style="text-align:justify;margin-bottom:12px">These policies form an integral part of your terms of engagement and are designed to ensure lawful and ethical conduct, protect students and their data, safeguard institutional assets and reputation, and support a professional, inclusive and high-performing academic environment. Every employee is expected to read, understand and comply with them.</p>
+  ${S.join('')}
+  ${onboard?`<div style="page-break-inside:avoid"><p style="margin:18px 0 6px;font-family:var(--serif);font-weight:700;font-size:14px;color:var(--burgundy)">B10 · Onboarding &amp; support directory</p>
+  <p style="text-align:justify;margin-bottom:4px">For a smooth joining, the following offices will assist you:</p>${onboard}</div>`:''}
+  <div style="page-break-before:always"></div>
+  <p style="font-family:var(--serif);font-weight:700;font-size:16px;text-align:center;color:var(--burgundy);letter-spacing:.04em;margin-bottom:14px">PART C — EMPLOYEE DECLARATION &amp; ACCEPTANCE</p>
+  <p style="text-align:justify;margin-bottom:10px">I, the undersigned, acknowledge that I have received, read and understood this letter of appointment together with the Institutional Policy Handbook set out above, and I accept the appointment on the terms and conditions stated herein.</p>
+  <p style="text-align:justify;margin-bottom:10px">I understand that it is my responsibility to familiarise myself with these policies and to comply with them throughout my engagement; that the contents of this letter are personal and confidential; and that the institution may amend its policies from time to time, of which I shall keep myself informed.</p>
+  <p style="text-align:justify;margin-bottom:14px">I further declare that the information furnished by me in my application and during the selection process is true, complete and accurate, and I confirm my commitment to upholding the values, standards and expectations of ${org}. I understand that any claim based on alleged verbal assurances not recorded in this letter shall not be entertained.</p>
+  <table class="info">
+    <tr><td class="k" style="width:38%">Name of appointee</td><td class="v">${esc($('f_salut').value)} ${esc($('f_name').value)}</td></tr>
+    <tr><td class="k">Signature</td><td class="v">______________________________</td></tr>
+    <tr><td class="k">Date &amp; place</td><td class="v">______________________________</td></tr>
+  </table>
+  <p style="font-size:12px;color:#6b6570;margin-top:10px">Please sign and return one copy of this letter to the Office of Human Resources to record your acceptance of these terms and conditions.</p>`;
+}
+
+const BUILDERS={salcert:bodySalCert,slip:bodySlip,expcert:bodyExpCert,recletter:bodyRecLetter,callletter:bodyCallLetter,joinletter:bodyJoinLetter};
+
+/* ── Render ── */
+function render(){
+  applyAutoTax();
+  $('pTitle').textContent=TITLE();
+  $('pRef').textContent='Ref: '+$('f_ref').value;
+  $('pDate').textContent='Date: '+longDate($('f_date').value);
+  $('pBody').innerHTML=BUILDERS[doc]();
+  $('pSigName').textContent=$('f_signame').value;
+  $('pSigTitle').textContent=$('f_sigtitle').value+' · '+$('f_place').value;
+  $('pFooter').innerHTML='';
+  const _fl=document.createElement('div'); _fl.textContent=$('f_footer').value;
+  const _cl=document.createElement('div'); _cl.style.marginTop='3px';
+  _cl.textContent='This is a system-generated document and is valid without a seal or signature. For any clarification, contact hr@alizongov.com';
+  $('pFooter').append(_fl,_cl);
+  $('netPreview').innerHTML = isUnpaid()
+    ? 'Unpaid internship — salary documents are not applicable.'
+    : `Gross <strong>${money(gross())}</strong> &nbsp;·&nbsp; Deductions <strong>${money(dedTotal())}</strong> &nbsp;·&nbsp; Net <strong>${money(net())}</strong>`;
+  $('autotaxHint').textContent = isUSA()
+    ? 'US payroll withholdings vary by W-4 and state — enter them manually.'
+    : ($('f_autotax').value==='auto'
+       ? 'EPF 12% of basic+DA, professional tax per office state, TDS estimated under the new regime (FY 2025-26). Estimates only — verify against payroll.'
+       : 'Enter each deduction yourself.');
+  updateVisibility();
+}
+
+/* show/hide fields per document & employment type */
+function updateVisibility(){
+  const show=(id,on)=>{$(id).style.display=on?'':'none';};
+  const isSlip=doc==='slip', isExp=doc==='expcert', isRec=doc==='recletter', isSal=doc==='salcert', isCall=doc==='callletter', isJoin=doc==='joinletter';
+  const intern=isIntern(), unpaid=isUnpaid(), usa=isUSA(), auto=!usa && $('f_autotax').value==='auto';
+  const cand=isCall||isJoin;
+
+  /* candidate vs employee framing */
+  $('lbl_name').textContent = cand?'Candidate full name':'Full name';
+  $('lbl_desig').textContent = cand?'Position':'Designation';
+  show('wrap_candaddr', cand);
+  show('row_id_dept', true);
+  $('f_empid').closest('.field').style.display = cand?'none':'';
+  show('wrap_manager', !isCall);
+  show('row_dates', !cand);
+  show('wrap_current', !cand);
+  show('fs_call', isCall);
+  show('fs_join', isJoin);
+  show('wrap_offerpay', isCall && $('f_calltype').value==='joining');
+  $('lbl_calldate').textContent = $('f_calltype').value==='joining'?'Joining date':'Interview date';
+  $('lbl_venue').textContent = $('f_callmode').value==='online'?'Meeting link':'Venue';
+
+  show('fs_salary', (isSlip||isSal||isJoin) && !unpaid);
+  show('grp_slip_rows', (isSlip||isSal||isJoin) && !unpaid);
+  show('wrap_month', isSlip);
+  show('wrap_autotax', (isSlip||isSal) && !usa && !unpaid);
+  show('wrap_pfcap', (isSlip||isSal) && auto && !intern && !unpaid);
+  /* appointment letter: only the earnings structure matters */
+  show('row_pf', !isJoin); show('row_tds', !isJoin);
+  show('row_days', !isJoin); show('row_bank', !isJoin);
+
+  /* intern pay mode: single stipend figure */
+  $('lbl_basic').textContent = intern?'Monthly stipend':'Basic pay';
+  show('wrap_da', !intern); show('row_hra_spl', !intern);
+  $('lbl_pf').textContent = usa?'Retirement / 401(k)':'Provident fund (EPF)';
+  $('wrap_pt').querySelector('label').textContent = usa?'State tax withholding':'Professional tax';
+  $('lbl_tds').textContent = usa?'Federal tax withholding':'Income tax (TDS)';
+  $('wrap_pan').querySelector('label').textContent = usa?'SSN (masked)':'PAN';
+  /* lock auto-calculated fields */
+  ['f_pf','f_pt','f_tds'].forEach(id=>{$(id).readOnly=auto;$(id).style.opacity=auto?'0.65':'1';});
+  if(intern){$('f_pf').readOnly=true;}
+
+  show('fs_purpose', !isSlip && !isCall && !isJoin);
+  show('wrap_purpose', isSal||isExp);
+  show('wrap_duties', isExp);
+  show('wrap_projects', isExp);
+  show('wrap_skills', isExp);
+  show('wrap_conduct', isExp);
+  show('wrap_relation', isRec);
+  show('wrap_strengths', isRec);
+  show('wrap_recfor', isRec);
+  show('wrap_dol', !cand && $('f_current').value==='former');
+
+  /* unpaid interns: salary docs unavailable */
+  document.querySelectorAll('.doc-tab').forEach(t=>{
+    const blocked = unpaid && (t.dataset.doc==='salcert'||t.dataset.doc==='slip');
+    t.disabled=blocked; t.style.opacity=blocked?'0.4':'1';
+    t.title=blocked?'Not applicable — unpaid internship':'';
+  });
+  if(unpaid && (doc==='salcert'||doc==='slip')){
+    doc='expcert';
+    document.querySelectorAll('.doc-tab').forEach(x=>x.classList.toggle('active',x.dataset.doc==='expcert'));
+    $('f_ref').value=autoRef();
+    render(); return;
+  }
+}
+
+/* ── Office change: refresh place, footer, currency, ref ── */
+$('f_office').addEventListener('change',()=>{
+  const o=OFFICES[$('f_office').value];
+  $('f_place').value=o.place;
+  $('f_footer').value=o.footer;
+  $('f_currency').value=o.cur;
+  $('f_ref').value=autoRef();
+  render();
+});
+
+/* ── Tabs ── */
+document.querySelectorAll('.doc-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    if(t.disabled) return;
+    document.querySelectorAll('.doc-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    doc=t.dataset.doc;
+    $('f_ref').value=autoRef();
+    render();
+  });
+});
+
+/* ── Inputs ── */
+document.querySelectorAll('input,select,textarea').forEach(el=>{
+  if(el.id==='f_office') return;
+  el.addEventListener('input',render);
+});
+
+/* ── Downloads ── */
+$('btnPdf').addEventListener('click',()=>{logDoc('PDF');window.print();});
+
+$('btnWord').addEventListener('click',()=>{
+  const body=$('paper').outerHTML;
+  const css=[...document.styleSheets].map(s=>{try{return [...s.cssRules].map(r=>r.cssText).join('\n')}catch(e){return ''}}).join('\n');
+  const html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
+<head><meta charset="utf-8"><title>${TITLE()}</title>
+<style>${css}
+body{background:#fff;color:#1E1A1B}
+.paper{box-shadow:none;width:100%;min-height:auto;padding:40px 50px}
+.desk,.paper-wrap{all:unset}
+</style></head><body>${body}</body></html>`;
+  const blob=new Blob(['﻿'+html],{type:'application/msword'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  const safe=($('f_name').value||'employee').replace(/[^a-z0-9]+/gi,'_');
+  a.download=`${TITLE().replace(/ /g,'_')}_${safe}.doc`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  logDoc('Word');
+});
+
+/* ══ EMPLOYEE MASTER, DASHBOARD & VIEWS ══ */
+let EMP=[
+  {empid:'ASMDI-0142',salut:'Ms.',pronoun:'she',name:'Anjali Menon',office:'tvm',emptype:'fulltime',status:'current',dept:'Digital Health Sciences',desig:'Assistant Professor',manager:'Dr. Meera Nair, Dean of Faculty',doj:'2021-06-01',basic:52000,da:8000,hra:15600,spl:9400,bank:'XXXX 4821',pan:'ABCPM1234K'},
+  {empid:'ASMDI-0098',salut:'Mr.',pronoun:'he',name:'Rahul Krishnan',office:'tvm',emptype:'fulltime',status:'current',dept:'Medical Informatics',desig:'Senior Lecturer',manager:'Dr. Meera Nair, Dean of Faculty',doj:'2019-08-12',basic:61000,da:9000,hra:18300,spl:11700,bank:'XXXX 1130',pan:'BQCPK5567L'},
+  {empid:'ASMDI-0233',salut:'Ms.',pronoun:'she',name:'Divya Suresh',office:'blr',emptype:'contract',status:'current',dept:'AI Research Lab',desig:'Research Engineer',manager:'Dr. Arjun Rao, Lab Director',doj:'2024-01-15',basic:70000,da:0,hra:21000,spl:14000,bank:'XXXX 7754',pan:'CJDPS8890M'},
+  {empid:'ASMDI-0301',salut:'Mr.',pronoun:'he',name:'Aditya Sharma',office:'delhi',emptype:'intern_paid',status:'current',dept:'Public Health Analytics',desig:'Research Intern',manager:'Dr. Kavita Bhatia, Programme Lead',doj:'2026-02-01',basic:15000,da:0,hra:0,spl:0,bank:'XXXX 3402',pan:'DKEPS2213N'},
+  {empid:'ASMDI-0307',salut:'Ms.',pronoun:'she',name:'Fathima Noor',office:'tvm',emptype:'intern_unpaid',status:'current',dept:'Clinical Simulation',desig:'Observer Intern',manager:'Dr. Thomas K. Varghese, Head — HR',doj:'2026-05-15',basic:0,da:0,hra:0,spl:0,bank:'',pan:''},
+  {empid:'ASMDI-US-011',salut:'Dr.',pronoun:'they',name:'Jordan Blake',office:'usa',emptype:'fulltime',status:'current',dept:'Digital Intelligence Programs',desig:'Program Director',manager:'Board of the USA Chapter',doj:'2023-03-01',basic:7200,da:0,hra:0,spl:800,bank:'XXXX 9012',pan:'XXX-XX-4321'},
+  {empid:'ASMDI-0071',salut:'Mr.',pronoun:'he',name:'Suresh Pillai',office:'tvm',emptype:'fulltime',status:'former',dept:'Administration',desig:'Office Manager',manager:'Dr. Thomas K. Varghese, Head — HR',doj:'2018-04-02',dol:'2025-12-31',basic:38000,da:6000,hra:11400,spl:4600,bank:'XXXX 2288',pan:'EFGPP4456P'},
+];
+let DOCLOG=[];
+
+/* persistence: shared ALIZON OS localStorage (same-origin as dashboard/admin) */
+function persist(){
+  try{ localStorage.setItem('alizonHR', JSON.stringify({EMP,DOCLOG})); }catch(e){}
+}
+function restore(){
+  try{
+    const r=localStorage.getItem('alizonHR');
+    if(r){const d=JSON.parse(r); if(Array.isArray(d.EMP)&&d.EMP.length){EMP=d.EMP;} if(Array.isArray(d.DOCLOG)){DOCLOG=d.DOCLOG;}}
+    else persist(); /* first run: write the seed so the Staff Portal can read it */
+  }catch(e){}
+  renderEmpTable(); renderDash();
+}
+
+/* ── View switching ── */
+let view='docs';
+function setView(v){
+  view=v;
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
+  $('view-dash').classList.toggle('on',v==='dash');
+  $('view-emp').classList.toggle('on',v==='emp');
+  $('view-inbox').classList.toggle('on',v==='inbox');
+  if(v==='inbox') renderInbox();
+  document.querySelector('.panel').style.display = v==='docs'?'':'none';
+  document.querySelector('.desk').style.display = v==='docs'?'':'none';
+  const docsOnly=v==='docs';
+  $('btnPdf').style.display=docsOnly?'':'none';
+  $('btnWord').style.display=docsOnly?'':'none';
+  if(v==='dash') renderDash();
+  if(v==='emp') renderEmpTable();
+}
+document.querySelectorAll('.nav-tab').forEach(t=>t.addEventListener('click',()=>setView(t.dataset.view)));
+
+/* ── Employee table ── */
+const TYPE_LABEL={fulltime:'Full-time',contract:'Contract',intern_paid:'Intern (paid)',intern_unpaid:'Intern (unpaid)'};
+function empGross(e){return (+e.basic||0)+(+e.da||0)+(+e.hra||0)+(+e.spl||0);}
+function renderEmpTable(){
+  const q=($('empSearch').value||'').toLowerCase();
+  const fo=$('empFilterOffice').value;
+  const rows=EMP.filter(e=>{
+    if(fo&&e.office!==fo) return false;
+    if(!q) return true;
+    return [e.name,e.empid,e.dept,e.desig].join(' ').toLowerCase().includes(q);
+  }).map((e)=>{
+    const i=EMP.indexOf(e);
+    const cur=OFFICES[e.office].cur, sym=CUR[cur];
+    const typePill=e.emptype.startsWith('intern')?`<span class="pill intern">${TYPE_LABEL[e.emptype]}</span>`:TYPE_LABEL[e.emptype];
+    return `<tr>
+      <td>${esc(e.empid)}</td>
+      <td><strong>${esc(e.salut)} ${esc(e.name)}</strong></td>
+      <td>${OFFICES[e.office].label.split(' (')[0].replace('Campus','').trim()}</td>
+      <td>${esc(e.dept)}</td>
+      <td>${esc(e.desig)}</td>
+      <td>${typePill}</td>
+      <td><span class="pill ${e.status==='current'?'active':'former'}">${e.status==='current'?'Current':'Former'}</span></td>
+      <td title="Portal access — Staff / Courses / Students / Evaluation / HR">${(function(a){a=a||{staff:true};
+        return ['staff','courses','students','eval','hr'].map(k=>a[k]?({staff:'S',courses:'C',students:'St',eval:'E',hr:'H'})[k]:null).filter(Boolean).join('·')||'—';})(e.access)}</td>
+      <td>${e.doj||'—'}</td>
+      <td>${e.emptype==='intern_unpaid'?'—':sym+empGross(e).toLocaleString(cur==='INR'?'en-IN':'en-US')}</td>
+      <td style="text-align:right">
+        <button class="btn mini" onclick="genFor(${i})">Generate doc</button>
+        <button class="btn mini" onclick="editEmp(${i})">Edit</button>
+        <button class="btn mini" onclick="delEmp(${i})" title="Delete">✕</button>
+      </td></tr>`;
+  }).join('');
+  $('empRows').innerHTML=rows||`<tr><td colspan="10" class="empty" style="padding:18px">No employees match. Add one with “+ Add employee”.</td></tr>`;
+}
+$('empSearch').addEventListener('input',renderEmpTable);
+$('empFilterOffice').addEventListener('change',renderEmpTable);
+
+/* ── Add / edit modal ── */
+let editIdx=-1;
+const M_FIELDS=['empid','salut','pronoun','name','office','emptype','status','dept','desig','manager','doj','basic','da','hra','spl','bank','pan','email'];
+const ACCESS_KEYS=['staff','courses','students','eval','hr'];
+function openEmpModal(idx){
+  editIdx=idx;
+  $('empModalTitle').textContent=idx<0?'Add employee':'Edit employee';
+  const e=idx<0?{empid:nextId(),salut:'Mr.',pronoun:'he',office:'tvm',emptype:'fulltime',status:'current',basic:0,da:0,hra:0,spl:0}:EMP[idx];
+  M_FIELDS.forEach(f=>{const el=$('m_'+f); if(el) el.value=e[f]!==undefined?e[f]:'';});
+  const ac=e.access||{staff:true};
+  ACCESS_KEYS.forEach(k=>{ const el=$('ac_'+k); if(el) el.checked=!!ac[k]; });
+  $('credNote').innerHTML='Login credentials are auto-generated: <b style="color:var(--ink)">login = '+(e.empid||'employee ID')+
+    ' · password = '+(e.password||e.empid||'employee ID')+'</b>. Only the name and employee ID are needed now — everything else can be filled from here later.';
+  $('empModalBg').classList.add('on');
+}
+function nextId(){
+  const nums=EMP.map(e=>parseInt((e.empid||'').replace(/\D/g,''),10)).filter(n=>!isNaN(n));
+  const n=(nums.length?Math.max(...nums):0)+1;
+  return 'ASMDI-'+String(n).padStart(4,'0');
+}
+window.editEmp=i=>openEmpModal(i);
+window.delEmp=i=>{ if(confirm('Delete '+EMP[i].name+' from the master sheet?')){EMP.splice(i,1);renderEmpTable();renderDash();persist();} };
+$('btnAddEmp').addEventListener('click',()=>openEmpModal(-1));
+$('btnEmpCancel').addEventListener('click',()=>$('empModalBg').classList.remove('on'));
+$('empModalBg').addEventListener('click',e=>{if(e.target.id==='empModalBg')$('empModalBg').classList.remove('on');});
+$('btnEmpSave').addEventListener('click',()=>{
+  const e={};
+  M_FIELDS.forEach(f=>{e[f]=$('m_'+f)?$('m_'+f).value:'';});
+  ['basic','da','hra','spl'].forEach(k=>e[k]=+e[k]||0);
+  if(!e.name.trim()){alert('Name is required.');return;}
+  if(!e.empid.trim()){alert('Employee ID is required — it becomes the login and password.');return;}
+  e.empid=e.empid.trim().toUpperCase();
+  /* auto-generated credentials: login = employee ID, password = employee ID (until changed) */
+  e.password=(editIdx>-1&&EMP[editIdx].password)?EMP[editIdx].password:e.empid;
+  e.access={}; ACCESS_KEYS.forEach(k=>{ const el=$('ac_'+k); e.access[k]=el?el.checked:false; });
+  if(editIdx<0){
+    if(EMP.some(x=>String(x.empid).toUpperCase()===e.empid)){alert('That employee ID already exists.');return;}
+    EMP.push(e);
+    DOCLOG.unshift({ts:Date.now(),emp:e.empid,name:e.name,doc:'Staff account provisioned — login/password = '+e.empid,by:'HR backend'});
+  } else EMP[editIdx]={...EMP[editIdx],...e};
+  $('empModalBg').classList.remove('on');
+  renderEmpTable(); renderDash(); persist();
+});
+
+/* ── Load an employee into the Document Studio ── */
+window.genFor=i=>{
+  const e=EMP[i];
+  $('f_office').value=e.office;
+  const o=OFFICES[e.office];
+  $('f_place').value=o.place; $('f_footer').value=o.footer; $('f_currency').value=o.cur;
+  $('f_emptype').value=e.emptype;
+  $('f_salut').value=e.salut; $('f_pronoun').value=e.pronoun;
+  $('f_name').value=e.name; $('f_empid').value=e.empid;
+  $('f_dept').value=e.dept; $('f_desig').value=e.desig; $('f_manager').value=e.manager||'';
+  $('f_doj').value=e.doj||''; $('f_dol').value=e.dol||'';
+  $('f_current').value=e.status||'current';
+  $('f_basic').value=e.basic||0; $('f_da').value=e.da||0; $('f_hra').value=e.hra||0; $('f_spl').value=e.spl||0;
+  $('f_bank').value=e.bank||''; $('f_pan').value=e.pan||'';
+  $('f_ref').value=autoRef();
+  setView('docs');
+  render();
+};
+
+/* ── Master sheet: CSV export / import ── */
+const CSV_COLS=['empid','salut','pronoun','name','office','emptype','status','dept','desig','manager','doj','dol','basic','da','hra','spl','bank','pan',
+  'email','phone','dob','address','emergency','qualification','bloodgroup','uan','password','access'];
+/* access serialises to a pipe list in CSV, e.g. "staff|courses" */
+function accessToStr(a){ return a&&typeof a==='object'?Object.keys(a).filter(k=>a[k]).join('|'):''; }
+function strToAccess(s){ const a={}; String(s||'').split('|').forEach(k=>{ if(k.trim())a[k.trim()]=true; }); return a; }
+
+/* ================= STAFF INBOX (requests + messages from the Staff Portal) ================= */
+function JS_(k,d){ try{const v=JSON.parse(localStorage.getItem(k)); return v==null?d:v;}catch(e){return d;} }
+function WS_(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
+let openThread=null;
+function inboxCounts(){
+  const pend=JS_('alizonStaffReqs',[]).filter(r=>r.status==='Pending').length;
+  const meta=JS_('alizonStaffMeta',{hrRead:{}});
+  const th=JS_('alizonStaffMsgs',{});
+  let un=0; Object.keys(th).forEach(id=>{ const last=(meta.hrRead||{})[id]||0;
+    un+=th[id].filter(m=>m.from==='staff'&&m.ts>last).length; });
+  return {pend,un};
+}
+function paintInboxBadge(){
+  const c=inboxCounts(), b=$('inboxBadge'), n=c.pend+c.un;
+  if(b){ b.textContent=n; b.style.display=n?'':'none'; }
+}
+function renderInbox(){
+  paintInboxBadge();
+  /* requests */
+  const reqs=JS_('alizonStaffReqs',[]);
+  $('reqRows').innerHTML=reqs.length?reqs.map(r=>{
+    const d=new Date(r.ts).toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+    const stc=r.status==='Pending'?'var(--gold)':r.status==='Ready'?'#3fbf90':'#ff8a90';
+    return `<tr><td>${d}</td><td><b>${escapeHtml(r.name)}</b><br><span style="color:var(--muted);font-size:11px">${escapeHtml(r.empid)}</span></td>
+      <td>${escapeHtml(r.type)}</td><td style="max-width:220px;white-space:normal">${escapeHtml(r.note||'—')}${r.hrNote?'<br><span style="color:var(--gold);font-size:11px">HR: '+escapeHtml(r.hrNote)+'</span>':''}</td>
+      <td style="color:${stc};font-weight:700">${escapeHtml(r.status)}</td>
+      <td>${r.status==='Pending'
+        ? `<input data-rn="${r.id}" placeholder="Note to staff (optional)" style="width:120px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);border-radius:8px;font-family:inherit;padding:6px 8px;font-size:12px">
+           <button class="btn mini" data-rok="${r.id}" style="color:#3fbf90">✔ Ready</button>
+           <button class="btn mini" data-rno="${r.id}" style="color:#ff8a90">✕ Decline</button>`
+        : '—'}</td></tr>`;
+  }).join(''):'<tr><td colspan="6" style="color:var(--muted)">No requests yet.</td></tr>';
+  document.querySelectorAll('[data-rok]').forEach(b=>b.onclick=()=>actReq(b.dataset.rok,'Ready'));
+  document.querySelectorAll('[data-rno]').forEach(b=>b.onclick=()=>actReq(b.dataset.rno,'Declined'));
+  /* threads */
+  const th=JS_('alizonStaffMsgs',{}), meta=JS_('alizonStaffMeta',{hrRead:{}});
+  const ids=Object.keys(th).sort((a,b)=>(th[b].slice(-1)[0]||{ts:0}).ts-(th[a].slice(-1)[0]||{ts:0}).ts);
+  $('threadList').innerHTML=ids.length?ids.map(id=>{
+    const e=EMP.find(x=>x.empid===id), last=(meta.hrRead||{})[id]||0;
+    const un=th[id].filter(m=>m.from==='staff'&&m.ts>last).length;
+    return `<div data-th="${id}" style="padding:11px 13px;border-bottom:1px solid var(--line);cursor:pointer;${openThread===id?'background:var(--gold-soft)':''}">
+      <b style="font-size:13px">${escapeHtml(e?e.name:id)}</b>${un?` <span style="background:var(--crimson);color:#fff;border-radius:100px;padding:0 7px;font-size:10px;font-weight:700">${un}</span>`:''}
+      <div style="color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml((th[id].slice(-1)[0]||{}).text||'')}</div></div>`;
+  }).join(''):'<div style="padding:14px;color:var(--muted);font-size:13px">No staff messages yet.</div>';
+  document.querySelectorAll('[data-th]').forEach(el=>el.onclick=()=>{ openThread=el.dataset.th; markRead(openThread); renderInbox(); });
+  /* thread view */
+  const tv=$('threadView');
+  if(openThread&&th[openThread]){
+    tv.innerHTML=th[openThread].map(m=>`<div style="max-width:80%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.5;${m.from==='hr'?'align-self:flex-end;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));color:#fff':'align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid var(--line)'}">
+      ${escapeHtml(m.text)}<div style="font-size:9.5px;opacity:.7;margin-top:3px">${m.from==='hr'?'HR Office':'Staff'} · ${new Date(m.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
+    tv.scrollTop=tv.scrollHeight;
+  } else tv.innerHTML='<div style="color:var(--muted);font-size:13px;margin:auto">Select a conversation.</div>';
+}
+function markRead(id){ const m=JS_('alizonStaffMeta',{hrRead:{}}); m.hrRead=m.hrRead||{}; m.hrRead[id]=Date.now(); WS_('alizonStaffMeta',m); }
+function actReq(id,status){
+  const reqs=JS_('alizonStaffReqs',[]); const r=reqs.find(x=>x.id===id); if(!r)return;
+  const noteEl=document.querySelector(`[data-rn="${id}"]`);
+  r.status=status; r.hrNote=noteEl?noteEl.value.trim():''; r.actedAt=Date.now();
+  WS_('alizonStaffReqs',reqs);
+  DOCLOG.unshift({ts:Date.now(),emp:r.empid,name:r.name,doc:r.type+' request — '+status,by:'HR Inbox'}); persist();
+  renderInbox();
+}
+$('hrReplyGo').addEventListener('click',()=>{
+  const v=$('hrReply').value.trim(); if(!v||!openThread)return;
+  const th=JS_('alizonStaffMsgs',{}); th[openThread]=th[openThread]||[];
+  th[openThread].push({from:'hr',text:v,ts:Date.now()});
+  WS_('alizonStaffMsgs',th); $('hrReply').value=''; renderInbox();
+});
+$('hrReply').addEventListener('keydown',e=>{ if(e.key==='Enter')$('hrReplyGo').click(); });
+function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+setInterval(paintInboxBadge,5000); paintInboxBadge();
+$('btnExportCsv').addEventListener('click',()=>{
+  const head=CSV_COLS.join(',');
+  const lines=EMP.map(e=>CSV_COLS.map(c=>{
+    let v=c==='access'?accessToStr(e.access):(e[c]!==undefined?String(e[c]):'');
+    if(/[",\n]/.test(v)) v='"'+v.replace(/"/g,'""')+'"';
+    return v;
+  }).join(','));
+  const blob=new Blob(['﻿'+[head,...lines].join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='ASMDI_Employee_Master_Sheet.csv';
+  a.click(); URL.revokeObjectURL(a.href);
+});
+$('btnImportCsv').addEventListener('click',()=>$('csvFile').click());
+$('csvFile').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const rows=parseCSV(r.result);
+      if(rows.length<2){alert('CSV appears empty.');return;}
+      const head=rows[0].map(h=>h.trim().toLowerCase());
+      const imported=rows.slice(1).filter(rw=>rw.some(c=>c&&c.trim())).map(rw=>{
+        const o={};
+        head.forEach((h,i)=>{if(CSV_COLS.includes(h)) o[h]=rw[i]||'';});
+        ['basic','da','hra','spl'].forEach(k=>o[k]=+o[k]||0);
+        if(!OFFICES[o.office]) o.office='tvm';
+        if(!TYPE_LABEL[o.emptype]) o.emptype='fulltime';
+        if(o.status!=='former') o.status='current';
+        o.access=o.access?strToAccess(o.access):{staff:true};
+        if(!o.password&&o.empid) o.password=String(o.empid).trim().toUpperCase();
+        return o;
+      }).filter(o=>o.name);
+      if(!imported.length){alert('No valid rows found. The header row must use the same column names as the exported master sheet.');return;}
+      /* MERGE — existing employees are never re-registered or overwritten; duplicates counted */
+      const byId={}; EMP.forEach(x=>{ if(x.empid)byId[String(x.empid).toUpperCase()]=x; });
+      let added=0,dups=0,filled=0;
+      imported.forEach(o=>{
+        const k=String(o.empid||'').toUpperCase();
+        if(k&&byId[k]){
+          dups++;
+          /* backfill only fields the existing record is missing */
+          Object.keys(o).forEach(f=>{ if((byId[k][f]===undefined||byId[k][f]==='')&&o[f]!==''){ byId[k][f]=o[f]; filled++; } });
+        } else { if(!o.empid)o.empid=nextId(); EMP.push(o); if(o.empid)byId[String(o.empid).toUpperCase()]=o; added++; }
+      });
+      renderEmpTable(); renderDash(); persist();
+      alert('Import processed:\n• '+added+' new employee'+(added!==1?'s':'')+' added\n• '+dups+' duplicate'+(dups!==1?'s':'')+' found & skipped (existing records kept)'+(filled?'\n• '+filled+' missing field'+(filled!==1?'s':'')+' backfilled on existing records':''));
+    }catch(err){alert('Could not read that CSV: '+err.message);}
+    e.target.value='';
+  };
+  r.readAsText(f);
+});
+function parseCSV(text){
+  const rows=[];let row=[],cur='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(inQ){
+      if(ch==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else inQ=false; }
+      else cur+=ch;
+    }else{
+      if(ch==='"') inQ=true;
+      else if(ch===','){row.push(cur);cur='';}
+      else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&text[i+1]==='\n')i++; row.push(cur);rows.push(row);row=[];cur=''; }
+      else cur+=ch;
+    }
+  }
+  if(cur!==''||row.length){row.push(cur);rows.push(row);}
+  return rows;
+}
+
+/* ── Dashboard ── */
+function renderDash(){
+  const cur=EMP.filter(e=>e.status==='current');
+  const interns=cur.filter(e=>e.emptype.startsWith('intern'));
+  const india=cur.filter(e=>e.office!=='usa');
+  const cards=[
+    [EMP.length,'Total on master sheet'],
+    [cur.length,'Currently active'],
+    [interns.length,'Active interns'],
+    [india.length,'Indian chapter'],
+    [cur.length-india.length,'USA chapter'],
+    [DOCLOG.length,'Documents this session'],
+  ];
+  $('dashCards').innerHTML=cards.map(c=>`<div class="card"><div class="big">${c[0]}</div><div class="lbl">${c[1]}</div></div>`).join('');
+  const byOffice={}; cur.forEach(e=>byOffice[e.office]=(byOffice[e.office]||0)+1);
+  const maxO=Math.max(1,...Object.values(byOffice));
+  $('dashOffice').innerHTML=Object.keys(OFFICES).map(k=>{
+    const n=byOffice[k]||0;
+    return `<div class="bar-row"><div class="bl">${OFFICES[k].label.split(' (')[0]}</div><div class="bar"><i style="width:${n/maxO*100}%"></i></div><div class="bn">${n}</div></div>`;
+  }).join('');
+  const byType={}; cur.forEach(e=>byType[e.emptype]=(byType[e.emptype]||0)+1);
+  const maxT=Math.max(1,...Object.values(byType));
+  $('dashType').innerHTML=Object.keys(TYPE_LABEL).map(k=>{
+    const n=byType[k]||0;
+    return `<div class="bar-row"><div class="bl">${TYPE_LABEL[k]}</div><div class="bar"><i style="width:${n/maxT*100}%"></i></div><div class="bn">${n}</div></div>`;
+  }).join('');
+  $('dashLog').innerHTML=DOCLOG.length
+    ? DOCLOG.slice(-10).reverse().map(l=>`<div class="log-item"><span><strong>${esc(l.type)}</strong> — ${esc(l.name)} <span class="t">(${esc(l.ref)})</span></span><span class="t">${l.when}</span></div>`).join('')
+    : '<div class="empty">No documents generated yet in this session. Downloads from the Document Studio appear here.</div>';
+}
+function logDoc(fmt){
+  DOCLOG.push({type:TITLE()+' · '+fmt,name:$('f_name').value,ref:$('f_ref').value,
+    when:new Date().toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})});
+  persist();
+}
+
+/* ── Init ── */
+$('f_date').value=new Date().toISOString().slice(0,10);
+$('f_ref').value=autoRef();
+render();
+renderEmpTable();
+renderDash();
+restore();
+</script>
+</body>
+</html>

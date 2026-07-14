@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · My Profile</title>
+<style>
+  :root{
+    --bg:#070810; --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.09);
+    --crimson:#D41820; --crimson-deep:#B1040E; --gold:#D9A441; --gold-soft:rgba(217,164,65,.14);
+    --pill:rgba(255,255,255,.05);
+    --tile-ink:#1c1a1f; --tile-muted:#6b6570; --tile-line:rgba(24,18,26,.12);
+    --tile-gold:#A16207; --tile-crimson:#C40D16;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.55}
+  .bgwrap{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.08),transparent 60%),
+    radial-gradient(90% 60% at 90% 10%,rgba(217,164,65,.06),transparent 55%)}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;letter-spacing:-.01em}
+
+  .top{position:sticky;top:0;z-index:10;background:rgba(13,16,36,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .top .in{max-width:1000px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:13px}
+  .top img.logo{width:32px;height:32px;object-fit:contain;flex:none}
+  .top .bt b{font-family:'Source Serif Pro',serif;font-size:16px;display:block;line-height:1.1}
+  .top .bt small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .top .sp{margin-left:auto;display:flex;gap:9px}
+  .top a,.top button{font-size:13px;text-decoration:none;color:var(--ink);cursor:pointer;font-family:inherit;
+    border:1px solid var(--line);background:var(--pill);padding:9px 15px;border-radius:100px;transition:.2s}
+  .top a:hover,.top button:hover{border-color:rgba(217,164,65,.4)}
+
+  .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:26px 22px 80px}
+
+  .card{color:var(--tile-ink);border:1px solid rgba(255,255,255,.62);border-radius:18px;padding:22px;margin-bottom:16px;
+    background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,255,255,.72) 48%,rgba(255,255,255,.84));
+    backdrop-filter:blur(28px) saturate(175%);-webkit-backdrop-filter:blur(28px) saturate(175%);
+    box-shadow:0 26px 60px rgba(0,0,0,.52),inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),inset 0 0 42px rgba(255,255,255,.16)}
+  .card h2{font-size:17px;margin-bottom:12px;color:var(--tile-ink)}
+  .card h2 .ic{margin-right:6px}
+
+  .find{max-width:520px;margin:40px auto}
+  .find label{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tile-muted);margin-bottom:7px}
+  .find input{width:100%;font-family:inherit;font-size:15px;color:var(--tile-ink);background:rgba(255,255,255,.8);
+    border:1px solid var(--tile-line);border-radius:12px;padding:12px 14px;outline:none;text-transform:uppercase}
+  .find input:focus{border-color:var(--tile-gold);box-shadow:0 0 0 3px rgba(161,98,7,.18)}
+  .find button{width:100%;margin-top:12px;cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;border:none;
+    border-radius:100px;padding:13px;color:#fff;background:linear-gradient(120deg,#9E0C13,var(--tile-crimson));
+    box-shadow:0 8px 22px rgba(212,24,32,.3)}
+  .find .err{margin-top:10px;font-size:13px;color:var(--tile-crimson);display:none}
+
+  .phead{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+  .avatar{width:92px;height:92px;border-radius:50%;flex:none;overflow:hidden;border:3px solid rgba(161,98,7,.45);
+    background:linear-gradient(120deg,#9E0C13,#C40D16);display:grid;place-items:center;color:#fff;
+    font-size:30px;font-weight:700;font-family:'Source Serif Pro',serif}
+  .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .pmeta{flex:1;min-width:240px}
+  .pmeta h1{font-size:clamp(20px,3vw,26px);color:var(--tile-ink)}
+  .pmeta .reg{font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:14px;color:var(--tile-gold);margin:2px 0 8px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .chip{font-size:11px;font-weight:700;letter-spacing:.04em;padding:4px 12px;border-radius:100px;
+    background:rgba(24,18,26,.05);border:1px solid var(--tile-line);color:var(--tile-muted)}
+  .chip.ok{color:#1E8E5A;background:rgba(30,142,90,.12);border-color:rgba(30,142,90,.35)}
+  .chip.gold{color:var(--tile-gold);background:rgba(161,98,7,.12);border-color:rgba(161,98,7,.35)}
+
+  .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.pgrid{grid-template-columns:1fr}}
+  .kv{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--tile-line);font-size:13.5px}
+  .kv:last-child{border-bottom:none}
+  .kv b{min-width:150px;flex:none;color:var(--tile-muted);font-weight:600;font-size:12px;letter-spacing:.03em;text-transform:uppercase;padding-top:1px}
+  .kv span{color:var(--tile-ink);word-break:break-word;white-space:pre-wrap}
+  .kv .num{font-family:ui-monospace,Menlo,monospace;font-weight:700}
+
+  @media print{
+    body{background:#fff}.bgwrap,.top{display:none !important}
+    .card{box-shadow:none;border:1px solid #ddd;background:#fff;break-inside:avoid}
+    @page{margin:16mm}
+  }
+</style>
+</head>
+<body>
+<div class="bgwrap"></div>
+
+<header class="top">
+  <div class="in">
+    <img class="logo" src="alizon-logo.png" alt="Alizon">
+    <div class="bt"><b>ALIZON OS</b><small>Student Profile</small></div>
+    <div class="sp">
+      <button id="printBtn">Print</button>
+      <button id="switchBtn">↺ Switch student</button>
+      <a href="ASMDI-dashboard.html">← Portal</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="card find" id="findCard">
+    <h2>View my profile</h2>
+    <label for="fr">Registration number</label>
+    <input id="fr" placeholder="e.g. ALZ102" autocomplete="off">
+    <button id="frGo">Show my details →</button>
+    <div class="err" id="frErr">No record found for that registration number. If you registered recently, ask the office to sync the roster.</div>
+  </div>
+  <div id="profArea" style="display:none"></div>
+</div>
+
+<script>
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function roster(){ try{const a=JSON.parse(localStorage.getItem('alizonStudents')||'[]');return Array.isArray(a)?a:[];}catch(e){return[];} }
+function findStudent(reg){ return roster().find(s=>String(s.reg||'').toUpperCase()===String(reg||'').trim().toUpperCase())||null; }
+function kv(label,val,num){ return val?`<div class="kv"><b>${label}</b><span class="${num?'num':''}">${esc(val)}</span></div>`:''; }
+function inr(v){ return '₹'+(+v||0).toLocaleString('en-IN',{maximumFractionDigits:2}); }
+function normName(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,''); }
+function feesFor(st){
+  try{ const all=JSON.parse(localStorage.getItem('alizonFees')||'[]'); if(!Array.isArray(all))return [];
+    const nn=normName(st.name);
+    return all.filter(x=>(x.reg&&String(x.reg).toUpperCase()===String(st.reg).toUpperCase())||(!x.reg&&normName(x.name)===nn));
+  }catch(e){ return []; }
+}
+
+function render(st){
+  document.getElementById('findCard').style.display='none';
+  const area=document.getElementById('profArea'); area.style.display='block';
+  const initials=String(st.name||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const exp=[st.expSector,st.expMonths?st.expMonths+' months':''].filter(Boolean).join(' · ');
+  area.innerHTML=`
+    <div class="card">
+      <div class="phead">
+        <div class="avatar" id="av">${st.photo?`<img src="${esc(st.photo)}" alt="" onerror="this.remove();document.getElementById('av').textContent='${initials}'">`:initials}</div>
+        <div class="pmeta">
+          <h1>${esc((st.salutation?st.salutation+' ':'')+st.name)}</h1>
+          <div class="reg">${esc(st.reg)}</div>
+          <div class="chips">
+            ${st.status?`<span class="chip ok">✔ ${esc(st.status)}</span>`:''}
+            ${st.batch?`<span class="chip gold">${esc(st.batch)}</span>`:''}
+            ${st.scholarship!==''&&st.scholarship!=null?`<span class="chip">Scholarship ${esc(st.scholarship)}%</span>`:''}
+            ${st.training?`<span class="chip">${esc(st.training)}</span>`:''}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="ic"></span>Programme</h2>
+      ${kv('Course',st.course)}
+      ${kv('Batch',st.batch)}
+      ${kv('Joined',st.joined)}
+      ${kv('Account status',st.status)}
+      ${kv('Reference / college',st.college)}
+      ${kv('Scholarship',st.scholarship!==''?st.scholarship+'%':'')}
+    </div>
+
+    ${(function(){
+      const fees=feesFor(st); if(!fees.length)return '';
+      const paidTx=fees.filter(x=>/paid/i.test(x.status));
+      const total=paidTx.reduce((a,x)=>a+(+x.amount||0),0);
+      const rows=fees.slice().sort((a,b)=>(b.date||'').split('/').reverse().join('').localeCompare((a.date||'').split('/').reverse().join('')))
+        .map(x=>`<div class="kv"><b>${esc(x.date)}${x.time?' · '+esc(x.time):''}</b>
+          <span><span class="num" style="font-weight:700">${inr(x.amount)}</span>
+          &nbsp;·&nbsp;${esc(x.mode)}${x.type?' · '+esc(x.type):''}
+          &nbsp;<span style="color:${/paid/i.test(x.status)?'#1E8E5A':'#C6551F'};font-weight:700;font-size:11px;letter-spacing:.05em">${esc(String(x.status).toUpperCase())}</span></span></div>`).join('');
+      return `<div class="card">
+        <h2><span class="ic"></span>Fees &amp; Payments</h2>
+        ${rows}
+        <div class="kv" style="border-top:2px solid rgba(161,98,7,.4);border-bottom:none;margin-top:4px">
+          <b>Total paid</b><span class="num" style="font-weight:800;font-size:16px;color:var(--tile-gold)">${inr(total)} <small style="font-weight:600;color:var(--tile-muted)">· ${paidTx.length} payment${paidTx.length!==1?'s':''}${fees.length>paidTx.length?' · '+(fees.length-paidTx.length)+' failed not counted':''}</small></span></div>
+      </div>`;
+    })()}
+    <div class="pgrid">
+      <div class="card">
+        <h2><span class="ic"></span>Personal</h2>
+        ${kv('Date of birth',st.dob,true)}
+        ${kv('Gender',st.gender)}
+        ${kv('Marital status',st.marital)}
+        ${kv('Category',st.category)}
+      </div>
+      <div class="card">
+        <h2><span class="ic"></span>Guardian</h2>
+        ${kv('Father / guardian',st.father)}
+        ${kv('Mother',st.mother)}
+      </div>
+      <div class="card">
+        <h2><span class="ic"></span>Contact</h2>
+        ${kv('Email',st.email)}
+        ${kv('Phone',st.phone,true)}
+      </div>
+      <div class="card">
+        <h2><span class="ic"></span>Address</h2>
+        ${kv('Address',st.address)}
+        ${kv('City',st.city)}
+        ${kv('District',st.district)}
+        ${kv('State',st.state)}
+        ${kv('PIN',st.pin,true)}
+      </div>
+      <div class="card">
+        <h2><span class="ic"></span>Education &amp; Experience</h2>
+        ${kv('Qualification',st.qualification)}
+        ${kv('Training status',st.training)}
+        ${kv('Experience',exp)}
+        ${kv('Employed',st.employed)}
+        ${kv('Details',st.empDetails)}
+      </div>
+      <div class="card">
+        <h2><span class="ic"></span>Portal access</h2>
+        ${kv('Login ID',st.reg,true)}
+        ${kv('Password',st.password||st.reg,true)}
+        <div class="kv"><b>Note</b><span>Your password is auto-set to your registration number. It will be enforced when sign-in goes live — you can change it in Dashboard → Settings → Security.</span></div>
+      </div>
+    </div>`;
+}
+
+function show(reg){
+  const st=findStudent(reg);
+  if(st){ render(st); try{ localStorage.setItem('alizonProfileView',st.reg); }catch(e){} return true; }
+  return false;
+}
+
+document.getElementById('frGo').addEventListener('click',()=>{
+  const ok=show(document.getElementById('fr').value);
+  document.getElementById('frErr').style.display=ok?'none':'block';
+});
+document.getElementById('fr').addEventListener('keydown',e=>{ if(e.key==='Enter')document.getElementById('frGo').click(); });
+document.getElementById('switchBtn').addEventListener('click',()=>{
+  document.getElementById('profArea').style.display='none';
+  document.getElementById('findCard').style.display='block';
+  document.getElementById('fr').value=''; document.getElementById('fr').focus();
+});
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+
+/* auto-open: logged-in profile → last viewed → ask */
+(function(){
+  let reg='';
+  try{ reg=(JSON.parse(localStorage.getItem('alizonProfile')||'{}').reg)||''; }catch(e){}
+  if(!reg){ try{ reg=localStorage.getItem('alizonProfileView')||''; }catch(e){} }
+  if(reg && show(reg)) return;
+  document.getElementById('fr').focus();
+})();
+</script>
+</body>
+</html>

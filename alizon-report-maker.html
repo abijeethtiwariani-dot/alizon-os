@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Assessments — Report &amp; Form Maker</title>
+<link rel="icon" href="alizon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070810; --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.09);
+    --crimson:#D41820; --crimson-deep:#B1040E; --gold:#D9A441; --gold-soft:rgba(217,164,65,.14);
+    --pill:rgba(255,255,255,.05); --glass:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+    --navy:#0D1024;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:15px;
+    -webkit-font-smoothing:antialiased;line-height:1.5}
+  .bgwrap{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.08),transparent 60%),
+    radial-gradient(90% 60% at 90% 8%,rgba(217,164,65,.06),transparent 55%)}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;letter-spacing:-.01em}
+
+  .top{position:sticky;top:0;z-index:20;background:rgba(13,16,36,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .top .in{max-width:1300px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:13px}
+  .top img.logo{width:32px;height:32px;object-fit:contain;flex:none}
+  .top .bt b{font-family:'Source Serif Pro',serif;font-size:16px;display:block;line-height:1.1}
+  .top .bt small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .top .sp{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap}
+  .top a.back,.top button{font-size:13px;text-decoration:none;color:var(--ink);cursor:pointer;font-family:inherit;
+    border:1px solid var(--line);background:var(--pill);padding:9px 15px;border-radius:100px;transition:.2s}
+  .top a.back:hover,.top button:hover{background:rgba(255,255,255,.1);border-color:rgba(217,164,65,.4)}
+  .top .dl{color:#fff;border:none;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));font-weight:600;box-shadow:0 6px 18px rgba(212,24,32,.3)}
+  .top .dl:hover{filter:brightness(1.08)}
+  .top #submitBtn{border-color:rgba(217,164,65,.5);color:var(--gold)}
+  .top #submitBtn:hover{background:var(--gold-soft)}
+
+  .layout{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:22px;display:grid;
+    grid-template-columns:minmax(360px,470px) 1fr;gap:22px;align-items:start}
+  @media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+  .panel{background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:20px;backdrop-filter:blur(14px)}
+  /* ===== LIQUID-WHITE GLASS TILE on the black canvas (match dashboard) ===== */
+  .panel{
+    --ink:#1c1a1f; --muted:#6b6570; --line:rgba(24,18,26,.12);
+    --crimson:#C40D16; --crimson-deep:#9E0C13; --gold:#A16207;
+    --gold-soft:rgba(217,164,65,.22); --pill:rgba(24,18,26,.05);
+    --glass:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,255,255,.72) 48%,rgba(255,255,255,.84));
+    color:var(--ink);
+    border:1px solid rgba(255,255,255,.62);
+    backdrop-filter:blur(28px) saturate(175%);
+    -webkit-backdrop-filter:blur(28px) saturate(175%);
+    box-shadow:0 26px 60px rgba(0,0,0,.52),
+      inset 0 1.5px 0 rgba(255,255,255,.95),
+      inset 0 -1px 0 rgba(255,255,255,.35),
+      inset 0 0 42px rgba(255,255,255,.16);
+  }
+  .panel input,.panel textarea,.panel select{background:rgba(255,255,255,.75)}
+  .panel .sa-row p,.panel .sa-radio label{color:var(--ink)}
+  .panel .modenote.up{color:#166A45}
+  .panel .modenote.dl{color:#7c4c06}
+  .panel .sec .mv:hover{color:var(--gold)}
+  .panel .sec{background:rgba(255,255,255,.35)}
+  .panel h2{font-size:17px;margin-bottom:4px}
+  .panel .hint{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+  .seg{display:flex;gap:6px;margin-bottom:16px;background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:4px}
+  .seg button{flex:1;border:none;background:none;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;
+    padding:9px 6px;border-radius:100px;cursor:pointer;transition:.2s}
+  .seg button.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .modenote{font-size:12.5px;border-radius:10px;padding:10px 13px;margin-bottom:16px;display:flex;gap:8px;align-items:flex-start}
+  .modenote.up{background:rgba(46,139,106,.14);border:1px solid rgba(46,139,106,.35);color:#8fe0bd}
+  .modenote.dl{background:var(--gold-soft);border:1px solid rgba(217,164,65,.32);color:#ecd9ab}
+  .grp{margin-bottom:16px}
+  .grp>.lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:520px){.row2{grid-template-columns:1fr}}
+  label.f{display:block;margin-bottom:10px}
+  label.f span{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+  input,textarea,select{width:100%;font-family:inherit;font-size:14px;color:var(--ink);background:rgba(255,255,255,.04);
+    border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none}
+  textarea{resize:vertical;min-height:110px;line-height:1.6}
+  input:focus,textarea:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  select option{background:#fff;color:#1c1a1f}
+  .chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;margin-bottom:10px}
+  .chk input{width:auto;accent-color:var(--crimson)}
+
+  .sec{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:11px;background:rgba(255,255,255,.02)}
+  .sec .sh{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+  .sec .sh input{font-weight:600}
+  .sec .mv{background:none;border:1px solid var(--line);color:var(--muted);width:30px;height:34px;border-radius:8px;cursor:pointer;flex:none;font-size:13px}
+  .sec .mv:hover{color:#fff;border-color:var(--gold)}
+  .sec .del{background:none;border:1px solid var(--line);color:var(--muted);width:34px;height:34px;border-radius:8px;cursor:pointer;flex:none;font-size:15px}
+  .sec .del:hover{color:var(--crimson);border-color:var(--crimson)}
+  .addsec{width:100%;border:1px dashed rgba(217,164,65,.4);background:var(--gold-soft);color:var(--gold);
+    font-family:inherit;font-weight:600;font-size:13.5px;padding:11px;border-radius:12px;cursor:pointer;transition:.2s}
+  .addsec:hover{background:rgba(217,164,65,.22)}
+
+  .previewwrap{position:sticky;top:74px}
+  .pvhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px}
+  .pvhead .t{font-size:12.5px;color:var(--muted);letter-spacing:.04em}
+  .pvscroll{max-height:calc(100vh - 130px);overflow:auto;border-radius:14px;padding:4px;background:rgba(0,0,0,.25);border:1px solid var(--line)}
+  .pvscroll::-webkit-scrollbar{width:8px}.pvscroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:10px}
+  @media(max-width:980px){.previewwrap{position:static}.pvscroll{max-height:none}}
+
+  /* self-assessment mode show/hide */
+  .sa-only{display:none}
+  body.mode-sa .sa-only{display:block}
+  body.mode-sa .doc-only{display:none}
+  body.mode-sa #declGrp,body.mode-sa #bodyGrp{display:none}
+  #sa-form{display:none}
+  body.mode-sa #sa-form{display:block}
+  .sa-sec{margin-bottom:20px}
+  .sa-sec h3{font-size:14px;margin-bottom:3px;color:var(--ink);font-family:'Source Serif Pro',serif}
+  .sa-sec .d{font-size:12px;color:var(--muted);margin-bottom:11px}
+  .sa-row{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+  .sa-row p{flex:1;font-size:13px;color:#d7d7dd;line-height:1.4;margin:0}
+  .sa-row select{width:66px;flex:none}
+  .sa-total{margin-top:11px;text-align:right;font-size:14px;color:var(--gold);font-weight:700}
+  .sa-q{margin-bottom:13px}
+  .sa-q>span{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;line-height:1.4}
+  .sa-radio{display:flex;flex-wrap:wrap;gap:8px}
+  .sa-radio label{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#d7d7dd;margin:0;
+    background:var(--pill);border:1px solid var(--line);padding:7px 12px;border-radius:100px;cursor:pointer}
+  .sa-radio label:hover{border-color:rgba(217,164,65,.4)}
+  .sa-radio input{width:auto;accent-color:var(--crimson)}
+
+  /* ===== printable document ===== */
+  #doc{background:#fff;color:#1a1a1a;width:100%;max-width:820px;margin:0 auto;padding:56px 60px;
+    font-family:'Source Serif Pro',Georgia,'Times New Roman',serif;font-size:15px;line-height:1.7}
+  #doc .dh{text-align:center;border-bottom:2px solid var(--crimson-deep);padding-bottom:16px;margin-bottom:8px}
+  #doc .dh img{width:52px;height:52px;object-fit:contain;margin-bottom:8px}
+  #doc .dh .inm{font-family:'Source Serif Pro',serif;font-weight:700;font-size:20px;color:var(--crimson-deep);letter-spacing:.01em}
+  #doc .dh .dep{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#666;margin-top:4px}
+  #doc .dt{text-align:center;margin:20px 0 6px;font-family:'Source Serif Pro',serif;font-weight:700;font-size:17px;
+    letter-spacing:.06em;text-transform:uppercase;color:#1a1a1a}
+  #doc .dsub{text-align:center;font-size:14px;color:#444;margin-bottom:22px;font-style:italic}
+  #doc h3.sn{font-family:'Source Serif Pro',serif;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--crimson-deep);margin:22px 0 9px;padding-bottom:5px;border-bottom:1px solid #e2d3d4}
+  #doc table.info{width:100%;border-collapse:collapse;font-size:14px;margin:4px 0}
+  #doc table.info td{padding:6px 8px;border:1px solid #e0dcd8;vertical-align:top}
+  #doc table.info td.k{width:200px;font-weight:600;background:#faf6f2;color:#333}
+  #doc p.body{margin:0 0 12px;text-align:justify;white-space:pre-wrap}
+  #doc .sig{margin-top:26px;font-size:14px}
+  #doc .sig .line{display:inline-block;border-bottom:1px solid #888;min-width:200px;margin-left:8px}
+  #doc h4.qn{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px;margin:16px 0 6px;color:#222}
+  #doc .foot{margin-top:34px;border-top:1px solid #e2d3d4;padding-top:10px;font-size:11px;color:#999;text-align:center}
+  #doc .empty{color:#bbb;font-style:italic}
+  #doc table.rate{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0}
+  #doc table.rate td,#doc table.rate th{border:1px solid #e0dcd8;padding:6px 9px;text-align:left;vertical-align:top}
+  #doc table.rate th{background:#faf6f2;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#555}
+  #doc table.rate td.r{width:72px;text-align:center;font-weight:700}
+  #doc .tot{text-align:right;font-weight:700;margin-top:6px;color:var(--crimson-deep)}
+  #doc .qa{margin:0 0 13px}#doc .qa .q{font-weight:600;color:#222;margin-bottom:3px}
+  #doc .pick{color:#222;font-weight:600}
+  #doc .scalekey{font-size:12px;color:#555;font-style:italic;margin:2px 0 8px}
+
+  @media print{
+    body{background:#fff}
+    .bgwrap,.top,.panel,.pvhead{display:none !important}
+    .layout{display:block;padding:0;max-width:100%}.previewwrap{position:static}
+    .pvscroll{max-height:none;overflow:visible;border:none;background:none;padding:0}
+    #doc{max-width:100%;padding:0;font-size:12.5pt}#doc .dh img{width:46px;height:46px}
+    @page{margin:18mm}
+  }
+</style>
+</head>
+<body>
+<div class="bgwrap"></div>
+
+<header class="top">
+  <div class="in">
+    <img class="logo" src="alizon-logo.png" alt="Alizon">
+    <div class="bt"><b>ALIZON OS</b><small>Assessments · Report &amp; Form Maker</small></div>
+    <div class="sp">
+      <a class="back" href="ASMDI-dashboard.html">← Portal</a>
+      <button id="submitBtn" title="Submit this practical to your dashboard">✔ Submit practical</button>
+      <button id="wordBtn" title="Download an editable Word file">Word (.doc)</button>
+      <button class="dl" id="pdfBtn" title="Print or save as PDF">PDF</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="panel">
+    <h2>Assessments</h2>
+    <p class="hint">Choose a document type, pick your module &amp; unit, and fill it in. The formatted document builds
+      live on the right.</p>
+
+    <div class="seg" id="seg">
+      <button data-type="assignment" class="on">Assignment</button>
+      <button data-type="practical">Practical</button>
+      <button data-type="self">Self-Assessment</button>
+    </div>
+
+    <div class="modenote dl" id="modeNote"></div>
+
+    <div class="grp">
+      <div class="lbl">1 · Module &amp; Student Information</div>
+      <div class="row2">
+        <label class="f"><span>Programme</span><select id="f-prog"></select></label>
+        <label class="f"><span>Module</span><select id="f-module"></select></label>
+      </div>
+      <label class="f"><span>Unit</span><select id="f-unit"></select></label>
+      <label class="f"><span>Student name</span><input id="f-name" placeholder="e.g. Krishna Priya E"></label>
+      <div class="row2">
+        <label class="f"><span>Registration number</span><input id="f-reg" placeholder="e.g. ALZ102"></label>
+        <label class="f doc-only"><span>Batch</span><input id="f-batch" placeholder="e.g. AIDP-1 Batch 7"></label>
+      </div>
+      <label class="f doc-only"><span id="l-no">Assignment no.</span><input id="f-no" placeholder="e.g. Assignment-1"></label>
+      <label class="f doc-only"><span id="l-title">Assignment title</span><input id="f-title" placeholder="e.g. Application of AI in Pharmacy"></label>
+      <label class="f sa-only"><span>Faculty name</span><input id="f-faculty" placeholder="e.g. Prof. Devan Iyer"></label>
+      <div class="row2">
+        <label class="f"><span>Course / subject code</span><input id="f-course" placeholder="e.g. ALZ102"></label>
+        <label class="f"><span>Date of submission</span><input id="f-date" placeholder="DD / MM / YYYY"></label>
+      </div>
+    </div>
+
+    <div class="grp" id="declGrp">
+      <div class="lbl">2 · Declaration</div>
+      <label class="chk"><input type="checkbox" id="f-decl" checked> Include the standard declaration &amp; signature line</label>
+      <textarea id="f-declText" style="min-height:90px"></textarea>
+    </div>
+
+    <div class="grp" id="bodyGrp">
+      <div class="lbl" id="l-body">3 · Assignment content</div>
+      <div id="sections"></div>
+      <button class="addsec" id="addSec">＋ Add section</button>
+    </div>
+
+    <div id="sa-form"></div>
+  </div>
+
+  <div class="previewwrap">
+    <div class="pvhead">
+      <span class="t">Live preview — this is exactly what downloads</span>
+      <span class="t" id="totalWords">0 words</span>
+    </div>
+    <div class="pvscroll"><div id="doc"></div></div>
+  </div>
+</div>
+
+<script>
+const LOGO="data:image/png;base64,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";
+const DEFAULT_PROGRAMS=[
+  {id:'paramedical',name:'Paramedical AI',icon:'',course:'Certificate Course in Digital Health & Artificial Intelligence for Paramedical Sciences',modules:[
+    {unit:'Module 1',title:'Vital Signs Monitoring with AI',desc:'Interpret patient vitals and trigger AI early-warning alerts.',status:'soon',href:'',units:[]},
+    {unit:'Module 2',title:'AI Triage & Emergency Prioritisation',desc:'Rank incoming cases by acuity using an AI triage model.',status:'soon',href:'',units:[]}
+  ]},
+  {id:'pharmacy',name:'Pharmacy AI',icon:'',course:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',modules:[
+    {unit:'Module 1',title:'AI Foundations & Digital Systems for Pharmacy Practice',desc:'Fundamentals of AI, ML & digital systems — the foundation for clinical AI in pharmacy.',status:'live',href:'ALIZON-OS-Module1-AI-Drug-Discovery.html',practicals:[
+      {title:'Practical 1 · AI Drug Discovery Lab (Unit 1)',href:'ALIZON-OS-Module1-AI-Drug-Discovery.html'},
+      {title:'Practical 2 · Ethics, Regulation & Data Protection Lab (Unit 3)',href:'ALIZON-OS-Module1-Ethics-Lab.html'}],units:[
+      'Unit 1 – Foundations of Artificial Intelligence in Pharmacy',
+      'Unit 2 – Digital Pharmacy & Information Systems',
+      'Unit 3 – Ethics, Regulation & Data Protection in Digital Pharmacy',
+      'Unit 4 – Computer Applications & Digital Documentation']},
+    {unit:'Module 2',title:'Digital Pharmacy, EHR & Telepharmacy',desc:'e-Prescriptions, EHR integration and telepharmacy service delivery.',status:'soon',href:'',units:[
+      'Unit 1 – Digital Pharmacy & E-Prescription Systems',
+      'Unit 2 – Electronic Health Records (EHR) in Pharmacy Practice',
+      'Unit 3 – Telepharmacy & Remote Patient Care',
+      'Unit 4 – Digital Inventory, ADR & Compliance Systems']},
+    {unit:'Module 3',title:'AI-Based Clinical Decision Support in Pharmacy',desc:'AI decision support — interactions, dosing, pharmacogenomics & pharmacovigilance.',status:'soon',href:'',units:[
+      'Unit 1 – Clinical Decision Support Systems (CDSS)',
+      'Unit 2 – Drug Interaction & Dose Optimization Software Tools',
+      'Unit 3 – Pharmacogenomics & Antibiogram Analysis',
+      'Unit 4 – Predictive Pharmacovigilance']},
+    {unit:'Module 4',title:'AI in Drug Development, Vaccines & Injectables',desc:'AI in drug discovery, sterile products, injectables and vaccine cold-chain.',status:'soon',href:'',units:[
+      'Unit 1 – AI in Drug Discovery & Molecular Targeting',
+      'Unit 2 – AI Support in Scientific Research & Data Analysis',
+      'Unit 3 – Injectable Medicines & Sterile Products',
+      'Unit 4 – Vaccines & Cold-Chain Analytics']},
+    {unit:'Module 5',title:'Clinical Trials, Pharmacovigilance & Evidence-Based Pharmacy',desc:'Clinical trials, GCP, ADR reporting and evidence-based pharmacy.',status:'soon',href:'',units:[
+      'Unit 1 – Clinical Trials in Pharmacy',
+      'Unit 2 – Good Clinical Practice (GCP) & Ethics',
+      'Unit 3 – Pharmacovigilance & ADR Reporting',
+      'Unit 4 – Evidence-Based Pharmacy & AI-Driven Literature Analysis']},
+    {unit:'Module 6',title:'Pharmacy Data Analytics & Predictive Modelling',desc:'Pharmacy data, machine learning, prescription analytics and demand forecasting.',status:'soon',href:'',units:[
+      'Unit 1 – Introduction to Pharmacy Data & Analytics',
+      'Unit 2 – Machine Learning in Pharmacy Practice',
+      'Unit 3 – Prescription Analytics & Safety Monitoring',
+      'Unit 4 – Demand Forecasting & Inventory Analytics']},
+    {unit:'Module 7',title:'Robotics & Automation in Pharmacy Practice',desc:'Robotic dispensing, smart packaging and automated pharmacy workflows.',status:'soon',href:'',units:[
+      'Unit 1 – Introduction to Pharmacy Robotics',
+      'Unit 2 – Automated Dispensing & Storage Systems',
+      'Unit 3 – Smart Packaging & Medication Tracking',
+      'Unit 4 – Workflow Optimisation & Quality Assurance']},
+    {unit:'Module 8',title:'AI-Enabled Clinical Case Studies & Simulations',desc:'Advanced clinical simulation suite — virtual patients, interaction screening, renal dosing & Rx safety audits.',status:'live',href:'ALIZON-OS-Clinical-Simulation.html',units:[
+      'Unit 1 – AI-Based Prescription Review & Safety Audits',
+      'Unit 2 – Drug Interaction & Dose Optimisation Simulations',
+      'Unit 3 – Clinical & Pharmacogenomic Case Simulations',
+      'Unit 4 – Digital Patient Care & Pharmacy Operations']}
+  ]},
+  {id:'medical',name:'Medical AI',icon:'',course:'Certificate Course in Digital Health & Artificial Intelligence for Medicine',modules:[
+    {unit:'Module 1',title:'AI-Assisted Medical Imaging Diagnosis',desc:'Classify X-ray / CT findings with a convolutional neural network.',status:'soon',href:'',units:[]},
+    {unit:'Module 2',title:'Clinical Risk Prediction Models',desc:'Predict readmission and complication risk from patient data.',status:'soon',href:'',units:[]}
+  ]},
+  {id:'hospital',name:'Hospital Administration AI',icon:'',course:'Certificate Course in Digital Health & Artificial Intelligence for Hospital Administration',modules:[
+    {unit:'Module 1',title:'AI Bed & Resource Allocation',desc:'Optimise bed occupancy and staff rostering with an AI planner.',status:'soon',href:'',units:[]},
+    {unit:'Module 2',title:'Predictive Patient Flow & Queue Management',desc:'Forecast OPD load and reduce patient waiting times.',status:'soon',href:'',units:[]}
+  ]}
+];
+const PROG_VER='2026-07-13-pro';
+function loadPrograms(){ try{
+    if(localStorage.getItem('alizonProgramsVer')!==PROG_VER){ localStorage.setItem('alizonPrograms',JSON.stringify(DEFAULT_PROGRAMS)); localStorage.setItem('alizonProgramsVer',PROG_VER); return DEFAULT_PROGRAMS; }
+    const s=localStorage.getItem('alizonPrograms'); if(s){const p=JSON.parse(s); if(Array.isArray(p)&&p.length)return p;} }catch(e){} return DEFAULT_PROGRAMS; }
+const DECL={
+  assignment:"I hereby declare that this assignment is my original work and has been prepared by me based on my own understanding, learning, and research. I confirm that I have appropriately acknowledged any sources used in the preparation of this assignment. I understand that plagiarism, fabrication, or academic misconduct may result in rejection of the assignment.",
+  practical:"I hereby declare that this practical record is my original work, carried out by me as part of my coursework. The observations, results and conclusions presented are based on the work I performed. I understand that plagiarism, fabrication of data, or academic misconduct may result in rejection of this record."
+};
+const PRESET={
+  assignment:[{t:'Introduction',b:''},{t:'Discussion',b:''},{t:'Conclusion',b:''},{t:'References',b:''}],
+  practical:[{t:'Aim',b:''},{t:'Principle / Theory',b:''},{t:'Requirements',b:''},{t:'Procedure',b:''},{t:'Observation',b:''},{t:'Result',b:''},{t:'Conclusion',b:''}]
+};
+const SA_STATEMENTS=[
+  'I actively participated in the learning activities, discussions, and exercises.',
+  'I attended the sessions regularly and engaged with the learning materials.',
+  'I understand the key concepts and principles covered in this module/unit.',
+  'I can explain the concepts learned using my own words.',
+  'I can apply the acquired knowledge to practical pharmacy and healthcare scenarios.',
+  'I developed new skills related to artificial intelligence and digital technologies.',
+  'I understand the relevance of AI and digital tools in modern pharmacy practice.',
+  'I successfully completed all assigned activities and tasks.',
+  'I am confident in using the digital tools or platforms introduced during this module.',
+  'I can critically evaluate the benefits and limitations of AI applications in healthcare.',
+  'I sought guidance and clarification whenever I encountered learning difficulties.',
+  'I believe I have achieved the intended learning outcomes of this module/unit.'
+];
+const SA_B=['What were the most important concepts, skills, or insights you gained from this module?','Which topic or activity did you find most interesting and why?','How do you think the knowledge gained from this module can be applied in pharmacy practice, patient care, healthcare management, research, or digital health environments?','Describe any practical skills, digital tools, or AI applications that you learned to use during this module.'];
+const SA_C=['What challenges or difficulties did you experience while studying this module?','Which topics require further study or clarification?','What actions will you take to improve your understanding and performance in future modules?'];
+const SA_D_OPTS=['Excellent','Very Good','Good','Satisfactory','Needs Improvement'];
+let sa={ratings:Array(12).fill(0),b:['','','',''],c:['','',''],dExp:'',dEffort:'',dRes:''};
+
+let docType='assignment';
+let sections=PRESET.assignment.map(s=>({...s}));
+
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ---- programme + module/unit selects ---- */
+function activeProgId(){ try{ return localStorage.getItem('alizonActiveProgram')||''; }catch(e){ return ''; } }
+function fillProgrammes(){
+  const progs=loadPrograms();
+  const act=progs.find(p=>p.id===activeProgId());
+  if(act){ /* student is locked to their own programme */
+    $('f-prog').innerHTML=`<option>${esc(act.name)}</option>`; $('f-prog').disabled=true;
+    $('f-prog').style.opacity='.75'; $('f-prog').style.cursor='not-allowed';
+  } else {
+    $('f-prog').innerHTML=progs.map(p=>`<option>${esc(p.name)}</option>`).join(''); $('f-prog').disabled=false;
+  }
+  fillModules();
+}
+function curProg(){ const progs=loadPrograms(); return progs.find(x=>x.name===$('f-prog').value)||progs[0]; }
+function curModule(){ const p=curProg(); const mi=$('f-module').value; return (mi!==''&&mi!=='__general'&&p&&p.modules)?p.modules[+mi]:null; }
+function fillModules(){
+  const p=curProg(); const mods=(p&&p.modules)||[];
+  $('f-module').innerHTML='<option value="">— Select module —</option>'+
+    mods.map((m,i)=>`<option value="${i}">${esc(m.unit)} — ${esc(m.title)}</option>`).join('')+
+    '<option value="__general">General / not module-specific</option>';
+  fillUnits();
+}
+function fillUnits(){
+  const m=curModule(); const units=(m&&m.units)||[];
+  const sel=$('f-unit');
+  if(!units.length){ sel.innerHTML='<option value="">— (choose a module with units) —</option>'; sel.disabled=true; }
+  else { sel.disabled=false; sel.innerHTML='<option value="">— Select unit —</option>'+units.map(u=>`<option>${esc(u)}</option>`).join(''); }
+}
+$('f-prog').addEventListener('change',()=>{fillModules();render();});
+$('f-module').addEventListener('change',()=>{fillUnits();render();});
+$('f-unit').addEventListener('change',render);
+
+/* ---- sections editor ---- */
+function renderSections(){
+  const host=$('sections');
+  host.innerHTML=sections.map((s,i)=>`
+    <div class="sec"><div class="sh">
+        <input data-i="${i}" data-k="t" value="${esc(s.t).replace(/"/g,'&quot;')}" placeholder="Section heading">
+        <button class="mv" data-up="${i}" title="Move up">↑</button>
+        <button class="del" data-del="${i}" title="Remove">✕</button></div>
+      <textarea data-i="${i}" data-k="b" placeholder="Write ${esc(s.t||'this section')} here…">${esc(s.b)}</textarea></div>`).join('');
+  host.querySelectorAll('input[data-k],textarea[data-k]').forEach(el=>el.addEventListener('input',()=>{sections[+el.dataset.i][el.dataset.k]=el.value;render();}));
+  host.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{sections.splice(+b.dataset.del,1);renderSections();render();}));
+  host.querySelectorAll('[data-up]').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.up;if(i>0){[sections[i-1],sections[i]]=[sections[i],sections[i-1]];renderSections();render();}}));
+}
+$('addSec').addEventListener('click',()=>{sections.push({t:'',b:''});renderSections();render();});
+
+/* ---- self-assessment editor ---- */
+function saTotal(){return sa.ratings.reduce((a,b)=>a+(+b||0),0);}
+function updateSATotal(){const el=$('saTotal');if(el)el.textContent='Total Score: '+saTotal()+' / 60';}
+function renderSAForm(){
+  const rate=SA_STATEMENTS.map((s,i)=>`<div class="sa-row"><p>${i+1}. ${esc(s)}</p>
+    <select data-sa="r" data-i="${i}">${[0,1,2,3,4,5].map(n=>`<option value="${n}" ${sa.ratings[i]===n?'selected':''}>${n||'–'}</option>`).join('')}</select></div>`).join('');
+  const ta=(k,i,q)=>`<div class="sa-q"><span>${i+1}. ${esc(q)}</span><textarea data-sa="${k}" data-i="${i}" style="min-height:80px">${esc(k==='b'?sa.b[i]:sa.c[i])}</textarea></div>`;
+  const radios=(name,val)=>`<div class="sa-radio">${SA_D_OPTS.map(o=>`<label><input type="radio" name="${name}" value="${o}" ${val===o?'checked':''}>${o}</label>`).join('')}</div>`;
+  $('sa-form').innerHTML=`
+    <div class="sa-sec"><h3>Section A · Learning Outcome Achievement</h3>
+      <div class="d">Rate each statement — 1 = Strongly Disagree · 5 = Strongly Agree</div>${rate}
+      <div class="sa-total" id="saTotal"></div></div>
+    <div class="sa-sec"><h3>Section B · Knowledge &amp; Skill Development</h3>${SA_B.map((q,i)=>ta('b',i,q)).join('')}</div>
+    <div class="sa-sec"><h3>Section C · Challenges &amp; Areas for Improvement</h3>${SA_C.map((q,i)=>ta('c',i,q)).join('')}</div>
+    <div class="sa-sec"><h3>Section D · Personal Learning Reflection</h3>
+      <div class="sa-q"><span>1. How would you describe your overall learning experience?</span>${radios('dExp',sa.dExp)}</div>
+      <div class="sa-q"><span>2. Rate your overall effort and commitment.</span>${radios('dEffort',sa.dEffort)}</div>
+      <div class="sa-q"><span>3. What additional resources, support or activities would help enhance your learning?</span>
+        <textarea data-sa="dRes" style="min-height:80px">${esc(sa.dRes)}</textarea></div></div>`;
+  $('sa-form').querySelectorAll('select[data-sa]').forEach(el=>el.addEventListener('change',()=>{sa.ratings[+el.dataset.i]=+el.value;updateSATotal();render();}));
+  $('sa-form').querySelectorAll('textarea[data-sa]').forEach(el=>el.addEventListener('input',()=>{const k=el.dataset.sa;if(k==='dRes')sa.dRes=el.value;else sa[k][+el.dataset.i]=el.value;render();}));
+  $('sa-form').querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener('change',()=>{sa[r.name]=r.value;render();}));
+  updateSATotal();
+}
+
+/* ---- doc type switch ---- */
+function moduleLabel(){
+  const m=curModule(); const u=$('f-unit').value;
+  if(!m) return '';
+  return m.unit+' · '+m.title + (u?(' · '+u):'');
+}
+$('seg').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+  if(b.dataset.type===docType)return;
+  docType=b.dataset.type;
+  $('seg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+  document.body.classList.toggle('mode-sa',docType==='self');
+  if(docType!=='self'){
+    $('l-title').textContent=docType==='practical'?'Practical / experiment title':'Assignment title';
+    $('l-no').textContent=docType==='practical'?'Practical no.':'Assignment no.';
+    $('l-body').textContent=docType==='practical'?'3 · Practical content':'3 · Assignment content';
+    $('f-declText').value=DECL[docType];
+    if(sections.every(s=>!s.b.trim())){sections=PRESET[docType].map(s=>({...s}));renderSections();}
+  }
+  updateModeUI(); render();
+}));
+function updateModeUI(){
+  // submit for practicals & self-assessment; assignments (theory) are download-only
+  const canSubmit = (docType==='practical'||docType==='self');
+  $('submitBtn').style.display = canSubmit ? '' : 'none';
+  $('submitBtn').textContent = docType==='self' ? '✔ Submit self-assessment' : '✔ Submit practical';
+  const n=$('modeNote');
+  if(canSubmit){ n.className='modenote up';
+    n.innerHTML='✔ <div><b>'+(docType==='self'?'Self-assessment':'Practical')+':</b> fill it in and <b>submit it to your dashboard</b> — you can download a copy too.</div>'; }
+  else { n.className='modenote dl';
+    n.innerHTML='<div><b>Assignment (theory):</b> download as PDF or Word, then upload it to our submission website. (No dashboard submission for theory.)</div>'; }
+}
+
+/* ---- build document ---- */
+function buildDoc(){
+  if(docType==='self') return buildSA();
+  const v=id=>$(id).value.trim();
+  const name=v('f-name'),reg=v('f-reg'),batch=v('f-batch'),prog=$('f-prog').value,mod=moduleLabel(),
+        no=v('f-no'),title=v('f-title'),course=v('f-course'),date=v('f-date');
+  const typeLabel=docType==='practical'?(no||'Practical Record'):(no||'Assignment');
+  const em=s=>s?esc(s):'<span class="empty">—</span>';
+  let rows=`
+    <tr><td class="k">Student Name</td><td>${em(name)}</td></tr>
+    <tr><td class="k">Registration Number</td><td>${em(reg)}</td></tr>
+    ${batch?`<tr><td class="k">Batch</td><td>${esc(batch)}</td></tr>`:''}
+    <tr><td class="k">Programme</td><td>${esc(prog)}</td></tr>
+    ${mod?`<tr><td class="k">Module / Unit</td><td>${esc(mod)}</td></tr>`:''}
+    ${course?`<tr><td class="k">Course / Subject Code</td><td>${esc(course)}</td></tr>`:''}
+    <tr><td class="k">${docType==='practical'?'Practical':'Assignment'} Title</td><td>${em(title)}</td></tr>
+    <tr><td class="k">Date of Submission</td><td>${em(date)}</td></tr>`;
+  let decl='';
+  if($('f-decl').checked){ decl=`<h3 class="sn">2 · Declaration</h3><p class="body">${esc($('f-declText').value.trim())}</p>
+      <div class="sig">Student Signature: <span class="line"></span></div>`; }
+  const body=sections.filter(s=>s.t.trim()||s.b.trim()).map((s,i)=>
+    `<h4 class="qn">${i+1}. ${esc(s.t||'Section')}</h4><p class="body">${s.b.trim()?esc(s.b):'<span class="empty">…</span>'}</p>`).join('')
+    || '<p class="body empty">Add your content sections on the left.</p>';
+  const bodyNo=$('f-decl').checked?3:2;
+  return `
+    <div class="dh"><img src="${LOGO}" alt="Alizon">
+      <div class="inm">Alizon School of Medical &amp; Digital Intelligence</div>
+      <div class="dep">Department of ${esc(prog)} · Virtual Campus</div></div>
+    <div class="dt">${esc(typeLabel)}</div>
+    <div class="dsub">${title?esc(title):(docType==='practical'?'Practical Record':'Assignment Submission')}${mod?' — '+esc(mod):''}</div>
+    <h3 class="sn">1 · Student Information</h3>
+    <table class="info"><tbody>${rows}</tbody></table>
+    ${decl}
+    <h3 class="sn">${bodyNo} · ${docType==='practical'?'Practical':'Assignment'}</h3>
+    ${body}
+    <div class="foot">Generated with the ALIZON OS Assessments · Report &amp; Form Maker · alizongov.com</div>`;
+}
+function buildSA(){
+  const v=id=>$(id).value.trim();
+  const name=v('f-name'),reg=v('f-reg'),course=v('f-course'),mod=moduleLabel(),faculty=v('f-faculty'),date=v('f-date'),prog=$('f-prog').value;
+  const em=s=>s?esc(s):'<span class="empty">—</span>';
+  const rateRows=SA_STATEMENTS.map((s,i)=>`<tr><td>${i+1}. ${esc(s)}</td><td class="r">${sa.ratings[i]||'—'}</td></tr>`).join('');
+  const qa=(q,a)=>`<div class="qa"><div class="q">${esc(q)}</div><p class="body">${a&&a.trim()?esc(a):'<span class="empty">…</span>'}</p></div>`;
+  const pick=x=>x?`<span class="pick">${esc(x)}</span>`:'<span class="empty">—</span>';
+  return `
+    <div class="dh"><img src="${LOGO}" alt="Alizon">
+      <div class="inm">Alizon School of Medical &amp; Digital Intelligence</div>
+      <div class="dep">Department of ${esc(prog)} · Virtual Campus</div></div>
+    <div class="dt">Student Self-Assessment &amp; Reflective Learning Form</div>
+    <div class="dsub">${mod?esc(mod):'Module / Unit self-assessment'}</div>
+    <h3 class="sn">Student Information</h3>
+    <table class="info"><tbody>
+      <tr><td class="k">Course</td><td>${em(course||prog)}</td></tr>
+      <tr><td class="k">Student Name</td><td>${em(name)}</td></tr>
+      <tr><td class="k">Registration Number</td><td>${em(reg)}</td></tr>
+      <tr><td class="k">Module / Unit</td><td>${em(mod)}</td></tr>
+      <tr><td class="k">Faculty Name</td><td>${em(faculty)}</td></tr>
+      <tr><td class="k">Date of Submission</td><td>${em(date)}</td></tr>
+    </tbody></table>
+    <h3 class="sn">Section A · Learning Outcome Achievement</h3>
+    <div class="scalekey">Scale: 1 = Strongly Disagree · 2 = Disagree · 3 = Neutral · 4 = Agree · 5 = Strongly Agree</div>
+    <table class="rate"><thead><tr><th>Statement</th><th class="r">Rating (1–5)</th></tr></thead><tbody>${rateRows}</tbody></table>
+    <div class="tot">Total Score: ${saTotal()} / 60</div>
+    <h3 class="sn">Section B · Knowledge &amp; Skill Development Reflection</h3>${SA_B.map((q,i)=>qa((i+1)+'. '+q,sa.b[i])).join('')}
+    <h3 class="sn">Section C · Challenges &amp; Areas for Improvement</h3>${SA_C.map((q,i)=>qa((i+1)+'. '+q,sa.c[i])).join('')}
+    <h3 class="sn">Section D · Personal Learning Reflection</h3>
+    <div class="qa"><div class="q">1. Overall learning experience</div><p class="body">${pick(sa.dExp)}</p></div>
+    <div class="qa"><div class="q">2. Overall effort and commitment</div><p class="body">${pick(sa.dEffort)}</p></div>
+    ${qa('3. What additional resources, support or activities would help enhance your learning?',sa.dRes)}
+    <h3 class="sn">Student Declaration</h3>
+    <p class="body">I hereby confirm that this self-assessment has been completed honestly and reflects my personal evaluation of my learning progress, participation, and achievement of learning outcomes within this module.</p>
+    <div class="sig">Student Signature: <span class="line"></span> &nbsp;&nbsp;&nbsp; Date: <span class="line" style="min-width:120px"></span></div>
+    <h3 class="sn">Faculty Review (Optional)</h3>
+    <p class="body" style="min-height:44px">&nbsp;</p>
+    <div class="sig">Faculty Signature: <span class="line"></span> &nbsp;&nbsp;&nbsp; Date: <span class="line" style="min-width:120px"></span></div>
+    <div class="foot">Generated with the ALIZON OS Assessments · Report &amp; Form Maker · alizongov.com</div>`;
+}
+function countWords(){ const t=docType==='self'?sa.b.join(' ')+' '+sa.c.join(' ')+' '+sa.dRes:sections.map(s=>s.b).join(' ')+' '+$('f-declText').value; return (t.match(/\S+/g)||[]).length; }
+function render(){ $('doc').innerHTML=buildDoc(); $('totalWords').textContent=countWords()+' words'; }
+
+/* ---- downloads ---- */
+function fileBase(){
+  const n=$('f-name').value.trim().replace(/\s+/g,'_')||'Student';
+  const c=($('f-course').value.trim()||$('f-reg').value.trim()||'ALZ').replace(/\s+/g,'');
+  const no=(docType==='self'?'Self-Assessment':($('f-no').value.trim()||(docType==='practical'?'Practical':'Assignment'))).replace(/\s+/g,'-');
+  return `${n}_${c}_${no}`;
+}
+$('pdfBtn').addEventListener('click',()=>window.print());
+$('wordBtn').addEventListener('click',()=>{
+  const css=document.querySelector('style').textContent;
+  const docCss=css.slice(css.indexOf('/* ===== printable document'));
+  const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" '+
+    'xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{margin:0}'+docCss+' #doc{box-shadow:none}</style></head><body><div id="doc">'+
+    $('doc').innerHTML+'</div></body></html>';
+  const blob=new Blob(['﻿'+html],{type:'application/msword'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileBase()+'.doc';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+});
+
+/* ---- submit (PRACTICALS ONLY) ---- */
+function toast(msg,bad){
+  let t=document.getElementById('__toast');
+  if(!t){t=document.createElement('div');t.id='__toast';
+    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(70px);z-index:99;padding:12px 22px;border-radius:100px;font-size:13.5px;font-weight:600;background:rgba(13,16,36,.95);backdrop-filter:blur(10px);transition:.35s;opacity:0;pointer-events:none';
+    document.body.appendChild(t);}
+  t.style.border='1px solid '+(bad?'rgba(212,24,32,.5)':'rgba(217,164,65,.5)');t.style.color=bad?'#ff8a90':'var(--gold)';
+  t.textContent=msg;requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(70px)';},2800);
+}
+/* ---- ALIZON AI Evaluator — rubric-based provisional marking on submit.
+       Faculty can accept or override the mark in the Admin Portal. ---- */
+function aiEvaluate(rec){
+  const fb=[], breakdown=[];
+  let score=0;
+  if(rec.type==='practical'){
+    const secs=sections.map(s=>({t:s.t||'Untitled',w:(String(s.b||'').match(/\S+/g)||[]).length}));
+    const filled=secs.filter(s=>s.w>=20);
+    /* 1 · completeness (4) */
+    const comp=+(Math.min(4,(filled.length/Math.max(secs.length,1))*4)).toFixed(1);
+    breakdown.push({k:'Completeness of sections',got:comp,of:4});
+    if(filled.length<secs.length) fb.push('Thin or empty sections: '+secs.filter(s=>s.w<20).map(s=>s.t).join(', ')+'.');
+    else fb.push('Every section is substantively filled.');
+    /* 2 · depth (3) */
+    const w=rec.words||0;
+    const depth=w>=400?3:w>=250?2.5:w>=150?2:w>=80?1.2:w>=30?0.6:0;
+    breakdown.push({k:'Depth & detail',got:depth,of:3});
+    fb.push(w>=250?('Good depth at '+w+' words.'):('Only '+w+' words overall — expand your observations and analysis.'));
+    /* 3 · structure (2) */
+    let str=0;
+    if(rec.title)str+=0.7; else fb.push('Add a clear practical title.');
+    if(rec.module)str+=0.6;
+    const hasResult=secs.some(s=>/result|conclusion|inference/i.test(s.t)&&s.w>=10);
+    if(hasResult)str+=0.7; else fb.push('No substantive Result / Conclusion section found.');
+    breakdown.push({k:'Structure & headings',got:+str.toFixed(1),of:2});
+    /* 4 · scientific content (1) — readings, values, technical vocabulary */
+    const body=sections.map(s=>s.b).join(' ');
+    const nums=(body.match(/\d+(\.\d+)?/g)||[]).length;
+    const terms=(body.match(/\b(AI|model|data|dose|drug|molecul\w*|predict\w*|accuracy|logP|lipinski|veber|bioavail\w*|receptor|binding|classifier|score|patient|clinical)\b/gi)||[]).length;
+    const sci=+(Math.min(1,nums*0.05+terms*0.08)).toFixed(1);
+    breakdown.push({k:'Scientific / technical content',got:sci,of:1});
+    if(sci<0.5)fb.push('Include readings, values and technical terms from the lab.');
+    score=comp+depth+str+sci;
+  }else{
+    /* self-assessment: ratings profile (6) + reflection (3) + completion (1) */
+    const total=rec.score||0;
+    const selfPart=+(Math.min(6,total/10)).toFixed(1);
+    breakdown.push({k:'Self-rating profile ('+total+'/60)',got:selfPart,of:6});
+    const refl=[sa.b.join(' '),sa.c.join(' '),sa.dRes].join(' ').trim();
+    const rw=(refl.match(/\S+/g)||[]).length;
+    const rp=rw>=150?3:rw>=80?2.4:rw>=40?1.6:rw>=15?0.8:0;
+    breakdown.push({k:'Reflection quality',got:rp,of:3});
+    fb.push(rw>=80?'Thoughtful written reflections.':'Written reflections are brief ('+rw+' words) — describe what you learned and where you struggled.');
+    const answered=sa.b.concat(sa.c).filter(v=>String(v).trim()!=='').length+sa.ratings.filter(v=>+v>0).length;
+    const totalQ=sa.b.length+sa.c.length+sa.ratings.length;
+    const ap=+(Math.min(1,answered/Math.max(totalQ,1))).toFixed(1);
+    breakdown.push({k:'All items answered',got:ap,of:1});
+    if(answered<totalQ)fb.push((totalQ-answered)+' item(s) left blank.');
+    score=selfPart+rp+ap;
+  }
+  score=Math.max(0,Math.min(10,+score.toFixed(1)));
+  const verdict=score>=8.5?'Excellent work':score>=7?'Good work':score>=5?'Satisfactory — room to improve':'Needs significant improvement';
+  return {grade:score+'/10',score,verdict,feedback:verdict+'. '+fb.join(' '),breakdown,
+    engine:'ALIZON AI Evaluator v1 · rubric-based · provisional',at:Date.now()};
+}
+
+$('submitBtn').addEventListener('click',()=>{
+  if(docType!=='practical' && docType!=='self') return;
+  const name=$('f-name').value.trim();
+  if(!name){toast('Enter your student name first',true);$('f-name').focus();return;}
+  if(!moduleLabel()){toast('Choose your module & unit first',true);$('f-module').focus();return;}
+  const rec={id:'s'+Date.now()+'_'+Math.floor(Math.random()*1000),
+    type:docType, typeLabel:(docType==='self'?'Self-Assessment':'Practical'),
+    name,reg:$('f-reg').value.trim(),programme:$('f-prog').value,module:moduleLabel(),
+    title:$('f-title').value.trim(),no:$('f-no').value.trim(),course:$('f-course').value.trim(),date:$('f-date').value.trim(),
+    score:(docType==='self'?saTotal():null),words:countWords(),ts:Date.now(),html:$('doc').innerHTML.split(LOGO).join('alizon-logo.png')};
+  rec.ai=aiEvaluate(rec); rec.status='ai-evaluated';
+  let arr=[];try{arr=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]');if(!Array.isArray(arr))arr=[];}catch(e){}
+  arr.unshift(rec);if(arr.length>60)arr=arr.slice(0,60);
+  try{localStorage.setItem('alizonSubmissions',JSON.stringify(arr));
+    toast('Submitted ✓ — AI provisional mark: '+rec.ai.grade+' (faculty may adjust)');}
+  catch(e){toast('Could not save (storage full)',true);}
+});
+
+/* ---- student roster autofill (CSV uploaded via Admin Portal) ---- */
+function findStudent(reg){
+  try{ const r=JSON.parse(localStorage.getItem('alizonStudents')||'[]');
+    return Array.isArray(r)?r.find(s=>String(s.reg||'').toUpperCase()===String(reg||'').trim().toUpperCase()):null;
+  }catch(e){ return null; }
+}
+$('f-reg').addEventListener('change',()=>{
+  const st=findStudent($('f-reg').value); if(!st) return;
+  if(!$('f-name').value)$('f-name').value=st.name||'';
+  if(!$('f-batch').value&&st.batch)$('f-batch').value=st.batch;
+  render(); toast('Roster: '+st.name+(st.dob?' · DOB '+st.dob:''));
+});
+
+/* ---- init ---- */
+$('f-declText').value=DECL.assignment;
+['f-name','f-reg','f-batch','f-no','f-title','f-course','f-date','f-declText','f-decl','f-faculty']
+  .forEach(id=>$(id).addEventListener('input',render));
+fillProgrammes(); renderSections(); renderSAForm(); updateModeUI(); render();
+/* prefill from saved dashboard profile */
+try{ const pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}');
+  if(pf.name&&!$('f-name').value)$('f-name').value=pf.name;
+  if(pf.reg&&!$('f-reg').value)$('f-reg').value=pf.reg;
+  if(pf.name||pf.reg)render();
+}catch(e){}
+</script>
+</body>
+</html>

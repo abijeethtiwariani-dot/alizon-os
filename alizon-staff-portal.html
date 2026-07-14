@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Staff Portal</title>
+<style>
+  :root{
+    --bg:#070810; --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.09);
+    --crimson:#D41820; --crimson-deep:#B1040E; --gold:#D9A441; --gold-soft:rgba(217,164,65,.14);
+    --pill:rgba(255,255,255,.05);
+    --tink:#1c1a1f; --tmut:#6b6570; --tline:rgba(24,18,26,.12);
+    --tgold:#A16207; --tcrim:#C40D16; --succ:#1E8E5A; --succ-soft:rgba(30,142,90,.12);
+    --warn:#C6551F; --warn-soft:rgba(198,85,31,.12); --dang:#B1040E; --dang-soft:rgba(177,4,14,.10);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.55}
+  .bgwrap{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.08),transparent 60%),
+    radial-gradient(90% 60% at 90% 10%,rgba(217,164,65,.06),transparent 55%)}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;letter-spacing:-.01em}
+
+  .top{position:sticky;top:0;z-index:10;background:rgba(13,16,36,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .top .in{max-width:1080px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:13px}
+  .top img.logo{width:32px;height:32px;object-fit:contain;flex:none}
+  .top .bt b{font-family:'Source Serif Pro',serif;font-size:16px;display:block;line-height:1.1}
+  .top .bt small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .top .sp{margin-left:auto;display:flex;gap:9px;align-items:center}
+  .top a,.top button{font-size:13px;text-decoration:none;color:var(--ink);cursor:pointer;font-family:inherit;
+    border:1px solid var(--line);background:var(--pill);padding:9px 15px;border-radius:100px;transition:.2s}
+  .top a:hover,.top button:hover{border-color:rgba(217,164,65,.4)}
+  .top a:focus-visible,.top button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+    outline:none;box-shadow:0 0 0 3px var(--gold-soft);border-color:var(--gold)}
+
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:26px 22px 80px}
+
+  .card{color:var(--tink);border:1px solid rgba(255,255,255,.62);border-radius:18px;padding:22px;margin-bottom:16px;
+    background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,255,255,.72) 48%,rgba(255,255,255,.84));
+    backdrop-filter:blur(28px) saturate(175%);-webkit-backdrop-filter:blur(28px) saturate(175%);
+    box-shadow:0 26px 60px rgba(0,0,0,.52),inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35),inset 0 0 42px rgba(255,255,255,.16)}
+  .card h2{font-size:17px;margin-bottom:12px;color:var(--tink)}
+  .hintl{font-size:12.5px;color:var(--tmut);margin:-6px 0 12px}
+
+  /* login */
+  .login{max-width:460px;margin:48px auto}
+  .login label{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tmut);margin:12px 0 7px}
+  .login input{width:100%;font-family:inherit;font-size:15px;color:var(--tink);background:rgba(255,255,255,.8);
+    border:1px solid var(--tline);border-radius:12px;padding:12px 14px;outline:none}
+  .login button{width:100%;margin-top:16px;cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;border:none;
+    border-radius:100px;padding:13px;color:#fff;background:linear-gradient(120deg,#9E0C13,var(--tcrim));
+    box-shadow:0 8px 22px rgba(212,24,32,.3)}
+  .login .err{margin-top:10px;font-size:13px;color:var(--tcrim);display:none}
+  .login .note{margin-top:12px;font-size:12px;color:var(--tmut)}
+
+  /* profile hero */
+  .phead{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+  .avatar{width:84px;height:84px;border-radius:50%;flex:none;border:3px solid rgba(161,98,7,.45);
+    background:linear-gradient(120deg,#9E0C13,#C40D16);display:grid;place-items:center;color:#fff;
+    font-size:27px;font-weight:700;font-family:'Source Serif Pro',serif}
+  .pmeta{flex:1;min-width:250px}
+  .pmeta h1{font-size:clamp(20px,3vw,25px);color:var(--tink)}
+  .pmeta .post{font-size:14px;font-weight:600;color:var(--tgold);margin:1px 0 8px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .chip{font-size:11px;font-weight:700;letter-spacing:.04em;padding:4px 12px;border-radius:100px;
+    background:rgba(24,18,26,.05);border:1px solid var(--tline);color:var(--tmut)}
+  .chip.ok{color:var(--succ);background:var(--succ-soft);border-color:rgba(30,142,90,.35)}
+  .chip.gold{color:var(--tgold);background:rgba(161,98,7,.12);border-color:rgba(161,98,7,.35)}
+  .chip.mono{font-family:ui-monospace,Menlo,monospace}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:16px}
+  .kpi{color:var(--tink);border:1px solid rgba(255,255,255,.62);border-radius:16px;padding:16px 18px;
+    background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,255,255,.74) 48%,rgba(255,255,255,.85));
+    backdrop-filter:blur(24px) saturate(170%);box-shadow:0 18px 44px rgba(0,0,0,.45),inset 0 1.5px 0 rgba(255,255,255,.95)}
+  .kpi .kl{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tmut)}
+  .kpi .kv{font-size:24px;font-weight:700;font-family:'Source Serif Pro',serif;color:var(--tgold);margin-top:4px}
+  .kpi .kd{font-size:11.5px;color:var(--tmut);margin-top:2px}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:820px){.grid2{grid-template-columns:1fr}}
+
+  table.pay{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.pay td{padding:8px 4px;border-bottom:1px solid var(--tline)}
+  table.pay td:last-child{text-align:right;font-family:ui-monospace,Menlo,monospace;font-weight:600}
+  table.pay tr.tot td{border-bottom:none;border-top:2px solid rgba(161,98,7,.4);font-weight:800;color:var(--tgold);font-size:14.5px}
+  table.pay tr.ded td{color:var(--warn)}
+
+  .kv{display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--tline);font-size:13.5px}
+  .kv:last-child{border-bottom:none}
+  .kv b{min-width:140px;flex:none;color:var(--tmut);font-weight:600;font-size:11.5px;letter-spacing:.03em;text-transform:uppercase;padding-top:2px}
+  .kv span{color:var(--tink);word-break:break-word}
+
+  .btnrow{display:flex;gap:9px;flex-wrap:wrap}
+  .abtn{cursor:pointer;font-family:inherit;font-weight:600;font-size:13px;border:1px solid var(--tline);
+    background:rgba(24,18,26,.05);color:var(--tink);border-radius:100px;padding:11px 17px;transition:.2s}
+  .abtn:hover{border-color:var(--tgold);color:var(--tgold)}
+  .abtn.primary{border:none;color:#fff;background:linear-gradient(120deg,#9E0C13,var(--tcrim));box-shadow:0 8px 22px rgba(212,24,32,.28)}
+  .abtn.primary:hover{color:#fff;transform:translateY(-1px)}
+
+  label.f{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tmut);margin:10px 0 6px}
+  select,textarea,input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--tink);background:rgba(255,255,255,.8);
+    border:1px solid var(--tline);border-radius:10px;padding:10px 12px;outline:none}
+  textarea{min-height:64px;resize:vertical}
+  select option{background:#fff;color:#1c1a1f}
+
+  .req{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--tline);font-size:13px}
+  .req:last-child{border-bottom:none}
+  .req .st{flex:none;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:100px}
+  .st.p{color:var(--warn);background:var(--warn-soft);border:1px solid rgba(198,85,31,.35)}
+  .st.r{color:var(--succ);background:var(--succ-soft);border:1px solid rgba(30,142,90,.35)}
+  .st.d{color:var(--dang);background:var(--dang-soft);border:1px solid rgba(177,4,14,.35)}
+
+  /* chat */
+  .chat{display:flex;flex-direction:column;gap:8px;max-height:330px;overflow-y:auto;padding:4px 2px;margin-bottom:10px}
+  .msg{max-width:78%;padding:9px 13px;border-radius:14px;font-size:13.5px;line-height:1.5}
+  .msg.staff{align-self:flex-end;background:linear-gradient(120deg,#9E0C13,#C40D16);color:#fff;border-bottom-right-radius:4px}
+  .msg.hr{align-self:flex-start;background:rgba(24,18,26,.06);border:1px solid var(--tline);color:var(--tink);border-bottom-left-radius:4px}
+  .msg small{display:block;font-size:10px;opacity:.75;margin-top:3px}
+  .chatrow{display:flex;gap:8px}
+  .chatrow input{flex:1}
+  .empty{font-size:13px;color:var(--tmut);padding:8px 0}
+
+  /* printable doc */
+  #printDoc{display:none}
+  @media print{
+    body>*{display:none !important}
+    #printDoc{display:block !important;background:#fff;color:#1a1a1a;font-family:'Source Serif Pro',Georgia,serif;
+      max-width:820px;margin:0 auto;line-height:1.7;font-size:15px}
+    @page{margin:18mm}
+  }
+</style>
+</head>
+<body>
+<div class="bgwrap"></div>
+
+<header class="top">
+  <div class="in">
+    <img class="logo" src="alizon-logo.png" alt="Alizon">
+    <div class="bt"><b>ALIZON OS</b><small>Staff Portal</small></div>
+    <div class="sp">
+      <a href="alizon-hr-studio.html" id="lnkHR" style="display:none">HR Studio</a>
+      <a href="ASMDI-dashboard.html">← Campus portal</a>
+      <button id="logoutBtn" style="display:none">↩ Sign out</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- LOGIN -->
+  <div class="card login" id="loginCard">
+    <h2>Staff sign in</h2>
+    <label for="lg-emp">Employee ID</label>
+    <input id="lg-emp" placeholder="e.g. ASMDI-0142" autocomplete="off">
+    <label for="lg-pw">Password</label>
+    <input id="lg-pw" type="password" placeholder="••••••••">
+    <button id="lg-go">Sign in →</button>
+    <div class="err" id="lg-err">Employee ID not found — contact hr@alizongov.com if you believe this is an error.</div>
+    <div class="note">Your password is auto-set to your Employee ID for the pilot. Staff records are maintained by HR from the back end.</div>
+  </div>
+
+  <!-- APP -->
+  <div id="app" style="display:none">
+    <div class="card">
+      <div class="phead">
+        <div class="avatar" id="avatar">–</div>
+        <div class="pmeta">
+          <h1 id="pName">—</h1>
+          <div class="post" id="pPost">—</div>
+          <div class="chips" id="pChips"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>Salary details</h2>
+        <div class="hintl" id="payHint"></div>
+        <table class="pay" id="payTable"></table>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <h2 style="margin-bottom:0">My details</h2>
+          <button class="abtn" id="editMe" style="padding:8px 14px;font-size:12px">Edit personal details</button>
+        </div>
+        <div class="hintl" style="margin-top:6px">Contact and personal information is yours to keep current. Job, salary and bank details are maintained by HR.</div>
+        <div id="myDetails"></div>
+        <div id="editForm" style="display:none"></div>
+      </div>
+
+      <div class="card">
+        <h2>My documents</h2>
+        <div class="hintl">Self-service — generated instantly on the official letterhead with the system-generated validation mark.</div>
+        <div class="btnrow">
+          <button class="abtn primary" id="dlCert">Salary certificate (.doc)</button>
+          <button class="abtn primary" id="dlSlip">Salary slip — this month (.doc)</button>
+          <button class="abtn" id="prCert">Print salary certificate</button>
+        </div>
+        <div class="hintl" style="margin-top:12px">Need a signed original? Raise a request →</div>
+      </div>
+
+      <div class="card">
+        <h2>Requests to HR</h2>
+        <label class="f">Document / request type</label>
+        <select id="reqType">
+          <option>Experience Certificate</option>
+          <option>Recommendation Letter</option>
+          <option>Signed Salary Certificate (hard copy)</option>
+          <option>Appointment Letter (copy)</option>
+          <option>Other</option>
+        </select>
+        <label class="f">Note to HR (optional)</label>
+        <textarea id="reqNote" placeholder="e.g. Needed for a bank loan application, by Friday…"></textarea>
+        <button class="abtn primary" id="reqGo" style="margin-top:12px">Submit request</button>
+        <h3 style="font-size:13.5px;margin:16px 0 4px;color:var(--tink)">My requests</h3>
+        <div id="reqList"></div>
+      </div>
+
+      <div class="card" style="grid-column:1/-1">
+        <h2>Message HR</h2>
+        <div class="hintl">Internal messaging with the HR office — replies appear here.</div>
+        <div class="chat" id="chat"></div>
+        <div class="chatrow">
+          <input type="text" id="msgIn" placeholder="Type a message to HR…">
+          <button class="abtn primary" id="msgGo">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="printDoc"></div>
+
+<script>
+const LOGO="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANwAAADFCAMAAAAIXWzgAAAAP1BMVEUAAABsHB/9/f2WWV2zi46srKzj19fKsLH/f398fHywYmKzlZirfYGCNjuGPUL2qqoAAAAAAAAAAAAAAAAAAADqn5KUAAAAEHRSTlMA/g772gNcoAICA0ja/v4F0uOpRgAACC9JREFUeNrdXQl72yAMxQKMoT7+/78d+FicJnHgGUNlfVvXY1v7LPR0oghRUkhrcVMhF97cE5tXGrWtsHdUm/9lpFR0Q3Reba2STSPN/cDZoLYmiCTR3Q1dq5pFBkO3Up1nyVY2m3jV6VthEw9szWjudC71Xm9Bde19VGd/YWsaQd1NXDm9YLuP6vSDJx9yE0/u/dsrtuDJ78ApTpixeYOuFdMdDW7x5Io/p9DbQ3kTTrHCDO/BBU7hrTr94VDOqgv2yFm8WX1SXNP0vFV3pLgQYhJzq/usOOacMgk6UJx3Bz7E5Oy/D8EF1XG1us8+7gYhpv6muBBisuWUr4rjyyn6C51saau9JZ0wVh3FnMqZUxhmBzbqVM4hpmZ4KtsocMEd6Hua3FJx4Hcu40yOZQGaIk1uyQ7cbcHxcwcUyydMKw7x4CSzg6lTNBc4hViBS9BcCDEdK3AmBRwvTkkEx4tTUsFJcV+b41XFdKngvDug22qOUyksKUL5X8UkLuAoERyjfiTFpzwc3QGZIVV1hiwPdDaZURjFKemMwqiK6e2nbwDVcSHMZEYJnMLD6jRgdIyyA5KI6ng0texx0/hjFZOJ6gC+5FNxQChlYNI7sJjqeHAKQaoL7oADpzhMdTw4xXtkRHVMblVMkOp8iKmJBaeYAeIUDlanoTAlcAqPKpjB3AGH8jqhqmNyMEF3wEJ1HeoO9G1Vx6XioFFO4aC6Dg0xWeQ+UMHh/iEmB9XRrTlFvL+KdZu0tcdCTA4HEwwxedRTOkLdAQ9PDoaYPKrrhKStPZcQE8l9wk0t+lvUaEnPQvvpi457iEmTe0nDnFuevUVDzD+hOasXYF5f7SJEm+4CwAkLMf9AP3IB4VH9GCV30vvPtvPXHBZiDqY2tmUrVGsCnJefzn9OrbNPDHsHnV6Rfeb60eNrQ5SPEGbFWlEI3Uko+c2LDVJ5I5SQr6uFbpoXXsXF/B4ekB1UizDJ+2YhE+bQhQJisDp53bTu8kpgB4BTVK2QKjHq8C5ZJYeYkqrwPymZaj6AO6jgDPzjbPvkWMra9BDTJz7lsQlgXFQDjfJBFK6DUbK5zT+kJaQAXbg+i2BbbQfojJQdy/caALCt1/nTZxzKTgBMSOK5PX9KdgdF6RIaUvCcN4HFopIB2ATl1DvKS61iFuyJYC2p/dHSlFaALunokKxMPpWxujQfWQ4cWAp5YvPEikOxY2mh+uPvHy/xSmshQgGHE15iDE0JaWspVwBOGb48+qSmlpyKOHG40faSTKfEAYUayDlr4vHnu0zg3EGHcnzbiErglCLgQsaSb6LExf5nZbat66wzy9EDfUV8OGUeBdKRMw5FeiEuc4ct9mGVIEt4LtSdPOaqiP8GFTedC3dKBF8TpLjhcFVgVNZbYq7UQeMIX+wlZsahwBzRdMnVlQg7LnA3ntw1E6Hfq5gFwhOHduv1Sd9ZYE4dnrP4ai7f3EGBguyFQ9jHIWaBjngHpXFxpY9jprreD9DhmvCzVHDkYwqElRodIImigiNOuZ4q4WwgcjPN52dXwMdNF7mBBxd/6IwUWPMMKi5hMfqnWcwC/ru7/n6f/5t1ypWEjrgmPPS3ZewSqQ5dkQ28HswXsw5LL/9oNiDSaO7Vrj22y2OTXL2BVHcQsF1eONFXu4FdEFQaW4fVFlT6otGn71QEG5gN9AiH775VGWxdlk5jKqcEbNe3rLwhGCwbQBzUluzLtkhTB7/APk3OS7eImN9ap50Lb7rOf0kLZ7tN3Py+m1UXXkHX6cfX3kiWahh41/TEvbBWep6NU7O2NRTXCPEjjDBG/KyyvSPE9oFZ3v8l4R+K6eebzDdN5qDtFEBMcU83QnYy+l/jOP+eP5zfWd5uf8hBRokypp0BwgEamMYJ5ImkB+ZyuYYRitbQoYT8N6ZuTGQ/4wPgWch/q1aIppyM4ZpJempEaDYAFcrOqC/4xcQcBL8ejNx3PwcvHJeUswlX88BtWCfhiVbERzVYUWiYewO6PLhmCGdTX8omIY0Dl2GdV56hSMPTYDYQbsBUAteMKq7e5tnEYGzSzS8/2tSRPsrwNOoGHDz0kOdoxqCzZzqNVIMu42s3+tSt4GpGF9U5OdnUCdd8mj+LDqvmea7qzpRxc9rdoeJ6iE30qeZCNjksBGD7NvdrDbH/ISc6ypsN7I+6rqu6z5VFOBugJ1dSVXUfHUKWxdJdXdV9Wv1p0blD96u+aiofzPdVX4PdQtI5XGU+dO84Bc4GdJ6SZzYR9NK1Dp/JdMQtsKbgWk7RmW4hLU+qsupy9QYs5QrirlNd1hYxeDUmW1Hl1xIVm3enWmXG/EWYTuTtNOqq6J4nmLBg/ij39dGOqkkpdk/eiI2Yo7nDqSa6/UIHzA2o49a8rohu96IHhF7bpy89vmp2Nz722BG4S+J7sYnUWAXcoE7xdtRc3bwYrK4zQCaFIud8kEVMuYyO0KJQ9MwgiTrK22Jem15qTJnP8kez7WUFcBNWaUybPaOEbYM58/EJygZS5+pCGcLDkzWOZaLiBpnSpd3DUwXVNy5dp0TFSQ8MGN2Zt3y2YeVssawn2eKWyQ9s3GpdPRsGqMbh+mNJSwAY/Z1GFZ4HPOpJ8zrksAzZCCPULP0iUi5/rp9U76R/Fbn/4Okvi2VBXLStS2m8tU2nxh1Ju0c96lLZKsRR8KQKis7xsn620+76V0yiLa38RmWDXNfrs3kt+n0Q0f039XfA1DrfqAVPmavGtAJ8ntxcF4RrEnyF9Naxb9u5+Tovd9/yBuIMbSUw94YvJs0e2B6i0I4mD4q7vv4BQ+9toYDBBmYAAAAASUVORK5CYII=";
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function $(id){return document.getElementById(id);}
+function J(k,d){ try{const v=JSON.parse(localStorage.getItem(k)); return v==null?d:v;}catch(e){return d;} }
+function W(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
+
+const OFFICES={tvm:'Thiruvananthapuram (HQ, Indian Chapter)',delhi:'New Delhi',blr:'Bengaluru',usa:'USA Chapter'};
+const TYPES={fulltime:'Full-time employee',contract:'Contract staff',intern_paid:'Paid intern',intern_unpaid:'Unpaid intern'};
+
+function employees(){ const d=J('alizonHR',{}); return Array.isArray(d.EMP)?d.EMP:[]; }
+function findEmp(id){ return employees().find(e=>String(e.empid||'').toUpperCase()===String(id||'').trim().toUpperCase())||null; }
+function calcPay(e){
+  const gross=(+e.basic||0)+(+e.da||0)+(+e.hra||0)+(+e.spl||0);
+  const usa=e.office==='usa', intern=String(e.emptype||'').indexOf('intern')===0;
+  const epf=(usa||intern)?0:Math.min(1800,Math.round((+e.basic||0)*0.12));
+  const pt=(usa||intern||gross<=20833)?0:208;
+  return {gross,epf,pt,net:gross-epf-pt,usa};
+}
+function money(v,usa){ return (usa?'$':'₹')+(+v||0).toLocaleString(usa?'en-US':'en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function tenure(doj){ if(!doj)return ''; const d=new Date(doj); if(isNaN(d))return '';
+  let m=(new Date().getFullYear()-d.getFullYear())*12+(new Date().getMonth()-d.getMonth()); if(m<0)m=0;
+  const y=Math.floor(m/12); m=m%12; return (y?y+' yr'+(y>1?'s':''):'')+(y&&m?' ':'')+(m?m+' mo':y?'':'under a month'); }
+function today(){ return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}); }
+function monthName(){ return new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'}); }
+
+let ME=null;
+
+/* ---------- login ---------- */
+$('lg-emp').addEventListener('change',()=>{ const e=findEmp($('lg-emp').value); if(e)$('lg-pw').value=e.empid; });
+$('lg-emp').addEventListener('keydown',e=>{ if(e.key==='Enter')$('lg-go').click(); });
+$('lg-pw').addEventListener('keydown',e=>{ if(e.key==='Enter')$('lg-go').click(); });
+function accessOf(e){ return (e&&typeof e.access==='object')?e.access:{staff:true}; }
+$('lg-go').addEventListener('click',()=>{
+  const err=t=>{ $('lg-err').textContent=t; $('lg-err').style.display='block'; };
+  /* master admin override — opens the first employee record (or a demo one) */
+  if(($('lg-emp').value||'').trim().toLowerCase()==='admin' && $('lg-pw').value==='admin123'){
+    const list=employees();
+    const e=list[0]||{empid:'ADMIN',name:'Administrator',salut:'',desig:'Administrator',dept:'HR',office:'tvm',emptype:'fulltime',status:'current',basic:0,da:0,hra:0,spl:0,access:{staff:true,hr:true}};
+    $('lg-err').style.display='none'; try{ localStorage.setItem('alizonStaffSession',e.empid); }catch(x){}
+    enter(e); return;
+  }
+  if(!employees().length){
+    err('Staff records are not synced on this device yet — ask HR to open the HR Studio once (or upload the staff CSV there).'); return;
+  }
+  const e=findEmp($('lg-emp').value);
+  if(!e){ err('Employee ID not found — accounts are provisioned by HR from the back end. Contact hr@alizongov.com.'); return; }
+  const pw=$('lg-pw').value;
+  if(pw!==(e.password||e.empid)){ err('Incorrect password. Your password was auto-set to your employee ID unless you changed it.'); return; }
+  if(accessOf(e).staff===false){ err('Your account does not have Staff Portal access — contact HR to enable it.'); return; }
+  $('lg-err').style.display='none';
+  try{ localStorage.setItem('alizonStaffSession',e.empid); }catch(x){}
+  enter(e);
+});
+$('logoutBtn').addEventListener('click',()=>{ try{localStorage.removeItem('alizonStaffSession');}catch(e){} location.reload(); });
+
+function enter(e){
+  ME=e;
+  $('loginCard').style.display='none'; $('app').style.display='block'; $('logoutBtn').style.display='';
+  render();
+  setInterval(renderChat, 4000); /* pick up HR replies */
+}
+
+/* ---------- dashboard ---------- */
+function render(){
+  const e=ME, p=calcPay(e);
+  $('avatar').textContent=String(e.name||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  $('pName').textContent=(e.salut?e.salut+' ':'')+e.name;
+  $('pPost').textContent=(e.desig||'—')+(e.dept?' · '+e.dept:'');
+  const AC_LABEL={staff:'Staff Portal',courses:'Courses & content',students:'Students & fees',eval:'Evaluation & grievances',hr:'HR Studio'};
+  const ac=(typeof e.access==='object')?e.access:{staff:true};
+  const granted=Object.keys(AC_LABEL).filter(k=>ac[k]);
+  $('pChips').innerHTML=
+    '<span class="chip mono">'+esc(e.empid)+'</span>'+
+    '<span class="chip ok">'+(e.status==='former'?'Former staff':'✔ Active')+'</span>'+
+    '<span class="chip gold">'+esc(TYPES[e.emptype]||e.emptype||'')+'</span>'+
+    '<span class="chip">'+esc(OFFICES[e.office]||e.office||'')+'</span>'+
+    (e.doj?'<span class="chip">Joined '+esc(e.doj)+(tenure(e.doj)?' · '+esc(tenure(e.doj)):'')+'</span>':'')+
+    '<span class="chip" title="Access granted by HR">Access: '+esc(granted.map(k=>AC_LABEL[k]).join(' · ')||'Staff Portal')+'</span>';
+  $('lnkHR').style.display=ac.hr?'':'none';
+  const reqs=myReqs(), pend=reqs.filter(r=>r.status==='Pending').length;
+  const un=unreadFromHR();
+  $('kpis').innerHTML=
+    kpi('Monthly net',money(p.net,p.usa),'after EPF & PT'+(p.usa?'':' · before TDS'))+
+    kpi('Annual gross',money(p.gross*12,p.usa),'CTC basis')+
+    kpi('Pending requests',pend||'0',pend?'awaiting HR':'all clear')+
+    kpi('Unread from HR',un||'0',un?'new reply below':'inbox clear');
+  /* salary table */
+  const rows=[['Basic pay',e.basic],['Dearness allowance',e.da],['House rent allowance',e.hra],['Special allowance',e.spl]]
+    .filter(r=>+r[1]>0).map(r=>'<tr><td>'+r[0]+'</td><td>'+money(r[1],p.usa)+'</td></tr>').join('');
+  $('payTable').innerHTML=rows+
+    '<tr class="tot"><td>Gross per month</td><td>'+money(p.gross,p.usa)+'</td></tr>'+
+    (p.epf?'<tr class="ded"><td>EPF (employee)</td><td>− '+money(p.epf,p.usa)+'</td></tr>':'')+
+    (p.pt?'<tr class="ded"><td>Professional tax</td><td>− '+money(p.pt,p.usa)+'</td></tr>':'')+
+    '<tr class="tot"><td>Net pay</td><td>'+money(p.net,p.usa)+'</td></tr>';
+  $('payHint').textContent=p.usa?'USA chapter — federal/state withholding per W-4.':'Statutory: EPF 12% of basic (capped ₹1,800) · Kerala professional tax · income tax (TDS) as per your regime.';
+  /* details */
+  const kv=(l,v,mono)=>v?'<div class="kv"><b>'+l+'</b><span'+(mono?' style="font-family:ui-monospace,Menlo,monospace;font-weight:600"':'')+'>'+esc(v)+'</span></div>':'';
+  $('myDetails').innerHTML=
+    kv('Reporting manager',e.manager)+kv('Email',e.email)+kv('Phone',e.phone,1)+kv('Date of birth',e.dob,1)+
+    kv('Address',e.address)+kv('Emergency contact',e.emergency)+kv('Qualification',e.qualification)+
+    kv('Blood group',e.bloodgroup)+kv('UAN',e.uan,1)+kv('Bank a/c',e.bank,1)+kv('PAN / SSN',e.pan,1)
+    ||'<div class="empty">Details will appear here once HR syncs them from the back end.</div>';
+  renderReqs(); renderChat();
+}
+function kpi(l,v,d){ return '<div class="kpi"><div class="kl">'+l+'</div><div class="kv">'+v+'</div><div class="kd">'+d+'</div></div>'; }
+
+/* ---------- edit personal details (writes back to the HR master sheet) ---------- */
+const EDITABLE=[
+  ['email','Email','you@example.com'],['phone','Phone','+91 …'],['dob','Date of birth','DDMMYYYY'],
+  ['address','Address',''],['emergency','Emergency contact','Name · relation · phone'],
+  ['qualification','Qualification',''],['bloodgroup','Blood group','e.g. O+']
+];
+$('editMe').addEventListener('click',()=>{
+  const f=$('editForm');
+  if(f.style.display!=='none'){ f.style.display='none'; $('myDetails').style.display=''; $('editMe').textContent='Edit personal details'; return; }
+  f.innerHTML=EDITABLE.map(x=>'<label class="f">'+x[1]+'</label><input type="text" data-ef="'+x[0]+'" value="'+esc(ME[x[0]]||'')+'" placeholder="'+esc(x[2])+'">').join('')+
+    '<div class="btnrow" style="margin-top:14px"><button class="abtn primary" id="saveMe">Save changes</button><button class="abtn" id="cancelMe">Cancel</button></div>'+
+    '<div class="hintl" id="saveNote" style="margin-top:10px"></div>';
+  f.style.display=''; $('myDetails').style.display='none'; $('editMe').textContent='Close editor';
+  $('cancelMe').onclick=()=>$('editMe').click();
+  $('saveMe').onclick=()=>{
+    const d=J('alizonHR',{}); const list=Array.isArray(d.EMP)?d.EMP:[];
+    const rec=list.find(x=>String(x.empid||'').toUpperCase()===ME.empid.toUpperCase());
+    if(!rec){ $('saveNote').textContent='Could not find your record — contact HR.'; return; }
+    EDITABLE.forEach(x=>{ const v=f.querySelector('[data-ef="'+x[0]+'"]').value.trim(); rec[x[0]]=v; ME[x[0]]=v; });
+    d.DOCLOG=Array.isArray(d.DOCLOG)?d.DOCLOG:[];
+    d.DOCLOG.unshift({ts:Date.now(),emp:ME.empid,name:ME.name,doc:'Personal details updated (self-service)',by:'Staff portal'});
+    W('alizonHR',d);
+    $('editMe').click(); render();
+  };
+});
+
+/* ---------- documents ---------- */
+function docShell(title,ref,body){
+  return '<div style="text-align:center;border-bottom:2px solid #7A0309;padding-bottom:14px;margin-bottom:6px">'+
+    (LOGO.indexOf('data:')===0?'<img src="'+LOGO+'" width="52" height="52" style="object-fit:contain">':'')+
+    '<div style="font-weight:700;font-size:19px;color:#7A0309;font-family:\'Source Serif Pro\',Georgia,serif">Alizon School of Medical &amp; Digital Intelligence</div>'+
+    '<div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#666;margin-top:4px">Office of Human Resources</div></div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:12px;color:#555;font-family:Arial,sans-serif;margin-bottom:14px"><span>Ref: '+esc(ref)+'</span><span>Date: '+today()+'</span></div>'+
+    '<div style="text-align:center;font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;margin:16px 0;font-family:\'Source Serif Pro\',serif">'+title+'</div>'+
+    body+
+    '<div style="margin-top:38px;display:flex;justify-content:space-between;align-items:flex-end">'+
+      '<div style="max-width:250px;border:1.5px dashed #C9A96A;border-radius:10px;padding:11px 14px;font-family:Arial,sans-serif">'+
+        '<div style="font-size:9.5px;font-weight:700;letter-spacing:.14em;color:#7A0309;text-transform:uppercase">✓ System-Generated Document</div>'+
+        '<div style="font-size:9.5px;color:#8A8384;line-height:1.55;margin-top:4px">Issued electronically via ALIZON OS.<br>Valid without a physical seal or signature.</div></div>'+
+      '<div style="text-align:left"><div style="width:220px;border-top:1px solid #9B9394;margin-bottom:7px"></div>'+
+        '<div style="font-weight:600">Office of Human Resources</div>'+
+        '<div style="font-family:Arial,sans-serif;font-size:12.5px;color:#4A4546">Alizon School of Medical &amp; Digital Intelligence</div></div></div>'+
+    '<div style="margin-top:36px;padding-top:11px;border-top:1px solid #E2DBDB;font-family:Arial,sans-serif;font-size:10.5px;color:#8A8384;text-align:center;line-height:1.6">'+
+      'Alizon School of Medical &amp; Digital Intelligence · Thiruvananthapuram, Kerala 695001, India · hr@alizongov.com<br>'+
+      'This is a system-generated document and is valid without a seal or signature. For any clarification, contact hr@alizongov.com</div>';
+}
+function certBody(){
+  const e=ME,p=calcPay(e);
+  return '<p style="font-weight:700;margin-bottom:12px">TO WHOMSOEVER IT MAY CONCERN</p>'+
+    '<p style="text-align:justify;margin-bottom:12px">This is to certify that <b>'+esc((e.salut?e.salut+' ':'')+e.name)+'</b> (ID: <b>'+esc(e.empid)+'</b>) is engaged as a '+esc((TYPES[e.emptype]||'employee').toLowerCase())+' of Alizon School of Medical &amp; Digital Intelligence'+(e.doj?' since <b>'+esc(e.doj)+'</b>':'')+', serving as <b>'+esc(e.desig||'staff member')+'</b>'+(e.dept?' in the Department of '+esc(e.dept):'')+', '+esc(OFFICES[e.office]||'')+'.</p>'+
+    '<table style="width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0 14px">'+
+      '<tr><td style="border:1px solid #e0dcd8;padding:7px 10px;background:#faf6f2;font-weight:600;width:220px">Monthly gross salary</td><td style="border:1px solid #e0dcd8;padding:7px 10px">'+money(p.gross,p.usa)+'</td></tr>'+
+      '<tr><td style="border:1px solid #e0dcd8;padding:7px 10px;background:#faf6f2;font-weight:600">Monthly net salary</td><td style="border:1px solid #e0dcd8;padding:7px 10px">'+money(p.net,p.usa)+'</td></tr>'+
+      '<tr><td style="border:1px solid #e0dcd8;padding:7px 10px;background:#faf6f2;font-weight:600">Annual gross</td><td style="border:1px solid #e0dcd8;padding:7px 10px">'+money(p.gross*12,p.usa)+'</td></tr></table>'+
+    '<p style="text-align:justify">This certificate is issued at the request of the employee. It does not constitute a contract of employment or a guarantee of future earnings.</p>';
+}
+function slipBody(){
+  const e=ME,p=calcPay(e);
+  const row=(l,v,ded)=>'<tr><td style="border:1px solid #e0dcd8;padding:7px 10px">'+l+'</td><td style="border:1px solid #e0dcd8;padding:7px 10px;text-align:right">'+(ded?'− ':'')+money(v,p.usa)+'</td></tr>';
+  return '<p style="margin-bottom:10px"><b>'+esc((e.salut?e.salut+' ':'')+e.name)+'</b> · '+esc(e.empid)+' · '+esc(e.desig||'')+(e.dept?' · '+esc(e.dept):'')+'</p>'+
+    '<p style="margin-bottom:12px;color:#555">Pay period: <b>'+monthName()+'</b>'+(e.bank?' · Bank a/c: '+esc(e.bank):'')+(e.pan?' · PAN: '+esc(e.pan):'')+'</p>'+
+    '<table style="width:100%;border-collapse:collapse;font-size:13.5px">'+
+    row('Basic pay',e.basic)+(+e.da?row('Dearness allowance',e.da):'')+(+e.hra?row('House rent allowance',e.hra):'')+(+e.spl?row('Special allowance',e.spl):'')+
+    '<tr><td style="border:1px solid #e0dcd8;padding:7px 10px;background:#faf6f2;font-weight:700">Gross earnings</td><td style="border:1px solid #e0dcd8;padding:7px 10px;text-align:right;font-weight:700">'+money(p.gross,p.usa)+'</td></tr>'+
+    (p.epf?row('EPF — employee contribution',p.epf,1):'')+(p.pt?row('Professional tax',p.pt,1):'')+
+    '<tr><td style="border:1px solid #e0dcd8;padding:7px 10px;background:#faf6f2;font-weight:700;color:#7A0309">Net pay</td><td style="border:1px solid #e0dcd8;padding:7px 10px;text-align:right;font-weight:700;color:#7A0309">'+money(p.net,p.usa)+'</td></tr></table>'+
+    '<p style="margin-top:12px;font-size:12.5px;color:#555">Income tax (TDS) is deducted as applicable per the declared regime and reflected in Form 16.</p>';
+}
+function dlDoc(title,ref,body,fname){
+  const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'+
+    '<head><meta charset="utf-8"><style>body{font-family:"Source Serif Pro",Georgia,serif;color:#1a1a1a;line-height:1.7;max-width:800px;margin:0 auto;padding:8px;font-size:15px}</style></head>'+
+    '<body>'+docShell(title,ref,body)+'</body></html>';
+  const blob=new Blob(['﻿'+html],{type:'application/msword'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=fname;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+  logDoc(title);
+}
+function ref(pre){ return 'ASMDI/HR/'+pre+'/'+new Date().getFullYear()+'/'+String(Date.now()).slice(-4); }
+function logDoc(title){
+  const d=J('alizonHR',{}); d.DOCLOG=Array.isArray(d.DOCLOG)?d.DOCLOG:[];
+  d.DOCLOG.unshift({ts:Date.now(),emp:ME.empid,name:ME.name,doc:title+' (self-service)',by:'Staff portal'});
+  if(d.DOCLOG.length>300)d.DOCLOG=d.DOCLOG.slice(0,300); W('alizonHR',d);
+}
+$('dlCert').addEventListener('click',()=>dlDoc('Salary Certificate',ref('SC'),certBody(),ME.empid+'_Salary_Certificate.doc'));
+$('dlSlip').addEventListener('click',()=>dlDoc('Salary Slip — '+monthName(),ref('SL'),slipBody(),ME.empid+'_Salary_Slip.doc'));
+$('prCert').addEventListener('click',()=>{ $('printDoc').innerHTML=docShell('Salary Certificate',ref('SC'),certBody()); window.print(); });
+
+/* ---------- requests ---------- */
+function myReqs(){ return J('alizonStaffReqs',[]).filter(r=>r.empid===ME.empid); }
+$('reqGo').addEventListener('click',()=>{
+  const all=J('alizonStaffReqs',[]);
+  all.unshift({id:'r'+Date.now(),empid:ME.empid,name:ME.name,type:$('reqType').value,
+    note:$('reqNote').value.trim(),ts:Date.now(),status:'Pending',hrNote:''});
+  W('alizonStaffReqs',all); $('reqNote').value=''; renderReqs(); render();
+});
+function renderReqs(){
+  const rs=myReqs();
+  $('reqList').innerHTML=rs.length?rs.map(r=>{
+    const cls=r.status==='Pending'?'p':r.status==='Ready'?'r':'d';
+    return '<div class="req"><span class="st '+cls+'">'+esc(r.status)+'</span>'+
+      '<div style="flex:1"><b>'+esc(r.type)+'</b>'+(r.note?' — '+esc(r.note):'')+
+      '<div style="font-size:11.5px;color:var(--tmut)">'+new Date(r.ts).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+
+      (r.hrNote?' · HR: '+esc(r.hrNote):'')+'</div></div></div>';
+  }).join(''):'<div class="empty">No requests yet.</div>';
+}
+
+/* ---------- messaging ---------- */
+function threads(){ return J('alizonStaffMsgs',{}); }
+function meta(){ return J('alizonStaffMeta',{hrRead:{},staffRead:{}}); }
+function unreadFromHR(){
+  const t=(threads()[ME.empid]||[]), m=meta();
+  const last=m.staffRead&&m.staffRead[ME.empid]||0;
+  return t.filter(x=>x.from==='hr'&&x.ts>last).length;
+}
+$('msgGo').addEventListener('click',sendMsg);
+$('msgIn').addEventListener('keydown',e=>{ if(e.key==='Enter')sendMsg(); });
+function sendMsg(){
+  const v=$('msgIn').value.trim(); if(!v)return;
+  const t=threads(); t[ME.empid]=t[ME.empid]||[];
+  t[ME.empid].push({from:'staff',text:v,ts:Date.now()});
+  W('alizonStaffMsgs',t); $('msgIn').value=''; renderChat();
+}
+function renderChat(){
+  if(!ME)return;
+  const t=threads()[ME.empid]||[];
+  $('chat').innerHTML=t.length?t.map(x=>'<div class="msg '+(x.from==='staff'?'staff':'hr')+'">'+esc(x.text)+
+    '<small>'+(x.from==='staff'?'You':'HR Office')+' · '+new Date(x.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})+'</small></div>').join('')
+    :'<div class="empty">No messages yet — say hello to HR </div>';
+  $('chat').scrollTop=$('chat').scrollHeight;
+  const m=meta(); m.staffRead=m.staffRead||{}; m.staffRead[ME.empid]=Date.now(); W('alizonStaffMeta',m);
+}
+
+/* ---------- auto-resume ---------- */
+(function(){
+  let id=''; try{ id=localStorage.getItem('alizonStaffSession')||''; }catch(e){}
+  const e=id&&findEmp(id);
+  if(e) enter(e); else $('lg-emp').focus();
+})();
+</script>
+</body>
+</html>
