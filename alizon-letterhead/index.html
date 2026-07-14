@@ -90,6 +90,10 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .subj{font-family:var(--serif);font-weight:600;font-size:13.5px;margin:14px 0 10px}
 .memo{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-family:var(--sans);font-size:12.5px;margin:14px 0 6px;border:1px solid #e7dede;border-radius:6px;padding:12px 14px}
 .memo b{color:var(--burgundy);font-weight:600}
+.dtable{width:100%;border-collapse:collapse;margin:14px 0 6px;font-family:var(--sans);font-size:12px}
+.dtable th{background:#f7ecec;color:var(--burgundy);text-align:left;padding:7px 11px;border:1px solid #e7d3d4;font-weight:600}
+.dtable td{padding:7px 11px;border:1px solid #ece2e2;color:#241d1e}
+.dtable td:last-child{text-align:right;white-space:nowrap}
 .body{font-family:var(--serif);font-size:13.5px;line-height:1.62;color:#241d1e;margin-top:6px;text-align:justify}
 .body p{margin:0 0 11px}
 .close{font-family:var(--serif);font-size:13.5px;margin-top:22px}
@@ -151,6 +155,7 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
         <div class="chip on" data-t="general">General purpose</div>
         <div class="chip" data-t="letter">Formal letter</div>
         <div class="chip" data-t="notice">Notice / Circular</div>
+        <div class="chip" data-t="notify">Course notification</div>
         <div class="chip" data-t="memo">Office memo</div>
         <div class="chip" data-t="cert">Certificate</div>
         <div class="chip" data-t="blank">Blank letterhead</div>
@@ -190,13 +195,30 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
       <label class="fl">From</label><input id="f_memoFrom" placeholder="Office of the Director">
     </div>
 
-    <div class="sec fld" data-for="general letter notice memo cert">
+    <!-- course notification -->
+    <div class="sec fld" data-for="notify">
+      <h3>Course notification</h3>
+      <label class="fl">Notification about</label>
+      <select id="f_ntype">
+        <option value="Course Allotment">Course allotment</option>
+        <option value="Fee Details">Fee details / structure</option>
+        <option value="New Course">New course announcement</option>
+        <option value="General Course">General course notification</option>
+      </select>
+      <label class="fl">Programme / Course name</label>
+      <input id="f_course" placeholder="e.g. PG Diploma in Medical Coding">
+      <label class="fl">Details table — particulars &amp; amount / detail (for fees, dates, seats…)</label>
+      <div id="ntRows"></div>
+      <button class="btn" id="ntAdd" style="margin-top:7px;width:100%">+ Add row</button>
+    </div>
+
+    <div class="sec fld" data-for="general letter notice memo cert notify">
       <h3 id="ttlHead">Title / Subject</h3>
       <label class="fl" id="ttl_l">Title or subject line</label>
       <input id="f_title" placeholder="Subject of the document">
     </div>
 
-    <div class="sec fld" data-for="general letter notice memo cert">
+    <div class="sec fld" data-for="general letter notice memo cert notify">
       <h3>Body</h3>
       <div class="hint">Leave a blank line between paragraphs. They'll be justified on the page.</div>
       <textarea id="f_body" rows="10" placeholder="Type the content of your letter here…"></textarea>
@@ -209,7 +231,7 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
       <input id="f_close" placeholder="Yours sincerely,">
     </div>
 
-    <div class="sec fld" data-for="general letter notice memo cert">
+    <div class="sec fld" data-for="general letter notice memo cert notify">
       <h3>Signatory</h3>
       <div class="row2">
         <div><label class="fl">Name</label><input id="f_sigName"></div>
@@ -292,16 +314,16 @@ const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 /* ---------- config (institution details), saved locally ---------- */
 const DEFAULT_CFG={
   name:'Alizon School of Medical & Digital Intelligence',
-  subline:'',
+  subline:'Affiliated with ASAP Kerala (Additional Skill Acquisition Programme) — an initiative of the Higher Education Department, Government of Kerala',
   web:'www.alizongov.com',
   reg:'Reg. No. ACS-6003 · PAN ACMFA0353J · TAN TVDA06642G',
   sigName:'',
   sigDesig:'',
   offices:{
-    tvm:{label:'Thiruvananthapuram (HQ — Indian Chapter)',place:'Thiruvananthapuram, Kerala',code:'TVM',
+    tvm:{label:'Thiruvananthapuram (Head Office)',place:'Thiruvananthapuram, Kerala',code:'TVM',
       addr:'Thiruvananthapuram, Kerala 695042, India',phone:'',email:'info@alizongov.com · info@alizon.in'},
-    delhi:{label:'New Delhi Campus',place:'New Delhi',code:'DEL',addr:'',phone:'',email:''},
-    blr:{label:'Bengaluru Campus',place:'Bengaluru, Karnataka',code:'BLR',addr:'',phone:'',email:''},
+    delhi:{label:'New Delhi Centre',place:'New Delhi',code:'DEL',addr:'',phone:'',email:''},
+    blr:{label:'Bengaluru Centre',place:'Bengaluru, Karnataka',code:'BLR',addr:'',phone:'',email:''},
     usa:{label:'USA Chapter',place:'Newark, Delaware, USA',code:'USA',addr:'',phone:'',email:''}
   }
 };
@@ -316,6 +338,17 @@ function loadCfg(){
 let CFG=loadCfg();
 function saveCfg(){ try{localStorage.setItem('alizonLetterheadCfg',JSON.stringify(CFG));}catch(e){} }
 let SIGN_IMG=CFG.signImg||'', SEAL_IMG=CFG.sealImg||'', signMode='name';
+let noteRows=[{k:'',v:''}];
+function renderNtRows(){
+  $('ntRows').innerHTML=noteRows.map((r,i)=>
+    `<div style="display:flex;gap:6px;margin-bottom:6px">`+
+    `<input data-nt="k" data-i="${i}" value="${esc(r.k)}" placeholder="Particulars" style="flex:1">`+
+    `<input data-nt="v" data-i="${i}" value="${esc(r.v)}" placeholder="Amount / detail" style="flex:1">`+
+    `<span data-ntdel="${i}" title="Remove row" style="cursor:pointer;color:var(--crimson);align-self:center;padding:0 4px">✕</span></div>`
+  ).join('');
+  $('ntRows').querySelectorAll('input[data-nt]').forEach(inp=>inp.oninput=()=>{ noteRows[+inp.dataset.i][inp.dataset.nt]=inp.value; render(); });
+  $('ntRows').querySelectorAll('[data-ntdel]').forEach(x=>x.onclick=()=>{ noteRows.splice(+x.dataset.ntdel,1); if(!noteRows.length)noteRows.push({k:'',v:''}); renderNtRows(); render(); });
+}
 
 /* ---------- office select ---------- */
 function fillOffice(){
@@ -330,11 +363,12 @@ const TYPE_HINT={
   general:'Free-form document for any general purpose — optional title, then your content.',
   letter:'Formal outgoing letter with recipient address, subject, salutation and closing.',
   notice:'Notice or circular — centred heading, subject and body for announcements.',
+  notify:'Course notification — allotment, fee details, or a new-course announcement with an optional details table.',
   memo:'Internal office memorandum with To / From / Subject grid.',
   cert:'Certificate / “To Whomsoever It May Concern” style document.',
   blank:'Just the letterhead header + footer on blank A4 — write or print by hand.'
 };
-const TITLE_LABEL={general:'Title (optional)',letter:'Subject',notice:'Notice title',memo:'Subject',cert:'Certificate heading'};
+const TITLE_LABEL={general:'Title (optional)',letter:'Subject',notice:'Notice title',notify:'Notification title (optional)',memo:'Subject',cert:'Certificate heading'};
 function setType(t){
   TYPE=t;
   document.querySelectorAll('#typeChips .chip').forEach(c=>c.classList.toggle('on',c.dataset.t===t));
@@ -351,7 +385,7 @@ function setType(t){
 }
 
 /* ---------- reference number ---------- */
-function refPrefix(){return {general:'GEN',letter:'LTR',notice:'NOT',memo:'MEM',cert:'CRT',blank:'GEN'}[TYPE]||'GEN';}
+function refPrefix(){return {general:'GEN',letter:'LTR',notice:'NOT',notify:'CN',memo:'MEM',cert:'CRT',blank:'GEN'}[TYPE]||'GEN';}
 function autoRef(){
   const d=new Date(); const off=(CFG.offices[$('f_office').value]||{}).code||'HQ';
   const n=String(1000+Math.floor(Math.random()*9000));
@@ -460,6 +494,14 @@ function render(){
   } else if(TYPE==='general'){
     if(title) blocks.push(`<div class="doctitle">${esc(title)}</div>`);
     pushParas(blocks,$('f_body').value);
+  } else if(TYPE==='notify'){
+    const nt=$('f_ntype').value, course=$('f_course').value.trim();
+    blocks.push(`<div class="doctitle">${esc(title||('Notification — '+nt))}</div>`);
+    if(course) blocks.push(`<div class="subj">Programme / Course: ${esc(course)}</div>`);
+    pushParas(blocks,$('f_body').value);
+    const rows=noteRows.filter(r=>(r.k||'').trim()||(r.v||'').trim());
+    if(rows.length) blocks.push(`<table class="dtable"><thead><tr><th>Particulars</th><th>Amount / Detail</th></tr></thead><tbody>`+
+      rows.map(r=>`<tr><td>${esc(r.k)}</td><td>${esc(r.v)}</td></tr>`).join('')+`</tbody></table>`);
   }
   if(showSig&&TYPE!=='blank') blocks.push(sigBlock(o));
 
@@ -473,18 +515,32 @@ function render(){
 }
 
 /* ---------- settings drawer ---------- */
+function captureOffices(){
+  $('officeEditors').querySelectorAll('input[data-o]').forEach(inp=>{ if(CFG.offices[inp.dataset.o]) CFG.offices[inp.dataset.o][inp.dataset.f]=inp.value; });
+}
 function buildOfficeEditors(){
   $('officeEditors').innerHTML=Object.keys(CFG.offices).map(k=>{
     const o=CFG.offices[k];
-    return `<div class="grp"><h4>${esc(o.label)}</h4>
+    return `<div class="grp"><h4>${esc(o.label)} <span data-del="${k}" style="float:right;color:var(--crimson);cursor:pointer;font-size:11px;font-weight:400">✕ remove</span></h4>
       <label class="fl">Display label</label><input data-o="${k}" data-f="label" value="${esc(o.label)}">
-      <label class="fl">Address (footer)</label><input data-o="${k}" data-f="addr" value="${esc(o.addr)}">
+      <label class="fl">Address (footer — optional)</label><input data-o="${k}" data-f="addr" value="${esc(o.addr)}">
       <div class="row2"><div><label class="fl">Phone</label><input data-o="${k}" data-f="phone" value="${esc(o.phone)}"></div>
       <div><label class="fl">Email</label><input data-o="${k}" data-f="email" value="${esc(o.email)}"></div></div>
       <div class="row2"><div><label class="fl">Place (signature)</label><input data-o="${k}" data-f="place" value="${esc(o.place)}"></div>
       <div><label class="fl">Ref. code</label><input data-o="${k}" data-f="code" value="${esc(o.code)}"></div></div>
     </div>`;
-  }).join('');
+  }).join('')+`<button class="btn" id="addOffice" style="width:100%">+ Add another center</button>`;
+  $('officeEditors').querySelectorAll('[data-del]').forEach(x=>x.onclick=()=>{
+    if(Object.keys(CFG.offices).length<=1){ alert('At least one center is required.'); return; }
+    if(confirm('Remove '+CFG.offices[x.dataset.del].label+'?')){ captureOffices(); delete CFG.offices[x.dataset.del]; saveCfg(); buildOfficeEditors(); fillOffice(); render(); }
+  });
+  $('addOffice').onclick=()=>{
+    captureOffices();
+    const key='c'+Date.now();
+    CFG.offices[key]={label:'New Centre',place:'',code:'NEW',addr:'',phone:'',email:''};
+    saveCfg(); buildOfficeEditors(); fillOffice();
+    $('officeEditors').lastElementChild.previousElementSibling.scrollIntoView({block:'center'});
+  };
 }
 function openDrawer(){
   $('s_name').value=CFG.name; $('s_subline').value=CFG.subline; $('s_web').value=CFG.web; $('s_reg').value=CFG.reg;
@@ -512,9 +568,11 @@ $('s_reset').onclick=()=>{ if(confirm('Reset all institution details to defaults
 document.querySelectorAll('#typeChips .chip').forEach(c=>c.onclick=()=>setType(c.dataset.t));
 $('f_office').onchange=()=>{ refreshRef(); render(); };
 $('f_refauto').onchange=()=>{ $('f_ref').readOnly=$('f_refauto').checked; refreshRef(); render(); };
-['f_ref','f_date','f_dept','f_title','f_body','f_toName','f_toAddr','f_salut','f_memoTo','f_memoFrom','f_close','f_sigName','f_sigDesig','f_place'].forEach(id=>{
+['f_ref','f_date','f_dept','f_title','f_body','f_toName','f_toAddr','f_salut','f_memoTo','f_memoFrom','f_close','f_sigName','f_sigDesig','f_place','f_course'].forEach(id=>{
   const el=$(id); if(el) el.addEventListener('input',render);
 });
+$('f_ntype').onchange=render;
+$('ntAdd').onclick=()=>{ noteRows.push({k:'',v:''}); renderNtRows(); render(); };
 $('f_showSig').addEventListener('change',render);
 $('f_showReg').addEventListener('change',render);
 $('f_signMode').onchange=()=>{ signMode=$('f_signMode').value; $('wrap_signImg').style.display=(signMode==='image')?'':'none'; render(); };
@@ -543,6 +601,7 @@ $('f_place').value=(CFG.offices.tvm||{}).place||'';
 $('f_close').value='Yours sincerely,';
 $('f_salut').value='Dear Sir/Madam,';
 $('f_ref').readOnly=true;
+renderNtRows();
 refreshRef();
 setType('general');
 render();
