@@ -1041,8 +1041,13 @@ function bodyJoinLetter(){
   const addr=esc($('f_candaddr').value).replace(/\n/g,'<br>');
   const office=OFFICES[$('f_office').value];
   const clauses=[];
-  clauses.push(['Appointment & probation',
-    `You are appointed as <strong>${esc($('f_desig').value)}</strong> in the Department of ${esc($('f_dept').value)}, ${office.label}, with effect from <strong>${longDate($('f_jdate').value)}</strong>. You will report to ${esc($('f_manager').value)}. You will be on probation for <strong>${esc($('f_probation').value)} months</strong> from the date of joining; on satisfactory completion, your appointment will be confirmed in writing. Probation may be extended at the discretion of the management.`]);
+  if(intern){
+    clauses.push(['Appointment & term',
+      `You are engaged as <strong>${esc($('f_desig').value)}</strong> in the Department of ${esc($('f_dept').value)}, ${office.label}, with effect from <strong>${longDate($('f_jdate').value)}</strong>. You will report to ${esc($('f_manager').value)}. This is a fixed-term ${roleWord} and, as such, is <strong>not subject to any probationary period or confirmation in regular service</strong>.`]);
+  }else{
+    clauses.push(['Appointment & probation',
+      `You are appointed as <strong>${esc($('f_desig').value)}</strong> in the Department of ${esc($('f_dept').value)}, ${office.label}, with effect from <strong>${longDate($('f_jdate').value)}</strong>. You will report to ${esc($('f_manager').value)}. You will be on probation for <strong>${esc($('f_probation').value)} months</strong> from the date of joining; on satisfactory completion, your appointment will be confirmed in writing. Probation may be extended at the discretion of the management.`]);
+  }
   if(unpaid){
     clauses.push(['Nature of engagement',
       `This is an unpaid, learning-oriented ${roleWord}. No salary or stipend is payable, and this engagement does not constitute an offer of employment or create any right to future employment.`]);

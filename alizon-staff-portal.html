@@ -470,6 +470,12 @@ const ONB_DECLS=[
   'I understand and accept my probation, notice-period and exit obligations as described in the letter.',
   'I confirm that the personal, academic, identity and bank details I have provided are true, complete and accurate.'
 ];
+function declList(){
+  const intern=ME&&String(ME.emptype||'').indexOf('intern')===0;
+  return ONB_DECLS.map(t=> (intern && /probation/i.test(t))
+    ? 'I understand and accept my internship term, notice-period and exit obligations as described in the letter.'
+    : t);
+}
 function fmtDate(ts){ try{return new Date(ts).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});}catch(e){return '';} }
 function onbRef(){ return 'ASMDI/HR/JL/'+new Date().getFullYear()+'/'+(String((ME&&ME.empid)||'').replace(/\D/g,'').slice(-4)||'0000'); }
 function keyTermsTable(){
@@ -483,16 +489,19 @@ function keyTermsTable(){
 }
 function joiningLetterBody(){
   const e=ME;
+  const intern=String(e.emptype||'').indexOf('intern')===0;
   return '<p style="margin-bottom:12px">Dear '+esc((e.salut?e.salut+' ':'')+e.name)+',</p>'+
     '<p style="text-align:justify;margin-bottom:12px">We are delighted to formally confirm your appointment at <b>Alizon School of Medical &amp; Digital Intelligence</b>. The principal terms of your engagement are recorded below. Your appointment is subject to, and governed by, the Institute’s policies, rules and the Employee Handbook, as amended from time to time.</p>'+
     keyTermsTable()+
-    '<p style="text-align:justify;margin-bottom:10px"><b>Probation.</b> You will serve a probationary period as applicable to your role, during which your performance and conduct will be reviewed before confirmation in service.</p>'+
+    (intern
+      ? '<p style="text-align:justify;margin-bottom:10px"><b>Term.</b> This is a fixed-term internship and is not subject to any probationary period or confirmation in regular service.</p>'
+      : '<p style="text-align:justify;margin-bottom:10px"><b>Probation.</b> You will serve a probationary period as applicable to your role, during which your performance and conduct will be reviewed before confirmation in service.</p>')+
     '<p style="text-align:justify;margin-bottom:10px"><b>Notice &amp; exit.</b> Either party may terminate this engagement by serving the notice stipulated in the Employee Handbook, or salary in lieu thereof.</p>'+
     '<p style="text-align:justify;margin-bottom:10px"><b>Confidentiality.</b> You will hold in strict confidence all institutional, patient, research and student information, and will comply with the Institute’s data-protection, anti-harassment (POSH) and equal-opportunity policies at all times.</p>'+
     '<p style="text-align:justify;margin-bottom:4px">We warmly welcome you to the Alizon community and look forward to your contribution.</p>';
 }
 function declListHtml(){
-  return '<div style="margin:4px 0 2px">'+ONB_DECLS.map(t=>
+  return '<div style="margin:4px 0 2px">'+declList().map(t=>
     '<div style="display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #eee;font-size:13px;line-height:1.5">'+
       '<span style="color:#1E8E5A;font-weight:700">✓</span><span>'+t+'</span></div>').join('')+'</div>';
 }
@@ -531,7 +540,7 @@ function renderOnboarding(){
     '<h3 style="font-size:14px;margin:16px 0 6px;color:var(--tink)">Your appointment — key terms</h3>'+keyTermsTable()+
     '<div class="btnrow" style="margin:-4px 0 8px"><button class="abtn" id="viewLetter">View / print the full letter</button></div>'+
     '<h3 style="font-size:14px;margin:18px 0 4px;color:var(--tink)">Declarations — please read and accept each</h3>'+
-    '<div id="onbDecls">'+ONB_DECLS.map((t,i)=>'<label class="onb-decl"><input type="checkbox" data-decl="'+i+'"><span>'+t+'</span></label>').join('')+'</div>'+
+    '<div id="onbDecls">'+declList().map((t,i)=>'<label class="onb-decl"><input type="checkbox" data-decl="'+i+'"><span>'+t+'</span></label>').join('')+'</div>'+
     '<h3 style="font-size:14px;margin:18px 0 6px;color:var(--tink)">Sign below</h3>'+
     '<div class="grid2" style="gap:12px;margin-bottom:10px">'+
       '<div><label class="f">Full legal name</label><input type="text" id="onbName" placeholder="As it should appear on the letter" value="'+esc((ME.salut?ME.salut+' ':'')+ME.name)+'"></div>'+
@@ -568,7 +577,7 @@ function submitOnboarding(){
   const c=$('sigPad');
   if(!c||!c._inked||!c._inked()){ show('Please draw your signature in the box above.'); return; }
   const ob={ signedAt:Date.now(), legalName:name, place:($('onbPlace').value||'').trim(), ref:onbRef(),
-    signatureImg:c.toDataURL('image/png'), decls:ONB_DECLS.slice(), device:(navigator.userAgent||'').slice(0,180) };
+    signatureImg:c.toDataURL('image/png'), decls:declList(), device:(navigator.userAgent||'').slice(0,180) };
   const d=J('alizonHR',{}); const list=Array.isArray(d.EMP)?d.EMP:[];
   const rec=list.find(x=>String(x.empid||'').toUpperCase()===String(ME.empid).toUpperCase());
   if(rec) rec.onboarding=ob;
