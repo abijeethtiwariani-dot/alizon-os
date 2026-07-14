@@ -166,6 +166,7 @@
   }
 </style>
   <script src="firebase-sync.js"></script>
+  <script src="print-paginate.js"></script>
 </head>
 <body>
 <div class="bgwrap"></div>
@@ -530,7 +531,10 @@ function fileBase(){
   const no=(docType==='self'?'Self-Assessment':($('f-no').value.trim()||(docType==='practical'?'Practical':'Assignment'))).replace(/\s+/g,'-');
   return `${n}_${c}_${no}`;
 }
-$('pdfBtn').addEventListener('click',()=>window.print());
+$('pdfBtn').addEventListener('click',()=>{
+  if(window.LHPrint){ LHPrint(document.getElementById('doc'),{headerEnd:'.dh',footer:'.foot'}); }
+  else window.print();
+});
 $('wordBtn').addEventListener('click',()=>{
   const css=document.querySelector('style').textContent;
   const docCss=css.slice(css.indexOf('/* ===== printable document'));

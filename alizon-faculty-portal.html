@@ -149,6 +149,7 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
   <script src="firebase-sync.js"></script>
+  <script src="print-paginate.js"></script>
 </head>
 <body>
 <div class="bgwrap"></div>
@@ -570,7 +571,10 @@ $('annAdd').addEventListener('click',()=>{
 
 /* ---------- doc viewer ---------- */
 $('dvClose').addEventListener('click',()=>$('docView').classList.remove('open'));
-$('dvPrint').addEventListener('click',()=>window.print());
+$('dvPrint').addEventListener('click',()=>{
+  if(window.LHPrint){ LHPrint(document.getElementById('dvDoc'),{headerEnd:'.dh',footer:'.foot',hideForPrint:'#docView'}); }
+  else window.print();
+});
 document.addEventListener('keydown',e=>{ if(e.key==='Escape')$('docView').classList.remove('open'); });
 </script>
 </body>

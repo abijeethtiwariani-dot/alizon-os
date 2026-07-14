@@ -99,8 +99,16 @@
 
     var ov=document.getElementById('lhp-print'); if(ov) ov.parentNode.removeChild(ov);
     ov=document.createElement('div'); ov.id='lhp-print'; ov.innerHTML=html; document.body.appendChild(ov);
+    /* portals that print via `#container{display:block}` would double-print the original;
+       hide it while our paginated overlay prints */
+    var hideSt=null;
+    if(opts.hideForPrint){
+      hideSt=document.createElement('style');
+      hideSt.textContent='@media print{'+opts.hideForPrint+'{display:none!important}}';
+      document.head.appendChild(hideSt);
+    }
     var cleaned=false;
-    function done(){ if(cleaned) return; cleaned=true; try{ov.parentNode.removeChild(ov);}catch(e){} window.removeEventListener('afterprint',done); }
+    function done(){ if(cleaned) return; cleaned=true; try{ov.parentNode.removeChild(ov);}catch(e){} if(hideSt){try{hideSt.parentNode.removeChild(hideSt);}catch(e){}} window.removeEventListener('afterprint',done); }
     window.addEventListener('afterprint',done);
     window.print();
     setTimeout(done, 2000);

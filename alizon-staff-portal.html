@@ -136,6 +136,7 @@
   .onb-warn{background:linear-gradient(120deg,#9E0C13,#C40D16);color:#fff;border-radius:12px;padding:14px 16px}
 </style>
   <script src="firebase-sync.js"></script>
+  <script src="print-paginate.js"></script>
 </head>
 <body>
 <div class="bgwrap"></div>
@@ -382,8 +383,12 @@ $('editMe').addEventListener('click',()=>{
 });
 
 /* ---------- documents ---------- */
+function printStaffDoc(){
+  if(window.LHPrint){ LHPrint(document.getElementById('printDoc'),{headerEnd:'.dh',footer:'.foot',hideForPrint:'#printDoc'}); }
+  else window.print();
+}
 function docShell(title,ref,body){
-  return '<div style="text-align:center;border-bottom:2px solid #7A0309;padding-bottom:14px;margin-bottom:6px">'+
+  return '<div class="dh" style="text-align:center;border-bottom:2px solid #7A0309;padding-bottom:14px;margin-bottom:6px">'+
     (LOGO.indexOf('data:')===0?'<img src="'+LOGO+'" width="52" height="52" style="object-fit:contain">':'')+
     '<div style="font-weight:700;font-size:19px;color:#7A0309;font-family:\'Source Serif Pro\',Georgia,serif">Alizon School of Medical &amp; Digital Intelligence</div>'+
     '<div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#666;margin-top:4px">Office of Human Resources</div></div>'+
@@ -397,7 +402,7 @@ function docShell(title,ref,body){
       '<div style="text-align:left"><div style="width:220px;border-top:1px solid #9B9394;margin-bottom:7px"></div>'+
         '<div style="font-weight:600">Office of Human Resources</div>'+
         '<div style="font-family:Arial,sans-serif;font-size:12.5px;color:#4A4546">Alizon School of Medical &amp; Digital Intelligence</div></div></div>'+
-    '<div style="margin-top:36px;padding-top:11px;border-top:1px solid #E2DBDB;font-family:Arial,sans-serif;font-size:10.5px;color:#8A8384;text-align:center;line-height:1.6">'+
+    '<div class="foot" style="margin-top:36px;padding-top:11px;border-top:1px solid #E2DBDB;font-family:Arial,sans-serif;font-size:10.5px;color:#8A8384;text-align:center;line-height:1.6">'+
       'Alizon School of Medical &amp; Digital Intelligence · Thiruvananthapuram, Kerala 695001, India · hr@alizongov.com<br>'+
       'This is a system-generated document and is valid without a seal or signature. For any clarification, contact hr@alizongov.com</div>';
 }
@@ -440,7 +445,7 @@ function logDoc(title){
 }
 $('dlCert').addEventListener('click',()=>dlDoc('Salary Certificate',ref('SC'),certBody(),ME.empid+'_Salary_Certificate.doc'));
 $('dlSlip').addEventListener('click',()=>dlDoc('Salary Slip — '+monthName(),ref('SL'),slipBody(),ME.empid+'_Salary_Slip.doc'));
-$('prCert').addEventListener('click',()=>{ $('printDoc').innerHTML=docShell('Salary Certificate',ref('SC'),certBody()); window.print(); });
+$('prCert').addEventListener('click',()=>{ $("printDoc").innerHTML=docShell('Salary Certificate',ref('SC'),certBody()); printStaffDoc(); });
 
 /* ---------- joining letter & onboarding e-signature ---------- */
 const ONB_DECLS=[
@@ -503,7 +508,7 @@ function renderOnboarding(){
       '</div>'+
       '<div class="btnrow" style="margin-top:16px"><button class="abtn primary" id="dlAck">Download signed acknowledgment (.doc)</button><button class="abtn" id="viewLetter2">View / print letter</button></div>';
     $('dlAck').onclick=()=>dlSignedAck(ME.onboarding);
-    $('viewLetter2').onclick=()=>{ $('printDoc').innerHTML=docShell('Letter of Appointment',ME.onboarding.ref,joiningLetterBody()+ackBlockHtml(ME.onboarding)); window.print(); };
+    $('viewLetter2').onclick=()=>{ $("printDoc").innerHTML=docShell('Letter of Appointment',ME.onboarding.ref,joiningLetterBody()+ackBlockHtml(ME.onboarding)); printStaffDoc(); };
     return;
   }
   body.innerHTML=
@@ -523,7 +528,7 @@ function renderOnboarding(){
     '<div id="onbErr" style="display:none;color:var(--tcrim);font-size:13px;margin-top:8px"></div>'+
     '<div class="btnrow" style="margin-top:12px"><button class="abtn primary" id="onbSubmit">Sign &amp; submit onboarding</button></div>';
   initSignPad();
-  $('viewLetter').onclick=()=>{ $('printDoc').innerHTML=docShell('Letter of Appointment',onbRef(),joiningLetterBody()); window.print(); };
+  $('viewLetter').onclick=()=>{ $("printDoc").innerHTML=docShell('Letter of Appointment',onbRef(),joiningLetterBody()); printStaffDoc(); };
   $('sigClear').onclick=()=>{ const c=$('sigPad'); if(c&&c._clear)c._clear(); };
   $('onbSubmit').onclick=submitOnboarding;
 }
