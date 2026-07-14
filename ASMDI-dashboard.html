@@ -1257,13 +1257,16 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
 
 /* ===== shared: a student's own evaluated results for a given module ===== */
 function _normKey(x){ return String(x==null?'':x).toUpperCase().replace(/\s+/g,''); }
+/* read a numeric percentage mark (0..100) from any submission, or null if not yet graded numerically */
+function markOf(s){ return (typeof s.mark==='number') ? s.mark : (s.grade!=null && /^\d+(\.\d+)?$/.test(String(s.grade).trim()) ? parseFloat(s.grade) : null); }
 function studentModuleSubs(moduleUnit, progName){
   var reg=''; try{ reg=(JSON.parse(localStorage.getItem('alizonProfile')||'{}').reg)||''; }catch(e){}
   var subs=[]; try{ subs=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]'); }catch(e){}
   if(!Array.isArray(subs)) subs=[];
   return subs.filter(function(s){
-    if(s.type!=='practical'&&s.type!=='self') return false;
-    if(_normKey(s.module)!==_normKey(moduleUnit)) return false;
+    if(s.type!=='practical'&&s.type!=='self'&&s.type!=='assignment') return false;
+    /* submissions store module as "<unit> · <title> · <unit-name>" — match on the leading unit segment */
+    if(_normKey(String(s.module||'').split('·')[0])!==_normKey(moduleUnit)) return false;
     if(progName && s.programme && _normKey(s.programme)!==_normKey(progName)) return false;
     if(reg && s.reg && _normKey(s.reg)!==_normKey(reg)) return false;
     return true;
@@ -1314,19 +1317,32 @@ function moduleResultBadge(moduleUnit, progName){
         ? `<div class="md-sec"><h3>Your result</h3><div class="md-empty">Submit this module’s practical or self-assessment from <b>Assessments</b> — your evaluated result will appear here automatically once faculty grades it.</div></div>`
         : '';
     }
+    const marks=[];
     const rows=subs.map(s=>{
       let cls,badge;
       if(s.grade){ cls='graded'; badge='✔ '+esc(s.grade); }
       else if(s.status==='rejected'){ cls='rejected'; badge='Redo requested'; }
       else if(s.ai&&s.ai.grade){ cls='ai'; badge=esc(s.ai.grade)+' · provisional'; }
       else { cls='pending'; badge='Awaiting evaluation'; }
+      const mk=markOf(s);
+      let pf='';
+      if(mk!=null){ marks.push(mk); const pass=mk>=50;
+        pf=`<span class="res-badge" style="color:${pass?'#6fd0ab':'#ff8a90'};background:${pass?'rgba(46,139,106,.18)':'rgba(212,24,32,.16)'};margin-left:8px">${Math.round(mk)}% · ${pass?'PASS':'FAIL'}</span>`; }
       const fb=s.feedback?`<div class="res-fb">“${esc(s.feedback)}”${s.gradedBy?' — '+esc(s.gradedBy):''}</div>`:'';
       return `<div class="resrow ${cls}">
-        <div class="res-main"><b>${esc(s.typeLabel||(s.type==='self'?'Self-assessment':'Practical'))}</b>
+        <div class="res-main"><b>${esc(s.typeLabel||(s.type==='self'?'Self-assessment':(s.type==='assignment'?'Assignment':'Practical')))}</b>
           <span>${esc(s.title||m.title)} · submitted ${fmtR(s.ts)}</span></div>
-        <span class="res-badge ${cls}">${badge}</span>${fb}</div>`;
+        <span class="res-badge ${cls}">${badge}</span>${pf}${fb}</div>`;
     }).join('');
-    return `<div class="md-sec"><h3>Your result <span class="c">${subs.length}</span></h3><div class="resbox">${rows}</div></div>`;
+    let total='';
+    if(marks.length){
+      const avg=Math.round(marks.reduce((a,b)=>a+b,0)/marks.length); const pass=avg>=50;
+      total=`<div class="resrow" style="border-color:${pass?'rgba(46,139,106,.5)':'rgba(212,24,32,.5)'}">
+        <div class="res-main"><b>Module total</b>
+          <span>Average of ${marks.length} evaluated submission${marks.length!==1?'s':''}</span></div>
+        <span class="res-badge" style="color:${pass?'#6fd0ab':'#ff8a90'};background:${pass?'rgba(46,139,106,.18)':'rgba(212,24,32,.16)'}">${avg}% · ${pass?'PASS':'FAIL'}</span></div>`;
+    }
+    return `<div class="md-sec"><h3>Your result <span class="c">${subs.length}</span></h3><div class="resbox">${rows}${total}</div></div>`;
   }
   const PROGRAMME_FORMS=[
     {t:'Self-Learning Module Protocol', f:'Self-Learning-Module-Protocol.pdf', d:'How to work through each self-learning module.'},
@@ -1451,18 +1467,44 @@ function moduleResultBadge(moduleUnit, progName){
   function saveSubs(a){ try{ localStorage.setItem('alizonSubmissions',JSON.stringify(a)); }catch(e){} }
   function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function fmt(ts){ try{ const d=new Date(ts); return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+  /* overall RESULT SUMMARY card for the signed-in student: total mark + PASS/FAIL + per-type breakdown */
+  function summaryCardHtml(subs){
+    let reg=''; try{ reg=(JSON.parse(localStorage.getItem('alizonProfile')||'{}').reg)||''; }catch(e){}
+    const nk=x=>String(x==null?'':x).toUpperCase().replace(/\s+/g,'');
+    const mine=(reg?subs.filter(s=>s.reg&&nk(s.reg)===nk(reg)):subs);
+    const graded=mine.map(markOf).filter(m=>m!=null);
+    if(!graded.length) return '';
+    const avg=Math.round(graded.reduce((a,b)=>a+b,0)/graded.length); const pass=avg>=50;
+    const typeAvg=t=>{ const ms=mine.filter(s=>s.type===t).map(markOf).filter(m=>m!=null); return ms.length?Math.round(ms.reduce((a,b)=>a+b,0)/ms.length):null; };
+    const parts=[['assignment','Assignment'],['self','Self-Assessment'],['practical','Practical']].map(([t,lbl])=>{
+      const a=typeAvg(t); if(a==null) return ''; const p=a>=50;
+      return `<span class="stype" style="color:${p?'#6fd0ab':'#ff8a90'};background:${p?'rgba(46,139,106,.16)':'rgba(212,24,32,.14)'}">${esc(lbl)} ${a}%</span>`;
+    }).filter(Boolean).join('');
+    return `<div class="subrow" style="border-color:${pass?'rgba(46,139,106,.5)':'rgba(212,24,32,.5)'}">
+      <div class="sic" style="background:${pass?'rgba(46,139,106,.16)':'rgba(212,24,32,.14)'};color:${pass?'#6fd0ab':'#ff8a90'}">Σ</div>
+      <div class="sinfo"><b>Result summary — overall total ${avg}%</b>
+        <span>Average across ${graded.length} evaluated submission${graded.length!==1?'s':''} ${parts?'· ':''}</span>
+        ${parts?`<span style="display:inline-flex;flex-wrap:wrap;gap:6px;margin-top:6px">${parts}</span>`:''}</div>
+      <span class="sgrade" style="font-size:13px;padding:6px 14px;color:${pass?'#6fd0ab':'#ff8a90'};border-color:${pass?'rgba(46,139,106,.55)':'rgba(212,24,32,.55)'}">${avg}% · ${pass?'PASS':'FAIL'}</span>
+    </div>`;
+  }
   function render(){
-    const subs=loadSubs().filter(s=>s.type==='practical'||s.type==='self');
+    const subs=loadSubs().filter(s=>s.type==='practical'||s.type==='self'||s.type==='assignment');
     const sub=document.getElementById('subSub');
     if(!subs.length){ list.innerHTML='<div class="subempty">Nothing submitted yet. Open <b>Assessments</b>, choose <b>Practical</b> or <b>Self-Assessment</b> + your module/unit, then click <b>Submit</b>. (Theory assignments are download-only.)</div>';
       if(sub) sub.textContent='Practicals & self-assessment forms you submitted from Assessments.'; return; }
     if(sub) sub.textContent=subs.length+' submission'+(subs.length!==1?'s':'')+' from this device.';
-    list.innerHTML=subs.map(s=>{ const isSA=s.type==='self'; return `<div class="subrow">
+    list.innerHTML=summaryCardHtml(subs)+subs.map(s=>{ const isSA=s.type==='self'; const isAsg=s.type==='assignment';
+      const tlabel=isSA?'Self-Assessment':(isAsg?'Assignment':'Practical');
+      const mk=markOf(s);
+      const pfChip=(mk!=null)?(function(){ const pass=mk>=50; return `<span class="sgrade" style="color:${pass?'#6fd0ab':'#ff8a90'};border-color:${pass?'rgba(46,139,106,.55)':'rgba(212,24,32,.55)'}" title="Evaluation mark">${Math.round(mk)}% · ${pass?'PASS':'FAIL'}</span>`; })():'';
+      return `<div class="subrow">
       <div class="sic">${isSA?'':''}</div>
       <div class="sinfo"><b>${esc(s.module||s.title||s.typeLabel)}</b>
         <span>${esc(s.name||'—')}${s.reg?' · '+esc(s.reg):''} · ${esc(s.programme||'')} · ${fmt(s.ts)}${s.feedback?' · '+esc(s.feedback):(s.ai&&s.ai.feedback?' · '+esc(s.ai.feedback):'')}</span></div>
-      <span class="stype" ${isSA?'style="color:var(--gold);background:var(--gold-soft)"':''}>${isSA?'Self-Assessment':'Practical'}</span>
+      <span class="stype" ${isSA?'style="color:var(--gold);background:var(--gold-soft)"':(isAsg?'style="color:var(--crimson);background:var(--crimson-soft)"':'')}>${tlabel}</span>
       ${s.score!=null?`<span class="sscore">${s.score}/60</span>`:''}
+      ${pfChip}
       ${s.status==='rejected'
         ?`<span class="sgrade" style="color:#ff8a90;border-color:rgba(212,24,32,.55)" title="Faculty asked you to redo and resubmit this">✘ Rejected — redo</span>`
         :s.grade?`<span class="sgrade">✔ ${esc(s.grade)}</span>`

@@ -147,6 +147,17 @@
   @media(max-width:720px){.arow3,.arow4{grid-template-columns:1fr}}
   .egrade{display:flex;gap:8px;align-items:center;flex:none}
   .egrade input{width:80px}
+  /* evaluation sub-tabs (Assignment / Self-Assessment / Practical) */
+  .evtabs{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 14px}
+  .evtab{cursor:pointer;font-family:inherit;font-weight:600;font-size:13px;color:var(--muted);
+    border:1px solid var(--line);background:var(--pill);border-radius:100px;padding:8px 15px;transition:.2s;display:flex;align-items:center;gap:8px}
+  .evtab:hover{color:var(--ink);border-color:rgba(161,98,7,.4)}
+  .evtab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent;box-shadow:0 6px 16px rgba(212,24,32,.25)}
+  .evtab .evc{font-size:11px;font-weight:700;background:rgba(24,18,26,.1);color:inherit;border-radius:100px;padding:1px 8px;line-height:1.5}
+  .evtab.on .evc{background:rgba(255,255,255,.25)}
+  .evpass{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:100px;flex:none}
+  .evpass.pass{color:#fff;background:var(--success)} .evpass.fail{color:#fff;background:var(--crimson)}
+  .evhint{font-size:12px;color:var(--muted);margin:-6px 0 10px}
   .badge2{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:100px;flex:none}
   .badge2.new{color:#ff9aa0;background:var(--crimson-soft)} .badge2.done{color:#6fd0ab;background:rgba(46,139,106,.18)}
   .badge2.ind{color:#ffca7a;background:rgba(217,164,65,.16)} .badge2.usa{color:#8fb2ff;background:rgba(79,123,255,.16)}
@@ -832,6 +843,12 @@ function loadSubs(){ try{const a=JSON.parse(localStorage.getItem('alizonSubmissi
 function loadGriev(){ try{const a=JSON.parse(localStorage.getItem('alizonGrievances')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
 
 /* ---- evaluation ---- */
+/* the three evaluation streams; active tab is module-scoped (default 'assignment') */
+const EVAL_TABS=[{type:'assignment',label:'Assignment'},{type:'self',label:'Self-Assessment'},{type:'practical',label:'Practical'}];
+let evalTab=(function(){ try{const t=localStorage.getItem('admEvalTab'); return EVAL_TABS.some(x=>x.type===t)?t:'assignment';}catch(e){return 'assignment';} })();
+/* read a numeric mark (0..100) from any submission; null = not yet graded numerically */
+function markOf(s){ return (typeof s.mark==='number') ? s.mark : (s.grade!=null && /^\d+(\.\d+)?$/.test(String(s.grade).trim()) ? parseFloat(s.grade) : null); }
+function setEvalTab(t){ if(!EVAL_TABS.some(x=>x.type===t))return; evalTab=t; try{localStorage.setItem('admEvalTab',t);}catch(e){} renderEval(); }
 function renderEval(){
   const el=document.getElementById('evalList');
   const progName=(selP>-1&&PROGRAMS[selP])?PROGRAMS[selP].name:null;
@@ -839,13 +856,23 @@ function renderEval(){
   if(hint) hint.innerHTML=(progName
     ?'Showing <b>'+esc(progName)+'</b> submissions only — use the programme dropdown above to switch.'
     :'Showing submissions from <b>all programmes</b>.')+' Grades &amp; feedback reflect on the student portal.';
-  const subs=loadSubs().filter(s=>s.type==='practical'||s.type==='self')
-                       .filter(s=>!progName||s.programme===progName);
   paintCounts();
-  if(!subs.length){ el.innerHTML='<div class="cnote">No '+(progName?esc(progName)+' ':'')+'submissions yet. Practicals & self-assessments submitted from Assessments appear here.</div>'; return; }
-  el.innerHTML=subs.map(s=>`<div class="citem col" data-id="${esc(s.id)}">
+  /* 3-way sub-nav with live per-type counts (respects the programme filter) */
+  const scoped=loadSubs().filter(s=>!progName||s.programme===progName);
+  const tabsHtml='<div class="evtabs">'+EVAL_TABS.map(t=>{
+    const n=scoped.filter(s=>s.type===t.type).length;
+    return `<button type="button" class="evtab ${t.type===evalTab?'on':''}" data-evtab="${t.type}">${esc(t.label)}<span class="evc">${n}</span></button>`;
+  }).join('')+'</div><div class="evhint">Pass mark: 50%</div>';
+  /* only submissions of the active type */
+  const subs=scoped.filter(s=>s.type===evalTab);
+  const tabName=(EVAL_TABS.find(x=>x.type===evalTab)||{}).label||'submission';
+  if(!subs.length){ el.innerHTML=tabsHtml+'<div class="cnote">No '+(progName?esc(progName)+' ':'')+esc(tabName)+' submissions yet.</div>'; }
+  else el.innerHTML=tabsHtml+subs.map(s=>{
+    const done=(s.status==='evaluated'); const m=markOf(s);
+    return `<div class="citem col" data-id="${esc(s.id)}">
     <div style="display:flex;gap:10px;align-items:center">
-      <span class="badge2 ${s.grade?'done':'new'}"${s.status==='rejected'?' style="color:#fff;background:var(--crimson)"':''}>${s.grade?'Evaluated':(s.status==='rejected'?'Rejected — redo':'Pending')}</span>
+      <span class="badge2 ${done?'done':'new'}"${s.status==='rejected'?' style="color:#fff;background:var(--crimson)"':''}>${done?'Evaluated':(s.status==='rejected'?'Rejected — redo':'Pending')}</span>
+      ${done&&m!=null?`<span class="evpass ${m>=50?'pass':'fail'}">${m>=50?'Pass':'Fail'} · ${m}/100</span>`:''}
       <div class="cinfo"><b>${esc(s.typeLabel||s.type)} — ${esc(s.module||s.title||'')}</b>
         <small>${esc(s.name||'—')}${s.reg?' · '+esc(s.reg):''} · ${esc(s.programme||'')} · ${fmt(s.ts)}${s.score!=null?' · self-score '+s.score+'/60':''}</small></div>
       <button class="eview" data-eview="${esc(s.id)}">View document</button>
@@ -853,25 +880,29 @@ function renderEval(){
     ${s.ai?`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12.5px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.3);border-radius:10px;padding:8px 12px">
       <b style="color:var(--gold);flex:none">AI suggests ${esc(s.ai.grade)}</b>
       <span style="flex:1;min-width:200px;color:var(--muted)">${esc(s.ai.verdict)} — ${(s.ai.breakdown||[]).map(b=>esc(b.k)+' '+b.got+'/'+b.of).join(' · ')}</span>
-      ${s.grade?'':`<button class="cadd" data-eaccept="${esc(s.id)}" style="padding:6px 12px;font-size:12px;flex:none">✔ Accept AI mark</button>`}
+      ${done?'':`<button class="cadd" data-eaccept="${esc(s.id)}" style="padding:6px 12px;font-size:12px;flex:none">✔ Accept AI mark</button>`}
     </div>`:''}
     <div class="egrade" style="width:100%;gap:8px">
-      <input placeholder="Grade / marks" value="${esc(s.grade||'')}" data-eg="${esc(s.id)}" style="width:130px">
+      <input type="number" min="0" max="100" placeholder="Mark /100" value="${m!=null?esc(m):''}" data-eg="${esc(s.id)}" style="width:130px">
       <input placeholder="Feedback to student${s.status==='rejected'?' (rejection reason sent)':''}" value="${esc(s.feedback||'')}" data-ef="${esc(s.id)}" style="flex:1">
       <button class="cadd" data-esave="${esc(s.id)}">Save</button>
       ${s.status==='rejected'?'':`<button class="cadd" data-erej="${esc(s.id)}" style="background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">✘ Reject — redo</button>`}
-    </div></div>`).join('');
+    </div></div>`;
+  }).join('');
+  el.querySelectorAll('[data-evtab]').forEach(b=>b.addEventListener('click',()=>setEvalTab(b.dataset.evtab)));
   el.querySelectorAll('[data-erej]').forEach(b=>b.addEventListener('click',()=>{
     const id=b.dataset.erej, f=el.querySelector(`[data-ef="${id}"]`).value.trim();
     if(!f){toast('Write feedback first — the student needs to know what to redo');el.querySelector(`[data-ef="${id}"]`).focus();return;}
     const subs2=loadSubs(); const s=subs2.find(x=>x.id===id); if(!s)return;
-    s.status='rejected'; s.grade=''; s.feedback=f; s.rejectedAt=Date.now();
+    s.status='rejected'; s.grade=''; s.mark=null; s.feedback=f; s.rejectedAt=Date.now();
     setDB('alizonSubmissions',subs2); renderEval(); toast('Submission rejected — student asked to redo');
     logAct('Rejected '+(s.typeLabel||'submission')+' by '+(s.name||'student')+' — redo requested','eval');
   }));
   el.querySelectorAll('[data-eaccept]').forEach(b=>b.addEventListener('click',()=>{
     const subs2=loadSubs(); const s=subs2.find(x=>x.id===b.dataset.eaccept); if(!s||!s.ai)return;
-    s.grade=s.ai.grade; s.feedback=s.ai.feedback; s.status='evaluated'; s.evaluatedAt=Date.now(); s.gradedBy='AI (accepted by faculty)';
+    const aiN=parseFloat(String(s.ai.grade).trim());
+    s.mark=(/^\d+(\.\d+)?$/.test(String(s.ai.grade).trim())) ? Math.round(aiN) : null;
+    s.grade=s.mark!=null?String(s.mark):s.ai.grade; s.feedback=s.ai.feedback; s.status='evaluated'; s.evaluatedAt=Date.now(); s.gradedBy='AI (accepted by faculty)';
     setDB('alizonSubmissions',subs2); renderEval(); toast('AI mark accepted — '+s.ai.grade);
     logAct('Accepted AI mark '+s.ai.grade+' for '+(s.typeLabel||'submission')+' by '+(s.name||'student'),'eval');
   }));
@@ -882,11 +913,13 @@ function renderEval(){
     document.getElementById('docView').classList.add('open');
   }));
   el.querySelectorAll('[data-esave]').forEach(b=>b.addEventListener('click',()=>{
-    const id=b.dataset.esave, g=el.querySelector(`[data-eg="${id}"]`).value.trim(), f=el.querySelector(`[data-ef="${id}"]`).value.trim();
-    if(!g){toast('Enter a grade/marks');return;}
+    const id=b.dataset.esave, raw=el.querySelector(`[data-eg="${id}"]`).value.trim(), f=el.querySelector(`[data-ef="${id}"]`).value.trim();
+    const n=parseFloat(raw);
+    if(raw===''||!isFinite(n)||n<0||n>100){toast('Enter a mark between 0 and 100');el.querySelector(`[data-eg="${id}"]`).focus();return;}
     const subs=loadSubs(); const s=subs.find(x=>x.id===id); if(!s)return;
-    s.grade=g; s.feedback=f; s.status='evaluated'; s.evaluatedAt=Date.now();
-    setDB('alizonSubmissions',subs); renderEval(); toast('Evaluation saved'); logAct('Evaluated '+(s.typeLabel||'submission')+' by '+(s.name||'student')+' — grade '+g,'eval');
+    s.mark=Math.round(n); s.grade=String(s.mark); s.feedback=f; s.status='evaluated'; s.evaluatedAt=Date.now();
+    setDB('alizonSubmissions',subs); renderEval(); toast('Evaluation saved — '+s.mark+'/100 ('+(s.mark>=50?'Pass':'Fail')+')');
+    logAct('Evaluated '+(s.typeLabel||'submission')+' by '+(s.name||'student')+' — '+s.mark+'/100 ('+(s.mark>=50?'Pass':'Fail')+')','eval');
   }));
 }
 /* ---- grievances ---- */
@@ -1177,7 +1210,7 @@ function showSec(id){
 }
 document.querySelectorAll('.anavv a[data-sec]').forEach(a=>a.addEventListener('click',()=>showSec(a.dataset.sec)));
 function paintCounts(){
-  const pend=loadSubs().filter(s=>(s.type==='practical'||s.type==='self')&&!s.grade&&s.status!=='rejected').length;
+  const pend=loadSubs().filter(s=>(s.type==='assignment'||s.type==='practical'||s.type==='self')&&s.status!=='evaluated'&&s.status!=='rejected'&&markOf(s)==null).length;
   const open=loadGriev().filter(g=>g.status!=='resolved').length;
   const ce=document.getElementById('cntEval'), cg=document.getElementById('cntGriev');
   if(ce){ ce.textContent=pend; ce.classList.toggle('show',pend>0); }

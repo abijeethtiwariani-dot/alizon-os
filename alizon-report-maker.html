@@ -433,13 +433,13 @@ $('seg').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
   updateModeUI(); render();
 }));
 function updateModeUI(){
-  // submit for practicals & self-assessment; assignments (theory) are download-only
-  const canSubmit = (docType==='practical'||docType==='self');
+  // submit for assignments, practicals & self-assessment; all can also be downloaded
+  const canSubmit = (docType==='practical'||docType==='self'||docType==='assignment');
   $('submitBtn').style.display = canSubmit ? '' : 'none';
-  $('submitBtn').textContent = docType==='self' ? '✔ Submit self-assessment' : '✔ Submit practical';
+  $('submitBtn').textContent = docType==='self' ? '✔ Submit self-assessment' : docType==='assignment' ? '✔ Submit assignment' : '✔ Submit practical';
   const n=$('modeNote');
   if(canSubmit){ n.className='modenote up';
-    n.innerHTML='✔ <div><b>'+(docType==='self'?'Self-assessment':'Practical')+':</b> fill it in and <b>submit it to your dashboard</b> — you can download a copy too.</div>'; }
+    n.innerHTML='✔ <div><b>'+(docType==='self'?'Self-assessment':docType==='assignment'?'Assignment':'Practical')+':</b> fill it in and <b>submit it to your dashboard</b> — you can download a copy too.</div>'; }
   else { n.className='modenote dl';
     n.innerHTML='<div><b>Assignment (theory):</b> download as PDF or Word, then upload it to our submission website. (No dashboard submission for theory.)</div>'; }
 }
@@ -613,20 +613,22 @@ function aiEvaluate(rec){
 }
 
 $('submitBtn').addEventListener('click',()=>{
-  if(docType!=='practical' && docType!=='self') return;
+  if(docType!=='practical' && docType!=='self' && docType!=='assignment') return;
   const name=$('f-name').value.trim();
   if(!name){toast('Enter your student name first',true);$('f-name').focus();return;}
   if(!moduleLabel()){toast('Choose your module & unit first',true);$('f-module').focus();return;}
   const rec={id:'s'+Date.now()+'_'+Math.floor(Math.random()*1000),
-    type:docType, typeLabel:(docType==='self'?'Self-Assessment':'Practical'),
+    type:docType, typeLabel:(docType==='self'?'Self-Assessment':docType==='assignment'?'Assignment':'Practical'),
     name,reg:$('f-reg').value.trim(),programme:$('f-prog').value,module:moduleLabel(),
     title:$('f-title').value.trim(),no:$('f-no').value.trim(),course:$('f-course').value.trim(),date:$('f-date').value.trim(),
     score:(docType==='self'?saTotal():null),words:countWords(),ts:Date.now(),html:$('doc').innerHTML.split(LOGO).join('alizon-logo.png')};
-  rec.ai=aiEvaluate(rec); rec.status='ai-evaluated';
+  /* assignments are graded by faculty only — no auto AI provisional mark (it isn't tuned for assignments) */
+  if(docType==='assignment'){ rec.status='submitted'; }
+  else { rec.ai=aiEvaluate(rec); rec.status='ai-evaluated'; }
   let arr=[];try{arr=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]');if(!Array.isArray(arr))arr=[];}catch(e){}
   arr.unshift(rec);if(arr.length>60)arr=arr.slice(0,60);
   try{localStorage.setItem('alizonSubmissions',JSON.stringify(arr));
-    toast('Submitted ✓ — AI provisional mark: '+rec.ai.grade+' (faculty may adjust)');}
+    toast(rec.ai ? ('Submitted ✓ — AI provisional mark: '+rec.ai.grade+' (faculty may adjust)') : 'Submitted ✓ — awaiting faculty evaluation');}
   catch(e){toast('Could not save (storage full)',true);}
 });
 

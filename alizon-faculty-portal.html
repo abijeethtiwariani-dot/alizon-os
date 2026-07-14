@@ -104,6 +104,17 @@
   .pickbar{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;margin-bottom:14px}
   @media(max-width:640px){.pickbar{grid-template-columns:1fr}}
 
+  /* evaluation sub-nav tabs */
+  .etabs{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 16px}
+  .etab{cursor:pointer;font-size:13px;font-weight:600;color:var(--tmut);border:1px solid var(--tline);
+    background:rgba(24,18,26,.05);padding:8px 15px;border-radius:100px;transition:.2s;display:inline-flex;align-items:center;gap:7px}
+  .etab:hover{color:var(--tink);border-color:rgba(161,98,7,.4)}
+  .etab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent;box-shadow:0 8px 20px rgba(212,24,32,.24)}
+  .etab .etc{font-size:10.5px;font-weight:700;background:rgba(24,18,26,.1);color:var(--tmut);border-radius:100px;padding:1px 7px}
+  .etab.on .etc{background:rgba(255,255,255,.28);color:#fff}
+  .badge2.pass{color:#1E8E5A;background:rgba(46,139,106,.15)}
+  .badge2.fail{color:#fff;background:var(--tcrim)}
+
   /* login gate */
   #gate{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;
     background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.1),transparent 60%),var(--bg)}
@@ -215,7 +226,12 @@
   <!-- EVALUATION -->
   <section class="panel asec" id="sec-eval" style="margin-top:26px">
     <h2>Submissions &amp; Evaluation</h2>
-    <div class="ahint">Grade student practicals &amp; self-assessments. Accept the AI provisional mark, enter your own, or reject for redo — the result reflects on the student portal.</div>
+    <div class="ahint">Grade student assignments, self-assessments &amp; practicals out of 100. Accept the AI provisional mark, enter your own, or reject for redo — the result reflects on the student portal. <b>Pass mark: 50%</b>.</div>
+    <div class="etabs" id="evalTabs">
+      <button class="etab on" data-etab="assignment">Assignment <b class="etc" id="etcAssignment">0</b></button>
+      <button class="etab" data-etab="self">Self-Assessment <b class="etc" id="etcSelf">0</b></button>
+      <button class="etab" data-etab="practical">Practical <b class="etc" id="etcPractical">0</b></button>
+    </div>
     <div class="clist" id="evalList"></div>
   </section>
 
@@ -311,6 +327,7 @@ function DB(k,d){ try{const v=JSON.parse(localStorage.getItem(k)); if(Array.isAr
 function setDB(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
 function fmt(ts){ try{const d=new Date(ts);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}catch(e){return '';} }
 function loadSubs(){ try{const a=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+function markOf(s){ return (typeof s.mark==='number') ? s.mark : (s.grade!=null && /^\d+(\.\d+)?$/.test(String(s.grade).trim()) ? parseFloat(s.grade) : null); }
 function loadGriev(){ try{const a=JSON.parse(localStorage.getItem('alizonGrievances')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
 function loadProgs(){ try{const a=JSON.parse(localStorage.getItem('alizonPrograms')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
 function saveProgs(p){ setDB('alizonPrograms',p); }
@@ -366,7 +383,7 @@ function boot(){
 function renderAll(){ renderKPIs(); renderActFeed(); renderEval(); renderGriev(); renderSched(); renderAnnounce(); paintCounts(); }
 
 function paintCounts(){
-  const pend=loadSubs().filter(s=>(s.type==='practical'||s.type==='self')&&!s.grade&&s.status!=='rejected').length;
+  const pend=loadSubs().filter(s=>(s.type==='assignment'||s.type==='practical'||s.type==='self')&&markOf(s)==null&&s.status!=='rejected').length;
   const open=loadGriev().filter(g=>g.status!=='resolved').length;
   const ce=$('cntEval'),cg=$('cntGriev');
   if(ce){ce.textContent=pend;ce.classList.toggle('show',pend>0);}
@@ -375,8 +392,8 @@ function paintCounts(){
 
 /* ---------- overview ---------- */
 function renderKPIs(){
-  const subs=loadSubs().filter(s=>s.type==='practical'||s.type==='self');
-  const pend=subs.filter(s=>!s.grade&&s.status!=='rejected').length;
+  const subs=loadSubs().filter(s=>s.type==='assignment'||s.type==='practical'||s.type==='self');
+  const pend=subs.filter(s=>markOf(s)==null&&s.status!=='rejected').length;
   const griev=loadGriev().filter(g=>g.status!=='resolved').length;
   let notes=0,videos=0; loadProgs().forEach(p=>p.modules.forEach(m=>{notes+=(m.notes||[]).length;videos+=(m.videos||[]).length;}));
   const sched=DB('alizonSchedule',[]).length;
@@ -393,13 +410,32 @@ function renderActFeed(){
 }
 
 /* ---------- evaluation ---------- */
+let evalTab='assignment'; try{ evalTab=sessionStorage.getItem('facEvalTab')||'assignment'; }catch(e){}
+if(['assignment','self','practical'].indexOf(evalTab)<0)evalTab='assignment';
+function setEvalTab(t){ if(['assignment','self','practical'].indexOf(t)<0)return; evalTab=t;
+  try{sessionStorage.setItem('facEvalTab',t);}catch(e){}
+  document.querySelectorAll('#evalTabs .etab').forEach(b=>b.classList.toggle('on',b.dataset.etab===t));
+  renderEval();
+}
+document.querySelectorAll('#evalTabs .etab').forEach(b=>{ b.classList.toggle('on',b.dataset.etab===evalTab); b.addEventListener('click',()=>setEvalTab(b.dataset.etab)); });
 function renderEval(){
-  const el=$('evalList'); const subs=loadSubs().filter(s=>s.type==='practical'||s.type==='self');
+  const el=$('evalList'); const all=loadSubs().filter(s=>s.type==='assignment'||s.type==='self'||s.type==='practical');
   paintCounts();
-  if(!subs.length){ el.innerHTML='<div class="cnote">No student submissions yet. Practicals &amp; self-assessments submitted from Assessments appear here.</div>'; return; }
-  el.innerHTML=subs.map(s=>`<div class="citem col">
+  /* tab counts (pending per type) */
+  const pendBy=t=>all.filter(s=>s.type===t&&markOf(s)==null&&s.status!=='rejected').length;
+  const ca=$('etcAssignment'),cs=$('etcSelf'),cp=$('etcPractical');
+  if(ca)ca.textContent=pendBy('assignment'); if(cs)cs.textContent=pendBy('self'); if(cp)cp.textContent=pendBy('practical');
+  const subs=all.filter(s=>s.type===evalTab);
+  const tlabel=evalTab==='assignment'?'assignment':(evalTab==='self'?'self-assessment':'practical');
+  if(!subs.length){ el.innerHTML='<div class="cnote">No '+esc(tlabel)+' submissions yet. Student '+esc(tlabel)+'s submitted from Assessments appear here.</div>'; return; }
+  el.innerHTML=subs.map(s=>{
+    const mk=markOf(s), evd=(s.status==='evaluated'||mk!=null)&&s.status!=='rejected';
+    const chip=s.status==='rejected'?'<span class="badge2 rej">Rejected — redo</span>'
+      :(evd&&mk!=null?`<span class="badge2 ${mk>=50?'pass':'fail'}">${mk>=50?'Pass':'Fail'} · ${mk}/100</span>`
+        :(evd?'<span class="badge2 done">Evaluated</span>':'<span class="badge2 new">Pending</span>'));
+    return `<div class="citem col">
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <span class="badge2 ${s.status==='rejected'?'rej':(s.grade?'done':'new')}">${s.grade?'Evaluated':(s.status==='rejected'?'Rejected — redo':'Pending')}</span>
+      ${chip}
       <div class="cinfo"><b>${esc(s.typeLabel||s.type)} — ${esc(s.module||s.title||'')}</b>
         <small>${esc(s.name||'—')}${s.reg?' · '+esc(s.reg):''} · ${esc(s.programme||'')} · ${fmt(s.ts)}${s.score!=null?' · self-score '+s.score+'/60':''}</small></div>
       <button class="btn mini ghost" data-eview="${esc(s.id)}">View document</button>
@@ -407,14 +443,15 @@ function renderEval(){
     ${s.ai?`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12.5px;background:rgba(161,98,7,.12);border:1px solid rgba(161,98,7,.3);border-radius:10px;padding:8px 12px">
       <b style="color:var(--tgold);flex:none">AI suggests ${esc(s.ai.grade)}</b>
       <span style="flex:1;min-width:200px;color:var(--tmut)">${esc(s.ai.verdict)}</span>
-      ${s.grade?'':`<button class="btn mini" data-eaccept="${esc(s.id)}" style="padding:6px 12px">Accept AI mark</button>`}
+      ${evd?'':`<button class="btn mini" data-eaccept="${esc(s.id)}" style="padding:6px 12px">Accept AI mark</button>`}
     </div>`:''}
     <div class="egrade">
-      <input type="text" placeholder="Grade / marks" value="${esc(s.grade||'')}" data-eg="${esc(s.id)}" style="width:130px">
+      <input type="number" min="0" max="100" step="1" placeholder="Mark /100" value="${mk!=null?esc(mk):''}" data-eg="${esc(s.id)}" style="width:110px">
       <input type="text" placeholder="Feedback to student" value="${esc(s.feedback||'')}" data-ef="${esc(s.id)}" style="flex:1;min-width:180px">
       <button class="btn mini" data-esave="${esc(s.id)}">Save</button>
       ${s.status==='rejected'?'':`<button class="btn mini" data-erej="${esc(s.id)}" style="background:var(--crimson-soft);color:var(--tcrim);border:1px solid rgba(196,13,22,.45)">Reject — redo</button>`}
-    </div></div>`).join('');
+      <span style="font-size:11.5px;color:var(--tmut);flex:none">Pass mark: 50%</span>
+    </div></div>`;}).join('');
   el.querySelectorAll('[data-eview]').forEach(b=>b.addEventListener('click',()=>{
     const s=loadSubs().find(x=>x.id===b.dataset.eview); if(!s)return;
     $('dvTitle').textContent=(s.typeLabel||'Submission')+' — '+(s.name||'');
@@ -422,16 +459,22 @@ function renderEval(){
     $('docView').classList.add('open');
   }));
   el.querySelectorAll('[data-esave]').forEach(b=>b.addEventListener('click',()=>{
-    const id=b.dataset.esave, g=el.querySelector(`[data-eg="${id}"]`).value.trim(), f=el.querySelector(`[data-ef="${id}"]`).value.trim();
-    if(!g){toast('Enter a grade/marks');return;}
+    const id=b.dataset.esave, raw=el.querySelector(`[data-eg="${id}"]`).value.trim(), f=el.querySelector(`[data-ef="${id}"]`).value.trim();
+    if(!raw){toast('Enter a mark out of 100');return;}
+    const n=parseFloat(raw);
+    if(!isFinite(n)||n<0||n>100){toast('Mark must be a number between 0 and 100');return;}
+    const m=Math.round(n);
     const subs=loadSubs(); const s=subs.find(x=>x.id===id); if(!s)return;
-    s.grade=g; s.feedback=f; s.status='evaluated'; s.evaluatedAt=Date.now(); s.gradedBy=ME.name;
-    setDB('alizonSubmissions',subs); renderEval(); renderKPIs(); toast('Evaluation saved');
-    logAct('Evaluated '+(s.typeLabel||'submission')+' by '+(s.name||'student')+' — grade '+g,'eval');
+    s.mark=m; s.grade=String(m); s.feedback=f; s.status='evaluated'; s.evaluatedAt=Date.now(); s.gradedBy=ME.name;
+    setDB('alizonSubmissions',subs); renderEval(); renderKPIs(); toast('Evaluation saved — '+m+'/100 · '+(m>=50?'Pass':'Fail'));
+    logAct('Evaluated '+(s.typeLabel||'submission')+' by '+(s.name||'student')+' — '+m+'/100 ('+(m>=50?'Pass':'Fail')+')','eval');
   }));
   el.querySelectorAll('[data-eaccept]').forEach(b=>b.addEventListener('click',()=>{
     const subs=loadSubs(); const s=subs.find(x=>x.id===b.dataset.eaccept); if(!s||!s.ai)return;
-    s.grade=s.ai.grade; s.feedback=s.ai.feedback; s.status='evaluated'; s.evaluatedAt=Date.now(); s.gradedBy=ME.name+' (accepted AI)';
+    const am=markOf({grade:s.ai.grade,mark:(typeof s.ai.mark==='number'?s.ai.mark:undefined)});
+    if(am!=null){ s.mark=Math.round(am); s.grade=String(Math.round(am)); }
+    else { s.grade=s.ai.grade; }
+    s.feedback=s.ai.feedback; s.status='evaluated'; s.evaluatedAt=Date.now(); s.gradedBy=ME.name+' (accepted AI)';
     setDB('alizonSubmissions',subs); renderEval(); renderKPIs(); toast('AI mark accepted — '+s.ai.grade);
     logAct('Accepted AI mark '+s.ai.grade+' for '+(s.name||'student'),'eval');
   }));
@@ -439,7 +482,7 @@ function renderEval(){
     const id=b.dataset.erej, f=el.querySelector(`[data-ef="${id}"]`).value.trim();
     if(!f){toast('Write feedback first — the student needs to know what to redo');return;}
     const subs=loadSubs(); const s=subs.find(x=>x.id===id); if(!s)return;
-    s.status='rejected'; s.grade=''; s.feedback=f; s.rejectedAt=Date.now();
+    s.status='rejected'; s.grade=''; delete s.mark; s.feedback=f; s.rejectedAt=Date.now();
     setDB('alizonSubmissions',subs); renderEval(); renderKPIs(); toast('Submission rejected — student asked to redo');
     logAct('Rejected '+(s.typeLabel||'submission')+' by '+(s.name||'student')+' — redo requested','eval');
   }));
