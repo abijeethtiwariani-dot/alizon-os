@@ -337,6 +337,7 @@ function faculty(){ try{const a=JSON.parse(localStorage.getItem('alizonFaculty')
       if(f && (pw===f.email || pw==='faculty123')) who={name:f.name,email:f.email,dept:f.dept};
     }
     if(!who){ $('gf-err').classList.add('show'); return; }
+    try{ if(window.alizonAuth) window.alizonAuth.signIn(who.master?'admin':id, pw, who.master?'admin':'faculty'); }catch(x){}
     try{ sessionStorage.setItem('alizonFacultyAuth',JSON.stringify(who)); }catch(x){}
     enter(who);
   });

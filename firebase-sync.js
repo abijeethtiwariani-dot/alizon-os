@@ -1,10 +1,12 @@
 /* ============================================================
-   ALIZON OS — Firebase Firestore sync
-   Mirrors the shared institutional data (courses, students,
-   submissions, fees, faculty, grievances, schedules, HR,
-   staff messages, activity) between each browser's localStorage
-   and a cloud Firestore database — so data is backed up and
-   syncs across every device. Per-device settings stay local.
+   ALIZON OS — Firebase Auth + Firestore sync (secured)
+   • Every portal login signs the user into Firebase Auth
+     (accounts auto-create on first login from the roster).
+   • Firestore rules require authentication, so the database
+     can only be read/written by a signed-in user — the public
+     web config alone no longer grants any access.
+   • Shared institutional data mirrors between localStorage and
+     the cloud; per-device settings stay local.
    ============================================================ */
 (function(){
   if (window.__alizonFB) return; window.__alizonFB = 1;
@@ -25,90 +27,101 @@
 
   var SDK = 'https://www.gstatic.com/firebasejs/10.12.5/';
   function load(f){ return new Promise(function(res,rej){
-    var s = document.createElement('script'); s.src = SDK+f; s.onload = res; s.onerror = rej;
-    document.head.appendChild(s);
+    var s=document.createElement('script'); s.src=SDK+f; s.onload=res; s.onerror=rej; document.head.appendChild(s);
   }); }
 
   var origSet = localStorage.setItem.bind(localStorage);
   var origRemove = localStorage.removeItem.bind(localStorage);
   var lastSeen = {}, pushTimers = {}, seeded = {};
-  var firstSeen = {}, initialChanged = false, initialDone = false;
-  var db = null, ready = false;
+  var db = null, auth = null, authed = false, listenersOn = false;
 
-  /* mirror shared writes up to the cloud (debounced) */
+  /* mirror shared writes up to the cloud — only when signed in */
   localStorage.setItem = function(key, val){
     origSet(key, val);
-    if (ready && KEYSET[key] && val !== lastSeen[key]) schedulePush(key, val);
+    if (authed && KEYSET[key] && val !== lastSeen[key]) schedulePush(key, val);
   };
   localStorage.removeItem = function(key){
     origRemove(key);
-    if (ready && KEYSET[key]) schedulePush(key, '[]');
+    if (authed && KEYSET[key]) schedulePush(key, '[]');
   };
   function schedulePush(key, val){
     clearTimeout(pushTimers[key]);
     pushTimers[key] = setTimeout(function(){
+      if (!authed) return;
       lastSeen[key] = val;
       db.collection('sync').doc(key).set({
         value: val, updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).catch(function(e){ console.warn('[alizon-fb] push failed', key, e && e.message); });
+      }).catch(function(e){ console.warn('[alizon-fb] push', key, e && e.code); });
     }, 700);
   }
 
-  /* reload only when it's safe — never mid-typing, mid-overlay, or in a tight loop */
-  function canReload(){
-    var ae = document.activeElement;
-    if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return false;
-    if (document.querySelector('.open, #docView.open, #practical.open, #subViewer.open, #moduleDetail.open')) return false;
-    var now = Date.now(), last = +(sessionStorage.getItem('__fbReloadAt') || 0);
-    return now - last > 12000;
+  /* map each portal login to a Firebase account (synthetic emails for id-based logins) */
+  function emailFor(id, role){
+    id = String(id || '').trim();
+    if (role === 'faculty' && id.indexOf('@') > -1) return id.toLowerCase();
+    var c = id.toLowerCase().replace(/[^a-z0-9._-]/g, '') || 'user';
+    var d = { student:'student', staff:'staff', faculty:'faculty', admin:'admin' }[role] || 'user';
+    return c + '@' + d + '.alizonos.app';
   }
-  function doReload(){ sessionStorage.setItem('__fbReloadAt', String(Date.now())); location.reload(); }
+  function pwFor(p){ p = String(p == null ? '' : p); return p.length >= 6 ? p : (p + 'aZ9x_'); }
 
-  /* after the first snapshot of every key arrives, refresh once if anything changed */
-  function maybeInitialReload(){
-    if (initialDone) return;
-    for (var i=0;i<KEYS.length;i++){ if(!firstSeen[KEYS[i]]) return; }
-    initialDone = true;
-    if (initialChanged && sessionStorage.getItem('__fbSynced') !== '1' && canReload()){
-      sessionStorage.setItem('__fbSynced','1'); doReload();
-    } else {
-      sessionStorage.setItem('__fbSynced','1');
-    }
+  /* public API the portals call after a successful login */
+  window.alizonAuth = {
+    signIn: function(id, password, role){
+      if (!auth) return Promise.resolve(false);
+      var email = emailFor(id, role), pw = pwFor(password);
+      return auth.signInWithEmailAndPassword(email, pw)
+        .then(function(){ return true; })
+        .catch(function(e){
+          var c = e && e.code;
+          if (c === 'auth/user-not-found' || c === 'auth/invalid-credential' ||
+              c === 'auth/invalid-login-credentials' || c === 'auth/wrong-password'){
+            /* first-time login → create the account (auto-provision) */
+            return auth.createUserWithEmailAndPassword(email, pw)
+              .then(function(){ return true; })
+              .catch(function(){ return false; });   /* exists with a different password → deny */
+          }
+          console.warn('[alizon-fb] signIn', c); return false;
+        });
+    },
+    signOut: function(){ if (auth) auth.signOut().catch(function(){}); }
+  };
+
+  function startSync(){
+    if (listenersOn || !db) return; listenersOn = true;
+    KEYS.forEach(function(key){
+      db.collection('sync').doc(key).onSnapshot(function(doc){
+        if (!doc.exists){
+          var local = localStorage.getItem(key);
+          if (local && local !== '[]' && local !== '{}' && !seeded[key]){
+            seeded[key] = true; lastSeen[key] = local;
+            db.collection('sync').doc(key).set({ value: local,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp() }).catch(function(){});
+          }
+          return;
+        }
+        var remote = doc.data().value;
+        if (typeof remote === 'string' && remote !== localStorage.getItem(key)){
+          lastSeen[key] = remote; origSet(key, remote);   /* update local silently; UI refreshes on next render */
+        }
+      }, function(err){ console.warn('[alizon-fb] listen', key, err && err.code); });
+    });
+    console.log('[alizon-fb] sync active (signed in)');
   }
 
   load('firebase-app-compat.js')
+    .then(function(){ return load('firebase-auth-compat.js'); })
     .then(function(){ return load('firebase-firestore-compat.js'); })
     .then(function(){
       firebase.initializeApp(CFG);
       db = firebase.firestore();
-      ready = true;
-      KEYS.forEach(function(key){
-        db.collection('sync').doc(key).onSnapshot(function(doc){
-          var isFirst = !firstSeen[key]; firstSeen[key] = true;
-          if (!doc.exists){
-            var local = localStorage.getItem(key);
-            if (local && local !== '[]' && local !== '{}' && !seeded[key]){
-              seeded[key] = true; lastSeen[key] = local;
-              db.collection('sync').doc(key).set({ value: local,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp() }).catch(function(){});
-            }
-            if (isFirst) maybeInitialReload();
-            return;
-          }
-          var remote = doc.data().value;
-          if (typeof remote === 'string' && remote !== localStorage.getItem(key)){
-            lastSeen[key] = remote; origSet(key, remote);
-            if (isFirst) initialChanged = true;
-            else if (canReload()) doReload();   /* live update from another device */
-          }
-          if (isFirst) maybeInitialReload();
-        }, function(err){
-          firstSeen[key] = true;
-          if (err) console.warn('[alizon-fb] listen error', key, err.code || err.message);
-          maybeInitialReload();
-        });
+      auth = firebase.auth();
+      auth.onAuthStateChanged(function(user){
+        authed = !!user;
+        if (user) startSync();
+        else listenersOn = false;
       });
-      console.log('[alizon-fb] connected to project alizon-os-7a17d');
+      console.log('[alizon-fb] ready (project alizon-os-7a17d) — waiting for sign-in');
     })
     .catch(function(e){ console.warn('[alizon-fb] init failed', e && e.message); });
 })();

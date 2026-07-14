@@ -995,6 +995,8 @@ document.getElementById('loginForm').addEventListener('submit',e=>{
     return;
   }
   if(errEl) errEl.classList.remove('show');
+  /* sign in to Firebase so cloud sync is authorised (accounts auto-create on first login) */
+  try{ if(window.alizonAuth) window.alizonAuth.signIn(isMaster?'admin':idRaw, pw, isMaster?'admin':'student'); }catch(x){}
   if(st && st!=='DENY'){
     const prof={name:st.name||'',reg:st.reg||'',sem:'',email:st.email||'',dob:st.dob||'',batch:st.batch||''};
     try{ localStorage.setItem('alizonProfile',JSON.stringify(prof)); }catch(x){}

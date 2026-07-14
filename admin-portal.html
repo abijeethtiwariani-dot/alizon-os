@@ -295,7 +295,7 @@
     e.preventDefault();
     const id=(document.getElementById('ga-id').value||'').trim().toLowerCase();
     const pw=document.getElementById('ga-pw').value||'';
-    if(id==='admin'&&pw==='admin123'){ try{sessionStorage.setItem('alizonAdminAuth','1');}catch(x){} document.getElementById('ga-err').classList.remove('show'); ok(); }
+    if(id==='admin'&&pw==='admin123'){ try{sessionStorage.setItem('alizonAdminAuth','1');}catch(x){} try{ if(window.alizonAuth) window.alizonAuth.signIn('admin','admin123','admin'); }catch(x){} document.getElementById('ga-err').classList.remove('show'); ok(); }
     else{ document.getElementById('ga-err').classList.add('show'); }
   });
 })();

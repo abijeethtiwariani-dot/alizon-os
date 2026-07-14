@@ -275,6 +275,7 @@ $('lg-go').addEventListener('click',()=>{
     const list=employees();
     const e=list[0]||{empid:'ADMIN',name:'Administrator',salut:'',desig:'Administrator',dept:'HR',office:'tvm',emptype:'fulltime',status:'current',basic:0,da:0,hra:0,spl:0,access:{staff:true,hr:true}};
     $('lg-err').style.display='none'; try{ localStorage.setItem('alizonStaffSession',e.empid); }catch(x){}
+    try{ if(window.alizonAuth) window.alizonAuth.signIn('admin','admin123','admin'); }catch(x){}
     enter(e); return;
   }
   if(!employees().length){
@@ -287,6 +288,7 @@ $('lg-go').addEventListener('click',()=>{
   if(accessOf(e).staff===false){ err('Your account does not have Staff Portal access — contact HR to enable it.'); return; }
   $('lg-err').style.display='none';
   try{ localStorage.setItem('alizonStaffSession',e.empid); }catch(x){}
+  try{ if(window.alizonAuth) window.alizonAuth.signIn(e.empid, pw, 'staff'); }catch(x){}
   enter(e);
 });
 $('logoutBtn').addEventListener('click',()=>{ try{localStorage.removeItem('alizonStaffSession');}catch(e){} location.reload(); });
