@@ -410,6 +410,17 @@
   .res-badge.ai{color:var(--gold);background:var(--gold-soft)}
   .res-badge.pending{color:var(--muted);background:rgba(255,255,255,.05)}
   .res-fb{flex-basis:100%;font-size:12.5px;color:var(--muted);font-style:italic;border-top:1px dashed var(--line);padding-top:8px;margin-top:2px}
+  /* module forms & resources */
+  .formlist{display:flex;flex-direction:column;gap:8px}
+  .formcard{display:flex;gap:12px;align-items:center;padding:12px 15px;border-radius:12px;background:var(--glass);border:1px solid var(--line)}
+  .formcard .fic{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;font-size:10px;font-weight:800;letter-spacing:.04em;color:#fff;background:linear-gradient(120deg,#B1040E,#D9A441);flex:none}
+  .formcard .finfo{flex:1;min-width:0}
+  .formcard .finfo b{font-size:14px;color:var(--ink);display:block;font-weight:600}
+  .formcard .finfo span{font-size:11.5px;color:var(--muted)}
+  .formcard .fbtn{flex:none;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:rgba(255,255,255,.05);padding:8px 13px;border-radius:100px;transition:.2s}
+  .formcard .fbtn:hover{border-color:var(--gold);color:var(--gold)}
+  .formcard .fbtn.dl{color:var(--gold);border-color:rgba(217,164,65,.4)}
+  @media(max-width:560px){.formcard .finfo span{display:none}}
   /* new dashboard sections */
   .dgrid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
   @media(max-width:900px){.dgrid2{grid-template-columns:1fr}}
@@ -1317,6 +1328,23 @@ function moduleResultBadge(moduleUnit, progName){
     }).join('');
     return `<div class="md-sec"><h3>Your result <span class="c">${subs.length}</span></h3><div class="resbox">${rows}</div></div>`;
   }
+  const PROGRAMME_FORMS=[
+    {t:'Self-Learning Module Protocol', f:'Self-Learning-Module-Protocol.pdf', d:'How to work through each self-learning module.'},
+    {t:'Assignment Protocol', f:'Assignment-Protocol.pdf', d:'How assignments are set, completed and graded.'},
+    {t:'Assignment Submission Template', f:'Assignment-Submission-Template.pdf', d:'The template to structure and submit your assignment.'},
+    {t:'Self-Assessment &amp; Reflection Form', f:'Self-Assessment-and-Reflection-Form.pdf', d:'Assess and reflect on your own learning.'},
+    {t:'Reflective Learning &amp; Self-Assessment Report', f:'Reflective-Learning-and-Self-Assessment-Report.pdf', d:'Record your reflective learning and self-assessment.'},
+    {t:'Student Feedback Form', f:'Student-Feedback-Form.pdf', d:'Share your feedback on the module and teaching.'}
+  ];
+  function formsSectionHtml(){
+    return `<div class="md-sec"><h3>Forms &amp; Resources <span class="c">${PROGRAMME_FORMS.length}</span></h3>
+      <div class="formlist">${PROGRAMME_FORMS.map(x=>`<div class="formcard">
+        <div class="fic">PDF</div>
+        <div class="finfo"><b>${x.t}</b><span>${x.d}</span></div>
+        <a class="fbtn" href="resources/forms/${x.f}" target="_blank" rel="noopener">Open</a>
+        <a class="fbtn dl" href="resources/forms/${x.f}" download>Download</a>
+      </div>`).join('')}</div></div>`;
+  }
   function open(prog,i){
     const m=prog.modules[i]; if(!m) return;
     const notes=(m.notes||[]).filter(n=>n.published!==false), videos=m.videos||[], units=m.units||[];
@@ -1361,7 +1389,8 @@ function moduleResultBadge(moduleUnit, progName){
       ${pracs.length?`<div class="md-sec"><h3>Practicals <span class="c">${pracs.length}</span></h3>${pracHtml}</div>`:''}
       <div class="md-sec"><h3>Units <span class="c">${units.length}</span></h3>${unitsHtml}</div>
       <div class="md-sec"><h3>Class videos <span class="c">${videos.length}</span></h3>${vidHtml}</div>
-      <div class="md-sec"><h3>Notes &amp; materials <span class="c">${notes.length}</span></h3>${noteHtml}</div>`;
+      <div class="md-sec"><h3>Notes &amp; materials <span class="c">${notes.length}</span></h3>${noteHtml}</div>
+      ${formsSectionHtml()}`;
 
     inner.querySelectorAll('[data-prac]').forEach(b=>b.addEventListener('click',()=>{
       const pr=pracs[+b.dataset.prac]; if(!pr||!pr.href) return;
