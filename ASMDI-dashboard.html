@@ -438,6 +438,25 @@
   .upd:last-child{border-bottom:none}.upd .ud{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none}
   .ud.upload{background:var(--gold)}.ud.approve{background:var(--success)}.ud.update{background:var(--crimson)}.ud.eval{background:#8fb2ff}.ud.griev{background:#ff9aa0}
   .upd .utime{margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap;flex:none}
+  /* ── admin "new module" announcements: home banner + assessments panel ── */
+  .annbanner{margin-bottom:22px;border:1px solid rgba(217,164,65,.42);border-radius:18px;overflow:hidden;
+    background:linear-gradient(120deg,var(--crimson-soft),var(--gold-soft));box-shadow:0 8px 26px rgba(0,0,0,.14)}
+  .annbanner .abrow{display:flex;gap:14px;align-items:flex-start;padding:16px 18px}
+  .annbanner .abrow+.abrow{border-top:1px solid var(--line)}
+  .annbanner .abico{font-size:20px;line-height:1.2;flex:none}
+  .annbanner .abmain{flex:1;min-width:0}
+  .annbanner .abtag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+    color:var(--gold);margin-bottom:4px}
+  .annbanner .abttl{font-weight:600;font-size:15px}
+  .annbanner .abttl b{color:var(--crimson)}
+  .annbanner .abtext{font-size:13px;color:var(--muted);margin-top:3px}
+  .annbanner .abgo{align-self:center;font-size:12.5px;font-weight:600;color:#fff;text-decoration:none;flex:none;
+    padding:8px 15px;border-radius:100px;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));cursor:pointer;white-space:nowrap}
+  .annbanner .abgo:hover{filter:brightness(1.08)}
+  .annbanner .abx{flex:none;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--pill);
+    color:var(--muted);font-size:13px;line-height:1;cursor:pointer;display:grid;place-items:center;align-self:flex-start}
+  .annbanner .abx:hover{color:var(--crimson);border-color:rgba(212,24,32,.4)}
+  .annnew .di span.annprog{color:var(--gold)}
   .facgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
   @media(max-width:760px){.facgrid{grid-template-columns:1fr}}
   .faccard{display:flex;gap:12px;align-items:center;padding:13px;border-radius:14px;background:var(--glass);border:1px solid var(--line)}
@@ -710,6 +729,8 @@
     </div>
 
     <div class="dsec on" id="sec-overview">
+<!-- admin new-module banner (rendered only when announcements are active) -->
+    <div class="annbanner" id="annBanner" style="display:none"></div>
 <!-- stats -->
     <div class="grid">
       <div class="card stat reveal">
@@ -756,6 +777,15 @@
     </div>
 
 <div class="dsec" id="sec-assessments">
+<!-- WHAT'S NEW · new & updated modules pushed by admin -->
+    <div class="modrow" id="whatsnew">
+      <div class="modhead">
+        <h3>New &amp; Updated Modules</h3>
+        <span class="modsub" id="annPageSub">Fresh modules and content your faculty just published.</span>
+      </div>
+      <div class="dlist" id="annList"></div>
+    </div>
+
 <!-- SUBMITTED PRACTICALS -->
     <div class="modrow" id="submissions">
       <div class="modhead">
@@ -1565,6 +1595,64 @@ function moduleResultBadge(moduleUnit, progName){
   const loadGriev=()=>{try{const a=JSON.parse(localStorage.getItem('alizonGrievances')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}};
   const initials=n=>(n||'?').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 
+  /* ── admin "new module" announcements (shared store 'alizonAnnounce') ── */
+  function loadAnnounce(){ try{ var a=JSON.parse(localStorage.getItem('alizonAnnounce')||'{}'); return {active: a.active!==false, items: Array.isArray(a.items)?a.items:[]}; }catch(e){ return {active:true, items:[]}; } }
+  function saveAnnounce(a){ try{ localStorage.setItem('alizonAnnounce', JSON.stringify({active:a.active!==false, items:(a.items||[]).slice(0,30)})); }catch(e){} }
+  function annPrefOn(){ try{ var el=document.getElementById('set-n-ann'); return !el || el.checked; }catch(e){ return true; } }
+  function annRel(ts){ var d=Date.now()-(+ts||0); if(d<0)d=0; var m=Math.floor(d/6e4); if(m<1)return 'just now'; if(m<60)return m+' min ago'; var h=Math.floor(m/60); if(h<24)return h+' hr ago'; var dd=Math.floor(h/24); if(dd<7)return dd+' day'+(dd>1?'s':'')+' ago'; return fmt(ts); }
+  /* map an announce item to its programme + module index, then open it */
+  function annFind(it){
+    try{
+      var progs=loadPrograms(), pk=String(it.programme||'').toLowerCase(), mk=String(it.module||'').toLowerCase();
+      for(var p=0;p<progs.length;p++){ var pr=progs[p];
+        if(pk && !(String(pr.name||'').toLowerCase().indexOf(pk)>=0 || String(pr.id||'').toLowerCase()===pk)) continue;
+        var mods=pr.modules||[];
+        for(var i=0;i<mods.length;i++){ var m=mods[i];
+          if(mk && (String(m.title||'').toLowerCase().indexOf(mk)>=0 || String(m.unit||'').toLowerCase()===mk)) return {prog:pr,i:i};
+        }
+      }
+    }catch(e){}
+    return null;
+  }
+  function annOpen(it){
+    var hit=annFind(it);
+    if(hit && window.__openModule){ window.__openModule(hit.prog, hit.i); return; }
+    if(it.href && window.__openPractical){ window.__openPractical(it.href, it.module||'Module', it.programme||''); return; }
+    if(window.__showDsec) window.__showDsec('sec-courses');
+  }
+  var annBanner=document.getElementById('annBanner');
+  function annDismissed(){ try{ return sessionStorage.getItem('annDismiss')==='1'; }catch(e){ return false; } }
+  function renderAnnBanner(){
+    if(!annBanner) return;
+    var a=loadAnnounce();
+    if(!a.active || !a.items.length || annDismissed() || !annPrefOn()){ annBanner.style.display='none'; annBanner.innerHTML=''; return; }
+    var top=a.items.slice(0,2);
+    annBanner.innerHTML=top.map(function(it){ return `<div class="abrow">
+        <span class="abico">📢</span>
+        <div class="abmain">
+          <span class="abtag">New module${it.programme?' · '+esc(it.programme):''}</span>
+          <div class="abttl">New module: <b>${esc(it.module||'Module')}</b></div>
+          <div class="abtext">${esc(it.text||'')} <span style="opacity:.7">· ${esc(annRel(it.ts))}</span></div>
+        </div>
+        <span class="abgo" data-annid="${esc(it.id||'')}">Start module →</span>
+      </div>`; }).join('')+
+      '<button class="abx" id="annBannerX" title="Dismiss for now" aria-label="Dismiss">✕</button>';
+    annBanner.style.display='';
+    annBanner.querySelectorAll('.abgo').forEach(function(b){ b.addEventListener('click',function(){ var it=a.items.find(function(x){return String(x.id)===b.getAttribute('data-annid');}); if(it) annOpen(it); }); });
+    var x=document.getElementById('annBannerX'); if(x) x.addEventListener('click',function(){ try{sessionStorage.setItem('annDismiss','1');}catch(e){} renderAnnBanner(); });
+  }
+  function renderAnnPage(){
+    var el=document.getElementById('annList'); if(!el) return;
+    var a=loadAnnounce();
+    var items=a.active?a.items:[];
+    if(!items.length){ el.innerHTML='<div class="dl-empty">No new modules right now — you are all caught up. New releases from your faculty will appear here.</div>'; return; }
+    el.innerHTML=items.map(function(it){ return `<div class="dl-item annnew">
+      <span class="lt">New</span>
+      <div class="di"><b>${esc(it.module||'Module')}</b><span><span class="annprog">${esc(it.programme||'')}</span>${it.programme?' · ':''}${esc(it.text||'')} · ${esc(annRel(it.ts))}</span></div>
+      <a class="join" data-annid="${esc(it.id||'')}">Start</a></div>`; }).join('');
+    el.querySelectorAll('a.join[data-annid]').forEach(function(b){ b.addEventListener('click',function(e){ e.preventDefault(); var it=items.find(function(x){return String(x.id)===b.getAttribute('data-annid');}); if(it) annOpen(it); }); });
+  }
+
   function renderUpdates(){ const acts=loadAct(),el=document.getElementById('updList');
     el.innerHTML=acts.length?acts.slice(0,8).map(x=>`<div class="upd"><span class="ud ${esc(x.type||'update')}"></span><div>${esc(x.text)}</div><span class="utime">${fmt(x.ts)}</span></div>`).join(''):'<div class="dl-empty">No updates yet.</div>'; }
   function renderSchedule(){ const ss=DB('alizonSchedule',SCHED_SEED),el=document.getElementById('schList');
@@ -1591,7 +1679,9 @@ function moduleResultBadge(moduleUnit, progName){
   bell.addEventListener('click',e=>{ e.stopPropagation(); const o=notif.classList.toggle('open'); if(o){ renderNotif(); try{localStorage.setItem('alizonNotifSeen',Date.now());}catch(e){} updateBadge(); } });
   document.addEventListener('click',e=>{ if(!notif.contains(e.target) && !bell.contains(e.target)) notif.classList.remove('open'); });
 
-  function renderAll(){ renderUpdates(); renderSchedule(); renderLinks(); renderFaculty(); renderGriev(); updateBadge(); }
+  function renderAll(){ renderUpdates(); renderSchedule(); renderLinks(); renderFaculty(); renderGriev(); renderAnnBanner(); renderAnnPage(); updateBadge(); }
+  /* re-show the banner when the student toggles the "Announcements & module updates" mute */
+  var annPref=document.getElementById('set-n-ann'); if(annPref) annPref.addEventListener('change',renderAnnBanner);
   renderAll();
   window.addEventListener('pageshow',renderAll);
   window.__renderExtras=renderAll;

@@ -340,6 +340,7 @@
     <a data-sec="adm-faculty"><span class="aic"></span> Faculty</a>
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
     <a data-sec="adm-links"><span class="aic"></span> Links</a>
+    <a data-sec="adm-announce"><span class="aic"></span> Module Updates</a>
     <a data-sec="adm-activity"><span class="aic"></span> History</a>
   </nav>
   <div class="asfoot">
@@ -545,6 +546,30 @@
     </div>
   </section>
 
+  <section class="apanel asec" id="adm-announce">
+    <h2>Module Updates</h2>
+    <div class="ahint">When a course goes live it is announced to students automatically. Use the master switch below as a <b>STOP</b> — turn it off to hide every module-update notification across the student portals.</div>
+    <div class="cblock"><div class="ct">Master switch</div>
+      <label class="citem" style="cursor:pointer;gap:12px">
+        <input type="checkbox" id="an-active">
+        <div class="cinfo"><b>Show module-update notifications to students</b><small>When OFF, students see no module-update notifications anywhere.</small></div>
+        <span class="badge2" id="an-state" style="flex:none"></span>
+      </label>
+    </div>
+    <div class="cblock"><div class="ct">Add an announcement</div>
+      <div class="arow3">
+        <input id="an-module" placeholder="Module — e.g. Module 2 (optional)">
+        <input id="an-prog" placeholder="Programme (optional)">
+        <input id="an-href" placeholder="Link / file (optional)">
+      </div>
+      <div class="crow n"><input id="an-text" placeholder="Message students see — e.g. Module 2 is now open. Start it now."></div>
+      <div class="crow n"><button class="cadd" id="an-add">＋ Add announcement</button></div>
+    </div>
+    <div class="cblock"><div class="ct">Current announcements</div>
+      <div class="clist" id="anList"></div>
+    </div>
+  </section>
+
   <section class="apanel asec" id="adm-activity">
     <h2>Activity History</h2>
     <div class="ahint">Every upload, approval, evaluation and update is logged here (newest first).</div>
@@ -632,6 +657,20 @@ function load(){ try{
   return JSON.parse(JSON.stringify(DEFAULT_PROGRAMS)); }
 function save(p){ try{ localStorage.setItem('alizonPrograms',JSON.stringify(p)); localStorage.setItem('alizonProgramsVer',PROG_VER); }catch(e){} }
 let PROGRAMS=load(); save(PROGRAMS);
+
+/* ---- module-update announcements (shared store, key 'alizonAnnounce') ---- */
+function loadAnnounce(){ try{ var a=JSON.parse(localStorage.getItem('alizonAnnounce')||'{}'); return {active: a.active!==false, items: Array.isArray(a.items)?a.items:[]}; }catch(e){ return {active:true, items:[]}; } }
+function saveAnnounce(a){ try{ localStorage.setItem('alizonAnnounce', JSON.stringify({active:a.active!==false, items:(a.items||[]).slice(0,30)})); }catch(e){} }
+/* auto-capture a "new module is live" announcement (deduped by module+programme) */
+function announceModule(p,m){
+  if(!m||m.status!=='live'||!m.href) return;
+  var st=loadAnnounce();
+  if(st.items.some(function(it){ return it.module===m.unit && it.programme===p.name; })) return;
+  st.items.unshift({ id:'an'+Date.now()+'_'+Math.floor(Math.random()*1000), module:m.unit, programme:p.name, href:m.href,
+    text:m.unit+' — '+m.title+' is now open. Start it now.', ts:Date.now(), source:'auto' });
+  saveAnnounce(st);
+  logAct('Announced new module: '+m.unit+' — '+m.title,'upload');
+}
 
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
@@ -783,9 +822,12 @@ function addModule(pi){
         status=field(pi,'status').value, href=field(pi,'href').value.trim(), desc=field(pi,'desc').value.trim();
   if(!title){ toast('Enter a course title'); field(pi,'title').focus(); return; }
   if(status==='live' && !href){ toast('A Live course needs a practical link'); field(pi,'href').focus(); return; }
-  PROGRAMS[pi].modules.push({unit:unit||('Unit '+(PROGRAMS[pi].modules.length+1)),title,desc,status,href});
+  const nm={unit:unit||('Unit '+(PROGRAMS[pi].modules.length+1)),title,desc,status,href};
+  PROGRAMS[pi].modules.push(nm);
   selM=-1; save(PROGRAMS); render(); toast('Course added to '+PROGRAMS[pi].name);
   logAct('Uploaded module "'+title+'" to '+PROGRAMS[pi].name,'upload');
+  /* auto-capture a module-update announcement if this course is added live */
+  if(status==='live' && href) announceModule(PROGRAMS[pi],nm);
 }
 document.getElementById('np-add').addEventListener('click',()=>{
   const name=document.getElementById('np-name').value.trim(), icon=document.getElementById('np-icon').value.trim()||'';
@@ -986,6 +1028,37 @@ document.getElementById('lk-add').addEventListener('click',()=>{
   const ls=DB('alizonLinks',LINK_SEED); ls.push({id:rid('l'),title:t,type:document.getElementById('lk-type').value,url:u});
   setDB('alizonLinks',ls); renderLinks(); toast('Link added'); logAct('Added '+document.getElementById('lk-type').value+' link "'+t+'"','upload');
   document.getElementById('lk-title').value=document.getElementById('lk-url').value='';
+});
+/* ---- module updates (announcements) ---- */
+function renderAnnounce(){
+  const st=loadAnnounce();
+  const ck=document.getElementById('an-active'); if(ck)ck.checked=st.active;
+  const bs=document.getElementById('an-state');
+  if(bs){ bs.textContent=st.active?'ON':'OFF · hidden'; bs.className='badge2 '+(st.active?'done':'new'); }
+  const el=document.getElementById('anList'); if(!el)return;
+  el.innerHTML=st.items.length?st.items.map((it,i)=>`<div class="citem">
+    <span class="badge2 ${it.source==='auto'?'ind':'usa'}" style="flex:none">${it.source==='auto'?'Auto':'Manual'}</span>
+    <div class="cinfo"><input data-antext="${i}" value="${esc(it.text)}"><small>${esc(it.programme||'')}${it.module?(it.programme?' · ':'')+esc(it.module):''}${it.href?' · '+esc(it.href):''} · ${fmt(it.ts)}</small></div>
+    <button class="cadd" data-ansave="${i}" style="padding:6px 11px;font-size:11.5px">Save</button>
+    <button class="cx" data-andel="${i}">✕</button></div>`).join(''):'<div class="cnote">No announcements yet — one is added automatically when a course goes live, or add a manual one above.</div>';
+  el.querySelectorAll('[data-ansave]').forEach(b=>b.addEventListener('click',()=>{
+    const a=loadAnnounce(), i=+b.dataset.ansave, inp=el.querySelector(`[data-antext="${i}"]`);
+    if(!a.items[i]||!inp)return; const v=inp.value.trim(); if(!v){toast('Announcement text cannot be empty');return;}
+    a.items[i].text=v; saveAnnounce(a); renderAnnounce(); toast('Announcement updated'); }));
+  el.querySelectorAll('[data-andel]').forEach(b=>b.addEventListener('click',()=>{
+    const a=loadAnnounce(); a.items.splice(+b.dataset.andel,1); saveAnnounce(a); renderAnnounce(); toast('Announcement removed'); }));
+}
+document.getElementById('an-active').addEventListener('change',e=>{
+  const a=loadAnnounce(); a.active=e.target.checked; saveAnnounce(a); renderAnnounce();
+  toast(a.active?'Module notifications ON':'Module notifications stopped'); logAct('Module notifications turned '+(a.active?'ON':'OFF (STOP)'),'update');
+});
+document.getElementById('an-add').addEventListener('click',()=>{
+  const text=document.getElementById('an-text').value.trim(); if(!text){toast('Enter the announcement text');return;}
+  const a=loadAnnounce();
+  a.items.unshift({ id:'an'+Date.now()+'_'+Math.floor(Math.random()*1000), module:document.getElementById('an-module').value.trim(),
+    programme:document.getElementById('an-prog').value.trim(), href:document.getElementById('an-href').value.trim(), text:text, ts:Date.now(), source:'manual' });
+  saveAnnounce(a); renderAnnounce(); toast('Announcement added'); logAct('Added a manual module announcement','upload');
+  document.getElementById('an-text').value=document.getElementById('an-module').value=document.getElementById('an-prog').value=document.getElementById('an-href').value='';
 });
 /* ---- activity ---- */
 function renderActivity(){
@@ -1196,7 +1269,7 @@ function renderFees(){
 }
 
 /* ---- sidebar: section switching + badges ---- */
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-griev','adm-faculty','adm-schedule','adm-links','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-griev','adm-faculty','adm-schedule','adm-links','adm-announce','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -1205,6 +1278,7 @@ function showSec(id){
   if(id==='adm-access') renderAccess();
   if(id==='adm-staff') renderStaff();
   if(id==='adm-results') renderResultsAdmin();
+  if(id==='adm-announce') renderAnnounce();
   try{ localStorage.setItem('admSec',id); }catch(e){}
   window.scrollTo({top:0,behavior:'instant'});
 }
@@ -1436,7 +1510,7 @@ function renderResultsAdmin(){
   tb.querySelectorAll('.resDel').forEach(b=>b.onclick=()=>delResult(b.dataset.c,b.dataset.m));
 }
 
-renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderActivity(); renderStudents(); renderFees(); renderAccess(); renderStaff(); renderResultsAdmin();
+renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderAnnounce(); renderActivity(); renderStudents(); renderFees(); renderAccess(); renderStaff(); renderResultsAdmin();
 render();
 paintCounts();
 showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; }catch(e){ return 'sec-courses'; } })());
