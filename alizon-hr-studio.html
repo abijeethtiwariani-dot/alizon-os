@@ -1438,24 +1438,30 @@ $('empSearch').addEventListener('input',renderEmpTable);
 $('empFilterOffice').addEventListener('change',renderEmpTable);
 
 /* ── Add / edit modal ── */
-let editIdx=-1;
+let editIdx=-1, pendingPass='';
 const M_FIELDS=['empid','salut','pronoun','name','office','emptype','status','dept','desig','manager','doj','basic','da','hra','spl','bank','pan','email'];
 const ACCESS_KEYS=['staff','courses','students','eval','hr'];
 function openEmpModal(idx){
   editIdx=idx;
   $('empModalTitle').textContent=idx<0?'Add employee':'Edit employee';
   const e=idx<0?{empid:nextId(),salut:'Mr.',pronoun:'he',office:'tvm',emptype:'fulltime',status:'current',basic:0,da:0,hra:0,spl:0}:EMP[idx];
+  if(idx<0) pendingPass=genPass();
   M_FIELDS.forEach(f=>{const el=$('m_'+f); if(el) el.value=e[f]!==undefined?e[f]:'';});
   const ac=e.access||{staff:true};
   ACCESS_KEYS.forEach(k=>{ const el=$('ac_'+k); if(el) el.checked=!!ac[k]; });
+  const pw=idx<0?pendingPass:(e.password||e.empid);
   $('credNote').innerHTML='Login credentials are auto-generated: <b style="color:var(--ink)">login = '+(e.empid||'employee ID')+
-    ' · password = '+(e.password||e.empid||'employee ID')+'</b>. Only the name and employee ID are needed now — everything else can be filled from here later.';
+    ' · password = '+pw+'</b>. The password can be changed later from the Admin portal (Staff &amp; Faculty).';
   $('empModalBg').classList.add('on');
 }
 function nextId(){
   const nums=EMP.map(e=>parseInt((e.empid||'').replace(/\D/g,''),10)).filter(n=>!isNaN(n));
   const n=(nums.length?Math.max(...nums):0)+1;
   return 'ASMDI-'+String(n).padStart(4,'0');
+}
+function genPass(){
+  const w=['alizon','campus','medic','digital','kerala','scholar','asmdi','vidya'];
+  return w[Math.floor(Math.random()*w.length)]+String(Math.floor(100+Math.random()*900));
 }
 window.editEmp=i=>openEmpModal(i);
 window.delEmp=i=>{ if(confirm('Delete '+EMP[i].name+' from the master sheet?')){EMP.splice(i,1);renderEmpTable();renderDash();persist();} };
@@ -1469,13 +1475,13 @@ $('btnEmpSave').addEventListener('click',()=>{
   if(!e.name.trim()){alert('Name is required.');return;}
   if(!e.empid.trim()){alert('Employee ID is required — it becomes the login and password.');return;}
   e.empid=e.empid.trim().toUpperCase();
-  /* auto-generated credentials: login = employee ID, password = employee ID (until changed) */
-  e.password=(editIdx>-1&&EMP[editIdx].password)?EMP[editIdx].password:e.empid;
+  /* auto-generated credentials: login = employee ID, password = simple generated password (editable from Admin) */
+  e.password=(editIdx>-1&&EMP[editIdx].password)?EMP[editIdx].password:(pendingPass||genPass());
   e.access={}; ACCESS_KEYS.forEach(k=>{ const el=$('ac_'+k); e.access[k]=el?el.checked:false; });
   if(editIdx<0){
     if(EMP.some(x=>String(x.empid).toUpperCase()===e.empid)){alert('That employee ID already exists.');return;}
     EMP.push(e);
-    DOCLOG.unshift({ts:Date.now(),emp:e.empid,name:e.name,doc:'Staff account provisioned — login/password = '+e.empid,by:'HR backend'});
+    DOCLOG.unshift({ts:Date.now(),emp:e.empid,name:e.name,doc:'Staff account provisioned — login = '+e.empid+' · password = '+e.password,by:'HR backend'});
   } else EMP[editIdx]={...EMP[editIdx],...e};
   $('empModalBg').classList.remove('on');
   renderEmpTable(); renderDash(); persist();
