@@ -161,6 +161,7 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
       <div class="reflag" id="refAuto"><input type="checkbox" id="f_refauto" checked style="width:auto"> Auto-generate reference number</div>
       <label class="fl" id="lbl_dept">Department / sub-line under the name</label>
       <input id="f_dept" placeholder="e.g. Office of the Registrar">
+      <label class="reflag"><input type="checkbox" id="f_showReg" checked style="width:auto"> Include registration line (PAN · TAN · Reg. No.) in footer</label>
     </div>
 
     <!-- recipient (letter) -->
@@ -291,12 +292,9 @@ const DEFAULT_CFG={
   offices:{
     tvm:{label:'Thiruvananthapuram (HQ — Indian Chapter)',place:'Thiruvananthapuram, Kerala',code:'TVM',
       addr:'Thiruvananthapuram, Kerala 695042, India',phone:'',email:'info@alizongov.com · info@alizon.in'},
-    delhi:{label:'New Delhi Campus',place:'New Delhi',code:'DEL',
-      addr:'Connaught Place, New Delhi 110001, India',phone:'+91 11 0000 0000',email:'delhi@alizongov.com'},
-    blr:{label:'Bengaluru Campus',place:'Bengaluru, Karnataka',code:'BLR',
-      addr:'Koramangala, Bengaluru, Karnataka 560034, India',phone:'+91 80 0000 0000',email:'bengaluru@alizongov.com'},
-    usa:{label:'USA Chapter',place:'Newark, Delaware, USA',code:'USA',
-      addr:'Newark, DE 19702, USA',phone:'+1 (302) 000-0000',email:'usa@alizongov.com'}
+    delhi:{label:'New Delhi Campus',place:'New Delhi',code:'DEL',addr:'',phone:'',email:''},
+    blr:{label:'Bengaluru Campus',place:'Bengaluru, Karnataka',code:'BLR',addr:'',phone:'',email:''},
+    usa:{label:'USA Chapter',place:'Newark, Delaware, USA',code:'USA',addr:'',phone:'',email:''}
   }
 };
 function loadCfg(){
@@ -420,9 +418,11 @@ function render(){
 
   const sig=(showSig&&TYPE!=='blank')?sigBlock(o):'';
 
+  const showReg=$('f_showReg')?$('f_showReg').checked:true;
   const footBits=[o.addr, o.phone, o.email, CFG.web].filter(Boolean).map(esc).join(' &nbsp;·&nbsp; ');
-  const foot=`<div class="foot"><b>${esc(CFG.name)}</b> — ${esc(o.label||'')}<br>${footBits}`+
-             (CFG.reg?`<br>${esc(CFG.reg)}`:'')+`</div>`;
+  const foot=`<div class="foot"><b>${esc(CFG.name)}</b> — ${esc(o.label||'')}`+
+             (footBits?`<br>${footBits}`:'')+
+             ((CFG.reg&&showReg)?`<br>${esc(CFG.reg)}`:'')+`</div>`;
 
   $('paper').innerHTML=
     `<div class="lh"><img src="${LOGO}" alt=""><div class="nm">`+
@@ -477,6 +477,7 @@ $('f_refauto').onchange=()=>{ $('f_ref').readOnly=$('f_refauto').checked; refres
   const el=$(id); if(el) el.addEventListener('input',render);
 });
 $('f_showSig').addEventListener('change',render);
+$('f_showReg').addEventListener('change',render);
 $('f_signMode').onchange=()=>{ signMode=$('f_signMode').value; $('wrap_signImg').style.display=(signMode==='image')?'':'none'; render(); };
 function readImg(input,set){
   const f=input.files&&input.files[0]; if(!f) return;
