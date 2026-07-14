@@ -320,6 +320,7 @@
   <nav class="anavv">
     <a data-sec="sec-courses" class="on"><span class="aic"></span> Courses</a>
     <a data-sec="adm-students"><span class="aic"></span> Students <b class="cnt" id="cntStud" style="background:var(--gold)"></b></a>
+    <a data-sec="adm-staff"><span class="aic"></span> Staff &amp; Faculty</a>
     <a data-sec="adm-access"><span class="aic"></span> Access &amp; Logins</a>
     <a data-sec="adm-fees"><span class="aic"></span> Fees <b class="cnt" id="cntFees" style="background:var(--success)"></b></a>
     <a data-sec="adm-eval"><span class="aic">✔</span> Evaluation <b class="cnt" id="cntEval"></b></a>
@@ -392,27 +393,51 @@
     </div>
     <div class="hint" id="ap-note" style="margin-top:8px"></div>
 
-    <h3 style="font-size:15px;margin:22px 0 8px;color:var(--gold)">Create a staff / employee login</h3>
-    <div class="ahint">Give a new employee a login ID and password, and choose what they can access.</div>
-    <div class="arow4">
-      <input type="text" id="ac-id" placeholder="Login ID — e.g. ASMDI-0210">
-      <input type="text" id="ac-name" placeholder="Full name">
-      <input type="text" id="ac-pw" placeholder="Password (min 6)">
-      <select id="ac-office"><option value="tvm">Thiruvananthapuram (HQ)</option><option value="delhi">New Delhi</option><option value="blr">Bengaluru</option><option value="usa">USA Chapter</option></select>
-    </div>
-    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin-top:8px">
-      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac-staff" checked> Staff Portal</label>
-      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac-courses"> Courses</label>
-      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac-students"> Students &amp; fees</label>
-      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac-eval"> Evaluation</label>
-      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac-hr"> HR Studio</label>
-    </div>
-    <div class="crow n" style="margin-top:10px"><button class="btn" id="ac-create">Create employee login</button></div>
+    <div class="ahint" style="margin-top:18px;padding:10px 12px;border:1px solid var(--line);border-radius:8px">Employees &amp; faculty are managed in the <b>Staff &amp; Faculty</b> section (logins auto-generated there).</div>
 
-    <h3 style="font-size:15px;margin:22px 0 8px;color:var(--gold)">Reset a login password</h3>
-    <div class="ahint">Search any student or employee and set a new password (blank &rarr; resets a student to their registration number, an employee to their ID).</div>
-    <input type="text" id="acSearch" placeholder="Search name / registration no / employee ID…" style="max-width:420px">
+    <h3 style="font-size:15px;margin:22px 0 8px;color:var(--gold)">Reset a student password</h3>
+    <div class="ahint">Search a student and set a new password (blank &rarr; resets to their registration number).</div>
+    <input type="text" id="acSearch" placeholder="Search student name / registration no…" style="max-width:420px">
     <div style="overflow-x:auto;max-height:48vh;overflow-y:auto;margin-top:10px"><table class="stt" id="acTable"></table></div>
+  </section>
+
+  <section class="apanel asec" id="adm-staff">
+    <h2>Staff &amp; Faculty</h2>
+    <div class="ahint">Add and manage employees &amp; faculty. The <b>login ID and password are generated automatically</b> — you can edit or regenerate them. Records here power the Staff Portal login and the HR Studio.</div>
+
+    <h3 style="font-size:15px;margin:14px 0 8px;color:var(--gold)" id="stfFormTitle">Add an employee / faculty member</h3>
+    <div class="arow4">
+      <input type="text" id="stf-name" placeholder="Full name *">
+      <input type="text" id="stf-desig" placeholder="Designation — e.g. Assistant Professor">
+      <input type="text" id="stf-dept" placeholder="Department">
+      <select id="stf-office"><option value="tvm">Thiruvananthapuram (HQ)</option><option value="delhi">New Delhi</option><option value="blr">Bengaluru</option><option value="usa">USA Chapter</option></select>
+    </div>
+    <div class="arow4" style="margin-top:9px">
+      <select id="stf-type"><option value="fulltime">Full-time</option><option value="contract">Contract</option><option value="parttime">Part-time</option><option value="intern_paid">Intern (paid)</option><option value="intern_unpaid">Intern (unpaid)</option><option value="visiting">Visiting faculty</option></select>
+      <input type="number" id="stf-basic" placeholder="Basic pay (optional)">
+      <input type="number" id="stf-hra" placeholder="HRA (optional)">
+      <input type="number" id="stf-spl" placeholder="Allowances (optional)">
+    </div>
+    <div class="arow3" style="grid-template-columns:1fr 1fr auto;align-items:end;margin-top:11px">
+      <div><label class="hint" style="display:block;margin-bottom:4px">Login ID (auto)</label><input type="text" id="stf-id" placeholder="ASMDI-0210"></div>
+      <div><label class="hint" style="display:block;margin-bottom:4px">Password (auto)</label><input type="text" id="stf-pw"></div>
+      <button class="btn" id="stf-regen" type="button">↻ Regenerate</button>
+    </div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin-top:11px">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="stf-a-staff" checked> Staff Portal</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="stf-a-courses"> Courses</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="stf-a-students"> Students &amp; fees</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="stf-a-eval"> Evaluation</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="stf-a-hr"> HR Studio</label>
+    </div>
+    <div class="crow n" style="margin-top:12px;display:flex;gap:8px">
+      <button class="btn" id="stf-save">Add employee</button>
+      <button class="btn" id="stf-cancel" type="button" style="display:none">Cancel edit</button>
+    </div>
+
+    <h3 style="font-size:15px;margin:24px 0 8px;color:var(--gold)">All staff &amp; faculty <span id="stf-count" style="color:var(--muted);font-weight:400;font-size:13px"></span></h3>
+    <input type="text" id="stfSearch" placeholder="Search name / ID / department…" style="max-width:420px">
+    <div style="overflow-x:auto;max-height:52vh;overflow-y:auto;margin-top:10px"><table class="stt" id="stfTable"></table></div>
   </section>
 
   <section class="apanel asec" id="adm-fees">
@@ -1120,13 +1145,14 @@ function renderFees(){
 }
 
 /* ---- sidebar: section switching + badges ---- */
-const SECS=['sec-courses','adm-students','adm-access','adm-fees','adm-eval','adm-griev','adm-faculty','adm-schedule','adm-links','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-eval','adm-griev','adm-faculty','adm-schedule','adm-links','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
   document.querySelectorAll('.anavv a[data-sec]').forEach(a=>a.classList.toggle('on',a.dataset.sec===id));
   const mw=document.getElementById('pickModWrap'); if(mw)mw.style.visibility=(id==='sec-courses')?'visible':'hidden';
   if(id==='adm-access') renderAccess();
+  if(id==='adm-staff') renderStaff();
   try{ localStorage.setItem('admSec',id); }catch(e){}
   window.scrollTo({top:0,behavior:'instant'});
 }
@@ -1145,23 +1171,20 @@ function saveHR(d){ try{ localStorage.setItem('alizonHR', JSON.stringify(d)); }c
 
 function renderAccess(){
   const q=(document.getElementById('acSearch').value||'').toLowerCase().trim();
-  const emps=loadHR().EMP.map(e=>({kind:'employee', id:e.empid, name:(e.salut?e.salut+' ':'')+e.name, pw:e.password||e.empid}));
-  const studs=loadStudents().map(s=>({kind:'student', id:s.reg, name:(s.salutation?s.salutation+' ':'')+s.name, pw:s.password||s.reg}));
-  let rows=emps.concat(studs);
+  let rows=loadStudents().map(s=>({id:s.reg, name:(s.salutation?s.salutation+' ':'')+s.name, pw:s.password||s.reg}));
   if(q) rows=rows.filter(r=>((r.id||'')+' '+(r.name||'')).toLowerCase().includes(q));
   const tb=document.getElementById('acTable');
-  tb.innerHTML='<tr><th>Type</th><th>ID</th><th>Name</th><th>New password</th><th></th></tr>'+
+  tb.innerHTML='<tr><th>Reg No</th><th>Name</th><th>New password</th><th></th></tr>'+
     (rows.length?rows.map(r=>`<tr>
-      <td>${r.kind==='employee'?'Employee':'Student'}</td>
       <td class="num">${esc(r.id)}</td>
       <td>${esc(r.name)}</td>
       <td><input type="text" class="acpw" placeholder="current: ${esc(r.pw)}" style="min-width:150px;width:100%"></td>
-      <td><button class="btn acReset" data-kind="${esc(r.kind)}" data-id="${esc(r.id)}" style="padding:5px 14px;font-size:12px">Save</button></td>
+      <td><button class="btn acReset" data-id="${esc(r.id)}" style="padding:5px 14px;font-size:12px">Save</button></td>
     </tr>`).join('')
-    :'<tr><td colspan="5" style="color:var(--muted);padding:12px">No matching users. Employees are created above; students come from the roster upload.</td></tr>');
+    :'<tr><td colspan="4" style="color:var(--muted);padding:12px">No students yet — upload the roster in the Students section.</td></tr>');
   tb.querySelectorAll('.acReset').forEach(b=>b.addEventListener('click',()=>{
     const inp=b.closest('tr').querySelector('.acpw');
-    resetPw(b.dataset.kind, b.dataset.id, inp?inp.value:'');
+    resetPw('student', b.dataset.id, inp?inp.value:'');
   }));
 }
 
@@ -1197,32 +1220,111 @@ document.getElementById('ap-save').addEventListener('click',async function(){
   document.getElementById('ap-new').value=''; document.getElementById('ap-new2').value='';
 });
 
-document.getElementById('ac-create').addEventListener('click',function(){
-  const id=(document.getElementById('ac-id').value||'').trim().toUpperCase();
-  const name=(document.getElementById('ac-name').value||'').trim();
-  const pw=(document.getElementById('ac-pw').value||'').trim();
-  const office=document.getElementById('ac-office').value;
-  if(!id){ toast('A login ID is required'); return; }
-  if(!name){ toast('A full name is required'); return; }
-  if(pw&&pw.length<6){ toast('Password must be at least 6 characters'); return; }
-  const d=loadHR();
-  if(d.EMP.some(x=>String(x.empid).toUpperCase()===id)){ toast('That login ID already exists'); return; }
-  const access={ staff:document.getElementById('ac-staff').checked, courses:document.getElementById('ac-courses').checked,
-    students:document.getElementById('ac-students').checked, eval:document.getElementById('ac-eval').checked, hr:document.getElementById('ac-hr').checked };
-  const emp={ empid:id, salut:'', pronoun:'they', name:name, office:office, emptype:'fulltime', status:'current',
-    dept:'', desig:'', manager:'', doj:'', basic:0, da:0, hra:0, spl:0, bank:'', pan:'', email:'', access:access };
-  if(pw) emp.password=pw;
-  d.EMP.push(emp);
-  d.DOCLOG.unshift({ts:Date.now(),emp:id,name:name,doc:'Staff account provisioned — login = '+id+', password = '+(pw||id),by:'Admin — Access & Logins'});
-  saveHR(d);
-  toast('Login created for '+name);
-  ['ac-id','ac-name','ac-pw'].forEach(k=>document.getElementById(k).value='');
-  renderAccess();
-});
-
 document.getElementById('acSearch').addEventListener('input',renderAccess);
 
-renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderActivity(); renderStudents(); renderFees(); renderAccess();
+/* ================= STAFF & FACULTY MANAGER ================= */
+const STF_OFFICES={tvm:'Thiruvananthapuram',delhi:'New Delhi',blr:'Bengaluru',usa:'USA'};
+const STF_ACCESS=['staff','courses','students','eval','hr'];
+let stfEditId=null;
+function nextEmpId(){
+  const nums=loadHR().EMP.map(e=>parseInt(String(e.empid||'').replace(/\D/g,''),10)).filter(n=>!isNaN(n));
+  const n=(nums.length?Math.max(...nums):200)+1;
+  return 'ASMDI-'+String(n).padStart(4,'0');
+}
+function genPass(){
+  const w=['alizon','campus','medic','digital','kerala','scholar','asmdi','vidya'];
+  return w[Math.floor(Math.random()*w.length)]+String(Math.floor(100+Math.random()*900));
+}
+function stfFillGen(){ document.getElementById('stf-id').value=nextEmpId(); document.getElementById('stf-pw').value=genPass(); }
+function stfReset(){
+  stfEditId=null;
+  ['stf-name','stf-desig','stf-dept','stf-basic','stf-hra','stf-spl'].forEach(k=>document.getElementById(k).value='');
+  document.getElementById('stf-office').value='tvm'; document.getElementById('stf-type').value='fulltime';
+  document.getElementById('stf-a-staff').checked=true;
+  ['courses','students','eval','hr'].forEach(k=>document.getElementById('stf-a-'+k).checked=false);
+  stfFillGen();
+  document.getElementById('stfFormTitle').textContent='Add an employee / faculty member';
+  document.getElementById('stf-save').textContent='Add employee';
+  document.getElementById('stf-cancel').style.display='none';
+}
+function renderStaff(){
+  const q=(document.getElementById('stfSearch').value||'').toLowerCase().trim();
+  const all=loadHR().EMP;
+  let list=all.slice();
+  if(q) list=list.filter(e=>[e.empid,e.name,e.dept,e.desig].join(' ').toLowerCase().includes(q));
+  document.getElementById('stf-count').textContent='· '+all.length+' total'+(q?' · '+list.length+' shown':'');
+  const acc=a=>{a=a||{staff:true};return STF_ACCESS.filter(k=>a[k]).map(k=>({staff:'Staff',courses:'Courses',students:'Students',eval:'Eval',hr:'HR'})[k]).join(', ')||'—';};
+  const tb=document.getElementById('stfTable');
+  tb.innerHTML='<tr><th>ID</th><th>Name</th><th>Designation</th><th>Dept</th><th>Office</th><th>Access</th><th>Password</th><th></th></tr>'+
+    (list.length?list.map(e=>`<tr>
+      <td class="num">${esc(e.empid)}</td>
+      <td>${esc((e.salut?e.salut+' ':'')+e.name)}</td>
+      <td>${esc(e.desig||'—')}</td>
+      <td>${esc(e.dept||'—')}</td>
+      <td>${esc(STF_OFFICES[e.office]||e.office||'—')}</td>
+      <td>${esc(acc(e.access))}</td>
+      <td class="num">${esc(e.password||e.empid)}</td>
+      <td style="white-space:nowrap"><button class="btn stf-edit" data-id="${esc(e.empid)}" style="padding:4px 10px;font-size:12px">Edit</button> <button class="btn stf-del" data-id="${esc(e.empid)}" style="padding:4px 10px;font-size:12px;border-color:var(--crimson);color:var(--crimson)">Delete</button></td>
+    </tr>`).join('')
+    :'<tr><td colspan="8" style="color:var(--muted);padding:12px">No staff yet — add your first employee above.</td></tr>');
+  tb.querySelectorAll('.stf-edit').forEach(b=>b.onclick=()=>stfLoad(b.dataset.id));
+  tb.querySelectorAll('.stf-del').forEach(b=>b.onclick=()=>stfDelete(b.dataset.id));
+}
+function stfLoad(id){
+  const e=loadHR().EMP.find(x=>String(x.empid)===String(id)); if(!e) return;
+  stfEditId=id;
+  document.getElementById('stf-name').value=e.name||''; document.getElementById('stf-desig').value=e.desig||'';
+  document.getElementById('stf-dept').value=e.dept||''; document.getElementById('stf-office').value=e.office||'tvm';
+  document.getElementById('stf-type').value=e.emptype||'fulltime';
+  document.getElementById('stf-basic').value=e.basic||''; document.getElementById('stf-hra').value=e.hra||''; document.getElementById('stf-spl').value=e.spl||'';
+  document.getElementById('stf-id').value=e.empid; document.getElementById('stf-pw').value=e.password||e.empid;
+  const a=e.access||{staff:true}; STF_ACCESS.forEach(k=>document.getElementById('stf-a-'+k).checked=!!a[k]);
+  document.getElementById('stfFormTitle').textContent='Edit '+(e.name||e.empid);
+  document.getElementById('stf-save').textContent='Update employee';
+  document.getElementById('stf-cancel').style.display='';
+  document.getElementById('stf-name').scrollIntoView({block:'center'});
+}
+function stfDelete(id){
+  const e=loadHR().EMP.find(x=>String(x.empid)===String(id)); if(!e) return;
+  if(!confirm('Delete '+e.name+' ('+id+')? This removes their login.')) return;
+  const d=loadHR(); d.EMP=d.EMP.filter(x=>String(x.empid)!==String(id));
+  d.DOCLOG.unshift({ts:Date.now(),emp:id,name:e.name,doc:'Employee removed',by:'Admin — Staff & Faculty'});
+  saveHR(d); if(stfEditId===id) stfReset(); renderStaff(); toast('Removed '+e.name);
+}
+document.getElementById('stf-regen').addEventListener('click',()=>{ if(!stfEditId) document.getElementById('stf-id').value=nextEmpId(); document.getElementById('stf-pw').value=genPass(); });
+document.getElementById('stf-cancel').addEventListener('click',stfReset);
+document.getElementById('stfSearch').addEventListener('input',renderStaff);
+document.getElementById('stf-save').addEventListener('click',function(){
+  const name=(document.getElementById('stf-name').value||'').trim();
+  if(!name){ toast('Full name is required'); return; }
+  let id=(document.getElementById('stf-id').value||'').trim().toUpperCase();
+  let pw=(document.getElementById('stf-pw').value||'').trim();
+  if(!id) id=nextEmpId();
+  if(!pw) pw=genPass();
+  const access={}; STF_ACCESS.forEach(k=>access[k]=document.getElementById('stf-a-'+k).checked);
+  const fields={ name:name, desig:document.getElementById('stf-desig').value.trim(), dept:document.getElementById('stf-dept').value.trim(),
+    office:document.getElementById('stf-office').value, emptype:document.getElementById('stf-type').value, status:'current',
+    basic:+document.getElementById('stf-basic').value||0, hra:+document.getElementById('stf-hra').value||0, spl:+document.getElementById('stf-spl').value||0, da:0,
+    password:pw, access:access };
+  const d=loadHR();
+  if(stfEditId){
+    const idx=d.EMP.findIndex(x=>String(x.empid)===String(stfEditId));
+    if(idx<0){ toast('Employee not found'); return; }
+    if(id!==stfEditId && d.EMP.some(x=>String(x.empid).toUpperCase()===id)){ toast('That login ID already exists'); return; }
+    d.EMP[idx]={...d.EMP[idx],...fields,empid:id};
+    d.DOCLOG.unshift({ts:Date.now(),emp:id,name:name,doc:'Employee details updated',by:'Admin — Staff & Faculty'});
+    saveHR(d); toast('Updated '+name);
+  } else {
+    if(d.EMP.some(x=>String(x.empid).toUpperCase()===id)){ toast('That login ID already exists — regenerate'); return; }
+    d.EMP.push({empid:id,salut:'',pronoun:'they',manager:'',doj:'',bank:'',pan:'',email:'',...fields});
+    d.DOCLOG.unshift({ts:Date.now(),emp:id,name:name,doc:'Employee added — login '+id+' / password '+pw,by:'Admin — Staff & Faculty'});
+    saveHR(d); toast('Added '+name+' — login '+id+' · '+pw);
+  }
+  stfReset(); renderStaff();
+});
+stfReset();
+
+renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderActivity(); renderStudents(); renderFees(); renderAccess(); renderStaff();
 render();
 paintCounts();
 showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; }catch(e){ return 'sec-courses'; } })());
