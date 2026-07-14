@@ -97,6 +97,8 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
 .body{font-family:var(--serif);font-size:13.5px;line-height:1.62;color:#241d1e;margin-top:6px;text-align:justify}
 .body p{margin:0 0 11px}
 .close{font-family:var(--serif);font-size:13.5px;margin-top:22px}
+.sigrow{display:flex;gap:44px;flex-wrap:wrap;align-items:flex-end;margin-top:8px}
+.sigrow .sig{margin-top:0}
 .sig{margin-top:6px;position:relative}
 .sig .ln{width:190px;border-top:1px solid #3a3132;margin-bottom:5px}
 .sigimg{height:50px;display:block;margin-bottom:3px}
@@ -143,6 +145,7 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
   <div class="brand"><b>Letterhead Studio</b><span>Alizon OS</span></div>
   <div class="sp"></div>
   <button class="btn" id="btnSettings">⚙ Institution details</button>
+  <button class="btn" id="btnCopy">⧉ Copy</button>
   <button class="btn gold" id="btnPrint">⤓ Print / Save PDF</button>
 </div>
 
@@ -232,25 +235,21 @@ select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,va
     </div>
 
     <div class="sec fld" data-for="general letter notice memo cert notify">
-      <h3>Signatory</h3>
-      <div class="row2">
-        <div><label class="fl">Name</label><input id="f_sigName"></div>
-        <div><label class="fl">Designation</label><input id="f_sigDesig"></div>
-      </div>
-      <label class="fl">Place</label><input id="f_place">
+      <h3>Signatories</h3>
+      <div class="hint" style="margin-bottom:8px">Add one or more signatories (e.g. both directors) — they print side by side.</div>
+      <div id="sigList"></div>
+      <label class="fl" style="margin-top:10px">Place</label><input id="f_place">
       <label class="fl">Signing style</label>
       <select id="f_signMode">
         <option value="name">Name + designation (signed line)</option>
         <option value="wet">Blank space for wet signature</option>
-        <option value="image">Signature / seal image</option>
+        <option value="image">Signature image (per signatory)</option>
         <option value="sysgen">System-generated (no signature needed)</option>
       </select>
       <div id="wrap_signImg" style="display:none">
-        <label class="fl">Signature image (PNG with transparent background works best)</label>
-        <input type="file" id="f_signImg" accept="image/*">
-        <label class="fl">Seal / stamp image (optional)</label>
+        <label class="fl">Official seal / stamp image (optional — one for the institution)</label>
         <input type="file" id="f_sealImg" accept="image/*">
-        <div class="hint">Images are saved on this device and reused. <span id="imgClear" style="color:var(--gold);cursor:pointer">Clear images</span></div>
+        <div class="hint">The seal is saved on this device. Each signatory's signature image is uploaded on its card above. <span id="imgClear" style="color:var(--gold);cursor:pointer">Clear seal</span></div>
       </div>
       <label class="reflag"><input type="checkbox" id="f_showSig" checked style="width:auto"> Show signatory block</label>
     </div>
@@ -337,7 +336,32 @@ function loadCfg(){
 }
 let CFG=loadCfg();
 function saveCfg(){ try{localStorage.setItem('alizonLetterheadCfg',JSON.stringify(CFG));}catch(e){} }
-let SIGN_IMG=CFG.signImg||'', SEAL_IMG=CFG.sealImg||'', signMode='name';
+let SEAL_IMG=CFG.sealImg||'', signMode='name';
+let signers=[{name:'',desig:'',img:''}];
+function renderSigners(){
+  const box=$('sigList');
+  box.innerHTML=signers.map((s,i)=>
+    `<div style="border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-bottom:8px">
+      <div class="row2">
+        <div><label class="fl">Name</label><input class="sg-name" data-i="${i}" value="${esc(s.name)}" placeholder="e.g. Dr. …"></div>
+        <div><label class="fl">Designation</label><input class="sg-desig" data-i="${i}" value="${esc(s.desig)}" placeholder="e.g. Director"></div>
+      </div>
+      <div class="sg-imgwrap" style="${signMode==='image'?'':'display:none'}">
+        <label class="fl">Signature image (optional)</label>
+        <input type="file" class="sg-img" data-i="${i}" accept="image/*">
+        ${s.img?`<span class="hint" style="color:var(--gold)">✓ signature set · <span class="sg-imgclear" data-i="${i}" style="cursor:pointer;text-decoration:underline">clear</span></span>`:''}
+      </div>
+      ${signers.length>1?`<div style="text-align:right;margin-top:4px"><span class="sg-del" data-i="${i}" style="color:var(--crimson);cursor:pointer;font-size:12px">✕ remove</span></div>`:''}
+    </div>`
+  ).join('')+`<button class="btn" id="sg-add" type="button" style="width:100%">+ Add signatory</button>`;
+  box.querySelectorAll('.sg-name').forEach(inp=>inp.oninput=()=>{ signers[+inp.dataset.i].name=inp.value; render(); });
+  box.querySelectorAll('.sg-desig').forEach(inp=>inp.oninput=()=>{ signers[+inp.dataset.i].desig=inp.value; render(); });
+  box.querySelectorAll('.sg-img').forEach(inp=>inp.onchange=e=>readImgTo(e.target,+inp.dataset.i));
+  box.querySelectorAll('.sg-imgclear').forEach(x=>x.onclick=()=>{ signers[+x.dataset.i].img=''; renderSigners(); render(); });
+  box.querySelectorAll('.sg-del').forEach(x=>x.onclick=()=>{ signers.splice(+x.dataset.i,1); renderSigners(); render(); });
+  $('sg-add').onclick=()=>{ signers.push({name:'',desig:'',img:''}); renderSigners(); render(); };
+}
+function readImgTo(input,i){ const f=input.files&&input.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ signers[i].img=r.result; renderSigners(); render(); }; r.readAsDataURL(f); }
 let noteRows=[{k:'',v:''}];
 function renderNtRows(){
   $('ntRows').innerHTML=noteRows.map((r,i)=>
@@ -402,25 +426,25 @@ function paras(txt){
     .map(p=>'<p>'+esc(p).replace(/\n/g,'<br>')+'</p>').join('');
 }
 function sigBlock(o){
-  const n=$('f_sigName').value.trim(), d=$('f_sigDesig').value.trim();
-  const names=(n?`<div class="n">${esc(n)}</div>`:'')+(d?`<div class="d">${esc(d)}</div>`:'')+
-    `<div class="o">${esc(CFG.name)}${o.place?', '+esc(o.place):''}</div>`;
+  const list=signers.filter(s=>(s.name||'').trim()||(s.desig||'').trim()||s.img);
+  if(!list.length) return '';
+  const orgLine=`<div class="o">${esc(CFG.name)}${o.place?', '+esc(o.place):''}</div>`;
   const seal=(SEAL_IMG&&signMode!=='sysgen')?`<img class="sealimg" src="${SEAL_IMG}" alt="seal">`:'';
+  const nameOf=s=>(s.name?`<div class="n">${esc(s.name)}</div>`:'')+(s.desig?`<div class="d">${esc(s.desig)}</div>`:'');
   if(signMode==='sysgen'){
-    return `<div class="sig">`+
-      `<div class="sysgen"><div class="b">✓ System-Generated Document</div>`+
+    const cols=list.map(s=>`<div class="sig">${nameOf(s)}</div>`).join('');
+    return `<div style="position:relative"><div class="sysgen"><div class="b">✓ System-Generated Document</div>`+
       `<div class="t">Issued electronically via ALIZON OS · valid without a physical seal or signature.</div></div>`+
-      `<div>${names}</div></div>`;
+      `<div class="sigrow">${cols}</div>${orgLine}</div>`;
   }
-  if(signMode==='image'){
-    return `<div class="sig">${seal}`+
-      (SIGN_IMG?`<img class="sigimg" src="${SIGN_IMG}" alt="signature">`:'')+
-      `<div class="ln"></div>${names}</div>`;
-  }
-  if(signMode==='wet'){
-    return `<div class="sig">${seal}<div style="height:44px"></div><div class="ln"></div>${names}</div>`;
-  }
-  return `<div class="sig">${seal}${(n||d)?'<div class="ln"></div>':''}${names}</div>`;
+  const cols=list.map(s=>{
+    let top='';
+    if(signMode==='image') top=(s.img?`<img class="sigimg" src="${s.img}" alt="signature">`:'')+`<div class="ln"></div>`;
+    else if(signMode==='wet') top=`<div style="height:44px"></div><div class="ln"></div>`;
+    else top=`<div class="ln"></div>`;
+    return `<div class="sig">${top}${nameOf(s)}</div>`;
+  }).join('');
+  return `<div style="position:relative">${seal}<div class="sigrow">${cols}</div>${orgLine}</div>`;
 }
 function pushParas(arr,txt){
   String(txt||'').split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean).forEach(p=>{
@@ -557,9 +581,10 @@ $('s_save').onclick=()=>{
     CFG.offices[inp.dataset.o][inp.dataset.f]=inp.value;
   });
   saveCfg(); fillOffice();
-  // reflect new default signatory if fields untouched-empty
-  if(!$('f_sigName').value) $('f_sigName').value=CFG.sigName;
-  if(!$('f_sigDesig').value) $('f_sigDesig').value=CFG.sigDesig;
+  // seed the first signatory from the saved default if still empty
+  if(signers.length===1 && !signers[0].name && !signers[0].desig && (CFG.sigName||CFG.sigDesig)){
+    signers[0]={name:CFG.sigName||'',desig:CFG.sigDesig||'',img:''}; renderSigners();
+  }
   render(); closeDrawer();
 };
 $('s_reset').onclick=()=>{ if(confirm('Reset all institution details to defaults?')){ CFG=JSON.parse(JSON.stringify(DEFAULT_CFG)); saveCfg(); openDrawer(); fillOffice(); render(); } };
@@ -568,24 +593,33 @@ $('s_reset').onclick=()=>{ if(confirm('Reset all institution details to defaults
 document.querySelectorAll('#typeChips .chip').forEach(c=>c.onclick=()=>setType(c.dataset.t));
 $('f_office').onchange=()=>{ refreshRef(); render(); };
 $('f_refauto').onchange=()=>{ $('f_ref').readOnly=$('f_refauto').checked; refreshRef(); render(); };
-['f_ref','f_date','f_dept','f_title','f_body','f_toName','f_toAddr','f_salut','f_memoTo','f_memoFrom','f_close','f_sigName','f_sigDesig','f_place','f_course'].forEach(id=>{
+['f_ref','f_date','f_dept','f_title','f_body','f_toName','f_toAddr','f_salut','f_memoTo','f_memoFrom','f_close','f_place','f_course'].forEach(id=>{
   const el=$(id); if(el) el.addEventListener('input',render);
 });
 $('f_ntype').onchange=render;
 $('ntAdd').onclick=()=>{ noteRows.push({k:'',v:''}); renderNtRows(); render(); };
 $('f_showSig').addEventListener('change',render);
 $('f_showReg').addEventListener('change',render);
-$('f_signMode').onchange=()=>{ signMode=$('f_signMode').value; $('wrap_signImg').style.display=(signMode==='image')?'':'none'; render(); };
+$('f_signMode').onchange=()=>{ signMode=$('f_signMode').value; $('wrap_signImg').style.display=(signMode==='image')?'':'none'; renderSigners(); render(); };
 function readImg(input,set){
   const f=input.files&&input.files[0]; if(!f) return;
   const r=new FileReader();
   r.onload=()=>{ set(r.result); render(); };
   r.readAsDataURL(f);
 }
-$('f_signImg').addEventListener('change',e=>readImg(e.target,v=>{ SIGN_IMG=v; CFG.signImg=v; saveCfg(); }));
 $('f_sealImg').addEventListener('change',e=>readImg(e.target,v=>{ SEAL_IMG=v; CFG.sealImg=v; saveCfg(); }));
-$('imgClear').onclick=()=>{ SIGN_IMG=''; SEAL_IMG=''; delete CFG.signImg; delete CFG.sealImg; saveCfg(); $('f_signImg').value=''; $('f_sealImg').value=''; render(); };
+$('imgClear').onclick=()=>{ SEAL_IMG=''; delete CFG.sealImg; saveCfg(); $('f_sealImg').value=''; render(); };
 $('btnPrint').onclick=()=>window.print();
+$('btnCopy').onclick=async()=>{
+  const html=$('paper').innerHTML, text=$('paper').innerText;
+  const b=$('btnCopy'), orig=b.textContent;
+  try{
+    if(navigator.clipboard && window.ClipboardItem){
+      await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]);
+    } else { await navigator.clipboard.writeText(text); }
+    b.textContent='✓ Copied'; setTimeout(()=>b.textContent=orig,1500);
+  }catch(e){ b.textContent='Copy failed'; setTimeout(()=>b.textContent=orig,1500); }
+};
 
 /* zoom */
 let zoom=1;
@@ -596,7 +630,7 @@ $('zOut').onclick=()=>{ zoom=Math.max(.5,zoom-.1); applyZoom(); };
 /* ---------- init ---------- */
 fillOffice();
 $('f_date').value=todayStr();
-$('f_sigName').value=CFG.sigName; $('f_sigDesig').value=CFG.sigDesig;
+signers=[{name:CFG.sigName||'',desig:CFG.sigDesig||'',img:''}]; renderSigners();
 $('f_place').value=(CFG.offices.tvm||{}).place||'';
 $('f_close').value='Yours sincerely,';
 $('f_salut').value='Dear Sir/Madam,';
