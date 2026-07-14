@@ -26,6 +26,7 @@
         'color:#8a8082;letter-spacing:.05em;margin-top:5px}'+
       '#lhp-print{position:fixed;left:-99999px;top:0}'+
       '@media print{'+
+        '@page{size:A4;margin:0}'+
         'body>*{display:none!important}'+
         '#lhp-print{display:block!important;position:static!important;left:auto!important}'+
         '#lhp-print .lhp-page{box-shadow:none!important;margin:0 auto!important;'+

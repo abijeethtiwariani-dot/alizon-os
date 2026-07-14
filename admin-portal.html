@@ -244,6 +244,7 @@
   .newprog{border:1px dashed rgba(161,98,7,.55)}
 </style>
   <script src="firebase-sync.js"></script>
+  <script src="print-paginate.js"></script>
 </head>
 <body>
 <div class="bgwrap"></div>
@@ -918,7 +919,10 @@ function renderActivity(){
 document.getElementById('act-clear').addEventListener('click',()=>{ if(confirm('Clear the activity history?')){ setDB('alizonActivity',[]); renderActivity(); } });
 (function(){ const dv=document.getElementById('docView');
   document.getElementById('dvClose').addEventListener('click',()=>dv.classList.remove('open'));
-  document.getElementById('dvPrint').addEventListener('click',()=>window.print());
+  document.getElementById('dvPrint').addEventListener('click',()=>{
+    if(window.LHPrint){ LHPrint(document.getElementById('dvDoc'),{headerEnd:'.dh',footer:'.foot',hideForPrint:'#docView, .np-fixhead'}); }
+    else window.print();
+  });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') dv.classList.remove('open'); });
 })();
 
