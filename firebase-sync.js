@@ -84,7 +84,13 @@
           console.warn('[alizon-fb] signIn', c); return false;
         });
     },
-    signOut: function(){ if (auth) auth.signOut().catch(function(){}); }
+    signOut: function(){ if (auth) auth.signOut().catch(function(){}); },
+    /* change the CURRENTLY signed-in user's own Firebase password (keeps cloud sync working) */
+    changeMyPassword: function(newPw){
+      if (!auth || !auth.currentUser) return Promise.resolve(false);
+      return auth.currentUser.updatePassword(pwFor(newPw)).then(function(){ return true; }).catch(function(e){ console.warn('[alizon-fb] pw change', e && e.code); return false; });
+    },
+    signedIn: function(){ return authed; }
   };
 
   function startSync(){

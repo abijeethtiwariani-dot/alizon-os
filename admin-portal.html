@@ -277,7 +277,7 @@
     <h2>Admin Portal</h2>
     <p class="gsub">Restricted — administrator sign-in required.</p>
     <label for="ga-id">Login ID</label>
-    <input id="ga-id" placeholder="admin" autocomplete="username">
+    <input id="ga-id" placeholder="Login ID" autocomplete="username">
     <label for="ga-pw">Password</label>
     <input id="ga-pw" type="password" placeholder="••••••••" autocomplete="current-password">
     <div class="gerr" id="ga-err">Incorrect login ID or password.</div>
@@ -295,7 +295,8 @@
     e.preventDefault();
     const id=(document.getElementById('ga-id').value||'').trim().toLowerCase();
     const pw=document.getElementById('ga-pw').value||'';
-    if(id==='admin'&&pw==='admin123'){ try{sessionStorage.setItem('alizonAdminAuth','1');}catch(x){} try{ if(window.alizonAuth) window.alizonAuth.signIn('admin','admin123','admin'); }catch(x){} document.getElementById('ga-err').classList.remove('show'); ok(); }
+    var apw=(function(){try{return localStorage.getItem('alizonAdminPass')||'admin123';}catch(e){return 'admin123';}})();
+    if(id==='admin'&&pw===apw){ try{sessionStorage.setItem('alizonAdminAuth','1');}catch(x){} try{ if(window.alizonAuth) window.alizonAuth.signIn('admin',pw,'admin'); }catch(x){} document.getElementById('ga-err').classList.remove('show'); ok(); }
     else{ document.getElementById('ga-err').classList.add('show'); }
   });
 })();
@@ -318,6 +319,7 @@
   <nav class="anavv">
     <a data-sec="sec-courses" class="on"><span class="aic"></span> Courses</a>
     <a data-sec="adm-students"><span class="aic"></span> Students <b class="cnt" id="cntStud" style="background:var(--gold)"></b></a>
+    <a data-sec="adm-access"><span class="aic"></span> Access &amp; Logins</a>
     <a data-sec="adm-fees"><span class="aic"></span> Fees <b class="cnt" id="cntFees" style="background:var(--success)"></b></a>
     <a data-sec="adm-eval"><span class="aic">✔</span> Evaluation <b class="cnt" id="cntEval"></b></a>
     <a data-sec="adm-griev"><span class="aic"></span> Grievances <b class="cnt" id="cntGriev"></b></a>
@@ -374,6 +376,42 @@
     <div class="hint" id="stUpResult" style="display:none;margin:10px 0 0;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.45);font-size:13px"></div>
     <div class="hint" id="stMeta" style="margin:10px 0 2px"></div>
     <div style="overflow-x:auto;max-height:60vh;overflow-y:auto"><table class="stt" id="stTable"></table></div>
+  </section>
+
+  <section class="apanel asec" id="adm-access">
+    <h2>Access &amp; Logins</h2>
+    <div class="ahint">Manage sign-in credentials for every portal from one place. Changes take effect on the next login.</div>
+
+    <h3 style="font-size:15px;margin:6px 0 8px;color:var(--gold)">Administrator password</h3>
+    <div class="ahint">Change the master admin password used for the Admin, Faculty and Staff portals.</div>
+    <div class="arow3" style="grid-template-columns:1fr 1fr auto;align-items:start">
+      <input type="password" id="ap-new" placeholder="New admin password (min 6 chars)">
+      <input type="password" id="ap-new2" placeholder="Confirm new password">
+      <button class="btn" id="ap-save">Update password</button>
+    </div>
+    <div class="hint" id="ap-note" style="margin-top:8px"></div>
+
+    <h3 style="font-size:15px;margin:22px 0 8px;color:var(--gold)">Create a staff / employee login</h3>
+    <div class="ahint">Give a new employee a login ID and password, and choose what they can access.</div>
+    <div class="arow4">
+      <input type="text" id="ac-id" placeholder="Login ID — e.g. ASMDI-0210">
+      <input type="text" id="ac-name" placeholder="Full name">
+      <input type="text" id="ac-pw" placeholder="Password (min 6)">
+      <select id="ac-office"><option value="tvm">Thiruvananthapuram (HQ)</option><option value="delhi">New Delhi</option><option value="blr">Bengaluru</option><option value="usa">USA Chapter</option></select>
+    </div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin-top:8px">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac-staff" checked> Staff Portal</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac-courses"> Courses</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac-students"> Students &amp; fees</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac-eval"> Evaluation</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ac-hr"> HR Studio</label>
+    </div>
+    <div class="crow n" style="margin-top:10px"><button class="btn" id="ac-create">Create employee login</button></div>
+
+    <h3 style="font-size:15px;margin:22px 0 8px;color:var(--gold)">Reset a login password</h3>
+    <div class="ahint">Search any student or employee and set a new password (blank &rarr; resets a student to their registration number, an employee to their ID).</div>
+    <input type="text" id="acSearch" placeholder="Search name / registration no / employee ID…" style="max-width:420px">
+    <div style="overflow-x:auto;max-height:48vh;overflow-y:auto;margin-top:10px"><table class="stt" id="acTable"></table></div>
   </section>
 
   <section class="apanel asec" id="adm-fees">
@@ -1078,12 +1116,13 @@ function renderFees(){
 }
 
 /* ---- sidebar: section switching + badges ---- */
-const SECS=['sec-courses','adm-students','adm-fees','adm-eval','adm-griev','adm-faculty','adm-schedule','adm-links','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-access','adm-fees','adm-eval','adm-griev','adm-faculty','adm-schedule','adm-links','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
   document.querySelectorAll('.anavv a[data-sec]').forEach(a=>a.classList.toggle('on',a.dataset.sec===id));
   const mw=document.getElementById('pickModWrap'); if(mw)mw.style.visibility=(id==='sec-courses')?'visible':'hidden';
+  if(id==='adm-access') renderAccess();
   try{ localStorage.setItem('admSec',id); }catch(e){}
   window.scrollTo({top:0,behavior:'instant'});
 }
@@ -1096,7 +1135,93 @@ function paintCounts(){
   if(cg){ cg.textContent=open; cg.classList.toggle('show',open>0); }
 }
 
-renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderActivity(); renderStudents(); renderFees();
+/* ================= ACCESS & LOGINS ================= */
+function loadHR(){ try{ const d=JSON.parse(localStorage.getItem('alizonHR')||'{}'); return {EMP:Array.isArray(d.EMP)?d.EMP:[], DOCLOG:Array.isArray(d.DOCLOG)?d.DOCLOG:[]}; }catch(e){ return {EMP:[],DOCLOG:[]}; } }
+function saveHR(d){ try{ localStorage.setItem('alizonHR', JSON.stringify(d)); }catch(e){} }
+
+function renderAccess(){
+  const q=(document.getElementById('acSearch').value||'').toLowerCase().trim();
+  const emps=loadHR().EMP.map(e=>({kind:'employee', id:e.empid, name:(e.salut?e.salut+' ':'')+e.name, pw:e.password||e.empid}));
+  const studs=loadStudents().map(s=>({kind:'student', id:s.reg, name:(s.salutation?s.salutation+' ':'')+s.name, pw:s.password||s.reg}));
+  let rows=emps.concat(studs);
+  if(q) rows=rows.filter(r=>((r.id||'')+' '+(r.name||'')).toLowerCase().includes(q));
+  const tb=document.getElementById('acTable');
+  tb.innerHTML='<tr><th>Type</th><th>ID</th><th>Name</th><th>New password</th><th></th></tr>'+
+    (rows.length?rows.map(r=>`<tr>
+      <td>${r.kind==='employee'?'Employee':'Student'}</td>
+      <td class="num">${esc(r.id)}</td>
+      <td>${esc(r.name)}</td>
+      <td><input type="text" class="acpw" placeholder="current: ${esc(r.pw)}" style="min-width:150px;width:100%"></td>
+      <td><button class="btn acReset" data-kind="${esc(r.kind)}" data-id="${esc(r.id)}" style="padding:5px 14px;font-size:12px">Save</button></td>
+    </tr>`).join('')
+    :'<tr><td colspan="5" style="color:var(--muted);padding:12px">No matching users. Employees are created above; students come from the roster upload.</td></tr>');
+  tb.querySelectorAll('.acReset').forEach(b=>b.addEventListener('click',()=>{
+    const inp=b.closest('tr').querySelector('.acpw');
+    resetPw(b.dataset.kind, b.dataset.id, inp?inp.value:'');
+  }));
+}
+
+function resetPw(kind,id,raw){
+  const val=String(raw||'').trim();
+  if(val&&val.length<6){ toast('Password must be at least 6 characters'); return; }
+  if(kind==='student'){
+    const all=loadStudents(); const s=all.find(x=>String(x.reg)===String(id));
+    if(!s){ toast('Student not found'); return; }
+    if(val) s.password=val; else delete s.password;
+    localStorage.setItem('alizonStudents',JSON.stringify(all));
+    localStorage.setItem('alizonStudentsUpdated',String(Date.now()));
+    toast(val?('Password updated for '+id):('Password for '+id+' reset to registration no'));
+  } else {
+    const d=loadHR(); const e=d.EMP.find(x=>String(x.empid)===String(id));
+    if(!e){ toast('Employee not found'); return; }
+    if(val) e.password=val; else delete e.password;
+    d.DOCLOG.unshift({ts:Date.now(),emp:e.empid,name:e.name,doc:'Login password '+(val?'reset by admin':'reset to employee ID'),by:'Admin — Access & Logins'});
+    saveHR(d);
+    toast(val?('Password updated for '+id):('Password for '+id+' reset to employee ID'));
+  }
+  renderAccess();
+}
+
+document.getElementById('ap-save').addEventListener('click',async function(){
+  const a=document.getElementById('ap-new').value||'', b=document.getElementById('ap-new2').value||'';
+  const note=document.getElementById('ap-note');
+  if(a.length<6){ note.style.color='var(--crimson)'; note.textContent='Password must be at least 6 characters.'; return; }
+  if(a!==b){ note.style.color='var(--crimson)'; note.textContent='The two passwords do not match.'; return; }
+  try{ localStorage.setItem('alizonAdminPass',a); }catch(e){}
+  note.style.color='var(--muted)'; note.textContent='Saving…';
+  let cloud=false;
+  try{ if(window.alizonAuth&&window.alizonAuth.signedIn&&window.alizonAuth.signedIn()) cloud=await window.alizonAuth.changeMyPassword(a); }catch(e){}
+  note.style.color='var(--gold)';
+  note.textContent='Admin password updated'+(cloud?' — cloud login synced.':'. Applies at the next admin login.');
+  document.getElementById('ap-new').value=''; document.getElementById('ap-new2').value='';
+});
+
+document.getElementById('ac-create').addEventListener('click',function(){
+  const id=(document.getElementById('ac-id').value||'').trim().toUpperCase();
+  const name=(document.getElementById('ac-name').value||'').trim();
+  const pw=(document.getElementById('ac-pw').value||'').trim();
+  const office=document.getElementById('ac-office').value;
+  if(!id){ toast('A login ID is required'); return; }
+  if(!name){ toast('A full name is required'); return; }
+  if(pw&&pw.length<6){ toast('Password must be at least 6 characters'); return; }
+  const d=loadHR();
+  if(d.EMP.some(x=>String(x.empid).toUpperCase()===id)){ toast('That login ID already exists'); return; }
+  const access={ staff:document.getElementById('ac-staff').checked, courses:document.getElementById('ac-courses').checked,
+    students:document.getElementById('ac-students').checked, eval:document.getElementById('ac-eval').checked, hr:document.getElementById('ac-hr').checked };
+  const emp={ empid:id, salut:'', pronoun:'they', name:name, office:office, emptype:'fulltime', status:'current',
+    dept:'', desig:'', manager:'', doj:'', basic:0, da:0, hra:0, spl:0, bank:'', pan:'', email:'', access:access };
+  if(pw) emp.password=pw;
+  d.EMP.push(emp);
+  d.DOCLOG.unshift({ts:Date.now(),emp:id,name:name,doc:'Staff account provisioned — login = '+id+', password = '+(pw||id),by:'Admin — Access & Logins'});
+  saveHR(d);
+  toast('Login created for '+name);
+  ['ac-id','ac-name','ac-pw'].forEach(k=>document.getElementById(k).value='');
+  renderAccess();
+});
+
+document.getElementById('acSearch').addEventListener('input',renderAccess);
+
+renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderActivity(); renderStudents(); renderFees(); renderAccess();
 render();
 paintCounts();
 showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; }catch(e){ return 'sec-courses'; } })());
