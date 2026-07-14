@@ -248,6 +248,7 @@ table.emp tr:hover td{background:rgba(255,255,255,.03)}
 }
 </style>
   <script src="firebase-sync.js"></script>
+  <script src="print-paginate.js"></script>
 </head>
 <body>
 <div class="app">
@@ -1330,7 +1331,10 @@ document.querySelectorAll('input,select,textarea').forEach(el=>{
 });
 
 /* ── Downloads ── */
-$('btnPdf').addEventListener('click',()=>{logDoc('PDF');window.print();});
+$('btnPdf').addEventListener('click',()=>{logDoc('PDF');
+  if(window.LHPrint){ LHPrint(document.getElementById('paper'),{headerEnd:'.lh-rule',footer:'.doc-footer',flatten:['.doc-body'],repeat:['.watermark']}); }
+  else window.print();
+});
 
 $('btnWord').addEventListener('click',()=>{
   const body=$('paper').outerHTML;
