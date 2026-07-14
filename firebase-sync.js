@@ -115,6 +115,42 @@
     console.log('[alizon-fb] sync active (signed in)');
   }
 
+  /* Read-only bootstrap account used only to pull shared data onto a fresh
+     device before login. Baked-in like the public web config; the open
+     Firestore rule already lets any signed-in user read, so this grants no
+     access that a default login didn't already. */
+  var BOOT_EMAIL = 'device-reader@bootstrap.alizonos.app', BOOT_PW = 'alizonBootstrap2026';
+  /* only the data a login is checked against — pulled during bootstrap so fresh
+     devices can authenticate. Operational data (fees, submissions, grievances,
+     messages, activity) stays in the cloud until a real user signs in. */
+  var AUTH_KEYS = ['alizonStudents','alizonHR','alizonFaculty'];
+  function pullAuthKeys(){
+    AUTH_KEYS.forEach(function(key){
+      db.collection('sync').doc(key).get().then(function(doc){
+        if (doc.exists){
+          var v = doc.data().value;
+          if (typeof v === 'string' && v !== localStorage.getItem(key)){ lastSeen[key] = v; origSet(key, v); }
+        }
+      }).catch(function(e){ console.warn('[alizon-fb] bootstrap pull', key, e && e.code); });
+    });
+    console.log('[alizon-fb] bootstrap: login data pulled');
+  }
+  var bootTried = false;
+  function bootstrapDevice(){
+    if (bootTried || !auth) return; bootTried = true;
+    if (authed) return;   /* a real or persisted session already exists */
+    auth.signInWithEmailAndPassword(BOOT_EMAIL, BOOT_PW)
+      .catch(function(e){
+        var c = e && e.code;
+        if (c === 'auth/user-not-found' || c === 'auth/invalid-credential' ||
+            c === 'auth/invalid-login-credentials' || c === 'auth/wrong-password'){
+          return auth.createUserWithEmailAndPassword(BOOT_EMAIL, BOOT_PW).catch(function(){});
+        }
+        console.warn('[alizon-fb] bootstrap', c);
+      })
+      .then(function(){ if (auth.currentUser) console.log('[alizon-fb] device bootstrap ok — syncing shared data'); });
+  }
+
   load('firebase-app-compat.js')
     .then(function(){ return load('firebase-auth-compat.js'); })
     .then(function(){ return load('firebase-firestore-compat.js'); })
@@ -124,10 +160,20 @@
       auth = firebase.auth();
       auth.onAuthStateChanged(function(user){
         authed = !!user;
-        if (user) startSync();
-        else listenersOn = false;
+        if (user){
+          if (user.email === BOOT_EMAIL) pullAuthKeys();  /* bootstrap session: login data only */
+          else startSync();                               /* real user: full two-way sync */
+        } else listenersOn = false;
       });
-      console.log('[alizon-fb] ready (project alizon-os-7a17d) — waiting for sign-in');
+      /* ---- Fresh-device bootstrap ----------------------------------------
+         Logins are validated against the roster stored in THIS browser. A new
+         device / incognito window starts empty, and sync only runs once signed
+         in — so without help a fresh device can never load the roster and every
+         login is rejected. Fix: sign in with a fixed, read-only bootstrap
+         account on load so the shared data downloads BEFORE anyone logs in.
+         (Independent of the admin account, so an admin password change can't
+         break sign-in bootstrapping.) Self-signup provisions it on first use. */
+      setTimeout(bootstrapDevice, 1200);
     })
     .catch(function(e){ console.warn('[alizon-fb] init failed', e && e.message); });
 })();

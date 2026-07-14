@@ -1188,11 +1188,8 @@ document.getElementById('ap-save').addEventListener('click',async function(){
   if(a.length<6){ note.style.color='var(--crimson)'; note.textContent='Password must be at least 6 characters.'; return; }
   if(a!==b){ note.style.color='var(--crimson)'; note.textContent='The two passwords do not match.'; return; }
   try{ localStorage.setItem('alizonAdminPass',a); }catch(e){}
-  note.style.color='var(--muted)'; note.textContent='Saving…';
-  let cloud=false;
-  try{ if(window.alizonAuth&&window.alizonAuth.signedIn&&window.alizonAuth.signedIn()) cloud=await window.alizonAuth.changeMyPassword(a); }catch(e){}
   note.style.color='var(--gold)';
-  note.textContent='Admin password updated'+(cloud?' — cloud login synced.':'. Applies at the next admin login.');
+  note.textContent='Admin password updated on this device. Set the same password on other devices you sign in from.';
   document.getElementById('ap-new').value=''; document.getElementById('ap-new2').value='';
 });
 
