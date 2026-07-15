@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Examinations</title>
+<style>
+  :root{
+    --bg:#070810; --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.10);
+    --crimson:#C40D16; --crimson-deep:#B1040E; --gold:#D9A441; --gold-soft:rgba(217,164,65,.14); --pill:rgba(255,255,255,.05);
+    --succ:#1E8E5A;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;letter-spacing:-.01em}
+  .bgwrap{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.09),transparent 60%),radial-gradient(90% 60% at 90% 10%,rgba(217,164,65,.06),transparent 55%)}
+  .top{position:sticky;top:0;z-index:10;background:rgba(13,16,36,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .top .in{max-width:900px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:13px}
+  .top img.logo{width:32px;height:32px;object-fit:contain;flex:none}
+  .top .bt b{font-family:'Source Serif Pro',serif;font-size:16px;display:block;line-height:1.1}
+  .top .bt small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .top .sp{margin-left:auto;display:flex;gap:9px}
+  .top a{font-size:13px;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--pill);padding:9px 15px;border-radius:100px}
+  .top a:hover{border-color:rgba(217,164,65,.4)}
+  .wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:24px 22px 80px}
+  .tabs{display:flex;gap:8px;margin-bottom:18px}
+  .tab{cursor:pointer;font-weight:600;font-size:14px;border:1px solid var(--line);background:var(--pill);color:var(--ink);border-radius:100px;padding:11px 20px}
+  .tab.on{border:none;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .card{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03);padding:20px;margin-bottom:16px}
+  .card h2{font-size:17px;margin-bottom:6px}
+  .hint{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  label.f{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:12px 0 6px}
+  input[type=text]{width:100%;font-family:inherit;font-size:15px;color:var(--ink);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:12px 14px;outline:none}
+  input:focus{border-color:var(--gold)}
+  .lookrow{display:flex;gap:9px;align-items:flex-end;flex-wrap:wrap}
+  .lookrow>div{flex:1;min-width:200px}
+  .abtn{cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;border:none;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-radius:100px;padding:12px 22px}
+  .abtn.ghost{border:1px solid var(--line);background:var(--pill);color:var(--ink)}
+  .abtn.ghost:hover{border-color:var(--gold);color:var(--gold)}
+  .err{color:#ff8a90;font-size:13px;margin-top:10px;display:none}
+  .ok{color:#6fd0ab;font-size:13.5px;margin-top:12px;display:none;background:rgba(30,142,90,.12);border:1px solid rgba(30,142,90,.4);border-radius:10px;padding:12px 14px}
+  .stud{display:none;margin-top:16px;border-top:1px solid var(--line);padding-top:16px}
+  .kv{display:flex;gap:12px;padding:5px 0;font-size:13.5px}
+  .kv b{min-width:130px;color:var(--muted);font-weight:600;font-size:11.5px;letter-spacing:.03em;text-transform:uppercase;padding-top:2px}
+  .chip{display:inline-block;font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;background:var(--gold-soft);color:var(--gold);border:1px solid rgba(217,164,65,.4);margin:2px 4px 2px 0}
+  .cyc{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;cursor:pointer}
+  .cyc.on{border-color:var(--gold);background:var(--gold-soft)}
+  .cyc b{font-size:14px}
+  .cyc small{color:var(--muted);font-size:12px;display:block;margin-top:2px}
+  .comps{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:13.5px}
+  .comps label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .comps input{width:16px;height:16px;accent-color:var(--crimson)}
+
+  /* hall ticket doc */
+  #htArea{display:none}
+  .htdoc{background:#fff;color:#1a1a1a;max-width:720px;margin:16px auto 0;padding:34px 40px;border-radius:10px;font-family:'Source Serif Pro',Georgia,serif;line-height:1.6}
+  @media print{ body>*{display:none !important} #htArea{display:block !important} .htdoc{box-shadow:none;margin:0;max-width:100%;border-radius:0} @page{margin:16mm} }
+</style>
+</head>
+<body>
+<div class="bgwrap"></div>
+<div class="top"><div class="in">
+  <img class="logo" src="alizon-logo.png" alt="" onerror="this.style.display='none'">
+  <div class="bt"><b>Examinations</b><small>ALIZON OS</small></div>
+  <div class="sp"><a href="ASMDI-dashboard.html">← Dashboard</a></div>
+</div></div>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab on" data-tab="apply">Apply for Exam</button>
+    <button class="tab" data-tab="ticket">Download Hall Ticket</button>
+  </div>
+
+  <!-- APPLY -->
+  <div id="tab-apply">
+    <div class="card">
+      <h2>Apply for an examination</h2>
+      <div class="hint">Type your registration number to load your details, choose the exam and the parts you're sitting, then submit. The exam office approves applications and issues hall tickets.</div>
+      <div class="lookrow">
+        <div><label class="f">Registration number</label><input type="text" id="ap-reg" placeholder="e.g. ALZ102" autocomplete="off"></div>
+        <button class="abtn" id="ap-look">Look up</button>
+      </div>
+      <div class="err" id="ap-err"></div>
+      <div class="stud" id="ap-stud"></div>
+    </div>
+  </div>
+
+  <!-- TICKET -->
+  <div id="tab-ticket" style="display:none">
+    <div class="card">
+      <h2>Download your hall ticket</h2>
+      <div class="hint">Once the exam office approves your application, enter your registration number here to view and download your hall ticket.</div>
+      <div class="lookrow">
+        <div><label class="f">Registration number</label><input type="text" id="ht-reg" placeholder="e.g. ALZ102" autocomplete="off"></div>
+        <button class="abtn" id="ht-look">Find hall ticket</button>
+      </div>
+      <div class="err" id="ht-err"></div>
+      <div id="ht-result"></div>
+    </div>
+  </div>
+</div>
+
+<div id="htArea"></div>
+
+<script>
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function J(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}}
+function W(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function today(){return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});}
+var COMP_LABEL={viva:'Viva Voce',practical:'Practical Examination',final:'Final / Theory Examination'};
+
+function students(){return (J('alizonStudents',[])||[]).filter(function(s){return s&&(s.reg||s.name);});}
+function loadCycles(){var a=J('alizonExamCycles',[]);return Array.isArray(a)?a:[];}
+function loadApps(){var a=J('alizonExamApps',[]);return Array.isArray(a)?a:[];}
+function saveApps(a){W('alizonExamApps',a);}
+function norm(v){return String(v||'').toLowerCase().replace(/\s+/g,'');}
+function findStudent(reg){return students().filter(function(s){return norm(s.reg)===norm(reg);})[0]||null;}
+
+/* modules where all 3 assessment types are graded (status evaluated) */
+function completedModules(reg){
+  var subs=(J('alizonSubmissions',[])||[]).filter(function(s){return s&&norm(s.reg)===norm(reg);});
+  var byUnit={};
+  subs.forEach(function(s){
+    if(s.status!=='evaluated') return;
+    var unit=norm(String(s.module||'').split('·')[0]); if(!unit) return;
+    byUnit[unit]=byUnit[unit]||{}; byUnit[unit][s.type]=1;
+  });
+  var n=0; Object.keys(byUnit).forEach(function(u){ var t=byUnit[u]; if(t.assignment&&t.self&&t.practical) n++; });
+  return n;
+}
+
+/* ---------- APPLY ---------- */
+var applySel={cycleId:null, comps:{}};
+$('ap-look').addEventListener('click',doLookup);
+$('ap-reg').addEventListener('keydown',function(e){if(e.key==='Enter')doLookup();});
+function doLookup(){
+  var reg=($('ap-reg').value||'').trim();
+  var st=findStudent(reg);
+  var err=$('ap-err'), box=$('ap-stud');
+  if(!reg){ err.textContent='Enter your registration number.'; err.style.display='block'; box.style.display='none'; return; }
+  if(!st){ err.textContent='No student found for "'+reg+'". Check the number, or contact the office if your details aren’t synced yet.'; err.style.display='block'; box.style.display='none'; return; }
+  err.style.display='none';
+  var cycles=loadCycles().filter(function(c){return c.active!==false;});
+  var done=completedModules(st.reg);
+  applySel={cycleId:null, comps:{}};
+  box.innerHTML=
+    '<div class="kv"><b>Name</b><span>'+esc((st.salutation?st.salutation+' ':'')+st.name)+'</span></div>'+
+    '<div class="kv"><b>Register no</b><span style="font-family:ui-monospace,Menlo,monospace">'+esc(st.reg)+'</span></div>'+
+    (st.batch?'<div class="kv"><b>Batch</b><span>'+esc(st.batch)+'</span></div>':'')+
+    (st.programme||st.course?'<div class="kv"><b>Programme</b><span>'+esc(st.programme||st.course)+'</span></div>':'')+
+    '<div class="kv"><b>Modules completed</b><span>'+done+' module'+(done!==1?'s':'')+' (all 3 assessments graded)</span></div>'+
+    '<label class="f" style="margin-top:16px">Choose the examination</label>'+
+    (cycles.length? '<div id="ap-cycles"></div>' : '<div class="hint" style="color:#ff8a90">No exam is open for applications right now. Please check back later.</div>')+
+    '<div id="ap-comps"></div>'+
+    (cycles.length?'<button class="abtn" id="ap-submit" style="margin-top:16px">Submit application</button>':'')+
+    '<div class="ok" id="ap-ok"></div>';
+  box.style.display='block';
+  if(cycles.length){
+    $('ap-cycles').innerHTML=cycles.map(function(c,i){
+      var open=Object.keys(c.components||{}).filter(function(k){return c.components[k];}).map(function(k){return COMP_LABEL[k]||k;}).join(' · ')||'—';
+      return '<div class="cyc" data-cyc="'+esc(c.id)+'"><b>'+esc(c.name)+'</b><small>'+esc(open)+(c.purpose?' · '+esc(c.purpose):'')+'</small></div>';
+    }).join('');
+    $('ap-cycles').querySelectorAll('[data-cyc]').forEach(function(el){
+      el.addEventListener('click',function(){ selectCycle(cycles, el.dataset.cyc); });
+    });
+    $('ap-submit').addEventListener('click',function(){ submitApp(st); });
+  }
+}
+function selectCycle(cycles, id){
+  applySel.cycleId=id; applySel.comps={};
+  document.querySelectorAll('#ap-cycles .cyc').forEach(function(el){ el.classList.toggle('on', el.dataset.cyc===id); });
+  var c=cycles.filter(function(x){return x.id===id;})[0]; if(!c) return;
+  var open=Object.keys(c.components||{}).filter(function(k){return c.components[k];});
+  $('ap-comps').innerHTML='<label class="f">Which parts are you applying for?</label><div class="comps">'+
+    open.map(function(k){return '<label><input type="checkbox" data-comp="'+k+'"> '+ (COMP_LABEL[k]||k) +'</label>';}).join('')+'</div>';
+  $('ap-comps').querySelectorAll('[data-comp]').forEach(function(cb){
+    cb.addEventListener('change',function(){ applySel.comps[cb.dataset.comp]=cb.checked; });
+  });
+}
+function submitApp(st){
+  var ok=$('ap-ok'), err=$('ap-err');
+  if(!applySel.cycleId){ err.textContent='Choose an examination first.'; err.style.display='block'; return; }
+  var comps=Object.keys(applySel.comps).filter(function(k){return applySel.comps[k];});
+  if(!comps.length){ err.textContent='Tick at least one part (Viva / Practical / Final).'; err.style.display='block'; return; }
+  err.style.display='none';
+  var cyc=loadCycles().filter(function(c){return c.id===applySel.cycleId;})[0]||{};
+  var apps=loadApps();
+  var existing=apps.filter(function(a){return norm(a.reg)===norm(st.reg)&&a.cycleId===applySel.cycleId&&a.status!=='rejected';})[0];
+  if(existing){
+    existing.components=comps; existing.appliedAt=Date.now();
+    if(existing.status!=='approved') existing.status='applied';
+  } else {
+    apps.unshift({ id:'ex'+Date.now()+'_'+Math.floor(Math.random()*1000), reg:st.reg, name:st.name, batch:st.batch||'', programme:st.programme||st.course||'',
+      cycleId:applySel.cycleId, cycleName:cyc.name||'Examination', components:comps, appliedAt:Date.now(), status:'applied',
+      hallTicketNo:'', purpose:cyc.purpose||'', notes:'', venue:'', examDate:'', approvedAt:0, approvedBy:'' });
+  }
+  saveApps(apps);
+  ok.innerHTML='✓ Application submitted for <b>'+esc(cyc.name||'the examination')+'</b> ('+comps.map(function(k){return COMP_LABEL[k]||k;}).join(', ')+').<br>The exam office will review it; once approved you can download your hall ticket from the "Download Hall Ticket" tab.';
+  ok.style.display='block';
+}
+
+/* ---------- HALL TICKET ---------- */
+$('ht-look').addEventListener('click',doTicket);
+$('ht-reg').addEventListener('keydown',function(e){if(e.key==='Enter')doTicket();});
+function doTicket(){
+  var reg=($('ht-reg').value||'').trim(), err=$('ht-err'), res=$('ht-result');
+  res.innerHTML='';
+  if(!reg){ err.textContent='Enter your registration number.'; err.style.display='block'; return; }
+  var st=findStudent(reg);
+  var apps=loadApps().filter(function(a){return norm(a.reg)===norm(reg)&&a.status==='approved';});
+  if(!apps.length){
+    err.style.display='block';
+    var pending=loadApps().filter(function(a){return norm(a.reg)===norm(reg)&&a.status==='applied';}).length;
+    err.textContent=pending? 'Your application is submitted and awaiting approval by the exam office. Please check back once it’s approved.' : 'No approved hall ticket found for "'+reg+'". Apply for the exam first, then download once approved.';
+    return;
+  }
+  err.style.display='none';
+  res.innerHTML=apps.map(function(a){
+    return '<div style="border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px">'+
+      '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><b style="font-size:14px">'+esc(a.cycleName)+'</b>'+
+      '<span class="chip" style="background:rgba(30,142,90,.15);color:#6fd0ab;border-color:rgba(30,142,90,.4)">Approved</span>'+
+      (a.hallTicketNo?'<span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted)">'+esc(a.hallTicketNo)+'</span>':'')+'</div>'+
+      '<div style="margin-top:6px;font-size:12.5px;color:var(--muted)">'+a.components.map(function(k){return COMP_LABEL[k]||k;}).join(' · ')+(a.examDate?' · '+esc(a.examDate):'')+(a.venue?' · '+esc(a.venue):'')+'</div>'+
+      '<div style="display:flex;gap:9px;margin-top:12px;flex-wrap:wrap"><button class="abtn" data-htdl="'+esc(a.id)+'">⬇ Download hall ticket (.doc)</button>'+
+      '<button class="abtn ghost" data-htpr="'+esc(a.id)+'">🖨 Print / Save as PDF</button></div></div>';
+  }).join('');
+  res.querySelectorAll('[data-htdl]').forEach(function(b){ b.addEventListener('click',function(){ var a=findApp(b.dataset.htdl); if(a) downloadTicket(a, st); }); });
+  res.querySelectorAll('[data-htpr]').forEach(function(b){ b.addEventListener('click',function(){ var a=findApp(b.dataset.htpr); if(a){ $('htArea').innerHTML=ticketHtml(a, st); window.print(); } }); });
+}
+function findApp(id){ return loadApps().filter(function(a){return a.id===id;})[0]; }
+
+function ticketHtml(a, st){
+  st=st||findStudent(a.reg)||{};
+  var comps=(a.components||[]).map(function(k){return '<li>'+esc(COMP_LABEL[k]||k)+'</li>';}).join('');
+  return '<div class="htdoc">'+
+    '<div style="text-align:center;border-bottom:2px solid #7A0309;padding-bottom:14px;margin-bottom:6px">'+
+      '<div style="font-weight:700;font-size:21px;color:#7A0309">Alizon School of Medical &amp; Digital Intelligence</div>'+
+      '<div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#666;margin-top:4px">Office of the Controller of Examinations</div></div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:12px;color:#555;font-family:Arial,sans-serif;margin:10px 0 14px">'+
+      '<span>Hall Ticket No: <b>'+esc(a.hallTicketNo||'—')+'</b></span><span>Issued: '+today()+'</span></div>'+
+    '<div style="text-align:center;font-weight:700;font-size:18px;letter-spacing:.06em;text-transform:uppercase;margin:12px 0 18px">Hall Ticket · Admit Card</div>'+
+    '<table style="width:100%;border-collapse:collapse;font-size:14px;font-family:Arial,sans-serif">'+
+      row('Candidate name',(st.salutation?st.salutation+' ':'')+(a.name||st.name||''))+
+      row('Register number',a.reg)+
+      (a.batch?row('Batch',a.batch):'')+
+      (a.programme?row('Programme',a.programme):'')+
+      row('Examination',a.cycleName)+
+      (a.examDate?row('Exam date',a.examDate):'')+
+      (a.venue?row('Venue',a.venue):'')+
+      (a.purpose?row('Purpose',a.purpose):'')+
+    '</table>'+
+    '<div style="margin-top:16px;font-family:Arial,sans-serif;font-size:14px"><b>Admitted for:</b><ul style="margin:8px 0 0 22px">'+comps+'</ul></div>'+
+    (a.notes?'<div style="margin-top:12px;font-family:Arial,sans-serif;font-size:13px;color:#444"><b>Notes:</b> '+esc(a.notes)+'</div>':'')+
+    '<div style="margin-top:16px;font-family:Arial,sans-serif;font-size:12px;color:#555;border-top:1px solid #e2d3d4;padding-top:10px">'+
+      '<b>Instructions:</b> Carry this hall ticket and a valid photo ID to every session. Reach the venue 30 minutes early. Electronic devices are not permitted in the examination hall unless specified. This admit card is valid only for the examination and components listed above.</div>'+
+    '<div style="margin-top:40px;display:flex;justify-content:space-between;align-items:flex-end;font-family:Arial,sans-serif;font-size:12.5px">'+
+      '<div><div style="width:200px;border-top:1px solid #9B9394;padding-top:5px">Candidate’s signature</div></div>'+
+      '<div style="text-align:right"><div style="width:220px;border-top:1px solid #9B9394;padding-top:5px;margin-left:auto">Controller of Examinations</div></div></div>'+
+    '<div style="margin-top:24px;text-align:center;font-family:Arial,sans-serif;font-size:10.5px;color:#8A8384;border-top:1px solid #E2DBDB;padding-top:10px">'+
+      'System-generated via ALIZON OS · Valid without a physical seal · For queries contact exams@alizongov.com</div>'+
+  '</div>';
+}
+function row(k,v){ return '<tr><td style="border:1px solid #e0dcd8;padding:8px 11px;background:#faf6f2;font-weight:600;width:200px">'+esc(k)+'</td><td style="border:1px solid #e0dcd8;padding:8px 11px">'+esc(v)+'</td></tr>'; }
+function downloadTicket(a, st){
+  var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'+
+    '<head><meta charset="utf-8"><style>body{font-family:"Source Serif Pro",Georgia,serif;color:#1a1a1a;max-width:760px;margin:0 auto;padding:10px}</style></head><body>'+ticketHtml(a, st)+'</body></html>';
+  var blob=new Blob(['﻿'+html],{type:'application/msword'});
+  var el=document.createElement('a'); el.href=URL.createObjectURL(blob);
+  el.download='Hall_Ticket_'+String(a.reg).replace(/[^A-Za-z0-9]+/g,'_')+'.doc';
+  document.body.appendChild(el); el.click(); el.remove(); setTimeout(function(){URL.revokeObjectURL(el.href);},1500);
+}
+
+/* ---------- tabs + deep-link ---------- */
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');}); t.classList.add('on');
+    var id=t.dataset.tab;
+    $('tab-apply').style.display=id==='apply'?'':'none';
+    $('tab-ticket').style.display=id==='ticket'?'':'none';
+  });
+});
+(function(){
+  var p=new URLSearchParams(location.search);
+  var reg=p.get('reg');
+  if(reg && !p.get('apply')){
+    // hall ticket deep-link
+    document.querySelector('.tab[data-tab="ticket"]').click();
+    $('ht-reg').value=reg; doTicket();
+  } else if(reg){
+    $('ap-reg').value=reg; doLookup();
+  }
+})();
+</script>
+</body>
+</html>

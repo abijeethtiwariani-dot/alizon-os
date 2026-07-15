@@ -22,7 +22,8 @@
 
   var KEYS = ['alizonPrograms','alizonStudents','alizonSubmissions','alizonGrievances',
     'alizonFees','alizonFaculty','alizonSchedule','alizonLinks','alizonActivity',
-    'alizonHR','alizonStaffReqs','alizonStaffMsgs','alizonStaffMeta','alizonResults','alizonAnnounce'];
+    'alizonHR','alizonStaffReqs','alizonStaffMsgs','alizonStaffMeta','alizonResults','alizonAnnounce',
+    'alizonExamCycles','alizonExamApps'];
   var KEYSET = {}; KEYS.forEach(function(k){ KEYSET[k] = 1; });
 
   var SDK = 'https://www.gstatic.com/firebasejs/10.12.5/';

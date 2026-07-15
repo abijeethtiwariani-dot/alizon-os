@@ -336,6 +336,7 @@
     <a data-sec="adm-fees"><span class="aic"></span> Fees <b class="cnt" id="cntFees" style="background:var(--success)"></b></a>
     <a data-sec="adm-results"><span class="aic"></span> Results</a>
     <a data-sec="adm-eval"><span class="aic">✔</span> Evaluation <b class="cnt" id="cntEval"></b></a>
+    <a data-sec="adm-exams"><span class="aic"></span> Exams <b class="cnt" id="cntExams" style="background:var(--gold)"></b></a>
     <a data-sec="adm-griev"><span class="aic"></span> Grievances <b class="cnt" id="cntGriev"></b></a>
     <a data-sec="adm-faculty"><span class="aic"></span> Faculty</a>
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
@@ -568,6 +569,57 @@
     </div>
     <div class="cblock"><div class="ct">Current announcements</div>
       <div class="clist" id="anList"></div>
+    </div>
+  </section>
+
+  <section class="apanel asec" id="adm-exams">
+    <h2>Exams</h2>
+    <div class="ahint">Define exam windows (cycles), then review &amp; approve student applications. Every approval issues a <b>hall-ticket number</b> and lets you set venue, date &amp; purpose — one-by-one or in <b>bulk by batch</b>. The <b>modules-completed</b> count on each row shows a student's progress before you approve.</div>
+
+    <div class="cblock"><div class="ct">Create an exam cycle</div>
+      <div class="arow4" style="grid-template-columns:1.4fr 1.6fr 130px;align-items:end">
+        <input id="ex-cname" placeholder="Cycle name — e.g. July 2026 Final Exams">
+        <input id="ex-cpurpose" placeholder="Purpose (optional) — e.g. Semester-end assessment">
+        <label class="citem" style="cursor:pointer;gap:8px;margin:0"><input type="checkbox" id="ex-cactive" checked><span style="font-size:12.5px">Active</span></label>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-top:10px">
+        <span class="hint" style="align-self:center">Components open:</span>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ex-cviva"> Viva</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ex-cprac"> Practical</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ex-cfinal" checked> Final</label>
+      </div>
+      <div class="crow n" style="margin-top:10px"><button class="cadd" id="ex-caddbtn">＋ Add exam cycle</button></div>
+    </div>
+
+    <div class="cblock"><div class="ct">Exam cycles</div>
+      <div class="clist" id="ex-cyclelist"></div>
+    </div>
+
+    <div class="cblock"><div class="ct">Bulk actions — by batch</div>
+      <div class="arow4" style="grid-template-columns:1fr 1fr 1fr 1fr;align-items:end">
+        <div><label class="hint" style="display:block;margin-bottom:4px">Batch</label><select id="ex-bkbatch"></select></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Cycle (optional)</label><select id="ex-bkcycle"></select></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Common venue</label><input id="ex-bkvenue" placeholder="e.g. ASMDI Exam Hall A"></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Common date</label><input id="ex-bkdate" type="date"></div>
+      </div>
+      <div class="crow n" style="margin-top:8px"><input id="ex-bkpurpose" placeholder="Common purpose / notes for this batch (optional)"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button class="cadd" id="ex-bkall" style="background:var(--pill);border-color:var(--line);color:var(--ink)">Select / clear all filtered</button>
+        <button class="cadd" id="ex-bkapprove" style="background:rgba(46,139,106,.16);border-color:rgba(46,139,106,.45);color:var(--success)">✔ Approve selected</button>
+        <button class="cadd" id="ex-bkreject" style="background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">✘ Reject selected</button>
+        <button class="cadd" id="ex-bkapply" style="background:var(--gold-soft);border-color:rgba(217,164,65,.45);color:var(--gold)">Apply venue / date / purpose to selected</button>
+      </div>
+      <div class="hint" style="margin-top:6px">Tick rows below (or use Select all), then apply an action. Approve issues a hall-ticket number to each ticked applicant.</div>
+    </div>
+
+    <div class="cblock"><div class="ct">Applications</div>
+      <div class="arow4" style="grid-template-columns:1fr 1fr 1fr auto;align-items:end;margin-bottom:6px">
+        <div><label class="hint" style="display:block;margin-bottom:4px">Filter by cycle</label><select id="ex-fcycle"></select></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Filter by batch</label><select id="ex-fbatch"></select></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Filter by status</label><select id="ex-fstatus"><option value="">All statuses</option><option value="applied">Applied</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
+        <div class="hint" id="ex-appcount" style="padding-bottom:10px"></div>
+      </div>
+      <div class="clist" id="ex-applist"></div>
     </div>
   </section>
 
@@ -1270,7 +1322,7 @@ function renderFees(){
 }
 
 /* ---- sidebar: section switching + badges ---- */
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-griev','adm-faculty','adm-schedule','adm-links','adm-announce','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-links','adm-announce','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -1279,6 +1331,7 @@ function showSec(id){
   if(id==='adm-access') renderAccess();
   if(id==='adm-staff') renderStaff();
   if(id==='adm-results') renderResultsAdmin();
+  if(id==='adm-exams') renderExams();
   if(id==='adm-announce') renderAnnounce();
   try{ localStorage.setItem('admSec',id); }catch(e){}
   window.scrollTo({top:0,behavior:'instant'});
@@ -1290,6 +1343,9 @@ function paintCounts(){
   const ce=document.getElementById('cntEval'), cg=document.getElementById('cntGriev');
   if(ce){ ce.textContent=pend; ce.classList.toggle('show',pend>0); }
   if(cg){ cg.textContent=open; cg.classList.toggle('show',open>0); }
+  const exN=loadApps().filter(a=>(a.status||'applied')==='applied').length;
+  const cx=document.getElementById('cntExams');
+  if(cx){ cx.textContent=exN; cx.classList.toggle('show',exN>0); }
 }
 
 /* ================= ACCESS & LOGINS ================= */
@@ -1511,7 +1567,233 @@ function renderResultsAdmin(){
   tb.querySelectorAll('.resDel').forEach(b=>b.onclick=()=>delResult(b.dataset.c,b.dataset.m));
 }
 
-renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderAnnounce(); renderActivity(); renderStudents(); renderFees(); renderAccess(); renderStaff(); renderResultsAdmin();
+/* ================= EXAMS (cycles + applications + bulk-by-batch) ================= */
+function loadCycles(){ try{const a=JSON.parse(localStorage.getItem('alizonExamCycles')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+function saveCycles(a){ setDB('alizonExamCycles',Array.isArray(a)?a:[]); }
+function loadApps(){ try{const a=JSON.parse(localStorage.getItem('alizonExamApps')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+function saveApps(a){ setDB('alizonExamApps',Array.isArray(a)?a:[]); }
+
+/* MODULE-COMPLETION contract — a unit counts complete when it has a graded (evaluated)
+   submission of ALL THREE types (assignment, self, practical) for the same student reg. */
+function exUnitKey(mod){ return String(mod||'').split('·')[0].trim().toUpperCase().replace(/\s+/g,''); }
+function completedModules(reg,programme){
+  if(reg==null) return 0;
+  const r=String(reg);
+  const subs=loadSubs().filter(s=>String(s.reg)===r && s.status==='evaluated' && (!programme || s.programme===programme));
+  const byUnit={};
+  subs.forEach(s=>{ const u=exUnitKey(s.module); if(!u)return; (byUnit[u]||(byUnit[u]={}))[s.type]=1; });
+  let n=0;
+  Object.keys(byUnit).forEach(u=>{ const t=byUnit[u]; if(t.assignment&&t.self&&t.practical)n++; });
+  return n;
+}
+
+const EX_COMPS=[{k:'viva',label:'Viva'},{k:'practical',label:'Practical'},{k:'final',label:'Final'}];
+let exSelected={}; /* id -> true for bulk selection */
+
+function exStudentBatches(){
+  const set={};
+  loadStudents().forEach(s=>{ if(s&&s.batch!=null&&String(s.batch).trim()!=='')set[String(s.batch)]=1; });
+  loadApps().forEach(a=>{ if(a&&a.batch!=null&&String(a.batch).trim()!=='')set[String(a.batch)]=1; });
+  return Object.keys(set).sort();
+}
+function exFillSelect(el,items,firstLabel,keep){
+  if(!el)return;
+  const cur=keep?el.value:'';
+  el.innerHTML='<option value="">'+esc(firstLabel)+'</option>'+items.map(o=>`<option value="${esc(o.v)}">${esc(o.t)}</option>`).join('');
+  if(cur&&items.some(o=>String(o.v)===String(cur)))el.value=cur;
+}
+function exNextHallSeq(){
+  let mx=0;
+  loadApps().forEach(a=>{ const m=String(a.hallTicketNo||'').match(/\/(\d+)$/); if(m){const n=parseInt(m[1],10); if(n>mx)mx=n;} });
+  return mx+1;
+}
+function exApprove(a,extra){
+  const yr=new Date().getFullYear();
+  if(!a.hallTicketNo){ a.hallTicketNo='ASMDI/HT/'+yr+'/'+String(exNextHallSeq()).padStart(4,'0'); }
+  a.status='approved'; a.approvedAt=Date.now(); a.approvedBy='Admin';
+  if(extra){ if(extra.venue!=null&&extra.venue!=='')a.venue=extra.venue;
+    if(extra.examDate!=null&&extra.examDate!=='')a.examDate=extra.examDate;
+    if(extra.purpose!=null&&extra.purpose!=='')a.purpose=extra.purpose;
+    if(extra.notes!=null&&extra.notes!=='')a.notes=extra.notes; }
+  return a;
+}
+
+function renderExams(){
+  paintCounts();
+  const cycles=loadCycles();
+  /* ---- cycle list ---- */
+  const cl=document.getElementById('ex-cyclelist');
+  if(cl){
+    cl.innerHTML=cycles.length?cycles.map(c=>{
+      const comps=EX_COMPS.filter(x=>c.components&&c.components[x.k]).map(x=>x.label).join(' · ')||'—';
+      return `<div class="citem">
+        <div class="cinfo"><b>${esc(c.name||'Untitled cycle')}</b>
+          <small>${esc(comps)}${c.purpose?' · '+esc(c.purpose):''}${c.ts?' · created '+fmt(c.ts):''}</small></div>
+        <span class="badge2 ${c.active?'done':''}" style="${c.active?'':'color:var(--muted);background:var(--pill)'}">${c.active?'Active':'Off'}</span>
+        <label class="eview" style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" class="ex-ctoggle" data-id="${esc(c.id)}"${c.active?' checked':''}> Active</label>
+        <button class="cx ex-cdel" data-id="${esc(c.id)}" title="Delete cycle">✕</button>
+      </div>`;
+    }).join(''):'<div class="hint" style="padding:6px 2px">No exam cycles yet — create one above to open an exam window.</div>';
+    cl.querySelectorAll('.ex-ctoggle').forEach(b=>b.addEventListener('change',()=>{
+      const arr=loadCycles(); const c=arr.find(x=>String(x.id)===String(b.dataset.id)); if(!c)return;
+      c.active=b.checked; saveCycles(arr); renderExams(); toast('Cycle "'+(c.name||'')+'" '+(c.active?'activated':'turned off'));
+      logAct('Exam cycle "'+(c.name||'')+'" '+(c.active?'activated':'deactivated'),'update');
+    }));
+    cl.querySelectorAll('.ex-cdel').forEach(b=>b.addEventListener('click',()=>{
+      const arr=loadCycles(); const c=arr.find(x=>String(x.id)===String(b.dataset.id));
+      if(!c)return; if(!confirm('Delete exam cycle "'+(c.name||'')+'"? Applications already made are kept.'))return;
+      saveCycles(arr.filter(x=>String(x.id)!==String(b.dataset.id))); renderExams(); toast('Exam cycle deleted');
+      logAct('Deleted exam cycle "'+(c.name||'')+'"','update');
+    }));
+  }
+
+  /* ---- populate cycle / batch selects (filters + bulk) ---- */
+  const cycleOpts=cycles.map(c=>({v:c.id,t:c.name||('Cycle '+c.id)}));
+  const batchOpts=exStudentBatches().map(b=>({v:b,t:'Batch '+b}));
+  exFillSelect(document.getElementById('ex-fcycle'),cycleOpts,'All cycles',true);
+  exFillSelect(document.getElementById('ex-fbatch'),batchOpts,'All batches',true);
+  exFillSelect(document.getElementById('ex-bkcycle'),cycleOpts,'Any cycle',true);
+  exFillSelect(document.getElementById('ex-bkbatch'),batchOpts,'Select a batch…',true);
+
+  /* ---- applications (newest first, filtered) ---- */
+  const fCycle=(document.getElementById('ex-fcycle')||{}).value||'';
+  const fBatch=(document.getElementById('ex-fbatch')||{}).value||'';
+  const fStatus=(document.getElementById('ex-fstatus')||{}).value||'';
+  let apps=loadApps().slice(); /* already stored newest-first */
+  if(fCycle) apps=apps.filter(a=>String(a.cycleId)===String(fCycle));
+  if(fBatch) apps=apps.filter(a=>String(a.batch)===String(fBatch));
+  if(fStatus) apps=apps.filter(a=>(a.status||'applied')===fStatus);
+
+  const cnt=document.getElementById('ex-appcount');
+  if(cnt){ const total=loadApps().length; cnt.textContent=apps.length+' shown · '+total+' total'; }
+
+  const list=document.getElementById('ex-applist');
+  if(list){
+    list.innerHTML=apps.length?apps.map(a=>{
+      const st=a.status||'applied';
+      const badge=st==='approved'?'<span class="badge2 done">Approved</span>'
+        :st==='rejected'?'<span class="badge2" style="color:#fff;background:var(--crimson)">Rejected</span>'
+        :'<span class="badge2 new">Applied</span>';
+      const comps=(Array.isArray(a.components)?a.components:[]).map(k=>{const f=EX_COMPS.find(x=>x.k===k);return f?f.label:k;}).join(' · ')||'—';
+      const done=completedModules(a.reg,a.programme);
+      const checked=exSelected[a.id]?' checked':'';
+      const editor=st==='approved'?`<div style="display:flex;gap:8px;flex-wrap:wrap;background:var(--gold-soft);border:1px solid rgba(217,164,65,.3);border-radius:10px;padding:8px 10px;margin-top:2px">
+          <span style="font-size:11.5px;color:var(--gold);font-weight:700;align-self:center">Hall ticket ${esc(a.hallTicketNo||'—')}</span>
+          <input placeholder="Venue" value="${esc(a.venue||'')}" data-exvenue="${esc(a.id)}" style="flex:1;min-width:130px">
+          <input type="date" value="${esc(a.examDate||'')}" data-exdate="${esc(a.id)}" style="min-width:150px">
+          <input placeholder="Purpose" value="${esc(a.purpose||'')}" data-expurpose="${esc(a.id)}" style="flex:1;min-width:130px">
+          <input placeholder="Notes" value="${esc(a.notes||'')}" data-exnotes="${esc(a.id)}" style="flex:1;min-width:130px">
+          <button class="cadd" data-exsave="${esc(a.id)}" style="padding:6px 12px;font-size:12px">Save</button>
+        </div>`:'';
+      return `<div class="citem col" data-appid="${esc(a.id)}">
+        <div style="display:flex;gap:10px;align-items:center">
+          <input type="checkbox" class="ex-pick" data-id="${esc(a.id)}"${checked} style="flex:none;width:16px;height:16px">
+          ${badge}
+          <div class="cinfo"><b>${esc(a.name||'—')} · ${esc(a.reg||'')}</b>
+            <small>Batch ${esc(a.batch||'—')} · ${esc(a.programme||'—')} · ${esc(a.cycleName||'')} · ${esc(comps)} · applied ${a.appliedAt?fmt(a.appliedAt):'—'}${st==='approved'&&a.hallTicketNo?' · HT '+esc(a.hallTicketNo):''}</small></div>
+          <span class="badge2 ind" title="Modules completed per assignment+self+practical rule" style="flex:none">${done} module${done===1?'':'s'} completed</span>
+          ${st!=='approved'?`<button class="cadd ex-approve" data-id="${esc(a.id)}" style="padding:6px 12px;font-size:12px;background:rgba(46,139,106,.16);border-color:rgba(46,139,106,.45);color:var(--success)">✔ Approve</button>`:''}
+          ${st!=='rejected'?`<button class="cadd ex-reject" data-id="${esc(a.id)}" style="padding:6px 12px;font-size:12px;background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">✘ Reject</button>`:''}
+        </div>
+        ${editor}
+      </div>`;
+    }).join(''):'<div class="hint" style="padding:6px 2px">No applications match the current filters.</div>';
+
+    list.querySelectorAll('.ex-pick').forEach(b=>b.addEventListener('change',()=>{ if(b.checked)exSelected[b.dataset.id]=true; else delete exSelected[b.dataset.id]; }));
+    list.querySelectorAll('.ex-approve').forEach(b=>b.addEventListener('click',()=>{
+      const arr=loadApps(); const a=arr.find(x=>String(x.id)===String(b.dataset.id)); if(!a)return;
+      exApprove(a); saveApps(arr); renderExams();
+      toast('Approved — hall ticket '+a.hallTicketNo);
+      logAct('Approved exam application for '+(a.name||a.reg||'student')+' — '+a.hallTicketNo,'approve');
+    }));
+    list.querySelectorAll('.ex-reject').forEach(b=>b.addEventListener('click',()=>{
+      const arr=loadApps(); const a=arr.find(x=>String(x.id)===String(b.dataset.id)); if(!a)return;
+      a.status='rejected'; saveApps(arr); renderExams();
+      toast('Application rejected'); logAct('Rejected exam application for '+(a.name||a.reg||'student'),'update');
+    }));
+    list.querySelectorAll('[data-exsave]').forEach(b=>b.addEventListener('click',()=>{
+      const id=b.dataset.exsave, arr=loadApps(); const a=arr.find(x=>String(x.id)===String(id)); if(!a)return;
+      const g=sel=>{const el=list.querySelector(`[${sel}="${id}"]`);return el?el.value:'';};
+      a.venue=g('data-exvenue'); a.examDate=g('data-exdate'); a.purpose=g('data-expurpose'); a.notes=g('data-exnotes');
+      saveApps(arr); toast('Exam details saved for '+(a.name||a.reg||'applicant'));
+      logAct('Updated exam details (venue/date) for '+(a.name||a.reg||'applicant'),'update');
+    }));
+  }
+}
+
+/* ---- create cycle ---- */
+(function(){
+  const add=document.getElementById('ex-caddbtn'); if(!add)return;
+  add.addEventListener('click',()=>{
+    const name=(document.getElementById('ex-cname').value||'').trim();
+    if(!name){ toast('Give the exam cycle a name'); document.getElementById('ex-cname').focus(); return; }
+    const arr=loadCycles();
+    arr.unshift({ id:'ec'+Date.now().toString(36), name:name,
+      components:{ viva:document.getElementById('ex-cviva').checked, practical:document.getElementById('ex-cprac').checked, final:document.getElementById('ex-cfinal').checked },
+      purpose:(document.getElementById('ex-cpurpose').value||'').trim(), active:document.getElementById('ex-cactive').checked, ts:Date.now() });
+    saveCycles(arr);
+    document.getElementById('ex-cname').value=''; document.getElementById('ex-cpurpose').value='';
+    document.getElementById('ex-cviva').checked=false; document.getElementById('ex-cprac').checked=false;
+    document.getElementById('ex-cfinal').checked=true; document.getElementById('ex-cactive').checked=true;
+    renderExams(); toast('Exam cycle "'+name+'" created'); logAct('Created exam cycle "'+name+'"','update');
+  });
+})();
+
+/* ---- filters re-render ---- */
+['ex-fcycle','ex-fbatch','ex-fstatus'].forEach(id=>{ const el=document.getElementById(id); if(el)el.addEventListener('change',renderExams); });
+
+/* ---- bulk by batch ---- */
+(function(){
+  function bulkTargets(){
+    const batch=(document.getElementById('ex-bkbatch')||{}).value||'';
+    const cyc=(document.getElementById('ex-bkcycle')||{}).value||'';
+    /* prefer explicitly ticked rows; else fall back to the batch/cycle selection */
+    const ticked=Object.keys(exSelected).filter(k=>exSelected[k]);
+    let arr=loadApps();
+    if(ticked.length) return arr.filter(a=>ticked.indexOf(String(a.id))>-1);
+    if(!batch){ toast('Select a batch (or tick rows) first'); return []; }
+    return arr.filter(a=>String(a.batch)===String(batch)&&(!cyc||String(a.cycleId)===String(cyc)));
+  }
+  const selAll=document.getElementById('ex-bkall');
+  if(selAll)selAll.addEventListener('click',()=>{
+    const rows=document.querySelectorAll('#ex-applist .ex-pick');
+    const anyOff=Array.prototype.some.call(rows,r=>!r.checked);
+    rows.forEach(r=>{ r.checked=anyOff; if(anyOff)exSelected[r.dataset.id]=true; else delete exSelected[r.dataset.id]; });
+  });
+  const ap=document.getElementById('ex-bkapprove');
+  if(ap)ap.addEventListener('click',()=>{
+    const t=bulkTargets(); if(!t.length){ if(!Object.keys(exSelected).length)return; toast('Nothing to approve'); return; }
+    const extra={ venue:(document.getElementById('ex-bkvenue').value||'').trim(), examDate:(document.getElementById('ex-bkdate').value||'').trim(), purpose:(document.getElementById('ex-bkpurpose').value||'').trim() };
+    const arr=loadApps(); let n=0;
+    t.forEach(tt=>{ const a=arr.find(x=>String(x.id)===String(tt.id)); if(a){ exApprove(a,extra); n++; } });
+    saveApps(arr); exSelected={}; renderExams();
+    toast('Approved '+n+' application'+(n===1?'':'s')+' — hall tickets issued');
+    logAct('Bulk-approved '+n+' exam application'+(n===1?'':'s'),'approve');
+  });
+  const rj=document.getElementById('ex-bkreject');
+  if(rj)rj.addEventListener('click',()=>{
+    const t=bulkTargets(); if(!t.length)return;
+    const arr=loadApps(); let n=0;
+    t.forEach(tt=>{ const a=arr.find(x=>String(x.id)===String(tt.id)); if(a){ a.status='rejected'; n++; } });
+    saveApps(arr); exSelected={}; renderExams();
+    toast('Rejected '+n+' application'+(n===1?'':'s')); logAct('Bulk-rejected '+n+' exam application'+(n===1?'':'s'),'update');
+  });
+  const apl=document.getElementById('ex-bkapply');
+  if(apl)apl.addEventListener('click',()=>{
+    const t=bulkTargets(); if(!t.length)return;
+    const venue=(document.getElementById('ex-bkvenue').value||'').trim();
+    const examDate=(document.getElementById('ex-bkdate').value||'').trim();
+    const purpose=(document.getElementById('ex-bkpurpose').value||'').trim();
+    if(!venue&&!examDate&&!purpose){ toast('Set a venue, date or purpose to apply'); return; }
+    const arr=loadApps(); let n=0;
+    t.forEach(tt=>{ const a=arr.find(x=>String(x.id)===String(tt.id)); if(a){ if(venue)a.venue=venue; if(examDate)a.examDate=examDate; if(purpose)a.purpose=purpose; n++; } });
+    saveApps(arr); renderExams();
+    toast('Applied common details to '+n+' application'+(n===1?'':'s'));
+    logAct('Set common exam venue/date/purpose for '+n+' application'+(n===1?'':'s'),'update');
+  });
+})();
+
+renderEval(); renderGriev(); renderFaculty(); renderSched(); renderLinks(); renderAnnounce(); renderActivity(); renderStudents(); renderFees(); renderAccess(); renderStaff(); renderResultsAdmin(); renderExams();
 render();
 paintCounts();
 showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; }catch(e){ return 'sec-courses'; } })());

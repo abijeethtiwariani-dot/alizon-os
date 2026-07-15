@@ -787,6 +787,16 @@
       <div class="dlist" id="annList"></div>
     </div>
 
+<!-- EXAMINATIONS -->
+    <div class="modrow" id="examinations">
+      <div class="modhead">
+        <h3>Examinations</h3>
+        <span class="modsub" id="examSub">Apply for your viva, practical and final exams — then download your hall ticket once approved.</span>
+        <a href="alizon-exam.html?apply=1" class="subnew" id="examApplyBtn">＋ Apply for exam</a>
+      </div>
+      <div class="subtable" id="examList"></div>
+    </div>
+
 <!-- SUBMITTED PRACTICALS -->
     <div class="modrow" id="submissions">
       <div class="modhead">
@@ -1561,6 +1571,86 @@ function moduleResultBadge(moduleUnit, progName){
     else window.print();
   });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape' && viewer.classList.contains('open')) closeViewer(); });
+  render();
+  window.addEventListener('pageshow',render);
+})();
+
+/* ================= EXAMINATIONS (apply + status + hall ticket) ================= */
+(function(){
+  const list=document.getElementById('examList');
+  if(!list) return;
+  const applyBtn=document.getElementById('examApplyBtn');
+  const sub=document.getElementById('examSub');
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmt(ts){ try{ const d=new Date(ts); return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return ''; } }
+  const nk=x=>String(x==null?'':x).toUpperCase().replace(/\s+/g,'');
+  /* shared store 'alizonExamApps' — newest first */
+  function loadApps(){ try{ const a=JSON.parse(localStorage.getItem('alizonExamApps')||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+  function myReg(){ try{ return (JSON.parse(localStorage.getItem('alizonProfile')||'{}').reg)||''; }catch(e){ return ''; } }
+  const CTYPES=[['viva','Viva'],['practical','Practical'],['final','Final']];
+  function compLabels(comps){
+    if(!Array.isArray(comps)||!comps.length) return '';
+    return comps.map(c=>{ const f=CTYPES.find(t=>t[0]===String(c).toLowerCase()); return f?f[1]:esc(String(c)); }).join(' · ');
+  }
+  /* MODULE-COMPLETION RULE: a unit counts as completed for this reg when there is a
+     graded (status==='evaluated') submission of ALL THREE types for that unit. */
+  function completedModules(reg){
+    if(!reg) return 0;
+    let subs=[]; try{ subs=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]'); }catch(e){}
+    if(!Array.isArray(subs)) subs=[];
+    const unit=m=>nk(String(m==null?'':m).split('·')[0]);
+    const map={};
+    subs.forEach(s=>{
+      if(!s||s.status!=='evaluated') return;
+      if(s.reg && nk(s.reg)!==nk(reg)) return;
+      const t=String(s.type||'').toLowerCase();
+      if(t!=='assignment'&&t!=='self'&&t!=='practical') return;
+      const u=unit(s.module); if(!u) return;
+      (map[u]||(map[u]={}))[t]=true;
+    });
+    let n=0; for(const u in map){ const g=map[u]; if(g.assignment&&g.self&&g.practical) n++; }
+    return n;
+  }
+  function statusChip(st){
+    const s=String(st||'applied').toLowerCase();
+    if(s==='approved') return `<span class="sgrade" style="color:#6fd0ab;border-color:rgba(46,139,106,.55)" title="Approved">✔ Approved</span>`;
+    if(s==='rejected') return `<span class="sgrade" style="color:#ff8a90;border-color:rgba(212,24,32,.55)" title="Rejected">✘ Rejected</span>`;
+    return `<span class="sgrade" style="color:var(--gold);border-color:rgba(217,164,65,.5)" title="Applied — awaiting approval">Applied</span>`;
+  }
+  function render(){
+    const reg=myReg();
+    const done=completedModules(reg);
+    if(sub) sub.textContent='Apply for your viva, practical and final exams, then download your hall ticket once approved. Modules completed: '+done+'.';
+    const mine=reg?loadApps().filter(a=>a&&a.reg&&nk(a.reg)===nk(reg)):[];
+    if(!mine.length){
+      list.innerHTML='<div class="subempty">No exam application yet. Click <b>Apply for exam</b> to register for the current exam cycle. <span style="color:var(--gold)">Modules completed: '+done+'</span>.</div>';
+      return;
+    }
+    list.innerHTML='<div class="subrow" style="border-color:rgba(217,164,65,.4)">'
+      +'<div class="sic" style="background:var(--gold-soft);color:var(--gold)">◆</div>'
+      +'<div class="sinfo"><b>Modules completed: '+done+'</b>'
+      +'<span>Eligibility indicator — a module counts once its assignment, self-assessment and practical are all evaluated.</span></div>'
+      +'</div>'
+      +mine.map(a=>{
+        const comps=compLabels(a.components);
+        const st=String(a.status||'applied').toLowerCase();
+        const approved=(st==='approved');
+        return '<div class="subrow">'
+          +'<div class="sic">✎</div>'
+          +'<div class="sinfo"><b>'+esc(a.cycleName||'Exam cycle')+'</b>'
+          +'<span>'+(comps?esc(comps)+' · ':'')+'Applied '+esc(fmt(a.appliedAt))
+          +(a.hallTicketNo&&approved?' · Hall ticket '+esc(a.hallTicketNo):'')
+          +(a.examDate&&approved?' · Exam '+esc(fmt(a.examDate)):'')
+          +(a.venue&&approved?' · '+esc(a.venue):'')
+          +'</span></div>'
+          +statusChip(a.status)
+          +(approved
+            ?'<a class="sview" style="text-decoration:none;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border:none" href="alizon-exam.html?reg='+encodeURIComponent(reg)+'"> Download Hall Ticket</a>'
+            :'')
+          +'</div>';
+      }).join('');
+  }
+  if(applyBtn){ const r=myReg(); if(r) applyBtn.setAttribute('href','alizon-exam.html?apply=1&reg='+encodeURIComponent(r)); }
   render();
   window.addEventListener('pageshow',render);
 })();
