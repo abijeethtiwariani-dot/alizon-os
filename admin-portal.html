@@ -342,10 +342,11 @@
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
     <a data-sec="adm-links"><span class="aic"></span> Links</a>
     <a data-sec="adm-announce"><span class="aic"></span> Module Updates</a>
+    <a data-sec="adm-data"><span class="aic"></span> Data &amp; Backup</a>
     <a data-sec="adm-activity"><span class="aic"></span> History</a>
   </nav>
   <div class="asfoot">
-    <a href="alizon-idcard.html" title="Generate & bulk-print ID cards for students, faculty and employees">ID Cards</a>
+    <a href="alizon-idcard.html?admin=1" title="Generate & bulk-print ID cards for students, faculty and employees">ID Cards</a>
     <a href="alizon-hr-studio.html" title="Employee master sheet, salary slips, certificates & letters">HR Studio</a>
     <a href="alizon-letterhead/" title="General-purpose letterhead — notices, memos, certificates, course notifications">Letterhead Studio</a>
     <a href="ASMDI-dashboard.html">↩ Student dashboard</a>
@@ -621,6 +622,21 @@
       </div>
       <div class="clist" id="ex-applist"></div>
     </div>
+  </section>
+
+  <section class="apanel asec" id="adm-data">
+    <h2>Data &amp; Backup</h2>
+    <div class="ahint">Export a full backup of every data store, or wipe everything for a clean go-live. These act on all synced institutional data (students, submissions, exams, HR, announcements, results, etc.).</div>
+    <h3 style="font-size:15px;margin:14px 0 8px;color:var(--gold)">Full backup</h3>
+    <div class="ahint">Download all data as a single <b>.zip</b> (one JSON file per store, plus a manifest) to keep on your own hardware.</div>
+    <button class="cadd" id="dbBackup">Download full backup (.zip)</button>
+    <h3 style="font-size:15px;margin:24px 0 8px;color:var(--crimson)">Danger zone — reset everything</h3>
+    <div class="ahint">Permanently deletes <b>ALL</b> data on this device and in the cloud. Your admin password is kept so you stay signed in. <b>Download a backup first.</b> Type <b>DELETE</b> to confirm.</div>
+    <div class="crow n" style="gap:8px;align-items:center;flex-wrap:wrap">
+      <input id="dbReset" placeholder="Type DELETE to confirm" style="max-width:230px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.05);color:var(--ink)">
+      <button class="cadd" id="dbResetBtn" style="background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">Reset — delete all data</button>
+    </div>
+    <div class="ahint" id="dbNote" style="margin-top:10px"></div>
   </section>
 
   <section class="apanel asec" id="adm-activity">
@@ -1322,7 +1338,35 @@ function renderFees(){
 }
 
 /* ---- sidebar: section switching + badges ---- */
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-links','adm-announce','adm-activity'];
+/* ===== Data & Backup ===== */
+function dbAllKeys(){ var out=[]; for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf('alizon')===0) out.push(k); } return out.sort(); }
+function dbCrc32(bytes){ if(!dbCrc32.t){ dbCrc32.t=[]; for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); dbCrc32.t[n]=c>>>0; } } var crc=-1; for(var i=0;i<bytes.length;i++) crc=(crc>>>8)^dbCrc32.t[(crc^bytes[i])&0xFF]; return (crc^-1)>>>0; }
+function dbZip(files){ var chunks=[],central=[],offset=0,enc=new TextEncoder();
+  function u16(n){return [n&0xFF,(n>>8)&0xFF];} function u32(n){n=n>>>0;return [n&0xFF,(n>>8)&0xFF,(n>>16)&0xFF,(n>>24)&0xFF];}
+  files.forEach(function(f){ var name=enc.encode(f.name),data=f.data,crc=dbCrc32(data);
+    var lh=[].concat(u32(0x04034b50),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(name.length),u16(0));
+    chunks.push(new Uint8Array(lh),name,data);
+    var ch=[].concat(u32(0x02014b50),u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(name.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset));
+    central.push(new Uint8Array(ch),name); offset+=lh.length+name.length+data.length; });
+  var csize=0; central.forEach(function(c){csize+=c.length;});
+  var eocd=new Uint8Array([].concat(u32(0x06054b50),u16(0),u16(0),u16(files.length),u16(files.length),u32(csize),u32(offset),u16(0)));
+  return new Blob(chunks.concat(central,[eocd]),{type:'application/zip'}); }
+function dbBackup(){ var enc=new TextEncoder(),files=[],manifest={exported:new Date().toISOString(),keys:{}};
+  dbAllKeys().forEach(function(k){ var v=localStorage.getItem(k)||''; files.push({name:k+'.json',data:enc.encode(v)}); try{var pp=JSON.parse(v); manifest.keys[k]=Array.isArray(pp)?pp.length:(pp&&typeof pp==='object'?Object.keys(pp).length:1);}catch(e){manifest.keys[k]='?';} });
+  files.push({name:'_manifest.json',data:enc.encode(JSON.stringify(manifest,null,2))});
+  var blob=dbZip(files),d=new Date(),ds=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='alizon-backup-'+ds+'.zip';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(a.href);},1500);
+  try{toast('Backup downloaded ('+files.length+' files)');}catch(e){} try{logAct('Downloaded full data backup','update');}catch(e){} }
+function dbResetAll(){ var inp=document.getElementById('dbReset'),note=document.getElementById('dbNote');
+  if(!inp||inp.value.trim()!=='DELETE'){ if(note){note.style.color='var(--crimson)'; note.textContent='Type DELETE (in capitals) to confirm.';} return; }
+  dbAllKeys().forEach(function(k){ if(k!=='alizonAdminPass'){ try{localStorage.removeItem(k);}catch(e){} } });
+  try{logAct('Reset - all data deleted','update');}catch(e){}
+  if(note){note.style.color='var(--gold)'; note.textContent='All data deleted. Reloading...';}
+  setTimeout(function(){ location.reload(); },800); }
+function renderData(){ var b=document.getElementById('dbBackup'); if(b&&!b._w){b._w=1;b.addEventListener('click',dbBackup);} var r=document.getElementById('dbResetBtn'); if(r&&!r._w){r._w=1;r.addEventListener('click',dbResetAll);} }
+
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-links','adm-announce','adm-data','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -1333,6 +1377,7 @@ function showSec(id){
   if(id==='adm-results') renderResultsAdmin();
   if(id==='adm-exams') renderExams();
   if(id==='adm-announce') renderAnnounce();
+  if(id==='adm-data') renderData();
   try{ localStorage.setItem('admSec',id); }catch(e){}
   window.scrollTo({top:0,behavior:'instant'});
 }
