@@ -71,6 +71,41 @@ main{display:flex;flex:1;min-height:0}
 .doc-tab:nth-child(odd){border-right:1px solid var(--line-soft)}
 .doc-tab:nth-last-child(-n+2){border-bottom:none}
 .doc-tab.active{color:var(--gold);box-shadow:inset 0 -2px 0 var(--gold)}
+.doc-tab[hidden]{display:none!important}
+
+/* ── HR mode segment (Employees | Interns) & sub-choices ── */
+.mode-seg{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;
+  padding:12px 14px 0;background:var(--navy)
+}
+.mode-seg button{
+  border:1px solid var(--line);background:var(--pill);color:var(--muted);
+  padding:9px 10px;border-radius:10px;font-family:var(--sans);font-size:12.5px;font-weight:700;
+  letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:background .15s,border-color .15s,color .15s
+}
+.mode-seg button:hover{color:var(--ink);border-color:rgba(217,164,65,.4)}
+.mode-seg button.active{
+  background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));
+  border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(212,24,32,.3)
+}
+.mode-seg button.active[data-mode="interns"]{
+  background:linear-gradient(120deg,#8a6b1f,var(--gold));color:#241a05;
+  box-shadow:0 6px 16px rgba(217,164,65,.28)
+}
+.intern-banner{
+  margin:12px 14px 0;padding:8px 12px;border-radius:10px;
+  background:var(--gold-soft);border:1px solid rgba(217,164,65,.3);
+  font-size:11.5px;color:#ecd9ab;line-height:1.45;display:none
+}
+body.hrmode-interns .intern-banner{display:block}
+.subseg{display:flex;gap:6px;margin-top:2px}
+.subseg button{
+  flex:1;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);
+  padding:7px 8px;border-radius:9px;font-family:var(--sans);font-size:12.5px;font-weight:600;transition:.15s
+}
+.subseg button:hover{color:var(--ink);border-color:rgba(217,164,65,.4)}
+.subseg button.active{background:var(--gold-soft);color:var(--gold);border-color:rgba(217,164,65,.4)}
 .form-scroll{overflow-y:auto;padding:18px 20px 40px;flex:1}
 fieldset{border:none;margin-bottom:22px}
 legend{
@@ -251,6 +286,23 @@ table.emp tr:hover td{background:rgba(255,255,255,.03)}
   <script src="print-paginate.js"></script>
 </head>
 <body>
+<!-- shared department suggestions (typeable) for both the Document Studio and the employee modal -->
+<datalist id="deptlist">
+  <option value="Academics"></option>
+  <option value="Clinical Sciences"></option>
+  <option value="Research"></option>
+  <option value="Digital Health Sciences"></option>
+  <option value="Medical Informatics"></option>
+  <option value="IT &amp; Systems"></option>
+  <option value="Human Resources"></option>
+  <option value="Finance &amp; Accounts"></option>
+  <option value="Administration"></option>
+  <option value="Admissions"></option>
+  <option value="Examinations"></option>
+  <option value="Library"></option>
+  <option value="Travel"></option>
+  <option value="Operations"></option>
+</datalist>
 <div class="app">
 <header class="topbar">
   <img class="brandmark" id="brandLogo" alt="Alizon logo">
@@ -370,7 +422,7 @@ table.emp tr:hover td{background:rgba(255,255,255,.03)}
           <select id="m_status"><option value="current">Current</option><option value="former">Former</option></select></div>
       </div>
       <div class="row">
-        <div class="field"><label>Department</label><input id="m_dept"></div>
+        <div class="field"><label>Department</label><input id="m_dept" list="deptlist" autocomplete="off"></div>
         <div class="field"><label>Designation</label><input id="m_desig"></div>
       </div>
       <div class="row">
@@ -411,6 +463,15 @@ table.emp tr:hover td{background:rgba(255,255,255,.03)}
 
   <!-- ── FORM PANEL ── -->
   <aside class="panel">
+    <!-- top-level workspace: Employees vs Interns (separate document docks) -->
+    <div class="mode-seg" role="tablist" aria-label="Document workspace">
+      <button id="mode_emp" data-mode="employees" role="tab" class="active">Employees</button>
+      <button id="mode_int" data-mode="interns" role="tab">Interns</button>
+    </div>
+    <div class="intern-banner" id="internBanner">
+      Interns dock — separate from employee documents. Standard intern treatment applies:
+      stipend wording, no probation, and PF &amp; professional tax exempt.
+    </div>
     <div class="doc-tabs" role="tablist">
       <button class="doc-tab active" data-doc="salcert" role="tab">Salary Certificate</button>
       <button class="doc-tab" data-doc="slip" role="tab">Salary Slip</button>
@@ -432,13 +493,20 @@ table.emp tr:hover td{background:rgba(255,255,255,.03)}
               <option value="usa">USA Chapter</option>
             </select>
           </div>
-          <div class="field"><label>Employment type</label>
+          <div class="field" id="wrap_emptype"><label>Employment type</label>
             <select id="f_emptype">
               <option value="fulltime" selected>Full-time employee</option>
               <option value="contract">Contract staff</option>
               <option value="intern_paid">Intern (paid stipend)</option>
               <option value="intern_unpaid">Intern (unpaid)</option>
             </select>
+          </div>
+        </div>
+        <div class="field" id="wrap_internpay" style="display:none">
+          <label>Internship stipend</label>
+          <div class="subseg" id="internPaySeg" role="tablist">
+            <button type="button" id="ipay_paid" data-ipay="intern_paid" role="tab" class="active">Paid (stipend)</button>
+            <button type="button" id="ipay_unpaid" data-ipay="intern_unpaid" role="tab">Unpaid</button>
           </div>
         </div>
         <div class="row">
@@ -459,7 +527,7 @@ table.emp tr:hover td{background:rgba(255,255,255,.03)}
         </div>
         <div class="row" id="row_id_dept">
           <div class="field"><label>Employee ID</label><input id="f_empid" value="ASMDI-0142"></div>
-          <div class="field"><label>Department</label><input id="f_dept" value="Digital Health Sciences"></div>
+          <div class="field"><label>Department</label><input id="f_dept" list="deptlist" value="Digital Health Sciences" autocomplete="off"></div>
         </div>
         <div class="row" id="row_desig_mgr">
           <div class="field"><label id="lbl_desig">Designation</label><input id="f_desig" value="Assistant Professor"></div>
@@ -613,7 +681,8 @@ table.emp tr:hover td{background:rgba(255,255,255,.03)}
         <legend>Joining letter &amp; policies</legend>
         <div class="row">
           <div class="field"><label>Date of joining</label><input id="f_jdate" type="date" value="2026-08-03"></div>
-          <div class="field"><label>Probation (months)</label><input id="f_probation" type="number" value="6"></div>
+          <div class="field" id="wrap_probation"><label>Probation (months)</label><input id="f_probation" type="number" value="6"></div>
+          <div class="field" id="wrap_internterm" style="display:none"><label>Internship duration / term</label><input id="f_internterm" value="six (6) months"></div>
         </div>
         <div class="field"><label>Notice period</label>
           <input id="f_notice" value="thirty (30) days during probation and sixty (60) days after confirmation">
@@ -767,6 +836,14 @@ function amountWords(n){
 /* ── State: which document ── */
 let doc='salcert';
 
+/* ── Workspace mode: 'employees' vs 'interns' (separate document docks) ── */
+let hrMode='employees';
+try{ const m=localStorage.getItem('hrMode'); if(m==='interns'||m==='employees') hrMode=m; }catch(e){}
+/* intern dock exposes ONLY intern documents; employee dock hides intern-only ones */
+const INTERN_DOCS=['joinletter','slip','salcert','expcert']; /* Internship Appointment, Stipend Slip, Stipend Certificate, Internship Certificate */
+const EMP_DOCS=['salcert','slip','expcert','recletter','callletter','joinletter'];
+function docAllowed(d){ return hrMode==='interns' ? INTERN_DOCS.includes(d) : EMP_DOCS.includes(d); }
+
 function isIntern(){return $('f_emptype').value.startsWith('intern');}
 function isUnpaid(){return $('f_emptype').value==='intern_unpaid';}
 function isUSA(){return $('f_office').value==='usa';}
@@ -860,6 +937,14 @@ function calcTDS(){
   return Math.round(tax/12);
 }
 function applyAutoTax(){
+  /* interns: statutory-exempt — PF & professional tax are always 0; unpaid ⇒ everything 0 */
+  if(isIntern()){
+    $('f_pf').value=0;
+    $('f_pt').value=0;
+    if(isUnpaid()){ $('f_tds').value=0; $('f_othded').value=0; }
+    else if(!isUSA() && $('f_autotax').value==='auto'){ $('f_tds').value=calcTDS(); }
+    return;
+  }
   if(isUSA()||$('f_autotax').value!=='auto'||isUnpaid()) return;
   $('f_pf').value=calcPF();
   $('f_pt').value=calcPT();
@@ -1043,8 +1128,9 @@ function bodyJoinLetter(){
   const office=OFFICES[$('f_office').value];
   const clauses=[];
   if(intern){
+    const term=esc(($('f_internterm')&&$('f_internterm').value.trim())||'a fixed term as notified');
     clauses.push(['Appointment & term',
-      `You are engaged as <strong>${esc($('f_desig').value)}</strong> in the Department of ${esc($('f_dept').value)}, ${office.label}, with effect from <strong>${longDate($('f_jdate').value)}</strong>. You will report to ${esc($('f_manager').value)}. This is a fixed-term ${roleWord} and, as such, is <strong>not subject to any probationary period or confirmation in regular service</strong>.`]);
+      `You are engaged as <strong>${esc($('f_desig').value)}</strong> in the Department of ${esc($('f_dept').value)}, ${office.label}, with effect from <strong>${longDate($('f_jdate').value)}</strong> for a fixed internship term of <strong>${term}</strong>. You will report to ${esc($('f_manager').value)}. This is a fixed-term ${roleWord} that ends on completion of the said term and, as such, is <strong>not subject to any probationary period or confirmation in regular service</strong> and does not create any right to future employment.`]);
   }else{
     clauses.push(['Appointment & probation',
       `You are appointed as <strong>${esc($('f_desig').value)}</strong> in the Department of ${esc($('f_dept').value)}, ${office.label}, with effect from <strong>${longDate($('f_jdate').value)}</strong>. You will report to ${esc($('f_manager').value)}. You will be on probation for <strong>${esc($('f_probation').value)} months</strong> from the date of joining; on satisfactory completion, your appointment will be confirmed in writing. Probation may be extended at the discretion of the management.`]);
@@ -1218,6 +1304,7 @@ const BUILDERS={salcert:bodySalCert,slip:bodySlip,expcert:bodyExpCert,recletter:
 
 /* ── Render ── */
 function render(){
+  applyMode(); /* reconcile the Employees/Interns dock before building the body */
   applyAutoTax();
   $('pTitle').textContent=TITLE();
   $('pRef').textContent='Ref: '+$('f_ref').value;
@@ -1241,6 +1328,45 @@ function render(){
   updateVisibility();
 }
 
+/* ── Workspace mode (Employees | Interns) ──
+   Keeps the two document docks separate: intern types are hidden in the
+   employee emptype list, employee types are hidden in the intern dock, and the
+   document-type picker only exposes docs valid for the active mode. */
+function applyMode(){
+  const interns = hrMode==='interns';
+  document.body.classList.toggle('hrmode-interns', interns);
+  $('mode_emp').classList.toggle('active', !interns);
+  $('mode_int').classList.toggle('active', interns);
+  try{ localStorage.setItem('hrMode', hrMode); }catch(e){}
+
+  /* emptype select: don't let employees and interns mix in either dock */
+  const et=$('f_emptype');
+  Array.from(et.options).forEach(o=>{
+    const isInternOpt=o.value.startsWith('intern');
+    o.hidden = interns ? !isInternOpt : isInternOpt;
+    o.disabled = o.hidden;
+  });
+  if(interns){
+    /* force an intern type; keep the Paid/Unpaid sub-choice in sync */
+    if(!et.value.startsWith('intern')) et.value='intern_paid';
+    $('ipay_paid').classList.toggle('active', et.value==='intern_paid');
+    $('ipay_unpaid').classList.toggle('active', et.value==='intern_unpaid');
+  }else if(et.value.startsWith('intern')){
+    et.value='fulltime';
+  }
+  /* hide the raw emptype select in intern mode (the Paid/Unpaid seg replaces it) */
+  $('wrap_emptype').style.display = interns ? 'none' : '';
+  $('wrap_internpay').style.display = interns ? '' : 'none';
+
+  /* restrict the document-type picker to the active dock */
+  document.querySelectorAll('.doc-tab').forEach(t=>{ t.hidden = !docAllowed(t.dataset.doc); });
+  if(!docAllowed(doc)){
+    doc = interns ? 'joinletter' : 'salcert';
+    document.querySelectorAll('.doc-tab').forEach(x=>x.classList.toggle('active', x.dataset.doc===doc));
+    $('f_ref').value=autoRef();
+  }
+}
+
 /* show/hide fields per document & employment type */
 function updateVisibility(){
   const show=(id,on)=>{$(id).style.display=on?'':'none';};
@@ -1259,6 +1385,9 @@ function updateVisibility(){
   show('wrap_current', !cand);
   show('fs_call', isCall);
   show('fs_join', isJoin);
+  /* interns: no probation — show the fixed-term "internship duration" field instead */
+  show('wrap_probation', !intern);
+  show('wrap_internterm', intern);
   show('wrap_offerpay', isCall && $('f_calltype').value==='joining');
   $('lbl_calldate').textContent = $('f_calltype').value==='joining'?'Joining date':'Interview date';
   $('lbl_venue').textContent = $('f_callmode').value==='online'?'Meeting link':'Venue';
@@ -1281,7 +1410,11 @@ function updateVisibility(){
   $('wrap_pan').querySelector('label').textContent = usa?'SSN (masked)':'PAN';
   /* lock auto-calculated fields */
   ['f_pf','f_pt','f_tds'].forEach(id=>{$(id).readOnly=auto;$(id).style.opacity=auto?'0.65':'1';});
-  if(intern){$('f_pf').readOnly=true;}
+  /* interns are statutory-exempt: PF & professional tax stay locked at 0 in any mode */
+  if(intern){
+    ['f_pf','f_pt'].forEach(id=>{$(id).readOnly=true;$(id).style.opacity='0.65';});
+    if(unpaid){ ['f_tds','f_othded'].forEach(id=>{$(id).readOnly=true;$(id).style.opacity='0.65';}); }
+  }
 
   show('fs_purpose', !isSlip && !isCall && !isJoin);
   show('wrap_purpose', isSal||isExp);
@@ -1294,14 +1427,14 @@ function updateVisibility(){
   show('wrap_recfor', isRec);
   show('wrap_dol', !cand && $('f_current').value==='former');
 
-  /* unpaid interns: salary docs unavailable */
+  /* unpaid interns: stipend documents unavailable (applies within either dock) */
   document.querySelectorAll('.doc-tab').forEach(t=>{
     const blocked = unpaid && (t.dataset.doc==='salcert'||t.dataset.doc==='slip');
-    t.disabled=blocked; t.style.opacity=blocked?'0.4':'1';
+    t.disabled=blocked; t.style.opacity=t.hidden?'':(blocked?'0.4':'1');
     t.title=blocked?'Not applicable — unpaid internship':'';
   });
   if(unpaid && (doc==='salcert'||doc==='slip')){
-    doc='expcert';
+    doc='expcert'; /* Internship Certificate — valid in both docks */
     document.querySelectorAll('.doc-tab').forEach(x=>x.classList.toggle('active',x.dataset.doc==='expcert'));
     $('f_ref').value=autoRef();
     render(); return;
@@ -1321,10 +1454,27 @@ $('f_office').addEventListener('change',()=>{
 /* ── Tabs ── */
 document.querySelectorAll('.doc-tab').forEach(t=>{
   t.addEventListener('click',()=>{
-    if(t.disabled) return;
+    if(t.disabled||t.hidden) return;
     document.querySelectorAll('.doc-tab').forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
     doc=t.dataset.doc;
+    $('f_ref').value=autoRef();
+    render();
+  });
+});
+
+/* ── Workspace mode segment (Employees | Interns) ── */
+document.querySelectorAll('.mode-seg button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    hrMode=b.dataset.mode;
+    $('f_ref').value=autoRef();
+    render(); /* render → updateVisibility → applyMode does the rest */
+  });
+});
+/* ── Intern Paid / Unpaid sub-choice ── */
+document.querySelectorAll('#internPaySeg button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    $('f_emptype').value=b.dataset.ipay;
     $('f_ref').value=autoRef();
     render();
   });
@@ -1500,6 +1650,8 @@ window.genFor=i=>{
   const o=OFFICES[e.office];
   $('f_place').value=o.place; $('f_footer').value=o.footer; $('f_currency').value=o.cur;
   $('f_emptype').value=e.emptype;
+  /* route into the correct dock so employee & intern documents stay separate */
+  hrMode = String(e.emptype||'').startsWith('intern') ? 'interns' : 'employees';
   $('f_salut').value=e.salut; $('f_pronoun').value=e.pronoun;
   $('f_name').value=e.name; $('f_empid').value=e.empid;
   $('f_dept').value=e.dept; $('f_desig').value=e.desig; $('f_manager').value=e.manager||'';
