@@ -92,7 +92,7 @@
 <div class="top"><div class="in">
   <img class="logo" src="alizon-logo.png" alt="" onerror="this.style.display='none'">
   <div class="bt"><b>ID Card Studio</b><small>ALIZON OS</small></div>
-  <div class="sp"><a href="admin-portal.html">← Admin Portal</a></div>
+  <div class="sp"><a href="ASMDI-dashboard.html" target="_top" id="idcBack">← Dashboard</a></div>
 </div></div>
 
 <div class="wrap">
@@ -391,5 +391,6 @@ $('bulkPrint').addEventListener('click',printAll);
   $('selfId').addEventListener('keydown',function(e){ if(e.key==='Enter') selfFind(); });
 })();
 </script>
+<script>(function(){var b=document.getElementById("idcBack"); if(b && new URLSearchParams(location.search).get("admin")){ b.href="admin-portal.html"; b.textContent="← Admin Portal"; }})();</script>
 </body>
 </html>
