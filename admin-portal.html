@@ -51,8 +51,8 @@
   .aside{position:sticky;top:62px;height:calc(100vh - 62px);padding:18px 13px;display:flex;flex-direction:column;
     border-right:1px solid var(--line);background:linear-gradient(180deg,rgba(13,16,36,.85),rgba(7,8,16,.9));
     backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-  .anavv{display:flex;flex-direction:column;gap:4px;flex:1}
-  .anavv a{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:12px;color:var(--muted);
+  .anavv{display:flex;flex-direction:column;gap:3px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}.anavv::-webkit-scrollbar{width:6px}.anavv::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:3px}
+  .anavv a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:11px;font-size:13.5px;color:var(--muted);
     text-decoration:none;font-size:14px;cursor:pointer;transition:.2s;border:1px solid transparent;user-select:none}
   .anavv a .aic{width:20px;text-align:center;flex:none}
   .anavv a:hover{color:var(--ink);background:var(--pill)}
