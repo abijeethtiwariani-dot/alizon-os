@@ -842,6 +842,7 @@ try{ const m=localStorage.getItem('hrMode'); if(m==='interns'||m==='employees') 
 /* intern dock exposes ONLY intern documents; employee dock hides intern-only ones */
 const INTERN_DOCS=['joinletter','slip','salcert','expcert']; /* Internship Appointment, Stipend Slip, Stipend Certificate, Internship Certificate */
 const EMP_DOCS=['salcert','slip','expcert','recletter','callletter','joinletter'];
+const TAB_LABELS={salcert:['Salary Certificate','Stipend Certificate'],slip:['Salary Slip','Stipend Slip'],expcert:['Experience Certificate','Internship Certificate'],recletter:['Recommendation Letter','Recommendation Letter'],callletter:['Call Letter (Interview / Joining)','Call Letter (Interview / Joining)'],joinletter:['Appointment Letter (with Policies)','Internship Appointment Letter']};
 function docAllowed(d){ return hrMode==='interns' ? INTERN_DOCS.includes(d) : EMP_DOCS.includes(d); }
 
 function isIntern(){return $('f_emptype').value.startsWith('intern');}
@@ -1360,6 +1361,7 @@ function applyMode(){
 
   /* restrict the document-type picker to the active dock */
   document.querySelectorAll('.doc-tab').forEach(t=>{ t.hidden = !docAllowed(t.dataset.doc); });
+  document.querySelectorAll('.doc-tab').forEach(t=>{ var L=TAB_LABELS[t.dataset.doc]; if(L) t.textContent = (hrMode==='interns')?L[1]:L[0]; });
   if(!docAllowed(doc)){
     doc = interns ? 'joinletter' : 'salcert';
     document.querySelectorAll('.doc-tab').forEach(x=>x.classList.toggle('active', x.dataset.doc===doc));
