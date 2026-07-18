@@ -340,6 +340,7 @@
     <a data-sec="adm-griev"><span class="aic"></span> Grievances <b class="cnt" id="cntGriev"></b></a>
     <a data-sec="adm-faculty"><span class="aic"></span> Faculty</a>
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
+    <a data-sec="adm-engage"><span class="aic"></span> Alerts &amp; Attendance <b class="cnt" id="cntEngage" style="background:var(--crimson)"></b></a>
     <a data-sec="adm-links"><span class="aic"></span> Links</a>
     <a data-sec="adm-announce"><span class="aic"></span> Module Updates</a>
     <a data-sec="adm-data"><span class="aic"></span> Data &amp; Backup</a>
@@ -534,6 +535,39 @@
       <div class="crow n"><button class="cadd" id="sc-add">＋ Add schedule</button></div>
     </div>
   </section>
+
+  <section class="apanel asec" id="adm-engage">
+    <h2>Alerts, Attendance &amp; Meetings</h2>
+    <div class="ahint">Push need-based alerts to students, mark attendance, and confirm meeting requests. Everything here syncs to the student dashboard instantly.</div>
+
+    <div class="cblock"><div class="ct">Push an alert / notification</div>
+      <div class="arow4">
+        <input id="al-title" placeholder="Title — e.g. Fee payment due">
+        <select id="al-level"><option value="info">Info · green</option><option value="warn">Warning · amber</option><option value="urgent">Urgent · red</option></select>
+        <input id="al-aud" placeholder="Audience: all / reg no / batch" value="all">
+        <input id="al-exp" type="date" title="Auto-hide after this date (optional)">
+      </div>
+      <div class="crow"><input id="al-body" placeholder="Message shown to students"></div>
+      <div class="crow n"><button class="cadd" id="al-add">＋ Push alert</button></div>
+      <div class="clist" id="alList" style="margin-top:12px"></div>
+    </div>
+
+    <div class="cblock"><div class="ct">Mark attendance</div>
+      <div class="arow4">
+        <input id="at-reg" placeholder="Registration no. — e.g. ALZ102">
+        <input id="at-date" type="date">
+        <select id="at-status"><option value="present">Present</option><option value="absent">Absent</option><option value="leave">Leave</option><option value="holiday">Holiday</option></select>
+        <button class="cadd" id="at-add">＋ Mark day</button>
+      </div>
+      <div class="crow"><input id="at-range-reg" placeholder="Reg no. (bulk)"><input id="at-from" type="date" title="From"><input id="at-to" type="date" title="To"><select id="at-rstatus"><option value="present">Present</option><option value="absent">Absent</option><option value="leave">Leave</option><option value="holiday">Holiday</option></select><button class="cadd" id="at-range">Mark range</button></div>
+      <div class="ahint" id="atInfo" style="margin-top:10px;color:var(--gold)"></div>
+    </div>
+
+    <div class="cblock"><div class="ct">Meeting requests</div>
+      <div class="clist" id="adminMtgList"></div>
+    </div>
+  </section>
+
 
   <section class="apanel asec" id="adm-links">
     <h2>Induction &amp; Assessment Links</h2>
@@ -1366,7 +1400,7 @@ function dbResetAll(){ var inp=document.getElementById('dbReset'),note=document.
   setTimeout(function(){ location.reload(); },800); }
 function renderData(){ var b=document.getElementById('dbBackup'); if(b&&!b._w){b._w=1;b.addEventListener('click',dbBackup);} var r=document.getElementById('dbResetBtn'); if(r&&!r._w){r._w=1;r.addEventListener('click',dbResetAll);} }
 
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-links','adm-announce','adm-data','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-data','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -1843,5 +1877,94 @@ render();
 paintCounts();
 showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; }catch(e){ return 'sec-courses'; } })());
 </script>
+<script>
+/* ============ Admin · Alerts / Attendance / Meetings ============ */
+(function(){
+  function LS(k,f){ try{var v=JSON.parse(localStorage.getItem(k)); return (v==null?f:v);}catch(e){return f;} }
+  function val(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function log(t){ try{ if(typeof logAct==='function') logAct(t,'engage'); }catch(e){} }
+  var DEL='cursor:pointer;font-family:inherit;font-weight:600;font-size:12.5px;border:1px solid rgba(212,24,32,.4);background:rgba(212,24,32,.12);color:#ff8a8a;border-radius:9px;padding:10px 14px;white-space:nowrap';
+
+  /* ---- alerts ---- */
+  function renderAlerts(){
+    var el=document.getElementById('alList'); if(!el) return;
+    var a=LS('alizonAlerts',[]);
+    el.innerHTML=a.length? a.slice().reverse().map(function(x){
+      return '<div class="citem"><div class="cinfo"><b>'+esc(x.title||'')+' <span class="badge2">'+esc(x.level||'info')+'</span></b>'+
+        '<small>'+esc(x.body||'')+' · to '+esc(x.audience||'all')+'</small></div>'+
+        '<button data-del="'+esc(x.id)+'" style="'+DEL+'">Remove</button></div>';
+    }).join('') : '<div class="ahint">No active alerts.</div>';
+    el.querySelectorAll('[data-del]').forEach(function(b){ b.onclick=function(){
+      var id=b.getAttribute('data-del'); var arr=LS('alizonAlerts',[]).filter(function(z){return z.id!==id;});
+      localStorage.setItem('alizonAlerts',JSON.stringify(arr)); renderAlerts(); log('Removed a student alert'); }; });
+  }
+  function addAlert(){
+    var t=val('al-title'); if(!t){ alert('Add a title for the alert'); return; }
+    var exp=val('al-exp'); var arr=LS('alizonAlerts',[]);
+    arr.push({id:'A'+Date.now()+Math.floor(Math.random()*999),title:t,body:val('al-body'),level:val('al-level')||'info',
+      audience:val('al-aud')||'all',ts:Date.now(),expires:exp?new Date(exp+'T23:59:59').getTime():0});
+    localStorage.setItem('alizonAlerts',JSON.stringify(arr));
+    document.getElementById('al-title').value=''; document.getElementById('al-body').value='';
+    renderAlerts(); log('Pushed student alert: '+t);
+  }
+
+  /* ---- attendance ---- */
+  function markOne(reg,date,st){
+    if(!reg||!date) return false;
+    reg=reg.toUpperCase(); var all=LS('alizonAttendance',{}); if(!all[reg]) all[reg]={};
+    all[reg][date]=st; localStorage.setItem('alizonAttendance',JSON.stringify(all)); return true;
+  }
+  function markDay(){
+    var reg=val('at-reg');
+    if(markOne(reg,val('at-date'),val('at-status'))){
+      document.getElementById('atInfo').textContent='Marked '+reg.toUpperCase()+' · '+val('at-date')+' · '+val('at-status');
+      log('Marked attendance for '+reg.toUpperCase());
+    } else alert('Registration no. and date are required');
+  }
+  function markRange(){
+    var reg=val('at-range-reg'),f=val('at-from'),t=val('at-to'),st=val('at-rstatus');
+    if(!reg||!f||!t){ alert('Reg no., from and to dates are required'); return; }
+    var d=new Date(f+'T00:00:00'), end=new Date(t+'T00:00:00'), n=0;
+    if(end<d){ alert('“To” is before “From”'); return; }
+    while(d<=end && n<400){ var k=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+      markOne(reg,k,st); d.setDate(d.getDate()+1); n++; }
+    document.getElementById('atInfo').textContent='Marked '+n+' day(s) for '+reg.toUpperCase()+' as '+st;
+    log('Marked '+n+'-day attendance range for '+reg.toUpperCase());
+  }
+
+  /* ---- meetings ---- */
+  function setStatus(id,st,note){ var arr=LS('alizonMeetings',[]);
+    arr.forEach(function(z){ if(z.id===id){ z.status=st; if(note) z.note=note; } });
+    localStorage.setItem('alizonMeetings',JSON.stringify(arr)); renderMtg(); }
+  function renderMtg(){
+    var el=document.getElementById('adminMtgList'); if(!el) return;
+    var m=LS('alizonMeetings',[]);
+    var pending=m.filter(function(x){return (x.status||'requested')==='requested';}).length;
+    var badge=document.getElementById('cntEngage'); if(badge) badge.textContent=pending?String(pending):'';
+    el.innerHTML=m.length? m.slice().reverse().map(function(x){
+      var st=(x.status||'requested');
+      return '<div class="citem"><div class="cinfo"><b>'+esc(x.topic||'Meeting')+' <span class="badge2">'+esc(st)+'</span></b>'+
+        '<small>'+esc(x.name||x.reg||'')+' · with '+esc(x.with||'')+' · '+esc(x.date||'')+' '+esc(x.time||'')+' · '+esc(x.mode||'')+(x.note?' · "'+esc(x.note)+'"':'')+'</small></div>'+
+        '<div style="display:flex;gap:6px;flex:none"><button class="cadd" data-ok="'+esc(x.id)+'">Confirm</button>'+
+        '<button data-no="'+esc(x.id)+'" style="'+DEL+'">Decline</button></div></div>';
+    }).join('') : '<div class="ahint">No meeting requests yet.</div>';
+    el.querySelectorAll('[data-ok]').forEach(function(b){ b.onclick=function(){ setStatus(b.getAttribute('data-ok'),'confirmed'); log('Confirmed a meeting'); }; });
+    el.querySelectorAll('[data-no]').forEach(function(b){ b.onclick=function(){ var r=prompt('Reason for declining (optional):')||''; setStatus(b.getAttribute('data-no'),'declined',r); log('Declined a meeting'); }; });
+  }
+
+  function boot(){ renderAlerts(); renderMtg(); }
+  function wire(){
+    var a=document.getElementById('al-add'); if(a) a.onclick=addAlert;
+    var d=document.getElementById('at-add'); if(d) d.onclick=markDay;
+    var r=document.getElementById('at-range'); if(r) r.onclick=markRange;
+    var nav=document.querySelector('.anavv a[data-sec="adm-engage"]');
+    if(nav) nav.addEventListener('click',function(){ setTimeout(boot,30); });
+    boot(); setInterval(renderMtg,20000);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
+})();
+</script>
+
 </body>
 </html>
