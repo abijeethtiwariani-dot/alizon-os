@@ -706,7 +706,7 @@
 body{ --bg:#ffffff; --panel:#ffffff; --ink:#2e2d29; --muted:#5f5d57; --faint:#8a887f;
   --line:rgba(0,0,0,.10); --line2:rgba(140,21,21,.16);
   background:#ffffff !important; color:#2e2d29 !important; }
-#bg{ display:none !important; }
+#bg{ opacity:.45 !important; }
 .glow{ background:radial-gradient(60% 45% at 50% 0%,rgba(140,21,21,.06),transparent 70%) !important; }
 
 /* nav: white editorial bar, cardinal serif brand */
@@ -1517,6 +1517,14 @@ footer .base{ border-top:1px solid rgba(0,0,0,.10) !important; color:#8a887f !im
 /* open state */
 #azstat-root .azstat-open{color:#2e2d29 !important;}
 #azstat-root .azstat-open .azstat-dot{background:#2e7d32 !important;}
+
+/* ===== restore: free-sitting Aliz launcher + subtle canvas on white ===== */
+#azcon-root .azcon-orb{background:none !important;border:none !important;box-shadow:none !important;
+  width:76px !important;height:86px !important;border-radius:0 !important;}
+#azcon-root .azcon-orb::after{display:none !important;}
+#azcon-root .azcon-orb img{padding:0 !important;border-radius:0 !important;object-fit:contain !important;
+  filter:drop-shadow(0 14px 26px rgba(20,18,16,.35)) !important;}
+#azcon-root .azcon-launcher:hover .azcon-orb{transform:translateY(-3px) scale(1.05) !important;}
 </style>
 <link rel="stylesheet" href="alizon-theme.css">
 </head>
