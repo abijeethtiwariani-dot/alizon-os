@@ -1,28 +1,38 @@
 /* ===================================================================
-   ALIZON OS — unified MAROON + WHITE theme (matches alizongov.com)
+   ALIZON OS — unified DARK + WHITE-CARD + LIME theme (medcity-crm style)
    Loaded LAST in every portal so it overrides the brand CSS variables.
-   Maroon = primary/brand (hsl 4 93% 37%) · gold = subtle secondary · white surfaces.
+   Lime = primary/CTA (dark text on lime) · white cards · dark canvas.
    =================================================================== */
 :root{
-  /* primary -> alizongov maroon */
-  --crimson:#b30e12 !important;
-  --crimson-deep:#7a0309 !important;
-  --crimson-bright:#d41820 !important;
-  --crimson-soft:rgba(179,14,18,.12) !important;
-  --crimson-2:#c0272d !important;
-  /* secondary accent -> brand gold */
-  --gold:#a16207 !important;
-  --gold-soft:rgba(161,98,7,.16) !important;
-  /* dark chrome kept subtle maroon-navy for portals that are dark */
-  --navy:#2a1416 !important;
-  --navy2:#3a1c1f !important;
-  --navy3:#4a2529 !important;
-  /* accent aliases */
-  --accent:#b30e12 !important;
-  --primary:#b30e12 !important;
-  --brand:#b30e12 !important;
+  /* primary -> bright lime (medcity #d3f56a -> #bceb3f) */
+  --crimson:#bce34f !important;
+  --crimson-deep:#a4cf34 !important;
+  --crimson-bright:#d3f56a !important;
+  --crimson-soft:rgba(188,227,79,.15) !important;
+  --crimson-2:#c8ea63 !important;
+  /* secondary accent -> readable olive-lime (works on white cards AND dark) */
+  --gold:#7d9e2b !important;
+  --gold-soft:rgba(125,158,43,.18) !important;
+  /* dark chrome */
+  --navy:#12141b !important;
+  --navy2:#1a1d27 !important;
+  --navy3:#262a38 !important;
+  --accent:#bce34f !important;
+  --primary:#bce34f !important;
+  --brand:#bce34f !important;
 }
-::selection{background:#b30e12;color:#fff;}
-* { scrollbar-color:#b3878a transparent; }
-*::-webkit-scrollbar-thumb{ background:#c9a6a8; border-radius:100px; }
-.orb{ filter:drop-shadow(0 0 12px rgba(179,14,18,.4)) !important; }
+::selection{background:#bce34f;color:#1e2a06;}
+* { scrollbar-color:#556b2a transparent; }
+*::-webkit-scrollbar-thumb{ background:#556b2a; border-radius:100px; }
+.orb{ filter:drop-shadow(0 0 12px rgba(188,227,79,.5)) !important; }
+
+/* Lime CTA buttons must use DARK text (white-on-lime is unreadable).
+   Force a consistent lime gradient + dark ink on the common primary/CTA classes. */
+.btn.primary,.btn-primary,.cadd,.gv-btn,.subnew,.sview,.pc-edit,.tl-join,
+.setbtn2:not(.danger),.segbtn.on,.progtab.active,.progtab.locked{
+  color:#1e2a06 !important;
+  background:linear-gradient(135deg,#d3f56a,#bce34f) !important;
+  border-color:transparent !important;
+  box-shadow:0 10px 24px rgba(164,207,52,.28) !important;
+  text-shadow:none !important;
+}
