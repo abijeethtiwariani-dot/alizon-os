@@ -885,9 +885,65 @@
   html.theme-dark .tl-body{background:rgba(255,255,255,.05)}
   html.theme-dark .tl-body.mtg{background:rgba(132,204,22,.14)}
   html.theme-dark .tl-dot{background:rgba(255,255,255,.08);color:#c6f24e}
+
+  /* ===================== PURPLE DARK premium override (student dashboard) ===================== */
+  html:not(.theme-dark) body{
+    background:
+      radial-gradient(1100px 680px at 12% -8%, #2a1e63 0%, transparent 55%),
+      radial-gradient(900px 620px at 108% 4%, #3a1f6b 0%, transparent 52%),
+      linear-gradient(180deg,#100e22 0%,#0b0a18 100%) !important;
+    color:#ece9f7 !important;}
+  html:not(.theme-dark) #bg{opacity:0 !important;}
+  html:not(.theme-dark) .grain{opacity:.02 !important;}
+  html:not(.theme-dark) .vignette{display:none !important;}
+  /* sidebar */
+  html:not(.theme-dark) .side{
+    background:linear-gradient(180deg,rgba(45,36,86,.62),rgba(20,17,42,.58)) !important;
+    border-right:1px solid rgba(255,255,255,.08) !important;
+    backdrop-filter:blur(26px) saturate(140%) !important;-webkit-backdrop-filter:blur(26px) saturate(140%) !important;}
+  html:not(.theme-dark) .side .brand .bname{color:#f5f3fc !important;}
+  html:not(.theme-dark) .side .brand .bname small{color:#b9a9ff !important;}
+  html:not(.theme-dark) .side .nav a{color:#c9c4e2 !important;}
+  html:not(.theme-dark) .side .nav a .ic{color:#948dbe !important;}
+  html:not(.theme-dark) .side .nav a:hover{background:rgba(255,255,255,.06) !important;color:#fff !important;}
+  html:not(.theme-dark) .side .nav a.active{background:linear-gradient(120deg,#7c5cfc,#9a7cff) !important;color:#fff !important;box-shadow:0 10px 24px rgba(124,92,252,.5) !important;}
+  html:not(.theme-dark) .side .nav a.active .ic{color:#fff !important;}
+  html:not(.theme-dark) .side-foot{border-top:1px solid rgba(255,255,255,.08) !important;}
+  html:not(.theme-dark) .side-foot a{color:#aca6cd !important;}
+  html:not(.theme-dark) .side-foot a:hover{background:rgba(255,255,255,.06) !important;color:#fff !important;}
+  /* topbar */
+  html:not(.theme-dark) .topbar .hello h2{color:#f5f3fc !important;}
+  html:not(.theme-dark) .topbar .hello p{color:#aca6cd !important;}
+  html:not(.theme-dark) .search{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.12) !important;box-shadow:none !important;}
+  html:not(.theme-dark) .search input{color:#f5f3fc !important;}
+  html:not(.theme-dark) .search input::placeholder{color:#938cb6 !important;}
+  html:not(.theme-dark) .search span{color:#938cb6 !important;}
+  html:not(.theme-dark) .icon-btn{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.12) !important;color:#d9d4f0 !important;box-shadow:none !important;}
+  html:not(.theme-dark) .icon-btn:hover{background:rgba(124,92,252,.35) !important;color:#fff !important;}
+  html:not(.theme-dark) .userchip{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.12) !important;box-shadow:none !important;}
+  html:not(.theme-dark) .userchip .uname{color:#f5f3fc !important;}
+  html:not(.theme-dark) .userchip .uname small{color:#b9a9ff !important;}
+  html:not(.theme-dark) .userchip .avatar{background:linear-gradient(135deg,#7c5cfc,#6636e8) !important;color:#fff !important;}
+  /* page-level section headings (on the dark bg, NOT inside cards) */
+  html:not(.theme-dark) .modrow>.modhead h3,html:not(.theme-dark) #updates .modhead h3{color:#f5f3fc !important;}
+  html:not(.theme-dark) .modrow>.modhead .modsub{color:#aca6cd !important;}
+  html:not(.theme-dark) .meetingsSec .modsub,html:not(.theme-dark) #meetingsSec .modsub{color:#aca6cd !important;}
+  /* stat number + attendance big number -> purple gradient (was green) */
+  html:not(.theme-dark) .card{--card-num:linear-gradient(120deg,#211d3a,#6636e8) !important;}
+  /* profile card small accents green -> purple (card body stays light) */
+  html:not(.theme-dark) .pc-sub b{color:#6636e8 !important;}
+  html:not(.theme-dark) .pc-actions button:hover{background:#7c5cfc !important;color:#fff !important;border-color:#7c5cfc !important;}
+  html:not(.theme-dark) .tl-dot{color:#6636e8 !important;}
+  html:not(.theme-dark) .tl-body.mtg{background:#efeafd !important;}
+  html:not(.theme-dark) .cal-day.today{outline-color:#7c5cfc !important;}
+  /* card hover ring -> purple */
+  html:not(.theme-dark) .card:hover,html:not(.theme-dark) .modcard:hover,html:not(.theme-dark) .modcard.live:hover,html:not(.theme-dark) .dcard:hover{border-color:rgba(124,92,252,.55) !important;}
+  /* login card foot text readable on dark */
+  html:not(.theme-dark) .login-foot,html:not(.theme-dark) .campus-tag{color:#9089b3 !important;}
 </style>
   <script src="firebase-sync.js"></script>
   <script src="print-paginate.js"></script>
+<link rel="stylesheet" href="alizon-theme.css">
 </head>
 <body>
 <canvas id="bg"></canvas>
