@@ -635,6 +635,235 @@
   }
   html.theme-dark .card:hover,html.theme-dark .modcard:hover,html.theme-dark .modcard.live:hover{
     border-color:rgba(217,164,65,.45);box-shadow:0 18px 42px rgba(0,0,0,.42)}
+
+  /* =====================================================================
+     GREEN GLASS — light frosted theme (reference-matched, default state)
+     Scoped html:not(.theme-dark) so the "Full black" toggle still works.
+     Lime-green accent · neutral grey/white glass · charcoal primary.
+     ===================================================================== */
+  html:not(.theme-dark) body{
+    background:linear-gradient(170deg,#eef0f3 0%,#e8eaed 55%,#e3e5e9 100%);
+    color:#1a1c1e;}
+  html:not(.theme-dark) #bg{opacity:0;pointer-events:none;}          /* hide dark particle canvas */
+  html:not(.theme-dark) .vignette{display:none;}
+  html:not(.theme-dark) .grain{opacity:.025;}
+  html:not(.theme-dark) ::selection{background:#c6f24e;color:#26340a;}
+
+  /* ---- accent + tile vars repointed to green on the white tiles ---- */
+  html:not(.theme-dark) .login-card,html:not(.theme-dark) .card,html:not(.theme-dark) .modcard,
+  html:not(.theme-dark) .dcard,html:not(.theme-dark) .subrow,html:not(.theme-dark) .vcard,
+  html:not(.theme-dark) .notecard,html:not(.theme-dark) .notebody,html:not(.theme-dark) .faccard,
+  html:not(.theme-dark) .md-units .u{
+    --crimson:#4d7c0f; --crimson-deep:#3f6212; --gold:#5f8a0c;
+    --gold-soft:rgba(132,204,22,.18); --crimson-soft:rgba(132,204,22,.14);
+    --card-num:linear-gradient(120deg,#1a1c1e,#3f6212);
+  }
+
+  /* ---- frosted-glass cards on the light canvas ---- */
+  html:not(.theme-dark) .login-card,html:not(.theme-dark) .card,html:not(.theme-dark) .modcard,
+  html:not(.theme-dark) .dcard,html:not(.theme-dark) .subrow,html:not(.theme-dark) .vcard,
+  html:not(.theme-dark) .notecard,html:not(.theme-dark) .faccard,html:not(.theme-dark) .md-units .u{
+    background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.74));
+    border:1px solid rgba(255,255,255,.9);
+    border-radius:26px;
+    backdrop-filter:blur(22px) saturate(150%);
+    -webkit-backdrop-filter:blur(22px) saturate(150%);
+    box-shadow:0 14px 36px rgba(24,32,52,.09),0 3px 10px rgba(24,32,52,.05),inset 0 1px 0 rgba(255,255,255,.95);
+  }
+  html:not(.theme-dark) .card:hover,html:not(.theme-dark) .modcard:hover,
+  html:not(.theme-dark) .modcard.live:hover,html:not(.theme-dark) .dcard:hover{
+    border-color:rgba(132,204,22,.5);
+    box-shadow:0 20px 46px rgba(24,32,52,.13),0 4px 12px rgba(24,32,52,.06),inset 0 1px 0 rgba(255,255,255,.98);
+  }
+  html:not(.theme-dark) .login-card{border-radius:30px;box-shadow:0 30px 70px rgba(24,32,52,.14),inset 0 1px 0 rgba(255,255,255,.95);}
+
+  /* ---- sidebar → light glass ---- */
+  html:not(.theme-dark) .side{
+    background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,255,255,.6));
+    border-right:1px solid rgba(17,24,39,.07);
+    backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);}
+  html:not(.theme-dark) .side .brand .bname{color:#16181c;}
+  html:not(.theme-dark) .side .brand .bname small{color:#5f8a0c;}
+  html:not(.theme-dark) .side .nav a{color:#565b64;border-radius:100px;font-weight:500;}
+  html:not(.theme-dark) .side .nav a .ic{color:#9098a2;}
+  html:not(.theme-dark) .side .nav a:hover{background:rgba(17,24,39,.05);color:#16181c;}
+  html:not(.theme-dark) .side .nav a.active{
+    background:#c6f24e;color:#243305;box-shadow:0 8px 18px rgba(132,204,22,.4);}
+  html:not(.theme-dark) .side .nav a.active .ic{color:#3f6212;}
+  html:not(.theme-dark) .side-foot{border-top:1px solid rgba(17,24,39,.08);}
+  html:not(.theme-dark) .side-foot a{color:#6b7280;border-radius:100px;}
+  html:not(.theme-dark) .side-foot a:hover{background:rgba(17,24,39,.05);color:#16181c;}
+
+  /* ---- top bar ---- */
+  html:not(.theme-dark) .topbar .hello h2{color:#15171a;}
+  html:not(.theme-dark) .topbar .hello p{color:#6b7280;}
+  html:not(.theme-dark) .search{background:#fff;border:1px solid rgba(17,24,39,.08);
+    box-shadow:0 4px 14px rgba(24,32,52,.05);border-radius:100px;}
+  html:not(.theme-dark) .search input{color:#1a1c1e;}
+  html:not(.theme-dark) .search input::placeholder{color:#9aa0aa;}
+  html:not(.theme-dark) .icon-btn{background:#fff;border:1px solid rgba(17,24,39,.08);color:#4b5563;
+    box-shadow:0 4px 14px rgba(24,32,52,.05);}
+  html:not(.theme-dark) .icon-btn:hover{background:#f3f5f7;color:#16181c;}
+  html:not(.theme-dark) .userchip{background:#fff;border:1px solid rgba(17,24,39,.08);
+    box-shadow:0 4px 14px rgba(24,32,52,.05);}
+  html:not(.theme-dark) .userchip .uname{color:#1a1c1e;}
+  html:not(.theme-dark) .userchip .uname small{color:#5f8a0c;}
+  html:not(.theme-dark) .userchip .avatar{background:#17181c;color:#fff;}
+  html:not(.theme-dark) .notif{background:#fff;border:1px solid rgba(17,24,39,.1);
+    box-shadow:0 20px 50px rgba(24,32,52,.16);color:#1a1c1e;}
+
+  /* ---- primary button → charcoal (reference "New Task") ---- */
+  html:not(.theme-dark) .btn-primary{background:#17181c;color:#fff;box-shadow:0 12px 26px rgba(17,20,26,.28);}
+  html:not(.theme-dark) .btn-primary:hover{box-shadow:0 16px 32px rgba(17,20,26,.36);}
+
+  /* ---- lime pop for section CTAs & submit buttons ---- */
+  html:not(.theme-dark) .subnew,html:not(.theme-dark) .gv-btn,html:not(.theme-dark) .setbtn2:not(.danger){
+    background:#c6f24e;color:#243305;border:none;box-shadow:0 8px 18px rgba(132,204,22,.32);border-radius:100px;font-weight:600;}
+  html:not(.theme-dark) .subnew:hover,html:not(.theme-dark) .gv-btn:hover{filter:brightness(1.03);transform:translateY(-1px);}
+
+  /* ---- trend/status chips ---- */
+  html:not(.theme-dark) .trend.up{background:#dbf3a6;color:#3f6212;}
+  html:not(.theme-dark) .trend.gold{background:#eef1f4;color:#5b616b;}
+
+  /* ---- misc pills / chips / tabs ---- */
+  html:not(.theme-dark) .chip{color:#3f6212;background:rgba(132,204,22,.16);border:1px solid rgba(132,204,22,.32);}
+  html:not(.theme-dark) .chip:hover{background:rgba(132,204,22,.26);}
+  html:not(.theme-dark) .progtab{background:#fff;border:1px solid rgba(17,24,39,.1);color:#4b5563;border-radius:100px;}
+  html:not(.theme-dark) .progtab.active,html:not(.theme-dark) .progtab.locked{background:#17181c;color:#fff;border-color:#17181c;}
+  html:not(.theme-dark) .segbtn{background:#fff;border:1px solid rgba(17,24,39,.1);color:#4b5563;}
+  html:not(.theme-dark) .segbtn.on,html:not(.theme-dark) .segbtn:hover{background:#c6f24e;color:#243305;border-color:#c6f24e;}
+
+  /* ---- section headings + text on light ---- */
+  html:not(.theme-dark) .modhead h3,html:not(.theme-dark) .dch h3{color:#15171a;}
+  html:not(.theme-dark) .modsub,html:not(.theme-dark) .modhead .modsub{color:#6b7280;}
+  html:not(.theme-dark) .login-foot,html:not(.theme-dark) .campus-tag{color:#8a909a;}
+  html:not(.theme-dark) .login-admin a{color:#4b5563;}
+  html:not(.theme-dark) .field input,html:not(.theme-dark) .gform input,html:not(.theme-dark) .gform select,
+  html:not(.theme-dark) .gform textarea{background:#fff;border:1px solid rgba(17,24,39,.12);color:#1a1c1e;}
+  html:not(.theme-dark) .field input:focus,html:not(.theme-dark) .gform input:focus,
+  html:not(.theme-dark) .gform textarea:focus{border-color:#84cc16;box-shadow:0 0 0 3px rgba(132,204,22,.2);}
+
+  /* ============ Attendance · Calendar · Meetings · Alerts ============ */
+  .attwrap{display:grid;grid-template-columns:.9fr 1.5fr;gap:18px;align-items:start;margin-top:8px}
+  @media(max-width:860px){.attwrap{grid-template-columns:1fr}}
+  .attsum{display:flex;flex-direction:column;gap:2px;padding:24px}
+  .att-big{font-size:3.2rem;font-weight:600;letter-spacing:-.04em;line-height:1;margin:6px 0 12px;
+    background:var(--card-num);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .att-row{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;color:var(--muted);
+    padding:9px 0;border-bottom:1px solid rgba(17,24,39,.06)}
+  .att-row b{font-weight:600;color:var(--ink);font-size:15px}
+  .attcal{padding:22px}
+  .calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .caltitle{font-weight:600;font-size:15.5px;color:var(--ink)}
+  .calnav{width:34px;height:34px;border-radius:50%;border:1px solid rgba(17,24,39,.1);background:#fff;
+    cursor:pointer;font-size:17px;line-height:1;color:#4b5563;display:grid;place-items:center;transition:.2s}
+  .calnav:hover{background:#f3f5f7;color:#16181c}
+  .cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:8px}
+  .cal-dow span{text-align:center;font-size:10.5px;font-weight:600;color:#9098a2;text-transform:uppercase;letter-spacing:.06em}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+  .cal-day{aspect-ratio:1;border-radius:13px;display:grid;place-items:center;font-size:13.5px;font-weight:500;
+    color:#3a3f47;background:#f1f3f5;transition:.15s}
+  .cal-day.empty{background:transparent}
+  .cal-day.present{background:#dbf3a6;color:#3f6212}
+  .cal-day.absent{background:#fcdcdc;color:#b1040e}
+  .cal-day.leave{background:#fce9c4;color:#9a6a00}
+  .cal-day.holiday{background:#e7eaef;color:#98a0ac}
+  .cal-day.today{outline:2px solid #17181c;outline-offset:1px;font-weight:700}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:15px;margin-top:16px;font-size:12px;color:var(--muted)}
+  .cal-legend i{width:12px;height:12px;border-radius:4px;display:inline-block;margin-right:6px;vertical-align:-1px}
+  .lg-present{background:#c6f24e}.lg-absent{background:#f5a3a3}.lg-leave{background:#f5cd6b}.lg-holiday{background:#cfd4dd}
+
+  .mtg{display:flex;align-items:center;gap:13px;padding:14px 0;border-bottom:1px solid rgba(17,24,39,.06)}
+  .mtg:last-child{border-bottom:none}
+  .mtg .mdate{flex:none;width:52px;text-align:center;background:#f1f3f5;border-radius:13px;padding:7px 0}
+  .mtg .mdate b{display:block;font-size:18px;font-weight:700;color:#17181c;line-height:1.05}
+  .mtg .mdate span{font-size:10px;text-transform:uppercase;color:#8a909a;letter-spacing:.05em}
+  .mtg .minfo{flex:1;min-width:0}
+  .mtg .minfo b{font-size:14px;color:var(--ink)}
+  .mtg .minfo p{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .mtg .mst{flex:none;font-size:11px;font-weight:600;padding:5px 12px;border-radius:100px}
+  .mst.confirmed{background:#dbf3a6;color:#3f6212}
+  .mst.requested{background:#eef1f4;color:#6b7280}
+  .mst.declined{background:#fcdcdc;color:#b1040e}
+
+  .alertstrip{display:flex;flex-direction:column;gap:11px;margin-bottom:20px}
+  .alert-item{display:flex;gap:13px;align-items:flex-start;padding:15px 17px;border-radius:20px;
+    background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.74));border:1px solid rgba(255,255,255,.9);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 12px 30px rgba(24,32,52,.09);position:relative;overflow:hidden}
+  .alert-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#84cc16}
+  .alert-item.warn::before{background:#f5a524}.alert-item.urgent::before{background:#e5484d}
+  .alert-ic{flex:none;width:36px;height:36px;border-radius:11px;background:rgba(132,204,22,.16);color:#3f6212;
+    display:grid;place-items:center;font-size:17px;font-weight:700}
+  .alert-item.warn .alert-ic{background:rgba(245,165,36,.16);color:#9a6a00}
+  .alert-item.urgent .alert-ic{background:rgba(229,72,77,.14);color:#b1040e}
+  .alert-b{flex:1;min-width:0}
+  .alert-b b{font-size:14px;color:#15171a;display:block}
+  .alert-b p{font-size:13px;color:#5b616b;margin-top:2px;line-height:1.5}
+  .alert-b span{font-size:11px;color:#9aa0aa;margin-top:5px;display:block}
+  .alert-x{flex:none;background:none;border:none;color:#b0b5be;cursor:pointer;font-size:15px;padding:2px 7px;border-radius:8px;line-height:1}
+  .alert-x:hover{background:rgba(17,24,39,.06);color:#4b5563}
+
+  /* dark-mode variants */
+  html.theme-dark .cal-day{background:rgba(255,255,255,.05);color:#c9ccd6}
+  html.theme-dark .cal-day.present{background:rgba(132,204,22,.22);color:#c6f24e}
+  html.theme-dark .cal-day.absent{background:rgba(212,24,32,.2);color:#ff9b9b}
+  html.theme-dark .cal-day.leave{background:rgba(217,164,65,.2);color:#f5cd6b}
+  html.theme-dark .cal-day.holiday{background:rgba(255,255,255,.07);color:#9098a2}
+  html.theme-dark .calnav{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#c9ccd6}
+  html.theme-dark .calnav:hover{background:rgba(255,255,255,.1);color:#fff}
+  html.theme-dark .mtg .mdate{background:rgba(255,255,255,.06)}
+  html.theme-dark .mtg .mdate b{color:#f5f4f6}
+  html.theme-dark .mst.requested{background:rgba(255,255,255,.08);color:#c9ccd6}
+  html.theme-dark .alert-item{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-color:rgba(255,255,255,.09);box-shadow:0 14px 34px rgba(0,0,0,.35)}
+  html.theme-dark .alert-b b{color:#f5f4f6}
+  html.theme-dark .alert-b p{color:#9a9db2}
+
+  /* ============ Profile candidate card + Today's Schedule ============ */
+  .ovtop{display:grid;grid-template-columns:.82fr 1.45fr;gap:18px;margin-bottom:18px}
+  @media(max-width:900px){.ovtop{grid-template-columns:1fr}}
+  .profcard{padding:18px}
+  .pc-photo{position:relative;height:250px;border-radius:20px;overflow:hidden;background:#17181c;
+    display:grid;place-items:center;color:#fff;font-size:3.2rem;font-weight:600;letter-spacing:-.02em}
+  .pc-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .pc-photo .pc-badge{position:absolute;left:14px;bottom:14px;z-index:2;background:rgba(255,255,255,.9);
+    color:#243305;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;backdrop-filter:blur(6px)}
+  .pc-name{font-family:'Source Serif Pro',Georgia,serif;font-size:22px;font-weight:600;color:var(--ink);margin:16px 2px 2px}
+  .pc-sub{font-size:13px;color:var(--muted);margin:0 2px 14px}
+  .pc-sub b{color:#5f8a0c;font-weight:600}
+  .pc-actions{display:flex;gap:9px;margin-bottom:16px}
+  .pc-actions button{width:42px;height:42px;border-radius:50%;border:1px solid rgba(17,24,39,.1);background:#fff;
+    cursor:pointer;color:#4b5563;font-size:15px;display:grid;place-items:center;transition:.2s}
+  .pc-actions button:hover{background:#c6f24e;color:#243305;border-color:#c6f24e;transform:translateY(-1px)}
+  .pc-details{display:flex;flex-direction:column;margin-bottom:16px}
+  .pc-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(17,24,39,.06)}
+  .pc-row:last-child{border-bottom:none}
+  .pc-row span{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#9098a2;flex:none}
+  .pc-row b{font-size:13.5px;color:var(--ink);font-weight:500;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pc-edit{width:100%;padding:13px;border:none;border-radius:100px;background:#c6f24e;color:#243305;
+    font-weight:600;font-size:14px;cursor:pointer;box-shadow:0 8px 18px rgba(132,204,22,.32);transition:.2s;font-family:inherit}
+  .pc-edit:hover{filter:brightness(1.03);transform:translateY(-1px)}
+
+  .todaycard{padding:24px;display:flex;flex-direction:column}
+  .tdhead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+  .tdhead h3{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:600;color:var(--ink)}
+  .tdhead span{font-size:12.5px;color:var(--muted)}
+  .today-tl{display:flex;flex-direction:column;margin-top:8px;position:relative}
+  .tl-item{display:flex;gap:14px;padding:9px 0}
+  .tl-time{flex:none;width:66px;font-size:12px;color:var(--muted);font-weight:600;padding-top:13px}
+  .tl-body{flex:1;background:#f4f5f7;border-radius:16px;padding:12px 15px;display:flex;align-items:center;gap:12px;min-width:0}
+  .tl-body.mtg{background:#eef7d6}
+  .tl-dot{flex:none;width:34px;height:34px;border-radius:10px;background:#fff;display:grid;place-items:center;font-size:15px;color:#5f8a0c;box-shadow:0 2px 6px rgba(24,32,52,.08)}
+  .tl-info{flex:1;min-width:0}
+  .tl-info b{font-size:13.5px;color:var(--ink);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tl-info span{font-size:11.5px;color:var(--muted)}
+  .tl-join{flex:none;font-size:11.5px;font-weight:600;text-decoration:none;color:#243305;background:#c6f24e;padding:6px 13px;border-radius:100px}
+  .tl-st{flex:none;font-size:11px;font-weight:600;padding:4px 11px;border-radius:100px;background:#eef1f4;color:#6b7280}
+  .tl-empty{padding:26px 6px;text-align:center;color:var(--muted);font-size:13.5px}
+  html.theme-dark .pc-photo{background:#2a2e44}
+  html.theme-dark .pc-actions button{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#c9ccd6}
+  html.theme-dark .tl-body{background:rgba(255,255,255,.05)}
+  html.theme-dark .tl-body.mtg{background:rgba(132,204,22,.14)}
+  html.theme-dark .tl-dot{background:rgba(255,255,255,.08);color:#c6f24e}
 </style>
   <script src="firebase-sync.js"></script>
   <script src="print-paginate.js"></script>
@@ -697,6 +926,7 @@
       <a data-launch="sim"><span class="ic">✚</span><span class="navlab">Clinical Sim Lab</span></a>
       <a data-launch="lab"><span class="ic">◎</span><span class="navlab">AI &amp; Data Lab</span></a>
       <a data-dsec="sec-schedule"><span class="ic">▤</span><span class="navlab">Schedule</span></a>
+      <a data-dsec="sec-attendance"><span class="ic">▦</span><span class="navlab">Attendance</span></a>
       <a data-dsec="sec-assessments"><span class="ic">✎</span><span class="navlab">Assessments</span></a>
       <a data-dsec="sec-faculty"><span class="ic">❖</span><span class="navlab">Faculty &amp; Support</span></a>
       <a href="alizon-student-profile.html"><span class="ic">▣</span><span class="navlab">My Profile</span></a>
@@ -732,6 +962,15 @@
     <div class="dsec on" id="sec-overview">
 <!-- admin new-module banner (rendered only when announcements are active) -->
     <div class="annbanner" id="annBanner" style="display:none"></div>
+    <div class="alertstrip" id="alertStrip"></div>
+<!-- profile candidate card + today's schedule -->
+    <div class="ovtop">
+      <div class="card profcard" id="profCard"></div>
+      <div class="card todaycard">
+        <div class="tdhead"><h3>Today's Schedule</h3><span id="tdDate"></span></div>
+        <div class="today-tl" id="todayTL"></div>
+      </div>
+    </div>
 <!-- stats -->
     <div class="grid">
       <div class="card stat reveal">
@@ -827,15 +1066,15 @@
 
     <!-- GRIEVANCE -->
     <div class="dgrid2" id="grievSec">
-      <div class="dcard"><div class="dch"><h3>Raise a Grievance</h3></div>
+      <div class="dcard"><div class="dch"><h3>Raise an Enquiry / Grievance</h3></div>
         <div class="gform">
           <div class="g2"><input id="gv-name" placeholder="Your name"><input id="gv-reg" placeholder="Registration no."></div>
-          <div class="g2"><input id="gv-subject" placeholder="Subject"><select id="gv-cat"><option>Academic</option><option>Technical</option><option>Assessment</option><option>Faculty</option><option>Other</option></select></div>
-          <textarea id="gv-msg" placeholder="Describe your grievance…"></textarea>
+          <div class="g2"><input id="gv-subject" placeholder="Subject"><select id="gv-cat"><option>Enquiry</option><option>Academic</option><option>Technical</option><option>Assessment</option><option>Fees</option><option>Faculty</option><option>Other</option></select></div>
+          <textarea id="gv-msg" placeholder="Describe your enquiry or grievance…"></textarea>
           <button class="gv-btn" id="gv-add">Submit grievance</button>
         </div>
       </div>
-      <div class="dcard"><div class="dch"><h3>My Grievances</h3></div><div id="gvList" class="dlist"></div></div>
+      <div class="dcard"><div class="dch"><h3>My Enquiries &amp; Grievances</h3></div><div id="gvList" class="dlist"></div></div>
     </div>
 
     </div>
@@ -918,6 +1157,48 @@
     </div>
 
     </div>
+
+<div class="dsec" id="sec-attendance">
+<!-- ATTENDANCE CALENDAR -->
+    <div class="modrow">
+      <div class="modhead"><h3>Attendance</h3><span class="modsub" id="attSub">Your monthly attendance, marked by your faculty. Green is present, red absent.</span></div>
+      <div class="attwrap">
+        <div class="card attsum" id="attSummary"></div>
+        <div class="card attcal">
+          <div class="calhead">
+            <button class="calnav" id="calPrev" title="Previous month">‹</button>
+            <div class="caltitle" id="calTitle">Month</div>
+            <button class="calnav" id="calNext" title="Next month">›</button>
+          </div>
+          <div class="cal-dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-legend">
+            <span><i class="lg-present"></i>Present</span><span><i class="lg-absent"></i>Absent</span>
+            <span><i class="lg-leave"></i>Leave</span><span><i class="lg-holiday"></i>Holiday</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- MEETINGS -->
+    <div class="modrow" id="meetingsSec">
+      <div class="modhead"><h3>Meetings</h3><span class="modsub">Upcoming meetings and requests. Book time with your faculty or the office — they confirm the slot.</span></div>
+      <div class="dgrid2">
+        <div class="dcard"><div class="dch"><h3>Upcoming &amp; Requested</h3></div><div id="mtgList" class="dlist"></div></div>
+        <div class="dcard"><div class="dch"><h3>Request a Meeting</h3></div>
+          <div class="gform">
+            <div class="g2"><input id="mt-with" placeholder="With — faculty or office"><input id="mt-topic" placeholder="Topic"></div>
+            <div class="g2"><input id="mt-date" type="date"><input id="mt-time" type="time"></div>
+            <select id="mt-mode"><option value="Online">Online (Google Meet)</option><option value="In person">In person</option><option value="Phone">Phone call</option></select>
+            <textarea id="mt-note" placeholder="Anything the faculty should know? (optional)"></textarea>
+            <button class="gv-btn" id="mt-add">Request meeting</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
 
   </div>
 </div>
@@ -1094,7 +1375,7 @@ document.getElementById('logoutBtn').addEventListener('click',()=>{
 
 /* sidebar → section switching (one section visible at a time) */
 (function(){
-  const DS=['sec-overview','sec-courses','sec-assessments','sec-schedule','sec-faculty','sec-settings'];
+  const DS=['sec-overview','sec-courses','sec-assessments','sec-schedule','sec-attendance','sec-faculty','sec-settings'];
   const links=[...document.querySelectorAll('#sideNav a')];
   function show(id){
     if(DS.indexOf(id)<0) id='sec-overview';
@@ -2090,5 +2371,238 @@ function moduleResultBadge(moduleUnit, progName){
   el('set-griev').addEventListener('click',()=>{ if(window.__showDsec)window.__showDsec('sec-faculty'); });
 })();
 </script>
+<script>
+/* ================= Attendance calendar · Meetings · Backend alerts ================= */
+(function(){
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function LS(k,f){ try{var v=JSON.parse(localStorage.getItem(k)); return (v==null?f:v);}catch(e){return f;} }
+  function val(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; }
+  function prof(){ try{return JSON.parse(localStorage.getItem('alizonProfile')||'{}')||{};}catch(e){return {};} }
+  function myReg(){ return String(prof().reg||'').toUpperCase(); }
+  function myName(){ return prof().name||'Student'; }
+  function toast(msg){ if(window.__aliztoast){window.__aliztoast(msg);return;}
+    var t=document.getElementById('__mtoast'); if(!t){t=document.createElement('div');t.id='__mtoast';
+      t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(70px);z-index:120;padding:12px 22px;border-radius:100px;font-size:13.5px;font-weight:600;background:#17181c;color:#c6f24e;box-shadow:0 14px 34px rgba(0,0,0,.3);transition:.35s;opacity:0;pointer-events:none';
+      document.body.appendChild(t);} window.__aliztoast=function(m){t.textContent=m;requestAnimationFrame(function(){t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});clearTimeout(t._t);t._t=setTimeout(function(){t.style.opacity='0';t.style.transform='translateX(-50%) translateY(70px)';},2600);}; window.__aliztoast(msg); }
+  var MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function pad(n){return (n<10?'0':'')+n;}
+  function ymd(y,m,d){return y+'-'+pad(m+1)+'-'+pad(d);}
+
+  /* ---------- attendance ---------- */
+  var viewY, viewM;
+  function attData(){
+    var reg=myReg(); var all=LS('alizonAttendance',{});
+    var rec=(all&&all[reg])?all[reg]:null;
+    if(rec && Object.keys(rec).length) return {data:rec, sample:false};
+    return {data:sampleAtt(reg), sample:true};
+  }
+  function sampleAtt(reg){
+    var seed=2166136261>>>0; var s=reg||'ALZ';
+    for(var i=0;i<s.length;i++){ seed^=s.charCodeAt(i); seed=(seed*16777619)>>>0; }
+    function rnd(){ seed=(seed*1103515245+12345)>>>0; return (seed>>>16)/65536; }
+    var out={}, today=new Date();
+    for(var back=0;back<75;back++){
+      var d=new Date(today.getFullYear(),today.getMonth(),today.getDate()-back);
+      var wd=d.getDay(); var key=ymd(d.getFullYear(),d.getMonth(),d.getDate());
+      if(wd===0){ out[key]='holiday'; continue; }
+      var r=rnd();
+      out[key]= r<0.84?'present' : r<0.93?'absent' : 'leave';
+    }
+    return out;
+  }
+  function renderCal(){
+    var g=document.getElementById('calGrid'); if(!g) return;
+    var ad=attData(), data=ad.data;
+    var tt=document.getElementById('calTitle'); if(tt) tt.textContent=MON[viewM]+' '+viewY;
+    var first=new Date(viewY,viewM,1); var lead=(first.getDay()+6)%7;
+    var days=new Date(viewY,viewM+1,0).getDate();
+    var td=new Date(), tY=td.getFullYear(), tM=td.getMonth(), tD=td.getDate();
+    var html='';
+    for(var i=0;i<lead;i++) html+='<div class="cal-day empty"></div>';
+    for(var d=1;d<=days;d++){
+      var key=ymd(viewY,viewM,d); var st=data[key]||'';
+      var cls='cal-day'+(st?' '+st:''); if(viewY===tY&&viewM===tM&&d===tD) cls+=' today';
+      html+='<div class="'+cls+'" title="'+key+(st?' · '+st:'')+'">'+d+'</div>';
+    }
+    g.innerHTML=html;
+    var pres=0,abs=0,lv=0,hol=0,tot=0, mp=viewY+'-'+pad(viewM+1);
+    Object.keys(data).forEach(function(k){ if(k.indexOf(mp)===0){ var v=data[k];
+      if(v==='present'){pres++;tot++;} else if(v==='absent'){abs++;tot++;} else if(v==='leave'){lv++;tot++;} else if(v==='holiday'){hol++;} } });
+    var pct=tot?Math.round(pres/tot*100):0;
+    var sum=document.getElementById('attSummary');
+    if(sum) sum.innerHTML=
+      '<div class="klabel">This month'+(ad.sample?' <span class="trend gold">sample</span>':'')+'</div>'+
+      '<div class="att-big">'+pct+'<span style="font-size:.4em;color:var(--muted)">%</span></div>'+
+      '<div class="att-row"><span>Present</span><b>'+pres+'</b></div>'+
+      '<div class="att-row"><span>Absent</span><b>'+abs+'</b></div>'+
+      '<div class="att-row"><span>Leave</span><b>'+lv+'</b></div>'+
+      '<div class="att-row"><span>Holidays</span><b>'+hol+'</b></div>'+
+      '<div class="setnote">'+(ad.sample?'Sample view — your real attendance appears here once your faculty starts marking it.':'Marked by your faculty · updates automatically.')+'</div>';
+  }
+
+  /* ---------- meetings ---------- */
+  function renderMtg(){
+    var el=document.getElementById('mtgList'); if(!el) return;
+    var reg=myReg(); var mine=LS('alizonMeetings',[]).filter(function(m){return String(m.reg||'').toUpperCase()===reg;});
+    mine.sort(function(a,b){return String(a.date+a.time).localeCompare(String(b.date+b.time));});
+    if(!mine.length){ el.innerHTML='<div class="setnote" style="padding:6px 0">No meetings yet. Request one on the right and your faculty will confirm it here.</div>'; return; }
+    el.innerHTML=mine.map(function(m){
+      var p=(m.date||'').split('-'); var dd=p[2]||'--'; var mm=MON3[(parseInt(p[1],10)||1)-1]||'';
+      var st=(m.status||'requested').toLowerCase();
+      return '<div class="mtg"><div class="mdate"><b>'+dd+'</b><span>'+mm+'</span></div>'+
+        '<div class="minfo"><b>'+esc(m.topic||'Meeting')+'</b><p>with '+esc(m.with||'—')+' · '+esc(m.mode||'Online')+(m.time?' · '+esc(m.time):'')+'</p>'+(m.note&&st==='declined'?'<p style="color:#b1040e">'+esc(m.note)+'</p>':'')+'</div>'+
+        '<span class="mst '+st+'">'+st.charAt(0).toUpperCase()+st.slice(1)+'</span></div>';
+    }).join('');
+  }
+  function addMtg(){
+    var w=val('mt-with'), t=val('mt-topic'), d=val('mt-date');
+    if(!w||!t||!d){ toast('Add who, a topic and a date'); return; }
+    var all=LS('alizonMeetings',[]);
+    all.push({id:'M'+Date.now()+Math.floor(Math.random()*1000),reg:myReg(),name:myName(),with:w,topic:t,date:d,time:val('mt-time'),mode:val('mt-mode')||'Online',note:val('mt-note'),status:'requested',ts:Date.now()});
+    localStorage.setItem('alizonMeetings',JSON.stringify(all));
+    try{var _ac=JSON.parse(localStorage.getItem('alizonActivity')||'[]');if(!Array.isArray(_ac))_ac=[];_ac.unshift({ts:Date.now(),text:(myName()||'A student')+' requested a meeting: '+t+' ('+d+(val('mt-time')?' '+val('mt-time'):'')+')',type:'meeting',by:myName()||'Student'});localStorage.setItem('alizonActivity',JSON.stringify(_ac.slice(0,200)));}catch(e){}
+    ['mt-with','mt-topic','mt-date','mt-time','mt-note'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+    renderMtg(); toast('Meeting requested — your faculty will confirm it');
+  }
+
+  /* ---------- backend-pushed alerts ---------- */
+  function renderAlerts(){
+    var el=document.getElementById('alertStrip'); if(!el) return;
+    var reg=myReg(), pr=prof(), now=Date.now();
+    var dismissed=LS('alizonAlertsDismissed',[]);
+    var show=LS('alizonAlerts',[]).filter(function(a){
+      if(!a||!a.id) return false;
+      if(dismissed.indexOf(a.id)>=0) return false;
+      if(a.expires && now>Number(a.expires)) return false;
+      var aud=String(a.audience||'all');
+      if(aud==='all'||aud==='') return true;
+      if(reg && aud.toUpperCase()===reg) return true;
+      if(pr.programme && aud===pr.programme) return true;
+      if(pr.batch && aud===pr.batch) return true;
+      return false;
+    }).sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+    if(!show.length){ el.innerHTML=''; el.style.display='none'; return; }
+    el.style.display='flex';
+    el.innerHTML=show.map(function(a){
+      var lv=String(a.level||'info'); var cls=lv==='urgent'?' urgent':(lv==='warn'?' warn':'');
+      var ic=lv==='urgent'?'!':(lv==='warn'?'▲':'i');
+      return '<div class="alert-item'+cls+'"><div class="alert-ic">'+ic+'</div>'+
+        '<div class="alert-b"><b>'+esc(a.title||'Notice')+'</b>'+(a.body?'<p>'+esc(a.body)+'</p>':'')+
+        (a.ts?'<span>'+new Date(a.ts).toLocaleDateString()+'</span>':'')+'</div>'+
+        '<button class="alert-x" data-aid="'+esc(a.id)+'" title="Dismiss">✕</button></div>';
+    }).join('');
+    el.querySelectorAll('.alert-x').forEach(function(b){ b.onclick=function(){
+      var id=b.getAttribute('data-aid'); var dm=LS('alizonAlertsDismissed',[]);
+      if(dm.indexOf(id)<0){ dm.push(id); localStorage.setItem('alizonAlertsDismissed',JSON.stringify(dm)); } renderAlerts(); }; });
+  }
+
+  /* ---------- boot + wiring ---------- */
+  function boot(){ var t=new Date(); viewY=t.getFullYear(); viewM=t.getMonth(); renderCal(); renderMtg(); renderAlerts(); }
+  function wire(){
+    var p=document.getElementById('calPrev'), n=document.getElementById('calNext');
+    if(p) p.onclick=function(){ viewM--; if(viewM<0){viewM=11;viewY--;} renderCal(); };
+    if(n) n.onclick=function(){ viewM++; if(viewM>11){viewM=0;viewY++;} renderCal(); };
+    var add=document.getElementById('mt-add'); if(add) add.onclick=addMtg;
+    var navA=document.querySelector('[data-dsec="sec-attendance"]');
+    if(navA) navA.addEventListener('click',function(){ setTimeout(function(){renderCal();renderMtg();},40); });
+    var lf=document.getElementById('loginForm'); if(lf) lf.addEventListener('submit',function(){ setTimeout(boot,650); });
+    setInterval(renderAlerts, 15000);
+    boot();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
+})();
+</script>
+
+<script>
+/* ================= Profile candidate card · Today's Schedule ================= */
+(function(){
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function LS(k,f){ try{var v=JSON.parse(localStorage.getItem(k)); return (v==null?f:v);}catch(e){return f;} }
+  function prof(){ try{return JSON.parse(localStorage.getItem('alizonProfile')||'{}')||{};}catch(e){return {};} }
+  function myReg(){ return String(prof().reg||'').toUpperCase(); }
+  function initials(n){ return String(n||'?').trim().split(/\s+/).map(function(w){return w[0];}).join('').slice(0,2).toUpperCase(); }
+  var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var DOW=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  function pad(n){return (n<10?'0':'')+n;}
+
+  function roster(){
+    var reg=myReg(); if(!reg) return null;
+    var all=LS('alizonStudents',[]); if(!Array.isArray(all)) return null;
+    for(var i=0;i<all.length;i++){ if(String(all[i].reg||'').toUpperCase()===reg) return all[i]; }
+    return null;
+  }
+  function fmtJoin(v){ if(!v) return '—'; var d=new Date(v); if(!isNaN(d.getTime())) return d.getDate()+' '+MON3[d.getMonth()]+' '+d.getFullYear(); return String(v); }
+
+  function renderProfile(){
+    var el=document.getElementById('profCard'); if(!el) return;
+    var p=prof(), r=roster()||{};
+    var name=r.name||p.name||'Student';
+    var photo=r.photo||p.photo||'';
+    var reg=(r.reg||p.reg||'').toUpperCase();
+    var email=r.email||p.email||'—';
+    var phone=r.phone||r.mobile||'—';
+    var programme=p.programme||r.course||r.batch||'Pharmacy AI';
+    var batch=r.batch||p.batch||'';
+    var joined=fmtJoin(r.joined||r.createdAt||r.since);
+    var ini=initials(name);
+    var photoHTML=photo?('<img src="'+esc(photo)+'" alt="" onerror="this.remove()">'):'';
+    el.innerHTML=
+      '<div class="pc-photo">'+photoHTML+ini+(batch?'<span class="pc-badge">'+esc(batch)+'</span>':'')+'</div>'+
+      '<div class="pc-name">'+esc(name)+'</div>'+
+      '<div class="pc-sub">'+esc(programme)+(reg?' · <b>'+esc(reg)+'</b>':'')+'</div>'+
+      '<div class="pc-actions">'+
+        '<button data-go="edit" title="Edit profile">✎</button>'+
+        '<button data-go="enquiry" title="Raise an enquiry">❖</button>'+
+        '<button data-go="call" title="Email / call office" data-email="'+esc(email)+'">☎</button>'+
+        '<button data-go="calendar" title="Attendance & meetings">▦</button>'+
+      '</div>'+
+      '<div class="pc-details">'+
+        '<div class="pc-row"><span>Registration</span><b>'+esc(reg||'—')+'</b></div>'+
+        '<div class="pc-row"><span>Email</span><b>'+esc(email)+'</b></div>'+
+        '<div class="pc-row"><span>Phone</span><b>'+esc(phone)+'</b></div>'+
+        '<div class="pc-row"><span>Programme</span><b>'+esc(programme)+'</b></div>'+
+        '<div class="pc-row"><span>Joined</span><b>'+esc(joined)+'</b></div>'+
+      '</div>'+
+      '<button class="pc-edit" data-go="edit">Edit Profile</button>';
+    el.querySelectorAll('[data-go]').forEach(function(b){ b.onclick=function(){
+      var g=b.getAttribute('data-go');
+      if(g==='edit'){ if(window.__showDsec)window.__showDsec('sec-settings'); }
+      else if(g==='enquiry'){ if(window.__showDsec)window.__showDsec('sec-faculty'); }
+      else if(g==='calendar'){ if(window.__showDsec)window.__showDsec('sec-attendance'); }
+      else if(g==='call'){ var em=b.getAttribute('data-email'); if(em&&em!=='—')location.href='mailto:'+em; }
+    }; });
+  }
+
+  function renderToday(){
+    var el=document.getElementById('todayTL'); if(!el) return;
+    var now=new Date(); var key=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+    var dEl=document.getElementById('tdDate'); if(dEl) dEl.textContent=DOW[now.getDay()]+', '+now.getDate()+' '+MON3[now.getMonth()]+' '+now.getFullYear();
+    var reg=myReg(); var items=[];
+    LS('alizonSchedule',[]).forEach(function(s){ if(s && s.date===key) items.push({time:s.time||'',title:s.title||'Session',sub:(s.module||'')+(s.mode?' · '+s.mode:''),link:s.link||'',kind:'session'}); });
+    LS('alizonMeetings',[]).forEach(function(m){ if(m && m.date===key && String(m.reg||'').toUpperCase()===reg) items.push({time:m.time||'',title:m.topic||'Meeting',sub:'with '+(m.with||'—')+' · '+(m.mode||'Online'),status:m.status||'requested',kind:'mtg'}); });
+    items.sort(function(a,b){return String(a.time).localeCompare(String(b.time));});
+    if(!items.length){ el.innerHTML='<div class="tl-empty">No sessions or meetings today. Enjoy the focus time — or request a meeting from the Attendance tab.</div>'; return; }
+    el.innerHTML=items.map(function(it){
+      var ic=it.kind==='mtg'?'◷':'▷';
+      var right = it.link?('<a class="tl-join" href="'+esc(it.link)+'" target="_blank" rel="noopener">Join</a>')
+        : (it.status?('<span class="tl-st">'+esc(it.status.charAt(0).toUpperCase()+it.status.slice(1))+'</span>'):'');
+      return '<div class="tl-item"><div class="tl-time">'+esc(it.time||'—')+'</div>'+
+        '<div class="tl-body'+(it.kind==='mtg'?' mtg':'')+'"><div class="tl-dot">'+ic+'</div>'+
+        '<div class="tl-info"><b>'+esc(it.title)+'</b><span>'+esc(it.sub)+'</span></div>'+right+'</div></div>';
+    }).join('');
+  }
+
+  function boot(){ renderProfile(); renderToday(); }
+  function wire(){
+    var lf=document.getElementById('loginForm'); if(lf) lf.addEventListener('submit',function(){ setTimeout(boot,680); });
+    var ov=document.querySelector('[data-dsec="sec-overview"]'); if(ov) ov.addEventListener('click',function(){ setTimeout(boot,40); });
+    setInterval(renderToday, 60000);
+    boot();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
+})();
+</script>
+
 </body>
 </html>
