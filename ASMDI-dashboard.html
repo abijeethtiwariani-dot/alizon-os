@@ -886,70 +886,67 @@
   html.theme-dark .tl-body.mtg{background:rgba(132,204,22,.14)}
   html.theme-dark .tl-dot{background:rgba(255,255,255,.08);color:#c6f24e}
 
-  /* ===================== DARK + WHITE-CARD + LIME override (student dashboard, medcity-crm style) ===================== */
+  /* ===================== WHITE + CARDINAL (Stanford-style) override — student dashboard ===================== */
   html:not(.theme-dark) body{
-    background:
-      radial-gradient(1100px 680px at 12% -8%, #1c2b12 0%, transparent 55%),
-      radial-gradient(900px 620px at 108% 4%, #141a24 0%, transparent 52%),
-      linear-gradient(180deg,#0e1014 0%,#0a0c10 100%) !important;
-    color:#eef1ea !important;}
+    background:linear-gradient(180deg,#ffffff 0%,#faf8f6 100%) !important;
+    color:#2e2d29 !important;}
   html:not(.theme-dark) #bg{opacity:0 !important;}
   html:not(.theme-dark) .grain{opacity:.02 !important;}
   html:not(.theme-dark) .vignette{display:none !important;}
-  /* sidebar — dark glass */
+  /* sidebar — light */
   html:not(.theme-dark) .side{
-    background:linear-gradient(180deg,rgba(26,32,22,.66),rgba(14,16,20,.6)) !important;
-    border-right:1px solid rgba(255,255,255,.08) !important;
-    backdrop-filter:blur(26px) saturate(140%) !important;-webkit-backdrop-filter:blur(26px) saturate(140%) !important;}
-  html:not(.theme-dark) .side .brand .bname{color:#f3f6ee !important;}
-  html:not(.theme-dark) .side .brand .bname small{color:#bce34f !important;}
-  html:not(.theme-dark) .side .nav a{color:#c6cbbe !important;}
-  html:not(.theme-dark) .side .nav a .ic{color:#8f9784 !important;}
-  html:not(.theme-dark) .side .nav a:hover{background:rgba(255,255,255,.06) !important;color:#fff !important;}
-  html:not(.theme-dark) .side .nav a.active{background:linear-gradient(120deg,#d3f56a,#bce34f) !important;color:#1e2a06 !important;box-shadow:0 10px 22px rgba(164,207,52,.35) !important;}
-  html:not(.theme-dark) .side .nav a.active .ic{color:#3f5312 !important;}
-  html:not(.theme-dark) .side-foot{border-top:1px solid rgba(255,255,255,.08) !important;}
-  html:not(.theme-dark) .side-foot a{color:#a9ae9e !important;}
-  html:not(.theme-dark) .side-foot a:hover{background:rgba(255,255,255,.06) !important;color:#fff !important;}
+    background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(250,248,246,.9)) !important;
+    border-right:1px solid rgba(140,21,21,.12) !important;
+    backdrop-filter:blur(20px) saturate(120%) !important;-webkit-backdrop-filter:blur(20px) saturate(120%) !important;}
+  html:not(.theme-dark) .side .brand .bname{color:#2e2d29 !important;font-family:'Source Serif Pro',Georgia,serif !important;}
+  html:not(.theme-dark) .side .brand .bname small{color:#8c1515 !important;}
+  html:not(.theme-dark) .side .nav a{color:#5f5d57 !important;}
+  html:not(.theme-dark) .side .nav a .ic{color:#a29d92 !important;}
+  html:not(.theme-dark) .side .nav a:hover{background:rgba(140,21,21,.07) !important;color:#2e2d29 !important;}
+  html:not(.theme-dark) .side .nav a.active{background:#8c1515 !important;color:#fff !important;box-shadow:0 8px 18px rgba(140,21,21,.28) !important;}
+  html:not(.theme-dark) .side .nav a.active .ic{color:#fff !important;}
+  html:not(.theme-dark) .side-foot{border-top:1px solid rgba(140,21,21,.12) !important;}
+  html:not(.theme-dark) .side-foot a{color:#7a766c !important;}
+  html:not(.theme-dark) .side-foot a:hover{background:rgba(140,21,21,.07) !important;color:#2e2d29 !important;}
   /* topbar */
-  html:not(.theme-dark) .topbar .hello h2{color:#f3f6ee !important;}
-  html:not(.theme-dark) .topbar .hello p{color:#a9ae9e !important;}
-  html:not(.theme-dark) .search{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.12) !important;box-shadow:none !important;}
-  html:not(.theme-dark) .search input{color:#f3f6ee !important;}
-  html:not(.theme-dark) .search input::placeholder{color:#8f9689 !important;}
-  html:not(.theme-dark) .search span{color:#8f9689 !important;}
-  html:not(.theme-dark) .icon-btn{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.12) !important;color:#d6dacb !important;box-shadow:none !important;}
-  html:not(.theme-dark) .icon-btn:hover{background:rgba(188,227,79,.28) !important;color:#1e2a06 !important;}
-  html:not(.theme-dark) .userchip{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.12) !important;box-shadow:none !important;}
-  html:not(.theme-dark) .userchip .uname{color:#f3f6ee !important;}
-  html:not(.theme-dark) .userchip .uname small{color:#bce34f !important;}
-  html:not(.theme-dark) .userchip .avatar{background:linear-gradient(135deg,#a4cf34,#7d9e2b) !important;color:#132006 !important;}
-  /* page-level section headings on the dark bg */
-  html:not(.theme-dark) .modrow>.modhead h3,html:not(.theme-dark) #updates .modhead h3{color:#f3f6ee !important;}
-  html:not(.theme-dark) .modrow>.modhead .modsub{color:#a9ae9e !important;}
-  html:not(.theme-dark) #meetingsSec .modsub{color:#a9ae9e !important;}
-  /* stat / attendance big number -> lime gradient */
-  html:not(.theme-dark) .card{--card-num:linear-gradient(120deg,#243312,#8fbf2e) !important;}
-  /* CTAs / buttons -> lime with dark text */
-  html:not(.theme-dark) .btn-primary{background:linear-gradient(120deg,#d3f56a,#bce34f) !important;color:#1e2a06 !important;box-shadow:0 12px 26px rgba(164,207,52,.32) !important;}
+  html:not(.theme-dark) .topbar .hello h2{color:#2e2d29 !important;font-family:'Source Serif Pro',Georgia,serif !important;}
+  html:not(.theme-dark) .topbar .hello p{color:#7a766c !important;}
+  html:not(.theme-dark) .search{background:#fff !important;border:1px solid rgba(140,21,21,.14) !important;box-shadow:0 3px 12px rgba(20,18,16,.05) !important;}
+  html:not(.theme-dark) .search input{color:#2e2d29 !important;}
+  html:not(.theme-dark) .search input::placeholder{color:#a29d92 !important;}
+  html:not(.theme-dark) .search span{color:#a29d92 !important;}
+  html:not(.theme-dark) .icon-btn{background:#fff !important;border:1px solid rgba(140,21,21,.14) !important;color:#5f5d57 !important;box-shadow:0 3px 12px rgba(20,18,16,.05) !important;}
+  html:not(.theme-dark) .icon-btn:hover{background:#8c1515 !important;color:#fff !important;}
+  html:not(.theme-dark) .userchip{background:#fff !important;border:1px solid rgba(140,21,21,.14) !important;box-shadow:0 3px 12px rgba(20,18,16,.05) !important;}
+  html:not(.theme-dark) .userchip .uname{color:#2e2d29 !important;}
+  html:not(.theme-dark) .userchip .uname small{color:#8c1515 !important;}
+  html:not(.theme-dark) .userchip .avatar{background:#8c1515 !important;color:#fff !important;}
+  /* page-level section headings */
+  html:not(.theme-dark) .modrow>.modhead h3,html:not(.theme-dark) #updates .modhead h3{color:#2e2d29 !important;font-family:'Source Serif Pro',Georgia,serif !important;}
+  html:not(.theme-dark) .modrow>.modhead .modsub{color:#7a766c !important;}
+  html:not(.theme-dark) #meetingsSec .modsub{color:#7a766c !important;}
+  /* stat / attendance big number -> cardinal */
+  html:not(.theme-dark) .card{--card-num:linear-gradient(120deg,#2e2d29,#8c1515) !important;}
+  /* CTAs / buttons -> cardinal + white text */
+  html:not(.theme-dark) .btn-primary{background:linear-gradient(120deg,#8c1515,#6b0f0f) !important;color:#fff !important;box-shadow:0 12px 26px rgba(140,21,21,.28) !important;}
   html:not(.theme-dark) .subnew,html:not(.theme-dark) .gv-btn,html:not(.theme-dark) .setbtn2:not(.danger),
   html:not(.theme-dark) .pc-edit,html:not(.theme-dark) .tl-join,html:not(.theme-dark) #mt-add{
-    background:linear-gradient(120deg,#d3f56a,#bce34f) !important;color:#1e2a06 !important;box-shadow:0 8px 18px rgba(164,207,52,.3) !important;}
-  /* small accents -> lime/olive (keep semantic attendance colours) */
-  html:not(.theme-dark) .pc-sub b{color:#5f7d1c !important;}
-  html:not(.theme-dark) .pc-actions button:hover{background:#bce34f !important;color:#1e2a06 !important;border-color:#bce34f !important;}
-  html:not(.theme-dark) .tl-dot{color:#5f7d1c !important;}
-  html:not(.theme-dark) .tl-body.mtg{background:#f2f7e2 !important;}
-  html:not(.theme-dark) .cal-day.today{outline-color:#8fbf2e !important;}
-  html:not(.theme-dark) .cal-day.sel,html:not(.theme-dark) .mtcal .cal-day.sel{background:#bce34f !important;color:#1e2a06 !important;box-shadow:0 4px 10px rgba(164,207,52,.35) !important;}
-  html:not(.theme-dark) .mtcal .cal-day.pick:hover:not(.disabled):not(.sel){background:#eaf6c4 !important;color:#3f5312 !important;}
-  html:not(.theme-dark) .chip{color:#5f7d1c !important;background:rgba(188,227,79,.16) !important;border-color:rgba(188,227,79,.3) !important;}
-  html:not(.theme-dark) .segbtn.on,html:not(.theme-dark) .segbtn:hover{background:#bce34f !important;color:#1e2a06 !important;border-color:#bce34f !important;}
-  html:not(.theme-dark) .field input:focus,html:not(.theme-dark) .gform input:focus,html:not(.theme-dark) .gform textarea:focus{border-color:#8fbf2e !important;box-shadow:0 0 0 3px rgba(143,191,46,.22) !important;}
-  html:not(.theme-dark) #mt-datedisp{color:#5f7d1c !important;}
-  /* card hover ring -> lime */
-  html:not(.theme-dark) .card:hover,html:not(.theme-dark) .modcard:hover,html:not(.theme-dark) .modcard.live:hover,html:not(.theme-dark) .dcard:hover{border-color:rgba(164,207,52,.5) !important;}
-  html:not(.theme-dark) .login-foot,html:not(.theme-dark) .campus-tag{color:#8f9689 !important;}
+    background:linear-gradient(120deg,#8c1515,#6b0f0f) !important;color:#fff !important;box-shadow:0 8px 18px rgba(140,21,21,.26) !important;}
+  /* small accents -> cardinal (keep semantic attendance colours) */
+  html:not(.theme-dark) .pc-sub b{color:#8c1515 !important;}
+  html:not(.theme-dark) .pc-actions button:hover{background:#8c1515 !important;color:#fff !important;border-color:#8c1515 !important;}
+  html:not(.theme-dark) .tl-dot{color:#8c1515 !important;}
+  html:not(.theme-dark) .tl-body.mtg{background:#f7ecec !important;}
+  html:not(.theme-dark) .cal-day.today{outline-color:#8c1515 !important;}
+  html:not(.theme-dark) .cal-day.sel,html:not(.theme-dark) .mtcal .cal-day.sel{background:#8c1515 !important;color:#fff !important;box-shadow:0 4px 10px rgba(140,21,21,.32) !important;}
+  html:not(.theme-dark) .mtcal .cal-day.pick:hover:not(.disabled):not(.sel){background:#f2dede !important;color:#6b0f0f !important;}
+  html:not(.theme-dark) .chip{color:#8c1515 !important;background:rgba(140,21,21,.09) !important;border-color:rgba(140,21,21,.22) !important;}
+  html:not(.theme-dark) .segbtn.on,html:not(.theme-dark) .segbtn:hover{background:#8c1515 !important;color:#fff !important;border-color:#8c1515 !important;}
+  html:not(.theme-dark) .field input:focus,html:not(.theme-dark) .gform input:focus,html:not(.theme-dark) .gform textarea:focus{border-color:#8c1515 !important;box-shadow:0 0 0 3px rgba(140,21,21,.18) !important;}
+  html:not(.theme-dark) #mt-datedisp{color:#8c1515 !important;}
+  html:not(.theme-dark) .card:hover,html:not(.theme-dark) .modcard:hover,html:not(.theme-dark) .modcard.live:hover,html:not(.theme-dark) .dcard:hover{border-color:rgba(140,21,21,.4) !important;}
+  html:not(.theme-dark) .login-foot,html:not(.theme-dark) .campus-tag{color:#8a887f !important;}
+  html:not(.theme-dark) .login-card h1{font-family:'Source Serif Pro',Georgia,serif !important;}
 </style>
   <script src="firebase-sync.js"></script>
   <script src="print-paginate.js"></script>

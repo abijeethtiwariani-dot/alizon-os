@@ -1,38 +1,27 @@
 /* ===================================================================
-   ALIZON OS — unified DARK + WHITE-CARD + LIME theme (medcity-crm style)
+   ALIZON OS — unified WHITE + CARDINAL (Stanford-style) theme
    Loaded LAST in every portal so it overrides the brand CSS variables.
-   Lime = primary/CTA (dark text on lime) · white cards · dark canvas.
+   Cardinal red #8c1515 primary (white text) · white surfaces · editorial serif.
    =================================================================== */
 :root{
-  /* primary -> bright lime (medcity #d3f56a -> #bceb3f) */
-  --crimson:#bce34f !important;
-  --crimson-deep:#a4cf34 !important;
-  --crimson-bright:#d3f56a !important;
-  --crimson-soft:rgba(188,227,79,.15) !important;
-  --crimson-2:#c8ea63 !important;
-  /* secondary accent -> readable olive-lime (works on white cards AND dark) */
-  --gold:#7d9e2b !important;
-  --gold-soft:rgba(125,158,43,.18) !important;
-  /* dark chrome */
-  --navy:#12141b !important;
-  --navy2:#1a1d27 !important;
-  --navy3:#262a38 !important;
-  --accent:#bce34f !important;
-  --primary:#bce34f !important;
-  --brand:#bce34f !important;
+  /* primary -> Stanford cardinal */
+  --crimson:#8c1515 !important;
+  --crimson-deep:#6b0f0f !important;
+  --crimson-bright:#b1040e !important;
+  --crimson-soft:rgba(140,21,21,.10) !important;
+  --crimson-2:#a52a2a !important;
+  /* secondary -> warm sandstone (readable on white) */
+  --gold:#9a7b3f !important;
+  --gold-soft:rgba(154,123,63,.16) !important;
+  /* dark chrome tokens nudged warm-neutral */
+  --navy:#2e2d29 !important;
+  --navy2:#3a3833 !important;
+  --navy3:#4a473f !important;
+  --accent:#8c1515 !important;
+  --primary:#8c1515 !important;
+  --brand:#8c1515 !important;
 }
-::selection{background:#bce34f;color:#1e2a06;}
-* { scrollbar-color:#556b2a transparent; }
-*::-webkit-scrollbar-thumb{ background:#556b2a; border-radius:100px; }
-.orb{ filter:drop-shadow(0 0 12px rgba(188,227,79,.5)) !important; }
-
-/* Lime CTA buttons must use DARK text (white-on-lime is unreadable).
-   Force a consistent lime gradient + dark ink on the common primary/CTA classes. */
-.btn.primary,.btn-primary,.cadd,.gv-btn,.subnew,.sview,.pc-edit,.tl-join,
-.setbtn2:not(.danger),.segbtn.on,.progtab.active,.progtab.locked{
-  color:#1e2a06 !important;
-  background:linear-gradient(135deg,#d3f56a,#bce34f) !important;
-  border-color:transparent !important;
-  box-shadow:0 10px 24px rgba(164,207,52,.28) !important;
-  text-shadow:none !important;
-}
+::selection{background:#8c1515;color:#fff;}
+* { scrollbar-color:#b99a9a transparent; }
+*::-webkit-scrollbar-thumb{ background:#c9b3b3; border-radius:100px; }
+.orb{ filter:drop-shadow(0 0 10px rgba(140,21,21,.35)) !important; }

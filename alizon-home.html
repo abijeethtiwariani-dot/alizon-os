@@ -699,6 +699,824 @@
   .pc:hover{box-shadow:0 30px 70px -30px rgba(179,14,18,.5)}
   .btn.primary{will-change:transform}
 
+
+/* ===================== STANFORD LIGHT OVERRIDES ===================== */
+
+/* ===================== WHITE + CARDINAL (Stanford editorial) — home base override ===================== */
+body{ --bg:#ffffff; --panel:#ffffff; --ink:#2e2d29; --muted:#5f5d57; --faint:#8a887f;
+  --line:rgba(0,0,0,.10); --line2:rgba(140,21,21,.16);
+  background:#ffffff !important; color:#2e2d29 !important; }
+#bg{ display:none !important; }
+.glow{ background:radial-gradient(60% 45% at 50% 0%,rgba(140,21,21,.06),transparent 70%) !important; }
+
+/* nav: white editorial bar, cardinal serif brand */
+nav.scrolled{ background:rgba(255,255,255,.92) !important; border-bottom:1px solid rgba(0,0,0,.10) !important; backdrop-filter:blur(14px) saturate(1.2) !important; }
+.brand span{ color:#2e2d29 !important; font-family:'Source Serif Pro',Georgia,serif !important; }
+.brand small{ color:#8c1515 !important; }
+.brand img{ filter:none !important; }
+.navlinks{ color:#5f5d57 !important; }
+.navlinks a:hover{ color:#8c1515 !important; }
+.btn.ghost{ color:#2e2d29 !important; background:#fff !important; border-color:rgba(0,0,0,.14) !important; }
+.btn.ghost:hover{ background:#f6f5f3 !important; border-color:#8c1515 !important; }
+
+/* hero: dark editorial serif on white */
+.eyebrow{ color:#9a7b3f !important; }
+.hero h1{ font-family:'Source Serif Pro',Georgia,serif !important;
+  background:none !important; -webkit-text-fill-color:#2e2d29 !important; color:#2e2d29 !important; }
+.hero .tag{ background:none !important; -webkit-text-fill-color:#8c1515 !important; color:#8c1515 !important; }
+.hero p.lead{ color:#5f5d57 !important; }
+.hero .price, .hero .price b{ color:#8a887f !important; }
+.scrollcue{ color:#a29d92 !important; }
+.scrollcue span{ background:linear-gradient(#8c1515,transparent) !important; }
+
+/* app-window showcase: light card */
+.window{ background:linear-gradient(180deg,#ffffff,#f6f5f3) !important; border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:0 40px 90px -30px rgba(20,18,16,.22),0 20px 60px -40px rgba(0,0,0,.2) !important; }
+.win-bar{ border-bottom:1px solid rgba(0,0,0,.08) !important; background:rgba(0,0,0,.02) !important; }
+.win-bar .u{ color:#8a887f !important; }
+.win-side{ border-right:1px solid rgba(0,0,0,.08) !important; background:linear-gradient(180deg,#faf8f6,#f2f0ed) !important; }
+.win-side b{ background:rgba(0,0,0,.08) !important; }
+.win-side b.on{ background:linear-gradient(120deg,#8c1515,#9a7b3f) !important; }
+.win-main .h{ background:rgba(0,0,0,.12) !important; }
+.win-main .s{ background:rgba(0,0,0,.06) !important; }
+.wc{ border:1px solid rgba(0,0,0,.10) !important; background:#fff !important; }
+.wc .n{ background:none !important; -webkit-text-fill-color:#8c1515 !important; color:#8c1515 !important; }
+.wc .l{ background:rgba(140,21,21,.4) !important; }
+
+/* stat strip */
+.strip{ border-top:1px solid rgba(0,0,0,.10) !important; border-bottom:1px solid rgba(0,0,0,.10) !important; background:#faf8f6 !important; }
+.strip .n{ background:none !important; -webkit-text-fill-color:#8c1515 !important; color:#8c1515 !important; }
+.strip .k{ color:#5f5d57 !important; }
+
+/* section blocks */
+.blk .ey{ color:#9a7b3f !important; }
+.blk h2{ font-family:'Source Serif Pro',Georgia,serif !important; color:#2e2d29 !important; }
+.blk h2 .accent{ background:none !important; -webkit-text-fill-color:#8c1515 !important; color:#8c1515 !important; }
+.blk p.sub{ color:#5f5d57 !important; }
+
+/* programme cards */
+.pc{ background:#ffffff !important; border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:0 12px 34px -18px rgba(20,18,16,.14) !important; }
+.pc:hover{ border-color:#8c1515 !important; box-shadow:0 26px 60px -28px rgba(140,21,21,.4) !important; }
+.pc::before{ background:radial-gradient(80% 60% at 15% 0%,var(--tint,rgba(140,21,21,.10)),transparent 70%) !important; opacity:.7 !important; }
+.pc h3{ color:#2e2d29 !important; font-family:'Source Serif Pro',Georgia,serif !important; }
+.pc p{ color:#5f5d57 !important; }
+.pc .meta{ color:#8c1515 !important; }
+
+/* feature splits */
+.feat h2{ font-family:'Source Serif Pro',Georgia,serif !important; color:#2e2d29 !important; }
+.feat p{ color:#5f5d57 !important; }
+.feat li{ color:#3a3833 !important; }
+.feat .art{ border:1px solid rgba(0,0,0,.10) !important; background:linear-gradient(160deg,#faf8f6,#f2f0ed) !important; }
+.feat .art.aliz{ background:radial-gradient(70% 70% at 50% 40%,rgba(140,21,21,.10),transparent 70%),linear-gradient(160deg,#faf1f1,#f6f5f3) !important; }
+.feat .art .bubble{ background:#fff !important; border:1px solid rgba(140,21,21,.3) !important; color:#2e2d29 !important; }
+.feat .art .bubble b{ color:#8c1515 !important; }
+
+/* CTA + footer */
+.cta-blk h2{ font-family:'Source Serif Pro',Georgia,serif !important; color:#2e2d29 !important; }
+.cta-blk p{ color:#5f5d57 !important; }
+footer{ border-top:1px solid rgba(0,0,0,.10) !important; color:#5f5d57 !important; background:#faf8f6 !important; }
+footer .brand{ color:#2e2d29 !important; }
+footer h4{ color:#8a887f !important; }
+footer a{ color:#5f5d57 !important; }
+footer a:hover{ color:#8c1515 !important; }
+footer .base{ border-top:1px solid rgba(0,0,0,.10) !important; color:#8a887f !important; }
+
+/* global polish tweaks for light */
+#azwow-progress{ box-shadow:0 0 10px rgba(140,21,21,.4) !important; }
+#azwow-cursor{ background:radial-gradient(circle,rgba(140,21,21,.08),transparent 62%) !important; }
+
+
+/* ===== azcon light ===== */
+/* ===== azcon — Stanford editorial LIGHT re-skin (override) ===== */
+/* Re-map the module's CSS vars for a white page, scoped to root */
+#azcon-root{
+  --crimson:#8c1515; --crimson-deep:#6b0f0f; --crimson-bright:#b1040e;
+  --gold:#9a7b3f;
+  --ink:#2e2d29; --muted:#5f5d57; --faint:#8a887f;
+  --line:rgba(0,0,0,.10); --line2:rgba(140,21,21,.16);
+}
+
+/* ---- Launcher label pill ---- */
+#azcon-root .azcon-lbl{
+  color:#2e2d29 !important;
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+}
+
+/* ---- Launcher orb (keep cardinal brand) ---- */
+#azcon-root .azcon-orb{
+  background:radial-gradient(120% 120% at 30% 25%,#8c1515,#6b0f0f) !important;
+  border:1px solid rgba(140,21,21,.28) !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.14),0 0 0 6px rgba(140,21,21,.08) !important;
+}
+#azcon-root .azcon-orb::after{
+  background:radial-gradient(circle,rgba(140,21,21,.30),transparent 68%) !important;
+}
+#azcon-root .azcon-launcher:hover .azcon-orb{
+  box-shadow:0 16px 40px rgba(20,18,16,.18),0 0 0 8px rgba(140,21,21,.12) !important;
+}
+#azcon-root .azcon-launcher:focus-visible .azcon-orb{
+  box-shadow:0 10px 30px rgba(20,18,16,.14),0 0 0 4px #8c1515 !important;
+}
+#azcon-root .azcon-fallback{color:#fff !important;}
+
+/* ---- Panel surface: solid white ---- */
+#azcon-root .azcon-panel{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+  box-shadow:0 30px 80px rgba(20,18,16,.16),0 0 0 1px rgba(0,0,0,.04) !important;
+}
+
+/* ---- Header ---- */
+#azcon-root .azcon-head{
+  border-bottom:1px solid rgba(0,0,0,.10) !important;
+  background:linear-gradient(180deg,rgba(140,21,21,.06),transparent) !important;
+}
+#azcon-root .azcon-avatar{
+  background:radial-gradient(120% 120% at 30% 25%,#8c1515,#6b0f0f) !important;
+  border:1px solid rgba(140,21,21,.24) !important;
+}
+#azcon-root .azcon-title{
+  color:#2e2d29 !important;
+  font-family:'Source Serif Pro',Georgia,serif !important;
+}
+#azcon-root .azcon-sub{color:#5f5d57 !important;}
+#azcon-root .azcon-online{background:#3f9d5a !important;box-shadow:0 0 8px rgba(63,157,90,.5) !important;}
+
+/* Close button */
+#azcon-root .azcon-x{
+  border:1px solid rgba(0,0,0,.10) !important;
+  background:#f6f5f3 !important;
+  color:#5f5d57 !important;
+}
+#azcon-root .azcon-x:hover{background:rgba(140,21,21,.08) !important;color:#8c1515 !important;}
+#azcon-root .azcon-x:focus-visible{outline:2px solid #8c1515 !important;}
+
+/* ---- Messages scrollbar ---- */
+#azcon-root .azcon-msgs{scrollbar-color:rgba(0,0,0,.22) transparent !important;}
+#azcon-root .azcon-msgs::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18) !important;}
+
+/* Message avatars */
+#azcon-root .azcon-m-av{
+  background:radial-gradient(120% 120% at 30% 25%,#8c1515,#6b0f0f) !important;
+  border:1px solid rgba(140,21,21,.24) !important;
+}
+
+/* Aliz (assistant) bubble -> warm light grey card */
+#azcon-root .azcon-m--aliz .azcon-bub{
+  background:#f6f5f3 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  color:#2e2d29 !important;
+}
+#azcon-root .azcon-m--aliz .azcon-bub b{color:#2e2d29 !important;}
+
+/* User bubble -> cardinal with white text */
+#azcon-root .azcon-m--user .azcon-bub{
+  background:linear-gradient(180deg,#8c1515,#6b0f0f) !important;
+  border:1px solid rgba(140,21,21,.30) !important;
+  color:#ffffff !important;
+  box-shadow:0 8px 22px rgba(140,21,21,.20) !important;
+}
+#azcon-root .azcon-m--user .azcon-bub b{color:#ffffff !important;}
+
+/* Inline links -> cardinal */
+#azcon-root .azcon-a{
+  color:#8c1515 !important;
+  border-bottom:1px solid rgba(140,21,21,.35) !important;
+}
+#azcon-root .azcon-a:hover{color:#6b0f0f !important;border-bottom-color:#6b0f0f !important;}
+#azcon-root .azcon-a:focus-visible{outline:2px solid #8c1515 !important;}
+
+/* Typing dots */
+#azcon-root .azcon-typing span{background:#8a887f !important;}
+
+/* ---- Chips ---- */
+#azcon-root .azcon-chips{border-top:1px solid rgba(0,0,0,.10) !important;}
+#azcon-root .azcon-chip{
+  color:#2e2d29 !important;
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azcon-root .azcon-chip:hover{
+  background:rgba(140,21,21,.08) !important;
+  border-color:rgba(140,21,21,.30) !important;
+  color:#8c1515 !important;
+}
+#azcon-root .azcon-chip:focus-visible{outline:2px solid #8c1515 !important;}
+
+/* ---- Input row ---- */
+#azcon-root .azcon-input{
+  border-top:1px solid rgba(0,0,0,.10) !important;
+  background:#f6f5f3 !important;
+}
+#azcon-root .azcon-field{
+  color:#2e2d29 !important;
+  background:#ffffff !important;
+  border:1px solid #d8d4cd !important;
+}
+#azcon-root .azcon-field::placeholder{color:#8a887f !important;}
+#azcon-root .azcon-field:focus{
+  border-color:#8c1515 !important;
+  background:#ffffff !important;
+  box-shadow:0 0 0 3px rgba(140,21,21,.16) !important;
+}
+
+/* Send button -> cardinal */
+#azcon-root .azcon-send{
+  background:linear-gradient(180deg,#8c1515,#6b0f0f) !important;
+  box-shadow:0 6px 18px rgba(140,21,21,.28) !important;
+}
+#azcon-root .azcon-send svg{stroke:#fff !important;}
+#azcon-root .azcon-send:hover{box-shadow:0 10px 26px rgba(140,21,21,.40) !important;}
+#azcon-root .azcon-send:focus-visible{outline:2px solid #8c1515 !important;}
+
+/* ===== azrole light ===== */
+/* ===== azrole — Stanford editorial LIGHT re-skin (append after base) ===== */
+
+/* Eyebrow -> warm sandstone/gold */
+#azrole-root .azrole-ey{color:#9a7b3f !important}
+
+/* Big display title -> dark ink editorial serif */
+#azrole-root .azrole-title{
+  font-family:'Source Serif Pro',Georgia,serif !important;
+  color:#2e2d29 !important}
+#azrole-root .azrole-sub{color:#5f5d57 !important}
+
+/* ---- segmented switcher: white pill, hairline border ---- */
+#azrole-root .azrole-seg{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important}
+
+/* moving indicator -> solid cardinal */
+#azrole-root .azrole-ind{
+  background:#8c1515 !important;
+  box-shadow:0 8px 22px -8px rgba(140,21,21,.55),inset 0 1px 0 rgba(255,255,255,.18) !important}
+
+/* tabs: dark ink text, cardinal hover, white on active */
+#azrole-root .azrole-tab{color:#5f5d57 !important}
+#azrole-root .azrole-tab:hover{color:#8c1515 !important}
+#azrole-root .azrole-tab[aria-selected="true"]{color:#ffffff !important}
+#azrole-root .azrole-tab:focus-visible{outline:2px solid #8c1515 !important}
+
+/* ---- action cards: solid white surface, hairline, soft shadow ---- */
+#azrole-root .azrole-card{
+  background:#ffffff !important;
+  color:#2e2d29 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important}
+/* kill dark glow overlay -> soft cardinal tint wash on hover */
+#azrole-root .azrole-card::before{
+  background:radial-gradient(120% 82% at 50% -12%,rgba(140,21,21,.07),transparent 62%) !important}
+#azrole-root .azrole-card:hover{
+  border-color:rgba(140,21,21,.28) !important;
+  box-shadow:0 22px 46px -20px rgba(140,21,21,.35),0 8px 22px -14px rgba(20,18,16,.18) !important}
+
+/* badge / icon chip -> cardinal-tinted on white */
+#azrole-root .azrole-badge{
+  background:rgba(140,21,21,.08) !important;
+  border:1px solid rgba(140,21,21,.20) !important;
+  color:#8c1515 !important;
+  box-shadow:none !important}
+#azrole-root .azrole-mini{filter:none !important}
+
+/* card text */
+#azrole-root .azrole-t{color:#2e2d29 !important}
+#azrole-root .azrole-d{color:#5f5d57 !important}
+
+/* "go" affordance -> cardinal */
+#azrole-root .azrole-go{color:#8c1515 !important}
+#azrole-root .azrole-card:focus-visible{outline:2px solid #8c1515 !important}
+
+/* inputs / selects, if any render inside this module */
+#azrole-root input,#azrole-root select,#azrole-root textarea{
+  background:#ffffff !important;
+  border:1px solid #d8d4cd !important;
+  color:#2e2d29 !important}
+#azrole-root input:focus,#azrole-root select:focus,#azrole-root textarea:focus{
+  outline:2px solid #8c1515 !important;outline-offset:2px;
+  border-color:#8c1515 !important}
+
+/* ===== azfinder light ===== */
+/* ===== azfinder — Stanford editorial LIGHT re-skin ===== */
+/* Scoped to #azfinder-root; overrides dark glassy base that precedes it */
+#azfinder-root{
+  --crimson:#8c1515; --crimson-deep:#6b0f0f; --crimson-bright:#b1040e;
+  --gold:#9a7b3f;
+  --ink:#2e2d29; --muted:#5f5d57; --faint:#8a887f;
+  --bg:#ffffff; --panel:#ffffff;
+  --line:rgba(0,0,0,.10); --line2:rgba(140,21,21,.16);
+}
+
+/* Eyebrows / question numbers -> warm sandstone gold */
+#azfinder-root .azfinder-ey,
+#azfinder-root .azfinder-qn,
+#azfinder-root .azfinder-r-eyebrow,
+#azfinder-root .azfinder-r-block h4{color:#9a7b3f !important}
+#azfinder-root .azfinder-ey::before{background:linear-gradient(90deg,transparent,#9a7b3f) !important}
+#azfinder-root .azfinder-ey::after{background:linear-gradient(270deg,transparent,#9a7b3f) !important}
+
+/* Display headings -> dark ink, serif */
+#azfinder-root .azfinder-h,
+#azfinder-root .azfinder-q,
+#azfinder-root .azfinder-r-name{
+  font-family:'Source Serif Pro',Georgia,serif;
+  color:#2e2d29 !important;
+}
+/* Result name had a light gradient text clip — neutralise it */
+#azfinder-root .azfinder-r-name{
+  background:none !important;
+  -webkit-background-clip:border-box !important;
+  background-clip:border-box !important;
+  -webkit-text-fill-color:#2e2d29 !important;
+}
+#azfinder-root .azfinder-sub,
+#azfinder-root .azfinder-r-tag,
+#azfinder-root .azfinder-learn{color:#5f5d57 !important}
+#azfinder-root .azfinder-learn b{color:#2e2d29 !important}
+
+/* Main card -> solid white, hairline border, soft shadow */
+#azfinder-root .azfinder-card{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+}
+/* Kill the dark radial glow */
+#azfinder-root .azfinder-glow{
+  background:radial-gradient(560px 240px at 50% -8%,rgba(140,21,21,.06),transparent 70%) !important;
+  opacity:1 !important;
+}
+
+/* Progress bar */
+#azfinder-root .azfinder-track{background:#eeece8 !important}
+#azfinder-root .azfinder-fill{
+  background:linear-gradient(90deg,#6b0f0f,#8c1515) !important;
+  box-shadow:0 0 12px -2px rgba(140,21,21,.4) !important;
+}
+#azfinder-root .azfinder-step-lbl{color:#8a887f !important}
+#azfinder-root .azfinder-step-lbl b{color:#2e2d29 !important}
+
+/* Option cards -> white surface, dark text */
+#azfinder-root .azfinder-opt{
+  color:#2e2d29 !important;
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azfinder-root .azfinder-opt:hover{
+  border-color:rgba(140,21,21,.30) !important;
+  background:rgba(140,21,21,.04) !important;
+  box-shadow:0 6px 18px rgba(20,18,16,.06) !important;
+}
+#azfinder-root .azfinder-opt:focus-visible{
+  border-color:#8c1515 !important;
+  box-shadow:0 0 0 3px rgba(140,21,21,.28) !important;
+}
+/* Selected option -> cardinal tint surface, dark text stays readable */
+#azfinder-root .azfinder-opt.is-sel{
+  border-color:#8c1515 !important;
+  background:rgba(140,21,21,.08) !important;
+  box-shadow:0 10px 30px rgba(140,21,21,.14) !important;
+}
+/* Tick */
+#azfinder-root .azfinder-tick{
+  border:1.5px solid rgba(0,0,0,.20) !important;
+  color:transparent !important;
+}
+#azfinder-root .azfinder-opt.is-sel .azfinder-tick{
+  border-color:transparent !important;
+  background:#8c1515 !important;
+  color:#fff !important;
+  box-shadow:0 0 0 4px rgba(140,21,21,.18) !important;
+}
+
+/* Buttons — secondary/ghost */
+#azfinder-root .azfinder-btn{
+  border:1px solid rgba(0,0,0,.14) !important;
+  background:#ffffff !important;
+  color:#2e2d29 !important;
+}
+#azfinder-root .azfinder-btn:hover{background:rgba(140,21,21,.06) !important}
+#azfinder-root .azfinder-btn:focus-visible{box-shadow:0 0 0 3px rgba(140,21,21,.35) !important}
+#azfinder-root .azfinder-btn.azfinder-ghost{background:transparent !important}
+#azfinder-root .azfinder-btn.azfinder-ghost:hover{background:rgba(140,21,21,.06) !important}
+/* Primary -> solid cardinal, white text */
+#azfinder-root .azfinder-btn.azfinder-prim{
+  border-color:transparent !important;
+  color:#fff !important;
+  background:#8c1515 !important;
+  box-shadow:0 10px 26px -12px rgba(140,21,21,.6) !important;
+}
+#azfinder-root .azfinder-btn.azfinder-prim:hover{
+  background:#6b0f0f !important;
+  box-shadow:0 14px 32px -12px rgba(140,21,21,.7) !important;
+}
+
+/* Result blocks -> nested warm-grey panels */
+#azfinder-root .azfinder-r-block{
+  background:#f6f5f3 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azfinder-root .azfinder-r-mascot{
+  border:1px solid rgba(0,0,0,.10) !important;
+  background:#f6f5f3 !important;
+}
+/* Result checklist bullets */
+#azfinder-root .azfinder-r-list li{color:#2e2d29 !important}
+#azfinder-root .azfinder-r-list li::before{
+  background:rgba(140,21,21,.12) !important;
+  box-shadow:inset 0 0 0 1.5px rgba(140,21,21,.55) !important;
+}
+#azfinder-root .azfinder-r-list li::after{
+  border-left:1.6px solid #8c1515 !important;
+  border-bottom:1.6px solid #8c1515 !important;
+}
+#azfinder-root .azfinder-note{color:#8a887f !important}
+
+/* ===== azest light ===== */
+/* ===== azest — Stanford editorial LIGHT re-skin (scoped to #azest-root) ===== */
+
+/* Re-map the page vars locally so every var() in the base CSS resolves to light ink */
+#azest-root{
+  --ink:#2e2d29;
+  --muted:#5f5d57;
+  --faint:#8a887f;
+  --line:rgba(0,0,0,.10);
+  --line2:rgba(0,0,0,.14);
+  --panel:#ffffff;
+  --crimson:#8c1515;
+  --crimson-deep:#6b0f0f;
+  --crimson-bright:#b1040e;
+  --gold:#9a7b3f;
+  --gold-soft:#9a7b3f;
+}
+
+/* Section eyebrow / helper */
+#azest-root .ey{color:var(--crimson) !important}
+
+/* Display heading -> editorial serif, dark ink */
+#azest-root .azest-title{
+  font-family:'Source Serif Pro',Georgia,serif !important;
+  color:#2e2d29 !important;
+}
+#azest-root .azest-title em{color:#9a7b3f !important}
+#azest-root .azest-sub{color:#5f5d57 !important}
+
+/* Indicative note pill */
+#azest-root .azest-note{
+  background:#f6f5f3 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  color:#5f5d57 !important;
+}
+#azest-root .azest-note b{color:#8c1515 !important}
+#azest-root .azest-dot{
+  background:#8c1515 !important;
+  box-shadow:0 0 10px rgba(140,21,21,.45) !important;
+}
+
+/* Cards / result panel -> solid white, hairline border, soft shadow, no glass */
+#azest-root .azest-card,
+#azest-root .azest-res{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+/* Form header */
+#azest-root .azest-form-h span{color:#2e2d29 !important}
+#azest-root .azest-form-h .azest-ic{
+  background:linear-gradient(150deg,#8c1515,#6b0f0f) !important;
+  box-shadow:0 6px 18px -6px rgba(140,21,21,.45) !important;
+}
+
+/* Labels */
+#azest-root .azest-lbl{color:#8a887f !important}
+
+/* Selects -> white, dark text, cardinal focus */
+#azest-root .azest-sel{
+  background:#ffffff !important;
+  border:1px solid #d8d4cd !important;
+  color:#2e2d29 !important;
+}
+#azest-root .azest-sel:hover{background:#f6f5f3 !important}
+#azest-root .azest-sel:focus-visible{
+  border-color:#8c1515 !important;
+  box-shadow:0 0 0 3px rgba(140,21,21,.24) !important;
+}
+#azest-root .azest-sel option{background:#ffffff !important;color:#2e2d29 !important}
+#azest-root .azest-selwrap::after{border-color:#8a887f !important}
+#azest-root .azest-selwrap:hover::after{border-color:#8c1515 !important}
+
+/* Segmented track control */
+#azest-root .azest-segs{
+  background:#f6f5f3 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azest-root .azest-seg{color:#5f5d57 !important;border-color:transparent !important}
+#azest-root .azest-seg:hover{color:#2e2d29 !important}
+#azest-root .azest-seg small{color:#8a887f !important}
+#azest-root .azest-seg[aria-pressed="true"]{
+  background:#8c1515 !important;
+  color:#ffffff !important;
+  border-color:#8c1515 !important;
+  box-shadow:0 6px 16px -10px rgba(140,21,21,.55) !important;
+}
+#azest-root .azest-seg[aria-pressed="true"] small{color:rgba(255,255,255,.82) !important}
+#azest-root .azest-seg:focus-visible{box-shadow:0 0 0 3px rgba(140,21,21,.28) !important}
+
+/* Primary CTA button -> cardinal, white text */
+#azest-root .azest-go{
+  color:#ffffff !important;
+  background:linear-gradient(135deg,#b1040e,#6b0f0f) !important;
+  box-shadow:0 12px 26px -14px rgba(140,21,21,.6),inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+#azest-root .azest-go:hover{filter:brightness(1.05) !important}
+#azest-root .azest-go:focus-visible{box-shadow:0 0 0 3px rgba(140,21,21,.32) !important}
+
+/* Result glow -> subtle cardinal */
+#azest-root .azest-glow{
+  --rescol:#8c1515;
+  opacity:.08 !important;
+}
+
+/* Result verdict badges -> readable on white */
+#azest-root .azest-v-ok{
+  color:#1f7a4d !important;background:rgba(34,197,94,.10) !important;border-color:rgba(34,150,90,.35) !important;
+}
+#azest-root .azest-v-ok .azest-bd{background:#1f9d5b !important;box-shadow:none !important}
+#azest-root .azest-v-mid{
+  color:#8a5a00 !important;background:rgba(245,158,11,.12) !important;border-color:rgba(200,140,20,.35) !important;
+}
+#azest-root .azest-v-mid .azest-bd{background:#c88c14 !important;box-shadow:none !important}
+#azest-root .azest-v-no{
+  color:#8c1515 !important;background:rgba(140,21,21,.08) !important;border-color:rgba(140,21,21,.30) !important;
+}
+#azest-root .azest-v-no .azest-bd{background:#b1040e !important;box-shadow:none !important}
+
+/* Result text */
+#azest-root .azest-rprog{color:#2e2d29 !important}
+#azest-root .azest-rprog b{color:#8c1515 !important}
+#azest-root .azest-reason{color:#5f5d57 !important}
+#azest-root .azest-reason b{color:#2e2d29 !important}
+
+/* Stat tiles -> nested light grey */
+#azest-root .azest-stat{
+  background:#f6f5f3 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azest-root .azest-stat .azest-k{color:#8a887f !important}
+#azest-root .azest-stat .azest-val{color:#2e2d29 !important}
+#azest-root .azest-stat .azest-vsub{color:#8a887f !important}
+
+/* CTAs */
+#azest-root .azest-cta.azest-apply{
+  color:#ffffff !important;
+  background:linear-gradient(135deg,#b1040e,#6b0f0f) !important;
+  box-shadow:0 12px 26px -14px rgba(140,21,21,.55),inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+#azest-root .azest-cta.azest-apply:hover{filter:brightness(1.05) !important}
+#azest-root .azest-cta.azest-ask{
+  color:#8c1515 !important;
+  background:rgba(140,21,21,.08) !important;
+  border-color:rgba(140,21,21,.16) !important;
+}
+#azest-root .azest-cta.azest-ask:hover{
+  background:rgba(140,21,21,.14) !important;
+  border-color:#8c1515 !important;
+}
+#azest-root .azest-cta:focus-visible{box-shadow:0 0 0 3px rgba(140,21,21,.28) !important}
+
+/* Fine print */
+#azest-root .azest-fine{color:#8a887f !important}
+#azest-root .azest-fine b{color:#5f5d57 !important}
+
+/* ===== azverify light ===== */
+/* ===== azverify — Stanford-style LIGHT re-skin (override, appended after base) ===== */
+
+/* Eyebrow -> warm sandstone accent */
+#azverify-root .azverify-ey{color:#9a7b3f !important}
+#azverify-root .azverify-ey::before{background:linear-gradient(90deg,#9a7b3f,transparent) !important}
+
+/* Big display heading -> dark ink editorial serif */
+#azverify-root .azverify-h{
+  font-family:'Source Serif Pro',Georgia,serif !important;
+  color:#2e2d29 !important;
+}
+#azverify-root .azverify-sub{color:#5f5d57 !important}
+
+/* Bullet points */
+#azverify-root .azverify-points li{color:#5f5d57 !important}
+#azverify-root .azverify-points b{color:#2e2d29 !important}
+#azverify-root .azverify-tick{
+  background:#f6f5f3 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azverify-root .azverify-tick svg{stroke:#8c1515 !important}
+
+/* Card / panel -> solid white, hairline border, soft shadow. Kill dark glass. */
+#azverify-root .azverify-card{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+}
+#azverify-root .azverify-card::before{
+  background:radial-gradient(120% 90% at 100% 0%,rgba(140,21,21,.06),transparent 55%) !important;
+  opacity:1 !important;
+}
+
+/* Badge */
+#azverify-root .azverify-badge{color:#5f5d57 !important}
+#azverify-root .azverify-badge span{
+  background:#8c1515 !important;
+  box-shadow:0 0 0 4px rgba(140,21,21,.16) !important;
+}
+
+/* Field labels */
+#azverify-root .azverify-lbl{color:#8a887f !important}
+
+/* Inputs -> white, warm border, dark text, cardinal focus ring */
+#azverify-root .azverify-input{
+  background:#ffffff !important;
+  border:1px solid #d8d4cd !important;
+  color:#2e2d29 !important;
+}
+#azverify-root .azverify-input::placeholder{color:#8a887f !important}
+#azverify-root .azverify-input:focus{
+  border-color:#8c1515 !important;
+  box-shadow:0 0 0 3px rgba(140,21,21,.18) !important;
+  background:#ffffff !important;
+}
+
+/* Primary button -> cardinal with white text */
+#azverify-root .azverify-btn{
+  color:#ffffff !important;
+  background:linear-gradient(180deg,#8c1515,#6b0f0f) !important;
+  box-shadow:0 14px 30px -12px rgba(140,21,21,.55),inset 0 1px 0 rgba(255,255,255,.15) !important;
+}
+#azverify-root .azverify-btn:hover{
+  filter:brightness(1.05) !important;
+  box-shadow:0 18px 38px -12px rgba(140,21,21,.65),inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+#azverify-root .azverify-btn svg{stroke:#ffffff !important}
+
+/* Focus rings -> cardinal */
+#azverify-root .azverify-input:focus-visible,
+#azverify-root .azverify-btn:focus-visible,
+#azverify-root .azverify-card a:focus-visible{outline-color:#8c1515 !important}
+
+/* Hint + links */
+#azverify-root .azverify-hint{color:#8a887f !important}
+#azverify-root .azverify-hint a{
+  color:#8c1515 !important;
+  border-bottom:1px solid rgba(140,21,21,.40) !important;
+}
+#azverify-root .azverify-hint a:hover{color:#6b0f0f !important}
+
+/* Result states -> soft tinted panels on white */
+#azverify-root .azverify-result.azverify-ok{
+  background:linear-gradient(180deg,rgba(21,115,71,.08),rgba(21,115,71,.02)) !important;
+  border-color:rgba(21,115,71,.30) !important;
+}
+#azverify-root .azverify-result.azverify-no{
+  background:linear-gradient(180deg,rgba(154,123,63,.10),rgba(154,123,63,.03)) !important;
+  border-color:rgba(154,123,63,.34) !important;
+}
+
+/* Result icons */
+#azverify-root .azverify-ok .azverify-icon{
+  background:radial-gradient(circle at 50% 35%,rgba(21,115,71,.18),rgba(21,115,71,.05)) !important;
+  box-shadow:0 0 0 1px rgba(21,115,71,.35) !important;
+}
+#azverify-root .azverify-no .azverify-icon{
+  background:radial-gradient(circle at 50% 35%,rgba(154,123,63,.20),rgba(154,123,63,.06)) !important;
+  box-shadow:0 0 0 1px rgba(154,123,63,.38) !important;
+}
+#azverify-root .azverify-ok .azverify-icon svg{stroke:#157347 !important}
+#azverify-root .azverify-no .azverify-icon svg{stroke:#9a7b3f !important}
+
+/* Result titles */
+#azverify-root .azverify-ok .azverify-rtitle{color:#157347 !important}
+#azverify-root .azverify-no .azverify-rtitle{color:#8a6a2f !important}
+#azverify-root .azverify-rid{color:#5f5d57 !important}
+
+/* Result data rows -> light alt surface with hairline separators */
+#azverify-root .azverify-rows{background:rgba(0,0,0,.10) !important}
+#azverify-root .azverify-rows li{background:#f6f5f3 !important}
+#azverify-root .azverify-rk{color:#8a887f !important}
+#azverify-root .azverify-rv{color:#2e2d29 !important}
+
+/* Verified pill -> green tint on white */
+#azverify-root .azverify-pill{
+  background:rgba(21,115,71,.12) !important;
+  color:#157347 !important;
+  border:1px solid rgba(21,115,71,.30) !important;
+}
+#azverify-root .azverify-pill::before{background:#157347 !important}
+
+/* Notes + result links */
+#azverify-root .azverify-note{color:#5f5d57 !important}
+#azverify-root .azverify-note strong{color:#2e2d29 !important}
+#azverify-root .azverify-rlinks a{color:#8c1515 !important}
+#azverify-root .azverify-rlinks a:hover{color:#6b0f0f !important}
+
+/* ===== azstat light ===== */
+/* ===== AZSTAT — Stanford editorial LIGHT re-skin (override) ===== */
+
+/* eyebrow pill */
+#azstat-root .azstat-ey{
+  color:#8c1515 !important;
+  border:1px solid rgba(140,21,21,.20) !important;
+  background:rgba(140,21,21,.06) !important;
+}
+#azstat-root .azstat-ey::before{
+  background:#8c1515 !important;
+  box-shadow:0 0 8px 1px rgba(140,21,21,.35) !important;
+}
+
+/* big display heading */
+#azstat-root .azstat-title{
+  font-family:'Source Serif Pro',Georgia,serif !important;
+  color:#2e2d29 !important;
+}
+#azstat-root .azstat-sub{color:#5f5d57 !important;}
+
+/* ===== (A) stat tiles ===== */
+#azstat-root .azstat-tile{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+}
+#azstat-root .azstat-tile::before{background:none !important;opacity:0 !important;}
+#azstat-root .azstat-tile:hover{
+  border-color:rgba(140,21,21,.24) !important;
+  box-shadow:0 16px 40px rgba(20,18,16,.12) !important;
+}
+#azstat-root .azstat-num{
+  font-family:'Source Serif Pro',Georgia,serif !important;
+  background:none !important;
+  -webkit-background-clip:border-box !important;background-clip:border-box !important;
+  color:#8c1515 !important;-webkit-text-fill-color:#8c1515 !important;
+  text-shadow:none !important;
+}
+#azstat-root .azstat-label{color:#5f5d57 !important;}
+
+/* ===== (B) countdown card ===== */
+#azstat-root .azstat-cd{
+  background:#f6f5f3 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+}
+#azstat-root .azstat-cd::after{background:none !important;}
+
+#azstat-root .azstat-cd-ey{color:#8c1515 !important;}
+#azstat-root .azstat-cd-h{
+  font-family:'Source Serif Pro',Georgia,serif !important;
+  color:#2e2d29 !important;
+}
+#azstat-root .azstat-cd-p{color:#5f5d57 !important;}
+
+/* primary CTA — cardinal with white text */
+#azstat-root .azstat-cta{
+  color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;
+  background:#8c1515 !important;
+  border:1px solid #6b0f0f !important;
+  box-shadow:0 12px 26px -12px rgba(140,21,21,.55) !important;
+}
+#azstat-root .azstat-cta:hover{
+  background:#6b0f0f !important;
+  filter:none !important;
+  box-shadow:0 16px 32px -12px rgba(140,21,21,.6) !important;
+}
+#azstat-root .azstat-cta:focus-visible{outline:2px solid #8c1515 !important;outline-offset:3px !important;}
+
+/* countdown segments — white nested tiles */
+#azstat-root .azstat-seg{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:0 4px 14px rgba(20,18,16,.06) !important;
+}
+#azstat-root .azstat-seg-n{
+  font-family:'Source Serif Pro',Georgia,serif !important;
+  color:#2e2d29 !important;
+}
+#azstat-root .azstat-seg-l{color:#8a887f !important;}
+
+/* open state */
+#azstat-root .azstat-open{color:#2e2d29 !important;}
+#azstat-root .azstat-open .azstat-dot{background:#2e7d32 !important;}
 </style>
 <link rel="stylesheet" href="alizon-theme.css">
 </head>
