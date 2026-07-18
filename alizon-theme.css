@@ -1,34 +1,28 @@
 /* ===================================================================
-   ALIZON OS — unified PURPLE + LIME "Apple glass" theme
-   Loaded LAST in every portal so it overrides the brand (crimson/gold)
-   CSS variables. Purple = primary/brand · Lime-green = CTA/accent.
+   ALIZON OS — unified MAROON + WHITE theme (matches alizongov.com)
+   Loaded LAST in every portal so it overrides the brand CSS variables.
+   Maroon = primary/brand (hsl 4 93% 37%) · gold = subtle secondary · white surfaces.
    =================================================================== */
 :root{
-  /* primary (was crimson) -> purple */
-  --crimson:#7c5cfc !important;
-  --crimson-deep:#6636e8 !important;
-  --crimson-bright:#9d84ff !important;
-  --crimson-soft:rgba(124,92,252,.16) !important;
-  --crimson-2:#8b6ef0 !important;
-  /* secondary accent (was gold) -> lime */
-  --gold:#c6f24e !important;
-  --gold-soft:rgba(198,242,78,.20) !important;
-  /* dark chrome (was navy) -> deep violet */
-  --navy:#171533 !important;
-  --navy2:#221f45 !important;
-  --navy3:#332d63 !important;
-  /* accent aliases some portals use */
-  --accent:#7c5cfc !important;
-  --primary:#7c5cfc !important;
-  --brand:#7c5cfc !important;
+  /* primary -> alizongov maroon */
+  --crimson:#b30e12 !important;
+  --crimson-deep:#7a0309 !important;
+  --crimson-bright:#d41820 !important;
+  --crimson-soft:rgba(179,14,18,.12) !important;
+  --crimson-2:#c0272d !important;
+  /* secondary accent -> brand gold */
+  --gold:#a16207 !important;
+  --gold-soft:rgba(161,98,7,.16) !important;
+  /* dark chrome kept subtle maroon-navy for portals that are dark */
+  --navy:#2a1416 !important;
+  --navy2:#3a1c1f !important;
+  --navy3:#4a2529 !important;
+  /* accent aliases */
+  --accent:#b30e12 !important;
+  --primary:#b30e12 !important;
+  --brand:#b30e12 !important;
 }
-
-/* premium touches shared everywhere */
-::selection{background:#7c5cfc;color:#fff;}
-* { scrollbar-color:#4a3d80 transparent; }
-*::-webkit-scrollbar-thumb{ background:#4a3d80; border-radius:100px; }
-
-/* keep the crimson logo glow from clashing — neutralise heavy red drop-shadows */
-.orb{ filter:drop-shadow(0 0 12px rgba(124,92,252,.45)) !important; }
-
-/* lime primary buttons read as the reference CTA everywhere they use the gradient */
+::selection{background:#b30e12;color:#fff;}
+* { scrollbar-color:#b3878a transparent; }
+*::-webkit-scrollbar-thumb{ background:#c9a6a8; border-radius:100px; }
+.orb{ filter:drop-shadow(0 0 12px rgba(179,14,18,.4)) !important; }
