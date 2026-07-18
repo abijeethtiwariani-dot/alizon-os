@@ -818,6 +818,27 @@
   html.theme-dark .alert-b b{color:#f5f4f6}
   html.theme-dark .alert-b p{color:#9a9db2}
 
+
+  /* ---- meeting scheduler calendar + Aliz dismiss ---- */
+  .mtcal{background:#fff;border:1px solid rgba(17,24,39,.1);border-radius:16px;padding:14px;margin:2px 0}
+  .mtcal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .mtcal .caltitle{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .mtcal .cal-dow{gap:4px;margin-bottom:4px}
+  .mtcal .cal-grid{gap:4px}
+  .mtcal .cal-day{aspect-ratio:1;border-radius:9px;font-size:12.5px;background:#f1f3f5;color:#3a3f47;cursor:default}
+  .mtcal .cal-day.pick{cursor:pointer;transition:.12s}
+  .mtcal .cal-day.pick:hover:not(.disabled):not(.sel){background:#dbf3a6;color:#3f6212}
+  .mtcal .cal-day.disabled{opacity:.3;cursor:not-allowed}
+  .mtcal .cal-day.sel{background:#c6f24e;color:#243305;font-weight:700;box-shadow:0 4px 10px rgba(132,204,22,.4)}
+  .mtcal .cal-day.hasmtg{position:relative}
+  .mtcal .cal-day.hasmtg::after{content:"";position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#65a30d}
+  .mtcal .cal-day.sel.hasmtg::after{background:#243305}
+  #mt-datedisp{background:#f4f5f7 !important;cursor:default;font-weight:600;color:#3f6212 !important}
+  .nudge-x{position:absolute;top:-9px;right:-9px;width:22px;height:22px;border-radius:50%;border:none;background:#17181c;color:#fff;font-size:11px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 3px 8px rgba(0,0,0,.35);z-index:2;padding:0}
+  .nudge-x:hover{background:#000;transform:scale(1.08)}
+  html.theme-dark .mtcal{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
+  html.theme-dark .mtcal .cal-day{background:rgba(255,255,255,.05);color:#c9ccd6}
+
   /* ============ Profile candidate card + Today's Schedule ============ */
   .ovtop{display:grid;grid-template-columns:.82fr 1.45fr;gap:18px;margin-bottom:18px}
   @media(max-width:900px){.ovtop{grid-template-columns:1fr}}
@@ -1188,7 +1209,12 @@
         <div class="dcard"><div class="dch"><h3>Request a Meeting</h3></div>
           <div class="gform">
             <div class="g2"><input id="mt-with" placeholder="With — faculty or office"><input id="mt-topic" placeholder="Topic"></div>
-            <div class="g2"><input id="mt-date" type="date"><input id="mt-time" type="time"></div>
+            <div class="mtcal" id="mtCal">
+              <div class="mtcal-head"><button type="button" class="calnav" id="mtPrev" title="Previous month">‹</button><div class="caltitle" id="mtCalTitle">Month</div><button type="button" class="calnav" id="mtNext" title="Next month">›</button></div>
+              <div class="cal-dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+              <div class="cal-grid" id="mtCalGrid"></div>
+            </div>
+            <div class="g2"><input id="mt-datedisp" readonly placeholder="Pick a date on the calendar"><input id="mt-time" type="time"><input id="mt-date" type="hidden"></div>
             <select id="mt-mode"><option value="Online">Online (Google Meet)</option><option value="In person">In person</option><option value="Phone">Phone call</option></select>
             <textarea id="mt-note" placeholder="Anything the faculty should know? (optional)"></textarea>
             <button class="gv-btn" id="mt-add">Request meeting</button>
@@ -2196,7 +2222,7 @@ function moduleResultBadge(moduleUnit, progName){
     panel.classList.remove('open');
     opened=false;
     clearTimeout(idleTimer);
-    armNudge(30000);
+    armNudge(600000);
   }
   fab.addEventListener('click',()=>opened?closeChat():openChat());
   document.getElementById('chatClose').addEventListener('click',closeChat);
@@ -2216,20 +2242,24 @@ function moduleResultBadge(moduleUnit, progName){
 
   /* proactive: nudge bubble when chat is closed */
   function showNudge(){
-    if(opened||nudges>=4)return;
+    if(opened||nudges>=5||window.__alizStop)return;
+    try{ if(localStorage.getItem('alizStop')==='1'){window.__alizStop=true;return;} }catch(e){}
     try{ const pf=JSON.parse(localStorage.getItem('alizonPrefs')||'{}'); if(pf.aliz===false)return; }catch(e){}
     nudges++;
     const onLogin=document.getElementById('login').style.display!=='none';
-    nudge.innerHTML=onLogin
+    nudge.innerHTML=(onLogin
       ? 'Hi! Need help <b>signing in</b>?'
-      : 'Hi! Do you <b>need any help</b>? ';
+      : 'Hi! Do you <b>need any help</b>? ')
+      + '<button class="nudge-x" type="button" title="Stop Aliz tips">\u2715</button>';
     nudge.classList.add('show');
-    setTimeout(hideNudge, 9000);
+    const _x=nudge.querySelector('.nudge-x');
+    if(_x) _x.addEventListener('click',function(ev){ ev.stopPropagation(); window.__alizStop=true; try{localStorage.setItem('alizStop','1');}catch(e){} hideNudge(); });
+    clearTimeout(nudge._h); nudge._h=setTimeout(hideNudge, 9000);
   }
   function hideNudge(){nudge.classList.remove('show')}
   function armNudge(ms){clearTimeout(nudgeTimer);nudgeTimer=setTimeout(showNudge,ms)}
-  armNudge(4500);
-  setInterval(()=>{if(!opened)showNudge()}, 50000);
+  armNudge(60000);
+  setInterval(()=>{if(!opened)showNudge()}, 600000);
 
   /* proactive: gentle follow-up when chat is open but quiet */
   function armIdle(){
@@ -2599,6 +2629,64 @@ function moduleResultBadge(moduleUnit, progName){
     var ov=document.querySelector('[data-dsec="sec-overview"]'); if(ov) ov.addEventListener('click',function(){ setTimeout(boot,40); });
     setInterval(renderToday, 60000);
     boot();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
+})();
+</script>
+
+<script>
+/* ================= Meeting scheduler calendar + Aliz reset ================= */
+(function(){
+  function LS(k,f){ try{var v=JSON.parse(localStorage.getItem(k)); return (v==null?f:v);}catch(e){return f;} }
+  function prof(){ try{return JSON.parse(localStorage.getItem('alizonProfile')||'{}')||{};}catch(e){return {};} }
+  function myReg(){ return String(prof().reg||'').toUpperCase(); }
+  var MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function pad(n){return (n<10?'0':'')+n;}
+  var vY,vM,sel='';
+
+  function meetDates(){ var s={}; LS('alizonMeetings',[]).forEach(function(m){ if(m&&m.date&&String(m.reg||'').toUpperCase()===myReg()) s[m.date]=1; }); return s; }
+  function fmtDisp(k){ var p=k.split('-'); return p[2]+' '+MON3[(parseInt(p[1],10)||1)-1]+' '+p[0]; }
+
+  function render(){
+    var g=document.getElementById('mtCalGrid'); if(!g) return;
+    var tt=document.getElementById('mtCalTitle'); if(tt) tt.textContent=MON[vM]+' '+vY;
+    var first=new Date(vY,vM,1), lead=(first.getDay()+6)%7, days=new Date(vY,vM+1,0).getDate();
+    var td=new Date(); td.setHours(0,0,0,0);
+    var md=meetDates(), html='';
+    for(var i=0;i<lead;i++) html+='<div class="cal-day empty"></div>';
+    for(var d=1;d<=days;d++){
+      var key=vY+'-'+pad(vM+1)+'-'+pad(d), dd=new Date(vY,vM,d);
+      var cls='cal-day pick';
+      if(dd<td) cls+=' disabled';
+      if(md[key]) cls+=' hasmtg';
+      if(key===sel) cls+=' sel';
+      html+='<div class="'+cls+'" data-k="'+key+'" title="'+key+'">'+d+'</div>';
+    }
+    g.innerHTML=html;
+    g.querySelectorAll('.cal-day.pick:not(.disabled)').forEach(function(c){ c.onclick=function(){
+      sel=c.getAttribute('data-k');
+      var hi=document.getElementById('mt-date'); if(hi) hi.value=sel;
+      var disp=document.getElementById('mt-datedisp'); if(disp) disp.value=fmtDisp(sel);
+      render();
+    }; });
+  }
+
+  function wire(){
+    var t=new Date(); vY=t.getFullYear(); vM=t.getMonth();
+    var p=document.getElementById('mtPrev'), n=document.getElementById('mtNext');
+    if(p) p.onclick=function(){ vM--; if(vM<0){vM=11;vY--;} render(); };
+    if(n) n.onclick=function(){ vM++; if(vM>11){vM=0;vY++;} render(); };
+    var nav=document.querySelector('[data-dsec="sec-attendance"]'); if(nav) nav.addEventListener('click',function(){ setTimeout(render,50); });
+    // after a successful request, mt-date is cleared by the handler -> reset selection
+    var add=document.getElementById('mt-add'); if(add) add.addEventListener('click',function(){ setTimeout(function(){
+      var hi=document.getElementById('mt-date');
+      if(hi && hi.value==='' && sel!==''){ sel=''; var d=document.getElementById('mt-datedisp'); if(d) d.value=''; }
+      render();
+    },90); });
+    // re-enabling Aliz tips from Settings clears the "stop" flag set by the nudge ✕
+    var azt=document.getElementById('set-n-aliz'); if(azt) azt.addEventListener('change',function(){ if(azt.checked){ window.__alizStop=false; try{localStorage.removeItem('alizStop');}catch(e){} } });
+    render();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
 })();
