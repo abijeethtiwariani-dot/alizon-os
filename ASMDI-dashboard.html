@@ -947,6 +947,7 @@
   html:not(.theme-dark) .card:hover,html:not(.theme-dark) .modcard:hover,html:not(.theme-dark) .modcard.live:hover,html:not(.theme-dark) .dcard:hover{border-color:rgba(140,21,21,.4) !important;}
   html:not(.theme-dark) .login-foot,html:not(.theme-dark) .campus-tag{color:#8a887f !important;}
   html:not(.theme-dark) .login-card h1{font-family:'Source Serif Pro',Georgia,serif !important;}
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #8c1515 !important;outline-offset:3px;}
 </style>
   <script src="firebase-sync.js"></script>
   <script src="print-paginate.js"></script>
@@ -1396,7 +1397,7 @@
     g.addColorStop(.55,'rgba(217,164,65,.05)');
     g.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-    requestAnimationFrame(frame);
+    if(!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))requestAnimationFrame(frame);
   }
   frame();
 })();
