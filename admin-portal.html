@@ -347,6 +347,7 @@
     <span class="ngl">🌐 Website</span>
     <a data-sec="adm-content"><span class="aic"></span> Website Content</a>
     <a data-sec="adm-news"><span class="aic"></span> Website News</a>
+    <a data-sec="adm-workshops"><span class="aic"></span> Workshops <b class="cnt" id="cntWs" style="background:var(--gold)"></b></a>
     <a data-sec="adm-announce"><span class="aic"></span> Module Updates</a>
     <span class="ngl">Office &amp; People</span>
     <a data-sec="adm-staff"><span class="aic"></span> Staff &amp; Faculty</a>
@@ -603,6 +604,58 @@
         <input id="lk-url" placeholder="https://…">
       </div>
       <div class="crow n"><button class="cadd" id="lk-add">＋ Add link</button></div>
+    </div>
+  </section>
+
+  <section class="apanel asec" id="adm-workshops">
+    <h2>Workshops &amp; Registrations</h2>
+    <div class="ahint">Publish workshops to the public <b>alizon.in/alizon-workshops</b> page. Build the syllabus by dragging modules from any course. Approve registrations to unlock each delegate's temporary ID card.</div>
+
+    <div class="cblock"><div class="ct">Publish a workshop</div>
+      <div class="arow4" style="grid-template-columns:2fr 1fr 1fr;gap:10px">
+        <div><label class="hint" style="display:block;margin-bottom:4px">Title</label><input type="text" id="ws-title" placeholder="e.g. AI in Healthcare — One-day Masterclass"></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Type</label><select id="ws-kind"><option>Workshop</option><option>Masterclass</option><option>Bootcamp</option><option>Seminar</option></select></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Mode</label><select id="ws-mode"><option>On-campus</option><option>Online</option><option>Hybrid</option></select></div>
+      </div>
+      <div class="arow4" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-top:8px">
+        <div><label class="hint" style="display:block;margin-bottom:4px">Date</label><input type="date" id="ws-date"></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">End date (optional)</label><input type="date" id="ws-end"></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Seats (optional)</label><input type="text" id="ws-seats" placeholder="e.g. 60"></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Fee (optional)</label><input type="text" id="ws-fee" placeholder="e.g. ₹499 or Free"></div>
+      </div>
+      <div style="margin-top:8px"><label class="hint" style="display:block;margin-bottom:4px">Venue / platform</label><input type="text" id="ws-venue" placeholder="e.g. Alizon Campus, Thiruvananthapuram · or Zoom"></div>
+      <div style="margin-top:8px"><label class="hint" style="display:block;margin-bottom:4px">Short description</label><textarea id="ws-desc" rows="2" placeholder="What delegates learn, who it is for…" style="width:100%;font:inherit;padding:9px 12px;border:1px solid rgba(0,0,0,.15);border-radius:9px;box-sizing:border-box"></textarea></div>
+
+      <div class="ct" style="margin-top:16px">Syllabus — drag modules from any course</div>
+      <div class="ahint">Pick a course, then drag its modules into the workshop syllabus (or click a module to add it).</div>
+      <div class="arow4" style="grid-template-columns:1fr 1fr;gap:12px;align-items:start;margin-top:6px">
+        <div>
+          <select id="ws-src-course" style="margin-bottom:8px"></select>
+          <div id="ws-src-mods" style="display:flex;flex-wrap:wrap;gap:7px;min-height:44px"></div>
+        </div>
+        <div>
+          <div class="hint" style="margin-bottom:6px">Workshop syllabus (<span id="ws-drop-n">0</span> modules)</div>
+          <div id="ws-drop" style="min-height:96px;border:2px dashed rgba(140,21,21,.35);border-radius:12px;padding:10px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;background:rgba(140,21,21,.03)"></div>
+        </div>
+      </div>
+      <div class="crow n" style="gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px">
+        <button class="cadd" id="ws-pub">Publish workshop</button>
+        <button class="cadd" id="ws-clear" style="border-color:var(--line);background:var(--pill);color:var(--muted)">Clear form</button>
+        <span class="hint" id="ws-msg"></span>
+      </div>
+    </div>
+
+    <div class="cblock"><div class="ct">Published workshops</div>
+      <div class="clist" id="ws-list"></div>
+    </div>
+
+    <div class="cblock"><div class="ct">Registrations</div>
+      <div class="arow4" style="grid-template-columns:1fr 1fr auto;align-items:end;margin-bottom:6px;gap:10px">
+        <div><label class="hint" style="display:block;margin-bottom:4px">Workshop</label><select id="wsr-fws"><option value="">All workshops</option></select></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Status</label><select id="wsr-fst"><option value="">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
+        <div class="hint" id="wsr-count" style="padding-bottom:10px"></div>
+      </div>
+      <div class="clist" id="wsr-list"></div>
     </div>
   </section>
 
@@ -1546,7 +1599,7 @@ function dbResetAll(){ var inp=document.getElementById('dbReset'),note=document.
   setTimeout(function(){ location.reload(); },800); }
 function renderData(){ var b=document.getElementById('dbBackup'); if(b&&!b._w){b._w=1;b.addEventListener('click',dbBackup);} var r=document.getElementById('dbResetBtn'); if(r&&!r._w){r._w=1;r.addEventListener('click',dbResetAll);} }
 
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-data','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-data','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -2542,6 +2595,199 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',refresh); else refresh();
   setInterval(refresh, 6000);
+})();
+</script>
+<script>
+/* ================= WORKSHOPS (alizonWorkshops + alizonWorkshopRegs) ================= */
+(function(){
+  function wsEsc(x){return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function loadWs(){ try{var a=JSON.parse(localStorage.getItem('alizonWorkshops')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+  function saveWs(a){ setDB('alizonWorkshops',Array.isArray(a)?a:[]); }
+  function loadWR(){ try{var a=JSON.parse(localStorage.getItem('alizonWorkshopRegs')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+  function saveWR(a){ setDB('alizonWorkshopRegs',Array.isArray(a)?a:[]); }
+  function progs(){ try{ return (typeof PROGRAMS!=='undefined'&&Array.isArray(PROGRAMS))?PROGRAMS:JSON.parse(localStorage.getItem('alizonPrograms')||'[]'); }catch(e){ return []; } }
+  var WSB={editing:null, modules:[]};
+  function $id(x){ return document.getElementById(x); }
+
+  /* ---- module source pane ---- */
+  function renderSrc(){
+    var sel=$id('ws-src-course'); if(!sel) return;
+    var P=progs(), cur=sel.value;
+    sel.innerHTML=P.map(function(c){ return '<option value="'+wsEsc(c.name)+'">'+wsEsc(c.name)+'</option>'; }).join('');
+    if(cur && P.some(function(c){return c.name===cur;})) sel.value=cur;
+    renderSrcMods();
+  }
+  function renderSrcMods(){
+    var sel=$id('ws-src-course'), host=$id('ws-src-mods'); if(!sel||!host) return;
+    var c=progs().filter(function(x){return x.name===sel.value;})[0];
+    var mods=(c&&c.modules)||[];
+    host.innerHTML=mods.length?mods.map(function(m,i){
+      return '<span class="pill" draggable="true" data-mi="'+i+'" style="cursor:grab;font-size:12px;padding:6px 12px;border-radius:100px;background:var(--pill,#f2efe9);border:1px solid rgba(0,0,0,.12)" title="Drag into the syllabus (or click to add)">'+wsEsc((m.unit?m.unit+' · ':'')+(m.title||''))+'</span>';
+    }).join(''):'<span class="hint">This course has no modules yet.</span>';
+  }
+  function addMod(c,u,m){
+    if(WSB.modules.some(function(x){return x.c===c&&x.m===m;})) return;
+    WSB.modules.push({c:c,u:u,m:m}); renderDrop();
+  }
+  function renderDrop(){
+    var host=$id('ws-drop'); if(!host) return;
+    host.innerHTML=WSB.modules.length?WSB.modules.map(function(x,i){
+      return '<span style="font-size:12px;padding:6px 10px 6px 12px;border-radius:100px;background:#fff;border:1px solid rgba(140,21,21,.3);display:inline-flex;align-items:center;gap:7px"><b style="color:var(--crimson)">'+wsEsc(x.c)+'</b> · '+wsEsc(x.m)
+        +'<button data-wsrm="'+i+'" style="border:0;background:none;cursor:pointer;color:var(--muted);font-size:14px;line-height:1" title="Remove">×</button></span>';
+    }).join(''):'<span class="hint" style="align-self:center">Drag modules here…</span>';
+    var n=$id('ws-drop-n'); if(n) n.textContent=WSB.modules.length;
+  }
+
+  /* drag & drop wiring (click-to-add fallback included) */
+  document.addEventListener('dragstart',function(e){
+    var t=e.target; if(!t||!t.getAttribute||!t.hasAttribute('data-mi')||!t.closest('#ws-src-mods')) return;
+    var sel=$id('ws-src-course'); var c=progs().filter(function(x){return x.name===sel.value;})[0]; if(!c) return;
+    var m=(c.modules||[])[parseInt(t.getAttribute('data-mi'),10)]; if(!m) return;
+    e.dataTransfer.setData('text/plain', JSON.stringify({c:c.name,u:m.unit||'',m:m.title||''}));
+    e.dataTransfer.effectAllowed='copy';
+  });
+  document.addEventListener('dragover',function(e){
+    var z=e.target&&e.target.closest&&e.target.closest('#ws-drop');
+    if(z){ e.preventDefault(); e.dataTransfer.dropEffect='copy'; z.style.background='rgba(140,21,21,.09)'; }
+  });
+  document.addEventListener('dragleave',function(e){
+    var z=e.target&&e.target.closest&&e.target.closest('#ws-drop');
+    if(z) z.style.background='rgba(140,21,21,.03)';
+  });
+  document.addEventListener('drop',function(e){
+    var z=e.target&&e.target.closest&&e.target.closest('#ws-drop'); if(!z) return;
+    e.preventDefault(); z.style.background='rgba(140,21,21,.03)';
+    try{ var d=JSON.parse(e.dataTransfer.getData('text/plain')||'{}'); if(d&&d.c&&d.m) addMod(d.c,d.u||'',d.m); }catch(err){}
+  });
+
+  /* ---- publish / edit / list ---- */
+  function clearForm(){
+    WSB.editing=null; WSB.modules=[];
+    ['ws-title','ws-date','ws-end','ws-seats','ws-fee','ws-venue','ws-desc'].forEach(function(id){ var el=$id(id); if(el) el.value=''; });
+    var k=$id('ws-kind'); if(k) k.selectedIndex=0; var mo=$id('ws-mode'); if(mo) mo.selectedIndex=0;
+    var b=$id('ws-pub'); if(b) b.textContent='Publish workshop';
+    renderDrop(); var m=$id('ws-msg'); if(m) m.textContent='';
+  }
+  function renderWsList(){
+    var host=$id('ws-list'); if(!host) return;
+    var regs=loadWR(), a=loadWs();
+    host.innerHTML=a.length?a.map(function(w){
+      var n=regs.filter(function(r){return r.ws===w.id;}).length;
+      var pend=regs.filter(function(r){return r.ws===w.id&&r.status==='pending';}).length;
+      return '<div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">'
+        +'<div style="flex:1;min-width:220px"><b>'+wsEsc(w.title)+'</b>'+(w.on===false?' <span class="hint">(unpublished)</span>':'')
+        +'<div class="hint">'+wsEsc(w.kind||'Workshop')+' · '+wsEsc(w.date||'no date')+(w.mode?' · '+wsEsc(w.mode):'')+' · '+(w.modules||[]).length+' modules · '+n+' registrations'+(pend?' ('+pend+' pending)':'')+'</div></div>'
+        +'<button class="cadd" data-wsed="'+wsEsc(w.id)+'">Edit</button>'
+        +'<button class="cadd" data-wstg="'+wsEsc(w.id)+'" style="background:var(--pill);color:var(--ink);border-color:var(--line)">'+(w.on===false?'Publish':'Unpublish')+'</button>'
+        +'<button class="cadd" data-wsdel="'+wsEsc(w.id)+'" style="background:#fbebeb;color:#b1040e;border-color:#eec7c7">Delete</button>'
+        +'</div>';
+    }).join(''):'<div class="hint">No workshops published yet.</div>';
+    var fsel=$id('wsr-fws');
+    if(fsel){ var cur=fsel.value;
+      fsel.innerHTML='<option value="">All workshops</option>'+a.map(function(w){return '<option value="'+wsEsc(w.id)+'">'+wsEsc(w.title)+'</option>';}).join('');
+      if(cur && a.some(function(w){return w.id===cur;})) fsel.value=cur; }
+  }
+  function renderRegs(){
+    var host=$id('wsr-list'); if(!host) return;
+    var fws=($id('wsr-fws')||{}).value||'', fst=($id('wsr-fst')||{}).value||'';
+    var a=loadWR().filter(function(r){ return (!fws||r.ws===fws)&&(!fst||r.status===fst); });
+    var c=$id('wsr-count'); if(c) c.textContent=a.length+' registration'+(a.length===1?'':'s');
+    host.innerHTML=a.length?a.map(function(r){
+      var st=r.status==='approved'?'<b style="color:#1E8E5A">Approved</b>':r.status==='rejected'?'<b style="color:#b1040e">Rejected</b>':'<b style="color:#8a6116">Pending</b>';
+      return '<div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">'
+        +'<div style="flex:1;min-width:240px"><b>'+wsEsc(r.name)+'</b> <span class="hint">('+wsEsc(r.reg)+')</span>'
+        +'<div class="hint">'+wsEsc(r.wsTitle)+' · '+wsEsc(r.college)+(r.subject?' · '+wsEsc(r.subject):'')+(r.year?' · '+wsEsc(r.year):'')+'</div>'
+        +'<div class="hint">'+wsEsc(r.email)+' · '+wsEsc(r.phone)+(r.city?' · '+wsEsc(r.city):'')+' · '+st+'</div></div>'
+        +(r.status!=='approved'?'<button class="cadd" data-wra="'+wsEsc(r.id)+'">Approve</button>':'')
+        +(r.status!=='rejected'?'<button class="cadd" data-wrr="'+wsEsc(r.id)+'" style="background:#fbebeb;color:#b1040e;border-color:#eec7c7">Reject</button>':'')
+        +'</div>';
+    }).join(''):'<div class="hint">No registrations'+((fws||fst)?' for this filter':' yet')+'.</div>';
+    var badge=$id('cntWs'); if(badge){ var p=loadWR().filter(function(r){return r.status==='pending';}).length; badge.textContent=p||''; }
+  }
+
+  document.addEventListener('click',function(ev){
+    var t=ev.target; if(!t) return;
+    /* click-to-add module chip */
+    if(t.hasAttribute&&t.hasAttribute('data-mi')&&t.closest('#ws-src-mods')){
+      var sel=$id('ws-src-course'); var c=progs().filter(function(x){return x.name===sel.value;})[0];
+      var m=c&&(c.modules||[])[parseInt(t.getAttribute('data-mi'),10)];
+      if(m) addMod(c.name,m.unit||'',m.title||'');
+      return;
+    }
+    if(t.hasAttribute&&t.hasAttribute('data-wsrm')){ WSB.modules.splice(parseInt(t.getAttribute('data-wsrm'),10),1); renderDrop(); return; }
+    if(t.id==='ws-clear'){ clearForm(); return; }
+    if(t.id==='ws-pub'){
+      var title=String(($id('ws-title')||{}).value||'').trim();
+      var date=($id('ws-date')||{}).value||'';
+      var msg=$id('ws-msg');
+      if(!title||!date){ if(msg) msg.textContent='Title and date are required.'; return; }
+      var a=loadWs();
+      var entry={ id:WSB.editing||('W'+Date.now()), title:title, kind:($id('ws-kind')||{}).value||'Workshop',
+        mode:($id('ws-mode')||{}).value||'', date:date, endDate:($id('ws-end')||{}).value||'',
+        seats:String(($id('ws-seats')||{}).value||'').trim(), fee:String(($id('ws-fee')||{}).value||'').trim(),
+        venue:String(($id('ws-venue')||{}).value||'').trim(), desc:String(($id('ws-desc')||{}).value||'').trim(),
+        modules:WSB.modules.slice(), on:true, ts:Date.now() };
+      if(WSB.editing){
+        var i=a.findIndex(function(w){return w.id===WSB.editing;});
+        if(i>-1){ entry.on=a[i].on!==false; entry.ts=a[i].ts||entry.ts; a[i]=entry; } else a.unshift(entry);
+        try{ logAct&&logAct('Workshop updated: "'+title+'"','update'); }catch(e){}
+        try{ toast&&toast('Workshop updated'); }catch(e){}
+      } else {
+        a.unshift(entry);
+        try{ logAct&&logAct('Workshop published: "'+title+'"','update'); }catch(e){}
+        try{ toast&&toast('Workshop published to alizon-workshops'); }catch(e){}
+      }
+      saveWs(a); clearForm(); renderWsList(); renderRegs();
+      return;
+    }
+    if(t.hasAttribute&&t.hasAttribute('data-wsed')){
+      var w=loadWs().filter(function(x){return x.id===t.getAttribute('data-wsed');})[0]; if(!w) return;
+      WSB.editing=w.id; WSB.modules=(w.modules||[]).slice();
+      $id('ws-title').value=w.title||''; $id('ws-kind').value=w.kind||'Workshop'; $id('ws-mode').value=w.mode||'On-campus';
+      $id('ws-date').value=w.date||''; $id('ws-end').value=w.endDate||''; $id('ws-seats').value=w.seats||'';
+      $id('ws-fee').value=w.fee||''; $id('ws-venue').value=w.venue||''; $id('ws-desc').value=w.desc||'';
+      $id('ws-pub').textContent='Save changes'; renderDrop();
+      $id('ws-title').scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+    if(t.hasAttribute&&t.hasAttribute('data-wstg')){
+      var a2=loadWs(); var w2=a2.filter(function(x){return x.id===t.getAttribute('data-wstg');})[0];
+      if(w2){ w2.on=w2.on===false; saveWs(a2); renderWsList(); }
+      return;
+    }
+    if(t.hasAttribute&&t.hasAttribute('data-wsdel')){
+      var id3=t.getAttribute('data-wsdel'); var a3=loadWs(); var w3=a3.filter(function(x){return x.id===id3;})[0];
+      var n3=loadWR().filter(function(r){return r.ws===id3;}).length;
+      if(!confirm('Delete "'+(w3&&w3.title)+'"?'+(n3?' It has '+n3+' registrations (they stay in the list below).':''))) return;
+      saveWs(a3.filter(function(x){return x.id!==id3;})); renderWsList(); renderRegs();
+      try{ logAct&&logAct('Workshop deleted: "'+(w3&&w3.title||id3)+'"','update'); }catch(e){}
+      return;
+    }
+    if(t.hasAttribute&&t.hasAttribute('data-wra')){
+      var r1=loadWR(); var x1=r1.filter(function(r){return r.id===t.getAttribute('data-wra');})[0];
+      if(x1){ x1.status='approved'; x1.approvedAt=Date.now(); saveWR(r1); renderRegs(); renderWsList();
+        try{ logAct&&logAct('Workshop reg approved: '+x1.reg+' ('+x1.name+')','update'); }catch(e){}
+        try{ toast&&toast('Approved — temporary ID card unlocked for '+x1.reg); }catch(e){} }
+      return;
+    }
+    if(t.hasAttribute&&t.hasAttribute('data-wrr')){
+      var r2=loadWR(); var x2=r2.filter(function(r){return r.id===t.getAttribute('data-wrr');})[0];
+      if(x2){ x2.status='rejected'; saveWR(r2); renderRegs(); renderWsList();
+        try{ logAct&&logAct('Workshop reg rejected: '+x2.reg+' ('+x2.name+')','update'); }catch(e){} }
+      return;
+    }
+  });
+  document.addEventListener('change',function(ev){
+    if(ev.target&&ev.target.id==='ws-src-course') renderSrcMods();
+    if(ev.target&&(ev.target.id==='wsr-fws'||ev.target.id==='wsr-fst')) renderRegs();
+  });
+
+  function boot(){ renderSrc(); renderDrop(); renderWsList(); renderRegs(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+  var nav=document.querySelector('[data-sec="adm-workshops"]');
+  if(nav) nav.addEventListener('click',function(){ setTimeout(boot,50); });
+  setInterval(function(){ renderRegs(); }, 8000);
+  window.__wsAdminTest={ addMod:addMod, renderWsList:renderWsList, renderRegs:renderRegs, WSB:WSB };
 })();
 </script>
 </body>
