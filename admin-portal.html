@@ -655,6 +655,10 @@
         <div><label class="hint" style="display:block;margin-bottom:4px">Status</label><select id="wsr-fst"><option value="">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div>
         <div class="hint" id="wsr-count" style="padding-bottom:10px"></div>
       </div>
+      <div class="crow n" style="gap:10px;align-items:center;flex-wrap:wrap;margin:4px 0 10px">
+        <button class="cadd" id="wsr-csv">Download candidate upload (CSV)</button>
+        <span class="hint">Exports the current filter in the official ASAP / Skill-India 38-column candidate-upload format.</span>
+      </div>
       <div class="clist" id="wsr-list"></div>
     </div>
   </section>
@@ -2697,7 +2701,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       return '<div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">'
         +'<div style="flex:1;min-width:240px"><b>'+wsEsc(r.name)+'</b> <span class="hint">('+wsEsc(r.reg)+')</span>'
         +'<div class="hint">'+wsEsc(r.wsTitle)+' · '+wsEsc(r.college)+(r.subject?' · '+wsEsc(r.subject):'')+(r.year?' · '+wsEsc(r.year):'')+'</div>'
-        +'<div class="hint">'+wsEsc(r.email)+' · '+wsEsc(r.phone)+(r.city?' · '+wsEsc(r.city):'')+' · '+st+'</div></div>'
+        +'<div class="hint">'+wsEsc(r.email)+' · '+wsEsc(r.phone)+(r.category?' · '+wsEsc(r.category):'')+(r.domDist?' · '+wsEsc(r.domDist):(r.city?' · '+wsEsc(r.city):''))+(r.eduLevel?' · '+wsEsc(r.eduLevel):'')+' · '+st+'</div></div>'
         +(r.status!=='approved'?'<button class="cadd" data-wra="'+wsEsc(r.id)+'">Approve</button>':'')
         +(r.status!=='rejected'?'<button class="cadd" data-wrr="'+wsEsc(r.id)+'" style="background:#fbebeb;color:#b1040e;border-color:#eec7c7">Reject</button>':'')
         +'</div>';
@@ -2782,7 +2786,38 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     if(ev.target&&(ev.target.id==='wsr-fws'||ev.target.id==='wsr-fst')) renderRegs();
   });
 
-  function boot(){ renderSrc(); renderDrop(); renderWsList(); renderRegs(); }
+  /* ---- ASAP / Skill-India candidate-upload CSV (exact 38-column order) ---- */
+  var CU_COLS=['Salutation','FullName','Gender','DateofBirth','EmailID','MaritalStatus','FathersName','MothersName','Religion','Category','Disability','TypeofDisability','DomicileState','DomicileDistrict','IDType','TypeofAlternateID','AdharReferenceNo','IDNo','CountryCode','MobileNo','EducationLevel','PermanentAddressAddress','PermanentAddressState','PermanentAddressDistrict','PermanentAddressPINCode','PermanentAddressCity','PermanentAddressTehsil','PermanentAddressConstituency','CommunicationSameasPermanentAddress','CommunicationAddressState','CommunicationAddressDistrict','CommunicationAddressPINCode','CommunicationAddressCity','CommunicationAddressTehsil','CommunicationAddressPermanentConstituency','TrainingStatus','HeardAboutUs','CandidateID'];
+  function ddmmyyyy(iso){ if(!iso) return ''; var p=String(iso).split('-'); return p.length===3?(p[2]+'/'+p[1]+'/'+p[0]):String(iso); }
+  function cuRow(r){
+    var same=(r.commSame||'Yes');
+    return [ r.sal||'', r.name||'', r.gender||'', ddmmyyyy(r.dob), r.email||'', r.marital||'',
+      r.father||'', r.mother||'', r.religion||'', r.category||'', r.disab||'', r.disab==='Yes'?(r.disabType||''):'',
+      r.domState||'', r.domDist||'', r.idType||'', r.idType==='Alternate ID'?(r.altIdType||''):'',
+      r.idType==='Aadhar ID'?(r.aadhaarRef||''):'', r.idType==='Alternate ID'?(r.idNo||''):'',
+      r.cc||'91', r.phone||'', r.eduLevel||'', r.permAddr||'', r.permState||'', r.permDist||'',
+      r.permPin||'', r.permCity||'', r.permTehsil||'', r.permConst||'', same,
+      same==='No'?(r.commState||''):'', same==='No'?(r.commDist||''):'', same==='No'?(r.commPin||''):'',
+      same==='No'?(r.commCity||''):'', same==='No'?(r.commTehsil||''):'', same==='No'?(r.commConst||''):'',
+      r.trainStatus||'', r.heard||'', r.reg||'' ];
+  }
+  function csvCell(v){ v=String(v==null?'':v); return /[",\n]/.test(v)?('"'+v.replace(/"/g,'""')+'"'):v; }
+  function exportCandidates(){
+    var fws=($id('wsr-fws')||{}).value||'', fst=($id('wsr-fst')||{}).value||'';
+    var a=loadWR().filter(function(r){ return (!fws||r.ws===fws)&&(!fst||r.status===fst); });
+    if(!a.length){ try{ toast&&toast('No registrations in the current filter'); }catch(e){} return; }
+    var lines=[CU_COLS.join(',')].concat(a.map(function(r){ return cuRow(r).map(csvCell).join(','); }));
+    var blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});
+    var ws=loadWs().filter(function(w){return w.id===fws;})[0];
+    var name='candidate-upload'+(ws?'-'+String(ws.title).toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,40):'')+(fst?'-'+fst:'')+'.csv';
+    var aEl=document.createElement('a'); aEl.href=URL.createObjectURL(blob); aEl.download=name;
+    document.body.appendChild(aEl); aEl.click();
+    setTimeout(function(){ URL.revokeObjectURL(aEl.href); aEl.remove(); },400);
+    try{ logAct&&logAct('Workshop candidate CSV exported ('+a.length+' rows)','update'); }catch(e){}
+  }
+
+  function boot(){ renderSrc(); renderDrop(); renderWsList(); renderRegs();
+    var x=$id('wsr-csv'); if(x&&!x._w){ x._w=1; x.addEventListener('click',exportCandidates); } }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
   var nav=document.querySelector('[data-sec="adm-workshops"]');
   if(nav) nav.addEventListener('click',function(){ setTimeout(boot,50); });
