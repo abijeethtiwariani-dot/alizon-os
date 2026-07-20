@@ -364,6 +364,15 @@
   </div>
 
   <section class="asec on" id="sec-courses">
+    <div class="cblock" style="margin-bottom:18px"><div class="ct">Course Master — names &amp; details</div>
+      <div class="ahint">The single source of truth for every course. Change the <b>main name</b> or the <b>sub course details</b> (certified course title) and it reflects across the ENTIRE portal — student dashboard, results, exam desks, assessments and the public website. Deleting removes the programme and its modules (published results/notices stay until removed in their own sections).</div>
+      <div id="cmList"></div>
+      <div class="arow3" style="grid-template-columns:1fr 1.6fr auto;align-items:end;margin-top:12px">
+        <input id="cm-name" placeholder="New main name — e.g. Medical">
+        <input id="cm-sub" placeholder="Sub course details — e.g. Medical AI Certified Course">
+        <button class="cadd" id="cm-add">＋ Add course</button>
+      </div>
+    </div>
     <div class="lead" id="adm-courses">
       <h1>Course &amp; Programme Management</h1>
       <p>Add, edit and remove practical courses across all AI programmes. Everything you save here appears
@@ -794,6 +803,71 @@ function load(){ try{
   return JSON.parse(JSON.stringify(DEFAULT_PROGRAMS)); }
 function save(p){ try{ localStorage.setItem('alizonPrograms',JSON.stringify(p)); localStorage.setItem('alizonProgramsVer',PROG_VER); }catch(e){} }
 let PROGRAMS=load(); save(PROGRAMS);
+
+/* ================= COURSE MASTER — rename/edit/delete with portal-wide cascade ================= */
+function cmEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function cmCascadeRename(oldName,newName){
+  if(!oldName||!newName||oldName===newName) return;
+  try{ const R=JSON.parse(localStorage.getItem('alizonResults')||'{}');
+    if(R&&R.courses&&R.courses[oldName]&&!R.courses[newName]){ R.courses[newName]=R.courses[oldName]; delete R.courses[oldName]; R.updated=Date.now();
+      localStorage.setItem('alizonResults',JSON.stringify(R)); } }catch(e){}
+  try{ const D=JSON.parse(localStorage.getItem('alizonExamDocs')||'[]'); let ch=false;
+    (Array.isArray(D)?D:[]).forEach(d=>{ if(d&&d.course===oldName){ d.course=newName; ch=true; } });
+    if(ch) localStorage.setItem('alizonExamDocs',JSON.stringify(D)); }catch(e){}
+  try{ const S=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]'); let ch=false;
+    (Array.isArray(S)?S:[]).forEach(s=>{ if(s&&s.programme===oldName){ s.programme=newName; ch=true; } });
+    if(ch) localStorage.setItem('alizonSubmissions',JSON.stringify(S)); }catch(e){}
+  /* public website programme card title (CMS) — cards follow programme order */
+  try{ const idx=PROGRAMS.findIndex(p=>p&&p.name===newName);
+    if(idx>=0&&idx<4){ const C=JSON.parse(localStorage.getItem('alizonContent')||'{}')||{};
+      C['prog-card-'+(idx+1)+'-title']=newName; localStorage.setItem('alizonContent',JSON.stringify(C)); } }catch(e){}
+}
+function renderMaster(){
+  const el=document.getElementById('cmList'); if(!el) return;
+  el.innerHTML=PROGRAMS.map((p,i)=>'<div class="citem" style="align-items:end;gap:10px;flex-wrap:wrap">'
+    +'<span style="flex:1;min-width:180px"><small style="opacity:.6;display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Main name</small>'
+    +'<input value="'+cmEsc(p.name)+'" data-cmn="'+i+'" style="width:100%"></span>'
+    +'<span style="flex:1.6;min-width:240px"><small style="opacity:.6;display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Sub course details</small>'
+    +'<input value="'+cmEsc(p.course||'')+'" data-cms="'+i+'" style="width:100%"></span>'
+    +'<span style="opacity:.6;font-size:11.5px;align-self:center;white-space:nowrap">'+(p.modules||[]).length+' modules</span>'
+    +'<button class="cadd" data-cmsave="'+i+'" style="white-space:nowrap">💾 Save</button>'
+    +'<button class="eview" data-cmdel="'+i+'" title="Delete this course">🗑</button>'
+    +'</div>').join('') || '<div class="hint">No courses yet — add one below.</div>';
+  el.querySelectorAll('[data-cmsave]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.cmsave; const p=PROGRAMS[i]; if(!p) return;
+    const nn=(el.querySelector('input[data-cmn="'+i+'"]').value||'').trim();
+    const ns=(el.querySelector('input[data-cms="'+i+'"]').value||'').trim();
+    if(!nn){ toast('The main name cannot be empty'); return; }
+    if(PROGRAMS.some((q,qi)=>qi!==i&&q.name.toLowerCase()===nn.toLowerCase())){ toast('Another course already uses that name'); return; }
+    const oldName=p.name;
+    p.name=nn; p.course=ns; save(PROGRAMS);
+    cmCascadeRename(oldName,nn);
+    logAct('Course master: "'+oldName+'" updated'+(oldName!==nn?' → "'+nn+'" (renamed everywhere)':''),'update');
+    toast(oldName!==nn?'Renamed everywhere across the portal':'Course details saved');
+    render(); renderMaster(); try{renderResultsAdmin();}catch(e){} try{renderXDocs();}catch(e){}
+  });
+  el.querySelectorAll('[data-cmdel]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.cmdel; const p=PROGRAMS[i]; if(!p) return;
+    if(!confirm('Delete the course "'+p.name+'" and its '+(p.modules||[]).length+' modules from the portal?\n\nPublished results and exam notices for it stay until you remove them in their own sections.')) return;
+    PROGRAMS.splice(i,1); save(PROGRAMS);
+    logAct('Course master: "'+p.name+'" deleted','update');
+    toast('Course deleted'); render(); renderMaster();
+  });
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const add=document.getElementById('cm-add');
+  if(add) add.onclick=()=>{
+    const n=(document.getElementById('cm-name').value||'').trim();
+    const s=(document.getElementById('cm-sub').value||'').trim();
+    if(!n){ toast('Give the course a main name'); return; }
+    if(PROGRAMS.some(q=>q.name.toLowerCase()===n.toLowerCase())){ toast('That course already exists'); return; }
+    PROGRAMS.push({ id:'prog'+Date.now(), name:n, icon:'', course:s, modules:[] });
+    save(PROGRAMS); logAct('Course master: "'+n+'" added','update');
+    document.getElementById('cm-name').value=''; document.getElementById('cm-sub').value='';
+    toast('Course added — visible across the portal'); render(); renderMaster();
+  };
+  renderMaster();
+});
 
 /* ---- module-update announcements (shared store, key 'alizonAnnounce') ---- */
 function loadAnnounce(){ try{ var a=JSON.parse(localStorage.getItem('alizonAnnounce')||'{}'); return {active: a.active!==false, items: Array.isArray(a.items)?a.items:[]}; }catch(e){ return {active:true, items:[]}; } }
