@@ -708,265 +708,1163 @@
   filter:drop-shadow(0 14px 26px rgba(20,18,16,.35)) !important;}
 #azcon-root .azcon-launcher:hover .azcon-orb{transform:translateY(-3px) scale(1.05) !important;}
 
-/* ===================== COSMIC (FAENG) POLISH ===================== */
-/* ============================================================
-   ALIZON OS — COSMIC PLUS polish (FAENG-style premium cosmic dark)
-   Appended after base styles + alizon-theme.css var remap.
-   Vars now resolve: --crimson:#7c5cfc  --crimson-deep:#6636e8
-   --crimson-bright:#9d84ff  --gold:#b9a9ff  --gold-soft:rgba(185,169,255,.16)
-   ============================================================ */
 
-/* ---------- 1. Body / atmosphere: indigo-black nebula ---------- */
-body{
-  --bg:#0a0a16; --panel:#0d0b1e;
-  --ink:#ffffff; --muted:#a9a4c8; --faint:#7a749c;
-  --line:rgba(255,255,255,.10); --line2:rgba(255,255,255,.16);
-  background:
-    radial-gradient(1200px 700px at 70% -10%, rgba(124,92,252,.14), transparent 60%),
-    radial-gradient(900px 600px at 12% 18%, rgba(216,132,255,.07), transparent 60%),
-    linear-gradient(180deg,#0a0a16 0%,#0d0b1e 55%,#0a0a16 100%) !important;
+/* ===================== APPLE LIGHT BASE ===================== */
+
+/* ===================== WHITE + CARDINAL (Stanford editorial) — home base override ===================== */
+body{ --bg:#ffffff; --panel:#ffffff; --ink:#1d1d1f; --muted:#6e6e73; --faint:#86868b;
+  --line:rgba(0,0,0,.10); --line2:rgba(0,113,227,.16);
+  background:#ffffff !important; color:#1d1d1f !important; }
+#bg{ display:none !important; }
+.glow{ background:radial-gradient(60% 45% at 50% 0%,rgba(0,113,227,.06),transparent 70%) !important; }
+
+/* nav: white editorial bar, cardinal serif brand */
+nav.scrolled{ background:rgba(255,255,255,.92) !important; border-bottom:1px solid rgba(0,0,0,.10) !important; backdrop-filter:blur(14px) saturate(1.2) !important; }
+.brand span{ color:#1d1d1f !important; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important; }
+.brand small{ color:#0071e3 !important; }
+.brand img{ filter:none !important; }
+.navlinks{ color:#6e6e73 !important; }
+.navlinks a:hover{ color:#0071e3 !important; }
+.btn.ghost{ color:#1d1d1f !important; background:#fff !important; border-color:rgba(0,0,0,.14) !important; }
+.btn.ghost:hover{ background:#f5f5f7 !important; border-color:#0071e3 !important; }
+
+/* hero: dark editorial serif on white */
+.eyebrow{ color:#6e6e73 !important; }
+.hero h1{ font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+  background:none !important; -webkit-text-fill-color:#1d1d1f !important; color:#1d1d1f !important; }
+.hero .tag{ background:none !important; -webkit-text-fill-color:#0071e3 !important; color:#0071e3 !important; }
+.hero p.lead{ color:#6e6e73 !important; }
+.hero .price, .hero .price b{ color:#86868b !important; }
+.scrollcue{ color:#a1a1a6 !important; }
+.scrollcue span{ background:linear-gradient(#0071e3,transparent) !important; }
+
+/* app-window showcase: light card */
+.window{ background:linear-gradient(180deg,#ffffff,#f5f5f7) !important; border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:0 40px 90px -30px rgba(20,18,16,.22),0 20px 60px -40px rgba(0,0,0,.2) !important; }
+.win-bar{ border-bottom:1px solid rgba(0,0,0,.08) !important; background:rgba(0,0,0,.02) !important; }
+.win-bar .u{ color:#86868b !important; }
+.win-side{ border-right:1px solid rgba(0,0,0,.08) !important; background:linear-gradient(180deg,#f5f5f7,#f0f0f2) !important; }
+.win-side b{ background:rgba(0,0,0,.08) !important; }
+.win-side b.on{ background:linear-gradient(120deg,#0071e3,#6e6e73) !important; }
+.win-main .h{ background:rgba(0,0,0,.12) !important; }
+.win-main .s{ background:rgba(0,0,0,.06) !important; }
+.wc{ border:1px solid rgba(0,0,0,.10) !important; background:#fff !important; }
+.wc .n{ background:none !important; -webkit-text-fill-color:#0071e3 !important; color:#0071e3 !important; }
+.wc .l{ background:rgba(0,113,227,.4) !important; }
+
+/* stat strip */
+.strip{ border-top:1px solid rgba(0,0,0,.10) !important; border-bottom:1px solid rgba(0,0,0,.10) !important; background:#f5f5f7 !important; }
+.strip .n{ background:none !important; -webkit-text-fill-color:#0071e3 !important; color:#0071e3 !important; }
+.strip .k{ color:#6e6e73 !important; }
+
+/* section blocks */
+.blk .ey{ color:#6e6e73 !important; }
+.blk h2{ font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important; color:#1d1d1f !important; }
+.blk h2 .accent{ background:none !important; -webkit-text-fill-color:#0071e3 !important; color:#0071e3 !important; }
+.blk p.sub{ color:#6e6e73 !important; }
+
+/* programme cards */
+.pc{ background:#ffffff !important; border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:0 12px 34px -18px rgba(20,18,16,.14) !important; }
+.pc:hover{ border-color:#0071e3 !important; box-shadow:0 26px 60px -28px rgba(0,113,227,.4) !important; }
+.pc::before{ background:radial-gradient(80% 60% at 15% 0%,var(--tint,rgba(0,113,227,.10)),transparent 70%) !important; opacity:.7 !important; }
+.pc h3{ color:#1d1d1f !important; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important; }
+.pc p{ color:#6e6e73 !important; }
+.pc .meta{ color:#0071e3 !important; }
+
+/* feature splits */
+.feat h2{ font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important; color:#1d1d1f !important; }
+.feat p{ color:#6e6e73 !important; }
+.feat li{ color:#333336 !important; }
+.feat .art{ border:1px solid rgba(0,0,0,.10) !important; background:linear-gradient(160deg,#f5f5f7,#f0f0f2) !important; }
+.feat .art.aliz{ background:radial-gradient(70% 70% at 50% 40%,rgba(0,113,227,.10),transparent 70%),linear-gradient(160deg,#faf1f1,#f5f5f7) !important; }
+.feat .art .bubble{ background:#fff !important; border:1px solid rgba(0,113,227,.3) !important; color:#1d1d1f !important; }
+.feat .art .bubble b{ color:#0071e3 !important; }
+
+/* CTA + footer */
+.cta-blk h2{ font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important; color:#1d1d1f !important; }
+.cta-blk p{ color:#6e6e73 !important; }
+footer{ border-top:1px solid rgba(0,0,0,.10) !important; color:#6e6e73 !important; background:#f5f5f7 !important; }
+footer .brand{ color:#1d1d1f !important; }
+footer h4{ color:#86868b !important; }
+footer a{ color:#6e6e73 !important; }
+footer a:hover{ color:#0071e3 !important; }
+footer .base{ border-top:1px solid rgba(0,0,0,.10) !important; color:#86868b !important; }
+
+/* global polish tweaks for light */
+#azwow-progress{ box-shadow:0 0 10px rgba(0,113,227,.4) !important; }
+#azwow-cursor{ background:radial-gradient(circle,rgba(0,113,227,.08),transparent 62%) !important; }
+
+/* ===== azcon apple-light ===== */
+/* ===== azcon — Stanford editorial LIGHT re-skin (override) ===== */
+/* Re-map the module's CSS vars for a white page, scoped to root */
+#azcon-root{
+  --crimson:#0071e3; --crimson-deep:#0066cc; --crimson-bright:#2997ff;
+  --gold:#6e6e73;
+  --ink:#1d1d1f; --muted:#6e6e73; --faint:#86868b;
+  --line:rgba(0,0,0,.10); --line2:rgba(0,113,227,.16);
+}
+
+/* ---- Launcher label pill ---- */
+#azcon-root .azcon-lbl{
+  color:#1d1d1f !important;
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+}
+
+/* ---- Launcher orb (keep cardinal brand) ---- */
+#azcon-root .azcon-orb{
+  background:radial-gradient(120% 120% at 30% 25%,#0071e3,#0066cc) !important;
+  border:1px solid rgba(0,113,227,.28) !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.14),0 0 0 6px rgba(0,113,227,.08) !important;
+}
+#azcon-root .azcon-orb::after{
+  background:radial-gradient(circle,rgba(0,113,227,.30),transparent 68%) !important;
+}
+#azcon-root .azcon-launcher:hover .azcon-orb{
+  box-shadow:0 16px 40px rgba(20,18,16,.18),0 0 0 8px rgba(0,113,227,.12) !important;
+}
+#azcon-root .azcon-launcher:focus-visible .azcon-orb{
+  box-shadow:0 10px 30px rgba(20,18,16,.14),0 0 0 4px #0071e3 !important;
+}
+#azcon-root .azcon-fallback{color:#fff !important;}
+
+/* ---- Panel surface: solid white ---- */
+#azcon-root .azcon-panel{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  -webkit-backdrop-filter:none !important; backdrop-filter:none !important;
+  box-shadow:0 30px 80px rgba(20,18,16,.16),0 0 0 1px rgba(0,0,0,.04) !important;
+}
+
+/* ---- Header ---- */
+#azcon-root .azcon-head{
+  border-bottom:1px solid rgba(0,0,0,.10) !important;
+  background:linear-gradient(180deg,rgba(0,113,227,.06),transparent) !important;
+}
+#azcon-root .azcon-avatar{
+  background:radial-gradient(120% 120% at 30% 25%,#0071e3,#0066cc) !important;
+  border:1px solid rgba(0,113,227,.24) !important;
+}
+#azcon-root .azcon-title{
+  color:#1d1d1f !important;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+}
+#azcon-root .azcon-sub{color:#6e6e73 !important;}
+#azcon-root .azcon-online{background:#3f9d5a !important;box-shadow:0 0 8px rgba(63,157,90,.5) !important;}
+
+/* Close button */
+#azcon-root .azcon-x{
+  border:1px solid rgba(0,0,0,.10) !important;
+  background:#f5f5f7 !important;
+  color:#6e6e73 !important;
+}
+#azcon-root .azcon-x:hover{background:rgba(0,113,227,.08) !important;color:#0071e3 !important;}
+#azcon-root .azcon-x:focus-visible{outline:2px solid #0071e3 !important;}
+
+/* ---- Messages scrollbar ---- */
+#azcon-root .azcon-msgs{scrollbar-color:rgba(0,0,0,.22) transparent !important;}
+#azcon-root .azcon-msgs::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18) !important;}
+
+/* Message avatars */
+#azcon-root .azcon-m-av{
+  background:radial-gradient(120% 120% at 30% 25%,#0071e3,#0066cc) !important;
+  border:1px solid rgba(0,113,227,.24) !important;
+}
+
+/* Aliz (assistant) bubble -> warm light grey card */
+#azcon-root .azcon-m--aliz .azcon-bub{
+  background:#f5f5f7 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  color:#1d1d1f !important;
+}
+#azcon-root .azcon-m--aliz .azcon-bub b{color:#1d1d1f !important;}
+
+/* User bubble -> cardinal with white text */
+#azcon-root .azcon-m--user .azcon-bub{
+  background:linear-gradient(180deg,#0071e3,#0066cc) !important;
+  border:1px solid rgba(0,113,227,.30) !important;
+  color:#ffffff !important;
+  box-shadow:0 8px 22px rgba(0,113,227,.20) !important;
+}
+#azcon-root .azcon-m--user .azcon-bub b{color:#ffffff !important;}
+
+/* Inline links -> cardinal */
+#azcon-root .azcon-a{
+  color:#0071e3 !important;
+  border-bottom:1px solid rgba(0,113,227,.35) !important;
+}
+#azcon-root .azcon-a:hover{color:#0066cc !important;border-bottom-color:#0066cc !important;}
+#azcon-root .azcon-a:focus-visible{outline:2px solid #0071e3 !important;}
+
+/* Typing dots */
+#azcon-root .azcon-typing span{background:#86868b !important;}
+
+/* ---- Chips ---- */
+#azcon-root .azcon-chips{border-top:1px solid rgba(0,0,0,.10) !important;}
+#azcon-root .azcon-chip{
+  color:#1d1d1f !important;
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azcon-root .azcon-chip:hover{
+  background:rgba(0,113,227,.08) !important;
+  border-color:rgba(0,113,227,.30) !important;
+  color:#0071e3 !important;
+}
+#azcon-root .azcon-chip:focus-visible{outline:2px solid #0071e3 !important;}
+
+/* ---- Input row ---- */
+#azcon-root .azcon-input{
+  border-top:1px solid rgba(0,0,0,.10) !important;
+  background:#f5f5f7 !important;
+}
+#azcon-root .azcon-field{
+  color:#1d1d1f !important;
+  background:#ffffff !important;
+  border:1px solid #d2d2d7 !important;
+}
+#azcon-root .azcon-field::placeholder{color:#86868b !important;}
+#azcon-root .azcon-field:focus{
+  border-color:#0071e3 !important;
+  background:#ffffff !important;
+  box-shadow:0 0 0 3px rgba(0,113,227,.16) !important;
+}
+
+/* Send button -> cardinal */
+#azcon-root .azcon-send{
+  background:linear-gradient(180deg,#0071e3,#0066cc) !important;
+  box-shadow:0 6px 18px rgba(0,113,227,.28) !important;
+}
+#azcon-root .azcon-send svg{stroke:#fff !important;}
+#azcon-root .azcon-send:hover{box-shadow:0 10px 26px rgba(0,113,227,.40) !important;}
+#azcon-root .azcon-send:focus-visible{outline:2px solid #0071e3 !important;}
+/* ===== azrole apple-light ===== */
+/* ===== azrole — Stanford editorial LIGHT re-skin (append after base) ===== */
+
+/* Eyebrow -> warm sandstone/gold */
+#azrole-root .azrole-ey{color:#6e6e73 !important}
+
+/* Big display title -> dark ink editorial serif */
+#azrole-root .azrole-title{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+  color:#1d1d1f !important}
+#azrole-root .azrole-sub{color:#6e6e73 !important}
+
+/* ---- segmented switcher: white pill, hairline border ---- */
+#azrole-root .azrole-seg{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important}
+
+/* moving indicator -> solid cardinal */
+#azrole-root .azrole-ind{
+  background:#0071e3 !important;
+  box-shadow:0 8px 22px -8px rgba(0,113,227,.55),inset 0 1px 0 rgba(255,255,255,.18) !important}
+
+/* tabs: dark ink text, cardinal hover, white on active */
+#azrole-root .azrole-tab{color:#6e6e73 !important}
+#azrole-root .azrole-tab:hover{color:#0071e3 !important}
+#azrole-root .azrole-tab[aria-selected="true"]{color:#ffffff !important}
+#azrole-root .azrole-tab:focus-visible{outline:2px solid #0071e3 !important}
+
+/* ---- action cards: solid white surface, hairline, soft shadow ---- */
+#azrole-root .azrole-card{
+  background:#ffffff !important;
+  color:#1d1d1f !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important}
+/* kill dark glow overlay -> soft cardinal tint wash on hover */
+#azrole-root .azrole-card::before{
+  background:radial-gradient(120% 82% at 50% -12%,rgba(0,113,227,.07),transparent 62%) !important}
+#azrole-root .azrole-card:hover{
+  border-color:rgba(0,113,227,.28) !important;
+  box-shadow:0 22px 46px -20px rgba(0,113,227,.35),0 8px 22px -14px rgba(20,18,16,.18) !important}
+
+/* badge / icon chip -> cardinal-tinted on white */
+#azrole-root .azrole-badge{
+  background:rgba(0,113,227,.08) !important;
+  border:1px solid rgba(0,113,227,.20) !important;
+  color:#0071e3 !important;
+  box-shadow:none !important}
+#azrole-root .azrole-mini{filter:none !important}
+
+/* card text */
+#azrole-root .azrole-t{color:#1d1d1f !important}
+#azrole-root .azrole-d{color:#6e6e73 !important}
+
+/* "go" affordance -> cardinal */
+#azrole-root .azrole-go{color:#0071e3 !important}
+#azrole-root .azrole-card:focus-visible{outline:2px solid #0071e3 !important}
+
+/* inputs / selects, if any render inside this module */
+#azrole-root input,#azrole-root select,#azrole-root textarea{
+  background:#ffffff !important;
+  border:1px solid #d2d2d7 !important;
+  color:#1d1d1f !important}
+#azrole-root input:focus,#azrole-root select:focus,#azrole-root textarea:focus{
+  outline:2px solid #0071e3 !important;outline-offset:2px;
+  border-color:#0071e3 !important}
+/* ===== azfinder apple-light ===== */
+/* ===== azfinder — Stanford editorial LIGHT re-skin ===== */
+/* Scoped to #azfinder-root; overrides dark glassy base that precedes it */
+#azfinder-root{
+  --crimson:#0071e3; --crimson-deep:#0066cc; --crimson-bright:#2997ff;
+  --gold:#6e6e73;
+  --ink:#1d1d1f; --muted:#6e6e73; --faint:#86868b;
+  --bg:#ffffff; --panel:#ffffff;
+  --line:rgba(0,0,0,.10); --line2:rgba(0,113,227,.16);
+}
+
+/* Eyebrows / question numbers -> warm sandstone gold */
+#azfinder-root .azfinder-ey,
+#azfinder-root .azfinder-qn,
+#azfinder-root .azfinder-r-eyebrow,
+#azfinder-root .azfinder-r-block h4{color:#6e6e73 !important}
+#azfinder-root .azfinder-ey::before{background:linear-gradient(90deg,transparent,#6e6e73) !important}
+#azfinder-root .azfinder-ey::after{background:linear-gradient(270deg,transparent,#6e6e73) !important}
+
+/* Display headings -> dark ink, serif */
+#azfinder-root .azfinder-h,
+#azfinder-root .azfinder-q,
+#azfinder-root .azfinder-r-name{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif;
+  color:#1d1d1f !important;
+}
+/* Result name had a light gradient text clip — neutralise it */
+#azfinder-root .azfinder-r-name{
+  background:none !important;
+  -webkit-background-clip:border-box !important;
+  background-clip:border-box !important;
+  -webkit-text-fill-color:#1d1d1f !important;
+}
+#azfinder-root .azfinder-sub,
+#azfinder-root .azfinder-r-tag,
+#azfinder-root .azfinder-learn{color:#6e6e73 !important}
+#azfinder-root .azfinder-learn b{color:#1d1d1f !important}
+
+/* Main card -> solid white, hairline border, soft shadow */
+#azfinder-root .azfinder-card{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+}
+/* Kill the dark radial glow */
+#azfinder-root .azfinder-glow{
+  background:radial-gradient(560px 240px at 50% -8%,rgba(0,113,227,.06),transparent 70%) !important;
+  opacity:1 !important;
+}
+
+/* Progress bar */
+#azfinder-root .azfinder-track{background:#eeece8 !important}
+#azfinder-root .azfinder-fill{
+  background:linear-gradient(90deg,#0066cc,#0071e3) !important;
+  box-shadow:0 0 12px -2px rgba(0,113,227,.4) !important;
+}
+#azfinder-root .azfinder-step-lbl{color:#86868b !important}
+#azfinder-root .azfinder-step-lbl b{color:#1d1d1f !important}
+
+/* Option cards -> white surface, dark text */
+#azfinder-root .azfinder-opt{
+  color:#1d1d1f !important;
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azfinder-root .azfinder-opt:hover{
+  border-color:rgba(0,113,227,.30) !important;
+  background:rgba(0,113,227,.04) !important;
+  box-shadow:0 6px 18px rgba(20,18,16,.06) !important;
+}
+#azfinder-root .azfinder-opt:focus-visible{
+  border-color:#0071e3 !important;
+  box-shadow:0 0 0 3px rgba(0,113,227,.28) !important;
+}
+/* Selected option -> cardinal tint surface, dark text stays readable */
+#azfinder-root .azfinder-opt.is-sel{
+  border-color:#0071e3 !important;
+  background:rgba(0,113,227,.08) !important;
+  box-shadow:0 10px 30px rgba(0,113,227,.14) !important;
+}
+/* Tick */
+#azfinder-root .azfinder-tick{
+  border:1.5px solid rgba(0,0,0,.20) !important;
+  color:transparent !important;
+}
+#azfinder-root .azfinder-opt.is-sel .azfinder-tick{
+  border-color:transparent !important;
+  background:#0071e3 !important;
   color:#fff !important;
+  box-shadow:0 0 0 4px rgba(0,113,227,.18) !important;
 }
-#bg{opacity:.85 !important}
-/* replace old crimson/gold .glow radials with violet/magenta nebula */
-.glow{
-  background:
-    radial-gradient(60% 45% at 50% 20%, rgba(124,92,252,.16), transparent 70%),
-    radial-gradient(46% 38% at 82% 6%, rgba(216,132,255,.10), transparent 65%),
-    radial-gradient(70% 42% at 18% 92%, rgba(216,132,255,.08), transparent 70%),
-    radial-gradient(38% 30% at 8% 30%, rgba(102,54,232,.12), transparent 70%) !important;
-}
-/* faint starfield sparkle over the nebula */
-.glow::after{
-  content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
-  background-image:
-    radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,.55), transparent 55%),
-    radial-gradient(1px 1px at 34% 8%,  rgba(255,255,255,.40), transparent 55%),
-    radial-gradient(1.4px 1.4px at 58% 16%, rgba(185,169,255,.55), transparent 55%),
-    radial-gradient(1px 1px at 76% 30%, rgba(255,255,255,.35), transparent 55%),
-    radial-gradient(1px 1px at 88% 10%, rgba(255,255,255,.5),  transparent 55%),
-    radial-gradient(1.3px 1.3px at 22% 58%, rgba(157,132,255,.45), transparent 55%),
-    radial-gradient(1px 1px at 66% 64%, rgba(255,255,255,.3),  transparent 55%),
-    radial-gradient(1px 1px at 44% 82%, rgba(255,255,255,.35), transparent 55%),
-    radial-gradient(1.2px 1.2px at 92% 76%, rgba(216,132,255,.4), transparent 55%);
-}
-::selection{background:rgba(124,92,252,.45); color:#fff}
 
-/* ---------- 2. Hero: bold white sans, violet gradient tag ---------- */
+/* Buttons — secondary/ghost */
+#azfinder-root .azfinder-btn{
+  border:1px solid rgba(0,0,0,.14) !important;
+  background:#ffffff !important;
+  color:#1d1d1f !important;
+}
+#azfinder-root .azfinder-btn:hover{background:rgba(0,113,227,.06) !important}
+#azfinder-root .azfinder-btn:focus-visible{box-shadow:0 0 0 3px rgba(0,113,227,.35) !important}
+#azfinder-root .azfinder-btn.azfinder-ghost{background:transparent !important}
+#azfinder-root .azfinder-btn.azfinder-ghost:hover{background:rgba(0,113,227,.06) !important}
+/* Primary -> solid cardinal, white text */
+#azfinder-root .azfinder-btn.azfinder-prim{
+  border-color:transparent !important;
+  color:#fff !important;
+  background:#0071e3 !important;
+  box-shadow:0 10px 26px -12px rgba(0,113,227,.6) !important;
+}
+#azfinder-root .azfinder-btn.azfinder-prim:hover{
+  background:#0066cc !important;
+  box-shadow:0 14px 32px -12px rgba(0,113,227,.7) !important;
+}
+
+/* Result blocks -> nested warm-grey panels */
+#azfinder-root .azfinder-r-block{
+  background:#f5f5f7 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azfinder-root .azfinder-r-mascot{
+  border:1px solid rgba(0,0,0,.10) !important;
+  background:#f5f5f7 !important;
+}
+/* Result checklist bullets */
+#azfinder-root .azfinder-r-list li{color:#1d1d1f !important}
+#azfinder-root .azfinder-r-list li::before{
+  background:rgba(0,113,227,.12) !important;
+  box-shadow:inset 0 0 0 1.5px rgba(0,113,227,.55) !important;
+}
+#azfinder-root .azfinder-r-list li::after{
+  border-left:1.6px solid #0071e3 !important;
+  border-bottom:1.6px solid #0071e3 !important;
+}
+#azfinder-root .azfinder-note{color:#86868b !important}
+/* ===== azest apple-light ===== */
+/* ===== azest — Stanford editorial LIGHT re-skin (scoped to #azest-root) ===== */
+
+/* Re-map the page vars locally so every var() in the base CSS resolves to light ink */
+#azest-root{
+  --ink:#1d1d1f;
+  --muted:#6e6e73;
+  --faint:#86868b;
+  --line:rgba(0,0,0,.10);
+  --line2:rgba(0,0,0,.14);
+  --panel:#ffffff;
+  --crimson:#0071e3;
+  --crimson-deep:#0066cc;
+  --crimson-bright:#2997ff;
+  --gold:#6e6e73;
+  --gold-soft:#6e6e73;
+}
+
+/* Section eyebrow / helper */
+#azest-root .ey{color:var(--crimson) !important}
+
+/* Display heading -> editorial serif, dark ink */
+#azest-root .azest-title{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+  color:#1d1d1f !important;
+}
+#azest-root .azest-title em{color:#6e6e73 !important}
+#azest-root .azest-sub{color:#6e6e73 !important}
+
+/* Indicative note pill */
+#azest-root .azest-note{
+  background:#f5f5f7 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  color:#6e6e73 !important;
+}
+#azest-root .azest-note b{color:#0071e3 !important}
+#azest-root .azest-dot{
+  background:#0071e3 !important;
+  box-shadow:0 0 10px rgba(0,113,227,.45) !important;
+}
+
+/* Cards / result panel -> solid white, hairline border, soft shadow, no glass */
+#azest-root .azest-card,
+#azest-root .azest-res{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+/* Form header */
+#azest-root .azest-form-h span{color:#1d1d1f !important}
+#azest-root .azest-form-h .azest-ic{
+  background:linear-gradient(150deg,#0071e3,#0066cc) !important;
+  box-shadow:0 6px 18px -6px rgba(0,113,227,.45) !important;
+}
+
+/* Labels */
+#azest-root .azest-lbl{color:#86868b !important}
+
+/* Selects -> white, dark text, cardinal focus */
+#azest-root .azest-sel{
+  background:#ffffff !important;
+  border:1px solid #d2d2d7 !important;
+  color:#1d1d1f !important;
+}
+#azest-root .azest-sel:hover{background:#f5f5f7 !important}
+#azest-root .azest-sel:focus-visible{
+  border-color:#0071e3 !important;
+  box-shadow:0 0 0 3px rgba(0,113,227,.24) !important;
+}
+#azest-root .azest-sel option{background:#ffffff !important;color:#1d1d1f !important}
+#azest-root .azest-selwrap::after{border-color:#86868b !important}
+#azest-root .azest-selwrap:hover::after{border-color:#0071e3 !important}
+
+/* Segmented track control */
+#azest-root .azest-segs{
+  background:#f5f5f7 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azest-root .azest-seg{color:#6e6e73 !important;border-color:transparent !important}
+#azest-root .azest-seg:hover{color:#1d1d1f !important}
+#azest-root .azest-seg small{color:#86868b !important}
+#azest-root .azest-seg[aria-pressed="true"]{
+  background:#0071e3 !important;
+  color:#ffffff !important;
+  border-color:#0071e3 !important;
+  box-shadow:0 6px 16px -10px rgba(0,113,227,.55) !important;
+}
+#azest-root .azest-seg[aria-pressed="true"] small{color:rgba(255,255,255,.82) !important}
+#azest-root .azest-seg:focus-visible{box-shadow:0 0 0 3px rgba(0,113,227,.28) !important}
+
+/* Primary CTA button -> cardinal, white text */
+#azest-root .azest-go{
+  color:#ffffff !important;
+  background:linear-gradient(135deg,#2997ff,#0066cc) !important;
+  box-shadow:0 12px 26px -14px rgba(0,113,227,.6),inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+#azest-root .azest-go:hover{filter:brightness(1.05) !important}
+#azest-root .azest-go:focus-visible{box-shadow:0 0 0 3px rgba(0,113,227,.32) !important}
+
+/* Result glow -> subtle cardinal */
+#azest-root .azest-glow{
+  --rescol:#0071e3;
+  opacity:.08 !important;
+}
+
+/* Result verdict badges -> readable on white */
+#azest-root .azest-v-ok{
+  color:#1f7a4d !important;background:rgba(34,197,94,.10) !important;border-color:rgba(34,150,90,.35) !important;
+}
+#azest-root .azest-v-ok .azest-bd{background:#1f9d5b !important;box-shadow:none !important}
+#azest-root .azest-v-mid{
+  color:#8a5a00 !important;background:rgba(245,158,11,.12) !important;border-color:rgba(200,140,20,.35) !important;
+}
+#azest-root .azest-v-mid .azest-bd{background:#c88c14 !important;box-shadow:none !important}
+#azest-root .azest-v-no{
+  color:#0071e3 !important;background:rgba(0,113,227,.08) !important;border-color:rgba(0,113,227,.30) !important;
+}
+#azest-root .azest-v-no .azest-bd{background:#2997ff !important;box-shadow:none !important}
+
+/* Result text */
+#azest-root .azest-rprog{color:#1d1d1f !important}
+#azest-root .azest-rprog b{color:#0071e3 !important}
+#azest-root .azest-reason{color:#6e6e73 !important}
+#azest-root .azest-reason b{color:#1d1d1f !important}
+
+/* Stat tiles -> nested light grey */
+#azest-root .azest-stat{
+  background:#f5f5f7 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azest-root .azest-stat .azest-k{color:#86868b !important}
+#azest-root .azest-stat .azest-val{color:#1d1d1f !important}
+#azest-root .azest-stat .azest-vsub{color:#86868b !important}
+
+/* CTAs */
+#azest-root .azest-cta.azest-apply{
+  color:#ffffff !important;
+  background:linear-gradient(135deg,#2997ff,#0066cc) !important;
+  box-shadow:0 12px 26px -14px rgba(0,113,227,.55),inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+#azest-root .azest-cta.azest-apply:hover{filter:brightness(1.05) !important}
+#azest-root .azest-cta.azest-ask{
+  color:#0071e3 !important;
+  background:rgba(0,113,227,.08) !important;
+  border-color:rgba(0,113,227,.16) !important;
+}
+#azest-root .azest-cta.azest-ask:hover{
+  background:rgba(0,113,227,.14) !important;
+  border-color:#0071e3 !important;
+}
+#azest-root .azest-cta:focus-visible{box-shadow:0 0 0 3px rgba(0,113,227,.28) !important}
+
+/* Fine print */
+#azest-root .azest-fine{color:#86868b !important}
+#azest-root .azest-fine b{color:#6e6e73 !important}
+/* ===== azverify apple-light ===== */
+/* ===== azverify — Stanford-style LIGHT re-skin (override, appended after base) ===== */
+
+/* Eyebrow -> warm sandstone accent */
+#azverify-root .azverify-ey{color:#6e6e73 !important}
+#azverify-root .azverify-ey::before{background:linear-gradient(90deg,#6e6e73,transparent) !important}
+
+/* Big display heading -> dark ink editorial serif */
+#azverify-root .azverify-h{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+  color:#1d1d1f !important;
+}
+#azverify-root .azverify-sub{color:#6e6e73 !important}
+
+/* Bullet points */
+#azverify-root .azverify-points li{color:#6e6e73 !important}
+#azverify-root .azverify-points b{color:#1d1d1f !important}
+#azverify-root .azverify-tick{
+  background:#f5f5f7 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+}
+#azverify-root .azverify-tick svg{stroke:#0071e3 !important}
+
+/* Card / panel -> solid white, hairline border, soft shadow. Kill dark glass. */
+#azverify-root .azverify-card{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+}
+#azverify-root .azverify-card::before{
+  background:radial-gradient(120% 90% at 100% 0%,rgba(0,113,227,.06),transparent 55%) !important;
+  opacity:1 !important;
+}
+
+/* Badge */
+#azverify-root .azverify-badge{color:#6e6e73 !important}
+#azverify-root .azverify-badge span{
+  background:#0071e3 !important;
+  box-shadow:0 0 0 4px rgba(0,113,227,.16) !important;
+}
+
+/* Field labels */
+#azverify-root .azverify-lbl{color:#86868b !important}
+
+/* Inputs -> white, warm border, dark text, cardinal focus ring */
+#azverify-root .azverify-input{
+  background:#ffffff !important;
+  border:1px solid #d2d2d7 !important;
+  color:#1d1d1f !important;
+}
+#azverify-root .azverify-input::placeholder{color:#86868b !important}
+#azverify-root .azverify-input:focus{
+  border-color:#0071e3 !important;
+  box-shadow:0 0 0 3px rgba(0,113,227,.18) !important;
+  background:#ffffff !important;
+}
+
+/* Primary button -> cardinal with white text */
+#azverify-root .azverify-btn{
+  color:#ffffff !important;
+  background:linear-gradient(180deg,#0071e3,#0066cc) !important;
+  box-shadow:0 14px 30px -12px rgba(0,113,227,.55),inset 0 1px 0 rgba(255,255,255,.15) !important;
+}
+#azverify-root .azverify-btn:hover{
+  filter:brightness(1.05) !important;
+  box-shadow:0 18px 38px -12px rgba(0,113,227,.65),inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+#azverify-root .azverify-btn svg{stroke:#ffffff !important}
+
+/* Focus rings -> cardinal */
+#azverify-root .azverify-input:focus-visible,
+#azverify-root .azverify-btn:focus-visible,
+#azverify-root .azverify-card a:focus-visible{outline-color:#0071e3 !important}
+
+/* Hint + links */
+#azverify-root .azverify-hint{color:#86868b !important}
+#azverify-root .azverify-hint a{
+  color:#0071e3 !important;
+  border-bottom:1px solid rgba(0,113,227,.40) !important;
+}
+#azverify-root .azverify-hint a:hover{color:#0066cc !important}
+
+/* Result states -> soft tinted panels on white */
+#azverify-root .azverify-result.azverify-ok{
+  background:linear-gradient(180deg,rgba(21,115,71,.08),rgba(21,115,71,.02)) !important;
+  border-color:rgba(21,115,71,.30) !important;
+}
+#azverify-root .azverify-result.azverify-no{
+  background:linear-gradient(180deg,rgba(110,110,115,.10),rgba(110,110,115,.03)) !important;
+  border-color:rgba(110,110,115,.34) !important;
+}
+
+/* Result icons */
+#azverify-root .azverify-ok .azverify-icon{
+  background:radial-gradient(circle at 50% 35%,rgba(21,115,71,.18),rgba(21,115,71,.05)) !important;
+  box-shadow:0 0 0 1px rgba(21,115,71,.35) !important;
+}
+#azverify-root .azverify-no .azverify-icon{
+  background:radial-gradient(circle at 50% 35%,rgba(110,110,115,.20),rgba(110,110,115,.06)) !important;
+  box-shadow:0 0 0 1px rgba(110,110,115,.38) !important;
+}
+#azverify-root .azverify-ok .azverify-icon svg{stroke:#157347 !important}
+#azverify-root .azverify-no .azverify-icon svg{stroke:#6e6e73 !important}
+
+/* Result titles */
+#azverify-root .azverify-ok .azverify-rtitle{color:#157347 !important}
+#azverify-root .azverify-no .azverify-rtitle{color:#8a6a2f !important}
+#azverify-root .azverify-rid{color:#6e6e73 !important}
+
+/* Result data rows -> light alt surface with hairline separators */
+#azverify-root .azverify-rows{background:rgba(0,0,0,.10) !important}
+#azverify-root .azverify-rows li{background:#f5f5f7 !important}
+#azverify-root .azverify-rk{color:#86868b !important}
+#azverify-root .azverify-rv{color:#1d1d1f !important}
+
+/* Verified pill -> green tint on white */
+#azverify-root .azverify-pill{
+  background:rgba(21,115,71,.12) !important;
+  color:#157347 !important;
+  border:1px solid rgba(21,115,71,.30) !important;
+}
+#azverify-root .azverify-pill::before{background:#157347 !important}
+
+/* Notes + result links */
+#azverify-root .azverify-note{color:#6e6e73 !important}
+#azverify-root .azverify-note strong{color:#1d1d1f !important}
+#azverify-root .azverify-rlinks a{color:#0071e3 !important}
+#azverify-root .azverify-rlinks a:hover{color:#0066cc !important}
+/* ===== azstat apple-light ===== */
+/* ===== AZSTAT — Stanford editorial LIGHT re-skin (override) ===== */
+
+/* eyebrow pill */
+#azstat-root .azstat-ey{
+  color:#0071e3 !important;
+  border:1px solid rgba(0,113,227,.20) !important;
+  background:rgba(0,113,227,.06) !important;
+}
+#azstat-root .azstat-ey::before{
+  background:#0071e3 !important;
+  box-shadow:0 0 8px 1px rgba(0,113,227,.35) !important;
+}
+
+/* big display heading */
+#azstat-root .azstat-title{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+  color:#1d1d1f !important;
+}
+#azstat-root .azstat-sub{color:#6e6e73 !important;}
+
+/* ===== (A) stat tiles ===== */
+#azstat-root .azstat-tile{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+}
+#azstat-root .azstat-tile::before{background:none !important;opacity:0 !important;}
+#azstat-root .azstat-tile:hover{
+  border-color:rgba(0,113,227,.24) !important;
+  box-shadow:0 16px 40px rgba(20,18,16,.12) !important;
+}
+#azstat-root .azstat-num{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+  background:none !important;
+  -webkit-background-clip:border-box !important;background-clip:border-box !important;
+  color:#0071e3 !important;-webkit-text-fill-color:#0071e3 !important;
+  text-shadow:none !important;
+}
+#azstat-root .azstat-label{color:#6e6e73 !important;}
+
+/* ===== (B) countdown card ===== */
+#azstat-root .azstat-cd{
+  background:#f5f5f7 !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+  box-shadow:0 10px 30px rgba(20,18,16,.08) !important;
+}
+#azstat-root .azstat-cd::after{background:none !important;}
+
+#azstat-root .azstat-cd-ey{color:#0071e3 !important;}
+#azstat-root .azstat-cd-h{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+  color:#1d1d1f !important;
+}
+#azstat-root .azstat-cd-p{color:#6e6e73 !important;}
+
+/* primary CTA — cardinal with white text */
+#azstat-root .azstat-cta{
+  color:#ffffff !important;-webkit-text-fill-color:#ffffff !important;
+  background:#0071e3 !important;
+  border:1px solid #0066cc !important;
+  box-shadow:0 12px 26px -12px rgba(0,113,227,.55) !important;
+}
+#azstat-root .azstat-cta:hover{
+  background:#0066cc !important;
+  filter:none !important;
+  box-shadow:0 16px 32px -12px rgba(0,113,227,.6) !important;
+}
+#azstat-root .azstat-cta:focus-visible{outline:2px solid #0071e3 !important;outline-offset:3px !important;}
+
+/* countdown segments — white nested tiles */
+#azstat-root .azstat-seg{
+  background:#ffffff !important;
+  border:1px solid rgba(0,0,0,.10) !important;
+  box-shadow:0 4px 14px rgba(20,18,16,.06) !important;
+}
+#azstat-root .azstat-seg-n{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+  color:#1d1d1f !important;
+}
+#azstat-root .azstat-seg-l{color:#86868b !important;}
+
+/* open state */
+#azstat-root .azstat-open{color:#1d1d1f !important;}
+#azstat-root .azstat-open .azstat-dot{background:#2e7d32 !important;}
+
+/* ===================== APPLE POLISH (agent layer) ===================== */
+/* ================================================================
+   APPLE POLISH — final layer, appended last so it wins everything
+   apple.com feel: white canvas, #f5f5f7 bands, #1d1d1f type,
+   #0071e3 accent, flat pills, borderless soft cards, huge air.
+   ================================================================ */
+
+/* ---------- 0. canvas & leftovers ---------- */
+html,body{background:#ffffff !important;color:#1d1d1f !important}
+#bg{opacity:.25 !important}
+.glow{display:none !important}
+::selection{background:rgba(0,113,227,.2) !important;color:#1d1d1f !important}
+
+/* ---------- 1. typography: system stack everywhere ---------- */
+body,button,input,select,textarea,
+h1,h2,h3,h4,h5,h6,
+.hero h1,.hero .tag,.blk h2,.feat h2,.cta-blk h2,.pc h3,
+.azrole-title,.azfinder-h,.azfinder-q,.azfinder-r-name,
+.azest-title,.azverify-h,.azstat-title,.azstat-cd-h,
+.azcon-title,.azcon-fallback,
+#azcon-root{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;
+}
+body{letter-spacing:-.015em !important;-webkit-font-smoothing:antialiased}
+
+/* hero */
 .hero h1{
-  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif !important;
-  font-weight:800 !important;
-  background:linear-gradient(180deg,#ffffff 30%,#c9c2ec 100%) !important;
-  -webkit-background-clip:text !important; background-clip:text !important;
-  color:transparent !important; -webkit-text-fill-color:transparent !important;
+  background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;
+  -webkit-text-fill-color:#1d1d1f !important;color:#1d1d1f !important;
+  font-weight:700 !important;letter-spacing:-.03em !important;line-height:1.05 !important;
 }
 .hero .tag{
-  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif !important;
-  font-weight:700 !important; letter-spacing:-.03em !important;
-  background:linear-gradient(100deg,#9d84ff,#b9a9ff 55%,#d884ff) !important;
-  -webkit-background-clip:text !important; background-clip:text !important;
-  color:transparent !important; -webkit-text-fill-color:transparent !important;
+  background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;
+  -webkit-text-fill-color:#6e6e73 !important;color:#6e6e73 !important;
+  font-weight:500 !important;letter-spacing:-.015em !important;
 }
-.hero p.lead{color:#a9a4c8 !important}
-.eyebrow{color:#b9a9ff !important}
-.hero .price{color:#7a749c !important}
-.hero .price b{color:#a9a4c8 !important}
-.scrollcue{color:#7a749c !important}
-.scrollcue span{background:linear-gradient(#b9a9ff,transparent) !important}
-/* kill any serif left over from the light era on all headings */
-.blk h2,.feat h2,.cta-blk h2,.pc h3,
-.azrole-title,.azfinder-h,.azfinder-q,.azfinder-r-name,.azcon-title{
-  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif !important;
+.hero p.lead{color:#6e6e73 !important;font-weight:400 !important}
+.hero .price{color:#86868b !important}
+.hero .price b{color:#6e6e73 !important;font-weight:500 !important}
+
+/* section headlines: solid near-black, kill every gradient-text */
+.blk h2,.feat h2,.cta-blk h2{
+  color:#1d1d1f !important;-webkit-text-fill-color:#1d1d1f !important;
+  background:none !important;font-weight:700 !important;letter-spacing:-.025em !important;line-height:1.08 !important;
 }
-.blk h2,.feat h2,.cta-blk h2{font-weight:800 !important; color:#fff !important}
-.pc h3{font-weight:700 !important; color:#fff !important}
 .blk h2 .accent{
-  background:linear-gradient(100deg,#9d84ff,#d884ff) !important;
-  -webkit-background-clip:text !important; background-clip:text !important;
-  color:transparent !important; -webkit-text-fill-color:transparent !important;
+  background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;
+  -webkit-text-fill-color:#0071e3 !important;color:#0071e3 !important;
 }
-.blk .ey{color:#b9a9ff !important}
-.blk p.sub,.feat p,.pc p,.cta-blk p{color:#a9a4c8 !important}
-.feat li{color:#dcd8f0 !important}
-.link{color:#b9a9ff !important}
+.blk p.sub,.feat p,.cta-blk p{color:#6e6e73 !important;font-weight:400 !important}
+.pc h3,.azrole-title,.azfinder-h,.azfinder-q,.azest-title,.azverify-h,.azstat-title,.azstat-cd-h{
+  color:#1d1d1f !important;-webkit-text-fill-color:#1d1d1f !important;background:none !important;
+  font-weight:600 !important;letter-spacing:-.02em !important;
+}
+.azfinder-r-name{
+  background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;
+  -webkit-text-fill-color:#1d1d1f !important;color:#1d1d1f !important;font-weight:700 !important;letter-spacing:-.025em !important;
+}
+.azrole-sub,.azfinder-sub,.azfinder-r-tag,.azest-sub,.azverify-sub,.azstat-sub,.azstat-cd-p,
+.azrole-d,.azfinder-learn,.pc p{color:#6e6e73 !important;font-weight:400 !important}
+.azrole-t{color:#1d1d1f !important}
 
-/* ---------- 3. CTAs: white primary pill, ghost secondary ---------- */
+/* eyebrows / kickers → Apple blue, no gold */
+.eyebrow,.blk .ey,.azrole-ey,.azfinder-ey,.azfinder-qn,.azfinder-r-eyebrow,
+.azest-ey,.azverify-ey,.azstat-ey,.azstat-cd-ey{
+  color:#0071e3 !important;-webkit-text-fill-color:#0071e3 !important;background:none !important;
+}
+
+/* ---------- 2. section rhythm: white / #f5f5f7 alternating bands ---------- */
+section.blk{padding-top:clamp(100px,14vw,170px) !important;padding-bottom:clamp(100px,14vw,170px) !important}
+.hero,.showcase,#azrole-root,#azfinder-root,#practicals,#aliz,#azstat-root,.cta-blk{background:#ffffff !important}
+.strip,#programmes,#azest-root,#assessment,#azverify-root,footer{background:#f5f5f7 !important}
+.strip{border-top:1px solid rgba(0,0,0,.08) !important;border-bottom:1px solid rgba(0,0,0,.08) !important;padding:64px 24px !important}
+#azrole-root,#azfinder-root{padding-top:clamp(90px,12vw,150px) !important;padding-bottom:clamp(90px,12vw,150px) !important}
+.scrollcue{color:#86868b !important}
+.scrollcue span{background:linear-gradient(rgba(0,0,0,.25),transparent) !important}
+
+/* ---------- 3. nav: frosted white ---------- */
+nav,nav.scrolled{
+  background:rgba(255,255,255,.8) !important;
+  backdrop-filter:blur(20px) saturate(1.8) !important;-webkit-backdrop-filter:blur(20px) saturate(1.8) !important;
+  border-bottom:1px solid rgba(0,0,0,.08) !important;
+}
+nav .in{padding:12px 24px !important}
+.brand{color:#1d1d1f !important;font-weight:600 !important}
+.brand img{filter:none !important}
+.brand small{color:#6e6e73 !important}
+.navlinks{color:#424245 !important;font-size:13.5px !important}
+.navlinks a{color:#424245 !important}
+.navlinks a:hover{color:#0071e3 !important}
+
+/* ---------- 4. buttons & links: flat blue pills ---------- */
+.btn{border-radius:980px !important;font-weight:500 !important;letter-spacing:-.01em !important}
 .btn.primary{
-  background:#ffffff !important; color:#14122a !important;
-  border-color:transparent !important;
-  box-shadow:0 10px 34px -8px rgba(255,255,255,.14), 0 14px 44px -14px rgba(124,92,252,.55) !important;
+  background:#0071e3 !important;color:#fff !important;border-color:transparent !important;
+  box-shadow:none !important;padding:12px 22px !important;
 }
-.btn.primary:hover{
-  transform:translateY(-2px) !important;
-  background:#ffffff !important; color:#14122a !important;
-  box-shadow:0 16px 46px -10px rgba(255,255,255,.22), 0 22px 60px -16px rgba(124,92,252,.65) !important;
-}
-.btn.primary svg,.btn.primary path{stroke:#14122a; fill:currentColor}
+.btn.primary:hover{background:#0077ed !important;transform:none !important;box-shadow:none !important}
 .btn.ghost{
-  background:transparent !important; color:#ffffff !important;
-  border:1px solid rgba(255,255,255,.22) !important;
+  background:transparent !important;color:#0071e3 !important;border:1px solid #0071e3 !important;box-shadow:none !important;
 }
-.btn.ghost:hover{
-  background:rgba(255,255,255,.08) !important;
-  border-color:rgba(255,255,255,.38) !important; color:#fff !important;
+.btn.ghost:hover{background:rgba(0,113,227,.08) !important;color:#0071e3 !important}
+.link{color:#0071e3 !important;font-weight:400 !important}
+.link:hover{text-decoration:underline !important;color:#0071e3 !important}
+.subnew,.gv-btn{
+  background:#0071e3 !important;color:#fff !important;border:0 !important;border-radius:980px !important;box-shadow:none !important;
 }
+.subnew:hover,.gv-btn:hover{background:#0077ed !important}
 
-/* ---------- 4. Cards: dark glass + violet glow ---------- */
-.pc{
-  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015)) !important;
-  border:1px solid rgba(255,255,255,.10) !important; border-radius:24px !important;
-  box-shadow:0 10px 30px -18px rgba(0,0,0,.8) !important;
-}
-.pc:hover{
-  border-color:rgba(157,132,255,.42) !important;
-  box-shadow:0 24px 60px -20px rgba(124,92,252,.45), 0 8px 26px -12px rgba(0,0,0,.8) !important;
-}
-.pc::before{
-  background:radial-gradient(80% 60% at 15% 0%, var(--tint, rgba(124,92,252,.18)), transparent 70%) !important;
-}
-.pc .meta{color:#b9a9ff !important}
+/* ---------- 5. showcase window: light framed mock ---------- */
 .window{
-  background:linear-gradient(180deg,#16142c,#0d0b1e) !important;
-  border:1px solid rgba(255,255,255,.12) !important;
-  box-shadow:0 50px 120px -30px rgba(124,92,252,.38), 0 30px 80px -40px rgba(0,0,0,.9) !important;
+  background:#ffffff !important;border:1px solid rgba(0,0,0,.06) !important;
+  box-shadow:0 20px 60px rgba(0,0,0,.08) !important;
 }
-.win-bar{border-bottom:1px solid rgba(255,255,255,.08) !important; background:rgba(255,255,255,.02) !important}
-.win-bar .u{color:#7a749c !important}
-.win-side{
-  border-right:1px solid rgba(255,255,255,.08) !important;
-  background:linear-gradient(180deg,rgba(26,22,52,.6),rgba(13,11,30,.6)) !important;
-}
-.win-side b{background:rgba(255,255,255,.08) !important}
-.win-side b.on{background:linear-gradient(120deg,#7c5cfc,#b9a9ff) !important}
-.win-main .h{background:rgba(255,255,255,.14) !important}
-.win-main .s{background:rgba(255,255,255,.06) !important}
-.wc{
-  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015)) !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-}
+.win-bar{background:#f5f5f7 !important;border-bottom:1px solid rgba(0,0,0,.08) !important}
+.win-bar .u{color:#86868b !important}
+.win-side{background:#fafafc !important;border-right:1px solid rgba(0,0,0,.06) !important}
+.win-side b{background:rgba(0,0,0,.08) !important}
+.win-side b.on{background:#0071e3 !important}
+.win-main .h{background:rgba(0,0,0,.12) !important}
+.win-main .s{background:rgba(0,0,0,.06) !important}
+.wc{background:#f5f5f7 !important;border:0 !important;border-color:transparent !important;border-radius:14px !important}
 .wc .n{
-  background:linear-gradient(120deg,#ffffff,#b9a9ff) !important;
-  -webkit-background-clip:text !important; background-clip:text !important;
-  color:transparent !important; -webkit-text-fill-color:transparent !important;
+  background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;
+  -webkit-text-fill-color:#1d1d1f !important;color:#1d1d1f !important;
 }
-.wc .l{background:rgba(185,169,255,.45) !important}
-/* stat strip */
-.strip{
-  background:rgba(10,10,22,.35) !important;
-  border-top:1px solid rgba(255,255,255,.08) !important;
-  border-bottom:1px solid rgba(255,255,255,.08) !important;
-}
+.wc .l{background:rgba(0,113,227,.35) !important}
+
+/* ---------- 6. stat strip: solid dark numbers ---------- */
 .strip .n{
-  background:linear-gradient(120deg,#ffffff 20%,#b9a9ff) !important;
-  -webkit-background-clip:text !important; background-clip:text !important;
-  color:transparent !important; -webkit-text-fill-color:transparent !important;
+  background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;
+  -webkit-text-fill-color:#1d1d1f !important;color:#1d1d1f !important;font-weight:700 !important;letter-spacing:-.03em !important;
 }
-.strip .k{color:#a9a4c8 !important}
-/* feature art panels */
-.feat .art{
-  background:linear-gradient(160deg,#181530,#0d0b1e) !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-  box-shadow:0 24px 70px -30px rgba(124,92,252,.35) !important;
+.strip .k{color:#6e6e73 !important}
+
+/* ---------- 7. cards: borderless, soft, airy ---------- */
+/* programme cards live on grey band → white */
+.pc{
+  background:#ffffff !important;border-color:transparent !important;border-radius:24px !important;
+  box-shadow:0 4px 24px rgba(0,0,0,.05) !important;padding:40px !important;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s !important;
 }
-.feat .art.aliz{
-  background:radial-gradient(70% 70% at 50% 40%,rgba(124,92,252,.24),transparent 70%),
-    linear-gradient(160deg,#161230,#0d0b1e) !important;
+.pc::before{display:none !important}
+.pc:hover{transform:scale(1.01) !important;border-color:transparent !important;box-shadow:0 8px 32px rgba(0,0,0,.09) !important}
+.pc .meta{color:#0071e3 !important}
+/* feature art panels on white → grey */
+.feat .art,.feat .art.aliz{
+  background:#f5f5f7 !important;border:0 !important;border-color:transparent !important;
+  border-radius:26px !important;box-shadow:none !important;
 }
+.feat .art img{filter:drop-shadow(0 12px 24px rgba(0,0,0,.12)) !important}
 .feat .art .bubble{
-  background:rgba(20,17,42,.92) !important;
-  border:1px solid rgba(185,169,255,.35) !important; color:#fff !important;
+  background:#ffffff !important;border:1px solid rgba(0,0,0,.08) !important;color:#1d1d1f !important;
+  box-shadow:0 4px 20px rgba(0,0,0,.06) !important;
 }
-.feat .art .bubble b{color:#b9a9ff !important}
-.feat li .dot{background:linear-gradient(120deg,#7c5cfc,#b9a9ff) !important; color:#14122a !important}
+.feat .art .bubble b{color:#0071e3 !important}
+.feat li{color:#1d1d1f !important}
+.feat li .dot{background:#0071e3 !important;box-shadow:none !important}
 
-/* ---------- 5. Nav ---------- */
-nav{background:transparent; border-bottom-color:transparent}
-nav.scrolled{
-  background:rgba(10,10,22,.75) !important;
-  backdrop-filter:blur(18px) saturate(1.4) !important;
-  -webkit-backdrop-filter:blur(18px) saturate(1.4) !important;
-  border-bottom:1px solid rgba(255,255,255,.08) !important;
+/* module cards */
+.azrole-card,.azstat-tile{ /* on white sections → grey */
+  background:#f5f5f7 !important;border:0 !important;border-color:transparent !important;
+  border-radius:22px !important;box-shadow:none !important;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s !important;
 }
-.navlinks{color:#a9a4c8 !important}
-.navlinks a{color:#a9a4c8 !important}
-.navlinks a:hover{color:#ffffff !important}
-.brand span{color:#ffffff !important; font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif !important}
-.brand small{color:#b9a9ff !important}
-.brand img{filter:drop-shadow(0 0 10px rgba(124,92,252,.6)) !important}
-@media(max-width:860px){
-  nav{background:rgba(10,10,22,.85) !important; border-bottom:1px solid rgba(255,255,255,.07) !important}
+.azrole-card:hover,.azstat-tile:hover{transform:scale(1.01) !important;box-shadow:0 4px 24px rgba(0,0,0,.06) !important}
+.azfinder-card{ /* white section → grey card */
+  background:#f5f5f7 !important;border:0 !important;border-color:transparent !important;border-radius:28px !important;
+  box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+}
+.azfinder-glow{display:none !important}
+.azest-card,.azest-res,.azverify-card{ /* grey sections → white cards */
+  background:#ffffff !important;border:0 !important;border-color:transparent !important;border-radius:26px !important;
+  box-shadow:0 4px 24px rgba(0,0,0,.05) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+}
+.azfinder-r-block{
+  background:#ffffff !important;border:1px solid transparent !important;border-radius:18px !important;
+  box-shadow:0 2px 12px rgba(0,0,0,.04) !important;
 }
 
-/* ---------- 6. Mobile menu + a11y widgets (beat az-ux whites) ---------- */
-.az-skip{
-  background:#14122a !important; color:#ffffff !important;
-  border:2px solid #9d84ff !important;
-  box-shadow:0 10px 30px rgba(0,0,0,.55) !important;
+/* ---------- 8. module controls ---------- */
+/* azrole segmented control → Apple segment style */
+.azrole-seg{background:#f5f5f7 !important;border:0 !important}
+.azrole-ind{background:#ffffff !important;box-shadow:0 2px 8px rgba(0,0,0,.12) !important}
+.azrole-tab{color:#6e6e73 !important}
+.azrole-tab[aria-selected="true"],.azrole-tab.is-active{color:#1d1d1f !important}
+.azrole-badge{background:#ffffff !important;box-shadow:0 2px 8px rgba(0,0,0,.08) !important;border:0 !important}
+.azrole-mini{filter:none !important}
+.azrole-go{color:#0071e3 !important}
+
+/* azfinder */
+.azfinder-track{background:rgba(0,0,0,.08) !important}
+.azfinder-fill{background:#0071e3 !important;box-shadow:none !important}
+.azfinder-step-lbl{color:#86868b !important}
+.azfinder-opt{
+  background:#ffffff !important;border:1px solid transparent !important;color:#1d1d1f !important;
+  box-shadow:0 2px 10px rgba(0,0,0,.04) !important;border-radius:16px !important;
 }
-a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
-  outline:2px solid #9d84ff !important; outline-offset:3px;
+.azfinder-opt:hover{border-color:rgba(0,113,227,.4) !important;transform:none !important}
+.azfinder-opt.is-sel{border-color:#0071e3 !important;background:#ffffff !important;box-shadow:0 2px 12px rgba(0,113,227,.12) !important}
+.azfinder-tick{border-color:rgba(0,0,0,.2) !important}
+.azfinder-opt.is-sel .azfinder-tick{background:#0071e3 !important;border-color:transparent !important;box-shadow:none !important;color:#fff !important}
+.azfinder-btn{
+  background:#ffffff !important;color:#0071e3 !important;border:1px solid #0071e3 !important;
+  border-radius:980px !important;box-shadow:none !important;font-weight:500 !important;
 }
-#azburger{
-  background:rgba(255,255,255,.08) !important;
-  border:1px solid rgba(255,255,255,.16) !important;
+.azfinder-btn:hover{background:rgba(0,113,227,.08) !important;transform:none !important}
+.azfinder-btn.azfinder-prim{background:#0071e3 !important;color:#fff !important;border-color:transparent !important;box-shadow:none !important}
+.azfinder-btn.azfinder-prim:hover{background:#0077ed !important}
+.azfinder-btn.azfinder-ghost{background:transparent !important;border-color:transparent !important;color:#0071e3 !important}
+.azfinder-btn.azfinder-ghost:hover{background:rgba(0,113,227,.08) !important}
+.azfinder-r-mascot{border:1px solid rgba(0,0,0,.08) !important;background:#f5f5f7 !important}
+.azfinder-note{color:#86868b !important}
+
+/* azest (estimator) */
+.azest-note{background:#ffffff !important;border:1px solid rgba(0,0,0,.08) !important;color:#6e6e73 !important}
+.azest-dot{background:#0071e3 !important;box-shadow:none !important}
+.azest-ic{background:#0071e3 !important;box-shadow:none !important;border-radius:10px !important}
+.azest-lbl{color:#6e6e73 !important}
+.azest-sel{
+  background:#ffffff !important;border:1px solid rgba(0,0,0,.15) !important;color:#1d1d1f !important;
+  border-radius:12px !important;box-shadow:none !important;
 }
-#azburger span{background:#ffffff !important}
-#azmobilemenu{
-  background:rgba(16,14,32,.97) !important;
-  border-bottom:1px solid rgba(255,255,255,.08) !important;
-  box-shadow:0 30px 70px rgba(0,0,0,.6) !important;
-  backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+.azest-sel:focus{border-color:#0071e3 !important;box-shadow:0 0 0 4px rgba(0,113,227,.15) !important;background:#ffffff !important}
+.azest-segs{background:#f5f5f7 !important;border:0 !important;border-radius:14px !important}
+.azest-seg{color:#6e6e73 !important}
+.azest-seg[aria-pressed="true"],.azest-seg.is-active,.azest-seg.is-sel{
+  background:#ffffff !important;color:#1d1d1f !important;box-shadow:0 2px 8px rgba(0,0,0,.12) !important;border-color:transparent !important;
 }
-#azmobilemenu a{
-  color:#e7e4f6 !important;
-  border-bottom:1px solid rgba(255,255,255,.07) !important;
+.azest-go{
+  background:#0071e3 !important;color:#fff !important;border-radius:980px !important;
+  box-shadow:none !important;font-weight:500 !important;
 }
-#azmobilemenu a:hover{color:#b9a9ff !important}
+.azest-go:hover{background:#0077ed !important;transform:none !important;filter:none !important;box-shadow:none !important}
+.azest-fine,.azest-vsub,.azest-reason{color:#86868b !important}
+.azest-val,.azest-k,.azest-stat{color:#1d1d1f !important;-webkit-text-fill-color:#1d1d1f !important;background:none !important}
+.azest-badge{background:rgba(0,113,227,.1) !important;color:#0071e3 !important;border:0 !important}
+
+/* azverify */
+.azverify-input,.azverify-field input{
+  background:#ffffff !important;border:1px solid rgba(0,0,0,.15) !important;color:#1d1d1f !important;
+  border-radius:12px !important;box-shadow:none !important;
+}
+.azverify-input:focus,.azverify-field input:focus{border-color:#0071e3 !important;box-shadow:0 0 0 4px rgba(0,113,227,.15) !important}
+.azverify-btn{
+  background:#0071e3 !important;color:#fff !important;border:0 !important;border-radius:980px !important;
+  box-shadow:none !important;font-weight:500 !important;
+}
+.azverify-btn:hover{background:#0077ed !important;transform:none !important}
+.azverify-rows,.azverify-result{border-color:rgba(0,0,0,.08) !important}
+.azverify-rk{color:#6e6e73 !important}
+.azverify-rv,.azverify-rid,.azverify-rtitle{color:#1d1d1f !important;-webkit-text-fill-color:#1d1d1f !important;background:none !important}
+.azverify-pill,.azverify-badge{background:rgba(0,113,227,.1) !important;color:#0071e3 !important;border:0 !important;box-shadow:none !important}
+.azverify-tick{background:#0071e3 !important;color:#fff !important;box-shadow:none !important}
+.azverify-hint,.azverify-note{color:#86868b !important}
+
+/* azstat count-up tiles + countdown */
+.azstat-num{
+  background:none !important;-webkit-background-clip:initial !important;background-clip:initial !important;
+  -webkit-text-fill-color:#1d1d1f !important;color:#1d1d1f !important;font-weight:700 !important;
+}
+.azstat-label,.azstat-seg-l{color:#6e6e73 !important}
+.azstat-dot{background:#0071e3 !important;box-shadow:none !important}
+.azstat-cd{background:#f5f5f7 !important;border:0 !important;border-radius:26px !important;box-shadow:none !important}
+.azstat-seg{background:#ffffff !important;border:0 !important;box-shadow:0 2px 10px rgba(0,0,0,.06) !important;border-radius:16px !important}
+.azstat-seg-n{color:#1d1d1f !important;-webkit-text-fill-color:#1d1d1f !important;background:none !important}
+.azstat-cta{background:#0071e3 !important;color:#fff !important;border:0 !important;border-radius:980px !important;box-shadow:none !important}
+.azstat-cta:hover{background:#0077ed !important}
+
+/* ---------- 9. azcon chat widget: light panel ---------- */
+.azcon-panel{
+  background:#ffffff !important;border:1px solid rgba(0,0,0,.08) !important;
+  box-shadow:0 24px 70px rgba(0,0,0,.18) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+}
+.azcon-head{background:#ffffff !important;border-bottom:1px solid rgba(0,0,0,.08) !important}
+.azcon-title{color:#1d1d1f !important}
+.azcon-sub{color:#6e6e73 !important}
+.azcon-x{background:#f5f5f7 !important;border:0 !important;color:#6e6e73 !important;border-radius:50% !important}
+.azcon-x:hover{background:#e8e8ed !important;color:#1d1d1f !important}
+.azcon-msgs{scrollbar-color:rgba(0,0,0,.2) transparent !important}
+.azcon-msgs::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18) !important}
+.azcon-m--aliz .azcon-bub{background:#f5f5f7 !important;border:0 !important;color:#1d1d1f !important}
+.azcon-m--aliz .azcon-bub b{color:#1d1d1f !important}
+.azcon-m--user .azcon-bub{background:#0071e3 !important;border:0 !important;color:#fff !important;box-shadow:none !important}
+.azcon-a{color:#0071e3 !important;border-bottom-color:rgba(0,113,227,.35) !important}
+.azcon-a:hover{color:#0077ed !important;border-bottom-color:#0077ed !important}
+.azcon-typing span{background:#86868b !important}
+.azcon-chips{border-top:1px solid rgba(0,0,0,.08) !important}
+.azcon-chip{background:#f5f5f7 !important;border:0 !important;color:#1d1d1f !important}
+.azcon-chip:hover{background:rgba(0,113,227,.1) !important;color:#0071e3 !important;transform:none !important;border-color:transparent !important}
+.azcon-input{background:#ffffff !important;border-top:1px solid rgba(0,0,0,.08) !important}
+.azcon-field{background:#f5f5f7 !important;border:1px solid transparent !important;color:#1d1d1f !important}
+.azcon-field::placeholder{color:#86868b !important}
+.azcon-field:focus{border-color:#0071e3 !important;background:#ffffff !important;box-shadow:0 0 0 4px rgba(0,113,227,.15) !important}
+.azcon-send{background:#0071e3 !important;box-shadow:none !important}
+.azcon-send:hover{background:#0077ed !important;transform:none !important;box-shadow:none !important}
+.azcon-lbl{
+  background:#ffffff !important;border:1px solid rgba(0,0,0,.08) !important;color:#1d1d1f !important;
+  box-shadow:0 4px 20px rgba(0,0,0,.1) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;
+}
+.azcon-orb{
+  background:#0071e3 !important;border:0 !important;
+  box-shadow:0 8px 24px rgba(0,113,227,.35) !important;
+}
+.azcon-orb::after{display:none !important}
+.azcon-launcher:hover .azcon-orb{box-shadow:0 12px 30px rgba(0,113,227,.45) !important}
+.azcon-avatar,.azcon-m-av{background:#0071e3 !important;border-color:rgba(0,0,0,.06) !important}
+
+/* ---------- 10. mobile menu, skip link, focus ---------- */
+#azburger{background:#ffffff !important;border:1px solid rgba(0,0,0,.12) !important;border-radius:12px !important}
+#azburger span{background:#1d1d1f !important}
+#azmobilemenu{background:#ffffff !important;border-bottom:1px solid rgba(0,0,0,.08) !important;box-shadow:0 20px 40px rgba(0,0,0,.1) !important}
+#azmobilemenu a{color:#1d1d1f !important;border-bottom:1px solid rgba(0,0,0,.06) !important}
+#azmobilemenu a:hover{color:#0071e3 !important}
 #azmobilemenu a.azmm-cta{
-  background:#ffffff !important; color:#14122a !important; border:none !important;
-  box-shadow:0 12px 34px -10px rgba(124,92,252,.5) !important;
+  background:#0071e3 !important;color:#fff !important;border:0 !important;border-radius:980px !important;box-shadow:none !important;
+}
+#azmobilemenu a.azmm-cta:hover{background:#0077ed !important;color:#fff !important}
+.az-skip{background:#ffffff !important;color:#0071e3 !important;border:1px solid rgba(0,0,0,.12) !important;box-shadow:0 8px 24px rgba(0,0,0,.12) !important}
+:focus-visible,
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
+.azcon-chip:focus-visible,.azcon-x:focus-visible,.azcon-send:focus-visible,.azcon-a:focus-visible,
+.azcon-launcher:focus-visible .azcon-orb{
+  outline:2px solid #0071e3 !important;outline-offset:2px !important;box-shadow:none !important;
 }
 
-/* ---------- 7. Footer ---------- */
-footer{
-  background:transparent !important; color:#a9a4c8 !important;
-  border-top:1px solid rgba(255,255,255,.08) !important;
-}
-footer .brand{color:#ffffff !important}
-footer h4{color:#7a749c !important}
-footer a{color:#a9a4c8 !important}
-footer a:hover{color:#ffffff !important}
-footer .base{border-top:1px solid rgba(255,255,255,.08) !important; color:#7a749c !important}
+/* ---------- 11. wow layer: quiet it down ---------- */
+#azwow-progress{background:#0071e3 !important;height:2px !important;box-shadow:none !important}
+#azwow-cursor{display:none !important}
 
-/* ---------- 8. Injected modules: minor scoped patches ----------
-   Modules (azcon/azrole/azfinder/azest/azverify/azstat) are var-driven
-   and self-correct via the theme remap. Only reassert dark local vars
-   in case any light-era var scoping lingers on their roots. */
-#azcon-root,#azrole-root,#azfinder-root,#azest-root,#azverify-root,#azstat-root{
-  --ink:#f5f5f7; --muted:#a9a4c8; --faint:#7a749c;
-  --line:rgba(255,255,255,.10); --line2:rgba(255,255,255,.16);
-  --crimson:#7c5cfc; --crimson-deep:#6636e8; --crimson-bright:#9d84ff;
-  --gold:#b9a9ff; --gold-soft:rgba(185,169,255,.16);
-}
-/* concierge send + user bubble: violet glow instead of crimson shadow */
-.azcon-send{box-shadow:0 6px 18px rgba(124,92,252,.4) !important}
-.azcon-send:hover{box-shadow:0 10px 26px rgba(124,92,252,.55) !important}
-.azcon-m--user .azcon-bub{box-shadow:0 6px 18px rgba(124,92,252,.32) !important}
-.azcon-field:focus{box-shadow:0 0 0 3px rgba(124,92,252,.22) !important; border-color:#7c5cfc !important}
-.azcon-orb::after{background:radial-gradient(circle,rgba(124,92,252,.55),transparent 68%) !important}
-/* role hub active pill glow */
-.azrole-ind{box-shadow:0 8px 22px -8px rgba(124,92,252,.9), inset 0 1px 0 rgba(255,255,255,.22) !important}
+/* ---------- 12. footer: light grey, hairlines ---------- */
+footer{border-top:1px solid rgba(0,0,0,.08) !important;color:#6e6e73 !important;padding:60px 24px 50px !important}
+footer .brand{color:#1d1d1f !important}
+footer h4{color:#86868b !important}
+footer a{color:#424245 !important;font-weight:400 !important}
+footer a:hover{color:#1d1d1f !important;text-decoration:underline !important}
+footer .base{border-top:1px solid rgba(0,0,0,.08) !important;color:#86868b !important}
 
-/* ---------- 9. Scroll progress + cursor glow ---------- */
-#azwow-progress{
-  background:linear-gradient(90deg,#6636e8,#7c5cfc,#b9a9ff) !important;
-  box-shadow:0 0 12px rgba(124,92,252,.6) !important;
-}
-#azwow-cursor{
-  background:radial-gradient(circle,rgba(124,92,252,.12),transparent 62%) !important;
-}
-/* card hover glow from the base "global polish" crimson rule */
-.pc:hover{box-shadow:0 24px 60px -20px rgba(124,92,252,.45) !important}
+/* ===== re-assert: free-sitting Aliz launcher (must stay last) ===== */
+#azcon-root .azcon-orb{background:none !important;border:none !important;box-shadow:none !important;
+  width:76px !important;height:86px !important;border-radius:0 !important;}
+#azcon-root .azcon-orb::after{display:none !important;}
+#azcon-root .azcon-orb img{padding:0 !important;border-radius:0 !important;object-fit:contain !important;
+  filter:drop-shadow(0 14px 26px rgba(20,18,16,.3)) !important;}
 </style>
 <style id="az-ux">
   /* skip link */
@@ -1471,7 +2369,7 @@ footer .base{border-top:1px solid rgba(255,255,255,.08) !important; color:#7a749
 (function(){
   const canvas=document.getElementById('bg'), ctx=canvas.getContext('2d');
   let W,H; const COLS=88, ROWS=30;
-  const CA={r:40,g:26,b:110}, CB={r:124,g:92,b:252}, CC={r:216,g:132,b:255};
+  const CA={r:100,g:120,b:150}, CB={r:0,g:113,b:227}, CC={r:41,g:151,b:255};
   function grad(t){t=Math.max(0,Math.min(1,t));let a,b,f;if(t<.55){a=CA;b=CB;f=t/.55}else{a=CB;b=CC;f=(t-.55)/.45}
     return [a.r+(b.r-a.r)*f|0,a.g+(b.g-a.g)*f|0,a.b+(b.b-a.b)*f|0];}
   function resize(){W=canvas.width=innerWidth*devicePixelRatio;H=canvas.height=innerHeight*devicePixelRatio;
