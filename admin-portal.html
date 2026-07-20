@@ -52,7 +52,11 @@
   .aside{position:sticky;top:62px;height:calc(100vh - 62px);padding:18px 13px;display:flex;flex-direction:column;
     border-right:1px solid var(--line);background:linear-gradient(180deg,rgba(13,16,36,.85),rgba(7,8,16,.9));
     backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-  .anavv{display:flex;flex-direction:column;gap:3px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}.anavv::-webkit-scrollbar{width:6px}.anavv::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:3px}
+  .anavv{display:flex;flex-direction:column;gap:3px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+  .anavv .ngl{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+    opacity:.85;padding:14px 12px 4px;pointer-events:none;user-select:none}
+  .anavv .ngl:first-child{padding-top:2px}
+  @media(max-width:840px){.anavv .ngl{width:100%;padding:10px 6px 2px}}.anavv::-webkit-scrollbar{width:6px}.anavv::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:3px}
   .anavv a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:11px;font-size:13.5px;color:var(--muted);
     text-decoration:none;font-size:14px;cursor:pointer;transition:.2s;border:1px solid transparent;user-select:none}
   .anavv a .aic{width:20px;text-align:center;flex:none}
@@ -331,22 +335,26 @@
 <div class="shell">
 <aside class="aside">
   <nav class="anavv">
+    <span class="ngl">Academics &amp; Students</span>
     <a data-sec="sec-courses" class="on"><span class="aic"></span> Courses</a>
     <a data-sec="adm-students"><span class="aic"></span> Students <b class="cnt" id="cntStud" style="background:var(--gold)"></b></a>
-    <a data-sec="adm-staff"><span class="aic"></span> Staff &amp; Faculty</a>
-    <a data-sec="adm-access"><span class="aic"></span> Access &amp; Logins</a>
-    <a data-sec="adm-fees"><span class="aic"></span> Fees <b class="cnt" id="cntFees" style="background:var(--success)"></b></a>
     <a data-sec="adm-results"><span class="aic"></span> Results</a>
     <a data-sec="adm-eval"><span class="aic">✔</span> Evaluation <b class="cnt" id="cntEval"></b></a>
     <a data-sec="adm-exams"><span class="aic"></span> Exams <b class="cnt" id="cntExams" style="background:var(--gold)"></b></a>
-    <a data-sec="adm-griev"><span class="aic"></span> Grievances <b class="cnt" id="cntGriev"></b></a>
-    <a data-sec="adm-faculty"><span class="aic"></span> Faculty</a>
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
     <a data-sec="adm-engage"><span class="aic"></span> Alerts &amp; Attendance <b class="cnt" id="cntEngage" style="background:var(--crimson)"></b></a>
     <a data-sec="adm-links"><span class="aic"></span> Links</a>
+    <span class="ngl">🌐 Website</span>
     <a data-sec="adm-content"><span class="aic"></span> Website Content</a>
     <a data-sec="adm-news"><span class="aic"></span> Website News</a>
     <a data-sec="adm-announce"><span class="aic"></span> Module Updates</a>
+    <span class="ngl">Office &amp; People</span>
+    <a data-sec="adm-staff"><span class="aic"></span> Staff &amp; Faculty</a>
+    <a data-sec="adm-faculty"><span class="aic"></span> Faculty</a>
+    <a data-sec="adm-fees"><span class="aic"></span> Fees <b class="cnt" id="cntFees" style="background:var(--success)"></b></a>
+    <a data-sec="adm-griev"><span class="aic"></span> Grievances <b class="cnt" id="cntGriev"></b></a>
+    <a data-sec="adm-access"><span class="aic"></span> Access &amp; Logins</a>
+    <span class="ngl">System</span>
     <a data-sec="adm-data"><span class="aic"></span> Data &amp; Backup</a>
     <a data-sec="adm-activity"><span class="aic"></span> History</a>
   </nav>
