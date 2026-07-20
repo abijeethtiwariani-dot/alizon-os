@@ -775,14 +775,28 @@
       <span id="cmsSaved" style="font-size:12.5px;font-weight:600;color:#1E8E5A"></span>
     </div>
 
-    <div class="cblock" style="margin-top:18px"><div class="ct">Academics page — hero photo</div>
-      <div class="ahint" id="acheroState">Loading…</div>
-      <div class="crow n" style="gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
-        <input type="file" id="acheroFile" accept="image/*">
-        <button class="cadd" id="acheroUp">Upload &amp; set</button>
-        <button class="cadd" id="acheroRm" style="border-color:var(--line);background:var(--pill);color:var(--muted)">Remove photo</button>
+    <div class="cblock" style="margin-top:18px"><div class="ct">Page hero images</div>
+      <div class="ahint">Each public page's hero shows built-in artwork until you upload a photo here — JPG/PNG, auto-resized to 1080px, stored in cloud sync, live for every visitor. Remove a photo to bring the artwork back.</div>
+      <div class="clist" style="margin-top:10px">
+        <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px"><b>Academics hero</b><div class="hint" data-hstate="acad-hero-img">…</div></div>
+          <input type="file" data-hfile="acad-hero-img" accept="image/*" style="max-width:200px">
+          <button class="cadd" data-hup="acad-hero-img">Upload</button>
+          <button class="cadd" data-hrm="acad-hero-img" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove</button>
+        </div>
+        <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px"><b>Workshops hero</b><div class="hint" data-hstate="ws-hero-img">…</div></div>
+          <input type="file" data-hfile="ws-hero-img" accept="image/*" style="max-width:200px">
+          <button class="cadd" data-hup="ws-hero-img">Upload</button>
+          <button class="cadd" data-hrm="ws-hero-img" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove</button>
+        </div>
+        <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px"><b>Testimonials hero</b><div class="hint" data-hstate="tst-hero-img">…</div></div>
+          <input type="file" data-hfile="tst-hero-img" accept="image/*" style="max-width:200px">
+          <button class="cadd" data-hup="tst-hero-img">Upload</button>
+          <button class="cadd" data-hrm="tst-hero-img" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove</button>
+        </div>
       </div>
-      <div class="ahint" style="margin-top:8px">JPG/PNG, auto-resized to 1080px and stored in cloud sync. The photo replaces the built-in artwork on the right half of the Academics hero. You can also paste an image URL in the "Hero — photo URL" field above instead.</div>
     </div>
   </section>
 
@@ -2566,44 +2580,47 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 })();
 </script>
 <script>
-/* ===== Academics hero photo (Website Content page) — chunked like news images ===== */
+/* ===== Page hero images (Website Content page) — chunked like news images ===== */
 (function(){
   function store(){ try{var o=JSON.parse(localStorage.getItem('alizonContent')||'{}');return (o&&typeof o==='object'&&!Array.isArray(o))?o:{};}catch(e){return {};} }
   function save(o){ try{ localStorage.setItem('alizonContent',JSON.stringify(o)); }catch(e){} }
-  function state(msg){ var el=document.getElementById('acheroState'); if(el) el.textContent=msg; }
+  function state(key,msg){ var el=document.querySelector('[data-hstate="'+key+'"]'); if(el) el.textContent=msg; }
   function refresh(){
-    var o=store(), m=String(o['acad-hero-img']||'').trim(), u=String(o['acad-hero-img-url']||'').trim();
-    if(u) state('Using the photo URL from the "Hero — photo URL" field above.');
-    else if(m) state('Photo uploaded \u2713 — live on the Academics hero for all visitors.');
-    else state('No photo set — the Academics hero shows the built-in artwork.');
+    ['acad-hero-img','ws-hero-img','tst-hero-img'].forEach(function(k){
+      var o=store(), m=String(o[k]||'').trim(), u=String(o[k+'-url']||'').trim();
+      if(u) state(k,'Using a photo URL (set in the fields above).');
+      else if(m) state(k,'Photo uploaded \u2713 — live on the page hero.');
+      else state(k,'No photo — showing the built-in artwork.');
+    });
   }
   function delChunks(meta){ try{ if(!meta) return; var p=String(meta).split(':'), id=p[0], n=parseInt(p[1],10)||1;
     if(window.firebase&&firebase.firestore){ var db=firebase.firestore();
       for(var i=0;i<n;i++){ db.collection('sync').doc('nwimg_'+id+'_'+i).delete().catch(function(){}); } } }catch(e){} }
   document.addEventListener('click', async function(ev){
-    var t=ev.target; if(!t||!t.id) return;
-    if(t.id==='acheroUp'){
-      var f=document.getElementById('acheroFile'); var file=f&&f.files&&f.files[0];
-      if(!file){ state('Choose an image file first.'); return; }
-      if(typeof nwUploadImg!=='function'||!window.firebase||!firebase.firestore||!firebase.auth().currentUser){ state('Cloud not ready — try again in a few seconds.'); return; }
-      t.disabled=true; state('Uploading\u2026');
+    var t=ev.target; if(!t||!t.hasAttribute) return;
+    if(t.hasAttribute('data-hup')){
+      var key=t.getAttribute('data-hup');
+      var f=document.querySelector('[data-hfile="'+key+'"]'); var file=f&&f.files&&f.files[0];
+      if(!file){ state(key,'Choose an image file first.'); return; }
+      if(typeof nwUploadImg!=='function'||!window.firebase||!firebase.firestore||!firebase.auth().currentUser){ state(key,'Cloud not ready — try again in a few seconds.'); return; }
+      t.disabled=true; state(key,'Uploading\u2026');
       try{
-        var o=store(); var old=o['acad-hero-img'];
-        var meta=await nwUploadImg(file,'ACH'+Date.now());
+        var o=store(); var old=o[key];
+        var meta=await nwUploadImg(file,'HB'+Date.now());
         if(old) delChunks(old);
-        o['acad-hero-img']=meta.id+':'+meta.chunks; save(o);
+        o[key]=meta.id+':'+meta.chunks; save(o);
         if(f) f.value='';
-        state('Photo uploaded \u2713 — live on the Academics hero for all visitors.');
-        try{ typeof toast==='function'&&toast('Academics hero photo updated'); }catch(e){}
-        try{ typeof logAct==='function'&&logAct('Academics: hero photo updated','update'); }catch(e){}
-      }catch(e){ state('Upload failed — '+((e&&e.message)||e)); }
+        state(key,'Photo uploaded \u2713 — live on the page hero.');
+        try{ typeof toast==='function'&&toast('Hero photo updated'); }catch(e){}
+        try{ typeof logAct==='function'&&logAct('Hero photo updated ('+key+')','update'); }catch(e){}
+      }catch(e){ state(key,'Upload failed — '+((e&&e.message)||e)); }
       t.disabled=false;
     }
-    if(t.id==='acheroRm'){
-      var o2=store(); var m2=o2['acad-hero-img'];
-      if(m2){ delChunks(m2); delete o2['acad-hero-img']; save(o2); }
-      refresh(); try{ typeof toast==='function'&&toast('Academics hero photo removed'); }catch(e){}
-      try{ typeof logAct==='function'&&logAct('Academics: hero photo removed','update'); }catch(e){}
+    if(t.hasAttribute('data-hrm')){
+      var key2=t.getAttribute('data-hrm');
+      var o2=store(); var m2=o2[key2];
+      if(m2){ delChunks(m2); delete o2[key2]; save(o2); }
+      refresh(); try{ typeof toast==='function'&&toast('Hero photo removed — artwork restored'); }catch(e){}
     }
   });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',refresh); else refresh();

@@ -84,6 +84,10 @@
   .hero .vis{position:relative;min-height:300px;background:
     radial-gradient(120% 130% at 82% 12%,#b1040e 0%,#8c1515 34%,#5c0d0d 68%,#320707 100%);overflow:hidden}
   .hero .vis svg{position:absolute;inset:0;width:100%;height:100%}
+  .hero .vis .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+  .hero .vis.hasphoto .photo{display:block}
+  .hero .vis.hasphoto svg{display:none}
+  .hero .vis.hasphoto::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,8,8,0) 55%,rgba(24,8,8,.55) 100%)}
   .hero .vis .badge{position:absolute;left:26px;bottom:22px;color:#fff;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;opacity:.85;z-index:2}
 
   .affil{background:#fff;border-bottom:1px solid var(--line)}
@@ -205,6 +209,12 @@
   .fb-ta:focus{outline:2px solid rgba(140,21,21,.35);border-color:var(--crimson)}
   .fb-item{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:3px;padding:12px 14px;margin-top:10px;font-size:13px;color:var(--muted);line-height:1.6}
   .fb-item b{color:var(--ink)}
+  .mod-row{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:12px 2px;border-top:1px dashed var(--line);flex-wrap:wrap}
+  .mod-row:first-of-type{border-top:none}
+  .mod-info{flex:1;min-width:220px}
+  .mod-info b{font-family:'Source Serif Pro',Georgia,serif;font-size:15px;font-weight:600;display:block;line-height:1.3}
+  .mod-info small{font-size:12px;color:var(--muted);line-height:1.5;display:block;margin-top:2px}
+  .mod-tag{font-size:11.5px;font-weight:600;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:100px;padding:6px 13px;white-space:nowrap}
   .idc .av img{width:64px;height:64px;border-radius:50%;object-fit:cover;display:block}
 
   /* ===== temporary ID card ===== */
@@ -302,6 +312,7 @@
       <path d="M0 470 H150 l18 -34 22 62 26 -96 24 68 16 -22 h90 l18 -30 20 52 24 -78 22 56 14 -18 H600"
         fill="none" stroke="#ffffff" stroke-opacity=".75" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
     </svg>
+    <img class="photo" id="wsHeroPhoto" alt="">
     <span class="badge">Learn · Practice · Certify</span>
   </div>
 </header>
@@ -781,6 +792,59 @@
       +'<div class="idc-note">Carry this temporary ID (printed or on your phone) with any government/college photo ID. It is valid only with the workshops office attendance list.</div></div>';
   }
 
+  function modulesHtml(r){
+    var w=workshops().filter(function(x){return x.id===r.ws;})[0]||{};
+    var mods=(w.modules||[]);
+    if(!mods.length) return '';
+    var P=J('alizonPrograms',[]); if(!Array.isArray(P)) P=[];
+    var rows=mods.map(function(mm){
+      var c=P.filter(function(x){return x&&x.name===mm.c;})[0];
+      var md=c&&(c.modules||[]).filter(function(x){return x&&x.title===mm.m;})[0];
+      var desc=(md&&md.desc)||'';
+      var href=(md&&md.href)||'';
+      var act;
+      if(r.status==='approved'){
+        act = href
+          ? '<a class="btn pri" style="padding:9px 18px;font-size:12.5px" href="'+esc(href)+'" target="_blank" rel="noopener">Open practical ↗</a>'
+          : '<span class="mod-tag">Live session at the workshop</span>';
+      } else act='<span class="mod-tag">🔒 Unlocks on approval</span>';
+      return '<div class="mod-row"><div class="mod-info"><b>'+esc((mm.u?mm.u+' · ':'')+mm.m)+'</b>'
+        +'<small>'+esc(mm.c)+(desc?' — '+esc(desc):'')+'</small></div>'+act+'</div>';
+    }).join('');
+    return '<div class="pp-sec"><h4>Your workshop modules &amp; practicals</h4>'
+      +'<div class="pp-hint">'+(r.status==='approved'
+        ?'Work through your syllabus below — virtual practicals open in a new tab on the ALIZON OS platform with instant AI-scored reports.'
+        :'Your syllabus is listed below. Modules unlock once the workshops office approves your registration.')+'</div>'
+      +rows+'</div>';
+  }
+
+  /* ---- replaceable hero image (Admin → Website Content → Page hero images) ---- */
+  var heroCache={};
+  function applyHeroPhoto(){
+    var vis=document.querySelector('.hero .vis'), ph=document.getElementById('wsHeroPhoto');
+    if(!vis||!ph) return;
+    var store={}; try{ var o=JSON.parse(localStorage.getItem('alizonContent')||'{}'); if(o&&typeof o==='object') store=o; }catch(e){}
+    var url=String(store['ws-hero-img-url']||'').trim();
+    var meta=String(store['ws-hero-img']||'').trim();
+    if(url){ if(ph.getAttribute('data-src')!==url){ ph.setAttribute('data-src',url); ph.src=url; } vis.classList.add('hasphoto'); return; }
+    if(!meta){ vis.classList.remove('hasphoto'); ph.removeAttribute('data-src'); ph.removeAttribute('src'); return; }
+    if(ph.getAttribute('data-src')===meta){ vis.classList.add('hasphoto'); return; }
+    ph.setAttribute('data-src',meta);
+    var p=meta.split(':'), id=p[0], n=parseInt(p[1],10)||1;
+    if(heroCache[id]){ ph.src=heroCache[id]; vis.classList.add('hasphoto'); return; }
+    whenAuthed(function(ok){
+      if(!ok||!window.firebase||!firebase.firestore) return;
+      var db=firebase.firestore(), gets=[];
+      for(var i=0;i<n;i++) gets.push(db.collection('sync').doc('nwimg_'+id+'_'+i).get());
+      Promise.all(gets).then(function(snaps){
+        var b64=snaps.map(function(x){return (x.exists&&x.data()&&x.data().value)||'';}).join('');
+        if(!b64) return;
+        heroCache[id]='data:image/jpeg;base64,'+b64;
+        ph.src=heroCache[id]; vis.classList.add('hasphoto');
+      }).catch(function(){});
+    });
+  }
+
   function myFeedback(){
     var a=J('alizonWsFeedback',[]); if(!Array.isArray(a)) a=[];
     return SESSION?a.filter(function(f){return f&&f.reg===SESSION.reg;}):[];
@@ -814,6 +878,9 @@
     if(r.status==='approved') html+='<div class="pp-sec"><h4>Temporary ID card</h4>'+idCardHtml(r)+'</div>';
     else if(r.status==='rejected') html+='<div class="pp-sec st-info">This registration was not approved. For queries write to <a href="mailto:opsmanager.mioc@miak.in" style="color:var(--crimson);font-weight:600">the workshops office</a>.</div>';
     else html+='<div class="pp-sec st-info">Your temporary ID card will appear here once the workshops office approves your registration — check back soon.</div>';
+
+    /* workshop modules & practicals */
+    html+=modulesHtml(r);
 
     /* feedback */
     var mine=myFeedback();
@@ -965,12 +1032,12 @@
     if(el) el.addEventListener('keydown',function(e){ if(e.key==='Enter') doLogin(); }); });
 
   /* boot + live refresh */
-  window.addEventListener('storage',function(e){ if(e.key==='alizonWorkshops') renderList(null,true); });
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){renderList(null,true);}); else renderList(null,true);
-  setInterval(function(){ renderList(null,false); }, 5000);
+  window.addEventListener('storage',function(e){ if(e.key==='alizonWorkshops') renderList(null,true); if(e.key==='alizonContent') applyHeroPhoto(); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){renderList(null,true);applyHeroPhoto();}); else { renderList(null,true); applyHeroPhoto(); }
+  setInterval(function(){ renderList(null,false); applyHeroPhoto(); }, 5000);
 
   /* test hooks (UI only — no storage writes) */
-  window.__wsTest={ renderList:function(l){renderList(l,true);}, credsHtml:credsHtml,
+  window.__wsTest={ renderList:function(l){renderList(l,true);}, credsHtml:credsHtml, modulesHtml:modulesHtml,
     portalHtml:portalHtml, setSession:function(r){SESSION=r;}, renderPortal:renderPortal,
     collectForm:collectForm, validateForm:validateForm };
 })();
