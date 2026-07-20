@@ -886,73 +886,65 @@
   html.theme-dark .tl-body.mtg{background:rgba(132,204,22,.14)}
   html.theme-dark .tl-dot{background:rgba(255,255,255,.08);color:#c6f24e}
 
-  /* ===================== APPLE LIGHT override — student dashboard ===================== */
+  /* ===================== PURPLE DARK premium override (student dashboard) ===================== */
   html:not(.theme-dark) body{
-    background:linear-gradient(180deg,#ffffff 0%,#f5f5f7 100%) !important;
-    color:#1d1d1f !important;}
+    background:
+      radial-gradient(1100px 680px at 12% -8%, #2a1e63 0%, transparent 55%),
+      radial-gradient(900px 620px at 108% 4%, #3a1f6b 0%, transparent 52%),
+      linear-gradient(180deg,#100e22 0%,#0b0a18 100%) !important;
+    color:#ece9f7 !important;}
   html:not(.theme-dark) #bg{opacity:0 !important;}
   html:not(.theme-dark) .grain{opacity:.02 !important;}
   html:not(.theme-dark) .vignette{display:none !important;}
-  /* sidebar — light */
+  /* sidebar */
   html:not(.theme-dark) .side{
-    background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(250,248,246,.9)) !important;
-    border-right:1px solid rgba(0,113,227,.12) !important;
-    backdrop-filter:blur(20px) saturate(120%) !important;-webkit-backdrop-filter:blur(20px) saturate(120%) !important;}
-  html:not(.theme-dark) .side .brand .bname{color:#1d1d1f !important;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;}
-  html:not(.theme-dark) .side .brand .bname small{color:#0071e3 !important;}
-  html:not(.theme-dark) .side .nav a{color:#6e6e73 !important;}
-  html:not(.theme-dark) .side .nav a .ic{color:#a1a1a6 !important;}
-  html:not(.theme-dark) .side .nav a:hover{background:rgba(0,113,227,.07) !important;color:#1d1d1f !important;}
-  html:not(.theme-dark) .side .nav a.active{background:#0071e3 !important;color:#fff !important;box-shadow:0 8px 18px rgba(0,113,227,.28) !important;}
+    background:linear-gradient(180deg,rgba(45,36,86,.62),rgba(20,17,42,.58)) !important;
+    border-right:1px solid rgba(255,255,255,.08) !important;
+    backdrop-filter:blur(26px) saturate(140%) !important;-webkit-backdrop-filter:blur(26px) saturate(140%) !important;}
+  html:not(.theme-dark) .side .brand .bname{color:#f5f3fc !important;}
+  html:not(.theme-dark) .side .brand .bname small{color:#b9a9ff !important;}
+  html:not(.theme-dark) .side .nav a{color:#c9c4e2 !important;}
+  html:not(.theme-dark) .side .nav a .ic{color:#948dbe !important;}
+  html:not(.theme-dark) .side .nav a:hover{background:rgba(255,255,255,.06) !important;color:#fff !important;}
+  html:not(.theme-dark) .side .nav a.active{background:linear-gradient(120deg,#7c5cfc,#9a7cff) !important;color:#fff !important;box-shadow:0 10px 24px rgba(124,92,252,.5) !important;}
   html:not(.theme-dark) .side .nav a.active .ic{color:#fff !important;}
-  html:not(.theme-dark) .side-foot{border-top:1px solid rgba(0,113,227,.12) !important;}
-  html:not(.theme-dark) .side-foot a{color:#6e6e73 !important;}
-  html:not(.theme-dark) .side-foot a:hover{background:rgba(0,113,227,.07) !important;color:#1d1d1f !important;}
+  html:not(.theme-dark) .side-foot{border-top:1px solid rgba(255,255,255,.08) !important;}
+  html:not(.theme-dark) .side-foot a{color:#aca6cd !important;}
+  html:not(.theme-dark) .side-foot a:hover{background:rgba(255,255,255,.06) !important;color:#fff !important;}
   /* topbar */
-  html:not(.theme-dark) .topbar .hello h2{color:#1d1d1f !important;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;}
-  html:not(.theme-dark) .topbar .hello p{color:#6e6e73 !important;}
-  html:not(.theme-dark) .search{background:#fff !important;border:1px solid rgba(0,113,227,.14) !important;box-shadow:0 3px 12px rgba(20,18,16,.05) !important;}
-  html:not(.theme-dark) .search input{color:#1d1d1f !important;}
-  html:not(.theme-dark) .search input::placeholder{color:#a1a1a6 !important;}
-  html:not(.theme-dark) .search span{color:#a1a1a6 !important;}
-  html:not(.theme-dark) .icon-btn{background:#fff !important;border:1px solid rgba(0,113,227,.14) !important;color:#6e6e73 !important;box-shadow:0 3px 12px rgba(20,18,16,.05) !important;}
-  html:not(.theme-dark) .icon-btn:hover{background:#0071e3 !important;color:#fff !important;}
-  html:not(.theme-dark) .userchip{background:#fff !important;border:1px solid rgba(0,113,227,.14) !important;box-shadow:0 3px 12px rgba(20,18,16,.05) !important;}
-  html:not(.theme-dark) .userchip .uname{color:#1d1d1f !important;}
-  html:not(.theme-dark) .userchip .uname small{color:#0071e3 !important;}
-  html:not(.theme-dark) .userchip .avatar{background:#0071e3 !important;color:#fff !important;}
-  /* page-level section headings */
-  html:not(.theme-dark) .modrow>.modhead h3,html:not(.theme-dark) #updates .modhead h3{color:#1d1d1f !important;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;}
-  html:not(.theme-dark) .modrow>.modhead .modsub{color:#6e6e73 !important;}
-  html:not(.theme-dark) #meetingsSec .modsub{color:#6e6e73 !important;}
-  /* stat / attendance big number -> cardinal */
-  html:not(.theme-dark) .card{--card-num:linear-gradient(120deg,#1d1d1f,#0071e3) !important;}
-  /* CTAs / buttons -> cardinal + white text */
-  html:not(.theme-dark) .btn-primary{background:linear-gradient(120deg,#0071e3,#0066cc) !important;color:#fff !important;box-shadow:0 12px 26px rgba(0,113,227,.28) !important;}
-  html:not(.theme-dark) .subnew,html:not(.theme-dark) .gv-btn,html:not(.theme-dark) .setbtn2:not(.danger),
-  html:not(.theme-dark) .pc-edit,html:not(.theme-dark) .tl-join,html:not(.theme-dark) #mt-add{
-    background:linear-gradient(120deg,#0071e3,#0066cc) !important;color:#fff !important;box-shadow:0 8px 18px rgba(0,113,227,.26) !important;}
-  /* small accents -> cardinal (keep semantic attendance colours) */
-  html:not(.theme-dark) .pc-sub b{color:#0071e3 !important;}
-  html:not(.theme-dark) .pc-actions button:hover{background:#0071e3 !important;color:#fff !important;border-color:#0071e3 !important;}
-  html:not(.theme-dark) .tl-dot{color:#0071e3 !important;}
-  html:not(.theme-dark) .tl-body.mtg{background:#eef4fd !important;}
-  html:not(.theme-dark) .cal-day.today{outline-color:#0071e3 !important;}
-  html:not(.theme-dark) .cal-day.sel,html:not(.theme-dark) .mtcal .cal-day.sel{background:#0071e3 !important;color:#fff !important;box-shadow:0 4px 10px rgba(0,113,227,.32) !important;}
-  html:not(.theme-dark) .mtcal .cal-day.pick:hover:not(.disabled):not(.sel){background:#e3effd !important;color:#0066cc !important;}
-  html:not(.theme-dark) .chip{color:#0071e3 !important;background:rgba(0,113,227,.09) !important;border-color:rgba(0,113,227,.22) !important;}
-  html:not(.theme-dark) .segbtn.on,html:not(.theme-dark) .segbtn:hover{background:#0071e3 !important;color:#fff !important;border-color:#0071e3 !important;}
-  html:not(.theme-dark) .field input:focus,html:not(.theme-dark) .gform input:focus,html:not(.theme-dark) .gform textarea:focus{border-color:#0071e3 !important;box-shadow:0 0 0 3px rgba(0,113,227,.18) !important;}
-  html:not(.theme-dark) #mt-datedisp{color:#0071e3 !important;}
-  html:not(.theme-dark) .card:hover,html:not(.theme-dark) .modcard:hover,html:not(.theme-dark) .modcard.live:hover,html:not(.theme-dark) .dcard:hover{border-color:rgba(0,113,227,.4) !important;}
-  html:not(.theme-dark) .login-foot,html:not(.theme-dark) .campus-tag{color:#86868b !important;}
-  html:not(.theme-dark) .login-card h1{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Helvetica,Arial,sans-serif !important;}
+  html:not(.theme-dark) .topbar .hello h2{color:#f5f3fc !important;}
+  html:not(.theme-dark) .topbar .hello p{color:#aca6cd !important;}
+  html:not(.theme-dark) .search{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.12) !important;box-shadow:none !important;}
+  html:not(.theme-dark) .search input{color:#f5f3fc !important;}
+  html:not(.theme-dark) .search input::placeholder{color:#938cb6 !important;}
+  html:not(.theme-dark) .search span{color:#938cb6 !important;}
+  html:not(.theme-dark) .icon-btn{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.12) !important;color:#d9d4f0 !important;box-shadow:none !important;}
+  html:not(.theme-dark) .icon-btn:hover{background:rgba(124,92,252,.35) !important;color:#fff !important;}
+  html:not(.theme-dark) .userchip{background:rgba(255,255,255,.08) !important;border:1px solid rgba(255,255,255,.12) !important;box-shadow:none !important;}
+  html:not(.theme-dark) .userchip .uname{color:#f5f3fc !important;}
+  html:not(.theme-dark) .userchip .uname small{color:#b9a9ff !important;}
+  html:not(.theme-dark) .userchip .avatar{background:linear-gradient(135deg,#7c5cfc,#6636e8) !important;color:#fff !important;}
+  /* page-level section headings (on the dark bg, NOT inside cards) */
+  html:not(.theme-dark) .modrow>.modhead h3,html:not(.theme-dark) #updates .modhead h3{color:#f5f3fc !important;}
+  html:not(.theme-dark) .modrow>.modhead .modsub{color:#aca6cd !important;}
+  html:not(.theme-dark) .meetingsSec .modsub,html:not(.theme-dark) #meetingsSec .modsub{color:#aca6cd !important;}
+  /* stat number + attendance big number -> purple gradient (was green) */
+  html:not(.theme-dark) .card{--card-num:linear-gradient(120deg,#211d3a,#6636e8) !important;}
+  /* profile card small accents green -> purple (card body stays light) */
+  html:not(.theme-dark) .pc-sub b{color:#6636e8 !important;}
+  html:not(.theme-dark) .pc-actions button:hover{background:#7c5cfc !important;color:#fff !important;border-color:#7c5cfc !important;}
+  html:not(.theme-dark) .tl-dot{color:#6636e8 !important;}
+  html:not(.theme-dark) .tl-body.mtg{background:#efeafd !important;}
+  html:not(.theme-dark) .cal-day.today{outline-color:#7c5cfc !important;}
+  /* card hover ring -> purple */
+  html:not(.theme-dark) .card:hover,html:not(.theme-dark) .modcard:hover,html:not(.theme-dark) .modcard.live:hover,html:not(.theme-dark) .dcard:hover{border-color:rgba(124,92,252,.55) !important;}
+  /* login card foot text readable on dark */
+  html:not(.theme-dark) .login-foot,html:not(.theme-dark) .campus-tag{color:#9089b3 !important;}
 
-  /* apple: keep the dot-wave, very subtle */
-  html:not(.theme-dark) #bg{opacity:.25 !important;}
-  html:not(.theme-dark) body{background:#ffffff !important;}
-  /* flatter apple cards */
-  html:not(.theme-dark) .card,html:not(.theme-dark) .dcard,html:not(.theme-dark) .modcard{border-color:transparent !important;box-shadow:0 4px 24px rgba(0,0,0,.06) !important;}
+  /* cosmic keeps the dot-wave visible (violet) */
+  html:not(.theme-dark) #bg{opacity:.4 !important;}
+  /* violet focus visibility */
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #9d84ff !important;outline-offset:3px;}
 </style>
   <script src="firebase-sync.js"></script>
   <script src="print-paginate.js"></script>
@@ -1360,7 +1352,7 @@
   let W,H,pts=[];
   const COLS=90, ROWS=34;
   // brand gradient: deep crimson -> crimson -> gold
-  const CA={r:100,g:120,b:150}, CB={r:0,g:113,b:227}, CC={r:41,g:151,b:255};
+  const CA={r:40,g:26,b:110}, CB={r:124,g:92,b:252}, CC={r:216,g:132,b:255};
   function grad(t){
     t=Math.max(0,Math.min(1,t));
     let a,b,f;

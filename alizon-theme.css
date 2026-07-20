@@ -1,182 +1,159 @@
 /* ===================================================================
-   ALIZON OS — unified APPLE-STYLE theme (apple.com design language)
+   ALIZON OS — unified COSMIC VIOLET dark theme (FAENG-style reference)
    Loaded LAST in every portal so it overrides the brand CSS variables.
-   Apple blue interactive · white/light surfaces (marketing + student)
-   · Apple-Pro dark chrome with blue accents (admin tools).
+   Violet primary · deep-space surfaces · white pill marketing CTAs.
    =================================================================== */
 :root{
-  /* primary -> Apple blue */
-  --crimson:#0071e3 !important;
-  --crimson-deep:#0066cc !important;
-  --crimson-bright:#2997ff !important;
-  --crimson-soft:rgba(0,113,227,.12) !important;
-  --crimson-2:#0077ed !important;
-  /* secondary accent -> Apple blue */
-  --gold:#0071e3 !important;
-  --gold-soft:rgba(0,113,227,.10) !important;
-  /* chrome -> neutral near-black (Apple Pro dark) */
-  --navy:#161617 !important;
-  --navy2:#1d1d1f !important;
-  --navy3:#2c2c2e !important;
-  --accent:#0071e3 !important;
-  --primary:#0071e3 !important;
-  --brand:#0071e3 !important;
+  /* primary -> cosmic violet */
+  --crimson:#7c5cfc !important;
+  --crimson-deep:#6636e8 !important;
+  --crimson-bright:#9d84ff !important;
+  --crimson-soft:rgba(124,92,252,.16) !important;
+  --crimson-2:#8b6ef0 !important;
+  /* secondary -> lavender */
+  --gold:#b9a9ff !important;
+  --gold-soft:rgba(185,169,255,.16) !important;
+  /* chrome -> deep indigo */
+  --navy:#14122a !important;
+  --navy2:#1d1a38 !important;
+  --navy3:#2a2650 !important;
+  --accent:#7c5cfc !important;
+  --primary:#7c5cfc !important;
+  --brand:#7c5cfc !important;
 }
-::selection{background:#0071e3;color:#fff;}
-* { scrollbar-color:#c7c7cc transparent;
-    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif; }
-*::-webkit-scrollbar-thumb{ background:#c7c7cc; border-radius:100px; }
-.orb{ filter:none !important; }
+::selection{background:#7c5cfc;color:#fff;}
+* { scrollbar-color:#453a7a transparent; }
+*::-webkit-scrollbar-thumb{ background:#453a7a; border-radius:100px; }
+.orb{ filter:drop-shadow(0 0 12px rgba(124,92,252,.5)) !important; }
 
-/* Marketing primary CTA -> Apple blue pill, flat */
+/* Marketing primary CTA -> WHITE pill with near-black text (FAENG reference) */
 .btn.primary{
-  background:#0071e3 !important;
-  color:#ffffff !important;
-  box-shadow:none !important;
+  background:#ffffff !important;
+  color:#14122a !important;
+  box-shadow:0 10px 30px -8px rgba(124,92,252,.55),0 4px 14px rgba(0,0,0,.35) !important;
   text-shadow:none !important;
 }
-.btn.primary:hover{ background:#0077ed !important; box-shadow:none !important; }
+.btn.primary:hover{ box-shadow:0 16px 40px -8px rgba(124,92,252,.7),0 6px 18px rgba(0,0,0,.4) !important; }
 
-/* ---- dashboard white tiles: repoint tile-scoped brand vars to Apple blue ---- */
-.login-card,.card,.modcard,.dcard,.subrow,.vcard,.notecard,.notebody,.faccard,.md-units .u{
-  --crimson:#0071e3 !important; --crimson-deep:#0066cc !important;
-  --gold:#0066cc !important; --gold-soft:rgba(0,113,227,.10) !important;
-  --crimson-soft:rgba(0,113,227,.08) !important;
-}
-input[type="checkbox"],input[type="radio"]{accent-color:#0071e3;}
+/* ===== per-portal hardcoded-colour neutralisation (violet system) ===== */
+/* ============================================================
+   VIOLET ERA · portal colour overrides (admin / faculty / staff /
+   results / exam). Appended last in alizon-theme.css.
+   Colours only — no layout. Neutralizes hardcoded crimson-red &
+   gold-amber relics that the var swap cannot reach.
+   ============================================================ */
 
-/* ===== per-portal Apple-Pro accents (admin/faculty/staff/results/exam) ===== */
-/* ================================================================
-   ALIZON OS · APPLE-PRO DARK ACCENT PASS (blue system)
-   Replaces the previous violet neutraliser block in alizon-theme.css.
-   Colours / shadows / fonts only — zero layout changes.
-   Accent: #0071e3 · deep #0066cc · bright #2997ff
-   ================================================================ */
-
-/* ---------- 1 · Legacy root vars → blue system ---------- */
+/* ---- bridge page-local legacy vars to the violet system ----
+   faculty/staff define --tgold/--tcrim; results defines
+   --burgundy/--gold-deep. Theme loads last, so these win. */
 :root{
-  --crimson:#0071e3!important; --crimson-deep:#0066cc!important; --crimson-bright:#2997ff!important;
-  --crimson-soft:rgba(0,113,227,.14)!important;
-  --gold:#0071e3!important; --gold-deep:#0066cc!important; --gold-soft:rgba(0,113,227,.12)!important;
-  --burgundy:#0066cc!important;
-  --tgold:#0066cc!important; --tcrim:#0071e3!important;
-  --muted:#86868b!important; --tmut:#6e6e73!important;
-  --line:rgba(255,255,255,.10)!important; --tline:rgba(0,0,0,.10)!important;
+  --tgold:#6636e8;                 /* amber #A16207 → deep violet (readable on white tiles) */
+  --gold-deep:#6636e8;
+  --burgundy:#5b2be0;              /* results sheet accent #7A0309 → deep violet */
 }
-
-/* admin-portal white-tile var re-scopes (they re-declare locally) */
+/* admin-portal white tiles re-scope brand vars locally — re-point them */
 .prog,.apanel,.newprog,.pickbar{
-  --crimson:#0071e3!important; --crimson-deep:#0066cc!important;
-  --gold:#0066cc!important;
-  --gold-soft:rgba(0,113,227,.10)!important; --crimson-soft:rgba(0,113,227,.08)!important;
-  --muted:#6e6e73!important; --line:rgba(0,0,0,.10)!important;
+  --crimson:#6636e8 !important;
+  --crimson-deep:#5b2be0 !important;
+  --gold:#6636e8 !important;
+  --gold-soft:rgba(124,92,252,.14) !important;
+  --crimson-soft:rgba(124,92,252,.10) !important;
 }
 
-/* ---------- 2 · System font on controls ---------- */
-button,input,select,textarea,
-.btn,.abtn,.chip,.tab,.etab,.evtab,.cadd,.eview,.top a{
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Segoe UI',Roboto,Helvetica,Arial,sans-serif!important;
+/* ---- ambient page glow (admin/faculty/staff/exam .bgwrap) ---- */
+.bgwrap{
+  background:radial-gradient(120% 80% at 50% -10%,rgba(124,92,252,.10),transparent 60%),
+             radial-gradient(90% 60% at 90% 10%,rgba(185,169,255,.07),transparent 55%) !important;
 }
 
-/* ---------- 3 · Background washes: red/gold glows → blue ---------- */
-.bgwrap{background:
-  radial-gradient(120% 80% at 50% -10%,rgba(0,113,227,.10),transparent 60%),
-  radial-gradient(90% 60% at 90% 10%,rgba(41,151,255,.06),transparent 55%)!important}
-#adminGate,#gate{background:
-  radial-gradient(120% 80% at 50% -10%,rgba(0,113,227,.12),transparent 60%),var(--bg)!important}
-
-/* ---------- 4 · White tiles: hairline border + flat black shadow ---------- */
-.prog,.apanel,.pickbar,.panel,.kpi,#app .card,.card.login,.gate-card{
-  border-color:rgba(0,0,0,.10)!important;
-  box-shadow:0 10px 30px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.92)!important;
+/* ---- login gates: admin #adminGate, faculty #gate, staff .login ---- */
+#adminGate,#gate{
+  background:radial-gradient(120% 80% at 50% -10%,rgba(124,92,252,.14),transparent 60%),var(--bg,#14122a) !important;
 }
-.newprog{border-color:rgba(0,113,227,.35)!important;
-  box-shadow:0 10px 30px rgba(0,0,0,.30)!important}
+#adminGate .gate-card input:focus,#gate .gate-card input:focus{
+  border-color:var(--crimson,#7c5cfc) !important;
+  box-shadow:0 0 0 3px rgba(124,92,252,.22) !important;
+}
+#adminGate .gate-card button,#gate .gate-card button,
+.card.login button,.login button{
+  background:linear-gradient(120deg,var(--crimson-deep,#6636e8),var(--crimson,#7c5cfc)) !important;
+  color:#fff !important;
+  box-shadow:0 10px 26px rgba(102,54,232,.35) !important;
+}
+#adminGate .gate-card .gfoot a,#gate .gate-card .gfoot a{color:#6636e8 !important}
+/* .gerr login error stays red on purpose (semantic) */
 
-/* ---------- 5 · Login gates → blue ---------- */
-#adminGate .gate-card button,#gate .gate-card button,.gate-card button,.login button{
-  background:linear-gradient(180deg,#0077ed,#0071e3)!important;color:#fff!important;
-  box-shadow:0 4px 12px rgba(0,0,0,.3)!important}
-.gate-card input:focus,.login input:focus{
-  border-color:#0071e3!important;box-shadow:0 0 0 3px rgba(0,113,227,.25)!important}
-.gate-card .gfoot a{color:#0066cc!important}
-.login .err{color:#d70015!important}   /* keep error semantic red (--tcrim now blue) */
+/* ---- primary buttons / CTAs on tool surfaces ---- */
+/* gradients already use vars → auto-violet; kill the red drop-shadows */
+.btn{box-shadow:0 8px 22px rgba(102,54,232,.30) !important}
+.btn:hover{box-shadow:0 12px 28px rgba(102,54,232,.38) !important}
+.btn.ghost{box-shadow:none !important}
+/* old gold CTA → lavender pill, near-black text (dark text only on light fills) */
+.btn.gold{
+  background:var(--gold,#b9a9ff) !important;
+  color:#191430 !important;
+  box-shadow:0 8px 22px rgba(185,169,255,.35) !important;
+}
+/* staff portal primary action buttons (hardcoded #9E0C13→#C40D16) */
+.abtn.primary{
+  background:linear-gradient(120deg,#5b2be0,#7c5cfc) !important;
+  color:#fff !important;border:none !important;
+  box-shadow:0 8px 22px rgba(102,54,232,.28) !important;
+}
+/* admin white-tile "+ add" buttons */
+.cadd{border-color:rgba(102,54,232,.40) !important;color:#5b2be0 !important;background:rgba(124,92,252,.12) !important}
+.cadd:hover{background:rgba(124,92,252,.22) !important}
+.eview:hover{border-color:rgba(124,92,252,.50) !important;color:#6636e8 !important}
 
-/* ---------- 6 · Primary buttons & CTAs ---------- */
-.btn,.abtn.primary{
-  background:linear-gradient(180deg,#0077ed,#0071e3)!important;color:#fff!important;
-  box-shadow:0 4px 12px rgba(0,0,0,.3)!important}
-.btn:hover,.abtn.primary:hover{box-shadow:0 6px 16px rgba(0,0,0,.3)!important}
-.btn.gold{background:linear-gradient(180deg,#2997ff,#0071e3)!important;color:#fff!important;
-  box-shadow:0 4px 12px rgba(0,0,0,.3)!important}
-.abtn{box-shadow:0 4px 12px rgba(0,0,0,.3)!important}          /* exam-page filled pill (bg via vars) */
-.abtn.ghost{box-shadow:none!important}
-.abtn:hover{border-color:#0071e3!important;color:#0071e3!important}
-.abtn.primary:hover{color:#fff!important}
-.cadd{border-color:rgba(0,113,227,.35)!important;background:rgba(0,113,227,.10)!important;color:#0066cc!important}
-.cadd:hover{background:rgba(0,113,227,.18)!important}
-.eview:hover{border-color:rgba(0,113,227,.5)!important;color:#0071e3!important}
+/* ---- active nav / tab states ---- */
+.anavv a.on{border-color:rgba(124,92,252,.38) !important;color:#fff !important}
+.anav a:hover{color:var(--gold,#b9a9ff) !important;border-color:rgba(124,92,252,.45) !important}
+.evtab.on,.etab.on{box-shadow:0 8px 20px rgba(102,54,232,.28) !important;color:#fff !important}
+.evtab:hover,.etab:hover{border-color:rgba(124,92,252,.45) !important}
+.chip.on{box-shadow:0 8px 22px rgba(102,54,232,.28) !important;color:#fff !important}
+.top a:hover,.top button:hover{border-color:rgba(185,169,255,.45) !important}
 
-/* ---------- 7 · Active nav / tabs / chips ---------- */
-.anavv a.on{background:rgba(0,113,227,.16)!important;border-color:rgba(0,113,227,.35)!important;color:#fff!important}
-.evtab.on,.etab.on,.tab.on,.chip.on{
-  background:linear-gradient(180deg,#0077ed,#0071e3)!important;color:#fff!important;
-  border-color:transparent!important;box-shadow:0 4px 12px rgba(0,0,0,.3)!important}
-.evtab:hover,.etab:hover{border-color:rgba(0,113,227,.35)!important}
-.chip:hover{border-color:rgba(0,113,227,.45)!important}
-.stud .chip,#ht-result .chip{border-color:rgba(0,113,227,.35)!important}  /* exam gold pills */
-.top a:hover,.top button:hover,.top a.back:hover,.top button.reset:hover,.anav a:hover{
-  border-color:rgba(41,151,255,.45)!important}
+/* ---- badges & status dots ---- */
+/* dark-surface variants (admin sidebar/main) */
+.badge2.new{color:#c9bbff !important;background:rgba(124,92,252,.18) !important}
+.badge2.ind{color:#b9a9ff !important;background:rgba(185,169,255,.16) !important}
+/* white-tile variants (admin .apanel, faculty .panel) */
+.apanel .badge2.new,.panel .badge2.new{color:#5b2be0 !important;background:rgba(124,92,252,.12) !important}
+.apanel .badge2.ind,.panel .badge2.ind{color:#6636e8 !important;background:rgba(124,92,252,.12) !important}
+.adot.griev{background:#9d84ff !important}
+/* keep FAIL/REJECT semantically red (tile var reset would turn them violet) */
+.evpass.fail,.badge2.fail,.badge2.rej{background:#bd2745 !important;color:#fff !important}
+/* pass/done/live greens untouched; .badge2.usa blue untouched */
 
-/* ---------- 8 · Badges (semantic pass/done GREEN & fail/rej RED preserved) ---------- */
-.badge2.new,.badge2.ind{color:#2997ff!important;background:rgba(41,151,255,.15)!important}         /* dark chrome */
-.badge2.usa{color:#6cb8ff!important;background:rgba(41,151,255,.12)!important}
-.panel .badge2.new,.apanel .badge2.new,
-.panel .badge2.ind,.apanel .badge2.ind,
-.apanel .badge2.usa{color:#0066cc!important;background:rgba(0,113,227,.10)!important}              /* white tiles */
-.badge2.fail,.badge2.rej,.evpass.fail{color:#fff!important;background:#d70015!important}           /* re-redden: vars went blue */
-/* .badge2.done/.pass, .evpass.pass, .st.live, .st.r stay green — untouched */
-
-/* ---------- 9 · Focus rings ---------- */
-input:focus,select:focus,textarea:focus{
-  border-color:#0071e3!important;box-shadow:0 0 0 3px rgba(0,113,227,.25)!important}
+/* ---- violet focus rings everywhere (replaces amber rgba(161,98,7,…)) ---- */
+input:focus,select:focus,textarea:focus,
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
-  box-shadow:0 0 0 3px rgba(0,113,227,.25)!important}
+  box-shadow:0 0 0 3px rgba(124,92,252,.22) !important;
+}
 
-/* ---------- 10 · Staff portal specifics ---------- */
-.avatar{background:linear-gradient(135deg,#0066cc,#2997ff)!important;border-color:rgba(0,113,227,.40)!important}
-.msg.staff{background:linear-gradient(135deg,#0071e3,#0066cc)!important}
-.onb-warn{background:linear-gradient(120deg,#0066cc,#0071e3)!important}
-#sigPad{border-color:#9ec4f0!important}
-.chip.gold{color:#0066cc!important;background:rgba(0,113,227,.10)!important;border-color:rgba(0,113,227,.30)!important}
-table.pay tr.tot td{border-top-color:rgba(0,113,227,.40)!important;color:#0066cc!important}
+/* ---- admin portal odds & ends ---- */
+.note{color:#d8d0ff !important;border-color:rgba(185,169,255,.35) !important;border-left-color:#b9a9ff !important}
+.newprog{border-color:rgba(124,92,252,.45) !important}
+.toast{border-color:rgba(185,169,255,.45) !important;color:var(--gold,#b9a9ff) !important}
 
-/* ---------- 11 · Results / document tables → blue tint ---------- */
-table.rt th{background:#eef4fd!important;color:#0066cc!important;border-color:#d8e6f8!important}
-table.rt td{border-color:#d8e6f8!important}
-table.rt td.mod{color:#0066cc!important}
-.stt th{background:#eef4fd!important;border-color:#d8e6f8!important}
-.sh-head{border-bottom-color:#0066cc!important}
-.sh-title{color:#0066cc!important}
-.sh-title::after{background:#0071e3!important}
-.sh-meta b{color:#0066cc!important}
-/* printable letterhead docs (class-based accents only) */
-.subdoc .dh{border-bottom-color:#0066cc!important}
-.subdoc .dh .inm{color:#0066cc!important}
-.subdoc h3.sn{color:#0066cc!important;border-bottom-color:#d8e6f8!important}
-.subdoc .tot{color:#0066cc!important}
-.subdoc table th{background:#eef4fd!important}
-.np-fixhead{border-bottom-color:#0066cc!important}
-.np-fixhead .t b{color:#0066cc!important}
+/* ---- staff portal odds & ends ---- */
+.avatar{background:linear-gradient(120deg,#5b2be0,#7c5cfc) !important;border-color:rgba(124,92,252,.45) !important}
+.msg.staff{background:linear-gradient(120deg,#6636e8,#7c5cfc) !important;color:#fff !important}
+.chip.gold{border-color:rgba(102,54,232,.35) !important;background:rgba(124,92,252,.10) !important}
+table.pay tr.tot td{border-top-color:rgba(102,54,232,.40) !important}
+.onb-decl input{accent-color:#6636e8 !important}
+#sigPad{border-color:#b9a9ff !important}
+.onb-warn{background:linear-gradient(120deg,#5b2be0,#7c5cfc) !important;color:#fff !important}
 
-/* ---------- 12 · Toasts & notes ---------- */
-.toast{color:#2997ff!important;border-color:rgba(0,113,227,.45)!important}
-.note{background:rgba(0,113,227,.10)!important;border-color:rgba(0,113,227,.30)!important;
-  border-left-color:#0071e3!important;color:#a8d2ff!important}
+/* ---- results portal on-screen sheet (white tile) ---- */
+table.rt th{background:#f2eefd !important;border-color:#e2dbf7 !important}
+table.rt td{border-color:#e9e4f7 !important}
+/* .sh-head border, .sh-title, td.mod all flow from --burgundy override above */
 
-/* ---------- 13 · Destructive affordances stay red (accents went blue) ---------- */
-.prog .delp:hover{border-color:#d70015!important;background:rgba(215,0,21,.10)!important;color:#fff!important}
-.mrow .delm:hover,.citem .cx:hover{color:#d70015!important}
-
-/* keep student-dashboard cards flat (counter the Pro tile shadow above) */
-#app .card,#app .dcard,#app .modcard{box-shadow:0 4px 24px rgba(0,0,0,.07) !important;border-color:transparent !important;}
+/* ---- dashboard white tiles: repoint tile-scoped brand vars to violet ---- */
+.login-card,.card,.modcard,.dcard,.subrow,.vcard,.notecard,.notebody,.faccard,.md-units .u{
+  --crimson:#6636e8 !important; --crimson-deep:#5b2be0 !important;
+  --gold:#6636e8 !important; --gold-soft:rgba(124,92,252,.14) !important;
+  --crimson-soft:rgba(124,92,252,.10) !important;
+}
+input[type="checkbox"],input[type="radio"]{accent-color:#6636e8;}
