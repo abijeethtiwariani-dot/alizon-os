@@ -661,6 +661,15 @@
       </div>
       <div class="clist" id="wsr-list"></div>
     </div>
+
+    <div class="cblock"><div class="ct">Feedback &amp; testimonials</div>
+      <div class="ahint">Feedback submitted from the delegate portal (and seeded student voices). <b>Approve</b> to publish it on the public <b>alizon.in/alizon-testimonials</b> page with the person's photo, course and batch; <b>Reject</b> to keep it off.</div>
+      <div class="arow4" style="grid-template-columns:1fr auto;align-items:end;margin-bottom:6px;gap:10px">
+        <div><label class="hint" style="display:block;margin-bottom:4px">Status</label><select id="wsf-fst"><option value="">All</option><option value="pending">Pending</option><option value="approved">Approved (live)</option><option value="rejected">Rejected</option></select></div>
+        <div class="hint" id="wsf-count" style="padding-bottom:10px"></div>
+      </div>
+      <div class="clist" id="wsf-list"></div>
+    </div>
   </section>
 
   <section class="apanel asec" id="adm-announce">
@@ -2816,12 +2825,61 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     try{ logAct&&logAct('Workshop candidate CSV exported ('+a.length+' rows)','update'); }catch(e){}
   }
 
-  function boot(){ renderSrc(); renderDrop(); renderWsList(); renderRegs();
+  /* ---- feedback & testimonials moderation ---- */
+  function loadFB(){ try{var a=JSON.parse(localStorage.getItem('alizonWsFeedback')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+  function saveFB(a){ setDB('alizonWsFeedback',Array.isArray(a)?a:[]); }
+  function renderFb(){
+    var host=$id('wsf-list'); if(!host) return;
+    var fst=($id('wsf-fst')||{}).value||'';
+    var a=loadFB().filter(function(f){ return !fst||f.status===fst; });
+    var c=$id('wsf-count'); if(c) c.textContent=a.length+' item'+(a.length===1?'':'s');
+    host.innerHTML=a.length?a.map(function(f){
+      var st=f.status==='approved'?'<b style="color:#1E8E5A">Live on Testimonials ✓</b>':f.status==='rejected'?'<b style="color:#b1040e">Rejected</b>':'<b style="color:#8a6116">Pending</b>';
+      return '<div class="citem" style="align-items:flex-start;gap:10px;flex-wrap:wrap">'
+        +'<div style="flex:1;min-width:260px"><b>'+wsEsc(f.name)+'</b>'
+        +' <span class="hint">'+wsEsc([f.course,f.batch].filter(Boolean).join(' · '))+(f.college?' · '+wsEsc(f.college):'')+(f.photo&&f.photo.id?' · 📷 photo':' · no photo')+(f.src==='seed'?' · seeded':'')+'</span>'
+        +'<div class="hint" style="margin-top:4px">“'+wsEsc(String(f.text||'').slice(0,220))+(String(f.text||'').length>220?'…':'')+'”</div>'
+        +'<div class="hint">'+st+'</div></div>'
+        +(f.status!=='approved'?'<button class="cadd" data-wfa="'+wsEsc(f.id)+'">Approve</button>':'')
+        +(f.status!=='rejected'?'<button class="cadd" data-wfr="'+wsEsc(f.id)+'" style="background:var(--pill);color:var(--ink);border-color:var(--line)">Reject</button>':'')
+        +'<button class="cadd" data-wfd="'+wsEsc(f.id)+'" style="background:#fbebeb;color:#b1040e;border-color:#eec7c7">Delete</button>'
+        +'</div>';
+    }).join(''):'<div class="hint">No feedback'+(fst?' with this status':' yet')+'.</div>';
+    var badge=$id('cntWs');
+    if(badge){ var p=loadWR().filter(function(r){return r.status==='pending';}).length
+      + loadFB().filter(function(f){return f.status==='pending';}).length;
+      badge.textContent=p||''; }
+  }
+  document.addEventListener('click',function(ev){
+    var t=ev.target; if(!t||!t.hasAttribute) return;
+    if(t.hasAttribute('data-wfa')){
+      var a=loadFB(); var f=a.filter(function(x){return x.id===t.getAttribute('data-wfa');})[0];
+      if(f){ f.status='approved'; f.approvedAt=Date.now(); saveFB(a); renderFb();
+        try{ logAct&&logAct('Testimonial approved: '+f.name,'update'); }catch(e){}
+        try{ toast&&toast('Published to the Testimonials page'); }catch(e){} }
+    }
+    if(t.hasAttribute('data-wfr')){
+      var a2=loadFB(); var f2=a2.filter(function(x){return x.id===t.getAttribute('data-wfr');})[0];
+      if(f2){ f2.status='rejected'; saveFB(a2); renderFb();
+        try{ logAct&&logAct('Testimonial rejected: '+f2.name,'update'); }catch(e){} }
+    }
+    if(t.hasAttribute('data-wfd')){
+      var id=t.getAttribute('data-wfd'); var a3=loadFB(); var f3=a3.filter(function(x){return x.id===id;})[0];
+      if(!f3||!confirm('Delete this feedback from '+f3.name+'?')) return;
+      try{ if(f3.photo&&f3.photo.id&&f3.src==='seed'&&window.firebase&&firebase.firestore){
+        var db=firebase.firestore(); for(var i=0;i<(f3.photo.chunks||1);i++) db.collection('sync').doc('wfimg_'+f3.photo.id+'_'+i).delete().catch(function(){}); } }catch(e){}
+      saveFB(a3.filter(function(x){return x.id!==id;})); renderFb();
+      try{ logAct&&logAct('Testimonial deleted: '+f3.name,'update'); }catch(e){}
+    }
+  });
+  document.addEventListener('change',function(ev){ if(ev.target&&ev.target.id==='wsf-fst') renderFb(); });
+
+  function boot(){ renderSrc(); renderDrop(); renderWsList(); renderRegs(); renderFb();
     var x=$id('wsr-csv'); if(x&&!x._w){ x._w=1; x.addEventListener('click',exportCandidates); } }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
   var nav=document.querySelector('[data-sec="adm-workshops"]');
   if(nav) nav.addEventListener('click',function(){ setTimeout(boot,50); });
-  setInterval(function(){ renderRegs(); }, 8000);
+  setInterval(function(){ renderRegs(); renderFb(); }, 8000);
   window.__wsAdminTest={ addMod:addMod, renderWsList:renderWsList, renderRegs:renderRegs, WSB:WSB };
 })();
 </script>
