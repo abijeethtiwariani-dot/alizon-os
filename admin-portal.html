@@ -493,6 +493,7 @@
 
     <h3 style="font-size:15px;margin:22px 0 8px;color:var(--gold)">Published results <span id="res-count" style="color:var(--muted);font-weight:400;font-size:13px"></span></h3>
     <div style="overflow-x:auto;max-height:52vh;overflow-y:auto;margin-top:8px"><table class="stt" id="resTable"></table></div>
+    <div id="resEditor" style="margin-top:14px"></div>
   </section>
 
   <section class="apanel asec" id="adm-eval">
@@ -1668,13 +1669,62 @@ function renderResultsAdmin(){
     dl.innerHTML=Object.keys(set).map(c=>`<option value="${esc(c)}">`).join(''); }
   let n=0, rowsHtml='';
   courses.forEach(c=>{ Object.keys(R.courses[c].modules||{}).forEach(m=>{ const mod=R.courses[c].modules[m]; n++;
-    rowsHtml+=`<tr><td>${esc(c)}</td><td>${esc(m)}</td><td class="num">${(mod.rows||[]).length}</td><td>${esc((mod.cols||[]).join(', ')||'—')}</td><td class="num">${mod.at?fmt(mod.at):'—'}</td><td><button class="btn resDel" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px;border-color:var(--crimson);color:var(--crimson)">Remove</button></td></tr>`;
+    rowsHtml+=`<tr><td>${esc(c)}</td><td>${esc(m)}</td><td class="num">${(mod.rows||[]).length}</td><td>${esc((mod.cols||[]).join(', ')||'—')}</td><td class="num">${mod.at?fmt(mod.at):'—'}</td><td style="white-space:nowrap"><button class="btn resEdit" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px">✎ Students</button> <button class="btn resDel" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px;border-color:var(--crimson);color:var(--crimson)">Remove</button></td></tr>`;
   }); });
   document.getElementById('res-count').textContent=n?'· '+n+' module'+(n>1?'s':'')+' published':'';
   const tb=document.getElementById('resTable');
   tb.innerHTML='<tr><th>Course</th><th>Module</th><th>Students</th><th>Columns</th><th>Published</th><th></th></tr>'+
     (rowsHtml||'<tr><td colspan="6" style="color:var(--muted);padding:12px">No results published yet — upload a module CSV above.</td></tr>');
   tb.querySelectorAll('.resDel').forEach(b=>b.onclick=()=>delResult(b.dataset.c,b.dataset.m));
+  tb.querySelectorAll('.resEdit').forEach(b=>b.onclick=()=>editResult(b.dataset.c,b.dataset.m));
+}
+
+/* ---- per-student result editor (edit values, delete/add students) ---- */
+let _reC=null,_reM=null;
+function reEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function editResult(c,m){
+  _reC=c;_reM=m;
+  const host=document.getElementById('resEditor'); if(!host) return;
+  const R=loadResults(); const mod=R.courses[c]&&R.courses[c].modules&&R.courses[c].modules[m];
+  if(!mod){ host.innerHTML=''; return; }
+  const cols=mod.cols||[];
+  host.innerHTML='<div class="cblock"><div class="ct">Edit students — '+esc(c)+' · '+esc(m)+'</div>'
+   +'<div class="hint" style="margin:4px 0 10px">Change any mark or field, delete a row, or add a student. Nothing goes live until you press <b>Save &amp; publish</b>.</div>'
+   +'<div style="overflow-x:auto;max-height:46vh;overflow-y:auto"><table class="stt" id="reTbl"><tr><th>Reg no</th><th>Name</th>'+cols.map(cl=>'<th>'+esc(cl)+'</th>').join('')+'<th></th></tr>'
+   +(mod.rows||[]).map(r=>'<tr><td><input value="'+reEsc(r.reg)+'" data-f="reg" style="width:110px"></td><td><input value="'+reEsc(r.name)+'" data-f="name" style="width:160px"></td>'
+     +cols.map(cl=>'<td><input value="'+reEsc(r.v&&r.v[cl])+'" data-col="'+reEsc(cl)+'" style="width:90px"></td>').join('')
+     +'<td><button class="eview reDelRow" title="Delete this student from the result">🗑</button></td></tr>').join('')
+   +'</table></div>'
+   +'<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><button class="cadd" id="reAddRow">＋ Add student</button>'
+   +'<button class="cadd" id="reSave">💾 Save &amp; publish changes</button>'
+   +'<button class="eview" id="reClose">Close without saving</button></div></div>';
+  host.scrollIntoView({behavior:'smooth',block:'nearest'});
+  function wireDel(scope){ scope.querySelectorAll('.reDelRow').forEach(b=>b.onclick=()=>b.closest('tr').remove()); }
+  wireDel(host);
+  document.getElementById('reAddRow').onclick=()=>{
+    const tbl=document.getElementById('reTbl'); const tr=document.createElement('tr');
+    tr.innerHTML='<td><input data-f="reg" style="width:110px" placeholder="ALZ000"></td><td><input data-f="name" style="width:160px"></td>'
+      +cols.map(cl=>'<td><input data-col="'+reEsc(cl)+'" style="width:90px"></td>').join('')+'<td><button class="eview reDelRow">🗑</button></td>';
+    tbl.appendChild(tr); wireDel(tr); tr.querySelector('input').focus();
+  };
+  document.getElementById('reClose').onclick=()=>{ host.innerHTML=''; };
+  document.getElementById('reSave').onclick=()=>{
+    const R2=loadResults(); const mod2=R2.courses[_reC]&&R2.courses[_reC].modules&&R2.courses[_reC].modules[_reM];
+    if(!mod2){ toast('This module was removed meanwhile'); host.innerHTML=''; renderResultsAdmin(); return; }
+    const rows=[];
+    host.querySelectorAll('#reTbl tr').forEach(tr=>{
+      const ri=tr.querySelector('input[data-f="reg"]'); if(!ri) return;
+      const reg=ri.value.trim(); if(!reg) return;
+      const nameEl=tr.querySelector('input[data-f="name"]');
+      const v={}; tr.querySelectorAll('input[data-col]').forEach(inp=>{ v[inp.getAttribute('data-col')]=inp.value.trim(); });
+      rows.push({ reg:reg, name:nameEl?nameEl.value.trim():'', v:v });
+    });
+    if(!rows.length){ toast('Keep at least one student — or use Remove to delete the whole module result'); return; }
+    mod2.rows=rows; mod2.at=Date.now(); R2.updated=Date.now(); saveResults(R2);
+    logAct('Results edited — '+_reC+' · '+_reM+' ('+rows.length+' students)','update');
+    toast('Saved — '+rows.length+' student'+(rows.length>1?'s':'')+' published');
+    host.innerHTML=''; renderResultsAdmin();
+  };
 }
 
 /* ================= EXAMS (cycles + applications + bulk-by-batch) ================= */

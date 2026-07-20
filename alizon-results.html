@@ -71,6 +71,25 @@ table.rt td.mod{font-weight:600;color:var(--burgundy)}
   .sheet{box-shadow:none;margin:0}
   .sh-head .s,.sh-title,.sh-title::after,table.rt th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+/* ===== course result folders (KUHS-style) ===== */
+#courseFolders{max-width:860px;margin:0 auto}
+.rf-row{border-bottom:1px solid rgba(140,21,21,.16)}
+.rf-head{display:flex;align-items:center;gap:12px;padding:16px 6px;cursor:pointer;user-select:none}
+.rf-head b{font-size:16px;font-weight:600;flex:1}
+.rf-cnt{font-size:11.5px;font-weight:700;padding:3px 11px;border-radius:100px;background:var(--crimson-soft,rgba(140,21,21,.1));color:var(--crimson,#8c1515)}
+.rf-tg{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:15px;font-weight:700;background:var(--crimson,#8c1515);color:#fff;transition:transform .25s}
+.rf-row.open .rf-tg{transform:rotate(45deg)}
+.rf-body{display:none;padding:2px 6px 18px}
+.rf-row.open .rf-body{display:block;animation:rfIn .25s ease-out}
+@keyframes rfIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.rf-mod{display:flex;align-items:baseline;gap:12px;padding:9px 8px;border-radius:10px}
+.rf-mod:hover{background:rgba(140,21,21,.05)}
+.rf-mod b{font-size:14px;font-weight:600}
+.rf-mod small{font-size:12px;opacity:.65}
+.rf-empty{font-size:13px;opacity:.6;padding:8px}
+.rf-lookup{margin-top:10px}
+.rf-lookup .card{margin:0}
 </style>
 <link rel="stylesheet" href="alizon-theme.css">
 
@@ -88,8 +107,8 @@ table.rt td.mod{font-weight:600;color:var(--burgundy)}
   </div>
 
   <div id="courseWrap">
-    <div class="lbl" style="text-align:center">Select your course</div>
-    <div class="chips" id="courseChips"></div>
+    <div class="lbl" style="text-align:center">Results — by course</div>
+    <div id="courseFolders"></div>
     <div class="hint" id="noCourses" style="display:none">Results have not been published yet. Please check back after your results are announced.</div>
   </div>
 
@@ -125,18 +144,43 @@ function loadStudents(){ try{const a=JSON.parse(localStorage.getItem('alizonStud
 
 let curCourse=null;
 function renderCourses(){
-  const R=loadResults(); const names=Object.keys(R.courses||{});
-  const box=$('courseChips');
+  const RS=loadResults(); const names=Object.keys(RS.courses||{});
+  const box=$('courseFolders'); const card=$('lookupCard');
+  /* rescue the lookup card before wiping the folder DOM (it lives inside the open folder) */
+  if(card && card.parentElement && card.parentElement.className==='rf-lookup') document.body.appendChild(card);
   $('noCourses').style.display=names.length?'none':'block';
-  box.innerHTML=names.map(c=>`<div class="chip${c===curCourse?' on':''}" data-c="${esc(c)}">${esc(c)}</div>`).join('');
-  box.querySelectorAll('.chip').forEach(ch=>ch.onclick=()=>selectCourse(ch.dataset.c));
-  // keep current selection valid
-  if(curCourse && !names.includes(curCourse)) { curCourse=null; $('lookupCard').style.display='none'; $('sheet').classList.remove('show'); }
+  if(curCourse && !names.includes(curCourse)){ curCourse=null; card.style.display='none'; $('sheet').classList.remove('show'); }
+  if(names.length===1) curCourse=curCourse||names[0];
+  box.innerHTML=names.map(c=>{
+    const mods=Object.keys((RS.courses[c]||{}).modules||{});
+    return '<div class="rf-row'+(c===curCourse?' open':'')+'" data-c="'+esc(c).replace(/"/g,'&quot;')+'">'
+      +'<div class="rf-head" role="button" tabindex="0" aria-expanded="'+(c===curCourse?'true':'false')+'"><b>'+esc(c)+'</b>'
+      +'<span class="rf-cnt">'+mods.length+' result'+(mods.length!==1?'s':'')+'</span><span class="rf-tg">＋</span></div>'
+      +'<div class="rf-body"><div class="rf-mods">'
+      +(mods.length? mods.map(m=>{ const mod=RS.courses[c].modules[m];
+          return '<div class="rf-mod"><b>'+esc(m)+'</b><small>'+((mod.rows||[]).length)+' students · published '+(mod.at?new Date(mod.at).toLocaleDateString():'—')+'</small></div>'; }).join('')
+        : '<div class="rf-empty">No results published for this course yet.</div>')
+      +'</div><div class="rf-lookup"></div></div></div>';
+  }).join('');
+  box.querySelectorAll('.rf-row').forEach(row=>{
+    const c=row.getAttribute('data-c'); const h=row.querySelector('.rf-head');
+    const act=()=>{
+      if(row.classList.contains('open')){ row.classList.remove('open'); h.setAttribute('aria-expanded','false'); return; }
+      box.querySelectorAll('.rf-row.open').forEach(r=>{ r.classList.remove('open'); r.querySelector('.rf-head').setAttribute('aria-expanded','false'); });
+      row.classList.add('open'); h.setAttribute('aria-expanded','true'); selectCourse(c,row);
+    };
+    h.addEventListener('click',act);
+    h.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
+    /* re-place the lookup card into the open folder without stealing focus (renderCourses re-runs every 4s) */
+    if(c===curCourse){ const slot=row.querySelector('.rf-lookup');
+      if(card&&slot){ slot.appendChild(card); card.style.display=''; $('lookupFor').textContent='Result lookup — '+c; } }
+  });
 }
-function selectCourse(c){
-  curCourse=c; renderCourses();
-  $('lookupCard').style.display='';
+function selectCourse(c,row){
+  curCourse=c;
+  const card=$('lookupCard'); card.style.display='';
   $('lookupFor').textContent='Result lookup — '+c;
+  if(row){ const slot=row.querySelector('.rf-lookup'); if(slot && card.parentElement!==slot) slot.appendChild(card); }
   $('sheet').classList.remove('show');
   $('r-err').classList.remove('show');
   $('r-reg').focus();
