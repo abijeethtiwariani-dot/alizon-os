@@ -343,6 +343,7 @@
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
     <a data-sec="adm-engage"><span class="aic"></span> Alerts &amp; Attendance <b class="cnt" id="cntEngage" style="background:var(--crimson)"></b></a>
     <a data-sec="adm-links"><span class="aic"></span> Links</a>
+    <a data-sec="adm-content"><span class="aic"></span> Website Content</a>
     <a data-sec="adm-announce"><span class="aic"></span> Module Updates</a>
     <a data-sec="adm-data"><span class="aic"></span> Data &amp; Backup</a>
     <a data-sec="adm-activity"><span class="aic"></span> History</a>
@@ -658,6 +659,18 @@
       <div class="clist" id="ex-applist"></div>
     </div>
   </section>
+
+  <section class="apanel asec" id="adm-content">
+    <h2>Website Content</h2>
+    <div class="ahint">Edit the public website text. Changes go live for every visitor via cloud sync.</div>
+    <div id="cmsForm"><div class="ahint">Loading editable fields…</div></div>
+    <div class="crow n" style="gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px">
+      <button class="cadd" id="cmsSave">Save & publish</button>
+      <button class="cadd" id="cmsReset" style="border-color:var(--line);background:var(--pill);color:var(--muted)">Reset to original</button>
+      <span id="cmsSaved" style="font-size:12.5px;font-weight:600;color:#1E8E5A"></span>
+    </div>
+  </section>
+
 
   <section class="apanel asec" id="adm-data">
     <h2>Data &amp; Backup</h2>
@@ -1401,7 +1414,7 @@ function dbResetAll(){ var inp=document.getElementById('dbReset'),note=document.
   setTimeout(function(){ location.reload(); },800); }
 function renderData(){ var b=document.getElementById('dbBackup'); if(b&&!b._w){b._w=1;b.addEventListener('click',dbBackup);} var r=document.getElementById('dbResetBtn'); if(r&&!r._w){r._w=1;r.addEventListener('click',dbResetAll);} }
 
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-data','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-data','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -1970,5 +1983,116 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 <script src="vendor/gsap.min.js"></script>
 <script src="vendor/ScrollTrigger.min.js"></script>
 <script src="alizon-motion.js"></script>
+<script src="alizon-cms.js"></script>
+<script>
+/* CMS editor: seed defaults by fetching the real homepage */
+(function(){
+  function textOf(el, part){
+    if(!el) return '';
+    if(part==='text'){
+      for(var n=el.firstChild;n;n=n.nextSibling){
+        if(n.nodeType===3 && n.textContent.trim()) return n.textContent.replace(/\s+/g,' ').trim();
+      }
+      return '';
+    }
+    return (el.textContent||'').replace(/\s+/g,' ').trim();
+  }
+  function seed(){
+    var C=window.__alizonCMS; var form=document.getElementById('cmsForm');
+    if(!C||!form||!form.querySelector('[data-cms-key]')){ setTimeout(seed,400); return; }
+    fetch('alizon-home.html').then(function(r){return r.text();}).then(function(html){
+      var doc=new DOMParser().parseFromString(html,'text/html');
+      var store={}; try{ store=JSON.parse(localStorage.getItem('alizonContent')||'{}')||{}; }catch(e){}
+      C.fields.forEach(function(f){
+        var ctl=form.querySelector('[data-cms-key="'+f.key+'"]'); if(!ctl) return;
+        var els=doc.querySelectorAll(f.sel); var el=els[f.idx||0];
+        var def=textOf(el, f.part);
+        if(def){ ctl.placeholder=def; if(!ctl.value){ ctl.value=(typeof store[f.key]==='string'&&store[f.key].trim())?store[f.key]:def; } }
+      });
+    }).catch(function(){});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',seed); else seed();
+  var nav=document.querySelector('a[data-sec="adm-content"]');
+  if(nav) nav.addEventListener('click',function(){ setTimeout(seed,150); });
+})();
+</script>
+<script>
+(function(){
+  var tries=0;
+  function cms(){ return (window.__alizonCMS && typeof window.__alizonCMS.get==='function') ? window.__alizonCMS : null; }
+  function ready(){
+    var C=cms();
+    if(!C){ if(++tries<40){ setTimeout(ready,250); } else { var h=document.getElementById('cmsForm'); if(h) h.innerHTML='<div class="ahint">Could not load the content editor — check that alizon-cms.js is present next to this file.</div>'; } return; }
+    build(C);
+  }
+  function fieldList(C){
+    var f=C.fields||C.FIELDS||null;
+    if(!f && typeof C.list==='function'){ try{ f=C.list(); }catch(e){} }
+    if(!f) return [];
+    if(Array.isArray(f)) return f;
+    return Object.keys(f).map(function(k){ var v=f[k]; if(typeof v==='string') return {key:k,label:k,area:'General'}; v=v||{}; return {key:k,label:v.label||k,area:v.area||v.group,multiline:v.multiline||v.type==='textarea'}; });
+  }
+  function build(C){
+    var host=document.getElementById('cmsForm'); if(!host) return;
+    var fs=fieldList(C);
+    if(!fs.length){ host.innerHTML='<div class="ahint">No editable fields were found. Update alizon-cms.js to register website fields.</div>'; return; }
+    var groups={}, order=[];
+    fs.forEach(function(f){ var a=(f&&(f.area||f.group))||'General'; if(!groups[a]){ groups[a]=[]; order.push(a); } groups[a].push(f); });
+    var frag=document.createDocumentFragment();
+    order.forEach(function(a){
+      var h=document.createElement('h3'); h.textContent=a;
+      h.style.cssText='font-size:15px;margin:18px 0 8px;color:var(--gold)';
+      frag.appendChild(h);
+      groups[a].forEach(function(f){
+        var key=f&&(f.key||f.id); if(!key) return;
+        var val=''; try{ var g=C.get(key); if(g!=null) val=String(g); }catch(e){}
+        var lab=document.createElement('label'); lab.textContent=(f.label||key);
+        lab.style.cssText='display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:0 0 4px';
+        var multi=!!(f.multiline||f.type==='textarea'||val.length>90);
+        var ctl=document.createElement(multi?'textarea':'input');
+        if(multi) ctl.rows=3;
+        ctl.value=val;
+        ctl.setAttribute('data-cms-key',key);
+        ctl.style.cssText='width:100%;padding:9px 12px;border:1px solid rgba(0,0,0,.15);border-radius:9px;font:inherit;font-size:13.5px;margin-bottom:12px;box-sizing:border-box;background:rgba(255,255,255,.72);color:var(--ink)';
+        frag.appendChild(lab); frag.appendChild(ctl);
+      });
+    });
+    host.innerHTML=''; host.appendChild(frag);
+  }
+  function collect(){
+    var o={}, els=document.querySelectorAll('#cmsForm [data-cms-key]');
+    Array.prototype.forEach.call(els,function(el){ var v=el.value; if(v && v.trim()) o[el.getAttribute('data-cms-key')]=v; });
+    return o;
+  }
+  function flash(msg){
+    var sp=document.getElementById('cmsSaved');
+    if(sp){ sp.textContent=msg; setTimeout(function(){ sp.textContent=''; },4000); }
+  }
+  document.addEventListener('click',function(ev){
+    var t=ev.target; if(!t||!t.id) return;
+    if(t.id==='cmsSave'){
+      var els=document.querySelectorAll('#cmsForm [data-cms-key]');
+      if(!els.length){ flash('Nothing to save yet'); return; }
+      var o=collect();
+      try{ localStorage.setItem('alizonContent', JSON.stringify(o)); }
+      catch(e){ flash('Save failed'); return; }
+      flash('Saved — live for all visitors');
+      try{ if(typeof toast==='function') toast('Website content saved'); }catch(e){}
+      try{ if(typeof logAct==='function') logAct('Website content updated','update'); }catch(e){}
+    }
+    if(t.id==='cmsReset'){
+      if(!confirm('Reset ALL website text to the original defaults? This removes every saved override for all visitors.')) return;
+      try{ localStorage.removeItem('alizonContent'); }catch(e){}
+      var C=cms();
+      try{ if(C && typeof C.reload==='function') C.reload(); }catch(e){}
+      if(C) build(C); else { var h2=document.getElementById('cmsForm'); if(h2) h2.innerHTML=''; tries=0; ready(); }
+      flash('Reset to original');
+      try{ if(typeof toast==='function') toast('Website content reset to original'); }catch(e){}
+      try{ if(typeof logAct==='function') logAct('Website content reset to original','update'); }catch(e){}
+    }
+  });
+  ready();
+})();
+</script>
 </body>
 </html>

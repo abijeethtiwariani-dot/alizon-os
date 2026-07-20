@@ -30,6 +30,8 @@
         var el = document.querySelector(sel);
         if (el) tl.from(el, { y: 36, autoAlpha: 0, duration: 0.85, clearProps: 'all' }, i * 0.12);
       });
+      /* failsafe: if rAF was throttled (hidden tab) ensure content is never left hidden */
+      setTimeout(function () { try { if (tl.progress() < 1) tl.progress(1); } catch (e) {} }, 4000);
     }
 
     /* ---------- 2) Scroll-triggered staggered reveals (public pages) ---------- */
