@@ -616,8 +616,9 @@
 
     <div class="cblock"><div class="ct">Public Examination Section — notices, timetable &amp; documents</div>
       <div class="ahint">Items publish instantly into the folder list on the public <b>Examinations</b> page (and sync to every visitor).</div>
-      <div class="arow4" style="grid-template-columns:190px 1fr 150px;align-items:end">
+      <div class="arow4" style="grid-template-columns:170px 170px 1fr 140px;align-items:end">
         <select id="xd-cat"><option value="notification">Notification</option><option value="timetable">Timetable</option><option value="circular">Circular / Instruction</option><option value="paper">Previous Question Paper</option><option value="order">Order</option></select>
+        <select id="xd-course"><option value="">All courses</option></select>
         <input id="xd-title" placeholder="Title — e.g. Final examinations commence 12 August">
         <input id="xd-date" type="date">
       </div>
@@ -1782,12 +1783,20 @@ function loadXDocs(){ try{const a=JSON.parse(localStorage.getItem('alizonExamDoc
 function saveXDocs(a){ setDB('alizonExamDocs',Array.isArray(a)?a:[]); }
 function escXD(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 const XD_CATS={notification:'Notification',timetable:'Timetable',circular:'Circular / Instruction',paper:'Prev. Question Paper',order:'Order'};
+function xdCourseNames(){
+  const set={};
+  try{ (JSON.parse(localStorage.getItem('alizonPrograms')||'[]')||[]).forEach(p=>{ if(p&&p.name)set[p.name]=1; }); }catch(e){}
+  try{ const R=JSON.parse(localStorage.getItem('alizonResults')||'{}'); Object.keys((R&&R.courses)||{}).forEach(c=>set[c]=1); }catch(e){}
+  return Object.keys(set);
+}
 function renderXDocs(){
+  const cs=document.getElementById('xd-course');
+  if(cs){ const cur=cs.value; cs.innerHTML='<option value="">All courses</option>'+xdCourseNames().map(c=>'<option value="'+escXD(c)+'">'+escXD(c)+'</option>').join(''); if(cur) cs.value=cur; }
   const el=document.getElementById('xd-list'); if(!el) return;
   const a=loadXDocs().slice().sort((x,y)=>String(y.date||'').localeCompare(String(x.date||'')));
   el.innerHTML=a.length? a.map(d=>'<div class="citem" style="align-items:flex-start">'
     +'<span style="font-family:ui-monospace,monospace;font-size:11px;opacity:.7;min-width:80px">'+escXD(d.date||'')+'</span>'
-    +'<span style="flex:1"><b>'+escXD(d.title||'')+'</b> <small style="opacity:.65">· '+(XD_CATS[d.cat]||d.cat)+(d.link?' · has link':'')+(d.file?' · 📄 '+escXD(d.file.name):'')+'</small>'
+    +'<span style="flex:1"><b>'+escXD(d.title||'')+'</b> <small style="opacity:.65">· '+(XD_CATS[d.cat]||d.cat)+' · '+(d.course?escXD(d.course):'All courses')+(d.link?' · has link':'')+(d.file?' · 📄 '+escXD(d.file.name):'')+'</small>'
     +(d.body?'<div style="font-size:12px;opacity:.7;white-space:pre-wrap;margin-top:2px">'+escXD(d.body)+'</div>':'')+'</span>'
     +'<button class="eview" data-xdtoggle="'+escXD(d.id)+'">'+(d.on===false?'▲ Publish':'⊘ Unpublish')+'</button>'
     +'<button class="eview" data-xddel="'+escXD(d.id)+'">🗑</button>'
@@ -1823,7 +1832,8 @@ async function xdUploadPdf(file, id){
       add.disabled=false; add.textContent='＋ Publish item';
     }
     const arr=loadXDocs();
-    arr.push({ id:'XD'+Date.now(), cat:document.getElementById('xd-cat').value, title:t,
+    arr.push({ id:'XD'+Date.now(), cat:document.getElementById('xd-cat').value,
+      course:(document.getElementById('xd-course')||{value:''}).value||'', title:t,
       date:document.getElementById('xd-date').value||new Date().toISOString().slice(0,10),
       link:(document.getElementById('xd-link').value||'').trim(), body:(document.getElementById('xd-body').value||'').trim(),
       file:fileMeta||undefined, on:true, ts:Date.now() });

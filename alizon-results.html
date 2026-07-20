@@ -160,7 +160,8 @@ function renderCourses(){
       +(mods.length? mods.map(m=>{ const mod=RS.courses[c].modules[m];
           return '<div class="rf-mod"><b>'+esc(m)+'</b><small>'+((mod.rows||[]).length)+' students · published '+(mod.at?new Date(mod.at).toLocaleDateString():'—')+'</small></div>'; }).join('')
         : '<div class="rf-empty">No results published for this course yet.</div>')
-      +'</div><div class="rf-lookup"></div></div></div>';
+      +'</div><div class="rf-desk" style="padding:4px 8px 10px"><a href="alizon-course.html?course='+encodeURIComponent(c)+'" style="font-size:13px;font-weight:600;color:var(--crimson,#8c1515)">Open '+esc(c)+' course desk → <span style="font-weight:400;opacity:.75">timetable, notifications &amp; documents</span></a></div>'
+      +'<div class="rf-lookup"></div></div></div>';
   }).join('');
   box.querySelectorAll('.rf-row').forEach(row=>{
     const c=row.getAttribute('data-c'); const h=row.querySelector('.rf-head');
@@ -231,9 +232,10 @@ function renderSheet(reg, batch, name, found){
 $('r-go').onclick=lookup;
 ['r-reg','r-batch'].forEach(id=>$(id).addEventListener('keydown',e=>{ if(e.key==='Enter') lookup(); }));
 /* deep-link: alizon-results.html?reg=ALZ102&batch=... — prefill + auto-lookup */
-(function(){ try{ var p=new URLSearchParams(location.search); var r=p.get('reg'), b=p.get('batch');
+(function(){ try{ var p=new URLSearchParams(location.search); var r=p.get('reg'), b=p.get('batch'), c=p.get('course');
+  if(c){ curCourse=c; renderCourses(); var el=document.getElementById('courseFolders'); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
   if(r) $('r-reg').value=r; if(b) $('r-batch').value=b;
-  if(r&&b) setTimeout(lookup, 400); else if(r) $('r-batch').focus();
+  if(r&&b) setTimeout(lookup, 500); else if(r) $('r-batch').focus();
 }catch(e){} })();
 $('shPrint').onclick=()=>window.print();
 $('shBack').onclick=()=>{ $('sheet').classList.remove('show'); $('lookupCard').scrollIntoView({block:'center'}); };

@@ -358,7 +358,7 @@ document.querySelectorAll('.tab').forEach(function(t){
         +'<div class="exs-body">'
         +(items.length? items.map(function(d){
             return '<div class="exs-item"><span class="dt">'+esc(d.date||'')+'</span>'
-              +'<span class="tt" style="flex:1"><b>'+esc(d.title||'Untitled')+'</b>'
+              +'<span class="tt" style="flex:1"><b>'+esc(d.title||'Untitled')+(d.course?' <small style="font-weight:600;color:var(--crimson,#8c1515);opacity:.8">· '+esc(d.course)+'</small>':'')+'</b>'
               +(d.body?'<p>'+esc(d.body)+'</p>':'')+'</span>'
               +(d.link?'<a class="lk" href="'+esc(d.link)+'" target="_blank" rel="noopener">Open ↗</a>':'')
               +(d.file?'<button type="button" class="lk" data-xf="'+esc(d.file.id)+'" data-xfn="'+(d.file.chunks||1)+'" data-xfname="'+esc(d.file.name||'document.pdf')+'">📄 Open PDF</button>':'')
@@ -366,6 +366,20 @@ document.querySelectorAll('.tab').forEach(function(t){
           }).join('') : '<div class="exs-empty">No items published yet.</div>')
         +'</div></div>';
     });
+    /* Course Desks — one dedicated page per course (results, timetable, notices for that course) */
+    var courseSet={};
+    try{ (JSON.parse(localStorage.getItem('alizonPrograms')||'[]')||[]).forEach(function(p){ if(p&&p.name)courseSet[p.name]=1; }); }catch(e){}
+    try{ var RR=JSON.parse(localStorage.getItem('alizonResults')||'{}'); Object.keys((RR&&RR.courses)||{}).forEach(function(c){courseSet[c]=1;}); }catch(e){}
+    var courses=Object.keys(courseSet);
+    html+='<div class="exs-row" data-cat="desks">'
+      +'<div class="exs-head" role="button" tabindex="0" aria-expanded="false"><b>Course Desks — results, timetable &amp; more per course</b>'
+      +'<span class="exs-cnt">'+courses.length+'</span><span class="exs-tg">＋</span></div>'
+      +'<div class="exs-body">'
+      +(courses.length? courses.map(function(c){
+          return '<div class="exs-item"><span class="tt" style="flex:1"><b>'+esc(c)+'</b><p>Everything for this course on its own page.</p></span>'
+            +'<a class="lk" href="alizon-course.html?course='+encodeURIComponent(c)+'">Open desk →</a></div>';
+        }).join('') : '<div class="exs-empty">No courses yet.</div>')
+      +'</div></div>';
     html+='<div class="exs-row" data-cat="results">'
       +'<div class="exs-head" role="button" tabindex="0" aria-expanded="false"><b>Check Examination Results</b>'
       +'<span class="exs-cnt">enter reg no</span><span class="exs-tg">＋</span></div>'

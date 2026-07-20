@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Course Desk</title>
+<link rel="icon" href="alizon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<script src="firebase-sync.js"></script>
+<style>
+  :root{ --crimson:#8c1515; --crimson-deep:#6b0f0f; --gold:#9a7b3f;
+    --ink:#2e2d29; --muted:#6e6a63; --line:rgba(140,21,21,.15); }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Inter,-apple-system,sans-serif;background:linear-gradient(180deg,#fff,#faf8f6);color:var(--ink);
+    -webkit-font-smoothing:antialiased;min-height:100vh}
+  a{color:inherit;text-decoration:none}
+  .top{background:#fff;border-bottom:1px solid rgba(0,0,0,.08);position:sticky;top:0;z-index:10}
+  .top .in{max-width:980px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:12px}
+  .top img{width:30px;height:30px;object-fit:contain}
+  .top .bt b{font-family:'Source Serif Pro',Georgia,serif;font-size:17px;display:block;line-height:1.1}
+  .top .bt small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--crimson);font-weight:600}
+  .top .sp{margin-left:auto;display:flex;gap:10px}
+  .top .sp a{font-size:13.5px;font-weight:500;padding:8px 16px;border-radius:100px;border:1px solid rgba(0,0,0,.12);transition:.2s}
+  .top .sp a:hover{border-color:var(--crimson);color:var(--crimson)}
+  .wrap{max-width:980px;margin:0 auto;padding:34px 20px 70px}
+  .hero{text-align:center;margin-bottom:26px}
+  .hero .ey{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:700;margin-top:8px}
+  .hero p{color:var(--muted);font-size:14.5px;margin-top:8px}
+  .card{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:20px;padding:26px 26px 18px;
+    box-shadow:0 10px 32px rgba(20,18,16,.06)}
+  .exs-row{border-bottom:1px solid var(--line)}
+  .exs-row:last-child{border-bottom:none}
+  .exs-head{display:flex;align-items:center;gap:12px;padding:15px 4px;cursor:pointer;user-select:none}
+  .exs-head b{font-size:15.5px;font-weight:600;flex:1}
+  .exs-cnt{font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(140,21,21,.1);color:var(--crimson)}
+  .exs-tg{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:15px;font-weight:700;
+    background:var(--crimson);color:#fff;transition:transform .25s}
+  .exs-row.open .exs-tg{transform:rotate(45deg)}
+  .exs-body{display:none;padding:2px 4px 16px}
+  .exs-row.open .exs-body{display:block;animation:exsIn .25s ease-out}
+  @keyframes exsIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .exs-item{display:flex;gap:12px;align-items:flex-start;padding:10px 8px;border-radius:10px}
+  .exs-item:hover{background:rgba(140,21,21,.04)}
+  .exs-item .dt{flex:none;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted);padding-top:3px;min-width:86px}
+  .exs-item .tt{flex:1}
+  .exs-item .tt b{font-size:14px;font-weight:600;display:block}
+  .exs-item .tt p{font-size:13px;color:var(--muted);margin:3px 0 0;line-height:1.55;white-space:pre-wrap}
+  .lk{flex:none;font-size:12.5px;font-weight:600;color:var(--crimson);border:1px solid rgba(140,21,21,.35);
+    padding:5px 12px;border-radius:100px;margin-top:1px;background:transparent;cursor:pointer;font-family:inherit}
+  .lk:hover{background:var(--crimson);color:#fff}
+  .lk[disabled]{opacity:.5;cursor:wait}
+  .exs-empty{font-size:13px;color:var(--muted);padding:8px}
+  .mods .exs-item .tt small{font-size:12px;color:var(--muted)}
+  .resrow{display:flex;gap:10px;flex-wrap:wrap;align-items:end;padding:8px 4px 2px}
+  .resrow>div{flex:1;min-width:170px}
+  .resrow label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .resrow input{width:100%;padding:11px 13px;border-radius:10px;border:1px solid rgba(0,0,0,.15);font:inherit;color:var(--ink)}
+  .resrow input:focus{outline:none;border-color:var(--crimson);box-shadow:0 0 0 3px rgba(140,21,21,.12)}
+  .go{padding:12px 22px;border-radius:100px;border:none;cursor:pointer;font:inherit;font-weight:600;font-size:14px;
+    background:linear-gradient(120deg,var(--crimson),var(--crimson-deep));color:#fff}
+  .go:hover{filter:brightness(1.08)}
+  .note{font-size:12.5px;color:var(--muted);padding:8px 4px 0}
+  .missing{max-width:560px;margin:60px auto;text-align:center}
+  .missing a{color:var(--crimson);font-weight:600}
+  @media print{.top{display:none}}
+</style>
+<link rel="stylesheet" href="alizon-theme.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <img src="alizon-logo.png" alt="">
+  <div class="bt"><b id="tCourse">Course Desk</b><small>ALIZON OS · Examination Office</small></div>
+  <div class="sp"><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">All results</a></div>
+</div></div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="ey">Course Desk</div>
+    <h1 id="hCourse">—</h1>
+    <p>Results, timetable, notifications and documents for this course.</p>
+  </div>
+  <div class="card"><div id="deskList"></div></div>
+  <div class="missing" id="noCourse" style="display:none">
+    <h2 style="font-family:'Source Serif Pro',Georgia,serif">Course not specified</h2>
+    <p style="color:var(--muted);margin:10px 0 16px">Open a course from the <a href="alizon-results.html">Results page</a> or the <a href="alizon-exam.html">Examinations page</a>.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var course=null;
+  try{ course=new URLSearchParams(location.search).get('course'); }catch(e){}
+  if(!course){ document.getElementById('noCourse').style.display='block'; document.querySelector('.card').style.display='none'; return; }
+  document.getElementById('tCourse').textContent=course;
+  document.getElementById('hCourse').textContent=course;
+  document.title='ALIZON OS · '+course+' — Course Desk';
+
+  function loadResults(){ try{var d=JSON.parse(localStorage.getItem('alizonResults')||'{}'); return (d&&d.courses)?d:{courses:{}}; }catch(e){ return {courses:{}}; } }
+  function docs(){ try{var a=JSON.parse(localStorage.getItem('alizonExamDocs')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+  function forCourse(d){ var c=(d.course||'').trim(); return !c || c==='all' || c.toLowerCase()===course.toLowerCase(); }
+
+  var CATS=[['timetable','Examination Timetable'],['notification','Examination Notifications'],
+            ['circular','Instructions · Circulars · Proformas'],['paper','Previous Question Papers'],['order','Orders']];
+
+  var _sig='';
+  function render(force){
+    var host=document.getElementById('deskList'); if(!host) return;
+    var sig=''; try{ sig=(localStorage.getItem('alizonResults')||'').length+':'+(localStorage.getItem('alizonExamDocs')||'').length; }catch(e){}
+    if(!force && sig===_sig && host.innerHTML) return;
+    _sig=sig;
+    /* preserve open folders + typed lookup values across a data refresh */
+    var openCats=[].map.call(host.querySelectorAll('.exs-row.open'),function(r){return r.getAttribute('data-cat');});
+    var vReg=(document.getElementById('cd-reg')||{}).value||'', vBatch=(document.getElementById('cd-batch')||{}).value||'';
+    var R=loadResults();
+    var courseKey=Object.keys(R.courses||{}).find(function(c){return c.toLowerCase()===course.toLowerCase();});
+    var mods=courseKey?Object.keys(R.courses[courseKey].modules||{}):[];
+    var all=docs().filter(function(d){return d && d.on!==false && forCourse(d);});
+    var html='';
+
+    /* Results folder (open by default) */
+    html+='<div class="exs-row open" data-cat="results"><div class="exs-head" role="button" tabindex="0" aria-expanded="true"><b>Examination Results</b>'
+      +'<span class="exs-cnt">'+mods.length+' published</span><span class="exs-tg">＋</span></div>'
+      +'<div class="exs-body"><div class="mods">'
+      +(mods.length? mods.map(function(m){ var mod=R.courses[courseKey].modules[m];
+          return '<div class="exs-item"><span class="tt"><b>'+esc(m)+'</b><small>'+((mod.rows||[]).length)+' students · published '+(mod.at?new Date(mod.at).toLocaleDateString():'—')+'</small></span></div>'; }).join('')
+        : '<div class="exs-empty">No results published for this course yet.</div>')
+      +'</div>'
+      +'<div class="resrow"><div><label>Registration number</label><input id="cd-reg" placeholder="e.g. ALZ102" autocomplete="off"></div>'
+      +'<div><label>Batch</label><input id="cd-batch" placeholder="e.g. Batch 2026 - 7" autocomplete="off"></div>'
+      +'<button class="go" id="cd-go">View my result</button></div>'
+      +'<div class="note">Opens your official module-wise statement — print or save as PDF there.</div>'
+      +'</div></div>';
+
+    CATS.forEach(function(c){
+      var items=all.filter(function(d){return d.cat===c[0];}).sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));});
+      html+='<div class="exs-row" data-cat="'+c[0]+'"><div class="exs-head" role="button" tabindex="0" aria-expanded="false"><b>'+c[1]+'</b>'
+        +'<span class="exs-cnt">'+items.length+'</span><span class="exs-tg">＋</span></div>'
+        +'<div class="exs-body">'
+        +(items.length? items.map(function(d){
+            return '<div class="exs-item"><span class="dt">'+esc(d.date||'')+'</span>'
+              +'<span class="tt"><b>'+esc(d.title||'Untitled')+'</b>'+(d.body?'<p>'+esc(d.body)+'</p>':'')+'</span>'
+              +(d.link?'<a class="lk" href="'+esc(d.link)+'" target="_blank" rel="noopener">Open ↗</a>':'')
+              +(d.file?'<button type="button" class="lk" data-xf="'+esc(d.file.id)+'" data-xfn="'+(d.file.chunks||1)+'" data-xfname="'+esc(d.file.name||'document.pdf')+'">📄 Open PDF</button>':'')
+              +'</div>';
+          }).join('') : '<div class="exs-empty">Nothing published for this course yet.</div>')
+        +'</div></div>';
+    });
+    host.innerHTML=html;
+
+    if(openCats.length){ host.querySelectorAll('.exs-row').forEach(function(r){ var on=openCats.indexOf(r.getAttribute('data-cat'))>=0 || (r.getAttribute('data-cat')==='results' && !host.dataset.touched); r.classList.toggle('open',on); var hh=r.querySelector('.exs-head'); if(hh)hh.setAttribute('aria-expanded',on?'true':'false'); }); }
+    if(vReg&&document.getElementById('cd-reg')) document.getElementById('cd-reg').value=vReg;
+    if(vBatch&&document.getElementById('cd-batch')) document.getElementById('cd-batch').value=vBatch;
+    host.querySelectorAll('.exs-head').forEach(function(h){
+      function tg(){ var r=h.parentElement; var open=r.classList.toggle('open'); h.setAttribute('aria-expanded',open?'true':'false'); }
+      h.addEventListener('click',tg);
+      h.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tg(); } });
+    });
+    var go=document.getElementById('cd-go');
+    if(go) go.addEventListener('click',function(){
+      var r=(document.getElementById('cd-reg').value||'').trim(), b=(document.getElementById('cd-batch').value||'').trim();
+      if(!r){ document.getElementById('cd-reg').focus(); return; }
+      location.href='alizon-results.html?course='+encodeURIComponent(course)+'&reg='+encodeURIComponent(r)+(b?'&batch='+encodeURIComponent(b):'');
+    });
+    ['cd-reg','cd-batch'].forEach(function(id){ var el=document.getElementById(id);
+      if(el) el.addEventListener('keydown',function(e){ if(e.key==='Enter'&&go) go.click(); }); });
+  }
+
+  /* uploaded PDFs: chunked in Firestore sync/xdfile_<id>_<n> */
+  function whenAuthed(cb,tries){ tries=tries||0;
+    try{ if(window.firebase&&firebase.auth&&firebase.auth().currentUser){ cb(true); return; } }catch(e){}
+    if(tries>22){ cb(false); return; }
+    setTimeout(function(){ whenAuthed(cb,tries+1); },400);
+  }
+  document.addEventListener('click',function(ev){
+    var b=ev.target.closest('button[data-xf]'); if(!b||b.disabled) return;
+    var id=b.getAttribute('data-xf'), n=parseInt(b.getAttribute('data-xfn'),10)||1, name=b.getAttribute('data-xfname')||'document.pdf';
+    var w=null; try{ w=window.open('about:blank','_blank'); }catch(e){}
+    b.disabled=true; var old=b.textContent; b.textContent='Loading…';
+    whenAuthed(function(ok){
+      if(!ok||!window.firebase||!firebase.firestore){ b.disabled=false; b.textContent=old; if(w)w.close(); alert('Could not connect to the document store. Please try again.'); return; }
+      var db=firebase.firestore(); var gets=[];
+      for(var i=0;i<n;i++) gets.push(db.collection('sync').doc('xdfile_'+id+'_'+i).get());
+      Promise.all(gets).then(function(snaps){
+        var b64=snaps.map(function(s){ return (s.exists&&s.data()&&s.data().value)||''; }).join('');
+        if(!b64) throw new Error('empty');
+        var bin=atob(b64), bytes=new Uint8Array(bin.length);
+        for(var j=0;j<bin.length;j++) bytes[j]=bin.charCodeAt(j);
+        var url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));
+        if(w){ w.location=url; } else { var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+        b.disabled=false; b.textContent=old;
+      }).catch(function(){ b.disabled=false; b.textContent=old; if(w)w.close(); alert('Could not load the PDF. Please try again.'); });
+    });
+  });
+
+  window.addEventListener('storage',function(e){ if(e.key==='alizonExamDocs'||e.key==='alizonResults') render(true); });
+  render(true);
+  setInterval(function(){ render(false); }, 5000);
+})();
+</script>
+</body>
+</html>
