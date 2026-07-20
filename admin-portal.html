@@ -621,6 +621,10 @@
         <input id="xd-date" type="date">
       </div>
       <input id="xd-link" placeholder="Link URL (optional — PDF or page)" style="margin-top:8px;width:100%">
+      <div style="display:flex;gap:12px;align-items:center;margin-top:8px;flex-wrap:wrap">
+        <input type="file" id="xd-file" accept="application/pdf" style="flex:1;min-width:220px">
+        <small class="hint" style="margin:0">…or upload a PDF directly (≤ 8 MB) — stored in the cloud, no link needed</small>
+      </div>
       <textarea id="xd-body" placeholder="Details (optional — shown under the title)" style="margin-top:8px;width:100%;min-height:60px;font:inherit"></textarea>
       <div class="crow n" style="margin-top:10px"><button class="cadd" id="xd-add">＋ Publish item</button></div>
       <div class="clist" id="xd-list" style="margin-top:12px"></div>
@@ -1733,28 +1737,50 @@ function renderXDocs(){
   const a=loadXDocs().slice().sort((x,y)=>String(y.date||'').localeCompare(String(x.date||'')));
   el.innerHTML=a.length? a.map(d=>'<div class="citem" style="align-items:flex-start">'
     +'<span style="font-family:ui-monospace,monospace;font-size:11px;opacity:.7;min-width:80px">'+escXD(d.date||'')+'</span>'
-    +'<span style="flex:1"><b>'+escXD(d.title||'')+'</b> <small style="opacity:.65">· '+(XD_CATS[d.cat]||d.cat)+(d.link?' · has link':'')+'</small>'
+    +'<span style="flex:1"><b>'+escXD(d.title||'')+'</b> <small style="opacity:.65">· '+(XD_CATS[d.cat]||d.cat)+(d.link?' · has link':'')+(d.file?' · 📄 '+escXD(d.file.name):'')+'</small>'
     +(d.body?'<div style="font-size:12px;opacity:.7;white-space:pre-wrap;margin-top:2px">'+escXD(d.body)+'</div>':'')+'</span>'
     +'<button class="eview" data-xdtoggle="'+escXD(d.id)+'">'+(d.on===false?'▲ Publish':'⊘ Unpublish')+'</button>'
     +'<button class="eview" data-xddel="'+escXD(d.id)+'">🗑</button>'
     +'</div>').join('') : '<div class="hint">Nothing published yet.</div>';
   el.querySelectorAll('[data-xdtoggle]').forEach(b=>b.onclick=()=>{ const arr=loadXDocs(); const d=arr.find(x=>String(x.id)===b.dataset.xdtoggle); if(d){ d.on=(d.on===false); saveXDocs(arr); renderXDocs(); toast(d.on?'Published':'Unpublished'); logAct&&logAct('Exam section: "'+(d.title||'')+'" '+(d.on?'published':'unpublished'),'exam'); } });
-  el.querySelectorAll('[data-xddel]').forEach(b=>b.onclick=()=>{ saveXDocs(loadXDocs().filter(x=>String(x.id)!==b.dataset.xddel)); renderXDocs(); toast('Item deleted'); });
+  el.querySelectorAll('[data-xddel]').forEach(b=>b.onclick=()=>{ const arr=loadXDocs(); const d=arr.find(x=>String(x.id)===b.dataset.xddel); xdDeleteFile(d); saveXDocs(arr.filter(x=>String(x.id)!==b.dataset.xddel)); renderXDocs(); toast('Item deleted'); });
+}
+function xdDeleteFile(d){ try{ if(d&&d.file&&window.firebase&&firebase.firestore){ const db=firebase.firestore(); for(let i=0;i<(d.file.chunks||1);i++){ db.collection('sync').doc('xdfile_'+d.file.id+'_'+i).delete().catch(()=>{}); } } }catch(e){} }
+async function xdUploadPdf(file, id){
+  const db=firebase.firestore();
+  const b64=await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result).split(',')[1]||''); r.onerror=rej; r.readAsDataURL(file); });
+  const CH=700000, n=Math.ceil(b64.length/CH);
+  for(let i=0;i<n;i++){ await db.collection('sync').doc('xdfile_'+id+'_'+i).set({ value:b64.slice(i*CH,(i+1)*CH) }); }
+  return { id:id, name:file.name, size:file.size, chunks:n };
 }
 (function(){
   const add=document.getElementById('xd-add'); if(!add) return;
   const dt=document.getElementById('xd-date'); if(dt&&!dt.value){ dt.value=new Date().toISOString().slice(0,10); }
-  add.addEventListener('click',()=>{
+  add.addEventListener('click',async ()=>{
     const t=(document.getElementById('xd-title').value||'').trim();
     if(!t){ toast('Give the item a title'); return; }
+    const fEl=document.getElementById('xd-file'); const f=fEl&&fEl.files&&fEl.files[0];
+    let fileMeta=null;
+    if(f){
+      const isPdf=(f.type==='application/pdf')||/\.pdf$/i.test(f.name||'');
+      if(!isPdf){ toast('Only PDF files can be uploaded'); return; }
+      if(f.size>8*1024*1024){ toast('PDF too large — keep it under 8 MB'); return; }
+      let authed=false; try{ authed=!!(window.firebase&&firebase.auth&&firebase.auth().currentUser); }catch(e){}
+      if(!authed){ toast('Cloud sign-in required to upload PDFs — check your connection or paste a link instead'); return; }
+      add.disabled=true; add.textContent='Uploading PDF…';
+      try{ fileMeta=await xdUploadPdf(f,'XF'+Date.now()); }
+      catch(e){ add.disabled=false; add.textContent='＋ Publish item'; toast('Upload failed — try again or paste a link'); return; }
+      add.disabled=false; add.textContent='＋ Publish item';
+    }
     const arr=loadXDocs();
     arr.push({ id:'XD'+Date.now(), cat:document.getElementById('xd-cat').value, title:t,
       date:document.getElementById('xd-date').value||new Date().toISOString().slice(0,10),
-      link:(document.getElementById('xd-link').value||'').trim(), body:(document.getElementById('xd-body').value||'').trim(), on:true, ts:Date.now() });
+      link:(document.getElementById('xd-link').value||'').trim(), body:(document.getElementById('xd-body').value||'').trim(),
+      file:fileMeta||undefined, on:true, ts:Date.now() });
     saveXDocs(arr);
-    document.getElementById('xd-title').value=''; document.getElementById('xd-link').value=''; document.getElementById('xd-body').value='';
-    renderXDocs(); toast('Published to the Examinations page');
-    try{ logAct&&logAct('Exam section: published "'+t+'"','exam'); }catch(e){}
+    document.getElementById('xd-title').value=''; document.getElementById('xd-link').value=''; document.getElementById('xd-body').value=''; if(fEl) fEl.value='';
+    renderXDocs(); toast(fileMeta?'PDF uploaded & published':'Published to the Examinations page');
+    try{ logAct&&logAct('Exam section: published "'+t+'"'+(fileMeta?' (PDF)':''),'exam'); }catch(e){}
   });
 })();
 function renderExams(){ renderXDocs();
