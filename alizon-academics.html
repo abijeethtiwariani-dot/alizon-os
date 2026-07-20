@@ -47,23 +47,39 @@
   .serif{font-family:'Source Serif Pro',Georgia,serif}
   .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
 
-  /* ===== Stanford-style cardinal top bar ===== */
-  .top{background:var(--crimson);position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(60,8,8,.25)}
-  .top .in{max-width:1240px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:14px;min-height:64px}
-  .top img{width:34px;height:34px;object-fit:contain;filter:brightness(0) invert(1)}
-  .top .bt{color:#fff}
-  .top .bt b{font-family:'Source Serif Pro',Georgia,serif;font-size:20px;font-weight:600;display:block;line-height:1.05;letter-spacing:.01em}
-  .top .bt small{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#eecfcf;font-weight:600}
-  .top nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
-  .top nav a{color:#fff;font-size:14px;font-weight:500;padding:9px 14px;border-radius:4px;transition:.2s}
-  .top nav a:hover{background:rgba(0,0,0,.22)}
-  .top nav a.pri{background:#fff;color:var(--crimson-deep);font-weight:600}
-  .top nav a.pri:hover{background:#f3e6e6}
-  @media(max-width:640px){
-    .top .in{padding:10px 16px;gap:10px}
-    .top .bt small{display:none}
-    .top nav{gap:0}
-    .top nav a{font-size:12.5px;padding:7px 9px}
+  /* ===== Stanford-style two-tier header =====
+     Tier 1: darker utility strip — label + pill quick-links + search.
+     Tier 2: cardinal main bar — serif wordmark + nav links.        */
+  .topbar{position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(60,8,8,.25)}
+  .util{background:var(--crimson-deep);border-bottom:1px solid rgba(0,0,0,.18)}
+  .util .in{max-width:1240px;margin:0 auto;padding:8px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .util .lbl{color:#fff;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-right:4px}
+  .util .pill{color:#fff;font-size:12.5px;font-weight:500;padding:5px 14px;border-radius:100px;background:rgba(255,255,255,.14);transition:.2s;white-space:nowrap}
+  .util .pill:hover{background:rgba(255,255,255,.28)}
+  .util .srch{margin-left:auto;display:flex;align-items:center;gap:8px;background:#fff;border-radius:100px;padding:6px 14px;min-width:220px;color:var(--muted)}
+  .util .srch svg{width:14px;height:14px;flex:none;opacity:.6}
+  .util .srch input{border:0;outline:0;font:inherit;font-size:13px;width:100%;background:transparent;color:var(--ink)}
+  .main-nav{background:var(--crimson)}
+  .main-nav .in{max-width:1240px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:14px;min-height:62px}
+  .main-nav img{width:34px;height:34px;object-fit:contain;filter:brightness(0) invert(1)}
+  .main-nav .bt{color:#fff}
+  .main-nav .bt b{font-family:'Source Serif Pro',Georgia,serif;font-size:21px;font-weight:600;display:block;line-height:1.05;letter-spacing:.01em}
+  .main-nav .bt small{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#eecfcf;font-weight:600}
+  .main-nav nav{margin-left:auto;display:flex;gap:2px;flex-wrap:wrap;align-items:center}
+  .main-nav nav a{color:#fff;font-size:14.5px;font-weight:500;padding:9px 13px;border-radius:4px;transition:.2s}
+  .main-nav nav a:hover{background:rgba(0,0,0,.22)}
+  .main-nav nav a.on{background:rgba(0,0,0,.18);box-shadow:inset 0 -3px 0 rgba(255,255,255,.85);border-radius:4px 4px 0 0}
+  .main-nav nav a.pri{background:#fff;color:var(--crimson-deep);font-weight:600;margin-left:6px}
+  .main-nav nav a.pri:hover{background:#f3e6e6}
+  @media(max-width:760px){
+    .util .lbl{display:none}
+    .util .in{padding:7px 12px;gap:7px}
+    .util .pill{font-size:11.5px;padding:4px 11px}
+    .util .srch{min-width:0;flex:1 1 150px;padding:5px 12px}
+    .main-nav .in{padding:8px 14px;gap:10px}
+    .main-nav .bt small{display:none}
+    .main-nav nav{gap:0}
+    .main-nav nav a{font-size:12.5px;padding:7px 8px}
   }
 
   /* ===== Split hero: dark editorial panel + cardinal visual ===== */
@@ -190,16 +206,30 @@
 </head>
 <body>
 
-<div class="top"><div class="in">
-  <img src="alizon-logo.png" alt="Alizon School of Medical & Digital Intelligence logo">
-  <div class="bt"><b class="serif">Alizon</b><small>School of Medical &amp; Digital Intelligence</small></div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="alizon-exam.html">Examinations</a>
-    <a href="alizon-results.html">Results</a>
-    <a class="pri" href="ASMDI-dashboard.html">Student Portal ↗</a>
-  </nav>
-</div></div>
+<div class="topbar">
+  <div class="util"><div class="in">
+    <span class="lbl">Our Programmes</span>
+    <a class="pill" href="alizon-course.html?course=Pharmacy%20AI">Pharmacy AI</a>
+    <a class="pill" href="alizon-course.html?course=Medical%20AI">Medical AI</a>
+    <a class="pill" href="alizon-course.html?course=Paramedical%20AI">Paramedical AI</a>
+    <a class="pill" href="#certified">See all</a>
+    <form class="srch" role="search" aria-label="Ask Aliz" onsubmit="location.href='index.html#azcon-root';return false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      <input type="search" placeholder="How can we help?" aria-label="How can we help?">
+    </form>
+  </div></div>
+  <div class="main-nav"><div class="in">
+    <img src="alizon-logo.png" alt="Alizon School of Medical & Digital Intelligence logo">
+    <div class="bt"><b class="serif">Alizon</b><small>School of Medical &amp; Digital Intelligence</small></div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a class="on" href="alizon-academics.html" aria-current="page">Academics</a>
+      <a href="alizon-exam.html">Examinations</a>
+      <a href="alizon-results.html">Results</a>
+      <a class="pri" href="ASMDI-dashboard.html">Student Portal ↗</a>
+    </nav>
+  </div></div>
+</div>
 
 <header class="hero">
   <div class="txt">
