@@ -484,9 +484,10 @@
     <div class="ahint">Publish module-wise results. Choose a course and module, then upload the results CSV. Students see them instantly on the public <b>Results</b> page (<span style="color:var(--gold)">/alizon-results</span>) by entering their registration number &amp; batch. Re-uploading a module replaces it.</div>
 
     <h3 style="font-size:15px;margin:14px 0 8px;color:var(--gold)">Publish a module result</h3>
-    <div class="arow3" style="grid-template-columns:1fr 1fr auto;align-items:end">
+    <div class="arow3" style="grid-template-columns:1fr 1fr .8fr auto;align-items:end">
       <div><label class="hint" style="display:block;margin-bottom:4px">Course</label><input type="text" id="res-course" placeholder="e.g. Paramedical AI" list="res-courselist"><datalist id="res-courselist"></datalist></div>
       <div><label class="hint" style="display:block;margin-bottom:4px">Module / exam</label><input type="text" id="res-module" placeholder="e.g. Module 1 — AI Foundations"></div>
+      <div><label class="hint" style="display:block;margin-bottom:4px">Batch (optional)</label><input type="text" id="res-batch" placeholder="e.g. Batch 2026 - 7" list="res-batchlist"><datalist id="res-batchlist"></datalist></div>
       <label class="cadd btn" style="cursor:pointer;text-align:center;white-space:nowrap">Upload results CSV<input type="file" id="resCsv" accept=".csv,text/csv" style="display:none"></label>
     </div>
     <div class="hint" id="res-note" style="margin-top:8px">CSV needs a registration-number column (header containing “reg”, “roll”, “admission” or “enroll”) and optionally a name column. Every other column (marks, grade, result…) is shown to the student.</div>
@@ -1644,9 +1645,10 @@ document.getElementById('resCsv').addEventListener('change',function(e){
       if(!data.length){ toast('No student rows with a registration number'); e.target.value=''; return; }
       const R=loadResults(); if(!R.courses[course]) R.courses[course]={modules:{}};
       if(!R.courses[course].modules) R.courses[course].modules={};
-      R.courses[course].modules[module]={ at:Date.now(), cols:cols, rows:data };
+      const batchv=(document.getElementById('res-batch').value||'').trim();
+      R.courses[course].modules[module]={ at:Date.now(), cols:cols, rows:data, batch:batchv };
       R.updated=Date.now(); saveResults(R);
-      logAct('Results published — '+course+' · '+module+' ('+data.length+' students)','update');
+      logAct('Results published — '+course+' · '+module+(batchv?' · '+batchv:'')+' ('+data.length+' students)','update');
       toast('Published '+data.length+' results for '+module);
       document.getElementById('res-module').value='';
       renderResultsAdmin();
@@ -1668,14 +1670,19 @@ function renderResultsAdmin(){
   if(dl){ const set={}; courses.forEach(c=>set[c]=1);
     try{ (JSON.parse(localStorage.getItem('alizonPrograms')||'[]')||[]).forEach(p=>{ if(p&&p.name)set[p.name]=1; }); }catch(e){}
     dl.innerHTML=Object.keys(set).map(c=>`<option value="${esc(c)}">`).join(''); }
+  const bl=document.getElementById('res-batchlist');
+  if(bl){ const bset={};
+    try{ (JSON.parse(localStorage.getItem('alizonStudents')||'[]')||[]).forEach(s=>{ if(s&&s.batch)bset[s.batch]=1; }); }catch(e){}
+    courses.forEach(c=>Object.keys(R.courses[c].modules||{}).forEach(m=>{ const b=R.courses[c].modules[m].batch; if(b)bset[b]=1; }));
+    bl.innerHTML=Object.keys(bset).map(b=>`<option value="${esc(b)}">`).join(''); }
   let n=0, rowsHtml='';
   courses.forEach(c=>{ Object.keys(R.courses[c].modules||{}).forEach(m=>{ const mod=R.courses[c].modules[m]; n++;
-    rowsHtml+=`<tr><td>${esc(c)}</td><td>${esc(m)}</td><td class="num">${(mod.rows||[]).length}</td><td>${esc((mod.cols||[]).join(', ')||'—')}</td><td class="num">${mod.at?fmt(mod.at):'—'}</td><td style="white-space:nowrap"><button class="btn resEdit" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px">✎ Students</button> <button class="btn resDel" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px;border-color:var(--crimson);color:var(--crimson)">Remove</button></td></tr>`;
+    rowsHtml+=`<tr><td>${esc(c)}</td><td>${esc(m)}</td><td>${esc(mod.batch||'All')}</td><td class="num">${(mod.rows||[]).length}</td><td>${esc((mod.cols||[]).join(', ')||'—')}</td><td class="num">${mod.at?fmt(mod.at):'—'}</td><td style="white-space:nowrap"><button class="btn resEdit" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px">✎ Students</button> <button class="btn resDel" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px;border-color:var(--crimson);color:var(--crimson)">Remove</button></td></tr>`;
   }); });
   document.getElementById('res-count').textContent=n?'· '+n+' module'+(n>1?'s':'')+' published':'';
   const tb=document.getElementById('resTable');
-  tb.innerHTML='<tr><th>Course</th><th>Module</th><th>Students</th><th>Columns</th><th>Published</th><th></th></tr>'+
-    (rowsHtml||'<tr><td colspan="6" style="color:var(--muted);padding:12px">No results published yet — upload a module CSV above.</td></tr>');
+  tb.innerHTML='<tr><th>Course</th><th>Module</th><th>Batch</th><th>Students</th><th>Columns</th><th>Published</th><th></th></tr>'+
+    (rowsHtml||'<tr><td colspan="7" style="color:var(--muted);padding:12px">No results published yet — upload a module CSV above.</td></tr>');
   tb.querySelectorAll('.resDel').forEach(b=>b.onclick=()=>delResult(b.dataset.c,b.dataset.m));
   tb.querySelectorAll('.resEdit').forEach(b=>b.onclick=()=>editResult(b.dataset.c,b.dataset.m));
 }

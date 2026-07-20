@@ -54,6 +54,9 @@
   .lk[disabled]{opacity:.5;cursor:wait}
   .exs-empty{font-size:13px;color:var(--muted);padding:8px}
   .mods .exs-item .tt small{font-size:12px;color:var(--muted)}
+  .cd-batch{border:1px solid rgba(140,21,21,.12);border-radius:14px;padding:8px 12px;margin:9px 0;background:rgba(140,21,21,.02)}
+  .cd-bhead{display:flex;align-items:center;gap:10px;padding:5px 2px 4px}
+  .cd-bhead b{flex:1;font-size:14.5px}
   .resrow{display:flex;gap:10px;flex-wrap:wrap;align-items:end;padding:8px 4px 2px}
   .resrow>div{flex:1;min-width:170px}
   .resrow label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
@@ -125,9 +128,20 @@
     html+='<div class="exs-row open" data-cat="results"><div class="exs-head" role="button" tabindex="0" aria-expanded="true"><b>Examination Results</b>'
       +'<span class="exs-cnt">'+mods.length+' published</span><span class="exs-tg">＋</span></div>'
       +'<div class="exs-body"><div class="mods">'
-      +(mods.length? mods.map(function(m){ var mod=R.courses[courseKey].modules[m];
-          return '<div class="exs-item"><span class="tt"><b>'+esc(m)+'</b><small>'+((mod.rows||[]).length)+' students · published '+(mod.at?new Date(mod.at).toLocaleDateString():'—')+'</small></span></div>'; }).join('')
-        : '<div class="exs-empty">No results published for this course yet.</div>')
+      +(function(){
+          if(!mods.length) return '<div class="exs-empty">No results published for this course yet.</div>';
+          var groups={};
+          mods.forEach(function(m){ var mod=R.courses[courseKey].modules[m];
+            var b=(mod.batch||'').trim()||'All batches'; (groups[b]=groups[b]||[]).push({name:m,mod:mod}); });
+          return Object.keys(groups).map(function(b){
+            var items=groups[b];
+            return '<div class="cd-batch"><div class="cd-bhead"><b>'+esc(b)+'</b>'
+              +'<span class="exs-cnt">'+items.length+' module'+(items.length>1?'s':'')+'</span>'
+              +'<button type="button" class="lk cd-bgo" data-b="'+esc(b==='All batches'?'':b)+'">Check result →</button></div>'
+              +items.map(function(it){ return '<div class="exs-item"><span class="tt"><b>'+esc(it.name)+'</b><small>'+((it.mod.rows||[]).length)+' students · published '+(it.mod.at?new Date(it.mod.at).toLocaleDateString():'—')+'</small></span></div>'; }).join('')
+              +'</div>';
+          }).join('');
+        })()
       +'</div>'
       +'<div class="resrow"><div><label>Registration number</label><input id="cd-reg" placeholder="e.g. ALZ102" autocomplete="off"></div>'
       +'<div><label>Batch</label><input id="cd-batch" placeholder="e.g. Batch 2026 - 7" autocomplete="off"></div>'
@@ -167,6 +181,15 @@
     });
     ['cd-reg','cd-batch'].forEach(function(id){ var el=document.getElementById(id);
       if(el) el.addEventListener('keydown',function(e){ if(e.key==='Enter'&&go) go.click(); }); });
+    host.querySelectorAll('.cd-bgo').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var b=btn.getAttribute('data-b')||'';
+        var bi=document.getElementById('cd-batch'), ri=document.getElementById('cd-reg');
+        if(bi&&b) bi.value=b;
+        var row=host.querySelector('.exs-row[data-cat="results"]'); if(row) row.classList.add('open');
+        if(ri){ ri.scrollIntoView({behavior:'smooth',block:'center'}); ri.focus(); }
+      });
+    });
   }
 
   /* uploaded PDFs: chunked in Firestore sync/xdfile_<id>_<n> */

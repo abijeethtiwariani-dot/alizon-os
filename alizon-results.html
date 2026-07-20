@@ -158,7 +158,7 @@ function renderCourses(){
       +'<span class="rf-cnt">'+mods.length+' result'+(mods.length!==1?'s':'')+'</span><span class="rf-tg">＋</span></div>'
       +'<div class="rf-body"><div class="rf-mods">'
       +(mods.length? mods.map(m=>{ const mod=RS.courses[c].modules[m];
-          return '<div class="rf-mod"><b>'+esc(m)+'</b><small>'+((mod.rows||[]).length)+' students · published '+(mod.at?new Date(mod.at).toLocaleDateString():'—')+'</small></div>'; }).join('')
+          return '<div class="rf-mod"><b>'+esc(m)+'</b><small>'+(mod.batch?esc(mod.batch)+' · ':'')+((mod.rows||[]).length)+' students · published '+(mod.at?new Date(mod.at).toLocaleDateString():'—')+'</small></div>'; }).join('')
         : '<div class="rf-empty">No results published for this course yet.</div>')
       +'</div><div class="rf-desk" style="padding:4px 8px 10px"><a href="alizon-course.html?course='+encodeURIComponent(c)+'" style="font-size:13px;font-weight:600;color:var(--crimson,#8c1515)">Open '+esc(c)+' course desk → <span style="font-weight:400;opacity:.75">timetable, notifications &amp; documents</span></a></div>'
       +'<div class="rf-lookup"></div></div></div>';
@@ -204,6 +204,8 @@ function lookup(){
   const found=[]; let studentName='';
   mods.forEach(m=>{
     const mod=course.modules[m];
+    /* batch-tagged module: only show to matching batch */
+    if(mod.batch && norm(mod.batch)!==norm(batch) && norm(mod.batch).indexOf(norm(batch))<0 && norm(batch).indexOf(norm(mod.batch))<0) return;
     const row=(mod.rows||[]).find(r=>norm(r.reg)===norm(reg));
     if(row){ found.push({module:m, cols:mod.cols||[], v:row.v||{}, at:mod.at}); if(row.name) studentName=row.name; }
   });
