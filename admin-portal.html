@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ALIZON OS · Admin Portal — Course Management</title>
+<meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="alizon-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1879,9 +1880,23 @@ function renderXDocs(){
     +'<span style="font-family:ui-monospace,monospace;font-size:11px;opacity:.7;min-width:80px">'+escXD(d.date||'')+'</span>'
     +'<span style="flex:1"><b>'+escXD(d.title||'')+'</b> <small style="opacity:.65">· '+(XD_CATS[d.cat]||d.cat)+' · '+(d.course?escXD(d.course):'All courses')+(d.link?' · has link':'')+(d.file?' · 📄 '+escXD(d.file.name):'')+'</small>'
     +(d.body?'<div style="font-size:12px;opacity:.7;white-space:pre-wrap;margin-top:2px">'+escXD(d.body)+'</div>':'')+'</span>'
+    +'<button class="eview" data-xdedit="'+escXD(d.id)+'" title="Edit this item">✎ Edit</button>'
     +'<button class="eview" data-xdtoggle="'+escXD(d.id)+'">'+(d.on===false?'▲ Publish':'⊘ Unpublish')+'</button>'
     +'<button class="eview" data-xddel="'+escXD(d.id)+'">🗑</button>'
     +'</div>').join('') : '<div class="hint">Nothing published yet.</div>';
+  el.querySelectorAll('[data-xdedit]').forEach(b=>b.onclick=()=>{
+    const d=loadXDocs().find(x=>String(x.id)===b.dataset.xdedit); if(!d) return;
+    window._xdEdit=d.id;
+    document.getElementById('xd-cat').value=d.cat||'notification';
+    const cs=document.getElementById('xd-course'); if(cs){ if(d.course&&![].some.call(cs.options,o=>o.value===d.course)){ const o=document.createElement('option'); o.value=o.textContent=d.course; cs.appendChild(o);} cs.value=d.course||''; }
+    document.getElementById('xd-title').value=d.title||'';
+    document.getElementById('xd-date').value=d.date||'';
+    document.getElementById('xd-link').value=d.link||'';
+    document.getElementById('xd-body').value=d.body||'';
+    const add=document.getElementById('xd-add'); add.textContent='💾 Save changes';
+    add.scrollIntoView({behavior:'smooth',block:'center'});
+    toast('Editing "'+(d.title||'')+'" — change the fields and press Save'+(d.file?' (uploaded PDF is kept unless you pick a new file)':''));
+  });
   el.querySelectorAll('[data-xdtoggle]').forEach(b=>b.onclick=()=>{ const arr=loadXDocs(); const d=arr.find(x=>String(x.id)===b.dataset.xdtoggle); if(d){ d.on=(d.on===false); saveXDocs(arr); renderXDocs(); toast(d.on?'Published':'Unpublished'); logAct&&logAct('Exam section: "'+(d.title||'')+'" '+(d.on?'published':'unpublished'),'exam'); } });
   el.querySelectorAll('[data-xddel]').forEach(b=>b.onclick=()=>{ const arr=loadXDocs(); const d=arr.find(x=>String(x.id)===b.dataset.xddel); xdDeleteFile(d); saveXDocs(arr.filter(x=>String(x.id)!==b.dataset.xddel)); renderXDocs(); toast('Item deleted'); });
 }
@@ -1913,6 +1928,26 @@ async function xdUploadPdf(file, id){
       add.disabled=false; add.textContent='＋ Publish item';
     }
     const arr=loadXDocs();
+    if(window._xdEdit){
+      const d=arr.find(x=>String(x.id)===String(window._xdEdit));
+      if(d){
+        if(fileMeta){ xdDeleteFile(d); d.file=fileMeta; }
+        d.cat=document.getElementById('xd-cat').value;
+        d.course=(document.getElementById('xd-course')||{value:''}).value||'';
+        d.title=t;
+        d.date=document.getElementById('xd-date').value||d.date;
+        d.link=(document.getElementById('xd-link').value||'').trim();
+        d.body=(document.getElementById('xd-body').value||'').trim();
+        d.ts=Date.now();
+      }
+      window._xdEdit=null;
+      document.getElementById('xd-add').textContent='＋ Publish item';
+      saveXDocs(arr);
+      document.getElementById('xd-title').value=''; document.getElementById('xd-link').value=''; document.getElementById('xd-body').value=''; if(fEl) fEl.value='';
+      renderXDocs(); toast('Item updated');
+      try{ logAct&&logAct('Exam section: edited "'+t+'"','update'); }catch(e){}
+      return;
+    }
     arr.push({ id:'XD'+Date.now(), cat:document.getElementById('xd-cat').value,
       course:(document.getElementById('xd-course')||{value:''}).value||'', title:t,
       date:document.getElementById('xd-date').value||new Date().toISOString().slice(0,10),
@@ -1937,6 +1972,7 @@ function renderExams(){ renderXDocs();
           <small>${esc(comps)}${c.purpose?' · '+esc(c.purpose):''}${c.ts?' · created '+fmt(c.ts):''}</small></div>
         <span class="badge2 ${c.active?'done':''}" style="${c.active?'':'color:var(--muted);background:var(--pill)'}">${c.active?'Active':'Off'}</span>
         <label class="eview" style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" class="ex-ctoggle" data-id="${esc(c.id)}"${c.active?' checked':''}> Active</label>
+        <button class="eview ex-cedit" data-id="${esc(c.id)}" title="Edit cycle">✎</button>
         <button class="cx ex-cdel" data-id="${esc(c.id)}" title="Delete cycle">✕</button>
       </div>`;
     }).join(''):'<div class="hint" style="padding:6px 2px">No exam cycles yet — create one above to open an exam window.</div>';
@@ -1944,6 +1980,19 @@ function renderExams(){ renderXDocs();
       const arr=loadCycles(); const c=arr.find(x=>String(x.id)===String(b.dataset.id)); if(!c)return;
       c.active=b.checked; saveCycles(arr); renderExams(); toast('Cycle "'+(c.name||'')+'" '+(c.active?'activated':'turned off'));
       logAct('Exam cycle "'+(c.name||'')+'" '+(c.active?'activated':'deactivated'),'update');
+    }));
+    cl.querySelectorAll('.ex-cedit').forEach(b=>b.addEventListener('click',()=>{
+      const arr=loadCycles(); const c=arr.find(x=>String(x.id)===String(b.dataset.id)); if(!c)return;
+      window._cycEdit=c.id;
+      document.getElementById('ex-cname').value=c.name||'';
+      document.getElementById('ex-cpurpose').value=c.purpose||'';
+      document.getElementById('ex-cactive').checked=!!c.active;
+      document.getElementById('ex-cviva').checked=!!(c.components&&c.components.viva);
+      document.getElementById('ex-cprac').checked=!!(c.components&&c.components.practical);
+      document.getElementById('ex-cfinal').checked=!!(c.components&&c.components.final);
+      const btn=document.getElementById('ex-caddbtn'); btn.textContent='💾 Save cycle changes';
+      btn.scrollIntoView({behavior:'smooth',block:'center'});
+      toast('Editing cycle "'+(c.name||'')+'" — press Save when done');
     }));
     cl.querySelectorAll('.ex-cdel').forEach(b=>b.addEventListener('click',()=>{
       const arr=loadCycles(); const c=arr.find(x=>String(x.id)===String(b.dataset.id));
@@ -2031,6 +2080,23 @@ function renderExams(){ renderXDocs();
 (function(){
   const add=document.getElementById('ex-caddbtn'); if(!add)return;
   add.addEventListener('click',()=>{
+    if(window._cycEdit){
+      const arr=loadCycles(); const c=arr.find(x=>String(x.id)===String(window._cycEdit));
+      if(c){
+        const nn=(document.getElementById('ex-cname').value||'').trim();
+        if(!nn){ toast('Give the cycle a name'); return; }
+        c.name=nn; c.purpose=(document.getElementById('ex-cpurpose').value||'').trim();
+        c.active=document.getElementById('ex-cactive').checked;
+        c.components={ viva:document.getElementById('ex-cviva').checked, practical:document.getElementById('ex-cprac').checked, final:document.getElementById('ex-cfinal').checked };
+        saveCycles(arr);
+        logAct('Exam cycle "'+nn+'" edited','update');
+      }
+      window._cycEdit=null;
+      document.getElementById('ex-caddbtn').textContent='＋ Add exam cycle';
+      document.getElementById('ex-cname').value=''; document.getElementById('ex-cpurpose').value='';
+      renderExams(); toast('Cycle updated');
+      return;
+    }
     const name=(document.getElementById('ex-cname').value||'').trim();
     if(!name){ toast('Give the exam cycle a name'); document.getElementById('ex-cname').focus(); return; }
     const arr=loadCycles();

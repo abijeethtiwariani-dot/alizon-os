@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alizon HR · Document Studio</title>
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
 <style>
@@ -13,8 +13,8 @@
   --bg:#070810; --navy:#0D1024; --navy2:#1A1D2E;
   --ink:#f5f4f6; --muted:#9a9db2;
   --line:rgba(255,255,255,.09); --line-soft:rgba(255,255,255,.06);
-  --crimson:#4C6FFF; --crimson-deep:#2F4FE0; --gold:#D9A441;
-  --gold-soft:rgba(217,164,65,.14); --crimson-soft:rgba(76,111,255,.14);
+  --crimson:#D41820; --crimson-deep:#B1040E; --gold:#D9A441;
+  --gold-soft:rgba(217,164,65,.14); --crimson-soft:rgba(212,24,32,.14);
   --pill:rgba(255,255,255,.05);
   --glass:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
   --ui:'Inter',system-ui,sans-serif;
@@ -48,7 +48,7 @@ button{font-family:var(--sans);cursor:pointer}
   display:inline-flex;align-items:center;gap:7px;transition:background .15s,border-color .15s
 }
 .btn:hover{background:rgba(255,255,255,.1);border-color:rgba(217,164,65,.4)}
-.btn.primary{background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent;color:#fff;box-shadow:0 8px 22px rgba(76,111,255,.3)}
+.btn.primary{background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent;color:#fff;box-shadow:0 8px 22px rgba(212,24,32,.3)}
 .btn.primary:hover{background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));filter:brightness(1.12)}
 .btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .btn:focus-visible,.doc-tab:focus-visible,.nav-tab:focus-visible{
@@ -88,7 +88,7 @@ main{display:flex;flex:1;min-height:0}
 .mode-seg button:hover{color:var(--ink);border-color:rgba(217,164,65,.4)}
 .mode-seg button.active{
   background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));
-  border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(76,111,255,.3)
+  border-color:transparent;color:#fff;box-shadow:0 6px 16px rgba(212,24,32,.3)
 }
 .mode-seg button.active[data-mode="interns"]{
   background:linear-gradient(120deg,#8a6b1f,var(--gold));color:#241a05;
@@ -135,7 +135,7 @@ select option{background:var(--navy)}
 
 /* ── Preview desk ──────────────────────────── */
 .desk{flex:1;overflow:auto;padding:34px;display:flex;justify-content:center;align-items:flex-start;
-  background:radial-gradient(120% 80% at 50% -10%,rgba(76,111,255,.08),transparent 60%),
+  background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.08),transparent 60%),
   radial-gradient(90% 60% at 90% 10%,rgba(217,164,65,.06),transparent 55%)}
 .paper-wrap{flex-shrink:0}
 
