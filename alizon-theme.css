@@ -1,27 +1,159 @@
 /* ===================================================================
-   ALIZON OS — unified WHITE + CARDINAL (Stanford-style) theme
+   ALIZON OS — unified COSMIC VIOLET dark theme (FAENG-style reference)
    Loaded LAST in every portal so it overrides the brand CSS variables.
-   Cardinal red #8c1515 primary (white text) · white surfaces · editorial serif.
+   Violet primary · deep-space surfaces · white pill marketing CTAs.
    =================================================================== */
 :root{
-  /* primary -> Stanford cardinal */
-  --crimson:#8c1515 !important;
-  --crimson-deep:#6b0f0f !important;
-  --crimson-bright:#b1040e !important;
-  --crimson-soft:rgba(140,21,21,.10) !important;
-  --crimson-2:#a52a2a !important;
-  /* secondary -> warm sandstone (readable on white) */
-  --gold:#9a7b3f !important;
-  --gold-soft:rgba(154,123,63,.16) !important;
-  /* dark chrome tokens nudged warm-neutral */
-  --navy:#2e2d29 !important;
-  --navy2:#3a3833 !important;
-  --navy3:#4a473f !important;
-  --accent:#8c1515 !important;
-  --primary:#8c1515 !important;
-  --brand:#8c1515 !important;
+  /* primary -> cosmic violet */
+  --crimson:#7c5cfc !important;
+  --crimson-deep:#6636e8 !important;
+  --crimson-bright:#9d84ff !important;
+  --crimson-soft:rgba(124,92,252,.16) !important;
+  --crimson-2:#8b6ef0 !important;
+  /* secondary -> lavender */
+  --gold:#b9a9ff !important;
+  --gold-soft:rgba(185,169,255,.16) !important;
+  /* chrome -> deep indigo */
+  --navy:#14122a !important;
+  --navy2:#1d1a38 !important;
+  --navy3:#2a2650 !important;
+  --accent:#7c5cfc !important;
+  --primary:#7c5cfc !important;
+  --brand:#7c5cfc !important;
 }
-::selection{background:#8c1515;color:#fff;}
-* { scrollbar-color:#b99a9a transparent; }
-*::-webkit-scrollbar-thumb{ background:#c9b3b3; border-radius:100px; }
-.orb{ filter:drop-shadow(0 0 10px rgba(140,21,21,.35)) !important; }
+::selection{background:#7c5cfc;color:#fff;}
+* { scrollbar-color:#453a7a transparent; }
+*::-webkit-scrollbar-thumb{ background:#453a7a; border-radius:100px; }
+.orb{ filter:drop-shadow(0 0 12px rgba(124,92,252,.5)) !important; }
+
+/* Marketing primary CTA -> WHITE pill with near-black text (FAENG reference) */
+.btn.primary{
+  background:#ffffff !important;
+  color:#14122a !important;
+  box-shadow:0 10px 30px -8px rgba(124,92,252,.55),0 4px 14px rgba(0,0,0,.35) !important;
+  text-shadow:none !important;
+}
+.btn.primary:hover{ box-shadow:0 16px 40px -8px rgba(124,92,252,.7),0 6px 18px rgba(0,0,0,.4) !important; }
+
+/* ===== per-portal hardcoded-colour neutralisation (violet system) ===== */
+/* ============================================================
+   VIOLET ERA · portal colour overrides (admin / faculty / staff /
+   results / exam). Appended last in alizon-theme.css.
+   Colours only — no layout. Neutralizes hardcoded crimson-red &
+   gold-amber relics that the var swap cannot reach.
+   ============================================================ */
+
+/* ---- bridge page-local legacy vars to the violet system ----
+   faculty/staff define --tgold/--tcrim; results defines
+   --burgundy/--gold-deep. Theme loads last, so these win. */
+:root{
+  --tgold:#6636e8;                 /* amber #A16207 → deep violet (readable on white tiles) */
+  --gold-deep:#6636e8;
+  --burgundy:#5b2be0;              /* results sheet accent #7A0309 → deep violet */
+}
+/* admin-portal white tiles re-scope brand vars locally — re-point them */
+.prog,.apanel,.newprog,.pickbar{
+  --crimson:#6636e8 !important;
+  --crimson-deep:#5b2be0 !important;
+  --gold:#6636e8 !important;
+  --gold-soft:rgba(124,92,252,.14) !important;
+  --crimson-soft:rgba(124,92,252,.10) !important;
+}
+
+/* ---- ambient page glow (admin/faculty/staff/exam .bgwrap) ---- */
+.bgwrap{
+  background:radial-gradient(120% 80% at 50% -10%,rgba(124,92,252,.10),transparent 60%),
+             radial-gradient(90% 60% at 90% 10%,rgba(185,169,255,.07),transparent 55%) !important;
+}
+
+/* ---- login gates: admin #adminGate, faculty #gate, staff .login ---- */
+#adminGate,#gate{
+  background:radial-gradient(120% 80% at 50% -10%,rgba(124,92,252,.14),transparent 60%),var(--bg,#14122a) !important;
+}
+#adminGate .gate-card input:focus,#gate .gate-card input:focus{
+  border-color:var(--crimson,#7c5cfc) !important;
+  box-shadow:0 0 0 3px rgba(124,92,252,.22) !important;
+}
+#adminGate .gate-card button,#gate .gate-card button,
+.card.login button,.login button{
+  background:linear-gradient(120deg,var(--crimson-deep,#6636e8),var(--crimson,#7c5cfc)) !important;
+  color:#fff !important;
+  box-shadow:0 10px 26px rgba(102,54,232,.35) !important;
+}
+#adminGate .gate-card .gfoot a,#gate .gate-card .gfoot a{color:#6636e8 !important}
+/* .gerr login error stays red on purpose (semantic) */
+
+/* ---- primary buttons / CTAs on tool surfaces ---- */
+/* gradients already use vars → auto-violet; kill the red drop-shadows */
+.btn{box-shadow:0 8px 22px rgba(102,54,232,.30) !important}
+.btn:hover{box-shadow:0 12px 28px rgba(102,54,232,.38) !important}
+.btn.ghost{box-shadow:none !important}
+/* old gold CTA → lavender pill, near-black text (dark text only on light fills) */
+.btn.gold{
+  background:var(--gold,#b9a9ff) !important;
+  color:#191430 !important;
+  box-shadow:0 8px 22px rgba(185,169,255,.35) !important;
+}
+/* staff portal primary action buttons (hardcoded #9E0C13→#C40D16) */
+.abtn.primary{
+  background:linear-gradient(120deg,#5b2be0,#7c5cfc) !important;
+  color:#fff !important;border:none !important;
+  box-shadow:0 8px 22px rgba(102,54,232,.28) !important;
+}
+/* admin white-tile "+ add" buttons */
+.cadd{border-color:rgba(102,54,232,.40) !important;color:#5b2be0 !important;background:rgba(124,92,252,.12) !important}
+.cadd:hover{background:rgba(124,92,252,.22) !important}
+.eview:hover{border-color:rgba(124,92,252,.50) !important;color:#6636e8 !important}
+
+/* ---- active nav / tab states ---- */
+.anavv a.on{border-color:rgba(124,92,252,.38) !important;color:#fff !important}
+.anav a:hover{color:var(--gold,#b9a9ff) !important;border-color:rgba(124,92,252,.45) !important}
+.evtab.on,.etab.on{box-shadow:0 8px 20px rgba(102,54,232,.28) !important;color:#fff !important}
+.evtab:hover,.etab:hover{border-color:rgba(124,92,252,.45) !important}
+.chip.on{box-shadow:0 8px 22px rgba(102,54,232,.28) !important;color:#fff !important}
+.top a:hover,.top button:hover{border-color:rgba(185,169,255,.45) !important}
+
+/* ---- badges & status dots ---- */
+/* dark-surface variants (admin sidebar/main) */
+.badge2.new{color:#c9bbff !important;background:rgba(124,92,252,.18) !important}
+.badge2.ind{color:#b9a9ff !important;background:rgba(185,169,255,.16) !important}
+/* white-tile variants (admin .apanel, faculty .panel) */
+.apanel .badge2.new,.panel .badge2.new{color:#5b2be0 !important;background:rgba(124,92,252,.12) !important}
+.apanel .badge2.ind,.panel .badge2.ind{color:#6636e8 !important;background:rgba(124,92,252,.12) !important}
+.adot.griev{background:#9d84ff !important}
+/* keep FAIL/REJECT semantically red (tile var reset would turn them violet) */
+.evpass.fail,.badge2.fail,.badge2.rej{background:#bd2745 !important;color:#fff !important}
+/* pass/done/live greens untouched; .badge2.usa blue untouched */
+
+/* ---- violet focus rings everywhere (replaces amber rgba(161,98,7,…)) ---- */
+input:focus,select:focus,textarea:focus,
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  box-shadow:0 0 0 3px rgba(124,92,252,.22) !important;
+}
+
+/* ---- admin portal odds & ends ---- */
+.note{color:#d8d0ff !important;border-color:rgba(185,169,255,.35) !important;border-left-color:#b9a9ff !important}
+.newprog{border-color:rgba(124,92,252,.45) !important}
+.toast{border-color:rgba(185,169,255,.45) !important;color:var(--gold,#b9a9ff) !important}
+
+/* ---- staff portal odds & ends ---- */
+.avatar{background:linear-gradient(120deg,#5b2be0,#7c5cfc) !important;border-color:rgba(124,92,252,.45) !important}
+.msg.staff{background:linear-gradient(120deg,#6636e8,#7c5cfc) !important;color:#fff !important}
+.chip.gold{border-color:rgba(102,54,232,.35) !important;background:rgba(124,92,252,.10) !important}
+table.pay tr.tot td{border-top-color:rgba(102,54,232,.40) !important}
+.onb-decl input{accent-color:#6636e8 !important}
+#sigPad{border-color:#b9a9ff !important}
+.onb-warn{background:linear-gradient(120deg,#5b2be0,#7c5cfc) !important;color:#fff !important}
+
+/* ---- results portal on-screen sheet (white tile) ---- */
+table.rt th{background:#f2eefd !important;border-color:#e2dbf7 !important}
+table.rt td{border-color:#e9e4f7 !important}
+/* .sh-head border, .sh-title, td.mod all flow from --burgundy override above */
+
+/* ---- dashboard white tiles: repoint tile-scoped brand vars to violet ---- */
+.login-card,.card,.modcard,.dcard,.subrow,.vcard,.notecard,.notebody,.faccard,.md-units .u{
+  --crimson:#6636e8 !important; --crimson-deep:#5b2be0 !important;
+  --gold:#6636e8 !important; --gold-soft:rgba(124,92,252,.14) !important;
+  --crimson-soft:rgba(124,92,252,.10) !important;
+}
+input[type="checkbox"],input[type="radio"]{accent-color:#6636e8;}
