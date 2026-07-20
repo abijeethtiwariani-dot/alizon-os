@@ -3,16 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Examinations & Hall Tickets — ALIZON OS</title>
-<meta name="description" content="Apply for examination cycles and download your hall ticket at the Alizon School of Medical & Digital Intelligence. Check eligibility, exam schedules and admit cards online.">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://www.alizon.in/alizon-exam">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="ALIZON OS">
-<meta property="og:title" content="Examinations & Hall Tickets — ALIZON OS">
-<meta property="og:description" content="Apply for examination cycles and download your hall ticket online.">
-<meta property="og:url" content="https://www.alizon.in/alizon-exam">
-<meta property="og:image" content="https://www.alizon.in/alizon-logo.png">
+<title>ALIZON OS · Examinations</title>
 <style>
   :root{
     --bg:#070810; --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.10);
@@ -65,6 +56,38 @@
   .htdoc{background:#fff;color:#1a1a1a;max-width:720px;margin:16px auto 0;padding:34px 40px;border-radius:10px;font-family:'Source Serif Pro',Georgia,serif;line-height:1.6}
   @media print{ body>*{display:none !important} #htArea{display:block !important} .htdoc{box-shadow:none;margin:0;max-width:100%;border-radius:0} @page{margin:16mm} }
 </style>
+<script src="firebase-sync.js"></script>
+<style>
+/* ===== KUHS-style Examination Section folders ===== */
+.exs{margin-top:26px}
+.exs .card h2{margin-bottom:4px}
+.exs-list{margin-top:10px}
+.exs-row{border-bottom:1px solid rgba(140,21,21,.14)}
+.exs-head{display:flex;align-items:center;gap:12px;padding:15px 4px;cursor:pointer;user-select:none}
+.exs-head b{font-size:15.5px;font-weight:600;flex:1}
+.exs-cnt{font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:100px;background:var(--crimson-soft,rgba(140,21,21,.1));color:var(--crimson,#8c1515)}
+.exs-tg{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:15px;font-weight:700;
+  background:var(--crimson,#8c1515);color:#fff;transition:transform .25s}
+.exs-row.open .exs-tg{transform:rotate(45deg)}
+.exs-body{display:none;padding:2px 4px 16px}
+.exs-row.open .exs-body{display:block;animation:exsIn .25s ease-out}
+@keyframes exsIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.exs-item{display:flex;gap:12px;align-items:flex-start;padding:10px 8px;border-radius:10px}
+.exs-item:hover{background:rgba(140,21,21,.05)}
+.exs-item .dt{flex:none;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;opacity:.65;padding-top:3px;min-width:86px}
+.exs-item .tt b{font-size:14px;font-weight:600;display:block}
+.exs-item .tt p{font-size:13px;opacity:.75;margin:3px 0 0;line-height:1.55;white-space:pre-wrap}
+.exs-item .lk{flex:none;font-size:12.5px;font-weight:600;color:var(--crimson,#8c1515);text-decoration:none;border:1px solid rgba(140,21,21,.35);
+  padding:5px 12px;border-radius:100px;margin-top:1px}
+.exs-item .lk:hover{background:var(--crimson,#8c1515);color:#fff}
+.exs-empty{font-size:13px;opacity:.6;padding:8px}
+.exs-resrow{display:flex;gap:10px;flex-wrap:wrap;align-items:end;padding:6px 4px 4px}
+.exs-resrow>div{flex:1;min-width:170px}
+.exs-resrow label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.65;margin-bottom:6px}
+.exs-resrow input{width:100%;padding:11px 13px;border-radius:10px;border:1px solid rgba(140,21,21,.25);background:rgba(255,255,255,.75);font:inherit;color:#1a1a1a}
+.exs-note{font-size:12.5px;opacity:.65;padding:8px 4px 0}
+</style>
+
 <link rel="stylesheet" href="alizon-theme.css">
 </head>
 <body>
@@ -106,6 +129,15 @@
       </div>
       <div class="err" id="ht-err"></div>
       <div id="ht-result"></div>
+    </div>
+  </div>
+
+  <!-- ===== EXAMINATION SECTION (KUHS-style folders) ===== -->
+  <div class="exs">
+    <div class="card">
+      <h2>Examination Section</h2>
+      <div class="hint">Notifications, timetables, circulars and results — published by the examination office.</div>
+      <div class="exs-list" id="exsList"></div>
     </div>
   </div>
 </div>
@@ -305,5 +337,58 @@ document.querySelectorAll('.tab').forEach(function(t){
 <script src="vendor/gsap.min.js"></script>
 <script src="vendor/ScrollTrigger.min.js"></script>
 <script src="alizon-motion.js"></script>
+<script>
+/* ===== Examination Section folders (data: alizonExamDocs, admin-published) ===== */
+(function(){
+  var CATS=[['notification','Examination Notifications'],['timetable','Examination Timetable'],
+            ['circular','Instructions · Circulars · Proformas'],['paper','Previous Question Papers'],['order','Orders']];
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function docs(){ try{var a=JSON.parse(localStorage.getItem('alizonExamDocs')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+  function render(){
+    var host=document.getElementById('exsList'); if(!host) return;
+    var all=docs().filter(function(d){return d && d.on!==false;});
+    var html='';
+    CATS.forEach(function(c){
+      var items=all.filter(function(d){return d.cat===c[0];}).sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));});
+      html+='<div class="exs-row" data-cat="'+c[0]+'">'
+        +'<div class="exs-head" role="button" tabindex="0" aria-expanded="false"><b>'+c[1]+'</b>'
+        +'<span class="exs-cnt">'+items.length+'</span><span class="exs-tg">＋</span></div>'
+        +'<div class="exs-body">'
+        +(items.length? items.map(function(d){
+            return '<div class="exs-item"><span class="dt">'+esc(d.date||'')+'</span>'
+              +'<span class="tt" style="flex:1"><b>'+esc(d.title||'Untitled')+'</b>'
+              +(d.body?'<p>'+esc(d.body)+'</p>':'')+'</span>'
+              +(d.link?'<a class="lk" href="'+esc(d.link)+'" target="_blank" rel="noopener">Open ↗</a>':'')
+              +'</div>';
+          }).join('') : '<div class="exs-empty">No items published yet.</div>')
+        +'</div></div>';
+    });
+    html+='<div class="exs-row" data-cat="results">'
+      +'<div class="exs-head" role="button" tabindex="0" aria-expanded="false"><b>Check Examination Results</b>'
+      +'<span class="exs-cnt">enter reg no</span><span class="exs-tg">＋</span></div>'
+      +'<div class="exs-body">'
+      +'<div class="exs-resrow">'
+      +'<div><label>Registration number</label><input id="exs-reg" placeholder="e.g. ALZ102" autocomplete="off"></div>'
+      +'<div><label>Batch</label><input id="exs-batch" placeholder="e.g. Batch 2026 - 7" autocomplete="off"></div>'
+      +'<button class="abtn" id="exs-go">View my result</button>'
+      +'</div><div class="exs-note">Opens your module-wise result sheet — you can print or save it as PDF there.</div>'
+      +'</div></div>';
+    host.innerHTML=html;
+    host.querySelectorAll('.exs-head').forEach(function(h){
+      function tg(){ var r=h.parentElement; var open=r.classList.toggle('open'); h.setAttribute('aria-expanded',open?'true':'false'); }
+      h.addEventListener('click',tg);
+      h.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tg(); } });
+    });
+    var go=document.getElementById('exs-go');
+    if(go) go.addEventListener('click',function(){
+      var r=(document.getElementById('exs-reg').value||'').trim(), b=(document.getElementById('exs-batch').value||'').trim();
+      if(!r){ document.getElementById('exs-reg').focus(); return; }
+      location.href='alizon-results.html?reg='+encodeURIComponent(r)+(b?'&batch='+encodeURIComponent(b):'');
+    });
+  }
+  window.addEventListener('storage',function(e){ if(e.key==='alizonExamDocs') render(); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',render); else render();
+})();
+</script>
 </body>
 </html>

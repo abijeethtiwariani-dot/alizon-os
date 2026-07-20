@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ALIZON OS · Admin Portal — Course Management</title>
-<meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="alizon-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -613,6 +612,19 @@
   <section class="apanel asec" id="adm-exams">
     <h2>Exams</h2>
     <div class="ahint">Define exam windows (cycles), then review &amp; approve student applications. Every approval issues a <b>hall-ticket number</b> and lets you set venue, date &amp; purpose — one-by-one or in <b>bulk by batch</b>. The <b>modules-completed</b> count on each row shows a student's progress before you approve.</div>
+
+    <div class="cblock"><div class="ct">Public Examination Section — notices, timetable &amp; documents</div>
+      <div class="ahint">Items publish instantly into the folder list on the public <b>Examinations</b> page (and sync to every visitor).</div>
+      <div class="arow4" style="grid-template-columns:190px 1fr 150px;align-items:end">
+        <select id="xd-cat"><option value="notification">Notification</option><option value="timetable">Timetable</option><option value="circular">Circular / Instruction</option><option value="paper">Previous Question Paper</option><option value="order">Order</option></select>
+        <input id="xd-title" placeholder="Title — e.g. Final examinations commence 12 August">
+        <input id="xd-date" type="date">
+      </div>
+      <input id="xd-link" placeholder="Link URL (optional — PDF or page)" style="margin-top:8px;width:100%">
+      <textarea id="xd-body" placeholder="Details (optional — shown under the title)" style="margin-top:8px;width:100%;min-height:60px;font:inherit"></textarea>
+      <div class="crow n" style="margin-top:10px"><button class="cadd" id="xd-add">＋ Publish item</button></div>
+      <div class="clist" id="xd-list" style="margin-top:12px"></div>
+    </div>
 
     <div class="cblock"><div class="ct">Create an exam cycle</div>
       <div class="arow4" style="grid-template-columns:1.4fr 1.6fr 130px;align-items:end">
@@ -1712,7 +1724,40 @@ function exApprove(a,extra){
   return a;
 }
 
-function renderExams(){
+function loadXDocs(){ try{const a=JSON.parse(localStorage.getItem('alizonExamDocs')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+function saveXDocs(a){ setDB('alizonExamDocs',Array.isArray(a)?a:[]); }
+function escXD(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+const XD_CATS={notification:'Notification',timetable:'Timetable',circular:'Circular / Instruction',paper:'Prev. Question Paper',order:'Order'};
+function renderXDocs(){
+  const el=document.getElementById('xd-list'); if(!el) return;
+  const a=loadXDocs().slice().sort((x,y)=>String(y.date||'').localeCompare(String(x.date||'')));
+  el.innerHTML=a.length? a.map(d=>'<div class="citem" style="align-items:flex-start">'
+    +'<span style="font-family:ui-monospace,monospace;font-size:11px;opacity:.7;min-width:80px">'+escXD(d.date||'')+'</span>'
+    +'<span style="flex:1"><b>'+escXD(d.title||'')+'</b> <small style="opacity:.65">· '+(XD_CATS[d.cat]||d.cat)+(d.link?' · has link':'')+'</small>'
+    +(d.body?'<div style="font-size:12px;opacity:.7;white-space:pre-wrap;margin-top:2px">'+escXD(d.body)+'</div>':'')+'</span>'
+    +'<button class="eview" data-xdtoggle="'+escXD(d.id)+'">'+(d.on===false?'▲ Publish':'⊘ Unpublish')+'</button>'
+    +'<button class="eview" data-xddel="'+escXD(d.id)+'">🗑</button>'
+    +'</div>').join('') : '<div class="hint">Nothing published yet.</div>';
+  el.querySelectorAll('[data-xdtoggle]').forEach(b=>b.onclick=()=>{ const arr=loadXDocs(); const d=arr.find(x=>String(x.id)===b.dataset.xdtoggle); if(d){ d.on=(d.on===false); saveXDocs(arr); renderXDocs(); toast(d.on?'Published':'Unpublished'); logAct&&logAct('Exam section: "'+(d.title||'')+'" '+(d.on?'published':'unpublished'),'exam'); } });
+  el.querySelectorAll('[data-xddel]').forEach(b=>b.onclick=()=>{ saveXDocs(loadXDocs().filter(x=>String(x.id)!==b.dataset.xddel)); renderXDocs(); toast('Item deleted'); });
+}
+(function(){
+  const add=document.getElementById('xd-add'); if(!add) return;
+  const dt=document.getElementById('xd-date'); if(dt&&!dt.value){ dt.value=new Date().toISOString().slice(0,10); }
+  add.addEventListener('click',()=>{
+    const t=(document.getElementById('xd-title').value||'').trim();
+    if(!t){ toast('Give the item a title'); return; }
+    const arr=loadXDocs();
+    arr.push({ id:'XD'+Date.now(), cat:document.getElementById('xd-cat').value, title:t,
+      date:document.getElementById('xd-date').value||new Date().toISOString().slice(0,10),
+      link:(document.getElementById('xd-link').value||'').trim(), body:(document.getElementById('xd-body').value||'').trim(), on:true, ts:Date.now() });
+    saveXDocs(arr);
+    document.getElementById('xd-title').value=''; document.getElementById('xd-link').value=''; document.getElementById('xd-body').value='';
+    renderXDocs(); toast('Published to the Examinations page');
+    try{ logAct&&logAct('Exam section: published "'+t+'"','exam'); }catch(e){}
+  });
+})();
+function renderExams(){ renderXDocs();
   paintCounts();
   const cycles=loadCycles();
   /* ---- cycle list ---- */
