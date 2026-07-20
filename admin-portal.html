@@ -708,6 +708,16 @@
       <button class="cadd" id="cmsReset" style="border-color:var(--line);background:var(--pill);color:var(--muted)">Reset to original</button>
       <span id="cmsSaved" style="font-size:12.5px;font-weight:600;color:#1E8E5A"></span>
     </div>
+
+    <div class="cblock" style="margin-top:18px"><div class="ct">Academics page — hero photo</div>
+      <div class="ahint" id="acheroState">Loading…</div>
+      <div class="crow n" style="gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
+        <input type="file" id="acheroFile" accept="image/*">
+        <button class="cadd" id="acheroUp">Upload &amp; set</button>
+        <button class="cadd" id="acheroRm" style="border-color:var(--line);background:var(--pill);color:var(--muted)">Remove photo</button>
+      </div>
+      <div class="ahint" style="margin-top:8px">JPG/PNG, auto-resized to 1080px and stored in cloud sync. The photo replaces the built-in artwork on the right half of the Academics hero. You can also paste an image URL in the "Hero — photo URL" field above instead.</div>
+    </div>
   </section>
 
 
@@ -2441,6 +2451,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
         var ctl=document.createElement(multi?'textarea':'input');
         if(multi) ctl.rows=3;
         ctl.value=val;
+        if(!val && f.def) ctl.placeholder=String(f.def);
         ctl.setAttribute('data-cms-key',key);
         ctl.style.cssText='width:100%;padding:9px 12px;border:1px solid rgba(0,0,0,.15);border-radius:9px;font:inherit;font-size:13.5px;margin-bottom:12px;box-sizing:border-box;background:rgba(255,255,255,.72);color:var(--ink)';
         frag.appendChild(lab); frag.appendChild(ctl);
@@ -2463,6 +2474,11 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       var els=document.querySelectorAll('#cmsForm [data-cms-key]');
       if(!els.length){ flash('Nothing to save yet'); return; }
       var o=collect();
+      /* keep keys that are not form fields (e.g. the uploaded Academics hero
+         photo reference 'acad-hero-img') — collect() only sees form inputs */
+      try{ var prevC=JSON.parse(localStorage.getItem('alizonContent')||'{}')||{};
+        for(var pk in prevC){ if(Object.prototype.hasOwnProperty.call(prevC,pk) && !document.querySelector('#cmsForm [data-cms-key="'+pk+'"]')) o[pk]=prevC[pk]; }
+      }catch(e){}
       try{ localStorage.setItem('alizonContent', JSON.stringify(o)); }
       catch(e){ flash('Save failed'); return; }
       flash('Saved — live for all visitors');
@@ -2481,6 +2497,51 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     }
   });
   ready();
+})();
+</script>
+<script>
+/* ===== Academics hero photo (Website Content page) — chunked like news images ===== */
+(function(){
+  function store(){ try{var o=JSON.parse(localStorage.getItem('alizonContent')||'{}');return (o&&typeof o==='object'&&!Array.isArray(o))?o:{};}catch(e){return {};} }
+  function save(o){ try{ localStorage.setItem('alizonContent',JSON.stringify(o)); }catch(e){} }
+  function state(msg){ var el=document.getElementById('acheroState'); if(el) el.textContent=msg; }
+  function refresh(){
+    var o=store(), m=String(o['acad-hero-img']||'').trim(), u=String(o['acad-hero-img-url']||'').trim();
+    if(u) state('Using the photo URL from the "Hero — photo URL" field above.');
+    else if(m) state('Photo uploaded \u2713 — live on the Academics hero for all visitors.');
+    else state('No photo set — the Academics hero shows the built-in artwork.');
+  }
+  function delChunks(meta){ try{ if(!meta) return; var p=String(meta).split(':'), id=p[0], n=parseInt(p[1],10)||1;
+    if(window.firebase&&firebase.firestore){ var db=firebase.firestore();
+      for(var i=0;i<n;i++){ db.collection('sync').doc('nwimg_'+id+'_'+i).delete().catch(function(){}); } } }catch(e){} }
+  document.addEventListener('click', async function(ev){
+    var t=ev.target; if(!t||!t.id) return;
+    if(t.id==='acheroUp'){
+      var f=document.getElementById('acheroFile'); var file=f&&f.files&&f.files[0];
+      if(!file){ state('Choose an image file first.'); return; }
+      if(typeof nwUploadImg!=='function'||!window.firebase||!firebase.firestore||!firebase.auth().currentUser){ state('Cloud not ready — try again in a few seconds.'); return; }
+      t.disabled=true; state('Uploading\u2026');
+      try{
+        var o=store(); var old=o['acad-hero-img'];
+        var meta=await nwUploadImg(file,'ACH'+Date.now());
+        if(old) delChunks(old);
+        o['acad-hero-img']=meta.id+':'+meta.chunks; save(o);
+        if(f) f.value='';
+        state('Photo uploaded \u2713 — live on the Academics hero for all visitors.');
+        try{ typeof toast==='function'&&toast('Academics hero photo updated'); }catch(e){}
+        try{ typeof logAct==='function'&&logAct('Academics: hero photo updated','update'); }catch(e){}
+      }catch(e){ state('Upload failed — '+((e&&e.message)||e)); }
+      t.disabled=false;
+    }
+    if(t.id==='acheroRm'){
+      var o2=store(); var m2=o2['acad-hero-img'];
+      if(m2){ delChunks(m2); delete o2['acad-hero-img']; save(o2); }
+      refresh(); try{ typeof toast==='function'&&toast('Academics hero photo removed'); }catch(e){}
+      try{ typeof logAct==='function'&&logAct('Academics: hero photo removed','update'); }catch(e){}
+    }
+  });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',refresh); else refresh();
+  setInterval(refresh, 6000);
 })();
 </script>
 </body>

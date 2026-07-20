@@ -90,7 +90,59 @@
     /* ---- CTA block + footer ---- */
     { key: 'cta-heading',  label: 'CTA block — heading',  sel: '.cta-blk h2', idx: 0, area: 'CTA & Footer' },
     { key: 'cta-sub',      label: 'CTA block — subtitle', sel: '.cta-blk p',  idx: 0, area: 'CTA & Footer', multiline: true },
-    { key: 'footer-blurb', label: 'Footer — blurb',       sel: 'footer .in p',idx: 0, area: 'CTA & Footer', multiline: true }
+    { key: 'footer-blurb', label: 'Footer — blurb',       sel: 'footer .in p',idx: 0, area: 'CTA & Footer', multiline: true },
+
+    /* ================================================================
+       ACADEMICS PAGE (alizon-academics.html).
+       These selectors are unique IDs that exist ONLY on the academics
+       page, so apply() is a no-op on the home page and admin portal.
+       The academics page has its own tiny applier (it must NOT load
+       this file — the home '.hero h1' etc. selectors would clash).
+       def = current hard-coded text, shown as a placeholder hint in
+       the admin editor when no override is stored.
+       ================================================================ */
+    { key: 'acad-hero-title',   label: 'Hero — big title',   sel: '#acHeroTitle', idx: 0, area: 'Academics — Hero', def: 'Academics' },
+    { key: 'acad-hero-lead',    label: 'Hero — lead paragraph', sel: '#acHeroLead', idx: 0, area: 'Academics — Hero', multiline: true, def: "On campus and online, Alizon scholars learn medicine and technology as one discipline — building India's AI-powered medical & engineering future through workshops, certified courses, skill development, professional learning and degree & PG pathways." },
+    { key: 'acad-hero-badge',   label: 'Hero — small badge on the art/photo', sel: '#acHeroBadge', idx: 0, area: 'Academics — Hero', def: 'Medicine × Intelligence' },
+    { key: 'acad-hero-img-url', label: 'Hero — photo URL (optional; or use the uploader below)', sel: '#x-acad-hero-img-url', idx: 0, area: 'Academics — Hero', def: '' },
+
+    { key: 'acad-news-ey', label: 'Campus News — eyebrow',   sel: '#acNewsEy', idx: 0, area: 'Academics — Campus News', def: 'Campus News & Research' },
+    { key: 'acad-news-h',  label: 'Campus News — heading',   sel: '#acNewsH',  idx: 0, area: 'Academics — Campus News', def: 'Stories from across our campus' },
+    { key: 'acad-news-p',  label: 'Campus News — sub line',  sel: '#acNewsP',  idx: 0, area: 'Academics — Campus News', multiline: true, def: 'People, research and innovation at Alizon — updated by our editorial team.' },
+
+    { key: 'acad-imp-ey',   label: 'Numbers band — eyebrow',  sel: '#acImpEy', idx: 0, area: 'Academics — Numbers', def: 'Learning that adds up' },
+    { key: 'acad-imp-h',    label: 'Numbers band — heading',  sel: '#acImpH',  idx: 0, area: 'Academics — Numbers', def: 'The Alizon classroom, in numbers' },
+    { key: 'acad-imp-p',    label: 'Numbers band — sub line', sel: '#acImpP',  idx: 0, area: 'Academics — Numbers', multiline: true, def: 'Virtual practicals, AI-scored assessments and simulation-first teaching on the ALIZON OS platform.' },
+    { key: 'acad-stat-1-num',   label: 'Number 1 — value (suffix + stays)', sel: '#acN1', idx: 0, area: 'Academics — Numbers', part: 'text', def: '500' },
+    { key: 'acad-stat-1-label', label: 'Number 1 — label',                  sel: '#acL1', idx: 0, area: 'Academics — Numbers', def: 'Students on campus' },
+    { key: 'acad-stat-2-num',   label: 'Number 2 — value',                  sel: '#acN2', idx: 0, area: 'Academics — Numbers', part: 'text', def: '4' },
+    { key: 'acad-stat-2-label', label: 'Number 2 — label',                  sel: '#acL2', idx: 0, area: 'Academics — Numbers', def: 'AI certificate programmes' },
+    { key: 'acad-stat-3-num',   label: 'Number 3 — value (suffix + stays)', sel: '#acN3', idx: 0, area: 'Academics — Numbers', part: 'text', def: '12' },
+    { key: 'acad-stat-3-label', label: 'Number 3 — label',                  sel: '#acL3', idx: 0, area: 'Academics — Numbers', def: 'Virtual practicals' },
+    { key: 'acad-stat-4-num',   label: 'Number 4 — value (suffix k+ stays)', sel: '#acN4', idx: 0, area: 'Academics — Numbers', part: 'text', def: '10' },
+    { key: 'acad-stat-4-label', label: 'Number 4 — label',                  sel: '#acL4', idx: 0, area: 'Academics — Numbers', def: 'AI-scored assessments' },
+    { key: 'acad-stat-5-num',   label: 'Number 5 — value (suffix + stays)', sel: '#acN5', idx: 0, area: 'Academics — Numbers', part: 'text', def: '20' },
+    { key: 'acad-stat-5-label', label: 'Number 5 — label',                  sel: '#acL5', idx: 0, area: 'Academics — Numbers', def: 'Cities reached' },
+    { key: 'acad-stat-6-num',   label: 'Number 6 — value (suffix % stays)', sel: '#acN6', idx: 0, area: 'Academics — Numbers', part: 'text', def: '95' },
+    { key: 'acad-stat-6-label', label: 'Number 6 — label',                  sel: '#acL6', idx: 0, area: 'Academics — Numbers', def: 'Placement-ready' },
+    { key: 'acad-imp-note',     label: 'Numbers band — footnote',           sel: '#acImpNote', idx: 0, area: 'Academics — Numbers', def: 'Indicative figures across ALIZON OS programmes and outreach.' },
+
+    { key: 'acad-cert-ey', label: 'Certified Courses — eyebrow',  sel: '#acCertEy', idx: 0, area: 'Academics — Certified Courses', def: 'Certified Courses' },
+    { key: 'acad-cert-h',  label: 'Certified Courses — heading',  sel: '#acCertH',  idx: 0, area: 'Academics — Certified Courses', def: 'AI healthcare certificate programmes' },
+    { key: 'acad-cert-p',  label: 'Certified Courses — sub line', sel: '#acCertP',  idx: 0, area: 'Academics — Certified Courses', multiline: true, def: 'Industry-focused certification programmes in Artificial Intelligence, Digital Health and Clinical Technology — taught through ALIZON OS virtual practicals, patient simulations and AI-scored assessments.' },
+
+    { key: 'acad-ws-h', label: 'Workshops — heading',   sel: '#acWsH', idx: 0, area: 'Academics — Topic sections', def: 'Live, online & hybrid healthcare workshops' },
+    { key: 'acad-ws-p', label: 'Workshops — paragraph', sel: '#acWsP', idx: 0, area: 'Academics — Topic sections', multiline: true, def: 'Interactive workshops for Medical, Pharmacy, Nursing and Allied Health students — expert mentoring, case-based learning, live demonstrations and practical activities led by experienced professionals.' },
+    { key: 'acad-sk-h', label: 'Skill Development — heading',   sel: '#acSkH', idx: 0, area: 'Academics — Topic sections', def: 'Job-ready healthcare skill programmes' },
+    { key: 'acad-sk-p', label: 'Skill Development — paragraph', sel: '#acSkP', idx: 0, area: 'Academics — Topic sections', multiline: true, def: 'Hands-on training, virtual simulations, industry projects and expert-led instruction — career-ready competencies for hospitals, pharma, health-tech, diagnostics, research organisations and global healthcare careers.' },
+    { key: 'acad-pr-h', label: 'Professional Learning — heading',   sel: '#acPrH', idx: 0, area: 'Academics — Topic sections', def: 'CPD for working professionals' },
+    { key: 'acad-pr-p', label: 'Professional Learning — paragraph', sel: '#acPrP', idx: 0, area: 'Academics — Topic sections', multiline: true, def: 'Flexible online & hybrid pathways for students, graduates, educators, researchers and healthcare professionals — healthcare management, artificial intelligence, leadership and emerging healthcare technologies, with professional certifications and industry case studies.' },
+
+    { key: 'acad-deg-h',   label: 'Degree & PG band — heading',     sel: '#acDegH',   idx: 0, area: 'Academics — Degree & PG', def: 'Take it further — degrees and postgraduate study' },
+    { key: 'acad-deg-p',   label: 'Degree & PG band — paragraph',   sel: '#acDegP',   idx: 0, area: 'Academics — Degree & PG', multiline: true, def: 'Explore degree programmes and postgraduate pathways in Digital Health, Healthcare AI and allied disciplines — guided admissions with our academic office, alongside research opportunities and the ALIZON OS learning platform. Contact admissions for the current intake, eligibility and programme structure.' },
+    { key: 'acad-deg-btn', label: 'Degree & PG band — button text', sel: '#acDegBtn', idx: 0, area: 'Academics — Degree & PG', def: 'Talk to Admissions' },
+
+    { key: 'acad-cta-h', label: 'Closing CTA — heading', sel: '#acCtaH', idx: 0, area: 'Academics — Closing CTA', def: 'Start your journey with Alizon' }
   ];
 
   var fieldByKey = {};

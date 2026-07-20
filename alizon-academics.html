@@ -76,7 +76,11 @@
   .hero .vis{position:relative;min-height:340px;background:
     radial-gradient(120% 130% at 82% 12%,#b1040e 0%,#8c1515 34%,#5c0d0d 68%,#320707 100%);overflow:hidden}
   .hero .vis svg{position:absolute;inset:0;width:100%;height:100%}
-  .hero .vis .badge{position:absolute;left:26px;bottom:22px;color:#fff;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;opacity:.85}
+  .hero .vis .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+  .hero .vis.hasphoto .photo{display:block}
+  .hero .vis.hasphoto svg{display:none}
+  .hero .vis.hasphoto::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,8,8,0) 55%,rgba(24,8,8,.55) 100%)}
+  .hero .vis .badge{position:absolute;left:26px;bottom:22px;color:#fff;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;opacity:.85;z-index:2}
 
   /* ===== affiliation strip ===== */
   .affil{background:#fff;border-bottom:1px solid var(--line)}
@@ -199,8 +203,8 @@
 
 <header class="hero">
   <div class="txt">
-    <h1 class="serif">Academics</h1>
-    <p>On campus and online, Alizon scholars learn medicine and technology as one discipline —
+    <h1 class="serif" id="acHeroTitle">Academics</h1>
+    <p id="acHeroLead">On campus and online, Alizon scholars learn medicine and technology as one discipline —
       <b>building India's AI-powered medical &amp; engineering future</b> through workshops, certified
       courses, skill development, professional learning and degree &amp; PG pathways.</p>
   </div>
@@ -231,7 +235,8 @@
       <path d="M0 470 H150 l18 -34 22 62 26 -96 24 68 16 -22 h90 l18 -30 20 52 24 -78 22 56 14 -18 H600"
         fill="none" stroke="#ffffff" stroke-opacity=".75" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
     </svg>
-    <span class="badge">Medicine × Intelligence</span>
+    <img class="photo" id="acHeroPhoto" alt="">
+    <span class="badge" id="acHeroBadge">Medicine × Intelligence</span>
   </div>
 </header>
 
@@ -245,9 +250,9 @@
 <section class="blk" id="news">
   <div class="wrap">
     <div class="bhead">
-      <div class="ey">Campus News &amp; Research</div>
-      <h2 class="serif">Stories from across our campus</h2>
-      <p>People, research and innovation at Alizon — updated by our editorial team.</p>
+      <div class="ey" id="acNewsEy">Campus News &amp; Research</div>
+      <h2 class="serif" id="acNewsH">Stories from across our campus</h2>
+      <p id="acNewsP">People, research and innovation at Alizon — updated by our editorial team.</p>
     </div>
     <div id="nwsHost"><div class="nw-empty">Loading stories…</div></div>
   </div>
@@ -256,28 +261,28 @@
 <section class="blk impact" id="impact">
   <div class="wrap">
     <div class="bhead">
-      <div class="ey">Learning that adds up</div>
-      <h2 class="serif">The Alizon classroom, in numbers</h2>
-      <p>Virtual practicals, AI-scored assessments and simulation-first teaching on the ALIZON OS platform.</p>
+      <div class="ey" id="acImpEy">Learning that adds up</div>
+      <h2 class="serif" id="acImpH">The Alizon classroom, in numbers</h2>
+      <p id="acImpP">Virtual practicals, AI-scored assessments and simulation-first teaching on the ALIZON OS platform.</p>
     </div>
     <div class="stats">
-      <div class="stat"><div class="n serif">500<em>+</em></div><div class="l">Students on campus</div></div>
-      <div class="stat"><div class="n serif">4</div><div class="l">AI certificate programmes</div></div>
-      <div class="stat"><div class="n serif">12<em>+</em></div><div class="l">Virtual practicals</div></div>
-      <div class="stat"><div class="n serif">10<em>k+</em></div><div class="l">AI-scored assessments</div></div>
-      <div class="stat"><div class="n serif">20<em>+</em></div><div class="l">Cities reached</div></div>
-      <div class="stat"><div class="n serif">95<em>%</em></div><div class="l">Placement-ready</div></div>
+      <div class="stat"><div class="n serif" id="acN1">500<em>+</em></div><div class="l" id="acL1">Students on campus</div></div>
+      <div class="stat"><div class="n serif" id="acN2">4</div><div class="l" id="acL2">AI certificate programmes</div></div>
+      <div class="stat"><div class="n serif" id="acN3">12<em>+</em></div><div class="l" id="acL3">Virtual practicals</div></div>
+      <div class="stat"><div class="n serif" id="acN4">10<em>k+</em></div><div class="l" id="acL4">AI-scored assessments</div></div>
+      <div class="stat"><div class="n serif" id="acN5">20<em>+</em></div><div class="l" id="acL5">Cities reached</div></div>
+      <div class="stat"><div class="n serif" id="acN6">95<em>%</em></div><div class="l" id="acL6">Placement-ready</div></div>
     </div>
-    <div class="note">Indicative figures across ALIZON OS programmes and outreach.</div>
+    <div class="note" id="acImpNote">Indicative figures across ALIZON OS programmes and outreach.</div>
   </div>
 </section>
 
 <section class="blk" id="certified">
   <div class="wrap">
     <div class="bhead">
-      <div class="ey">Certified Courses</div>
-      <h2 class="serif">AI healthcare certificate programmes</h2>
-      <p>Industry-focused certification programmes in Artificial Intelligence, Digital Health and Clinical Technology —
+      <div class="ey" id="acCertEy">Certified Courses</div>
+      <h2 class="serif" id="acCertH">AI healthcare certificate programmes</h2>
+      <p id="acCertP">Industry-focused certification programmes in Artificial Intelligence, Digital Health and Clinical Technology —
         taught through ALIZON OS virtual practicals, patient simulations and AI-scored assessments.</p>
     </div>
     <div class="crs">
@@ -303,8 +308,8 @@
     <div class="topic" id="workshops">
       <div class="lead">
         <div class="ey">Workshops &amp; Masterclasses</div>
-        <h3 class="serif">Live, online &amp; hybrid healthcare workshops</h3>
-        <p>Interactive workshops for Medical, Pharmacy, Nursing and Allied Health students — expert mentoring,
+        <h3 class="serif" id="acWsH">Live, online &amp; hybrid healthcare workshops</h3>
+        <p id="acWsP">Interactive workshops for Medical, Pharmacy, Nursing and Allied Health students — expert mentoring,
           case-based learning, live demonstrations and practical activities led by experienced professionals.</p>
         <a class="go" href="mailto:opsmanager.mioc@miak.in">Enquire about the next workshop →</a>
       </div>
@@ -323,8 +328,8 @@
     <div class="topic" id="skill">
       <div class="lead">
         <div class="ey">Skill Development</div>
-        <h3 class="serif">Job-ready healthcare skill programmes</h3>
-        <p>Hands-on training, virtual simulations, industry projects and expert-led instruction — career-ready
+        <h3 class="serif" id="acSkH">Job-ready healthcare skill programmes</h3>
+        <p id="acSkP">Hands-on training, virtual simulations, industry projects and expert-led instruction — career-ready
           competencies for hospitals, pharma, health-tech, diagnostics, research organisations and global healthcare careers.</p>
       </div>
       <div class="rows">
@@ -340,8 +345,8 @@
     <div class="topic" id="professional">
       <div class="lead">
         <div class="ey">Professional Learning</div>
-        <h3 class="serif">CPD for working professionals</h3>
-        <p>Flexible online &amp; hybrid pathways for students, graduates, educators, researchers and healthcare
+        <h3 class="serif" id="acPrH">CPD for working professionals</h3>
+        <p id="acPrP">Flexible online &amp; hybrid pathways for students, graduates, educators, researchers and healthcare
           professionals — healthcare management, artificial intelligence, leadership and emerging healthcare
           technologies, with professional certifications and industry case studies.</p>
       </div>
@@ -361,13 +366,13 @@
   <div class="in">
     <div>
       <div class="ey">Degree &amp; PG Pathways</div>
-      <h2 class="serif">Take it further — degrees and postgraduate study</h2>
+      <h2 class="serif" id="acDegH">Take it further — degrees and postgraduate study</h2>
     </div>
     <div>
-      <p>Explore degree programmes and postgraduate pathways in Digital Health, Healthcare AI and allied disciplines —
+      <p id="acDegP">Explore degree programmes and postgraduate pathways in Digital Health, Healthcare AI and allied disciplines —
         guided admissions with our academic office, alongside research opportunities and the ALIZON OS learning platform.
         Contact admissions for the current intake, eligibility and programme structure.</p>
-      <a class="btn" href="mailto:opsmanager.mioc@miak.in">Talk to Admissions</a>
+      <a class="btn" id="acDegBtn" href="mailto:opsmanager.mioc@miak.in">Talk to Admissions</a>
     </div>
   </div>
 </section>
@@ -388,7 +393,7 @@
 </section>
 
 <div class="cta">
-  <h2 class="serif">Start your journey with Alizon</h2>
+  <h2 class="serif" id="acCtaH">Start your journey with Alizon</h2>
   <div class="row">
     <a class="pri" href="ASMDI-dashboard.html">Enter the Student Portal ↗</a>
     <a href="index.html#azfinder-root">Find your programme</a>
@@ -425,6 +430,52 @@
       }).catch(function(){});
     });
   }
+  /* ===== Page-content overrides (alizonContent CMS, acad-* keys) =====
+     Editable from Admin → 🌐 WEBSITE → Website Content. This page must
+     NOT load alizon-cms.js (its home-page '.hero h1' selectors would
+     clash with ours), so this is a tiny local applier for acad-* keys. */
+  var CMS_MAP={
+    'acad-hero-title':'#acHeroTitle','acad-hero-lead':'#acHeroLead','acad-hero-badge':'#acHeroBadge',
+    'acad-news-ey':'#acNewsEy','acad-news-h':'#acNewsH','acad-news-p':'#acNewsP',
+    'acad-imp-ey':'#acImpEy','acad-imp-h':'#acImpH','acad-imp-p':'#acImpP','acad-imp-note':'#acImpNote',
+    'acad-stat-1-num':'#acN1','acad-stat-1-label':'#acL1','acad-stat-2-num':'#acN2','acad-stat-2-label':'#acL2',
+    'acad-stat-3-num':'#acN3','acad-stat-3-label':'#acL3','acad-stat-4-num':'#acN4','acad-stat-4-label':'#acL4',
+    'acad-stat-5-num':'#acN5','acad-stat-5-label':'#acL5','acad-stat-6-num':'#acN6','acad-stat-6-label':'#acL6',
+    'acad-cert-ey':'#acCertEy','acad-cert-h':'#acCertH','acad-cert-p':'#acCertP',
+    'acad-ws-h':'#acWsH','acad-ws-p':'#acWsP','acad-sk-h':'#acSkH','acad-sk-p':'#acSkP',
+    'acad-pr-h':'#acPrH','acad-pr-p':'#acPrP',
+    'acad-deg-h':'#acDegH','acad-deg-p':'#acDegP','acad-deg-btn':'#acDegBtn',
+    'acad-cta-h':'#acCtaH'
+  };
+  function cmsStore(){ try{var o=JSON.parse(localStorage.getItem('alizonContent')||'{}');return (o&&typeof o==='object'&&!Array.isArray(o))?o:{};}catch(e){return {};} }
+  function applyAcadCMS(store){
+    store=store||cmsStore();
+    Object.keys(CMS_MAP).forEach(function(k){
+      var v=store[k]; if(typeof v!=='string'||!v.trim()) return;
+      var el=document.querySelector(CMS_MAP[k]); if(!el) return;
+      if(/-num$/.test(k)){ /* keep the styled <em> suffix — replace only the leading text node */
+        var tn=null;
+        for(var i=0;i<el.childNodes.length;i++){ var n=el.childNodes[i];
+          if(n.nodeType===3&&n.nodeValue&&n.nodeValue.replace(/\s+/g,'')!==''){ tn=n; break; } }
+        if(tn) tn.nodeValue=v; else el.insertBefore(document.createTextNode(v),el.firstChild||null);
+      } else { el.textContent=v; }
+    });
+    /* hero photo: 'acad-hero-img-url' (direct URL) wins, else 'acad-hero-img'
+       ("<id>:<chunks>" chunked JPEG in sync/nwimg_*, uploaded from the admin) */
+    var vis=document.querySelector('.hero .vis'), ph=document.getElementById('acHeroPhoto');
+    if(vis&&ph){
+      var url=String(store['acad-hero-img-url']||'').trim();
+      var meta=String(store['acad-hero-img']||'').trim();
+      if(url){ if(ph.getAttribute('data-src')!==url){ ph.setAttribute('data-src',url); ph.src=url; } vis.classList.add('hasphoto'); }
+      else if(meta){
+        if(ph.getAttribute('data-src')!==meta){ ph.setAttribute('data-src',meta);
+          var p=meta.split(':'); loadImg({id:p[0],chunks:parseInt(p[1],10)||1}, ph); }
+        vis.classList.add('hasphoto');
+      } else { vis.classList.remove('hasphoto'); ph.removeAttribute('data-src'); ph.removeAttribute('src'); }
+    }
+  }
+  window.__applyAcadCMS=applyAcadCMS;
+
   var _sig='';
   function render(force){
     var host=document.getElementById('nwsHost'); if(!host) return;
@@ -460,9 +511,9 @@
       +(d.link?'<a class="rd" href="'+esc(d.link)+'" target="_blank" rel="noopener">Read more →</a>':'')
       +'</div></article>';
   }
-  window.addEventListener('storage',function(e){ if(e.key==='alizonNews') render(true); });
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){render(true);}); else render(true);
-  setInterval(function(){ render(false); }, 5000);
+  window.addEventListener('storage',function(e){ if(e.key==='alizonNews') render(true); if(e.key==='alizonContent') applyAcadCMS(); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){render(true);applyAcadCMS();}); else { render(true); applyAcadCMS(); }
+  setInterval(function(){ render(false); applyAcadCMS(); }, 5000);
 })();
 </script>
 </body>
