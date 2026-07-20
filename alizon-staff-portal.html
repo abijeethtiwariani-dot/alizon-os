@@ -173,11 +173,16 @@
   <div id="app" style="display:none">
     <div class="card">
       <div class="phead">
-        <div class="avatar" id="avatar">–</div>
+        <div class="avatar" id="avatar" style="overflow:hidden">–</div>
         <div class="pmeta">
           <h1 id="pName">—</h1>
           <div class="post" id="pPost">—</div>
           <div class="chips" id="pChips"></div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px">
+            <input type="file" id="myPhoto" accept="image/*" style="font-size:11.5px;max-width:200px">
+            <button class="abtn" id="myPhotoUp" style="padding:7px 13px;font-size:12px">📷 Upload my photo</button>
+            <span class="hintl" id="myPhotoMsg" style="margin:0"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -201,7 +206,7 @@
           <h2 style="margin-bottom:0">My details</h2>
           <button class="abtn" id="editMe" style="padding:8px 14px;font-size:12px">Edit personal details</button>
         </div>
-        <div class="hintl" style="margin-top:6px">Contact and personal information is yours to keep current. Job, salary and bank details are maintained by HR.</div>
+        <div class="hintl" style="margin-top:6px">Keep your full profile current — contact, identity (Aadhaar / alternate ID), nationality, addresses, previous employment and references. Job, salary and bank details are maintained by HR.</div>
         <div id="myDetails"></div>
         <div id="editForm" style="display:none"></div>
       </div>
@@ -327,6 +332,7 @@ function enter(e){
   $('loginCard').style.display='none'; $('app').style.display='block'; $('logoutBtn').style.display='';
   const idc=$('dlIdCard'); if(idc)idc.href='alizon-idcard.html?type=employee&id='+encodeURIComponent(ME.empid||'');
   render();
+  renderMyPhoto(); setInterval(renderMyPhoto, 8000);
   setInterval(renderChat, 4000); /* pick up HR replies */
 }
 
@@ -367,8 +373,14 @@ function render(){
   const kv=(l,v,mono)=>v?'<div class="kv"><b>'+l+'</b><span'+(mono?' style="font-family:ui-monospace,Menlo,monospace;font-weight:600"':'')+'>'+esc(v)+'</span></div>':'';
   $('myDetails').innerHTML=
     kv('Reporting manager',e.manager)+kv('Email',e.email)+kv('Phone',e.phone,1)+kv('Date of birth',e.dob,1)+
-    kv('Address',e.address)+kv('Emergency contact',e.emergency)+kv('Qualification',e.qualification)+
-    kv('Blood group',e.bloodgroup)+kv('UAN',e.uan,1)+kv('Bank a/c',e.bank,1)+kv('PAN / SSN',e.pan,1)
+    kv('Nationality',e.nationality)+kv('Marital status',e.marital)+
+    kv("Father's / guardian's name",e.father)+kv("Mother's name",e.mother)+
+    kv('Aadhaar',e.aadhaar,1)+kv('Alternate ID',e.altid)+
+    kv('Permanent address',e.address)+kv('Communication address',e.commaddress)+kv('PIN code',e.pincode,1)+
+    kv('Emergency contact',e.emergency)+kv('Qualification',e.qualification)+
+    kv('Blood group',e.bloodgroup)+kv('Previous employment 1',e.prevemp1)+kv('Previous employment 2',e.prevemp2)+
+    kv('Reference 1',e.reference1)+kv('Reference 2',e.reference2)+
+    kv('UAN',e.uan,1)+kv('Bank a/c',e.bank,1)+kv('PAN / SSN',e.pan,1)
     ||'<div class="empty">Details will appear here once HR syncs them from the back end.</div>';
   renderReqs(); renderChat(); renderOnboarding();
 }
@@ -377,8 +389,18 @@ function kpi(l,v,d){ return '<div class="kpi"><div class="kl">'+l+'</div><div cl
 /* ---------- edit personal details (writes back to the HR master sheet) ---------- */
 const EDITABLE=[
   ['email','Email','you@example.com'],['phone','Phone','+91 …'],['dob','Date of birth','DDMMYYYY'],
-  ['address','Address',''],['emergency','Emergency contact','Name · relation · phone'],
-  ['qualification','Qualification',''],['bloodgroup','Blood group','e.g. O+']
+  ['nationality','Nationality','Indian'],['marital','Marital status','Single / Married / …'],
+  ['father',"Father's / guardian's name",''],['mother',"Mother's name",''],
+  ['aadhaar','Aadhaar number','12 digits'],['altid','Alternate ID (PAN / Passport / Voter ID)','Type · number'],
+  ['address','Permanent address','House · street · post office · district · PIN'],
+  ['commaddress','Communication address','Leave blank if same as permanent'],
+  ['pincode','PIN code','6 digits'],
+  ['emergency','Emergency contact','Name · relation · phone'],
+  ['qualification','Qualification',''],['bloodgroup','Blood group','e.g. O+'],
+  ['prevemp1','Previous employment 1','Employer · designation · from–to'],
+  ['prevemp2','Previous employment 2','Employer · designation · from–to'],
+  ['reference1','Professional reference 1','Name · organisation · phone'],
+  ['reference2','Professional reference 2','Name · organisation · phone']
 ];
 $('editMe').addEventListener('click',()=>{
   const f=$('editForm');
@@ -398,6 +420,71 @@ $('editMe').addEventListener('click',()=>{
     W('alizonHR',d);
     $('editMe').click(); render();
   };
+});
+
+/* ---------- my photo (shared registry: alizonPhotos + sync/phimg_*) ---------- */
+function phKey(){ return 'employee:'+String(ME&&ME.empid||'').toLowerCase().replace(/\s+/g,''); }
+function phMap(){ const o=J('alizonPhotos',{}); return (o&&typeof o==='object'&&!Array.isArray(o))?o:{}; }
+let phDataCache={};
+function whenFbAuthed(cb,tries){ tries=tries||0;
+  try{ if(window.firebase&&firebase.auth&&firebase.auth().currentUser){ cb(true); return; } }catch(e){}
+  if(tries>25){ cb(false); return; }
+  setTimeout(()=>whenFbAuthed(cb,tries+1),400);
+}
+function renderMyPhoto(){
+  const meta=phMap()[phKey()]; const el=$('avatar');
+  if(!meta||!meta.id||!el) return;
+  if(phDataCache[meta.id]){ el.innerHTML='<img src="'+phDataCache[meta.id]+'" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" alt="">'; return; }
+  whenFbAuthed(ok=>{
+    if(!ok||!window.firebase||!firebase.firestore) return;
+    const db=firebase.firestore(), gets=[];
+    for(let i=0;i<(meta.chunks||1);i++) gets.push(db.collection('sync').doc('phimg_'+meta.id+'_'+i).get());
+    Promise.all(gets).then(snaps=>{
+      const b64=snaps.map(x=>(x.exists&&x.data()&&x.data().value)||'').join('');
+      if(!b64) return;
+      phDataCache[meta.id]='data:image/jpeg;base64,'+b64;
+      el.innerHTML='<img src="'+phDataCache[meta.id]+'" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" alt="">';
+    }).catch(()=>{});
+  });
+}
+document.addEventListener('click',ev=>{
+  if(!ev.target||ev.target.id!=='myPhotoUp') return;
+  const f=$('myPhoto'), msg=$('myPhotoMsg'), file=f&&f.files&&f.files[0];
+  if(!ME){ return; }
+  if(!file){ if(msg) msg.textContent='Choose a photo first.'; return; }
+  if(msg) msg.textContent='Uploading…';
+  const r=new FileReader();
+  r.onload=()=>{ const im=new Image();
+    im.onload=()=>{
+      const sc=Math.min(1,512/Math.max(im.width,im.height));
+      const cv=document.createElement('canvas');cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);
+      cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+      const b64=cv.toDataURL('image/jpeg',.82).split(',')[1];
+      whenFbAuthed(ok=>{
+        if(!ok||!window.firebase||!firebase.firestore){ if(msg) msg.textContent='Cloud not ready — try again.'; return; }
+        const db=firebase.firestore();
+        const id='PH'+Date.now(), CH=700000, n=Math.ceil(b64.length/CH), writes=[];
+        for(let i=0;i<n;i++) writes.push(db.collection('sync').doc('phimg_'+id+'_'+i).set({value:b64.slice(i*CH,(i+1)*CH)}));
+        Promise.all(writes).then(()=>{
+          const map=phMap(); const old=map[phKey()];
+          map[phKey()]={id:id,chunks:n};
+          const json=JSON.stringify(map);
+          try{ localStorage.setItem('alizonPhotos', json); }catch(e){}
+          db.collection('sync').doc('alizonPhotos').set({ value:json,
+            updatedAt:firebase.firestore.FieldValue.serverTimestamp() }).catch(()=>{});
+          try{ if(old&&old.id){ for(let j=0;j<(old.chunks||1);j++) db.collection('sync').doc('phimg_'+old.id+'_'+j).delete().catch(()=>{}); } }catch(e){}
+          phDataCache[id]='data:image/jpeg;base64,'+b64;
+          if(msg) msg.textContent='Photo saved ✓ — it appears on your ID card too.';
+          if(f) f.value='';
+          renderMyPhoto();
+        }).catch(()=>{ if(msg) msg.textContent='Upload failed — try again.'; });
+      });
+    };
+    im.onerror=()=>{ if(msg) msg.textContent='Could not read that image.'; };
+    im.src=String(r.result);
+  };
+  r.onerror=()=>{ if(msg) msg.textContent='Could not read that image.'; };
+  r.readAsDataURL(file);
 });
 
 /* ---------- documents ---------- */

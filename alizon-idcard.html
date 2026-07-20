@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ALIZON OS · ID Card Studio</title>
 <meta name="robots" content="noindex,nofollow">
+<script src="firebase-sync.js"></script>
 <style>
   :root{
     --bg:#070810; --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.10);
@@ -51,28 +52,32 @@
   .abtn.primary{border:none;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
   .abtn.primary:hover{color:#fff}
 
-  /* ===== the ID card ===== */
-  .idcard{width:320px;height:504px;border-radius:18px;overflow:hidden;background:#fff;color:#1a1a1a;position:relative;
-    box-shadow:0 24px 60px rgba(0,0,0,.55);font-family:'Inter',sans-serif}
-  .idc-head{background:linear-gradient(120deg,#B1040E,#C40D16 55%,#D9A441);color:#fff;padding:16px 16px 14px;text-align:center;position:relative}
-  .idc-head img{width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
-  .idc-head .nm{font-family:'Source Serif Pro',Georgia,serif;font-weight:700;font-size:13.5px;line-height:1.15;margin-top:5px}
-  .idc-head .sc{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.9;margin-top:3px}
-  .idc-tag{position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);background:#111;color:var(--gold);font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;padding:5px 14px;border-radius:100px;white-space:nowrap}
-  .idc-body{padding:26px 18px 14px;text-align:center}
-  .idc-photo{width:96px;height:96px;border-radius:50%;margin:0 auto;display:grid;place-items:center;color:#fff;font-family:'Source Serif Pro',serif;font-weight:700;font-size:34px;overflow:hidden;
-    background:linear-gradient(120deg,#9E0C13,#C40D16);border:4px solid #D9A441;box-shadow:0 6px 16px rgba(0,0,0,.2)}
-  .idc-photo img{width:100%;height:100%;border-radius:50%;object-fit:cover}
-  .idc-name{font-family:'Source Serif Pro',Georgia,serif;font-weight:700;font-size:18px;margin-top:12px;color:#231D1E}
-  .idc-id{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:#7A0309;font-weight:600;margin-top:2px}
-  .idc-role{font-size:12px;color:#4A4546;margin-top:8px;line-height:1.45;padding:0 6px}
-  .idc-role b{color:#231D1E}
-  .idc-valid{font-size:10px;color:#8A8384;margin-top:10px;letter-spacing:.04em}
-  .idc-foot{position:absolute;bottom:0;left:0;right:0;background:#7A0309;color:#fff;padding:9px 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .idc-bars{display:flex;gap:2px;align-items:flex-end;height:26px}
-  .idc-bars i{display:block;width:2px;background:#fff;border-radius:1px}
-  .idc-foot .sg{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.85;text-align:right;line-height:1.3}
-
+  /* ===== the ID card — corporate ===== */
+  .idcard{width:320px;height:504px;border-radius:14px;overflow:hidden;background:#fff;color:#1a1a1a;position:relative;
+    box-shadow:0 24px 60px rgba(0,0,0,.55);font-family:'Inter',sans-serif;border:1px solid rgba(0,0,0,.08)}
+  .idc-head{background:linear-gradient(120deg,#5c0d0d,#8c1515 70%,#a31212);color:#fff;padding:14px 16px 12px;display:flex;gap:11px;align-items:center;text-align:left;border-bottom:3px solid #D9A441}
+  .idc-head img{width:34px;height:34px;object-fit:contain;flex:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
+  .idc-head .nm{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;font-size:13px;line-height:1.18}
+  .idc-head .sc{font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.85;margin-top:2px}
+  .idc-ribbon{background:#1b1414;color:#D9A441;text-align:center;font-size:9px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;padding:6px 8px}
+  .idc-body{padding:18px 18px 12px;text-align:center}
+  .idc-photo{width:112px;height:112px;border-radius:14px;margin:0 auto;display:grid;place-items:center;color:#fff;font-family:'Source Serif Pro',serif;font-weight:700;font-size:38px;overflow:hidden;
+    background:linear-gradient(135deg,#7a1010,#a31212);border:3px solid #fff;outline:2px solid #D9A441;box-shadow:0 8px 20px rgba(60,8,8,.25)}
+  .idc-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .idc-name{font-family:'Source Serif Pro',Georgia,serif;font-weight:700;font-size:18.5px;margin-top:12px;color:#231D1E;line-height:1.15}
+  .idc-id{display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#7A0309;font-weight:700;margin-top:5px;background:rgba(140,21,21,.08);border:1px solid rgba(140,21,21,.18);border-radius:100px;padding:3px 14px;letter-spacing:.06em}
+  .idc-rows{margin:12px 4px 0;text-align:left}
+  .idc-r{display:flex;gap:10px;align-items:baseline;padding:5.5px 2px;border-bottom:1px dashed rgba(0,0,0,.1)}
+  .idc-r:last-child{border-bottom:none}
+  .idc-r .k{flex:none;width:86px;font-size:8.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9a8a6a}
+  .idc-r .v{font-size:11.5px;font-weight:600;color:#231D1E;line-height:1.3}
+  .idc-foot{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:3px solid #7A0309;padding:8px 14px 9px;display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+  .idc-bars{display:flex;gap:2px;align-items:flex-end;height:24px}
+  .idc-bars i{display:block;width:2px;background:#7A0309;border-radius:1px}
+  .idc-foot .sg{font-size:7px;letter-spacing:.08em;text-transform:uppercase;color:#8A8384;text-align:right;line-height:1.4}
+  .idc-foot .sg b{display:block;font-family:'Source Serif Pro',Georgia,serif;font-style:italic;font-size:11px;color:#231D1E;text-transform:none;letter-spacing:0}
+  .phbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:2px}
+  .phbar input[type=file]{font-size:11.5px;color:var(--muted);max-width:210px}
   /* bulk sheet */
   .sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;justify-items:center}
 
@@ -157,7 +162,7 @@ function employees(){var d=J('alizonHR',{});return (d&&Array.isArray(d.EMP)?d.EM
 function model(cat, r){
   if(cat==='student'){
     return {id:r.reg||'—', name:(r.salutation?r.salutation+' ':'')+ (r.name||'Student'),
-      role:'Student', line1:r.programme||r.course||'', line2:r.batch?('Batch '+r.batch):'',
+      role:'Student', line1:r.programme||r.course||'', line2:r.batch?(/^\s*batch/i.test(r.batch)?r.batch:('Batch '+r.batch)):'',
       photo:(r.photo||r.photoUrl||r.pic||''),
       search:[r.reg,r.name,r.batch,r.programme,r.email].join(' ').toLowerCase(), batch:r.batch||'—', raw:r};
   }
@@ -184,90 +189,160 @@ function barsHtml(id){
   return out;
 }
 function cardHtml(m){
-  var role=m.role==='Student'?'STUDENT ID':m.role==='Faculty'?'FACULTY ID':'EMPLOYEE ID';
+  var role=m.role==='Student'?'Student Identity Card':m.role==='Faculty'?'Faculty Identity Card':'Employee Identity Card';
+  var k1=m.role==='Student'?'Programme':'Designation';
+  var k2=m.role==='Student'?'Batch':(m.role==='Faculty'?'Department':'Office');
+  var sig=m.role==='Student'?'Registrar':'HR Office';
+  var ph=photoUrlFor(m);
   return '<div class="idcard">'+
     '<div class="idc-head"><img src="'+LOGO_SRC+'" onerror="this.style.display=\'none\'">'+
-      '<div class="nm">Alizon School of Medical<br>&amp; Digital Intelligence</div>'+
-      '<div class="sc">Identity Card</div><div class="idc-tag">'+role+'</div></div>'+
+      '<div><div class="nm">Alizon School of Medical<br>&amp; Digital Intelligence</div>'+
+      '<div class="sc">Thiruvananthapuram · alizon.in</div></div></div>'+
+    '<div class="idc-ribbon">'+role+'</div>'+
     '<div class="idc-body">'+
-      '<div class="idc-photo">'+(m.photo?'<img src="'+esc(m.photo)+'" alt="" onerror="this.remove()">':esc(initials(m.name)))+'</div>'+
+      '<div class="idc-photo" data-ph="'+esc(photoKey(m))+'">'+(ph?'<img src="'+esc(ph)+'" alt="">':esc(initials(m.name)))+'</div>'+
       '<div class="idc-name">'+esc(m.name)+'</div>'+
       '<div class="idc-id">'+esc(m.id)+'</div>'+
-      '<div class="idc-role">'+(m.line1?'<b>'+esc(m.line1)+'</b>':'')+(m.line2?'<br>'+esc(m.line2):'')+'</div>'+
-      '<div class="idc-valid">Valid for Academic Year 2026–27</div>'+
+      '<div class="idc-rows">'+
+        (m.line1?'<div class="idc-r"><span class="k">'+k1+'</span><span class="v">'+esc(m.line1)+'</span></div>':'')+
+        (m.line2?'<div class="idc-r"><span class="k">'+k2+'</span><span class="v">'+esc(m.line2)+'</span></div>':'')+
+        '<div class="idc-r"><span class="k">Valid thru</span><span class="v">Academic Year 2026–27</span></div>'+
+      '</div>'+
     '</div>'+
     '<div class="idc-foot"><div class="idc-bars">'+barsHtml(m.id)+'</div>'+
-      '<div class="sg">System-generated<br>ALIZON OS</div></div>'+
+      '<div class="sg"><b>'+sig+'</b>Authorised signatory · ALIZON OS</div></div>'+
   '</div>';
+}
+
+/* ===== shared photo registry (alizonPhotos + sync/phimg_* chunks) ===== */
+function photoKey(m){ return (m.role||'').toLowerCase()+':'+String(m.id||'').toLowerCase().replace(/\s+/g,''); }
+function photoMap(){ var o=J('alizonPhotos',{}); return (o&&typeof o==='object'&&!Array.isArray(o))?o:{}; }
+var phCache={};
+function photoUrlFor(m){
+  if(m.photo) return m.photo;                 /* legacy inline value */
+  var meta=photoMap()[photoKey(m)];
+  return (meta&&meta.id&&phCache[meta.id])||'';
+}
+function whenAuthed(cb,tries){ tries=tries||0;
+  try{ if(window.firebase&&firebase.auth&&firebase.auth().currentUser){ cb(true); return; } }catch(e){}
+  if(tries>25){ cb(false); return; }
+  setTimeout(function(){ whenAuthed(cb,tries+1); },400);
+}
+function fetchPhoto(meta, cb){
+  if(!meta||!meta.id){ cb(''); return; }
+  if(phCache[meta.id]){ cb(phCache[meta.id]); return; }
+  whenAuthed(function(ok){
+    if(!ok||!window.firebase||!firebase.firestore){ cb(''); return; }
+    var db=firebase.firestore(), gets=[];
+    for(var i=0;i<(meta.chunks||1);i++) gets.push(db.collection('sync').doc('phimg_'+meta.id+'_'+i).get());
+    Promise.all(gets).then(function(snaps){
+      var b64=snaps.map(function(x){return (x.exists&&x.data()&&x.data().value)||'';}).join('');
+      if(!b64){ cb(''); return; }
+      phCache[meta.id]='data:image/jpeg;base64,'+b64; cb(phCache[meta.id]);
+    }).catch(function(){ cb(''); });
+  });
+}
+function hydratePhotos(scope){
+  (scope||document).querySelectorAll('.idc-photo[data-ph]').forEach(function(el){
+    if(el.querySelector('img')) return;
+    var meta=photoMap()[el.getAttribute('data-ph')];
+    if(!meta) return;
+    fetchPhoto(meta, function(url){
+      if(url&&!el.querySelector('img')) el.innerHTML='<img src="'+url+'" alt="">';
+    });
+  });
 }
 
 /* ---- PNG via canvas (draws fields directly, no external lib) ---- */
 function roundRect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
 function downloadPng(m){
-  var W=640,H=1008,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
-  x.fillStyle='#fff';roundRect(x,0,0,W,H,36);x.fill();
-  // header gradient
-  var g=x.createLinearGradient(0,0,W,300);g.addColorStop(0,'#B1040E');g.addColorStop(.55,'#C40D16');g.addColorStop(1,'#D9A441');
-  x.save();roundRect(x,0,0,W,300,36);x.clip();x.fillStyle=g;x.fillRect(0,0,W,300);x.restore();
-  x.fillStyle='#fff';x.textAlign='center';
-  x.font='700 30px Georgia, serif';x.fillText('Alizon School of Medical',W/2,150);
-  x.fillText('& Digital Intelligence',W/2,188);
-  x.font='700 15px Inter, sans-serif';x.fillStyle='rgba(255,255,255,.92)';
-  x.fillText('I D E N T I T Y   C A R D',W/2,232);
-  // role tag
-  x.fillStyle='#111';roundRect(x,W/2-95,278,190,34,17);x.fill();
-  x.fillStyle='#D9A441';x.font='800 14px Inter, sans-serif';
-  x.fillText((m.role||'').toUpperCase()+' ID',W/2,301);
-  // avatar
-  var cx=W/2,cy=430,r=90;
-  // gold ring behind the avatar (drawn in every case)
-  x.beginPath();x.arc(cx,cy,r+7,0,7);x.fillStyle='#D9A441';x.fill();
-  function drawInitialsAvatar(){
-    var ag=x.createLinearGradient(cx-r,cy-r,cx+r,cy+r);ag.addColorStop(0,'#9E0C13');ag.addColorStop(1,'#C40D16');
-    x.beginPath();x.arc(cx,cy,r,0,7);x.fillStyle=ag;x.fill();
-    x.fillStyle='#fff';x.textAlign='center';x.font='700 74px Georgia, serif';x.textBaseline='middle';x.fillText(initials(m.name),cx,cy+4);x.textBaseline='alphabetic';
-  }
-  // rest of the card + export; safe to call after either avatar variant
-  function finalize(){
-    // name + id
-    x.textAlign='center';
-    x.fillStyle='#231D1E';x.font='700 40px Georgia, serif';x.fillText(m.name,W/2,600);
-    x.fillStyle='#7A0309';x.font='600 26px monospace';x.fillText(m.id,W/2,640);
-    // role lines
-    x.fillStyle='#231D1E';x.font='700 24px Inter, sans-serif';if(m.line1)x.fillText(m.line1,W/2,690);
-    x.fillStyle='#4A4546';x.font='400 22px Inter, sans-serif';if(m.line2)x.fillText(m.line2,W/2,724);
-    x.fillStyle='#8A8384';x.font='400 18px Inter, sans-serif';x.fillText('Valid for Academic Year 2026-27',W/2,772);
-    // footer strip
-    x.fillStyle='#7A0309';x.fillRect(0,H-92,W,92);
-    var s=String(m.id||'0'),bx=40;
-    x.fillStyle='#fff';
-    for(var i=0;i<46;i++){var code=s.charCodeAt(i%s.length)||48;var bw=(code%3)+1;var bh=16+((code*(i+3))%34);x.fillRect(bx,H-30-bh,bw,bh);bx+=bw+3;}
-    x.textAlign='right';x.font='800 15px Inter, sans-serif';x.fillStyle='rgba(255,255,255,.9)';
-    x.fillText('SYSTEM-GENERATED · ALIZON OS',W-30,H-40);
-    var url;
-    try{ url=c.toDataURL('image/png'); }
-    catch(e){
-      // tainted (cross-origin) canvas — redraw with initials avatar, then export
-      drawInitialsAvatar();
-      try{ url=c.toDataURL('image/png'); }catch(e2){ return; }
+  function draw(photoUrl){
+    var W=640,H=1008,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+    x.fillStyle='#fff';roundRect(x,0,0,W,H,28);x.fill();
+    /* header band (left-aligned, gold rule) */
+    var g=x.createLinearGradient(0,0,W,0);g.addColorStop(0,'#5c0d0d');g.addColorStop(.7,'#8c1515');g.addColorStop(1,'#a31212');
+    x.save();roundRect(x,0,0,W,150,28);x.clip();x.fillStyle=g;x.fillRect(0,0,W,150);
+    x.fillStyle='#D9A441';x.fillRect(0,144,W,6);x.restore();
+    x.fillStyle='#fff';x.textAlign='left';
+    x.font='600 27px Georgia, serif';x.fillText('Alizon School of Medical',96,64);
+    x.fillText('& Digital Intelligence',96,98);
+    x.font='600 13px Inter, sans-serif';x.fillStyle='rgba(255,255,255,.85)';
+    x.fillText('T H I R U V A N A N T H A P U R A M  ·  A L I Z O N . I N',96,126);
+    /* logo circle placeholder */
+    x.fillStyle='rgba(255,255,255,.18)';x.beginPath();x.arc(56,75,26,0,7);x.fill();
+    x.fillStyle='#fff';x.font='700 26px Georgia, serif';x.textAlign='center';x.fillText('A',56,85);
+    /* role ribbon */
+    x.fillStyle='#1b1414';x.fillRect(0,150,W,44);
+    x.fillStyle='#D9A441';x.font='800 17px Inter, sans-serif';x.textAlign='center';
+    var role=m.role==='Student'?'S T U D E N T   I D E N T I T Y   C A R D':m.role==='Faculty'?'F A C U L T Y   I D E N T I T Y   C A R D':'E M P L O Y E E   I D E N T I T Y   C A R D';
+    x.fillText(role,W/2,179);
+    /* photo (rounded rect) */
+    var pw=224,px0=(W-pw)/2,py0=232;
+    x.fillStyle='#D9A441';roundRect(x,px0-8,py0-8,pw+16,pw+16,32);x.fill();
+    x.fillStyle='#fff';roundRect(x,px0-4,py0-4,pw+8,pw+8,30);x.fill();
+    function drawInitials(){
+      var ag=x.createLinearGradient(px0,py0,px0+pw,py0+pw);ag.addColorStop(0,'#7a1010');ag.addColorStop(1,'#a31212');
+      x.save();roundRect(x,px0,py0,pw,pw,26);x.clip();x.fillStyle=ag;x.fillRect(px0,py0,pw,pw);
+      x.fillStyle='#fff';x.font='700 84px Georgia, serif';x.textAlign='center';x.textBaseline='middle';
+      x.fillText(initials(m.name),W/2,py0+pw/2+6);x.textBaseline='alphabetic';x.restore();
     }
-    var a=document.createElement('a');a.href=url;
-    a.download='ALIZON_ID_'+String(m.id).replace(/[^A-Za-z0-9]+/g,'_')+'.png';
-    document.body.appendChild(a);a.click();a.remove();
+    function finalize(){
+      x.textAlign='center';
+      x.fillStyle='#231D1E';x.font='700 38px Georgia, serif';x.fillText(m.name,W/2,548);
+      /* id pill */
+      x.font='700 24px monospace';var idw=x.measureText(m.id).width+56;
+      x.fillStyle='rgba(140,21,21,.08)';roundRect(x,(W-idw)/2,566,idw,44,22);x.fill();
+      x.strokeStyle='rgba(140,21,21,.25)';x.lineWidth=2;roundRect(x,(W-idw)/2,566,idw,44,22);x.stroke();
+      x.fillStyle='#7A0309';x.fillText(m.id,W/2,597);
+      /* detail rows */
+      var rows=[], k1=m.role==='Student'?'PROGRAMME':'DESIGNATION',
+          k2=m.role==='Student'?'BATCH':(m.role==='Faculty'?'DEPARTMENT':'OFFICE');
+      if(m.line1) rows.push([k1,m.line1]);
+      if(m.line2) rows.push([k2,m.line2]);
+      rows.push(['VALID THRU','Academic Year 2026-27']);
+      var ry=668;
+      rows.forEach(function(rr){
+        x.textAlign='left';x.fillStyle='#9a8a6a';x.font='800 15px Inter, sans-serif';x.fillText(rr[0],60,ry);
+        x.fillStyle='#231D1E';x.font='600 21px Inter, sans-serif';
+        var val=String(rr[1]); if(val.length>38) val=val.slice(0,37)+'…';
+        x.fillText(val,240,ry);
+        x.strokeStyle='rgba(0,0,0,.08)';x.setLineDash([4,5]);x.beginPath();x.moveTo(60,ry+16);x.lineTo(W-60,ry+16);x.stroke();x.setLineDash([]);
+        ry+=54;
+      });
+      /* footer */
+      x.fillStyle='#7A0309';x.fillRect(0,H-96,W,6);
+      var s2=String(m.id||'0'),bx=52;
+      x.fillStyle='#7A0309';
+      for(var i=0;i<40;i++){var code=s2.charCodeAt(i%s2.length)||48;var bw=(code%3)+1;var bh=14+((code*(i+3))%28);x.fillRect(bx,H-30-bh,bw,bh);bx+=bw+3;}
+      x.textAlign='right';x.font='italic 700 22px Georgia, serif';x.fillStyle='#231D1E';
+      x.fillText(m.role==='Student'?'Registrar':'HR Office',W-52,H-56);
+      x.font='700 12px Inter, sans-serif';x.fillStyle='#8A8384';
+      x.fillText('AUTHORISED SIGNATORY · ALIZON OS',W-52,H-34);
+      var url;
+      try{ url=c.toDataURL('image/png'); }
+      catch(e){ drawInitials(); try{ url=c.toDataURL('image/png'); }catch(e2){ return; } }
+      var a=document.createElement('a');a.href=url;
+      a.download='ALIZON_ID_'+String(m.id).replace(/[^A-Za-z0-9]+/g,'_')+'.png';
+      document.body.appendChild(a);a.click();a.remove();
+    }
+    if(photoUrl){
+      var img=new Image();
+      img.onload=function(){
+        x.save();roundRect(x,px0,py0,pw,pw,26);x.clip();
+        var sc=Math.max(pw/img.width,pw/img.height);
+        x.drawImage(img,px0+(pw-img.width*sc)/2,py0+(pw-img.height*sc)/2,img.width*sc,img.height*sc);
+        x.restore();finalize();
+      };
+      img.onerror=function(){ drawInitials();finalize(); };
+      img.src=photoUrl;
+    } else { drawInitials();finalize(); }
   }
-  if(m.photo){
-    var img=new Image();img.crossOrigin='anonymous';
-    img.onload=function(){
-      x.save();x.beginPath();x.arc(cx,cy,r,0,7);x.clip();x.drawImage(img,cx-r,cy-r,2*r,2*r);x.restore();
-      finalize();
-    };
-    img.onerror=function(){ drawInitialsAvatar();finalize(); };
-    img.src=m.photo;
-  } else {
-    drawInitialsAvatar();finalize();
-  }
+  var meta=photoMap()[photoKey(m)];
+  if(m.photo) draw(m.photo);
+  else if(meta) fetchPhoto(meta,function(url){ draw(url||''); });
+  else draw('');
 }
-function printOne(m){$('printArea').className='';$('printArea').innerHTML=cardHtml(m);window.print();}
+function printOne(m){$('printArea').className='';$('printArea').innerHTML=cardHtml(m);hydratePhotos($('printArea'));setTimeout(function(){window.print();},350);}
 
 /* ---- state + rendering ---- */
 var CAT='student', current=null;
@@ -281,13 +356,79 @@ function renderList(){
 }
 function select(m){
   current=m;
+  var isAdmin=(sessionStorage.getItem('alizonAdminAuth')==='1')||!!(new URLSearchParams(location.search).get('admin'));
   $('stage').innerHTML=cardHtml(m)+
     '<div class="btnrow"><button class="abtn primary" id="dlPng">⬇ Download ID card (PNG)</button>'+
     '<button class="abtn" id="prCard">🖨 Print / Save as PDF</button></div>'+
-    '<div class="stagehint">Photo-less cards use gold-ringed initials. Details come from the back-end records.</div>';
+    (isAdmin?'<div class="phbar"><input type="file" id="phFile" accept="image/*"><button class="abtn" id="phUp">📷 Upload photo</button>'+
+      (photoMap()[photoKey(m)]?'<button class="abtn" id="phRm">Remove photo</button>':'')+
+      '<span class="stagehint" id="phMsg"></span></div>':'')+
+    '<div class="stagehint">Photo-less cards use initials. Photos upload once and appear on ID cards, portals and testimonials.</div>';
   $('dlPng').addEventListener('click',function(){downloadPng(m);});
   $('prCard').addEventListener('click',function(){printOne(m);});
+  if(isAdmin){
+    var up=$('phUp'); if(up) up.addEventListener('click',function(){ adminUpload(m); });
+    var rm=$('phRm'); if(rm) rm.addEventListener('click',function(){ adminRemove(m); });
+  }
+  hydratePhotos($('stage'));
   renderList();
+}
+
+/* ---- admin: upload / remove a person's photo (shared registry) ---- */
+function dscale(file){
+  return new Promise(function(res,rej){
+    var r=new FileReader();
+    r.onload=function(){ var im=new Image();
+      im.onload=function(){
+        var sc=Math.min(1,512/Math.max(im.width,im.height));
+        var cv=document.createElement('canvas');cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);
+        cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+        res(cv.toDataURL('image/jpeg',.82).split(',')[1]);
+      };
+      im.onerror=rej; im.src=String(r.result);
+    };
+    r.onerror=rej; r.readAsDataURL(file);
+  });
+}
+function savePhotoMap(map){
+  var json=JSON.stringify(map);
+  try{ localStorage.setItem('alizonPhotos', json); }catch(e){}
+  whenAuthed(function(ok){
+    if(ok&&window.firebase&&firebase.firestore){
+      firebase.firestore().collection('sync').doc('alizonPhotos').set({ value:json,
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp() }).catch(function(){});
+    }
+  });
+}
+function adminUpload(m){
+  var f=$('phFile'), msg=$('phMsg');
+  var file=f&&f.files&&f.files[0];
+  if(!file){ if(msg) msg.textContent='Choose an image first.'; return; }
+  if(msg) msg.textContent='Uploading…';
+  dscale(file).then(function(b64){
+    whenAuthed(function(ok){
+      if(!ok||!window.firebase||!firebase.firestore){ if(msg) msg.textContent='Cloud not ready — try again.'; return; }
+      var db=firebase.firestore();
+      var id='PH'+Date.now(), CH=700000, n=Math.ceil(b64.length/CH), writes=[];
+      for(var i=0;i<n;i++) writes.push(db.collection('sync').doc('phimg_'+id+'_'+i).set({value:b64.slice(i*CH,(i+1)*CH)}));
+      Promise.all(writes).then(function(){
+        var map=photoMap(); var old=map[photoKey(m)];
+        map[photoKey(m)]={id:id,chunks:n}; savePhotoMap(map);
+        try{ if(old&&old.id){ for(var j=0;j<(old.chunks||1);j++) db.collection('sync').doc('phimg_'+old.id+'_'+j).delete().catch(function(){}); } }catch(e){}
+        phCache[id]='data:image/jpeg;base64,'+b64;
+        if(msg) msg.textContent='Photo saved ✓';
+        select(m);
+      }).catch(function(){ if(msg) msg.textContent='Upload failed — try again.'; });
+    });
+  }).catch(function(){ if(msg) msg.textContent='Could not read that image.'; });
+}
+function adminRemove(m){
+  var map=photoMap(); var old=map[photoKey(m)];
+  if(!old) return;
+  delete map[photoKey(m)]; savePhotoMap(map);
+  try{ if(window.firebase&&firebase.firestore){ var db=firebase.firestore();
+    for(var j=0;j<(old.chunks||1);j++) db.collection('sync').doc('phimg_'+old.id+'_'+j).delete().catch(function(){}); } }catch(e){}
+  select(m);
 }
 
 /* ---- bulk ---- */
@@ -308,12 +449,13 @@ function drawSheet(){
   if(CAT==='student'){ var b=$('bulkBatch').value; if(b&&b!=='__all') list=list.filter(function(m){return String(m.batch)===String(b);}); }
   $('bulkCount').textContent=list.length+' card'+(list.length!==1?'s':'');
   $('bulkSheet').innerHTML=list.length?list.map(cardHtml).join(''):'<div class="empty">No records for this selection.</div>';
+  hydratePhotos($('bulkSheet'));
 }
 function printAll(){
   var list=listFor(CAT);
   if(CAT==='student'){ var b=$('bulkBatch').value; if(b&&b!=='__all') list=list.filter(function(m){return String(m.batch)===String(b);}); }
   if(!list.length){ return; }
-  $('printArea').className='sheet';$('printArea').innerHTML=list.map(cardHtml).join('');window.print();
+  $('printArea').className='sheet';$('printArea').innerHTML=list.map(cardHtml).join('');hydratePhotos($('printArea'));setTimeout(function(){window.print();},600);
 }
 
 /* ---- wiring ---- */
@@ -388,6 +530,7 @@ $('bulkPrint').addEventListener('click',printAll);
       '<button class="abtn" id="selfPr">🖨 Print / Save as PDF</button></div>';
     $('selfDl').addEventListener('click',function(){downloadPng(m);});
     $('selfPr').addEventListener('click',function(){printOne(m);});
+    hydratePhotos($('selfStage'));
   }
   $('selfGo').addEventListener('click',selfFind);
   $('selfId').addEventListener('keydown',function(e){ if(e.key==='Enter') selfFind(); });

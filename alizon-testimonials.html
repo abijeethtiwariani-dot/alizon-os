@@ -210,11 +210,12 @@
   var imgCache={};
   function loadChunkImg(meta, el){
     if(!meta||!meta.id||!el) return;
+    var pfx=meta.pfx||'wfimg_';
     if(imgCache[meta.id]){ el.src=imgCache[meta.id]; return; }
     whenAuthed(function(ok){
       if(!ok||!window.firebase||!firebase.firestore) return;
       var db=firebase.firestore(), gets=[];
-      for(var i=0;i<(meta.chunks||1);i++) gets.push(db.collection('sync').doc('wfimg_'+meta.id+'_'+i).get());
+      for(var i=0;i<(meta.chunks||1);i++) gets.push(db.collection('sync').doc(pfx+meta.id+'_'+i).get());
       Promise.all(gets).then(function(snaps){
         var b64=snaps.map(function(s){return (s.exists&&s.data()&&s.data().value)||'';}).join('');
         if(!b64) return;
@@ -237,10 +238,21 @@
       list=approved();
     }
     if(!list.length){ host.innerHTML='<div class="t-empty">Voices are on their way — feedback appears here once the office approves it.</div>'; return; }
+    var phMap={}; try{ var pm=JSON.parse(localStorage.getItem('alizonPhotos')||'{}'); if(pm&&typeof pm==='object') phMap=pm; }catch(e){}
+    var rosterPh={}; try{ (JSON.parse(localStorage.getItem('alizonStudents')||'[]')||[]).forEach(function(st){
+      if(st&&st.reg&&(st.photo||st.photoUrl||st.pic)) rosterPh[String(st.reg).toLowerCase().replace(/\s+/g,'')]=String(st.photo||st.photoUrl||st.pic); });}catch(e){}
     host.innerHTML='<div class="tgrid">'+list.map(function(f){
-      var av=f.photo&&f.photo.id
-        ? '<img data-wf="'+esc(f.photo.id)+':'+(f.photo.chunks||1)+'" alt="'+esc(f.name)+'">'
-        : '<div class="mono">'+esc(initials(f.name))+'</div>';
+      /* photo priority: delegate-uploaded (wfimg) → office registry photo by reg (phimg) → monogram */
+      var av;
+      if(f.photo&&f.photo.id){
+        av='<img data-wf="wfimg_:'+esc(f.photo.id)+':'+(f.photo.chunks||1)+'" alt="'+esc(f.name)+'">';
+      } else {
+        var nreg=String(f.reg||'').toLowerCase().replace(/\s+/g,'');
+        var meta=phMap['student:'+nreg]||phMap['employee:'+nreg];
+        if(meta&&meta.id) av='<img data-wf="phimg_:'+esc(meta.id)+':'+(meta.chunks||1)+'" alt="'+esc(f.name)+'">';
+        else if(rosterPh[nreg]) av='<img src="'+esc(rosterPh[nreg])+'" alt="'+esc(f.name)+'" loading="lazy" onerror="this.outerHTML=\'<div class=mono>'+esc(initials(f.name))+'</div>\'">';
+        else av='<div class="mono">'+esc(initials(f.name))+'</div>';
+      }
       var sub=[f.course,f.batch].filter(Boolean).join(' · ');
       return '<article class="tcard"><div class="q">'+esc(f.text)+'”</div>'
         +'<div class="who">'+av+'<div><b>'+esc(f.name||'Alizon student')+'</b>'
@@ -250,7 +262,7 @@
     }).join('')+'</div>';
     host.querySelectorAll('img[data-wf]').forEach(function(im){
       var p=String(im.getAttribute('data-wf')).split(':');
-      loadChunkImg({id:p[0],chunks:parseInt(p[1],10)||1}, im);
+      loadChunkImg({pfx:p[0],id:p[1],chunks:parseInt(p[2],10)||1}, im);
       im.removeAttribute('data-wf');
     });
     /* SEO: Review structured data */
