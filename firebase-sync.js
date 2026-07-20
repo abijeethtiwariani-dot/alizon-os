@@ -23,7 +23,7 @@
   var KEYS = ['alizonPrograms','alizonStudents','alizonSubmissions','alizonGrievances',
     'alizonFees','alizonFaculty','alizonSchedule','alizonLinks','alizonActivity',
     'alizonHR','alizonStaffReqs','alizonStaffMsgs','alizonStaffMeta','alizonResults','alizonAnnounce',
-    'alizonExamCycles','alizonExamApps','alizonAttendance','alizonMeetings','alizonAlerts','alizonContent','alizonExamDocs'];
+    'alizonExamCycles','alizonExamApps','alizonAttendance','alizonMeetings','alizonAlerts','alizonContent','alizonExamDocs','alizonNews'];
   var KEYSET = {}; KEYS.forEach(function(k){ KEYSET[k] = 1; });
 
   var SDK = 'https://www.gstatic.com/firebasejs/10.12.5/';
@@ -124,7 +124,7 @@
   /* only the data a login is checked against — pulled during bootstrap so fresh
      devices can authenticate. Operational data (fees, submissions, grievances,
      messages, activity) stays in the cloud until a real user signs in. */
-  var AUTH_KEYS = ['alizonStudents','alizonHR','alizonFaculty','alizonResults','alizonContent','alizonExamDocs'];
+  var AUTH_KEYS = ['alizonStudents','alizonHR','alizonFaculty','alizonResults','alizonContent','alizonExamDocs','alizonNews'];
   function pullAuthKeys(){
     AUTH_KEYS.forEach(function(key){
       db.collection('sync').doc(key).get().then(function(doc){
