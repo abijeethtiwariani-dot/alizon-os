@@ -498,16 +498,13 @@
           approved feedback appears on our <a href="alizon-testimonials.html" style="color:var(--crimson);font-weight:600">Testimonials page</a>.</p>
       </div>
       <div class="lg-box">
-        <h3>Delegate sign in</h3>
-        <div class="frm" style="grid-template-columns:1fr">
-          <div class="fld"><label>Registration number</label><input type="text" id="lg-reg" placeholder="e.g. AWK1024" autocomplete="off"></div>
-          <div class="fld"><label>Password</label><input type="password" id="lg-pass" placeholder="Your password" autocomplete="off"></div>
-        </div>
-        <div class="frm-act">
-          <button class="btn pri" id="lg-go">Sign in</button>
-          <span class="frm-err" id="lg-err"></span>
-        </div>
-        <div id="lg-out"></div>
+        <h3>Workshop Portal</h3>
+        <div class="pp-hint" style="margin-bottom:16px">Your delegate home: full profile, photo upload,
+          temporary ID card (on approval), your workshop modules — practicals unlock on the workshop
+          day &amp; time — and feedback that can feature on our Testimonials page.</div>
+        <a class="btn pri" href="workshop-portal" style="font-size:14.5px;padding:13px 26px">Open the Workshop Portal ↗</a>
+        <div class="pp-hint" style="margin-top:14px">Sign in there with your <b>AWK registration number</b> and password.
+          You can also reach it from the Student Portal login — choose <b>“Workshop delegate”</b> in the programme menu.</div>
       </div>
     </div>
   </div>
@@ -612,7 +609,7 @@
         +(w.desc?'<p>'+esc(w.desc)+'</p>':'<p></p>')
         +(mods.length?'<div class="ws-mods">'+mods.slice(0,4).map(function(m){return '<span class="ws-mod"><b>'+esc(m.c)+'</b> · '+esc(m.m)+'</span>';}).join('')+(mods.length>4?'<span class="ws-mod">+'+(mods.length-4)+' more</span>':'')+'</div>':'')
         +'<div class="act"><button class="btn pri" data-pick="'+esc(w.id)+'">Register</button>'
-        +'<a class="btn" href="#login">Sign in</a></div>'
+        +'<a class="btn" href="workshop-portal">Sign in</a></div>'
         +'</article>';
     }).join('')+'</div>';
     injectLd(list);
@@ -690,8 +687,8 @@
       +'<div class="cred"><div class="k">Status</div><div class="v serif" style="font-size:16px;padding-top:5px">Pending approval</div></div>'
       +'</div>'
       +'<div class="note"><b>Write these down or screenshot this box</b> — they are shown only once. '
-      +'Sign in below anytime to track your status; when the workshops office approves your seat, your '
-      +'temporary ID card appears in the sign-in area. A confirmation is also kept against your email ('+esc(entry.email)+').</div></div>';
+      +'Sign in at the <a href="workshop-portal" style="color:var(--crimson);font-weight:700">Workshop Portal</a> anytime to track your status; when the workshops office approves your seat, your '
+      +'temporary ID card and workshop modules appear there. A confirmation is also kept against your email ('+esc(entry.email)+').</div></div>';
   }
 
   /* cloud-safe append (pull latest → merge → append → set) */
@@ -741,83 +738,6 @@
     }, function(m){ err.textContent=m; subBtn.disabled=false; subBtn.textContent='Submit & get my ID'; });
   });
 
-  /* ---------- delegate portal: profile · photo · ID card · feedback ---------- */
-  var SESSION=null;   /* the signed-in registration entry */
-  function initials(name){ return String(name||'').trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0).toUpperCase();}).join('')||'A'; }
-
-  /* chunked-image loader (photos live in sync/wfimg_<id>_<n>) */
-  var imgCache={};
-  function loadChunkImg(meta, el){
-    if(!meta||!meta.id||!el) return;
-    if(imgCache[meta.id]){ el.src=imgCache[meta.id]; return; }
-    whenAuthed(function(ok){
-      if(!ok||!window.firebase||!firebase.firestore) return;
-      var db=firebase.firestore(), gets=[];
-      for(var i=0;i<(meta.chunks||1);i++) gets.push(db.collection('sync').doc('wfimg_'+meta.id+'_'+i).get());
-      Promise.all(gets).then(function(snaps){
-        var b64=snaps.map(function(s){return (s.exists&&s.data()&&s.data().value)||'';}).join('');
-        if(!b64) return;
-        var url='data:image/jpeg;base64,'+b64;
-        imgCache[meta.id]=url; el.src=url;
-      }).catch(function(){});
-    });
-  }
-  function hookImgs(scope){
-    (scope||document).querySelectorAll('img[data-wf]').forEach(function(im){
-      var p=String(im.getAttribute('data-wf')).split(':');
-      loadChunkImg({id:p[0],chunks:parseInt(p[1],10)||1}, im);
-      im.removeAttribute('data-wf');
-    });
-  }
-  function avatarHtml(r, cls, mono){
-    if(r&&r.photo&&r.photo.id) return '<img class="'+cls+'" data-wf="'+esc(r.photo.id)+':'+(r.photo.chunks||1)+'" alt="'+esc(r.name)+'">';
-    return '<div class="'+mono+'">'+esc(initials(r&&r.name))+'</div>';
-  }
-
-  function idCardHtml(r){
-    var w=workshops().filter(function(x){return x.id===r.ws;})[0]||{};
-    var valid=w.endDate||w.date||'';
-    return '<div class="idc-wrap"><div class="idc" id="idCard">'
-      +'<div class="top-strip"><img src="alizon-logo.png" alt=""><div class="t"><b>Alizon School of Medical &amp; Digital Intelligence</b><small>Workshops &amp; Masterclasses Office</small></div></div>'
-      +'<div class="ribbon">Temporary ID · Workshop Delegate</div>'
-      +'<div class="bd"><div class="av">'+(r.photo&&r.photo.id?'<img data-wf="'+esc(r.photo.id)+':'+(r.photo.chunks||1)+'" alt="">':esc(initials(r.name)))+'</div><div>'
-      +'<div class="nm serif">'+esc((r.sal?r.sal+' ':'')+r.name)+'</div>'
-      +'<div class="rg">'+esc(r.reg)+'</div>'
-      +'<div class="ws-t">'+esc(r.wsTitle)+(w.date?' · '+esc(prettyDate(w.date)):'')+'<br>'+esc(r.college||'')+(r.subject?' · '+esc(r.subject):'')+'</div>'
-      +'</div></div>'
-      +'<div class="ft"><div>Valid for the workshop day'+(valid?'<b>'+esc(prettyDate(valid))+'</b>':'')+'</div>'
-      +'<div class="sig"><span class="ln">Alizon Workshops Office</span><br>Authorised signatory</div></div>'
-      +'</div>'
-      +'<div class="frm-act" style="margin-top:12px"><button class="btn pri" onclick="window.print()">Print / save as PDF</button></div>'
-      +'<div class="idc-note">Carry this temporary ID (printed or on your phone) with any government/college photo ID. It is valid only with the workshops office attendance list.</div></div>';
-  }
-
-  function modulesHtml(r){
-    var w=workshops().filter(function(x){return x.id===r.ws;})[0]||{};
-    var mods=(w.modules||[]);
-    if(!mods.length) return '';
-    var P=J('alizonPrograms',[]); if(!Array.isArray(P)) P=[];
-    var rows=mods.map(function(mm){
-      var c=P.filter(function(x){return x&&x.name===mm.c;})[0];
-      var md=c&&(c.modules||[]).filter(function(x){return x&&x.title===mm.m;})[0];
-      var desc=(md&&md.desc)||'';
-      var href=(md&&md.href)||'';
-      var act;
-      if(r.status==='approved'){
-        act = href
-          ? '<a class="btn pri" style="padding:9px 18px;font-size:12.5px" href="'+esc(href)+'" target="_blank" rel="noopener">Open practical ↗</a>'
-          : '<span class="mod-tag">Live session at the workshop</span>';
-      } else act='<span class="mod-tag">🔒 Unlocks on approval</span>';
-      return '<div class="mod-row"><div class="mod-info"><b>'+esc((mm.u?mm.u+' · ':'')+mm.m)+'</b>'
-        +'<small>'+esc(mm.c)+(desc?' — '+esc(desc):'')+'</small></div>'+act+'</div>';
-    }).join('');
-    return '<div class="pp-sec"><h4>Your workshop modules &amp; practicals</h4>'
-      +'<div class="pp-hint">'+(r.status==='approved'
-        ?'Work through your syllabus below — virtual practicals open in a new tab on the ALIZON OS platform with instant AI-scored reports.'
-        :'Your syllabus is listed below. Modules unlock once the workshops office approves your registration.')+'</div>'
-      +rows+'</div>';
-  }
-
   /* ---- replaceable hero image (Admin → Website Content → Page hero images) ---- */
   var heroCache={};
   function applyHeroPhoto(){
@@ -845,191 +765,6 @@
     });
   }
 
-  function myFeedback(){
-    var a=J('alizonWsFeedback',[]); if(!Array.isArray(a)) a=[];
-    return SESSION?a.filter(function(f){return f&&f.reg===SESSION.reg;}):[];
-  }
-
-  function portalHtml(r){
-    var badge = r.status==='approved' ? '<span class="st-badge approved">Approved</span>'
-      : r.status==='rejected' ? '<span class="st-badge rejected">Not approved</span>'
-      : '<span class="st-badge pending">Pending approval</span>';
-    var w=workshops().filter(function(x){return x.id===r.ws;})[0]||{};
-    var html='<div style="border-top:1px solid var(--line);margin-top:18px;padding-top:16px">'
-      +'<div class="pp-head">'+avatarHtml(r,'pav','pav-mono')
-      +'<div><div class="st-line" style="margin-bottom:4px"><b class="serif" style="font-size:18px">'+esc((r.sal?r.sal+' ':'')+r.name)+'</b>'+badge+'</div>'
-      +'<div class="st-info"><b>'+esc(r.reg)+'</b> · '+esc(r.wsTitle)+(w.date?' · '+esc(prettyDate(w.date)):'')+'</div></div></div>'
-
-      /* profile */
-      +'<div class="prof">'
-      +pi('College',r.college)+pi('Course of study',r.subject)+pi('Year',r.year)
-      +pi('Email',r.email)+pi('Mobile',(r.cc?'+'+r.cc+' ':'')+ (r.phone||''))+pi('Category',r.category)
-      +pi('District',r.domDist||r.permDist)+pi('Education',r.eduLevel)+pi('Training status',r.trainStatus)
-      +'</div>'
-
-      /* photo upload */
-      +'<div class="pp-sec"><h4>Your photo</h4>'
-      +'<div class="pp-hint">Upload a clear passport-style photo — it appears on your delegate ID card and (with your feedback) on the Testimonials page.</div>'
-      +'<div class="frm-act" style="margin-top:0"><input type="file" id="pp-photo" accept="image/*">'
-      +'<button class="btn" id="pp-upbtn">'+(r.photo?'Replace photo':'Upload photo')+'</button>'
-      +'<span class="frm-err" id="pp-uperr"></span></div></div>';
-
-    /* ID card (approved only) */
-    if(r.status==='approved') html+='<div class="pp-sec"><h4>Temporary ID card</h4>'+idCardHtml(r)+'</div>';
-    else if(r.status==='rejected') html+='<div class="pp-sec st-info">This registration was not approved. For queries write to <a href="mailto:opsmanager.mioc@miak.in" style="color:var(--crimson);font-weight:600">the workshops office</a>.</div>';
-    else html+='<div class="pp-sec st-info">Your temporary ID card will appear here once the workshops office approves your registration — check back soon.</div>';
-
-    /* workshop modules & practicals */
-    html+=modulesHtml(r);
-
-    /* feedback */
-    var mine=myFeedback();
-    html+='<div class="pp-sec"><h4>Your workshop feedback</h4>'
-      +'<div class="pp-hint">Tell us how the workshop went. Feedback is reviewed by the workshops office — once approved it appears on the public <a href="alizon-testimonials.html" style="color:var(--crimson);font-weight:600">Testimonials page</a> with your name, photo and course.</div>'
-      +'<textarea class="fb-ta" id="pp-fbtext" maxlength="600" placeholder="Your experience in a few sentences… (min 20 characters)">'+(mine.length&&mine[0].status!=='approved'?esc(mine[0].text||''):'')+'</textarea>'
-      +'<div class="frm-act"><button class="btn pri" id="pp-fbsend">'+(mine.length?'Update my feedback':'Submit feedback')+'</button>'
-      +'<span class="frm-err" id="pp-fberr"></span></div>';
-    if(mine.length){
-      html+=mine.map(function(f){
-        var st=f.status==='approved'?'<b style="color:var(--ok)">Approved — live on the Testimonials page ✓</b>'
-          :f.status==='rejected'?'<b style="color:var(--crimson-bright)">Not approved</b>'
-          :'<b style="color:#8a6116">Waiting for office approval</b>';
-        return '<div class="fb-item">“'+esc(f.text)+'”<br>'+st+'</div>';
-      }).join('');
-    }
-    html+='</div></div>';
-    return html;
-    function pi(k,v){ return v?('<div class="pi"><div class="k">'+esc(k)+'</div><div class="v">'+esc(v)+'</div></div>'):''; }
-  }
-
-  function renderPortal(){
-    var out=document.getElementById('lg-out'); if(!out||!SESSION) return;
-    out.innerHTML=portalHtml(SESSION);
-    hookImgs(out);
-  }
-
-  /* ---- photo upload (downscale → 1-2 chunks in sync/wfimg_*) ---- */
-  function downscale(file){
-    return new Promise(function(res,rej){
-      var r=new FileReader();
-      r.onload=function(){ var im=new Image();
-        im.onload=function(){
-          var scale=Math.min(1, 512/Math.max(im.width,im.height));
-          var cv=document.createElement('canvas');
-          cv.width=Math.round(im.width*scale); cv.height=Math.round(im.height*scale);
-          cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
-          res(cv.toDataURL('image/jpeg',.82).split(',')[1]);
-        };
-        im.onerror=rej; im.src=String(r.result);
-      };
-      r.onerror=rej; r.readAsDataURL(file);
-    });
-  }
-  function saveMyRegPatch(patch, done, fail){
-    whenAuthed(function(ok){
-      if(!ok||!window.firebase||!firebase.firestore){ fail('Could not reach the service — try again.'); return; }
-      var db=firebase.firestore();
-      db.collection('sync').doc('alizonWorkshopRegs').get().then(function(doc){
-        var arr=[]; try{ var v=doc.exists&&doc.data()&&doc.data().value; if(v) arr=JSON.parse(v)||[]; }catch(e){}
-        if(!Array.isArray(arr)) arr=[];
-        var me=arr.filter(function(x){return x&&x.id===SESSION.id;})[0];
-        if(!me){ fail('Session out of date — sign in again.'); return; }
-        Object.keys(patch).forEach(function(k){ me[k]=patch[k]; });
-        var json=JSON.stringify(arr);
-        db.collection('sync').doc('alizonWorkshopRegs').set({ value:json,
-          updatedAt:firebase.firestore.FieldValue.serverTimestamp() }).then(function(){
-            try{ localStorage.setItem('alizonWorkshopRegs', json); }catch(e){}
-            Object.keys(patch).forEach(function(k){ SESSION[k]=patch[k]; });
-            done();
-          }).catch(function(){ fail('Could not save — try again.'); });
-      }).catch(function(){ fail('Could not reach the service — try again.'); });
-    });
-  }
-  document.addEventListener('click',function(ev){
-    var t=ev.target; if(!t||!t.id) return;
-    if(t.id==='pp-upbtn'){
-      var f=document.getElementById('pp-photo'), errEl=document.getElementById('pp-uperr');
-      var file=f&&f.files&&f.files[0];
-      if(!file){ errEl.textContent='Choose a photo first.'; return; }
-      t.disabled=true; t.textContent='Uploading…'; errEl.textContent='';
-      downscale(file).then(function(b64){
-        whenAuthed(function(ok){
-          if(!ok){ errEl.textContent='Could not reach the service.'; t.disabled=false; return; }
-          var db=firebase.firestore();
-          var id='WF'+Date.now(), CH=700000, n=Math.ceil(b64.length/CH), writes=[];
-          for(var i=0;i<n;i++) writes.push(db.collection('sync').doc('wfimg_'+id+'_'+i).set({value:b64.slice(i*CH,(i+1)*CH)}));
-          Promise.all(writes).then(function(){
-            var old=SESSION.photo;
-            saveMyRegPatch({photo:{id:id,chunks:n}}, function(){
-              try{ if(old&&old.id){ for(var j=0;j<(old.chunks||1);j++) db.collection('sync').doc('wfimg_'+old.id+'_'+j).delete().catch(function(){}); } }catch(e){}
-              imgCache[id]='data:image/jpeg;base64,'+b64;
-              renderPortal();
-            }, function(m){ errEl.textContent=m; t.disabled=false; t.textContent='Upload photo'; });
-          }).catch(function(){ errEl.textContent='Upload failed — try again.'; t.disabled=false; t.textContent='Upload photo'; });
-        });
-      }).catch(function(){ errEl.textContent='Could not read that image.'; t.disabled=false; });
-    }
-    if(t.id==='pp-fbsend'){
-      var ta=document.getElementById('pp-fbtext'), fe=document.getElementById('pp-fberr');
-      var text=String(ta&&ta.value||'').trim();
-      if(text.length<20){ fe.textContent='Please write at least 20 characters.'; return; }
-      t.disabled=true; t.textContent='Sending…'; fe.textContent='';
-      whenAuthed(function(ok){
-        function fail(m){ fe.textContent=m; t.disabled=false; t.textContent='Submit feedback'; }
-        if(!ok||!window.firebase||!firebase.firestore){ fail('Could not reach the service — try again.'); return; }
-        var db=firebase.firestore();
-        db.collection('sync').doc('alizonWsFeedback').get().then(function(doc){
-          var arr=[]; try{ var v=doc.exists&&doc.data()&&doc.data().value; if(v) arr=JSON.parse(v)||[]; }catch(e){}
-          if(!Array.isArray(arr)) arr=[];
-          var mine=arr.filter(function(f){return f&&f.reg===SESSION.reg&&f.ws===SESSION.ws;})[0];
-          if(mine){ mine.text=text; mine.status='pending'; mine.ts=Date.now();
-            mine.photo=SESSION.photo||mine.photo||null; mine.name=SESSION.name; }
-          else arr.unshift({ id:'FB'+Date.now()+'_'+Math.floor(Math.random()*10000), reg:SESSION.reg, ws:SESSION.ws,
-            name:SESSION.name, course:SESSION.wsTitle, batch:SESSION.subject||'', college:SESSION.college||'',
-            photo:SESSION.photo||null, text:text, status:'pending', src:'workshop', ts:Date.now(), approvedAt:0 });
-          var json=JSON.stringify(arr);
-          db.collection('sync').doc('alizonWsFeedback').set({ value:json,
-            updatedAt:firebase.firestore.FieldValue.serverTimestamp() }).then(function(){
-              try{ localStorage.setItem('alizonWsFeedback', json); }catch(e){}
-              renderPortal();
-            }).catch(function(){ fail('Could not send — try again.'); });
-        }).catch(function(){ fail('Could not reach the service — try again.'); });
-      });
-    }
-  });
-
-  function doLogin(){
-    var reg=String((document.getElementById('lg-reg')||{}).value||'').trim().toUpperCase();
-    var pass=String((document.getElementById('lg-pass')||{}).value||'');
-    var err=document.getElementById('lg-err'), out=document.getElementById('lg-out'), btn=document.getElementById('lg-go');
-    err.textContent=''; out.innerHTML='';
-    if(!reg||!pass){ err.textContent='Enter your registration number and password.'; return; }
-    btn.disabled=true; btn.textContent='Checking…';
-    whenAuthed(function(ok){
-      function finish(){ btn.disabled=false; btn.textContent='Sign in'; }
-      if(!ok||!window.firebase||!firebase.firestore){ err.textContent='Could not reach the service — try again.'; finish(); return; }
-      var db=firebase.firestore();
-      Promise.all([
-        db.collection('sync').doc('alizonWorkshopRegs').get(),
-        db.collection('sync').doc('alizonWsFeedback').get()
-      ]).then(function(docs){
-        var arr=[], fb=[];
-        try{ var v=docs[0].exists&&docs[0].data()&&docs[0].data().value; if(v) arr=JSON.parse(v)||[]; }catch(e){}
-        try{ var v2=docs[1].exists&&docs[1].data()&&docs[1].data().value; if(v2) fb=JSON.parse(v2)||[]; }catch(e){}
-        if(!Array.isArray(arr)) arr=[];
-        if(!Array.isArray(fb)) fb=[];
-        try{ localStorage.setItem('alizonWorkshopRegs', JSON.stringify(arr)); }catch(e){}
-        try{ localStorage.setItem('alizonWsFeedback', JSON.stringify(fb)); }catch(e){}
-        var r=arr.filter(function(x){ return x && String(x.reg||'').toUpperCase()===reg && String(x.pass||'')===pass; })[0];
-        if(!r){ err.textContent='No registration matches that number and password.'; finish(); return; }
-        SESSION=r; renderPortal(); finish();
-      }).catch(function(){ err.textContent='Could not reach the service — try again.'; finish(); });
-    });
-  }
-  var lgBtn=document.getElementById('lg-go');
-  if(lgBtn) lgBtn.addEventListener('click', doLogin);
-  ['lg-reg','lg-pass'].forEach(function(id){ var el=document.getElementById(id);
-    if(el) el.addEventListener('keydown',function(e){ if(e.key==='Enter') doLogin(); }); });
 
   /* boot + live refresh */
   window.addEventListener('storage',function(e){ if(e.key==='alizonWorkshops') renderList(null,true); if(e.key==='alizonContent') applyHeroPhoto(); });
@@ -1037,8 +772,7 @@
   setInterval(function(){ renderList(null,false); applyHeroPhoto(); }, 5000);
 
   /* test hooks (UI only — no storage writes) */
-  window.__wsTest={ renderList:function(l){renderList(l,true);}, credsHtml:credsHtml, modulesHtml:modulesHtml,
-    portalHtml:portalHtml, setSession:function(r){SESSION=r;}, renderPortal:renderPortal,
+  window.__wsTest={ renderList:function(l){renderList(l,true);}, credsHtml:credsHtml,
     collectForm:collectForm, validateForm:validateForm };
 })();
 </script>

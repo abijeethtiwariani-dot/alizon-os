@@ -37,12 +37,12 @@
     if (heroTxt) {
       var tl = g.timeline({ defaults: { ease: 'power3.out' } });
       var h1 = heroTxt.querySelector('h1'), p = heroTxt.querySelector('p');
-      if (h1) tl.from(h1, { y: 44, autoAlpha: 0, duration: 0.9, clearProps: 'all' }, 0.05);
-      if (p) tl.from(p, { y: 30, autoAlpha: 0, duration: 0.85, clearProps: 'all' }, 0.22);
+      if (h1) tl.from(h1, { y: 22, autoAlpha: 0, duration: 0.7, clearProps: 'all' }, 0.05);
+      if (p) tl.from(p, { y: 16, autoAlpha: 0, duration: 0.65, clearProps: 'all' }, 0.18);
       var vis = document.querySelector('.hero .vis');
-      if (vis) tl.from(vis, { autoAlpha: 0, xPercent: 6, duration: 1.0, clearProps: 'opacity,visibility,transform' }, 0.15);
+      if (vis) tl.from(vis, { autoAlpha: 0, duration: 0.9, clearProps: 'opacity,visibility' }, 0.1);
       var badge = document.querySelector('.hero .vis .badge');
-      if (badge) tl.from(badge, { y: 14, autoAlpha: 0, duration: 0.6, clearProps: 'all' }, 0.7);
+      if (badge) tl.from(badge, { autoAlpha: 0, duration: 0.5, clearProps: 'all' }, 0.6);
       setTimeout(function () { try { if (tl.progress() < 1) tl.progress(1); } catch (e) {} }, 4000);
     }
     var affil = document.querySelector('.affil .in');
@@ -52,13 +52,13 @@
 
     /* ---------- 2) scroll reveals (static + dynamic content) ---------- */
     var CARD_SELS = [
-      '.bhead', '.cc', '.crs > *', '.chips .chip',
-      '.nw-card', '.nw-spot', '.nw-grid > *', '.nws > *',
-      '.ws-card', '.ws-grid > *', '.tcard', '.tgrid > *',
-      '.stat', '.row-i', '.rows > *',
-      '.topic .lead', '.topic .rows',
+      '.bhead', '.cc', '.crs > *',
+      '.nw-card', '.nw-spot',
+      '.ws-card', '.tcard',
+      '.stat',
+      '.topic .lead', '.topic .rows', '.rows',
       '.deg-band .in > *', '.spot .in > *',
-      '.login-grid > *', '.rd-box', '.cta .row', '.cta h2'
+      '.login-grid > *', '.rd-box', '.cta h2'
     ].join(',');
 
     function eligible(el) {
@@ -69,9 +69,9 @@
       if (!els.length) return;
       els.forEach(function (e) { e.__alzDone = 1; });
       window.ScrollTrigger.batch(els, {
-        start: 'top 90%', once: true,
+        start: 'top 94%', once: true,
         onEnter: function (b) {
-          g.from(b, { y: 34, autoAlpha: 0, duration: 0.7, stagger: 0.07, ease: 'power3.out', clearProps: 'all' });
+          g.from(b, { y: 16, autoAlpha: 0, duration: 0.55, stagger: 0.05, ease: 'power2.out', clearProps: 'all' });
         }
       });
       window.ScrollTrigger.refresh();
@@ -89,24 +89,12 @@
     var visWrap = document.querySelector('.hero .vis');
     if (visWrap) {
       Array.prototype.forEach.call(document.querySelectorAll('.hero .vis svg, .hero .vis .photo'), function (el) {
-        g.fromTo(el, { yPercent: -6 }, {
-          yPercent: 6, ease: 'none',
+        g.fromTo(el, { yPercent: -3 }, {
+          yPercent: 3, ease: 'none',
           scrollTrigger: { trigger: visWrap, start: 'top top', end: 'bottom top', scrub: true }
         });
       });
     }
-    /* cardinal statement bands: content rises gently while the band scrolls */
-    ['.deg-band', '.spot', '.impact'].forEach(function (sel) {
-      var band = document.querySelector(sel);
-      if (!band) return;
-      var inner = band.querySelector('.in') || band.querySelector('.wrap');
-      if (!inner) return;
-      g.fromTo(inner, { yPercent: 4 }, {
-        yPercent: -4, ease: 'none',
-        scrollTrigger: { trigger: band, start: 'top bottom', end: 'bottom top', scrub: true }
-      });
-    });
-
     /* ---------- 4) numbers band count-up (keeps the styled suffix) ---------- */
     function countUp(el) {
       if (el.__alzCounted) return;

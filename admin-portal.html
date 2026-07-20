@@ -617,9 +617,11 @@
         <div><label class="hint" style="display:block;margin-bottom:4px">Type</label><select id="ws-kind"><option>Workshop</option><option>Masterclass</option><option>Bootcamp</option><option>Seminar</option></select></div>
         <div><label class="hint" style="display:block;margin-bottom:4px">Mode</label><select id="ws-mode"><option>On-campus</option><option>Online</option><option>Hybrid</option></select></div>
       </div>
-      <div class="arow4" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-top:8px">
+      <div class="arow4" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px">
         <div><label class="hint" style="display:block;margin-bottom:4px">Date</label><input type="date" id="ws-date"></div>
         <div><label class="hint" style="display:block;margin-bottom:4px">End date (optional)</label><input type="date" id="ws-end"></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">Start time (gates practicals)</label><input type="time" id="ws-tstart"></div>
+        <div><label class="hint" style="display:block;margin-bottom:4px">End time</label><input type="time" id="ws-tend"></div>
         <div><label class="hint" style="display:block;margin-bottom:4px">Seats (optional)</label><input type="text" id="ws-seats" placeholder="e.g. 60"></div>
         <div><label class="hint" style="display:block;margin-bottom:4px">Fee (optional)</label><input type="text" id="ws-fee" placeholder="e.g. ₹499 or Free"></div>
       </div>
@@ -2693,7 +2695,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   /* ---- publish / edit / list ---- */
   function clearForm(){
     WSB.editing=null; WSB.modules=[];
-    ['ws-title','ws-date','ws-end','ws-seats','ws-fee','ws-venue','ws-desc'].forEach(function(id){ var el=$id(id); if(el) el.value=''; });
+    ['ws-title','ws-date','ws-end','ws-tstart','ws-tend','ws-seats','ws-fee','ws-venue','ws-desc'].forEach(function(id){ var el=$id(id); if(el) el.value=''; });
     var k=$id('ws-kind'); if(k) k.selectedIndex=0; var mo=$id('ws-mode'); if(mo) mo.selectedIndex=0;
     var b=$id('ws-pub'); if(b) b.textContent='Publish workshop';
     renderDrop(); var m=$id('ws-msg'); if(m) m.textContent='';
@@ -2706,7 +2708,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       var pend=regs.filter(function(r){return r.ws===w.id&&r.status==='pending';}).length;
       return '<div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">'
         +'<div style="flex:1;min-width:220px"><b>'+wsEsc(w.title)+'</b>'+(w.on===false?' <span class="hint">(unpublished)</span>':'')
-        +'<div class="hint">'+wsEsc(w.kind||'Workshop')+' · '+wsEsc(w.date||'no date')+(w.mode?' · '+wsEsc(w.mode):'')+' · '+(w.modules||[]).length+' modules · '+n+' registrations'+(pend?' ('+pend+' pending)':'')+'</div></div>'
+        +'<div class="hint">'+wsEsc(w.kind||'Workshop')+' · '+wsEsc(w.date||'no date')+(w.timeStart?' '+wsEsc(w.timeStart)+(w.timeEnd?'–'+wsEsc(w.timeEnd):''):'')+(w.mode?' · '+wsEsc(w.mode):'')+' · '+(w.modules||[]).length+' modules · '+n+' registrations'+(pend?' ('+pend+' pending)':'')+'</div></div>'
         +'<button class="cadd" data-wsed="'+wsEsc(w.id)+'">Edit</button>'
         +'<button class="cadd" data-wstg="'+wsEsc(w.id)+'" style="background:var(--pill);color:var(--ink);border-color:var(--line)">'+(w.on===false?'Publish':'Unpublish')+'</button>'
         +'<button class="cadd" data-wsdel="'+wsEsc(w.id)+'" style="background:#fbebeb;color:#b1040e;border-color:#eec7c7">Delete</button>'
@@ -2754,6 +2756,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       var a=loadWs();
       var entry={ id:WSB.editing||('W'+Date.now()), title:title, kind:($id('ws-kind')||{}).value||'Workshop',
         mode:($id('ws-mode')||{}).value||'', date:date, endDate:($id('ws-end')||{}).value||'',
+        timeStart:($id('ws-tstart')||{}).value||'', timeEnd:($id('ws-tend')||{}).value||'',
         seats:String(($id('ws-seats')||{}).value||'').trim(), fee:String(($id('ws-fee')||{}).value||'').trim(),
         venue:String(($id('ws-venue')||{}).value||'').trim(), desc:String(($id('ws-desc')||{}).value||'').trim(),
         modules:WSB.modules.slice(), on:true, ts:Date.now() };
@@ -2774,7 +2777,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       var w=loadWs().filter(function(x){return x.id===t.getAttribute('data-wsed');})[0]; if(!w) return;
       WSB.editing=w.id; WSB.modules=(w.modules||[]).slice();
       $id('ws-title').value=w.title||''; $id('ws-kind').value=w.kind||'Workshop'; $id('ws-mode').value=w.mode||'On-campus';
-      $id('ws-date').value=w.date||''; $id('ws-end').value=w.endDate||''; $id('ws-seats').value=w.seats||'';
+      $id('ws-date').value=w.date||''; $id('ws-end').value=w.endDate||''; $id('ws-tstart').value=w.timeStart||''; $id('ws-tend').value=w.timeEnd||''; $id('ws-seats').value=w.seats||'';
       $id('ws-fee').value=w.fee||''; $id('ws-venue').value=w.venue||''; $id('ws-desc').value=w.desc||'';
       $id('ws-pub').textContent='Save changes'; renderDrop();
       $id('ws-title').scrollIntoView({behavior:'smooth',block:'center'});

@@ -1657,7 +1657,14 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
   function fillLoginSelect(){
     if(!sel) return;
     const programs=loadPrograms(), act=activeProgramId();
-    sel.innerHTML=programs.map(p=>`<option value="${p.id}" ${p.id===act?'selected':''}>${esc(p.name)}</option>`).join('');
+    sel.innerHTML=programs.map(p=>`<option value="${p.id}" ${p.id===act?'selected':''}>${esc(p.name)}</option>`).join('')
+      +'<option value="__workshop">Workshop delegate — Workshop Portal</option>';
+  }
+  /* workshop delegates sign in at their own portal */
+  if(sel && !sel.__wsHook){ sel.__wsHook=1;
+    sel.addEventListener('change',function(){
+      if(sel.value==='__workshop') location.href='workshop-portal';
+    });
   }
   const lf=document.getElementById('loginForm');
   if(lf) lf.addEventListener('submit',()=>{ if(sel) setActiveProgramId(sel.value); renderTabs(); }, true);

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workshop Portal — Delegate Sign In | Alizon School of Medical & Digital Intelligence</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://www.alizon.in/workshop-portal">
+<link rel="icon" href="/alizon-logo.png">
+<script src="/firebase-sync.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --crimson:#8c1515; --crimson-deep:#6b0f0f; --crimson-bright:#b1040e; --gold:#9a7b3f;
+    --ink:#2e2d29; --muted:#6e6a63; --line:rgba(0,0,0,.12); --paper:#faf8f6; --coal:#181512; --ok:#1E8E5A; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:Inter,-apple-system,sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;min-height:100vh;display:flex;flex-direction:column}
+  a{color:inherit;text-decoration:none}
+  .serif{font-family:'Source Serif Pro',Georgia,serif}
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;width:100%}
+
+  .main-nav{background:var(--crimson);box-shadow:0 2px 14px rgba(60,8,8,.25)}
+  .main-nav .in{max-width:1240px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:14px;min-height:60px}
+  .main-nav img{width:32px;height:32px;object-fit:contain;filter:brightness(0) invert(1)}
+  .main-nav .bt{color:#fff}
+  .main-nav .bt b{font-family:'Source Serif Pro',Georgia,serif;font-size:20px;font-weight:600;display:block;line-height:1.05}
+  .main-nav .bt small{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#eecfcf;font-weight:600}
+  .main-nav nav{margin-left:auto;display:flex;gap:2px;flex-wrap:wrap;align-items:center}
+  .main-nav nav a{color:#fff;font-size:13.5px;font-weight:500;padding:8px 12px;border-radius:4px;transition:.2s}
+  .main-nav nav a:hover{background:rgba(0,0,0,.22)}
+  .main-nav nav a.pri{background:#fff;color:var(--crimson-deep);font-weight:600;margin-left:6px}
+  @media(max-width:640px){ .main-nav .bt small{display:none} .main-nav nav a{font-size:12px;padding:7px 8px} }
+
+  .strip{background:var(--coal);color:#fff;padding:34px 0 30px}
+  .strip .ey{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#e8b4b4}
+  .strip h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.9rem,5vw,2.9rem);font-weight:600;margin-top:8px;line-height:1.08}
+  .strip p{color:#c9c2ba;font-size:14px;margin-top:10px;max-width:64ch;line-height:1.6}
+
+  main{flex:1;padding:34px 0 60px}
+  .lg-box{background:#fff;border:1px solid var(--line);border-top:3px solid var(--crimson);border-radius:3px;padding:26px;max-width:520px}
+  .lg-box.full{max-width:none}
+  .lg-box h3{font-family:'Source Serif Pro',Georgia,serif;font-size:20px;font-weight:600;margin-bottom:14px}
+  .fld{margin-bottom:14px}
+  .fld label{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .fld input{width:100%;padding:11px 13px;border:1px solid rgba(0,0,0,.18);border-radius:3px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+  .fld input:focus{outline:2px solid rgba(140,21,21,.35);border-color:var(--crimson)}
+  .btn{display:inline-block;font-size:13.5px;font-weight:600;padding:11px 22px;border-radius:3px;border:1px solid rgba(0,0,0,.2);cursor:pointer;background:#fff;font-family:inherit;transition:.2s;color:var(--ink)}
+  .btn:hover{border-color:var(--crimson);color:var(--crimson)}
+  .btn.pri{background:var(--crimson);color:#fff;border-color:transparent}
+  .btn.pri:hover{background:var(--crimson-deep);color:#fff}
+  .frm-act{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .frm-err{color:var(--crimson-bright);font-size:13px;font-weight:600}
+  .hint{font-size:12.5px;color:var(--muted);line-height:1.6}
+
+  .st-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .st-badge{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 13px;border-radius:100px}
+  .st-badge.pending{background:#fdf3e0;color:#8a6116;border:1px solid #e8d5a8}
+  .st-badge.approved{background:#e7f5ec;color:var(--ok);border:1px solid #b9e0c8}
+  .st-badge.rejected{background:#fbebeb;color:var(--crimson-bright);border:1px solid #eec7c7}
+  .st-info{font-size:13.5px;color:var(--muted);line-height:1.7}
+  .st-info b{color:var(--ink)}
+
+  .pp-head{display:flex;gap:16px;align-items:center;margin-bottom:6px}
+  .pav{width:74px;height:74px;border-radius:50%;object-fit:cover;border:2px solid rgba(140,21,21,.3);flex:none;background:var(--paper)}
+  .pav-mono{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#8c1515,#4c0a0a);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Source Serif Pro',Georgia,serif;font-size:28px;font-weight:700;flex:none}
+  .prof{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:14px}
+  .prof .pi{background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:9px 12px}
+  .prof .pi .k{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .prof .pi .v{font-size:13px;font-weight:600;margin-top:2px;word-break:break-word}
+  .pp-sec{border-top:1px solid var(--line);margin-top:20px;padding-top:16px}
+  .pp-sec h4{font-family:'Source Serif Pro',Georgia,serif;font-size:17px;font-weight:600;margin-bottom:8px}
+  .pp-hint{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+  .fb-ta{width:100%;min-height:96px;padding:12px;border:1px solid rgba(0,0,0,.18);border-radius:3px;font:inherit;font-size:14px;resize:vertical}
+  .fb-ta:focus{outline:2px solid rgba(140,21,21,.35);border-color:var(--crimson)}
+  .fb-item{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:3px;padding:12px 14px;margin-top:10px;font-size:13px;color:var(--muted);line-height:1.6}
+  .fb-item b{color:var(--ink)}
+  .mod-row{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:12px 2px;border-top:1px dashed var(--line);flex-wrap:wrap}
+  .mod-row:first-of-type{border-top:none}
+  .mod-info{flex:1;min-width:220px}
+  .mod-info b{font-family:'Source Serif Pro',Georgia,serif;font-size:15px;font-weight:600;display:block;line-height:1.3}
+  .mod-info small{font-size:12px;color:var(--muted);line-height:1.5;display:block;margin-top:2px}
+  .mod-tag{font-size:11.5px;font-weight:600;color:var(--muted);background:var(--paper);border:1px solid var(--line);border-radius:100px;padding:6px 13px;white-space:nowrap}
+  .mod-tag.now{background:#e7f5ec;color:var(--ok);border-color:#b9e0c8}
+
+  .idc-wrap{margin-top:18px}
+  .idc{width:340px;max-width:100%;border-radius:12px;overflow:hidden;box-shadow:0 14px 40px rgba(40,8,8,.25);border:1px solid rgba(0,0,0,.1);background:#fff}
+  .idc .top-strip{background:linear-gradient(115deg,#8c1515,#6b0f0f);color:#fff;padding:12px 16px;display:flex;gap:10px;align-items:center}
+  .idc .top-strip img{width:26px;height:26px;object-fit:contain;filter:brightness(0) invert(1)}
+  .idc .top-strip .t b{display:block;font-family:'Source Serif Pro',Georgia,serif;font-size:13.5px;font-weight:600;line-height:1.1}
+  .idc .top-strip .t small{font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:#eecfcf;font-weight:600}
+  .idc .ribbon{background:var(--gold);color:#fff;text-align:center;font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;padding:4px}
+  .idc .bd{display:flex;gap:14px;padding:16px;align-items:center}
+  .idc .av{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#8c1515,#4c0a0a);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Source Serif Pro',Georgia,serif;font-size:26px;font-weight:700;flex:none;overflow:hidden}
+  .idc .av img{width:64px;height:64px;border-radius:50%;object-fit:cover;display:block}
+  .idc .nm{font-family:'Source Serif Pro',Georgia,serif;font-size:17px;font-weight:700;line-height:1.15}
+  .idc .rg{font-size:12px;color:var(--crimson);font-weight:700;letter-spacing:.05em;margin-top:2px}
+  .idc .ws-t{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.45}
+  .idc .ft{border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;padding:10px 16px 12px;font-size:9.5px;color:var(--muted)}
+  .idc .ft b{display:block;font-size:10.5px;color:var(--ink)}
+  .idc .sig{text-align:right}
+  .idc .sig .ln{font-family:'Source Serif Pro',Georgia,serif;font-style:italic;font-size:12px;color:var(--ink)}
+  .idc-note{font-size:12px;color:var(--muted);margin-top:10px;max-width:44ch;line-height:1.6}
+
+  footer{background:var(--crimson);color:#f3e2e2;padding:26px 24px;text-align:center;font-size:12.5px}
+  footer a{color:#fff;font-weight:600}
+
+  @media print{
+    body *{visibility:hidden}
+    .idc,.idc *{visibility:visible}
+    .idc{position:fixed;left:20px;top:20px;box-shadow:none}
+  }
+</style>
+<link rel="stylesheet" href="/alizon-theme.css">
+</head>
+<body>
+
+<div class="main-nav"><div class="in">
+  <img src="/alizon-logo.png" alt="Alizon logo">
+  <div class="bt"><b class="serif">Alizon</b><small>Workshop Portal</small></div>
+  <nav>
+    <a href="/index.html">Home</a>
+    <a href="/alizon-workshops.html">Workshops</a>
+    <a href="/alizon-testimonials.html">Testimonials</a>
+    <a class="pri" href="/ASMDI-dashboard.html">Student Portal ↗</a>
+  </nav>
+</div></div>
+
+<div class="strip"><div class="wrap">
+  <div class="ey">Delegate Access</div>
+  <h1 class="serif">Workshop Portal</h1>
+  <p>Sign in with the registration number and password you received when you registered. Your profile,
+    temporary ID card, workshop modules and feedback live here — practicals unlock on the day and time
+    of your workshop.</p>
+</div></div>
+
+<main><div class="wrap">
+  <div class="lg-box" id="lgBox">
+    <h3>Delegate sign in</h3>
+    <div class="fld"><label>Registration number</label><input type="text" id="lg-reg" placeholder="e.g. AWK1024" autocomplete="off"></div>
+    <div class="fld"><label>Password</label><input type="password" id="lg-pass" placeholder="Your password" autocomplete="off"></div>
+    <div class="frm-act">
+      <button class="btn pri" id="lg-go">Sign in</button>
+      <span class="frm-err" id="lg-err"></span>
+    </div>
+    <div class="hint" style="margin-top:14px">Not registered yet? <a href="/alizon-workshops.html" style="color:var(--crimson);font-weight:600">Register on the Workshops page →</a></div>
+    <div id="lg-out"></div>
+  </div>
+</div></main>
+
+<footer>© 2026 Alizon School of Medical &amp; Digital Intelligence · Thiruvananthapuram, Kerala ·
+  <a href="/index.html">alizon.in</a> · <a href="/alizon-workshops.html">Workshops</a></footer>
+
+<script>
+(function(){
+  'use strict';
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function J(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}}
+  var MONTHS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  function whenAuthed(cb,tries){ tries=tries||0;
+    try{ if(window.firebase&&firebase.auth&&firebase.auth().currentUser){ cb(true); return; } }catch(e){}
+    if(tries>25){ cb(false); return; }
+    setTimeout(function(){ whenAuthed(cb,tries+1); },400);
+  }
+  function workshops(){ var a=J('alizonWorkshops',[]); return (Array.isArray(a)?a:[]).filter(function(w){return w&&w.on!==false;}); }
+  function dateParts(iso){ var d=iso?new Date(iso+'T00:00:00'):null; if(!d||isNaN(d)) return null;
+    return {m:MONTHS[d.getMonth()], d:('0'+d.getDate()).slice(-2), y:d.getFullYear()}; }
+  function prettyDate(iso){ var p=dateParts(iso); return p?(p.d+' '+p.m.charAt(0)+p.m.slice(1).toLowerCase()+' '+p.y):''; }
+  function fmtTime(t){ if(!t) return ''; var p=String(t).split(':'); var h=parseInt(p[0],10), m=p[1]||'00';
+    var ap=h>=12?'PM':'AM'; h=h%12||12; return h+':'+m+' '+ap; }
+  function initials(name){ return String(name||'').trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0).toUpperCase();}).join('')||'A'; }
+
+  var SESSION=null;
+  var imgCache={};
+  function loadChunkImg(meta, el){
+    if(!meta||!meta.id||!el) return;
+    if(imgCache[meta.id]){ el.src=imgCache[meta.id]; return; }
+    whenAuthed(function(ok){
+      if(!ok||!window.firebase||!firebase.firestore) return;
+      var db=firebase.firestore(), gets=[];
+      for(var i=0;i<(meta.chunks||1);i++) gets.push(db.collection('sync').doc('wfimg_'+meta.id+'_'+i).get());
+      Promise.all(gets).then(function(snaps){
+        var b64=snaps.map(function(s){return (s.exists&&s.data()&&s.data().value)||'';}).join('');
+        if(!b64) return;
+        var url='data:image/jpeg;base64,'+b64;
+        imgCache[meta.id]=url; el.src=url;
+      }).catch(function(){});
+    });
+  }
+  function hookImgs(scope){
+    (scope||document).querySelectorAll('img[data-wf]').forEach(function(im){
+      var p=String(im.getAttribute('data-wf')).split(':');
+      loadChunkImg({id:p[0],chunks:parseInt(p[1],10)||1}, im);
+      im.removeAttribute('data-wf');
+    });
+  }
+  function avatarHtml(r, cls, mono){
+    if(r&&r.photo&&r.photo.id) return '<img class="'+cls+'" data-wf="'+esc(r.photo.id)+':'+(r.photo.chunks||1)+'" alt="'+esc(r.name)+'">';
+    return '<div class="'+mono+'">'+esc(initials(r&&r.name))+'</div>';
+  }
+
+  function idCardHtml(r){
+    var w=workshops().filter(function(x){return x.id===r.ws;})[0]||{};
+    var valid=w.endDate||w.date||'';
+    return '<div class="idc-wrap"><div class="idc" id="idCard">'
+      +'<div class="top-strip"><img src="/alizon-logo.png" alt=""><div class="t"><b>Alizon School of Medical &amp; Digital Intelligence</b><small>Workshops &amp; Masterclasses Office</small></div></div>'
+      +'<div class="ribbon">Temporary ID · Workshop Delegate</div>'
+      +'<div class="bd"><div class="av">'+(r.photo&&r.photo.id?'<img data-wf="'+esc(r.photo.id)+':'+(r.photo.chunks||1)+'" alt="">':esc(initials(r.name)))+'</div><div>'
+      +'<div class="nm serif">'+esc((r.sal?r.sal+' ':'')+r.name)+'</div>'
+      +'<div class="rg">'+esc(r.reg)+'</div>'
+      +'<div class="ws-t">'+esc(r.wsTitle)+(w.date?' · '+esc(prettyDate(w.date)):'')+'<br>'+esc(r.college||'')+(r.subject?' · '+esc(r.subject):'')+'</div>'
+      +'</div></div>'
+      +'<div class="ft"><div>Valid for the workshop day'+(valid?'<b>'+esc(prettyDate(valid))+'</b>':'')+'</div>'
+      +'<div class="sig"><span class="ln">Alizon Workshops Office</span><br>Authorised signatory</div></div>'
+      +'</div>'
+      +'<div class="frm-act" style="margin-top:12px"><button class="btn pri" onclick="window.print()">Print / save as PDF</button></div>'
+      +'<div class="idc-note">Carry this temporary ID (printed or on your phone) with any government/college photo ID. It is valid only with the workshops office attendance list.</div></div>';
+  }
+
+  /* ---- modules, gated to the workshop day & time ---- */
+  function moduleWindow(w){
+    if(!w||!w.date) return null;
+    var from=new Date(w.date+'T'+((w.timeStart||'00:00'))+':00');
+    var to=new Date((w.endDate||w.date)+'T'+((w.timeEnd||'23:59'))+':59');
+    if(isNaN(from)||isNaN(to)) return null;
+    return {from:from,to:to};
+  }
+  function modulesHtml(r){
+    var w=workshops().filter(function(x){return x.id===r.ws;})[0]||{};
+    var mods=(w.modules||[]);
+    if(!mods.length) return '';
+    var P=J('alizonPrograms',[]); if(!Array.isArray(P)) P=[];
+    var win=moduleWindow(w), now=new Date();
+    var phase = r.status!=='approved' ? 'unapproved'
+      : (!win ? 'open' : (now<win.from ? 'before' : (now>win.to ? 'after' : 'open')));
+    var whenTxt = win ? (prettyDate(w.date)+(w.timeStart?(' · '+fmtTime(w.timeStart)+(w.timeEnd?'–'+fmtTime(w.timeEnd):'')):'')) : '';
+    var rows=mods.map(function(mm){
+      var c=P.filter(function(x){return x&&x.name===mm.c;})[0];
+      var md=c&&(c.modules||[]).filter(function(x){return x&&x.title===mm.m;})[0];
+      var desc=(md&&md.desc)||'';
+      var href=(md&&md.href)||'';
+      var act;
+      if(phase==='open'){
+        act = href
+          ? '<a class="btn pri" style="padding:9px 18px;font-size:12.5px" href="/'+esc(href.replace(/^\//,''))+'" target="_blank" rel="noopener">Open practical ↗</a>'
+          : '<span class="mod-tag now">Live session — in progress</span>';
+      } else if(phase==='before') act='<span class="mod-tag">🔒 Opens '+esc(whenTxt)+'</span>';
+      else if(phase==='after') act='<span class="mod-tag">Workshop completed — access closed</span>';
+      else act='<span class="mod-tag">🔒 Unlocks on approval</span>';
+      return '<div class="mod-row"><div class="mod-info"><b>'+esc((mm.u?mm.u+' · ':'')+mm.m)+'</b>'
+        +'<small>'+esc(mm.c)+(desc?' — '+esc(desc):'')+'</small></div>'+act+'</div>';
+    }).join('');
+    var hint = phase==='open' ? 'Your workshop is live — open each practical in a new tab; reports are AI-scored on the ALIZON OS platform.'
+      : phase==='before' ? 'Your syllabus is below. Practicals unlock automatically on '+whenTxt+'.'
+      : phase==='after' ? 'This workshop has concluded — thank you for attending. Share your feedback below.'
+      : 'Modules unlock once the workshops office approves your registration.';
+    return '<div class="pp-sec"><h4>Your workshop modules &amp; practicals</h4>'
+      +'<div class="pp-hint">'+hint+'</div>'+rows+'</div>';
+  }
+
+  function myFeedback(){
+    var a=J('alizonWsFeedback',[]); if(!Array.isArray(a)) a=[];
+    return SESSION?a.filter(function(f){return f&&f.reg===SESSION.reg;}):[];
+  }
+
+  function portalHtml(r){
+    var badge = r.status==='approved' ? '<span class="st-badge approved">Approved</span>'
+      : r.status==='rejected' ? '<span class="st-badge rejected">Not approved</span>'
+      : '<span class="st-badge pending">Pending approval</span>';
+    var w=workshops().filter(function(x){return x.id===r.ws;})[0]||{};
+    var html='<div style="border-top:1px solid var(--line);margin-top:20px;padding-top:18px">'
+      +'<div class="pp-head">'+avatarHtml(r,'pav','pav-mono')
+      +'<div><div class="st-line" style="margin-bottom:4px"><b class="serif" style="font-size:18px">'+esc((r.sal?r.sal+' ':'')+r.name)+'</b>'+badge+'</div>'
+      +'<div class="st-info"><b>'+esc(r.reg)+'</b> · '+esc(r.wsTitle)+(w.date?' · '+esc(prettyDate(w.date)):'')+(w.timeStart?' · '+esc(fmtTime(w.timeStart))+(w.timeEnd?'–'+esc(fmtTime(w.timeEnd)):''):'')+'</div></div></div>'
+      +'<div class="prof">'
+      +pi('College',r.college)+pi('Course of study',r.subject)+pi('Year',r.year)
+      +pi('Email',r.email)+pi('Mobile',(r.cc?'+'+r.cc+' ':'')+(r.phone||''))+pi('Category',r.category)
+      +pi('District',r.domDist||r.permDist)+pi('Education',r.eduLevel)+pi('Training status',r.trainStatus)
+      +'</div>'
+      +'<div class="pp-sec"><h4>Your photo</h4>'
+      +'<div class="pp-hint">Upload a clear passport-style photo — it appears on your delegate ID card and (with your feedback) on the Testimonials page.</div>'
+      +'<div class="frm-act"><input type="file" id="pp-photo" accept="image/*">'
+      +'<button class="btn" id="pp-upbtn">'+(r.photo?'Replace photo':'Upload photo')+'</button>'
+      +'<span class="frm-err" id="pp-uperr"></span></div></div>';
+    if(r.status==='approved') html+='<div class="pp-sec"><h4>Temporary ID card</h4>'+idCardHtml(r)+'</div>';
+    else if(r.status==='rejected') html+='<div class="pp-sec st-info">This registration was not approved. For queries write to <a href="mailto:opsmanager.mioc@miak.in" style="color:var(--crimson);font-weight:600">the workshops office</a>.</div>';
+    else html+='<div class="pp-sec st-info">Your temporary ID card will appear here once the workshops office approves your registration — check back soon.</div>';
+    html+=modulesHtml(r);
+    var mine=myFeedback();
+    html+='<div class="pp-sec"><h4>Your workshop feedback</h4>'
+      +'<div class="pp-hint">Tell us how the workshop went. Feedback is reviewed by the workshops office — once approved it appears on the public <a href="/alizon-testimonials.html" style="color:var(--crimson);font-weight:600">Testimonials page</a> with your name, photo and course.</div>'
+      +'<textarea class="fb-ta" id="pp-fbtext" maxlength="600" placeholder="Your experience in a few sentences… (min 20 characters)">'+(mine.length&&mine[0].status!=='approved'?esc(mine[0].text||''):'')+'</textarea>'
+      +'<div class="frm-act" style="margin-top:10px"><button class="btn pri" id="pp-fbsend">'+(mine.length?'Update my feedback':'Submit feedback')+'</button>'
+      +'<span class="frm-err" id="pp-fberr"></span></div>';
+    if(mine.length){
+      html+=mine.map(function(f){
+        var st=f.status==='approved'?'<b style="color:var(--ok)">Approved — live on the Testimonials page ✓</b>'
+          :f.status==='rejected'?'<b style="color:var(--crimson-bright)">Not approved</b>'
+          :'<b style="color:#8a6116">Waiting for office approval</b>';
+        return '<div class="fb-item">“'+esc(f.text)+'”<br>'+st+'</div>';
+      }).join('');
+    }
+    html+='</div></div>';
+    return html;
+    function pi(k,v){ return v?('<div class="pi"><div class="k">'+esc(k)+'</div><div class="v">'+esc(v)+'</div></div>'):''; }
+  }
+
+  function renderPortal(){
+    var out=document.getElementById('lg-out'); if(!out||!SESSION) return;
+    document.getElementById('lgBox').classList.add('full');
+    out.innerHTML=portalHtml(SESSION);
+    hookImgs(out);
+  }
+
+  function saveMyRegPatch(patch, done, fail){
+    whenAuthed(function(ok){
+      if(!ok||!window.firebase||!firebase.firestore){ fail('Could not reach the service — try again.'); return; }
+      var db=firebase.firestore();
+      db.collection('sync').doc('alizonWorkshopRegs').get().then(function(doc){
+        var arr=[]; try{ var v=doc.exists&&doc.data()&&doc.data().value; if(v) arr=JSON.parse(v)||[]; }catch(e){}
+        if(!Array.isArray(arr)) arr=[];
+        var me=arr.filter(function(x){return x&&x.id===SESSION.id;})[0];
+        if(!me){ fail('Session out of date — sign in again.'); return; }
+        Object.keys(patch).forEach(function(k){ me[k]=patch[k]; });
+        var json=JSON.stringify(arr);
+        db.collection('sync').doc('alizonWorkshopRegs').set({ value:json,
+          updatedAt:firebase.firestore.FieldValue.serverTimestamp() }).then(function(){
+            try{ localStorage.setItem('alizonWorkshopRegs', json); }catch(e){}
+            Object.keys(patch).forEach(function(k){ SESSION[k]=patch[k]; });
+            done();
+          }).catch(function(){ fail('Could not save — try again.'); });
+      }).catch(function(){ fail('Could not reach the service — try again.'); });
+    });
+  }
+  function downscale(file){
+    return new Promise(function(res,rej){
+      var r=new FileReader();
+      r.onload=function(){ var im=new Image();
+        im.onload=function(){
+          var scale=Math.min(1, 512/Math.max(im.width,im.height));
+          var cv=document.createElement('canvas');
+          cv.width=Math.round(im.width*scale); cv.height=Math.round(im.height*scale);
+          cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+          res(cv.toDataURL('image/jpeg',.82).split(',')[1]);
+        };
+        im.onerror=rej; im.src=String(r.result);
+      };
+      r.onerror=rej; r.readAsDataURL(file);
+    });
+  }
+  document.addEventListener('click',function(ev){
+    var t=ev.target; if(!t||!t.id) return;
+    if(t.id==='pp-upbtn'){
+      var f=document.getElementById('pp-photo'), errEl=document.getElementById('pp-uperr');
+      var file=f&&f.files&&f.files[0];
+      if(!file){ errEl.textContent='Choose a photo first.'; return; }
+      t.disabled=true; t.textContent='Uploading…'; errEl.textContent='';
+      downscale(file).then(function(b64){
+        whenAuthed(function(ok){
+          if(!ok){ errEl.textContent='Could not reach the service.'; t.disabled=false; return; }
+          var db=firebase.firestore();
+          var id='WF'+Date.now(), CH=700000, n=Math.ceil(b64.length/CH), writes=[];
+          for(var i=0;i<n;i++) writes.push(db.collection('sync').doc('wfimg_'+id+'_'+i).set({value:b64.slice(i*CH,(i+1)*CH)}));
+          Promise.all(writes).then(function(){
+            var old=SESSION.photo;
+            saveMyRegPatch({photo:{id:id,chunks:n}}, function(){
+              try{ if(old&&old.id){ for(var j=0;j<(old.chunks||1);j++) db.collection('sync').doc('wfimg_'+old.id+'_'+j).delete().catch(function(){}); } }catch(e){}
+              imgCache[id]='data:image/jpeg;base64,'+b64;
+              renderPortal();
+            }, function(m){ errEl.textContent=m; t.disabled=false; t.textContent='Upload photo'; });
+          }).catch(function(){ errEl.textContent='Upload failed — try again.'; t.disabled=false; t.textContent='Upload photo'; });
+        });
+      }).catch(function(){ errEl.textContent='Could not read that image.'; t.disabled=false; });
+    }
+    if(t.id==='pp-fbsend'){
+      var ta=document.getElementById('pp-fbtext'), fe=document.getElementById('pp-fberr');
+      var text=String(ta&&ta.value||'').trim();
+      if(text.length<20){ fe.textContent='Please write at least 20 characters.'; return; }
+      t.disabled=true; t.textContent='Sending…'; fe.textContent='';
+      whenAuthed(function(ok){
+        function fail(m){ fe.textContent=m; t.disabled=false; t.textContent='Submit feedback'; }
+        if(!ok||!window.firebase||!firebase.firestore){ fail('Could not reach the service — try again.'); return; }
+        var db=firebase.firestore();
+        db.collection('sync').doc('alizonWsFeedback').get().then(function(doc){
+          var arr=[]; try{ var v=doc.exists&&doc.data()&&doc.data().value; if(v) arr=JSON.parse(v)||[]; }catch(e){}
+          if(!Array.isArray(arr)) arr=[];
+          var mine=arr.filter(function(f){return f&&f.reg===SESSION.reg&&f.ws===SESSION.ws;})[0];
+          if(mine){ mine.text=text; mine.status='pending'; mine.ts=Date.now();
+            mine.photo=SESSION.photo||mine.photo||null; mine.name=SESSION.name; }
+          else arr.unshift({ id:'FB'+Date.now()+'_'+Math.floor(Math.random()*10000), reg:SESSION.reg, ws:SESSION.ws,
+            name:SESSION.name, course:SESSION.wsTitle, batch:SESSION.subject||'', college:SESSION.college||'',
+            photo:SESSION.photo||null, text:text, status:'pending', src:'workshop', ts:Date.now(), approvedAt:0 });
+          var json=JSON.stringify(arr);
+          db.collection('sync').doc('alizonWsFeedback').set({ value:json,
+            updatedAt:firebase.firestore.FieldValue.serverTimestamp() }).then(function(){
+              try{ localStorage.setItem('alizonWsFeedback', json); }catch(e){}
+              renderPortal();
+            }).catch(function(){ fail('Could not send — try again.'); });
+        }).catch(function(){ fail('Could not reach the service — try again.'); });
+      });
+    }
+  });
+
+  function doLogin(){
+    var reg=String((document.getElementById('lg-reg')||{}).value||'').trim().toUpperCase();
+    var pass=String((document.getElementById('lg-pass')||{}).value||'');
+    var err=document.getElementById('lg-err'), out=document.getElementById('lg-out'), btn=document.getElementById('lg-go');
+    err.textContent=''; out.innerHTML='';
+    if(!reg||!pass){ err.textContent='Enter your registration number and password.'; return; }
+    btn.disabled=true; btn.textContent='Checking…';
+    whenAuthed(function(ok){
+      function finish(){ btn.disabled=false; btn.textContent='Sign in'; }
+      if(!ok||!window.firebase||!firebase.firestore){ err.textContent='Could not reach the service — try again.'; finish(); return; }
+      var db=firebase.firestore();
+      Promise.all([
+        db.collection('sync').doc('alizonWorkshopRegs').get(),
+        db.collection('sync').doc('alizonWsFeedback').get()
+      ]).then(function(docs){
+        var arr=[], fb=[];
+        try{ var v=docs[0].exists&&docs[0].data()&&docs[0].data().value; if(v) arr=JSON.parse(v)||[]; }catch(e){}
+        try{ var v2=docs[1].exists&&docs[1].data()&&docs[1].data().value; if(v2) fb=JSON.parse(v2)||[]; }catch(e){}
+        if(!Array.isArray(arr)) arr=[];
+        if(!Array.isArray(fb)) fb=[];
+        try{ localStorage.setItem('alizonWorkshopRegs', JSON.stringify(arr)); }catch(e){}
+        try{ localStorage.setItem('alizonWsFeedback', JSON.stringify(fb)); }catch(e){}
+        var r=arr.filter(function(x){ return x && String(x.reg||'').toUpperCase()===reg && String(x.pass||'')===pass; })[0];
+        if(!r){ err.textContent='No registration matches that number and password.'; finish(); return; }
+        SESSION=r;
+        try{ sessionStorage.setItem('wsPortalSession', JSON.stringify({reg:reg,pass:pass})); }catch(e){}
+        renderPortal(); finish();
+      }).catch(function(){ err.textContent='Could not reach the service — try again.'; finish(); });
+    });
+  }
+  var lgBtn=document.getElementById('lg-go');
+  if(lgBtn) lgBtn.addEventListener('click', doLogin);
+  ['lg-reg','lg-pass'].forEach(function(id){ var el=document.getElementById(id);
+    if(el) el.addEventListener('keydown',function(e){ if(e.key==='Enter') doLogin(); }); });
+
+  /* resume the session on reload + re-check the day/time gate every minute */
+  try{
+    var saved=JSON.parse(sessionStorage.getItem('wsPortalSession')||'null');
+    if(saved&&saved.reg){ document.getElementById('lg-reg').value=saved.reg;
+      document.getElementById('lg-pass').value=saved.pass||''; doLogin(); }
+  }catch(e){}
+  setInterval(function(){ if(SESSION) renderPortal(); }, 60000);
+
+  window.__wpTest={ portalHtml:portalHtml, modulesHtml:modulesHtml, setSession:function(r){SESSION=r;}, renderPortal:renderPortal };
+})();
+</script>
+</body>
+</html>
