@@ -103,6 +103,13 @@
     <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
     <div class="card"><h2>Patient counselling</h2><p class="muted">Explain to the patient:</p><div class="cl" id="counRef"></div></div>
     <div class="card"><h2>Learning outcomes</h2><div class="cl" id="loRef"></div></div>
+    <div class="card"><h2>WHO-UMC causality categories</h2>
+      <div class="tw"><table><thead><tr><th>Category</th><th>Key criteria</th></tr></thead><tbody>
+        <tr><td><b>Certain</b></td><td>Plausible time link · other causes excluded · positive dechallenge · pharmacologically definitive · rechallenge satisfactory (if performed)</td></tr>
+        <tr><td><b>Probable / Likely</b></td><td>Reasonable time link · other causes unlikely · reasonable dechallenge · rechallenge not required</td></tr>
+        <tr><td><b>Possible</b></td><td>Reasonable time link · could also be explained by disease or other drugs · dechallenge unclear or absent</td></tr>
+        <tr><td><b>Unlikely</b></td><td>Time link improbable · disease or other drugs give a plausible explanation</td></tr>
+      </tbody></table></div></div>
     <div class="card"><h2>Faculty assessment rubric</h2>
       <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
       <p class="note">Objective criteria are auto-scored; the written report is graded by faculty. Mis-classifying a serious ADR as non-serious triggers a patient-safety flag.</p>
@@ -212,6 +219,31 @@
     coun:['Dark stools are an expected, harmless effect; take with vitamin C and continue.','Stop iron and seek emergency care for the dark stools.','Take iron with tea to reduce nausea.','Double the dose to relieve constipation.'],counC:0}
   ];
 
+  /* patient condition (clinical vignette) + WHO-UMC expected criteria per case */
+  var CONDS={
+   1:{cond:'A 29-year-old woman was started on amoxicillin 500 mg TID for a throat infection. On day 2 she developed an itchy, generalized maculopapular rash over the trunk and arms. She takes no other new medicines and has no history of skin disease; the rash began settling within a day of stopping the antibiotic.',
+      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Positive',rechallenge:'Not done'}},
+   2:{cond:'A 52-year-old man with newly diagnosed type-2 diabetes began metformin 500 mg BD. From the second day he has had loose stools 3–4 times a day with cramping abdominal discomfort. There is no fever or blood in the stool and no one else at home is unwell; symptoms ease when the dose is taken with food.',
+      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Positive',rechallenge:'Not done'}},
+   3:{cond:'A 61-year-old man taking diclofenac 50 mg TID for chronic back pain, with no acid-suppressing cover, presents with severe burning epigastric pain and two days of black, tarry stools. He looks pale; there is no history of liver disease or alcohol excess.',
+      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}},
+   4:{cond:'A 58-year-old woman on amlodipine 5 mg OD for hypertension noticed both ankles becoming swollen over the past week. The swelling is soft and pits on pressure; there is no breathlessness, and her heart and kidney checks are normal.',
+      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Positive',rechallenge:'Not done'}},
+   5:{cond:'A 64-year-old man started enalapril 5 mg OD for high blood pressure three weeks ago and since then has a persistent, tickly dry cough, worse at night. He has no fever, wheeze or sputum, and the cough began only after the new tablet.',
+      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Positive',rechallenge:'Not done'}},
+   6:{cond:'A 45-year-old man on ciprofloxacin 500 mg BD for a urinary infection develops pain and swelling at the back of the right ankle (Achilles region) on day 4. There was no injury or unusual exercise, and he has no history of gout.',
+      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}},
+   7:{cond:'A 66-year-old man with diabetes on human insulin took his usual dose but skipped breakfast. An hour later he became sweaty, shaky and dizzy; a finger-prick glucose reads 48 mg/dL. Symptoms resolve quickly after oral glucose.',
+      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Positive',rechallenge:'Not done'}},
+   8:{cond:'A 57-year-old woman on atorvastatin 20 mg at night for high cholesterol reports aching, weak thigh and calf muscles for the past week. She has not been exercising unusually; blood tests show a raised creatine kinase (CK).',
+      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}},
+   9:{cond:'A 34-year-old woman started carbamazepine 200 mg BD for epilepsy about two weeks ago. She now has fever, a rapidly spreading rash with skin peeling and painful mouth ulcers. She looks unwell and cannot eat.',
+      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}},
+   10:{cond:'A 27-year-old woman on ferrous sulphate 200 mg OD for iron-deficiency anaemia reports mild nausea, constipation and dark-coloured stools since starting treatment. She is otherwise well, with no abdominal pain or dizziness.',
+      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}}
+  };
+  CASES.forEach(function(c){ var x=CONDS[c.n]; if(x){ c.cond=x.cond; c.who=x.who; } });
+
   /* ---- briefing ---- */
   $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
   $('counRef').innerHTML=COUNSEL.map(function(t){return '<label><input type="checkbox" disabled><span>'+esc(t)+'</span></label>';}).join('');
@@ -236,7 +268,8 @@
     var c=CASES[state.ci]; var h='';
     h+='<div class="card"><span class="step">Case '+c.n+'</span>'
       +'<h2 style="margin-top:6px">'+esc(c.drug)+' '+esc(c.strength)+'</h2>'
-      +'<h3>Clinical presentation</h3><p>'+esc(c.presentation)+'</p>'
+      +'<h3>Patient condition</h3><p>'+esc(c.cond||c.presentation)+'</p>'
+      +'<h3>Suspected reaction</h3><p>'+esc(c.presentation)+'</p>'
       +'<h3>Patient history &amp; prescription (from the EHR)</h3>'
       +'<div class="tw"><table><tbody>'
       +'<tr><td><b>Patient ID</b></td><td>'+esc(c.pt.id)+'</td><td><b>Age / Sex</b></td><td>'+c.pt.age+' · '+esc(c.pt.sex)+'</td><td><b>Weight</b></td><td>'+esc(c.pt.wt)+'</td></tr>'
@@ -278,9 +311,17 @@
       +'<div><label class="f">Date</label><input type="date" id="f-repdate"></div>'
       +'<div><label class="f">Digital signature (type your name)</label><input type="text" id="f-sign" placeholder="Sign by typing your name"></div></div></div>';
 
-    /* Step 4 causality */
+    /* Step 4 causality — WHO-UMC structured assessment */
     h+='<div class="card"><span class="step">Step 4</span> <b>Causality assessment (WHO-UMC)</b>'
-      +'<div class="seg" id="causSeg" style="margin-top:8px">'+CAUSAL.map(function(x){return '<button type="button" data-c="'+esc(x)+'">'+esc(x)+'</button>';}).join('')+'</div></div>';
+      +'<p class="note">Assess each WHO-UMC criterion from the patient condition, then choose the causality category.</p>'
+      +'<div class="grid2" style="margin-top:6px">'
+      +'<div><label class="f">Time relationship (drug → reaction)</label><select id="w-temporal"><option value="">Select…</option><option>Plausible</option><option>Not plausible</option><option>Unclear</option></select></div>'
+      +'<div><label class="f">Other causes (disease / other drugs)</label><select id="w-other"><option value="">Select…</option><option>Excluded</option><option>Possible</option><option>Unknown</option></select></div>'
+      +'<div><label class="f">Dechallenge (response to stopping the drug)</label><select id="w-dechallenge"><option value="">Select…</option><option>Positive</option><option>Negative</option><option>Not done</option></select></div>'
+      +'<div><label class="f">Rechallenge (response to restarting)</label><select id="w-rechallenge"><option value="">Select…</option><option>Positive</option><option>Negative</option><option>Not done</option></select></div>'
+      +'</div>'
+      +'<label class="f" style="margin-top:14px">Causality category</label>'
+      +'<div class="seg" id="causSeg">'+CAUSAL.map(function(x){return '<button type="button" data-c="'+esc(x)+'">'+esc(x)+'</button>';}).join('')+'</div></div>';
 
     /* Step 5 counselling */
     h+='<div class="card"><span class="step">Step 5</span> <b>Patient counselling</b>'
@@ -328,11 +369,17 @@
     sc.form=Math.round(got/total*20);
     fb.form=(got===total)?'Electronic ADR form fully completed.':('Form '+got+'/'+total+' key fields completed.');
 
-    /* 4 causality (15) */
+    /* 4 causality (15) — WHO-UMC criteria (up to 7) + correct category (up to 8) */
+    var w=c.who||{};
+    var critPairs=[['w-temporal',w.temporal],['w-other',w.other],['w-dechallenge',w.dechallenge],['w-rechallenge',w.rechallenge]];
+    var critTot=0,critHits=0;
+    critPairs.forEach(function(p){ if(p[1]){ critTot++; if(val(p[0])===p[1]) critHits++; } });
+    var critScore=critTot?Math.round(critHits/critTot*7):0;
     var causOK=state.caus===c.caus;
-    var adjacent = state.caus && (CAUSAL.indexOf(state.caus)>=0) && Math.abs(CAUSAL.indexOf(state.caus)-CAUSAL.indexOf(c.caus))===1;
-    sc.caus=causOK?15:(adjacent?8:0);
-    fb.caus=causOK?('Causality correctly assessed as '+c.caus+'.'):(state.caus?('Assessed '+state.caus+'; expected '+c.caus+'.'):'Causality not assessed.');
+    var adjacent=state.caus&&(CAUSAL.indexOf(state.caus)>=0)&&Math.abs(CAUSAL.indexOf(state.caus)-CAUSAL.indexOf(c.caus))===1;
+    var catScore=causOK?8:(adjacent?4:0);
+    sc.caus=catScore+critScore;
+    fb.caus=(causOK?('Causality correctly assessed as '+c.caus+'. '):(state.caus?('Assessed '+state.caus+'; expected '+c.caus+'. '):'Category not chosen. '))+'WHO criteria '+critHits+'/'+critTot+' correct.';
 
     /* 5 documentation accuracy (10) — generic matches drug, severity & seriousness correct */
     var genMatch=val('f-generic') && c.drug.toLowerCase().indexOf(val('f-generic').toLowerCase().split(' ')[0])>=0;
@@ -367,7 +414,11 @@
     var h='<h3 style="color:#8c1515;margin:0 0 6px">Case '+c.n+' — '+esc(c.drug)+' '+esc(c.strength)+'</h3>';
     h+='<p style="margin:2px 0"><b>Patient:</b> '+esc(c.pt.id)+' · '+c.pt.age+'/'+esc(c.pt.sex)+' · '+esc(c.pt.wt)+'</p>';
     h+='<p style="margin:2px 0"><b>Suspected reaction:</b> '+esc(c.presentation)+'</p>';
-    h+='<p style="margin:2px 0"><b>Your assessment:</b> severity '+esc(val('f-severity')||'—')+' · '+(val('f-serious')==='serious'?'Serious':(val('f-serious')==='non'?'Non-serious':'—'))+' · causality '+esc(state.caus||'—')+'</p>';
+    h+='<p style="margin:2px 0"><b>Your assessment:</b> severity '+esc(val('f-severity')||'—')+' · '+(val('f-serious')==='serious'?'Serious':(val('f-serious')==='non'?'Non-serious':'—'))+'</p>';
+    h+='<p style="margin:6px 0"><b>WHO-UMC causality assessment</b><br>'
+      +'Time relationship: '+esc(val('w-temporal')||'—')+' &nbsp;·&nbsp; Other causes: '+esc(val('w-other')||'—')
+      +' &nbsp;·&nbsp; Dechallenge: '+esc(val('w-dechallenge')||'—')+' &nbsp;·&nbsp; Rechallenge: '+esc(val('w-rechallenge')||'—')
+      +' &nbsp;→&nbsp; <b>Category: '+esc(state.caus||'—')+'</b></p>';
     h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
       +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
       +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
