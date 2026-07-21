@@ -20,6 +20,8 @@
   function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function J(k,d){ try{ var v=JSON.parse(localStorage.getItem(k)); return v==null?d:v; }catch(e){ return d; } }
   function niceDate(){ try{ return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return ''; } }
+  /* pull the Aim from the on-page experiment sheet (Module-1-Unit-1 style report format) */
+  function aimFromBrief(){ try{ var d=document.querySelector('.ebx details, .acc details'); if(d){ var p=d.querySelector('.ebx-body p, .body p'); if(p) return p.innerHTML; } }catch(e){} return ''; }
 
   var DEFAULT_SECTIONS=[
     {key:'principle',label:'Principle (in your own words)',hint:'Explain the scientific principle behind this practical and how it relates to the outcome…'},
@@ -89,13 +91,22 @@
       gen.addEventListener('click',function(){
         var name=v('apr-name'); if(!name){ alert('Please enter your name.'); host.querySelector('#apr-name').focus(); return; }
         var cls=v('apr-class'), batch=v('apr-batch'), reg=pf.reg||'';
+        /* Module-1-Unit-1 report format: Experiment · Aim · sections as formal headings · signature block */
+        var RT='font-family:Georgia,\'Source Serif Pro\',serif;color:#8c1515;font-size:14.5px;font-weight:700;border-bottom:1px solid #e6d8d2;padding-bottom:3px;margin:18px 0 7px';
+        var PB='font-family:Arial,sans-serif;font-size:13px;line-height:1.65;color:#26221f;margin:0;white-space:pre-wrap';
         var body='';
-        body+='<p style="font-family:Arial,sans-serif;font-size:12px;color:#333"><b>Student:</b> '+esc(name)+(reg?' ('+esc(reg)+')':'')
+        body+='<p style="font-family:Arial,sans-serif;font-size:12px;color:#333;margin:0 0 2px"><b>Student:</b> '+esc(name)+(reg?' ('+esc(reg)+')':'')
              +(cls?' &nbsp;·&nbsp; <b>Class/Roll:</b> '+esc(cls):'')+(batch?' &nbsp;·&nbsp; <b>Batch/Date:</b> '+esc(batch):'')+'</p>';
-        if(opts.titleField){ var tv=v('apr-titlefield'); if(tv) body+='<p><b>'+esc(opts.titleField.label)+':</b> '+esc(tv)+'</p>'; }
+        body+='<h3 style="'+RT+'">Experiment</h3><p style="'+PB+';white-space:normal"><b>'+esc(opts.module||'')+'</b></p>';
+        var aim=aimFromBrief(); if(aim) body+='<h3 style="'+RT+'">Aim</h3><p style="'+PB+';white-space:normal">'+aim+'</p>';
+        if(opts.titleField){ var tv=v('apr-titlefield'); if(tv) body+='<h3 style="'+RT+'">'+esc(opts.titleField.label)+'</h3><p style="'+PB+';white-space:normal">'+esc(tv)+'</p>'; }
         var auto=''; try{ auto=opts.autoResult?opts.autoResult():''; }catch(e){}
-        if(auto) body+='<div style="margin:12px 0;padding:10px 12px;background:#faf6f4;border:1px solid #eaded8;border-radius:8px">'+auto+'</div>';
-        sections.forEach(function(s){ var val=v('apr-'+s.key); if(val) body+='<h4 style="color:#8c1515;margin:14px 0 4px">'+esc(s.label)+'</h4><p style="white-space:pre-wrap;margin:0">'+esc(val)+'</p>'; });
+        if(auto) body+='<h3 style="'+RT+'">Result Summary (auto-assessed)</h3><div style="font-family:Arial,sans-serif">'+auto+'</div>';
+        sections.forEach(function(s){ var val=v('apr-'+s.key); if(val) body+='<h3 style="'+RT+'">'+esc(s.label)+'</h3><p style="'+PB+'">'+esc(val)+'</p>'; });
+        body+='<table role="presentation" width="100%" style="margin-top:32px;font-family:Arial,sans-serif;border-collapse:collapse"><tr>'
+          +'<td style="text-align:center;padding-top:26px"><div style="border-top:1px solid #777;width:78%;margin:0 auto;padding-top:5px;font-size:11px;color:#555">Student signature</div></td>'
+          +'<td style="text-align:center;padding-top:26px"><div style="border-top:1px solid #777;width:78%;margin:0 auto;padding-top:5px;font-size:11px;color:#555">Faculty signature &amp; evaluation</div></td>'
+          +'</tr></table>';
 
         var pct=null,rt=''; try{ pct=opts.autoPct?opts.autoPct():null; }catch(e){} try{ rt=opts.autoResultText?opts.autoResultText():''; }catch(e){}
         var reportObj={html:body,name:name,reg:reg,pct:pct,resultText:rt};
