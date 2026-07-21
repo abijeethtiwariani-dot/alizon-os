@@ -798,6 +798,36 @@
           <button class="cadd" data-hup="tst-hero-img">Upload</button>
           <button class="cadd" data-hrm="tst-hero-img" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove</button>
         </div>
+        <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px"><b>Certified Courses hero</b><div class="hint" data-hstate="cert-hero-img">…</div></div>
+          <input type="file" data-hfile="cert-hero-img" accept="image/*" style="max-width:200px">
+          <button class="cadd" data-hup="cert-hero-img">Upload</button>
+          <button class="cadd" data-hrm="cert-hero-img" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove</button>
+        </div>
+        <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px"><b>Skill Development hero</b><div class="hint" data-hstate="skill-hero-img">…</div></div>
+          <input type="file" data-hfile="skill-hero-img" accept="image/*" style="max-width:200px">
+          <button class="cadd" data-hup="skill-hero-img">Upload</button>
+          <button class="cadd" data-hrm="skill-hero-img" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove</button>
+        </div>
+        <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px"><b>Professional Learning hero</b><div class="hint" data-hstate="cpd-hero-img">…</div></div>
+          <input type="file" data-hfile="cpd-hero-img" accept="image/*" style="max-width:200px">
+          <button class="cadd" data-hup="cpd-hero-img">Upload</button>
+          <button class="cadd" data-hrm="cpd-hero-img" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove</button>
+        </div>
+        <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px"><b>Degree & PG hero</b><div class="hint" data-hstate="degree-hero-img">…</div></div>
+          <input type="file" data-hfile="degree-hero-img" accept="image/*" style="max-width:200px">
+          <button class="cadd" data-hup="degree-hero-img">Upload</button>
+          <button class="cadd" data-hrm="degree-hero-img" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove</button>
+        </div>
+        <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px"><b>Campus News hero</b><div class="hint" data-hstate="news-hero-img">…</div></div>
+          <input type="file" data-hfile="news-hero-img" accept="image/*" style="max-width:200px">
+          <button class="cadd" data-hup="news-hero-img">Upload</button>
+          <button class="cadd" data-hrm="news-hero-img" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove</button>
+        </div>
       </div>
     </div>
   </section>
@@ -2588,7 +2618,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   function save(o){ try{ localStorage.setItem('alizonContent',JSON.stringify(o)); }catch(e){} }
   function state(key,msg){ var el=document.querySelector('[data-hstate="'+key+'"]'); if(el) el.textContent=msg; }
   function refresh(){
-    ['acad-hero-img','ws-hero-img','tst-hero-img'].forEach(function(k){
+    ['acad-hero-img','ws-hero-img','tst-hero-img','cert-hero-img','skill-hero-img','cpd-hero-img','degree-hero-img','news-hero-img'].forEach(function(k){
       var o=store(), m=String(o[k]||'').trim(), u=String(o[k+'-url']||'').trim();
       if(u) state(k,'Using a photo URL (set in the fields above).');
       else if(m) state(k,'Photo uploaded \u2713 — live on the page hero.');
