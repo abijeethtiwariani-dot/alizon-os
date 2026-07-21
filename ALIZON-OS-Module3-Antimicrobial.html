@@ -116,6 +116,7 @@
   </div>
 
   <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="antimicrobial"></div>
     <div class="guide">
       <h2>New to antimicrobial selection? Start here</h2>
       <p>Choosing an antibiotic is not just "which one kills the bug". A good choice must be <b>Safe</b>, <b>Effective</b>, and <b>appropriate</b> (stewardship). Work through each case like this:</p>
@@ -126,25 +127,6 @@
         <li><b>Stewardship</b> — pick the <b>narrowest</b> effective agent, the right route (oral if possible), and de-escalate once cultures are back. Save broad-spectrum drugs for when they are truly needed.</li>
       </ol>
       <p style="margin-top:8px">Unsure on a case? Open <b>“Need a hint?”</b> in the station.</p>
-    </div>
-    <div class="card"><h2>Principle</h2>
-      <p>Antimicrobials selectively act on bacteria — attacking the cell wall, protein synthesis, DNA replication or metabolic pathways that human cells lack. A rational choice must satisfy three things at once:</p>
-      <p style="margin-top:8px"><b>1. Effective</b> — the organism must be <b>sensitive</b> to the drug. This is confirmed by <b>culture &amp; sensitivity testing (the antibiogram)</b>, where the size of the <i>zone of inhibition</i> around an antibiotic disc shows whether the bacterium is sensitive (large clear zone) or resistant (no zone).
-      <b>2. Safe</b> — free of allergy and appropriate for the patient's kidney/liver function, pregnancy and age, with no dangerous interactions.
-      <b>3. Appropriate (stewardship)</b> — the <b>narrowest-spectrum</b> agent that works, at the right dose, route and duration.</p>
-      <p style="margin-top:8px">Overusing broad-spectrum antibiotics drives <b>antimicrobial resistance</b>. <b>Antimicrobial stewardship</b> — right drug, right dose, right duration, and de-escalation once cultures return — keeps antibiotics effective for the future.</p>
-    </div>
-    <div class="card"><h2>Procedure</h2>
-      <p class="muted">Follow these steps for every case — and describe them in the <b>Method / Procedure</b> section of your report:</p>
-      <ol style="margin:8px 0 0 18px;font-size:13.5px;line-height:1.85">
-        <li>Confirm the <b>infection and its likely site / organism</b>.</li>
-        <li>Read the <b>culture &amp; sensitivity (antibiogram)</b> — note which agents are sensitive and which are resistant.</li>
-        <li>Check <b>patient safety factors</b> — allergy, pregnancy, kidney/liver function, age and interactions.</li>
-        <li><b>Shortlist</b> the antibiotics that are both <b>effective</b> (sensitive) and <b>safe</b>.</li>
-        <li>Apply <b>stewardship</b> — choose the <b>narrowest effective</b> agent, correct dose, oral route where possible, shortest effective duration.</li>
-        <li>In <b>severe infection</b>, start broad-spectrum empirical therapy promptly, then <b>de-escalate</b> once cultures return.</li>
-        <li><b>Document</b> your rationale and <b>counsel</b> the patient.</li>
-      </ol>
     </div>
     <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
     <div class="card"><h2>Common safety rules to remember</h2>
@@ -183,6 +165,8 @@
 <script src="firebase-sync.js"></script>
 <script src="alizon-practical-submit.js"></script>
 <script src="alizon-practical-report.js"></script>
+<script src="alizon-experiment-brief.js"></script>
+<script src="alizon-experiment-data.js"></script>
 <script>
 (function(){
   'use strict';

@@ -207,6 +207,7 @@
 
   <!-- ============ PATIENT CASES ============ -->
   <section class="panel on" id="p-cases">
+    <div id="expBrief" data-exp="clinicalsim"></div>
     <div class="card" id="casePicker">
       <h2>Virtual Patient Cases</h2>
       <div class="hint">Work through each case as the clinical pharmacist. The AI co-pilot flags what a CDSS would surface — you make the call.</div>
@@ -614,6 +615,8 @@ paint();
 </script>
 <script src="firebase-sync.js"></script>
 <script src="alizon-practical-submit.js"></script>
+<script src="alizon-experiment-brief.js"></script>
+<script src="alizon-experiment-data.js"></script>
 <script src="alizon-practical-report.js"></script>
 <script>
 window.AlizonPracticalReport&&AlizonPracticalReport.mount({
