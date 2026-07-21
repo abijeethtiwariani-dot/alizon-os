@@ -96,10 +96,10 @@
   .intro .btn{display:inline-block;margin-top:24px;background:var(--crimson);color:#fff;font-weight:600;font-size:14px;padding:13px 28px;border-radius:3px;transition:.2s}
   .intro .btn:hover{background:var(--crimson-deep)}
 
-  /* ===== dark experience block (research "experience" zone) ===== */
-  .exp{position:relative;background:linear-gradient(160deg,#1b1414 0%,#3d0808 45%,#5c0d0d 100%);color:#fff;overflow:hidden}
-  .exp::before{content:"";position:absolute;left:-10%;top:-8%;width:520px;height:520px;border-radius:50%;background:rgba(177,4,14,.22);filter:blur(90px);pointer-events:none}
-  .exp::after{content:"";position:absolute;right:-8%;bottom:-10%;width:480px;height:480px;border-radius:50%;background:rgba(154,123,63,.14);filter:blur(90px);pointer-events:none}
+  /* ===== dark experience block (matches alizongov.com research — navy) ===== */
+  .exp{position:relative;background:linear-gradient(160deg,#0f172a 0%,#15233f 45%,#1e3a5f 100%);color:#fff;overflow:hidden}
+  .exp::before{content:"";position:absolute;left:-10%;top:-8%;width:520px;height:520px;border-radius:50%;background:rgba(49,46,129,.35);filter:blur(90px);pointer-events:none}
+  .exp::after{content:"";position:absolute;right:-8%;bottom:-10%;width:480px;height:480px;border-radius:50%;background:rgba(140,21,21,.18);filter:blur(90px);pointer-events:none}
   .exp .z{position:relative;z-index:2}
   .zone{padding:clamp(52px,7vw,88px) 0}
   .zone+.zone{border-top:1px solid rgba(255,255,255,.1)}
@@ -119,6 +119,41 @@
   .gc p{font-size:13.5px;color:rgba(255,255,255,.82);flex:1;line-height:1.6}
   .gc .go{font-size:13px;font-weight:600;color:#f2c9c9}
   .gc .go:hover{text-decoration:underline}
+
+  /* ===== carousel (auto-scroll + arrow nav, matches alizongov.com) ===== */
+  .caro{position:relative}
+  .caro-track{display:flex;gap:20px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;padding:4px 2px 12px;-ms-overflow-style:none;scrollbar-width:none}
+  .caro-track::-webkit-scrollbar{display:none}
+  .caro-track>*{scroll-snap-align:start;flex:0 0 auto}
+  .caro-nav{display:flex;gap:12px;justify-content:center;margin-top:20px}
+  .caro-btn{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+  .caro-btn:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.6)}
+  .caro-btn svg{width:20px;height:20px;stroke:#fff}
+  /* image programme card (carousel) */
+  .pcard{position:relative;width:340px;max-width:82vw;height:340px;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.16);background:linear-gradient(135deg,#1e3a5f,#0f172a);display:flex;align-items:flex-end}
+  .pcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .pcard::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,.15) 30%,rgba(15,23,42,.92) 100%)}
+  .pcard .pc-in{position:relative;z-index:2;padding:24px}
+  .pcard .pc-k{font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#a9c2e8}
+  .pcard h3{font-family:'Source Serif Pro',Georgia,serif;font-size:22px;font-weight:600;margin-top:6px;line-height:1.15}
+  .pcard p{font-size:13px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.5;max-width:40ch}
+  .pcard .go{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;color:#f2c9c9}
+  /* story slide (carousel) */
+  .sslide{width:min(760px,86vw);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:30px;backdrop-filter:blur(14px)}
+  .sslide .sk{font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#a9c2e8}
+  .sslide .sq{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.2rem,2.6vw,1.6rem);font-weight:600;line-height:1.35;margin-top:12px}
+  .sslide .smeta{display:flex;gap:14px;align-items:center;margin-top:18px}
+  .sslide .smeta img{width:56px;height:56px;border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1)}
+  .sslide .smeta .mono{width:56px;height:56px;border-radius:50%;flex:none;background:linear-gradient(135deg,#1e3a5f,#0f172a);display:flex;align-items:center;justify-content:center;font-family:'Source Serif Pro',Georgia,serif;font-size:20px;font-weight:700}
+  .sslide .smeta b{display:block;font-family:'Source Serif Pro',Georgia,serif;font-size:16px;font-weight:600}
+  .sslide .smeta small{display:block;font-size:12px;color:rgba(255,255,255,.72);margin-top:2px}
+  /* stats over background image */
+  .lovwrap{position:relative;border-radius:22px;overflow:hidden;min-height:360px;display:flex;align-items:center}
+  .lovwrap .lovbg{position:absolute;inset:0;z-index:0;background:radial-gradient(120% 130% at 80% 15%,#1e3a5f,#0f172a)}
+  .lovwrap .lovbg img{width:100%;height:100%;object-fit:cover}
+  .lovwrap::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(120deg,rgba(9,14,28,.9) 0%,rgba(9,14,28,.6) 60%,rgba(9,14,28,.4) 100%)}
+  .lovwrap .lov-in{position:relative;z-index:2;padding:clamp(30px,5vw,54px);width:100%}
+  .lovstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;margin-top:24px}
 
   /* impact stats */
   .stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.18)}
@@ -239,27 +274,25 @@
       <p id="acWhyP">Join students, clinicians and innovators pushing the boundaries of healthcare, AI and digital
         medicine — with hands-on virtual practicals, patient simulations and instant AI-scored assessments.</p>
     </div>
-    <div class="glass">
-      <div class="gc">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2v20M2 7l10 5 10-5"/><path d="M4 12v6a8 8 0 0 0 16 0v-6"/></svg></div>
-        <h3 class="serif" id="acWc1T">Pharmacy AI</h3>
-        <p id="acWc1D">Certificate in Digital Health &amp; AI for Pharmacy — drug discovery, ADME, pharmacy informatics and virtual screening.</p>
-        <a class="go" href="alizon-course.html?course=Pharmacy%20AI">Course desk &rarr;</a></div>
-      <div class="gc">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12h4l2 5 4-13 2 8h6"/></svg></div>
-        <h3 class="serif" id="acWc2T">Paramedical AI</h3>
-        <p id="acWc2D">AI triage, vital-signs monitoring and emergency prioritisation — decision support for frontline care.</p>
-        <a class="go" href="alizon-course.html?course=Paramedical%20AI">Course desk &rarr;</a></div>
-      <div class="gc">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
-        <h3 class="serif" id="acWc3T">Medical AI</h3>
-        <p id="acWc3D">AI-assisted imaging diagnosis, clinical risk prediction and evidence-based decision models.</p>
-        <a class="go" href="alizon-course.html?course=Medical%20AI">Course desk &rarr;</a></div>
-      <div class="gc">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 21V7l9-4 9 4v14"/><path d="M9 21v-6h6v6"/></svg></div>
-        <h3 class="serif" id="acWc4T">Hospital Administration AI</h3>
-        <p id="acWc4D">Predictive patient flow, bed &amp; resource allocation and queue management powered by AI planners.</p>
-        <a class="go" href="alizon-course.html?course=Hospital%20Administration%20AI">Course desk &rarr;</a></div>
+    <div class="caro" data-caro="why">
+      <div class="caro-track" id="whyTrack">
+        <article class="pcard"><img data-cardimg="acad-wc1-img" alt=""><div class="pc-in"><div class="pc-k">Certificate · ASAP Kerala</div>
+          <h3 class="serif" id="acWc1T">Pharmacy AI</h3><p id="acWc1D">Certificate in Digital Health &amp; AI for Pharmacy — drug discovery, ADME, pharmacy informatics and virtual screening.</p>
+          <a class="go" href="alizon-course.html?course=Pharmacy%20AI">Course desk &rarr;</a></div></article>
+        <article class="pcard"><img data-cardimg="acad-wc2-img" alt=""><div class="pc-in"><div class="pc-k">Certificate</div>
+          <h3 class="serif" id="acWc2T">Paramedical AI</h3><p id="acWc2D">AI triage, vital-signs monitoring and emergency prioritisation — decision support for frontline care.</p>
+          <a class="go" href="alizon-course.html?course=Paramedical%20AI">Course desk &rarr;</a></div></article>
+        <article class="pcard"><img data-cardimg="acad-wc3-img" alt=""><div class="pc-in"><div class="pc-k">Certificate</div>
+          <h3 class="serif" id="acWc3T">Medical AI</h3><p id="acWc3D">AI-assisted imaging diagnosis, clinical risk prediction and evidence-based decision models.</p>
+          <a class="go" href="alizon-course.html?course=Medical%20AI">Course desk &rarr;</a></div></article>
+        <article class="pcard"><img data-cardimg="acad-wc4-img" alt=""><div class="pc-in"><div class="pc-k">Certificate</div>
+          <h3 class="serif" id="acWc4T">Hospital Administration AI</h3><p id="acWc4D">Predictive patient flow, bed &amp; resource allocation and queue management powered by AI planners.</p>
+          <a class="go" href="alizon-course.html?course=Hospital%20Administration%20AI">Course desk &rarr;</a></div></article>
+      </div>
+      <div class="caro-nav">
+        <button class="caro-btn" data-caro-prev="why" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="caro-btn" data-caro-next="why" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
     </div>
     <div style="margin-top:26px;display:flex;gap:22px;flex-wrap:wrap">
       <a class="story-cta" style="margin:0" href="alizon-certified.html">All certified courses &rarr;</a>
@@ -271,18 +304,21 @@
 
   <!-- Impact numbers -->
   <section class="zone" id="impact"><div class="wrap">
-    <div class="zhead">
-      <div class="ey" id="acImpEy">Learning that adds up</div>
-      <h2 class="serif" id="acImpH">The Alizon classroom, in numbers</h2>
-      <p id="acImpP">Virtual practicals, AI-scored assessments and simulation-first teaching on the ALIZON OS platform.</p>
+    <div class="lovwrap">
+      <div class="lovbg" data-cardimg="acad-love-img"><img data-cardimg-el alt=""></div>
+      <div class="lov-in">
+        <div class="ey" id="acImpEy" style="color:#a9c2e8">Why Choose Alizon</div>
+        <h2 class="serif" id="acImpH" style="font-size:clamp(1.9rem,4.6vw,3rem);font-weight:600;margin-top:8px;max-width:18ch">The Alizon classroom, in numbers</h2>
+        <p id="acImpP" style="color:rgba(255,255,255,.85);font-size:15.5px;margin-top:12px;max-width:60ch;line-height:1.65">Virtual practicals, AI-scored assessments and simulation-first teaching on the ALIZON OS platform.</p>
+        <div class="lovstats">
+          <div class="stat" style="padding:0;border:none"><div class="n serif" id="acN1">500<em>+</em></div><div class="l" id="acL1">Students on campus</div></div>
+          <div class="stat" style="padding:0;border:none"><div class="n serif" id="acN2">4</div><div class="l" id="acL2">AI certificate programmes</div></div>
+          <div class="stat" style="padding:0;border:none"><div class="n serif" id="acN3">12<em>+</em></div><div class="l" id="acL3">Virtual practicals</div></div>
+          <div class="stat" style="padding:0;border:none"><div class="n serif" id="acN4">10<em>k+</em></div><div class="l" id="acL4">AI-scored assessments</div></div>
+        </div>
+        <div class="impnote" id="acImpNote" style="margin-top:16px">Indicative figures across ALIZON OS programmes and outreach.</div>
+      </div>
     </div>
-    <div class="stats">
-      <div class="stat"><div class="n serif" id="acN1">500<em>+</em></div><div class="l" id="acL1">Students on campus</div></div>
-      <div class="stat"><div class="n serif" id="acN2">4</div><div class="l" id="acL2">AI certificate programmes</div></div>
-      <div class="stat"><div class="n serif" id="acN3">12<em>+</em></div><div class="l" id="acL3">Virtual practicals</div></div>
-      <div class="stat"><div class="n serif" id="acN4">10<em>k+</em></div><div class="l" id="acL4">AI-scored assessments</div></div>
-    </div>
-    <div class="impnote" id="acImpNote">Indicative figures across ALIZON OS programmes and outreach.</div>
   </div></section>
 
   <!-- Student stories -->
@@ -352,11 +388,11 @@
   function render(force){
     var host=document.getElementById('storyHost'); if(!host) return;
     var sig=String((localStorage.getItem('alizonWsFeedback')||'').length); if(!force&&sig===_sig) return; _sig=sig;
-    var list=approved().slice(0,6);
+    var list=approved().slice(0,10);
     if(!list.length){ host.innerHTML='<div class="story-empty">Student voices will appear here once the office approves them.</div>'; return; }
     var phMap={}; try{ var pm=JSON.parse(localStorage.getItem('alizonPhotos')||'{}'); if(pm&&typeof pm==='object') phMap=pm; }catch(e){}
     var rosterPh={}; try{ (JSON.parse(localStorage.getItem('alizonStudents')||'[]')||[]).forEach(function(st){ if(st&&st.reg&&(st.photo||st.photoUrl||st.pic)) rosterPh[String(st.reg).toLowerCase().replace(/\s+/g,'')]=String(st.photo||st.photoUrl||st.pic); });}catch(e){}
-    host.innerHTML='<div class="stories">'+list.map(function(f){
+    host.innerHTML='<div class="caro" data-caro="story"><div class="caro-track" id="storyTrack">'+list.map(function(f){
       var av, nreg=String(f.reg||'').toLowerCase().replace(/\s+/g,'');
       if(f.photo&&f.photo.id) av='<img data-p="wfimg_:'+esc(f.photo.id)+':'+(f.photo.chunks||1)+'" alt="'+esc(f.name)+'">';
       else { var meta=phMap['student:'+nreg]||phMap['employee:'+nreg];
@@ -364,15 +400,68 @@
         else if(rosterPh[nreg]) av='<img src="'+esc(rosterPh[nreg])+'" alt="'+esc(f.name)+'" loading="lazy" onerror="this.outerHTML=\'<div class=mono>'+esc(initials(f.name))+'</div>\'">';
         else av='<div class="mono">'+esc(initials(f.name))+'</div>'; }
       var sub=[f.course,f.batch].filter(Boolean).join(' · ');
-      return '<article class="story"><div class="q">'+esc(f.text)+'”</div><div class="who">'+av+'<div><b>'+esc(f.name||'Alizon student')+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</div></div></article>';
-    }).join('')+'</div>';
+      return '<article class="sslide"><div class="sk">Student Story</div><div class="sq">“'+esc(f.text)+'”</div>'
+        +'<div class="smeta">'+av+'<div><b>'+esc(f.name||'Alizon student')+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</div></div></article>';
+    }).join('')+'</div>'
+    +'<div class="caro-nav"><button class="caro-btn" data-caro-prev="story" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>'
+    +'<button class="caro-btn" data-caro-next="story" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div></div>';
     host.querySelectorAll('img[data-p]').forEach(function(im){ var p=String(im.getAttribute('data-p')).split(':'); loadImg(p[0],{id:p[1],chunks:parseInt(p[2],10)||1},im); im.removeAttribute('data-p'); });
+    if(window.__initCaros) window.__initCaros();
   }
   whenAuthed(function(ok){ if(!ok||!window.firebase||!firebase.firestore) return;
     firebase.firestore().collection('sync').doc('alizonWsFeedback').get().then(function(doc){ var v=doc.exists&&doc.data()&&doc.data().value; if(typeof v==='string'){ try{localStorage.setItem('alizonWsFeedback',v);}catch(e){} render(true); } }).catch(function(){}); });
   window.addEventListener('storage',function(e){ if(e.key==='alizonWsFeedback') render(true); });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){render(true);}); else render(true);
   setInterval(function(){ render(false); }, 6000);
+})();
+
+/* ===== carousels (auto-scroll + arrow nav, matches alizongov.com) ===== */
+(function(){
+  var timers={};
+  function track(name){ return document.getElementById(name+'Track'); }
+  function step(name){ var t=track(name); if(!t) return 300; var c=t.children[0]; return c?(c.getBoundingClientRect().width+20):320; }
+  function go(name,dir){ var t=track(name); if(!t) return; t.scrollBy({left:dir*step(name),behavior:'smooth'}); }
+  function auto(name){ clearInterval(timers[name]); timers[name]=setInterval(function(){
+    var t=track(name); if(!t||!t.children.length) return;
+    if(t.scrollLeft+t.clientWidth>=t.scrollWidth-8) t.scrollTo({left:0,behavior:'smooth'});
+    else t.scrollBy({left:step(name),behavior:'smooth'});
+  }, 4500); }
+  function pauseOnHover(name){ var c=document.querySelector('[data-caro="'+name+'"]'); if(!c||c.__ph) return; c.__ph=1;
+    c.addEventListener('mouseenter',function(){ clearInterval(timers[name]); });
+    c.addEventListener('mouseleave',function(){ auto(name); });
+    c.addEventListener('touchstart',function(){ clearInterval(timers[name]); },{passive:true}); }
+  function init(){
+    document.querySelectorAll('[data-caro]').forEach(function(c){ var name=c.getAttribute('data-caro');
+      if(c.children.length && track(name)){ pauseOnHover(name);
+        var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if(!rm) auto(name); } });
+  }
+  document.addEventListener('click',function(ev){
+    var p=ev.target.closest&&ev.target.closest('[data-caro-prev]'); if(p){ go(p.getAttribute('data-caro-prev'),-1); return; }
+    var n=ev.target.closest&&ev.target.closest('[data-caro-next]'); if(n){ go(n.getAttribute('data-caro-next'),1); }
+  });
+  window.__initCaros=init;
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+
+/* ===== card / band background images (CMS URL keys) ===== */
+(function(){
+  function store(){ try{var o=JSON.parse(localStorage.getItem('alizonContent')||'{}');return (o&&typeof o==='object'&&!Array.isArray(o))?o:{};}catch(e){return {};} }
+  function apply(){
+    var s=store();
+    document.querySelectorAll('[data-cardimg]').forEach(function(el){
+      var key=el.getAttribute('data-cardimg');
+      var img=el.matches('img')?el:el.querySelector('img[data-cardimg-el]');
+      if(!img) return;
+      var url=String(s[key+'-url']||s[key]||'').trim();
+      if(url){ if(img.getAttribute('src')!==url) img.src=url; }
+      else { img.removeAttribute('src'); }
+    });
+  }
+  window.__applyCardImgs=apply;
+  window.addEventListener('storage',function(e){ if(e.key==='alizonContent') apply(); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply); else apply();
+  setInterval(apply, 5000);
 })();
 
 /* ===== CMS text overrides (acad-* keys in alizonContent) ===== */

@@ -123,6 +123,12 @@
     { key: 'acad-wc4-t', label: 'Card 4 — title', sel:'#acWc4T', idx:0, area:'Academics — Why Study' },
     { key: 'acad-wc4-d', label: 'Card 4 — text',  sel:'#acWc4D', idx:0, area:'Academics — Why Study', multiline:true },
 
+    { key: 'acad-wc1-img', label: 'Card 1 — image URL (optional)', sel:'#x-wc1', idx:0, area:'Academics — Why Study', def:'' },
+    { key: 'acad-wc2-img', label: 'Card 2 — image URL (optional)', sel:'#x-wc2', idx:0, area:'Academics — Why Study', def:'' },
+    { key: 'acad-wc3-img', label: 'Card 3 — image URL (optional)', sel:'#x-wc3', idx:0, area:'Academics — Why Study', def:'' },
+    { key: 'acad-wc4-img', label: 'Card 4 — image URL (optional)', sel:'#x-wc4', idx:0, area:'Academics — Why Study', def:'' },
+
+    { key: 'acad-love-img', label: 'Numbers band — background image URL (optional)', sel:'#x-love', idx:0, area:'Academics — Numbers', def:'' },
     { key: 'acad-imp-ey',   label: 'Numbers — eyebrow',  sel:'#acImpEy', idx:0, area:'Academics — Numbers', def:'Learning that adds up' },
     { key: 'acad-imp-h',    label: 'Numbers — heading',  sel:'#acImpH', idx:0, area:'Academics — Numbers', def:'The Alizon classroom, in numbers' },
     { key: 'acad-imp-p',    label: 'Numbers — sub line', sel:'#acImpP', idx:0, area:'Academics — Numbers', multiline:true },
