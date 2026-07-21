@@ -117,6 +117,7 @@
   .badge2.fail{color:#fff;background:var(--tcrim)}
 
   /* login gate */
+  body:not(.fauthed) .wrap,body:not(.fauthed) .side,body:not(.fauthed) aside,body:not(.fauthed) #signout{display:none !important}
   #gate{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;
     background:radial-gradient(120% 80% at 50% -10%,rgba(212,24,32,.1),transparent 60%),var(--bg)}
   #gate.hide{display:none}
@@ -344,7 +345,7 @@ let ME={name:'Faculty'};
 function faculty(){ try{const a=JSON.parse(localStorage.getItem('alizonFaculty')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
 (function(){
   const gate=$('gate');
-  function enter(who){ ME=who; $('whoami').textContent=who.name; gate.classList.add('hide'); document.body.style.overflow=''; boot(); }
+  function enter(who){ ME=who; document.body.classList.add('fauthed'); $('whoami').textContent=who.name; gate.classList.add('hide'); document.body.style.overflow=''; boot(); }
   let saved=''; try{ saved=sessionStorage.getItem('alizonFacultyAuth')||''; }catch(e){}
   if(saved){ try{ enter(JSON.parse(saved)); return; }catch(e){} }
   document.body.style.overflow='hidden';
