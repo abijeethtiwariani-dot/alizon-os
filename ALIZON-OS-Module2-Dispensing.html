@@ -643,10 +643,17 @@
       +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr>'
       +'</tbody></table></div>';
     html+='<div class="row no-print" style="margin-top:14px">'
+      +'<button class="btn" id="submitFacultyBtn">⤴ Submit report to faculty</button>'
       +'<button class="btn gold" onclick="window.print()">Download / Print record</button>'
-      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>';
+      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>'
+      +'<p class="note no-print" id="submitNote">Submit your report so your faculty can evaluate it — your mark then appears in your student portal.</p>';
     body.innerHTML=html;
     var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ switchTab('station'); window.scrollTo(0,0); });
+    var sfb=$('submitFacultyBtn'); if(sfb) sfb.addEventListener('click',function(){
+      var rep=buildReport(); if(!rep){ alert('Please submit & evaluate the dispensing first.'); return; }
+      if(window.AlizonPracticalSubmit) AlizonPracticalSubmit.submit(PRAC_OPTS, rep);
+      else alert('Submission service not loaded — please refresh and try again.');
+    });
   }
 
   /* ================= persist ================= */
@@ -671,6 +678,8 @@
   });
 
   /* ===== faculty submission ===== */
+  var PRAC_OPTS={module:'Module 2 · Unit 1 — Digital Dispensing (FEFO/FIFO)',title:'Digital Dispensing — FEFO/FIFO & Patient Counselling',programme:'Pharmacy AI',
+    incompleteMsg:'Complete the dispensing station and click "Submit & evaluate dispensing" first — then submit your report to faculty.'};
   function buildReport(){
     if(!state||!state.submitted||!state.result) return null;
     var c=CASES[state.ci], r=state.result;
@@ -685,13 +694,7 @@
     h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'+(r.critical?' (CRITICAL ERROR: '+esc(r.critMsg)+')':'')+'</p>';
     return {html:h, pct:r.pct, resultText:(r.pass?'PASS':'FAIL')+' '+r.pct+'%', name:r.name, reg:r.reg};
   }
-  if(window.AlizonPracticalSubmit) AlizonPracticalSubmit.mount({
-    module:'Module 2 · Unit 1 — Digital Dispensing (FEFO/FIFO)',
-    title:'Digital Dispensing — FEFO/FIFO & Patient Counselling',
-    programme:'Pharmacy AI',
-    getReport:buildReport,
-    incompleteMsg:'Complete the dispensing station and click "Submit & evaluate dispensing" first — then submit your report to faculty.'
-  });
+  if(window.AlizonPracticalSubmit) AlizonPracticalSubmit.mount(Object.assign({getReport:buildReport}, PRAC_OPTS));
 
   /* boot */
   loadCase(0);
