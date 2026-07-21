@@ -978,6 +978,7 @@
       <a href="alizon-results.html">Check Results</a>
       <a href="alizon-exam.html">Examinations</a>
       <a href="alizon-verify.html">Verify</a>
+      <a href="alizon-syllabus.html">Syllabus</a>
       <a href="https://www.alizongov.com" target="_blank" rel="noopener">Website</a>
     </nav>
   </div>
@@ -1118,6 +1119,15 @@
       </div>
       <div class="progtabs" id="progTabs"></div>
       <div class="modgrid" id="modGrid"></div>
+    </div>
+
+    <div class="modrow" id="syllabusRow" style="margin-top:22px">
+      <div class="modhead">
+        <h3>My Syllabus &amp; Curriculum</h3>
+        <span class="modsub">Module details, training hours (T / P / OJT / Internship) and marks — <a href="alizon-syllabus.html" style="color:var(--gold);font-weight:600">open full catalogue &rarr;</a></span>
+      </div>
+      <div style="margin:10px 0 6px"><select id="sylSel" style="padding:10px 13px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:14px;background:var(--pill);color:var(--ink);min-width:300px;max-width:100%"></select></div>
+      <div id="dashSyllabus" style="margin-top:8px"></div>
     </div>
 
     </div>
@@ -2788,5 +2798,42 @@ function moduleResultBadge(moduleUnit, progName){
 <script src="vendor/ScrollTrigger.min.js"></script>
 <script src="alizon-motion.js"></script>
 <style>body,.appwrap,.dsec{font-family:'Source Sans 3','Source Sans Pro',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif !important}</style>
+<script src="alizon-curriculum.js"></script>
+<script>
+/* ---- dashboard syllabus panel ---- */
+(function(){
+  function J(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}}
+  function progNames(){ return (J('alizonPrograms',[])||[]).map(function(p){return p&&p.name;}).filter(Boolean); }
+  function fill(){
+    if(!window.AlizonCurriculum) return;
+    var sel=document.getElementById('sylSel'); if(!sel) return;
+    var store=window.AlizonCurriculum.store(), opts=[];
+    Object.keys(store).forEach(function(k){ var m=store[k].meta||{}; opts.push({v:k,t:(m.name||k)}); });
+    progNames().forEach(function(n){ var key=window.AlizonCurriculum.courseKey({meta:{name:n}});
+      if(!store[key] && !window.AlizonCurriculum.findForCourse(n)) opts.push({v:'name:'+n, t:n+' (no syllabus yet)'}); });
+    var cur=sel.value;
+    sel.innerHTML=opts.length?opts.map(function(o){return '<option value="'+String(o.v).replace(/"/g,'&quot;')+'">'+String(o.t).replace(/</g,'&lt;')+'</option>';}).join(''):'<option value="">No syllabus published yet</option>';
+    /* default to the student's own programme if it has a syllabus */
+    if(!cur){ var mine=progNames()[0]; var mk=mine?window.AlizonCurriculum.courseKey({meta:{name:mine}}):''; 
+      var match=null; opts.forEach(function(o){ if(o.v===mk) match=o.v; });
+      if(!match){ var c=mine&&window.AlizonCurriculum.findForCourse(mine); if(c) match=window.AlizonCurriculum.courseKey(c); }
+      sel.value=match||opts[0]&&opts[0].v||''; }
+    else sel.value=cur;
+    show();
+  }
+  function show(){
+    if(!window.AlizonCurriculum) return;
+    var sel=document.getElementById('sylSel'), el=document.getElementById('dashSyllabus'); if(!sel||!el) return;
+    var v=sel.value, course=null;
+    if(v.indexOf('name:')===0) course=window.AlizonCurriculum.findForCourse(v.slice(5));
+    else course=window.AlizonCurriculum.get(v);
+    window.AlizonCurriculum.render(el, course);
+  }
+  var sel=document.getElementById('sylSel'); if(sel) sel.addEventListener('change',show);
+  window.addEventListener('storage',function(e){ if(e.key==='alizonCurriculum'||e.key==='alizonPrograms') fill(); });
+  var tries=0; var iv=setInterval(function(){ fill(); if(++tries>15) clearInterval(iv); }, 1500);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fill); else fill();
+})();
+</script>
 </body>
 </html>
