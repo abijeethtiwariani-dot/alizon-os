@@ -21,7 +21,7 @@
 <script src="firebase-sync.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
  {"@type":"ListItem","position":1,"name":"Home","item":"https://www.alizon.in/"},
@@ -36,14 +36,18 @@
     --ink:#2e2d29; --muted:#6e6a63; --line:rgba(0,0,0,.12); --paper:#faf8f6; --coal:#181512; --ok:#1E8E5A; }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{font-family:Inter,-apple-system,sans-serif;background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  body{font-family:'Source Sans 3','Source Sans Pro',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
   a{color:inherit;text-decoration:none}
   .serif{font-family:'Source Serif Pro',Georgia,serif}
   .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
 
   /* ===== Stanford two-tier header ===== */
-  .topbar{position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(60,8,8,.25)}
-  .util{background:var(--crimson-deep);border-bottom:1px solid rgba(0,0,0,.18)}
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:50;transition:box-shadow .5s cubic-bezier(0,0,.2,1)}
+  .topbar::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(15,8,8,.55),rgba(15,8,8,0));opacity:1;transition:opacity .5s ease;pointer-events:none}
+  .topbar.scrolled::before{opacity:0}
+  .topbar.scrolled{box-shadow:0 2px 16px rgba(60,8,8,.32)}
+  .util{background:transparent;transition:background-color .5s ease}
+  .topbar.scrolled .util{background:var(--crimson-deep);border-bottom:1px solid rgba(0,0,0,.18)}
   .util .in{max-width:1240px;margin:0 auto;padding:8px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .util .lbl{color:#fff;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-right:4px}
   .util .pill{color:#fff;font-size:12.5px;font-weight:500;padding:5px 14px;border-radius:100px;background:rgba(255,255,255,.14);transition:.2s;white-space:nowrap}
@@ -51,7 +55,8 @@
   .util .srch{margin-left:auto;display:flex;align-items:center;gap:8px;background:#fff;border-radius:100px;padding:6px 14px;min-width:220px;color:var(--muted)}
   .util .srch svg{width:14px;height:14px;flex:none;opacity:.6}
   .util .srch input{border:0;outline:0;font:inherit;font-size:13px;width:100%;background:transparent;color:var(--ink)}
-  .main-nav{background:var(--crimson)}
+  .main-nav{background:transparent;transition:background-color .5s ease}
+  .topbar.scrolled .main-nav{background:var(--crimson)}
   .main-nav .in{max-width:1240px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:14px;min-height:62px}
   .main-nav img{width:34px;height:34px;object-fit:contain;filter:brightness(0) invert(1)}
   .main-nav .bt{color:#fff}
@@ -75,7 +80,7 @@
   }
 
   /* ===== Split hero ===== */
-  .hero{display:grid;grid-template-columns:1.05fr .95fr;background:var(--coal)}
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;background:var(--coal);margin-top:-106px;padding-top:106px}
   @media(max-width:860px){.hero{grid-template-columns:1fr}}
   .hero .txt{color:#fff;padding:clamp(44px,7vw,96px) clamp(24px,5vw,72px);display:flex;flex-direction:column;justify-content:center}
   .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;font-size:clamp(2.8rem,8vw,5.6rem);line-height:1.02;letter-spacing:-.015em}
@@ -779,5 +784,10 @@
 <script src="vendor/gsap.min.js"></script>
 <script src="vendor/ScrollTrigger.min.js"></script>
 <script src="alizon-stanford-motion.js"></script>
+<script>
+(function(){var bar=document.querySelector('.topbar');if(!bar)return;var t=false;
+function u(){t=false;if(window.scrollY>60)bar.classList.add('scrolled');else bar.classList.remove('scrolled');}
+window.addEventListener('scroll',function(){if(!t){t=true;requestAnimationFrame(u);}},{passive:true});u();})();
+</script>
 </body>
 </html>
