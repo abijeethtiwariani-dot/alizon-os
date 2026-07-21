@@ -27,20 +27,38 @@
   function fmtNow(){ try{ var d=new Date(); return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
 
   function wrapReport(o,name,reg){
-    return '<div style="font-family:Georgia,\'Source Serif Pro\',serif;color:#1a1516;max-width:820px;margin:0 auto;padding:6px">'
-      +'<div style="border-bottom:2px solid #8c1515;padding-bottom:8px;margin-bottom:12px">'
-        +'<div style="font-weight:700;color:#8c1515;font-size:16px">Alizon School of Medical &amp; Digital Intelligence</div>'
-        +'<div style="font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#7a6f66">Practical Report — '+esc(o.module||'')+'</div>'
+    return '<div style="font-family:Arial,Helvetica,sans-serif;color:#1a1516;max-width:820px;margin:0 auto;padding:6px">'
+      /* ===== ALIZON LETTERHEAD ===== */
+      +'<table role="presentation" width="100%" style="border-collapse:collapse;border-bottom:2.5px solid #8c1515;padding-bottom:8px"><tr>'
+        +'<td style="width:70px;vertical-align:middle;padding-bottom:10px">'
+          +'<img src="/alizon-logo.png" alt="Alizon" width="60" height="60" style="display:block;object-fit:contain" '
+          +'onerror="this.style.display=\'none\'"></td>'
+        +'<td style="vertical-align:middle;padding:0 0 10px 6px">'
+          +'<div style="font-family:Georgia,\'Source Serif Pro\',serif;font-weight:700;color:#8c1515;font-size:18px;line-height:1.2">Alizon School of Medical &amp; Digital Intelligence</div>'
+          +'<div style="font-size:11.5px;font-style:italic;color:#6e6a63;margin-top:2px">Advancing Artificial Intelligence in Healthcare Education</div>'
+          +'<div style="font-size:10.5px;letter-spacing:.04em;color:#8a827b;margin-top:3px;font-weight:600">Thiruvananthapuram, Kerala, India&nbsp; ·&nbsp; www.alizon.in</div>'
+        +'</td>'
+      +'</tr></table>'
+      +'<div style="font-size:9.8px;line-height:1.5;color:#5f5a54;background:#faf4f2;border-left:3px solid #9a7b3f;padding:6px 10px;margin:8px 0 14px">'
+        +'An initiative under <b>ASAP Kerala</b> — Additional Skill Acquisition Programme, Department of Higher Education, Government of Kerala&nbsp; ·&nbsp; Registered with <b>Kerala Startup Mission</b></div>'
+      /* ===== document title ===== */
+      +'<div style="text-align:center;margin:6px 0 14px">'
+        +'<div style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#9a7b3f;font-weight:700">Practical Report</div>'
+        +'<div style="font-family:Georgia,\'Source Serif Pro\',serif;font-size:16px;font-weight:700;color:#26221f;margin-top:3px">'+esc(o.module||'')+'</div>'
       +'</div>'
-      +'<div style="font-family:Arial,sans-serif;font-size:12px;color:#333;margin-bottom:14px;line-height:1.7">'
+      /* ===== candidate line ===== */
+      +'<div style="font-size:12px;color:#333;margin-bottom:14px;line-height:1.7;border:1px solid #eadfd9;border-radius:8px;padding:9px 12px;background:#fbfaf9">'
         +'<b>Candidate:</b> '+esc(name||'—')+(reg?' ('+esc(reg)+')':'')+' &nbsp;&middot;&nbsp; '
         +'<b>Programme:</b> '+esc(o.programme||progName()||'—')+' &nbsp;&middot;&nbsp; '
         +'<b>Submitted:</b> '+esc(fmtNow())
         +(o.resultText?' &nbsp;&middot;&nbsp; <b>Final result:</b> '+esc(o.resultText):'')
       +'</div>'
-      +'<div style="font-family:Arial,sans-serif">'+(o.html||'')+'</div>'
-      +'<div style="font-family:Arial,sans-serif;font-size:10.5px;color:#8a827b;border-top:1px solid #e2d8d2;margin-top:16px;padding-top:8px">'
-        +'System-generated practical report · Awaiting faculty evaluation · Pass mark 50%.</div>'
+      +'<div>'+(o.html||'')+'</div>'
+      /* ===== footer ===== */
+      +'<div style="border-top:2px solid #8c1515;margin-top:18px;padding-top:8px">'
+        +'<div style="font-size:10.5px;color:#8a827b;line-height:1.6">This is a system-generated practical report issued by the Controller of Examinations, Alizon School of Medical &amp; Digital Intelligence. Awaiting faculty evaluation · Pass mark 50%.</div>'
+        +'<div style="font-size:10.5px;font-weight:700;color:#8c1515;margin-top:4px">Alizon School of Medical &amp; Digital Intelligence&nbsp; ·&nbsp; Thiruvananthapuram, Kerala&nbsp; ·&nbsp; www.alizon.in</div>'
+      +'</div>'
     +'</div>';
   }
 
