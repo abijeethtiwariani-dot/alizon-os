@@ -87,6 +87,18 @@
     method:['For each patient ask: is any medicine <b>high-alert</b>, and is the patient <b>high-risk</b>?','If both are true, add extra safeguards (double-check, monitor, verify the dose).','Name exactly what could go wrong (the specific hazard).','Choose the safeguard that removes that hazard.','Document your rationale and confirm your checks.'],
     methodNote:'<b>Golden rule:</b> never dispense an obviously dangerous high-alert order (e.g. daily methotrexate, undiluted IV potassium, vincristine for intrathecal use) — hold and clarify with the prescriber.'
    },
+   airesearch:{
+    practicalNo:'Module 4 · Unit 2 · Practical 1',
+    title:'AI Support in Scientific Research & Data Analysis',
+    aim:'To use AI tools to support scientific research and data analysis — <b>literature review, biostatistics, meta-analysis and writing</b> — while applying correct methodology and the <b>responsible, ethical use of AI</b>.',
+    principle:'AI can accelerate research — searching literature, drafting text and analysing data — but its outputs must always be <b>verified</b>. Sound research still depends on <b>correct methodology</b> (the right statistical test, PRISMA for reviews, appropriate models) and on <b>research integrity</b>: no fabrication, no plagiarism, transparent disclosure of AI use, and protection of confidential data.',
+    principleNote:'<b>Key point:</b> AI is an assistant, not an author — every AI output must be verified, and AI must never be used to fabricate, plagiarise, or expose confidential data.',
+    theory:'AI language models can <em>“hallucinate”</em> — inventing realistic but non-existent references or facts — so citations and statistics must be independently checked. The correct statistical test depends on the data (t-test / ANOVA for means, chi-square for categorical outcomes, correlation for association; random-effects models for heterogeneous meta-analyses). Journals and the ICMJE require <b>disclosure</b> of AI assistance and do not permit AI as an author. Uploading identifiable patient data to public AI tools breaches data protection.',
+    requirements:['AI research assistant / tools','Bibliographic database (for reference verification)','Statistical software','PRISMA &amp; reporting guidelines','Journal / ICMJE AI-use policy','Ethics &amp; data-protection rules'],
+    procedure:['Identify the research task (literature, statistics, meta-analysis, writing).','Use AI to assist the task.','Verify every AI output — references, statistics and text.','Apply the correct methodology (test, model or guideline).','Check for integrity issues (fabrication, plagiarism, disclosure, data privacy).','Document the decision and the responsible-use rationale.'],
+    method:['For each task ask: is the AI output <b>correct and verifiable</b>, and is this an <b>ethical</b> use?','Verify references in a database and confirm statistics yourself.','Choose the method that fits the data (test / model / guideline).','Disclose AI assistance; never upload identifiable patient data.','Document your rationale.'],
+    methodNote:'<b>Golden rule:</b> never accept an AI output that fabricates data, invents references, plagiarises, or requires uploading identifiable patient data — that is research misconduct.'
+   },
    clinicalsim:{
     practicalNo:'Module 8 · Practical',
     title:'Clinical Simulation Suite',

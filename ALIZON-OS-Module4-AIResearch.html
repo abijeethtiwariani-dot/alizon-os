@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Module 4 · AI Support in Scientific Research & Data Analysis</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)} .scorechip b{color:var(--gold)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:6px}
+  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:5px 0;cursor:pointer}
+  .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:480px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  select,textarea,input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  select:focus,textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:60px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .aibox{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:12px 14px;margin-top:8px;font-size:13px}
+  .aibox .lbl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
+  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
+  details.help>summary::-webkit-details-marker{display:none}
+  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
+  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 4 · Unit 2 — AI Support in Scientific Research &amp; Data Analysis</div>
+    <h1 class="serif">AI Support in Scientific Research &amp; Data Analysis</h1>
+    <p><b>Aim —</b> To use AI tools to support scientific research and data analysis — literature review, biostatistics, meta-analysis and writing — while applying correct methodology and the <b>responsible, ethical use of AI</b>.
+      <span class="muted">Duration 60 minutes · One case per student · 100-mark rubric · Pass 50%.</span></p>
+    <div class="chips">
+      <div class="scorechip">Case <b id="scCase">—</b></div>
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Research Station</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="airesearch"></div>
+    <div class="guide">
+      <h2>New to AI in research? Start here</h2>
+      <p>AI can help you search literature, analyse data and draft papers — but its output must always be <b>checked</b>, and it must be used <b>ethically</b>. For each task:</p>
+      <ol>
+        <li><b>Know the research task</b> — literature review, statistics, meta-analysis, writing.</li>
+        <li><b>Verify the AI output</b> — references (AI can invent them), statistics, and text must be independently confirmed.</li>
+        <li><b>Apply the correct method</b> — the right statistical test, PRISMA for reviews, the right model.</li>
+        <li><b>Use AI responsibly</b> — never fabricate data, plagiarise, or upload identifiable patient data; <b>disclose</b> AI assistance (AI is not an author).</li>
+      </ol>
+      <p style="margin-top:8px">Unsure on a case? Open <b>“Need a hint?”</b> in the station.</p>
+    </div>
+    <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
+    <div class="card"><h2>Choosing a statistical test (quick guide)</h2>
+      <div class="tw"><table><thead><tr><th>Question</th><th>Typical test</th></tr></thead><tbody>
+        <tr><td>Compare the <b>means</b> of two independent, normally-distributed groups</td><td>Independent (unpaired) t-test</td></tr>
+        <tr><td>Compare the means of three or more groups</td><td>One-way ANOVA</td></tr>
+        <tr><td>Compare a <b>categorical</b> outcome across groups</td><td>Chi-square test</td></tr>
+        <tr><td>Measure the <b>association</b> between two continuous variables</td><td>Correlation (Pearson / Spearman)</td></tr>
+        <tr><td>Pool results across studies with high heterogeneity</td><td>Random-effects meta-analysis model</td></tr>
+      </tbody></table></div></div>
+    <div class="card"><h2>Faculty assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
+      <p class="note">Accepting a fabricated result, an invented reference, plagiarised text, or uploading identifiable patient data is <b>research misconduct</b> and fails the station.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card"><h2>Candidate &amp; case assignment</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+        <div><label class="f">Assigned case</label><select id="caseSel"></select></div>
+      </div>
+    </div>
+    <div id="caseArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>Practical record &amp; assessment</h2>
+      <p class="muted" id="repEmpty">Complete the research station and submit to generate your assessment, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=3"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=4"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+
+  var TASKS=['Identify the research task (literature, statistics, meta-analysis, writing)','Use AI tools to assist the task',
+    'Verify every AI output — references, statistics and text','Apply the correct methodology (test / model / guideline)',
+    'Check for research-integrity issues (fabrication, plagiarism, disclosure, privacy)','Never accept fabricated, plagiarised or unverifiable AI output',
+    'Confirm the responsible-use checks you performed','Document your decision and rationale'];
+  var RUBRIC=[
+    {k:'task', label:'Research task / method identified', max:20},
+    {k:'handle',label:'Correct handling of the AI output', max:25},
+    {k:'ethics',label:'Responsible &amp; ethical AI use', max:25},
+    {k:'method',label:'Methodological accuracy', max:20},
+    {k:'doc',   label:'Documentation &amp; confirmation', max:10}];
+  var MAXTOTAL=RUBRIC.reduce(function(a,r){return a+r.max;},0);
+
+  var CASES=[
+   {n:1,scenario:'You ask an AI chatbot for references on a pharmacology topic. It returns five citations, but when you search a bibliographic database, two of the DOIs do not exist and the papers cannot be found.',
+    ai:'AI-generated reference list — 5 citations, 2 unverifiable.',
+    task:{q:'What is the research task here?',o:['Literature review &amp; reference management','Biostatistical analysis','Meta-analysis','Data collection'],c:0},
+    handle:{o:[{t:'Cite only the references you have independently verified; discard the unverifiable (hallucinated) ones',correct:true},{t:'Cite all five — AI references are reliable',unsafe:true},{t:'Invent DOIs for the two missing papers',unsafe:true},{t:'Do not cite any references at all',correct:false}]},
+    ethics:{q:'The main integrity issue is:',o:['AI hallucinated (fabricated) references','Nothing — this is normal','Data-privacy breach','Duplicate publication'],c:0},
+    method:{q:'How should AI be used in a literature review?',o:['As a search aid — but every citation must be human-verified','As a full replacement for reading the papers','To invent citations when none exist','To copy other reviews'],c:0},
+    hint:'AI language models can “hallucinate” — invent realistic-looking references that do not exist. Verify every citation in a database before you use it.'},
+
+   {n:2,scenario:'You compare mean systolic blood pressure between a drug group and a placebo group (two independent groups). The data are approximately normally distributed.',
+    ai:'AI suggests a statistical test for your comparison.',
+    task:{q:'What are you doing statistically?',o:['Comparing the means of two independent groups','Comparing proportions','Measuring a correlation','Time-to-event analysis'],c:0},
+    handle:{o:[{t:'Accept the AI suggestion only after confirming it is the correct test and its assumptions are met',correct:true},{t:'Use whatever test the AI names without checking',correct:false},{t:'Report a significant result without running any test',unsafe:true},{t:'Use no statistics at all',correct:false}]},
+    ethics:{q:'Responsible use here means:',o:['Verify the AI-suggested test and check its assumptions yourself','Trust the AI blindly','Report only the favourable result','Hide the method used'],c:0},
+    method:{q:'The correct test for two independent, normally-distributed groups is:',o:['Independent (unpaired) t-test','Chi-square test','One-way ANOVA','Pearson correlation'],c:0},
+    hint:'Two independent groups, means, normal data → an unpaired t-test. Let AI suggest it, but confirm the test and its assumptions yourself.'},
+
+   {n:3,scenario:'You compare a categorical outcome (cured / not cured) across three different treatments.',
+    ai:'AI proposes a test for your table of counts.',
+    task:{q:'What are you comparing?',o:['Proportions / frequencies across groups','The means of two groups','Time to an event','A correlation'],c:0},
+    handle:{o:[{t:'Confirm the correct categorical test and its assumptions, then apply it',correct:true},{t:'Use a t-test on the categories',correct:false},{t:'Claim significance with no test',unsafe:true},{t:'Merge the groups to force a result',unsafe:true}]},
+    ethics:{q:'Responsible practice is to:',o:['Choose the test that fits the data type and report it transparently','Pick the test that gives the smallest p-value','Hide the group that spoils the result','Report without any method'],c:0},
+    method:{q:'The correct test for a categorical outcome across three groups is:',o:['Chi-square test','Independent t-test','Pearson correlation','Paired t-test'],c:0},
+    hint:'A categorical outcome (cured/not cured) across groups is analysed with a chi-square test — not a t-test (which is for means).'},
+
+   {n:4,scenario:'You pool the results of eight clinical trials in a meta-analysis. The heterogeneity statistic is I² = 85% (high).',
+    ai:'AI offers to combine the studies for you.',
+    task:{q:'What is the research task?',o:['Meta-analysis (combining results across studies)','Screening abstracts','Writing the introduction','Formatting references'],c:0},
+    handle:{o:[{t:'Combine using a random-effects model and investigate the causes of the heterogeneity',correct:true},{t:'Use a fixed-effect model and ignore the heterogeneity',correct:false},{t:'Combine anyway with no model',correct:false},{t:'Silently delete the studies that disagree',unsafe:true}]},
+    ethics:{q:'Responsible practice is to:',o:['Report the heterogeneity honestly and explore it','Hide the heterogeneity statistic','Drop inconvenient studies quietly','Overstate the certainty of the pooled result'],c:0},
+    method:{q:'With high heterogeneity (I² = 85%) you should:',o:['Use a random-effects model and explore heterogeneity','Use a fixed-effect model and ignore it','Combine with no model','Report a single trial only'],c:0},
+    hint:'High heterogeneity (I² = 85%) means the studies differ a lot — use a random-effects model and explore why they differ, rather than a fixed-effect model.'},
+
+   {n:5,scenario:'You use an AI tool to help screen 2,000 abstracts for a systematic review.',
+    ai:'The AI proposes an include/exclude decision for each abstract.',
+    task:{q:'What is the research task?',o:['Study screening for a systematic review','Statistical testing','Drafting the discussion','Reference formatting'],c:0},
+    handle:{o:[{t:'Use AI to assist screening, but two independent reviewers make the final decisions and every exclusion is documented (PRISMA)',correct:true},{t:'Let the AI include/exclude studies with no human check',unsafe:true},{t:'Screen with one reviewer and no criteria',correct:false},{t:'Skip screening entirely',correct:false}]},
+    ethics:{q:'Responsible use of AI in screening means:',o:['AI is a tool that supports — not replaces — reviewer judgment','AI decisions need no checking','No documentation is required','A single hidden reviewer is enough'],c:0},
+    method:{q:'Systematic-review screening should follow:',o:['A pre-registered protocol and PRISMA, with independent reviewers','Whatever the AI decides alone','No documented criteria','One reviewer, no protocol'],c:0},
+    hint:'AI can speed up abstract screening, but a systematic review still needs a protocol, PRISMA reporting, and independent human reviewers making the final calls.'},
+
+   {n:6,scenario:'AI drafts your Discussion section and writes “the reduction was highly significant (p < 0.001)”, but that p-value never appeared anywhere in your actual results.',
+    ai:'AI-written Discussion containing an unsupported statistic.',
+    task:{q:'What is the research task?',o:['Scientific writing (drafting a section)','Meta-analysis','Reference management','Data collection'],c:0},
+    handle:{o:[{t:'Remove the unsupported statistic — never report a result you did not obtain',correct:true},{t:'Keep it — it makes the paper look stronger',unsafe:true},{t:'Change your results to match the AI text',unsafe:true},{t:'Submit it and hope no one checks',unsafe:true}]},
+    ethics:{q:'Reporting a result you did not obtain is:',o:['Data fabrication (research misconduct)','Acceptable rounding','A citation error','Good practice'],c:0},
+    method:{q:'AI-drafted text must always be:',o:['Fact-checked against your real data before use','Trusted as written','Kept even if unsupported','Left uncited'],c:0},
+    hint:'Never keep a statistic the AI invented that is not in your results — that is data fabrication, a serious form of research misconduct.'},
+
+   {n:7,scenario:'AI paraphrases a paragraph from another published paper very closely and inserts it into your manuscript without any citation.',
+    ai:'AI-paraphrased paragraph closely matching a published source.',
+    task:{q:'What is the research task?',o:['Research-paper drafting / writing','Biostatistics','Meta-analysis','Screening'],c:0},
+    handle:{o:[{t:'Rewrite it in your own words and cite the original source; run a similarity check',correct:true},{t:'Submit it as your own writing',unsafe:true},{t:'Change a few words and submit uncited',unsafe:true},{t:'Ignore the similarity',unsafe:true}]},
+    ethics:{q:'Using another author’s text without citation is:',o:['Plagiarism','A minor style issue','Standard practice','A statistics error'],c:0},
+    method:{q:'Correct practice is to:',o:['Cite the source and express ideas in your own words','Copy freely if the AI wrote it','Never cite AI-assisted text','Submit without a similarity check'],c:0},
+    hint:'Text closely matching a source without citation is plagiarism — even if the AI produced it. Rewrite in your own words, cite the source, and run a similarity check.'},
+
+   {n:8,scenario:'You used an AI tool to improve the grammar and language of your manuscript before submitting it to a journal.',
+    ai:'AI-polished manuscript language.',
+    task:{q:'What is the research task?',o:['Publication preparation','Statistical analysis','Meta-analysis','Data collection'],c:0},
+    handle:{o:[{t:'Disclose the AI assistance per the journal / ICMJE guidance; AI is a tool, not an author',correct:true},{t:'List the AI tool as a co-author',unsafe:false,correct:false},{t:'Hide that AI was used',unsafe:true},{t:'Claim you wrote every word by hand',unsafe:true}]},
+    ethics:{q:'The correct practice is to:',o:['Disclose AI assistance transparently; AI cannot be an author','List AI as an author','Conceal the AI use','Deny using any tools'],c:0},
+    method:{q:'Journal / ICMJE guidance says AI:',o:['May assist but must be disclosed and cannot be an author','Can be a listed co-author','Never needs disclosure','Should be hidden'],c:0},
+    hint:'Using AI to polish language is fine — but you must disclose it (per ICMJE/journal rules). AI cannot be listed as an author.'},
+
+   {n:9,scenario:'To analyse your dataset quickly, you consider pasting a spreadsheet of identifiable patient data (names and hospital IDs) into a free, public AI chatbot.',
+    ai:'Request to upload identifiable patient data to a public AI tool.',
+    task:{q:'What is the research task?',o:['Data analysis — with a data-protection decision','Reference management','Writing the abstract','Meta-analysis'],c:0},
+    handle:{o:[{t:'Do not upload identifiable data — anonymise it first and use an approved, secure, ethics-compliant tool',correct:true},{t:'Paste the full identifiable data — it is quicker',unsafe:true},{t:'Upload it but delete the chat afterwards',unsafe:true},{t:'Share it with classmates instead',unsafe:true}]},
+    ethics:{q:'Uploading identifiable patient data to a public AI tool is:',o:['A breach of confidentiality &amp; data protection','Perfectly safe','Required for analysis','A minor issue'],c:0},
+    method:{q:'Before any AI analysis of patient data you must:',o:['Anonymise the data and use an approved secure tool with ethics/consent','Upload everything for speed','Skip consent','Use any public tool'],c:0},
+    hint:'Never paste identifiable patient data into a public AI tool — it breaches confidentiality and data-protection law. Anonymise first and use an approved secure tool.'},
+
+   {n:10,scenario:'AI analyses your data, reports a strong correlation (r = 0.8) between two variables, and concludes “X causes Y”.',
+    ai:'AI output: “Strong correlation (r = 0.8) — therefore X causes Y.”',
+    task:{q:'What is the research task?',o:['Interpreting a statistical result','Screening abstracts','Reference formatting','Publication preparation'],c:0},
+    handle:{o:[{t:'Reject the causal claim — a correlation does not prove causation; interpret it cautiously',correct:true},{t:'Accept that r = 0.8 proves X causes Y',unsafe:true},{t:'Report causation to make the finding stronger',unsafe:true},{t:'Delete the analysis',correct:false}]},
+    ethics:{q:'Presenting correlation as proven causation is:',o:['An unjustified (misleading) conclusion','Sound reasoning','Required by journals','A citation issue'],c:0},
+    method:{q:'The correct interpretation of a strong correlation is:',o:['Correlation does not prove causation — interpret cautiously','A strong correlation proves causation','r = 0.8 means no relationship','Correlation and causation are identical'],c:0},
+    hint:'A correlation — even a strong one (r = 0.8) — does not prove causation. Do not accept an AI’s causal claim without an appropriate study design.'}
+  ];
+
+  $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
+  $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+r.label+'</td><td>'+r.max+'</td></tr>';}).join('')+'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
+
+  var sel=$('caseSel');
+  var SHORT=['Hallucinated references','Two-group means','Categorical outcome','Meta-analysis heterogeneity','Systematic review screening','Fabricated statistic','Plagiarism','AI disclosure','Patient-data privacy','Correlation vs causation'];
+  sel.innerHTML=CASES.map(function(c,i){return '<option value="'+i+'">Case '+c.n+' — '+esc(SHORT[i])+'</option>';}).join('');
+  sel.addEventListener('change',function(){ loadCase(parseInt(this.value,10)); });
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var state=null;
+  function loadCase(ci){
+    state={ci:ci,task:null,handle:null,ethics:null,method:null,check:false,note:'',submitted:false,result:null};
+    var c=CASES[ci];
+    $('scCase').textContent='Case '+c.n; $('scScore').textContent='—'; $('scRes').textContent='—';
+    $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+    renderStation();
+  }
+
+  function mcq(id,q,opts,attr){
+    return '<div class="card"><span class="step">'+id.label+'</span> <b>'+q+'</b>'
+      +'<div id="'+id.el+'">'+opts.map(function(o,k){var t=(typeof o==='string')?o:o.t;return '<button type="button" class="opt" data-'+attr+'="'+k+'">'+t+'</button>';}).join('')+'</div></div>';
+  }
+  function renderStation(){
+    var c=CASES[state.ci]; var h='';
+    h+='<div class="card"><span class="step">Case '+c.n+'</span>'
+      +'<h2 style="margin-top:6px">'+esc(SHORT[state.ci])+'</h2>'
+      +'<h3>Research scenario</h3><p>'+esc(c.scenario)+'</p>'
+      +'<div class="aibox"><div class="lbl">AI output / suggestion</div>'+esc(c.ai)+'</div>'
+      +(c.hint?'<details class="help"><summary>Need a hint?</summary><div class="hb">'+esc(c.hint)+'</div></details>':'')
+      +'</div>';
+    h+=mcq({label:'Step 1',el:'q-task'}, esc(c.task.q), c.task.o, 'task');
+    h+=mcq({label:'Step 2',el:'q-handle'}, 'How do you handle this AI output?', c.handle.o, 'handle');
+    h+=mcq({label:'Step 3',el:'q-ethics'}, esc(c.ethics.q), c.ethics.o, 'ethics');
+    h+=mcq({label:'Step 4',el:'q-method'}, esc(c.method.q), c.method.o, 'method');
+    h+='<div class="card"><span class="step">Step 5</span> <b>Confirmation &amp; rationale</b>'
+      +'<div class="cl" style="margin-top:6px"><label><input type="checkbox" id="safeChk"><span>I verified the AI output and used AI responsibly (no fabrication, plagiarism or data-privacy breach).</span></label></div>'
+      +'<label class="f" style="margin-top:10px">Rationale for your decision</label>'
+      +'<textarea id="noteBox" placeholder="Explain the correct method and the responsible-use decision for this task."></textarea></div>';
+    h+='<div class="card"><button class="btn" id="submitBtn">Submit &amp; evaluate</button>'
+      +'<span class="muted" style="font-size:12.5px;margin-left:10px">Auto-scored against the 100-mark rubric.</span></div>';
+    $('caseArea').innerHTML=h;
+    [['task','#q-task'],['handle','#q-handle'],['ethics','#q-ethics'],['method','#q-method']].forEach(function(p){
+      document.querySelectorAll(p[1]+' .opt').forEach(function(b){ b.addEventListener('click',function(){ state[p[0]]=+b.getAttribute('data-'+p[0]); document.querySelectorAll(p[1]+' .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); }); });
+    });
+    $('safeChk').addEventListener('change',function(){ state.check=this.checked; });
+    $('noteBox').addEventListener('input',function(){ state.note=this.value; });
+    $('submitBtn').addEventListener('click',evaluate);
+  }
+
+  function evaluate(){
+    var c=CASES[state.ci]; var name=($('cName').value||'').trim()||'Candidate', reg=($('cReg').value||'').trim();
+    var sc={}, fb={};
+    var taskOK=state.task===c.task.c; sc.task=taskOK?20:0; fb.task=taskOK?'Research task correctly identified.':'The research task was not correctly identified.';
+    var pick=(state.handle!=null)?c.handle.o[state.handle]:null;
+    var unsafe=(pick&&pick.unsafe);
+    sc.handle=(pick&&pick.correct)?25:((pick&&!pick.unsafe)?10:0);
+    fb.handle=(pick&&pick.correct)?'Correct, responsible handling of the AI output.':(unsafe?'A research-integrity violation was chosen.':'A weak but not unethical choice.');
+    var ethOK=state.ethics===c.ethics.c; sc.ethics=ethOK?25:0; fb.ethics=ethOK?'Integrity issue correctly identified.':'The responsible-use / ethics issue was not correctly identified.';
+    var metOK=state.method===c.method.c; sc.method=metOK?20:0; fb.method=metOK?'Methodology correct.':'The methodological point was not correct.';
+    var noteOK=(state.note||'').trim().length>=15; sc.doc=(noteOK?6:0)+(state.check?4:0);
+    fb.doc=(noteOK?'Rationale documented. ':'Rationale too brief. ')+(state.check?'Responsible-use confirmed.':'Responsible-use not confirmed.');
+    var tot=RUBRIC.reduce(function(a,r){return a+(sc[r.k]||0);},0);
+    var pct=Math.round(tot/MAXTOTAL*100);
+    var critical=unsafe;
+    var pass=pct>=50 && !critical;
+    state.result={name:name,reg:reg,total:tot,pct:pct,pass:pass,critical:critical,sc:sc,fb:fb,handleText:pick?pick.t:'(none)'};
+    state.submitted=true;
+    $('scScore').textContent=tot+'/'+MAXTOTAL; $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+pct+'%)';
+    renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+
+  function buildAuto(){
+    if(!state||!state.submitted) return null;
+    var c=CASES[state.ci], r=state.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Case '+c.n+' — '+esc(SHORT[state.ci])+'</h3>';
+    h+='<p style="margin:2px 0"><b>Scenario:</b> '+esc(c.scenario)+'</p>';
+    h+='<p style="margin:2px 0"><b>AI output:</b> '+esc(c.ai)+'</p>';
+    h+='<p style="margin:6px 0"><b>Your decision:</b> '+esc(r.handleText)+'</p>';
+    if((state.note||'').trim()) h+='<p style="margin:2px 0"><b>Rationale:</b> '+esc(state.note)+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
+      +RUBRIC.map(function(x){return '<tr><td>'+x.label.replace(/&amp;/g,'&')+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
+      +'<tr style="background:#f3e2e2;font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">'+MAXTOTAL+'</td></tr></table>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'+(r.critical?' (RESEARCH-INTEGRITY VIOLATION)':'')+'</p>';
+    return h;
+  }
+
+  function renderReport(){
+    var c=CASES[state.ci], r=state.result;
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Score</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">of '+MAXTOTAL+'</div></div>'
+      +'<div class="repbox"><div class="rv">'+c.n+'</div><div class="rl">Case</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+esc(SHORT[state.ci])+'</div>';
+    if(r.critical) html+='<div class="note" style="color:var(--danger);font-weight:600;margin:-4px 0 10px">Fabrication, plagiarism, using invented references, or exposing identifiable patient data is research misconduct and fails the station regardless of total marks.</div>';
+    html+='<div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Score</th><th>Max</th></tr></thead><tbody>'
+      +RUBRIC.map(function(x){return '<tr><td>'+x.label+'<div class="note" style="margin-top:2px">'+esc(r.fb[x.k]||'')+'</div></td><td>'+(r.sc[x.k]||0)+'</td><td>'+x.max+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr></tbody></table></div>';
+    html+='<div class="row no-print" style="margin-top:14px"><button class="btn gold" onclick="window.print()">Download / Print record</button>'
+      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 4 · Unit 2 — AI Support in Scientific Research & Data Analysis',title:'AI Support in Scientific Research & Data Analysis',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Research task &amp; AI-use decision', placeholder:'e.g. Case 1 — hallucinated references, verified before citing'},
+      minWords:400,
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return state.result?state.result.pct:null; },
+      autoResultText:function(){ return state.result?((state.result.pass?'PASS':'FAIL')+' '+state.result.pct+'%'):''; }
+    });
+  }
+
+  function switchTab(p){ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+
+  loadCase(0);
+})();
+</script>
+</body>
+</html>
