@@ -68,6 +68,14 @@
   .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
   .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
   .note{font-size:12px;color:var(--muted);margin-top:6px}
+  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
+  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
+  details.help>summary::-webkit-details-marker{display:none}
+  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
+  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
   @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
 </style>
 </head>
@@ -93,6 +101,17 @@
   </div>
 
   <section class="panel on" id="p-brief">
+    <div class="guide">
+      <h2>New to CDSS alerts? Start here</h2>
+      <p>A <b>Clinical Decision Support System (CDSS)</b> checks each prescription against the patient's record and pops up <b>alerts</b> (interactions, allergies, dose or kidney warnings, duplicates). Your job is to decide what each alert really means:</p>
+      <ol>
+        <li><b>Read the alert</b> and the patient's EHR (allergies, current medicines, labs, conditions).</li>
+        <li><b>Grade the severity</b> — <b>Critical</b> (dangerous/contraindicated), <b>Major</b> (important), or <b>Minor</b> (low value).</li>
+        <li><b>Take the right action</b> — accept, override (with a reason), adjust the dose, hold &amp; contact the prescriber, or do not dispense.</li>
+        <li><b>Never override a Critical alert.</b> But don't over-react to every Minor one either — that causes <i>alert fatigue</i>.</li>
+      </ol>
+      <p style="margin-top:8px">Unsure on a case? Open <b>“Need a hint?”</b> in the console.</p>
+    </div>
     <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
     <div class="card"><h2>Components of a CDSS</h2>
       <div class="tw"><table><thead><tr><th>Component</th><th>Role</th></tr></thead><tbody>
@@ -213,6 +232,19 @@
      {t:'Reminder — check blood pressure at the next visit.',sev:'Minor',act:['accept'],why:'Informational reminder — accept.'}]}
   ];
 
+  var CHINTS={
+   1:'The key issue is the warfarin–ciprofloxacin interaction (bleeding risk) — significant enough to clarify with the prescriber. The renal and old-duplicate alerts are lower value.',
+   2:'The patient has penicillin ANAPHYLAXIS and amoxicillin is a penicillin — an absolute contraindication that must never be overridden.',
+   3:'Metformin is contraindicated when kidney function (eGFR) is below 30 — treat this as critical.',
+   4:'Amiodarone and low potassium both prolong the QT interval; adding ondansetron adds more risk — clarify before giving it.',
+   5:'NSAID + ACE inhibitor + diuretic together (the “triple whammy”) can cause acute kidney injury — the NSAID should be avoided.',
+   6:'Tramadol with diazepam causes extra sedation, and with sertraline risks serotonin syndrome — both need prescriber review.',
+   7:'Two statins together is a therapeutic duplication — do not dispense both; clarify which one to continue.',
+   8:'Warfarin is teratogenic and contraindicated in pregnancy — a critical alert; a safer alternative is needed.',
+   9:'The 500 mg paracetamol dose is too high for a 16 kg child — it should be recalculated to about 15 mg/kg.',
+   10:'These are all low-value alerts for a safe, common blood-pressure combination — accepting them (not escalating) is correct and avoids alert fatigue.'
+  };
+  CASES.forEach(function(c){ c.hint=CHINTS[c.n]; });
   $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
   $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+esc(r.label)+'</td><td>'+r.max+'</td></tr>';}).join('')+'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
 
@@ -241,7 +273,9 @@
       +'<div class="e"><b>Current medicines</b>'+esc(c.ehr.meds)+'</div>'
       +'<div class="e"><b>Labs</b>'+esc(c.ehr.labs)+'</div>'
       +'<div class="e"><b>Conditions</b>'+esc(c.ehr.cond)+'</div>'
-      +'</div></div>';
+      +'</div>'
+      +(c.hint?'<details class="help"><summary>Need a hint?</summary><div class="hb">'+esc(c.hint)+'</div></details>':'')
+      +'</div>';
 
     h+='<div class="card"><span class="step">CDSS Alerts</span> <b>Triage each alert generated by the system</b>'
       +'<p class="note">For each alert: classify its <b>severity</b>, choose the correct <b>action</b>, and document a reason where you override. Never override a critical alert.</p>'

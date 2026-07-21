@@ -75,6 +75,14 @@
   .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
   .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
   .note{font-size:12px;color:var(--muted);margin-top:6px}
+  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
+  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
+  details.help>summary::-webkit-details-marker{display:none}
+  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
+  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
   @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
 </style>
 </head>
@@ -100,6 +108,18 @@
   </div>
 
   <section class="panel on" id="p-brief">
+    <div class="guide">
+      <h2>New to ADR reporting? Start here</h2>
+      <p>An <b>Adverse Drug Reaction (ADR)</b> is any harmful, unintended response to a medicine taken at a normal dose. Reporting ADRs (pharmacovigilance) keeps medicines safe. In this station you will work through one patient:</p>
+      <ol>
+        <li><b>Read the patient's condition</b> and the medicine they are taking.</li>
+        <li><b>Identify the suspected reaction</b> (the ADR) and <b>which medicine</b> likely caused it.</li>
+        <li><b>Judge how serious it is</b> — could it cause death, hospitalisation or lasting harm? Then it is <i>serious</i>.</li>
+        <li><b>Assess causality</b> — how confident are we the drug caused it? Use the <b>WHO-UMC</b> scale (time link, other causes, response to stopping/restarting).</li>
+        <li><b>Complete the electronic ADR form</b>, then <b>counsel the patient</b> on safety and future precautions.</li>
+      </ol>
+      <p style="margin-top:8px">Not sure on a case? Open <b>“Need a hint?”</b> in the station. Work through Steps 1–5 in order.</p>
+    </div>
     <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
     <div class="card"><h2>Patient counselling</h2><p class="muted">Explain to the patient:</p><div class="cl" id="counRef"></div></div>
     <div class="card"><h2>Learning outcomes</h2><div class="cl" id="loRef"></div></div>
@@ -242,7 +262,19 @@
    10:{cond:'A 27-year-old woman on ferrous sulphate 200 mg OD for iron-deficiency anaemia reports mild nausea, constipation and dark-coloured stools since starting treatment. She is otherwise well, with no abdominal pain or dizziness.',
       who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}}
   };
-  CASES.forEach(function(c){ var x=CONDS[c.n]; if(x){ c.cond=x.cond; c.who=x.who; } });
+  var HINTS={
+   1:'Think “penicillin allergy”. A rash starting soon after amoxicillin is a suspected drug allergy — record it, judge how serious it is, submit the ADR and counsel the patient to avoid penicillins.',
+   2:'Ask: did the diarrhoea begin after starting metformin? GI upset is a common, usually mild metformin ADR — report it as suspected and advise taking it with food.',
+   3:'Black, tarry stools + gastric pain on an NSAID = suspect gastrointestinal bleeding. This is SERIOUS — recommend urgent medical review.',
+   4:'Bilateral ankle swelling on amlodipine is peripheral oedema (a known effect). Advise the patient not to stop the medicine without consulting their doctor.',
+   5:'A persistent dry cough that started after enalapril is a classic ACE-inhibitor cough — recognise it and complete the ADR documentation.',
+   6:'Achilles tendon pain during a fluoroquinolone (ciprofloxacin) suggests tendinopathy — advise stopping pending physician review. Treat as serious.',
+   7:'Sweating, tremor and glucose 48 mg/dL = hypoglycaemia from insulin. Recognise it, document immediate management (give sugar) — this is serious.',
+   8:'Muscle pain with a raised CK on a statin points to statin-associated myopathy — report it promptly and it is serious.',
+   9:'Fever + spreading rash + mouth ulcers on carbamazepine = suspect Stevens–Johnson Syndrome. Classify as SERIOUS and needing emergency referral.',
+   10:'Nausea, constipation and dark stools with iron are usually EXPECTED, non-serious effects — differentiate from a serious reaction, reassure and counsel the patient, and still document the event.'
+  };
+  CASES.forEach(function(c){ var x=CONDS[c.n]; if(x){ c.cond=x.cond; c.who=x.who; } c.hint=HINTS[c.n]; });
 
   /* ---- briefing ---- */
   $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
@@ -270,7 +302,8 @@
       +'<h2 style="margin-top:6px">'+esc(c.drug)+' '+esc(c.strength)+'</h2>'
       +'<h3>Patient condition</h3><p>'+esc(c.cond||c.presentation)+'</p>'
       +'<h3>Suspected reaction</h3><p>'+esc(c.presentation)+'</p>'
-      +'<h3>Patient history &amp; prescription (from the EHR)</h3>'
+      +(c.hint?'<details class="help"><summary>Need a hint?</summary><div class="hb">'+esc(c.hint)+'</div></details>':'')
+      +'<h3 style="margin-top:16px">Patient history &amp; prescription (from the EHR)</h3>'
       +'<div class="tw"><table><tbody>'
       +'<tr><td><b>Patient ID</b></td><td>'+esc(c.pt.id)+'</td><td><b>Age / Sex</b></td><td>'+c.pt.age+' · '+esc(c.pt.sex)+'</td><td><b>Weight</b></td><td>'+esc(c.pt.wt)+'</td></tr>'
       +'<tr><td><b>Prescribed</b></td><td colspan="5">'+esc(c.drug+' '+c.strength+' '+c.freq)+' · '+esc(c.brand)+' ('+esc(c.mfg)+')</td></tr>'

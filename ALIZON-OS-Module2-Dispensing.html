@@ -120,6 +120,14 @@
   .fb.ok{background:rgba(30,142,90,.12);color:var(--success)}
   .fb.no{background:rgba(196,38,46,.1);color:var(--danger)}
   .note{font-size:12px;color:var(--muted);margin-top:6px}
+  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
+  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
+  details.help>summary::-webkit-details-marker{display:none}
+  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
+  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
   @media print{
     .tabs,.btn,.no-print{display:none!important}
     body{background:#fff}
@@ -152,6 +160,17 @@
 
   <!-- ===================== BRIEFING ===================== -->
   <section class="panel on" id="p-brief">
+    <div class="guide">
+      <h2>New to dispensing? Start here</h2>
+      <p>You are the pharmacist. A prescription arrives and you must give out the right medicine, safely, from a digital stock rack. The golden rules:</p>
+      <ol>
+        <li><b>Right drug, right strength</b> — match exactly what the prescription says (watch for look-alike strengths).</li>
+        <li><b>FEFO — First Expiry First Out</b> — dispense the batch with the <b>earliest expiry</b> first (reduces waste).</li>
+        <li><b>FIFO — First In First Out</b> — if two batches have the <b>same</b> expiry, give the one received earliest.</li>
+        <li><b>Never dispense an expired or wrong-strength product.</b> Then dispense the correct quantity, label it, update stock and counsel the patient.</li>
+      </ol>
+      <p style="margin-top:8px">Stuck on a case? Open <b>“Need a hint?”</b> in the station.</p>
+    </div>
     <div class="card">
       <h2>Student tasks</h2>
       <p class="muted">During the dispensing station you must:</p>
@@ -420,6 +439,7 @@
     h+='<div class="card"><span class="step">Case '+c.n+'</span>'
       +'<h2 style="margin-top:6px">'+esc(c.rx.drug)+(c.rx.strength==='—'?'':' '+esc(c.rx.strength))+'</h2>'
       +'<p class="muted">'+esc(c.challenge)+'</p>'
+      +'<details class="help"><summary>Need a hint?</summary><div class="hb">'+esc({'FEFO':'Confirm the correct drug and strength first, then dispense from the batch with the EARLIEST expiry that is not expired. Never pick an expired or wrong-strength pack.','FIFO':'When two valid batches share the same expiry date, dispense the one received/manufactured earliest (First In First Out).','FEFO (split)':'Dispense the earliest-expiry batch first; if it runs short of the quantity needed, take the remainder from the next earliest-expiry batch and record both batch numbers.'}[c.principle]||'Confirm the correct drug and strength, then dispense from the earliest-expiry batch that is not expired.')+'</div></details>'
       +'<h3>Patient details</h3>'
       +'<div class="tw"><table><tbody>'
       +'<tr><td><b>Name</b></td><td>'+esc(c.pt.name)+'</td><td><b>Age / Sex</b></td><td>'+c.pt.age+' · '+esc(c.pt.sex)+'</td></tr>'
