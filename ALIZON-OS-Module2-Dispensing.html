@@ -201,6 +201,7 @@
 
 <script src="firebase-sync.js"></script>
 <script src="alizon-practical-submit.js"></script>
+<script src="alizon-practical-report.js"></script>
 <script>
 (function(){
   'use strict';
@@ -643,16 +644,19 @@
       +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr>'
       +'</tbody></table></div>';
     html+='<div class="row no-print" style="margin-top:14px">'
-      +'<button class="btn" id="submitFacultyBtn">⤴ Submit report to faculty</button>'
       +'<button class="btn gold" onclick="window.print()">Download / Print record</button>'
-      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>'
-      +'<p class="note no-print" id="submitNote">Submit your report so your faculty can evaluate it — your mark then appears in your student portal.</p>';
+      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>';
+    html+='<div class="card no-print" id="reportWriter" style="margin-top:18px"></div>';
     body.innerHTML=html;
     var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ switchTab('station'); window.scrollTo(0,0); });
-    var sfb=$('submitFacultyBtn'); if(sfb) sfb.addEventListener('click',function(){
-      var rep=buildReport(); if(!rep){ alert('Please submit & evaluate the dispensing first.'); return; }
-      if(window.AlizonPracticalSubmit) AlizonPracticalSubmit.submit(PRAC_OPTS, rep);
-      else alert('Submission service not loaded — please refresh and try again.');
+    /* written report → faculty (student must write ≥400 words, generate, then submit) */
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:PRAC_OPTS.module, title:PRAC_OPTS.title, programme:PRAC_OPTS.programme, submitOpts:PRAC_OPTS,
+      titleField:{label:'Case & medicine dispensed', placeholder:'e.g. Case 1 — Metformin 500 mg × 60'},
+      minWords:400,
+      autoResult:function(){ var r=buildReport(); return r?r.html:''; },
+      autoPct:function(){ return state.result?state.result.pct:null; },
+      autoResultText:function(){ return state.result?((state.result.pass?'PASS':'FAIL')+' '+state.result.pct+'%'):''; }
     });
   }
 
@@ -694,7 +698,7 @@
     h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'+(r.critical?' (CRITICAL ERROR: '+esc(r.critMsg)+')':'')+'</p>';
     return {html:h, pct:r.pct, resultText:(r.pass?'PASS':'FAIL')+' '+r.pct+'%', name:r.name, reg:r.reg};
   }
-  if(window.AlizonPracticalSubmit) AlizonPracticalSubmit.mount(Object.assign({getReport:buildReport}, PRAC_OPTS));
+  /* submission now flows through the written-report writer in the Result panel (see renderReport) */
 
   /* boot */
   loadCase(0);

@@ -252,6 +252,7 @@
       <div class="repgrid" id="repGrid"></div>
       <div class="verdict show" id="repVerdict" style="margin-top:4px">Complete the practicals to unlock your summary.</div>
       <button class="btn gold" onclick="window.print()">Print / Save PDF</button>
+      <div id="reportWriter" style="margin-top:16px"></div>
     </div>
   </section>
 </div>
@@ -815,18 +816,20 @@ drawGrid();paint();
 </script>
 <script src="firebase-sync.js"></script>
 <script src="alizon-practical-submit.js"></script>
+<script src="alizon-practical-report.js"></script>
 <script>
-window.AlizonPracticalSubmit&&AlizonPracticalSubmit.mount({
+window.AlizonPracticalReport&&AlizonPracticalReport.mount({
+  container:'#reportWriter',
   module:'Module 1 · Unit 3 — Ethics, Regulation & Data Protection Lab',
   title:'Ethics, Regulation & Data Protection Lab',
   programme:'Pharmacy AI',
-  getReport:function(){
+  minWords:400,
+  autoResult:function(){
     var g=document.getElementById('repGrid'); var v=document.getElementById('repVerdict');
-    if(!g||!g.children.length) return null;
-    var vt=v?v.textContent:''; if(/Complete the practicals to unlock/i.test(vt)) return null;
-    return {html:'<div>'+g.outerHTML+(v?('<p style="margin-top:10px;font-weight:700">'+v.textContent+'</p>'):'')+'</div>', resultText:vt};
-  },
-  incompleteMsg:'Complete at least one practical to build your report, then submit it to faculty.'
+    if(!g||!g.children.length) return '';
+    var vt=v?v.textContent:''; if(/Complete the practicals to unlock/i.test(vt)) return '';
+    return g.outerHTML+(v?('<p style="margin-top:10px;font-weight:700">'+v.textContent+'</p>'):'');
+  }
 });
 </script>
 </body>

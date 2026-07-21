@@ -302,6 +302,7 @@
       </div>
       <div class="copilot"><div class="ai"></div><div id="repAI">Complete the sections to unlock your AI performance summary.</div></div>
       <button class="btn gold" onclick="window.print()">Print / Save PDF</button>
+      <div id="reportWriter" style="margin-top:16px"></div>
     </div>
   </section>
 </div>
@@ -613,19 +614,21 @@ paint();
 </script>
 <script src="firebase-sync.js"></script>
 <script src="alizon-practical-submit.js"></script>
+<script src="alizon-practical-report.js"></script>
 <script>
-window.AlizonPracticalSubmit&&AlizonPracticalSubmit.mount({
+window.AlizonPracticalReport&&AlizonPracticalReport.mount({
+  container:'#reportWriter',
   module:'Module 8 · Clinical Simulation Suite',
   title:'Clinical Simulation Suite',
   programme:'Pharmacy AI',
-  getReport:function(){
+  minWords:400,
+  autoResult:function(){
     var t=document.getElementById('repTotal'), c=document.getElementById('repCases');
     var done=(t&&parseInt(t.textContent,10)>0)||(c&&!/^0\//.test((c.textContent||'').trim()));
-    if(!done) return null;
+    if(!done) return '';
     var grid=document.querySelector('#p-report .repgrid'), ai=document.getElementById('repAI');
-    return {html:'<div>'+(grid?grid.outerHTML:'')+(ai?('<p style="margin-top:10px">'+esc(ai.textContent)+'</p>'):'')+'</div>'};
-  },
-  incompleteMsg:'Complete at least one simulation case to build your report, then submit it to faculty.'
+    return (grid?grid.outerHTML:'')+(ai?('<p style="margin-top:10px">'+esc(ai.textContent)+'</p>'):'');
+  }
 });
 </script>
 </body>
