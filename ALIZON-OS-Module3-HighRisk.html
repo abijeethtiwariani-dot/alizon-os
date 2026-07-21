@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Module 3 · Identifying High-Risk Patients & High-Alert Medicines</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)} .scorechip b{color:var(--gold)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:6px}
+  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:5px 0;cursor:pointer}
+  .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:480px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  select,textarea,input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  select:focus,textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:60px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .seg{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .seg button{cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:100px;padding:8px 15px}
+  .seg button:hover{border-color:var(--gold)} .seg button.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
+  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
+  details.help>summary::-webkit-details-marker{display:none}
+  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
+  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 3 · Unit 3 — Identifying High-Risk Patients &amp; High-Alert Medicines</div>
+    <h1 class="serif">Identifying High-Risk Patients &amp; High-Alert Medicines</h1>
+    <p><b>Aim —</b> To identify high-alert medicines and high-risk patients, recognise the specific hazard, and apply the correct risk-reduction (safety) action.
+      <span class="muted">Duration 60 minutes · One case per student · 100-mark rubric · Pass 50%.</span></p>
+    <div class="chips">
+      <div class="scorechip">Case <b id="scCase">—</b></div>
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Risk Review Station</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="highrisk"></div>
+    <div class="guide">
+      <h2>New to high-alert medicines? Start here</h2>
+      <p>Some medicines cause <b>serious harm when used in error</b>, and some patients are <b>more vulnerable</b> to harm. Your job is to spot both and add extra safeguards:</p>
+      <ol>
+        <li><b>Flag high-alert medicines</b> — anticoagulants, insulin, opioids, cytotoxics (e.g. methotrexate), concentrated electrolytes (e.g. IV potassium), narrow-therapeutic-index drugs (e.g. digoxin).</li>
+        <li><b>Flag high-risk patients</b> — elderly, poor kidney/liver function, pregnancy, children, low body weight, many medicines (polypharmacy).</li>
+        <li><b>Name the specific hazard</b> — what could actually go wrong here?</li>
+        <li><b>Apply the safety action</b> — independent double-check, monitoring, dose verification, clear labelling, or <b>hold &amp; clarify</b> a dangerous order.</li>
+      </ol>
+      <p style="margin-top:8px">Unsure on a case? Open <b>“Need a hint?”</b> in the station.</p>
+    </div>
+    <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
+    <div class="card"><h2>Examples of high-alert medicines</h2>
+      <div class="tw"><table><thead><tr><th>Class</th><th>Classic catastrophic error</th></tr></thead><tbody>
+        <tr><td><b>Anticoagulants</b> (warfarin, heparin)</td><td>Bleeding; wrong heparin concentration; interactions raising INR</td></tr>
+        <tr><td><b>Insulin</b></td><td>Hypoglycaemia; "U" misread as a zero (10× overdose)</td></tr>
+        <tr><td><b>Opioids</b></td><td>Respiratory depression, especially opioid-naive/elderly/renal</td></tr>
+        <tr><td><b>Methotrexate</b></td><td>Taken DAILY instead of WEEKLY — fatal toxicity</td></tr>
+        <tr><td><b>Concentrated IV potassium</b></td><td>Fatal arrhythmia if given undiluted as a bolus</td></tr>
+        <tr><td><b>Vincristine (chemo)</b></td><td>Fatal if given intrathecally instead of IV</td></tr>
+        <tr><td><b>Digoxin</b> (narrow TI)</td><td>Toxicity with renal impairment / low potassium</td></tr>
+      </tbody></table></div></div>
+    <div class="card"><h2>Faculty assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
+      <p class="note">Choosing an unsafe action for a life-threatening high-alert order (e.g. dispensing daily methotrexate, undiluted IV potassium) is a patient-safety error and fails the station.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card"><h2>Candidate &amp; case assignment</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+        <div><label class="f">Assigned case</label><select id="caseSel"></select></div>
+      </div>
+    </div>
+    <div id="caseArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>Practical record &amp; assessment</h2>
+      <p class="muted" id="repEmpty">Complete the risk review and submit to generate your assessment, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=2"></script>
+<script src="alizon-practical-report.js"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=3"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+
+  var TASKS=['Review the patient and their medicines','Flag any high-alert medicine and its class','Identify the high-risk patient factors',
+    'Name the specific hazard for this patient','Choose the correct risk-reduction (safety) action','Never dispense an obviously dangerous high-alert order — hold & clarify',
+    'Confirm the safety checks you performed','Document your decision and rationale'];
+  var RUBRIC=[
+    {k:'ha',  label:'High-alert medicine flagged & classified', max:20},
+    {k:'risk',label:'High-risk patient factors identified', max:20},
+    {k:'haz', label:'Specific hazard identified', max:20},
+    {k:'act', label:'Correct risk-reduction action', max:25},
+    {k:'doc', label:'Documentation & safety confirmation', max:15}];
+  var MAXTOTAL=RUBRIC.reduce(function(a,r){return a+r.max;},0);
+
+  var CASES=[
+   {n:1,pt:{name:'Kunjumon P',age:78,sex:'Male'},rx:'Warfarin 4 mg OD, plus a NEW prescription for ciprofloxacin',
+    scenario:'A 78-year-old man on long-term warfarin for atrial fibrillation is started on ciprofloxacin for a urinary infection. He takes six other regular medicines.',
+    ha:{opts:['Anticoagulant (high-alert)','Simple antibiotic','Vitamin supplement','Antacid'],c:0},
+    factors:{opts:['Elderly (age &gt; 75)','Polypharmacy','Interaction — ciprofloxacin raises warfarin effect','On an anticoagulant','Pregnancy','Paediatric'],correct:[0,1,2,3]},
+    haz:{opts:['Increased bleeding / raised INR','Low blood pressure','Kidney stones','Weight gain'],c:0},
+    act:{opts:[{t:'Dispense, monitor INR closely, counsel on bleeding, and flag the interaction to the prescriber',safe:true,correct:true},{t:'Dispense as normal — no extra action needed',safe:true,correct:false},{t:'Stop the warfarin yourself without asking',safe:false,correct:false},{t:'Double the warfarin dose',safe:false,correct:false}]},
+    hint:'Warfarin is a high-alert anticoagulant and ciprofloxacin raises its effect — in an elderly patient on many drugs the danger is bleeding. Monitor INR and flag the interaction.'},
+
+   {n:2,pt:{name:'Saramma J',age:70,sex:'Female'},rx:'Human insulin, variable dose',
+    scenario:'A 70-year-old woman with type-2 diabetes and reduced kidney function (eGFR 30) is on insulin. She often skips meals.',
+    ha:{opts:['Insulin (high-alert)','Laxative','Antihistamine','Vitamin'],c:0},
+    factors:{opts:['Elderly','Reduced kidney function','Skips meals (hypoglycaemia risk)','On insulin','Pregnancy','Paediatric'],correct:[0,1,2,3]},
+    haz:{opts:['Severe hypoglycaemia','Constipation','Hypertension','Hair loss'],c:0},
+    act:{opts:[{t:'Independently double-check the insulin dose/units, monitor blood glucose, and counsel on recognising &amp; treating hypoglycaemia',safe:true,correct:true},{t:'Give a large dose to cover skipped meals',safe:false,correct:false},{t:'Dispense with no counselling',safe:true,correct:false},{t:'Stop insulin entirely',safe:false,correct:false}]},
+    hint:'Insulin is high-alert; a “U” can be misread as a zero (10× overdose). With renal impairment and skipped meals the danger is hypoglycaemia — double-check units and counsel.'},
+
+   {n:3,pt:{name:'Ravi S',age:55,sex:'Male'},rx:'Methotrexate 2.5 mg — written "once DAILY"',
+    scenario:'A prescription for methotrexate (for rheumatoid arthritis) is written as "2.5 mg ONCE DAILY". For this indication methotrexate is normally taken ONCE WEEKLY.',
+    ha:{opts:['Cytotoxic — high-alert (methotrexate)','Ordinary painkiller','Vitamin','Antibiotic'],c:0},
+    factors:{opts:['Prescribed DAILY instead of WEEKLY','High-alert cytotoxic drug','Risk of fatal bone-marrow / GI toxicity','On an anticoagulant','Pregnancy','Paediatric'],correct:[0,1,2]},
+    haz:{opts:['Fatal toxicity from daily (should be weekly) dosing','Mild indigestion','Drowsiness','Weight gain'],c:0},
+    act:{opts:[{t:'HOLD and contact the prescriber to confirm WEEKLY dosing — do not dispense as daily',safe:true,correct:true},{t:'Dispense exactly as written (once daily)',safe:false,correct:false},{t:'Quietly change it to weekly and dispense',safe:false,correct:false},{t:'Dispense a double dose',safe:false,correct:false}]},
+    hint:'Methotrexate taken DAILY instead of WEEKLY is a classic fatal error. Never dispense it as daily — hold and clarify with the prescriber.'},
+
+   {n:4,pt:{name:'Ward request',age:60,sex:'—'},rx:'Concentrated potassium chloride (KCl) injection — requested for rapid IV bolus',
+    scenario:'A ward requests concentrated potassium chloride (KCl) to be given as a rapid intravenous BOLUS for a patient with a low potassium level.',
+    ha:{opts:['Concentrated electrolyte — high-alert','Simple saline','Vitamin','Oral supplement'],c:0},
+    factors:{opts:['Concentrated electrolyte','Requested as an undiluted IV bolus','Risk of fatal cardiac arrhythmia','Pregnancy','Paediatric','On an anticoagulant'],correct:[0,1,2]},
+    haz:{opts:['Fatal cardiac arrhythmia / arrest if given as an undiluted bolus','Mild nausea','Headache','Constipation'],c:0},
+    act:{opts:[{t:'Never give as a bolus — dilute in a large volume and give a slow, controlled infusion with cardiac monitoring',safe:true,correct:true},{t:'Supply for the rapid IV bolus as requested',safe:false,correct:false},{t:'Give it orally as a bolus instead',safe:false,correct:false},{t:'Double the concentration',safe:false,correct:false}]},
+    hint:'Concentrated IV potassium given as an undiluted bolus can stop the heart. It must be diluted and infused slowly with monitoring — never a bolus.'},
+
+   {n:5,pt:{name:'Ali M',age:82,sex:'Male'},rx:'Morphine — standard adult dose',
+    scenario:'An 82-year-old, opioid-naive man with reduced kidney function is prescribed morphine for pain at a standard adult dose.',
+    ha:{opts:['Opioid (high-alert)','Antacid','Laxative','Vitamin'],c:0},
+    factors:{opts:['Elderly','Reduced kidney function','Opioid-naive','On an opioid','Pregnancy','Paediatric'],correct:[0,1,2,3]},
+    haz:{opts:['Respiratory depression / over-sedation','High blood pressure','Kidney stones','Rash'],c:0},
+    act:{opts:[{t:'Start a lower dose, monitor sedation and breathing, ensure naloxone is available, and counsel',safe:true,correct:true},{t:'Give the full adult dose with no monitoring',safe:false,correct:false},{t:'Withhold all analgesia',safe:false,correct:false},{t:'Double the dose for better relief',safe:false,correct:false}]},
+    hint:'Opioids are high-alert. An opioid-naive, elderly patient with poor kidneys is at high risk of respiratory depression — start low, monitor, have naloxone ready.'},
+
+   {n:6,pt:{name:'Leela K',age:76,sex:'Female'},rx:'Digoxin 250 mcg OD',
+    scenario:'A 76-year-old woman on digoxin has reduced kidney function and a low potassium level.',
+    ha:{opts:['Narrow-therapeutic-index drug (digoxin)','Simple vitamin','Antibiotic','Antacid'],c:0},
+    factors:{opts:['Elderly','Reduced kidney function','Low potassium (raises digoxin toxicity)','Narrow therapeutic index','Pregnancy','Paediatric'],correct:[0,1,2,3]},
+    haz:{opts:['Digoxin toxicity','Low blood sugar','Constipation','Weight gain'],c:0},
+    act:{opts:[{t:'Check the digoxin level and potassium, consider a dose reduction, and monitor for signs of toxicity',safe:true,correct:true},{t:'Increase the digoxin dose',safe:false,correct:false},{t:'Dispense with no checks',safe:true,correct:false},{t:'Stop it permanently without advice',safe:false,correct:false}]},
+    hint:'Digoxin has a narrow safety margin. Poor kidney function and low potassium both increase toxicity — check levels/potassium and consider a lower dose.'},
+
+   {n:7,pt:{name:'Oncology patient',age:34,sex:'Female'},rx:'Vincristine injection (chemotherapy)',
+    scenario:'A chemotherapy order for vincristine. Vincristine must be given by the INTRAVENOUS (IV) route ONLY — it is fatal if given intrathecally (into the spinal fluid).',
+    ha:{opts:['Cytotoxic chemotherapy — high-alert','Ordinary antibiotic','Vitamin','Painkiller'],c:0},
+    factors:{opts:['High-alert cytotoxic drug','Fatal if given by the wrong route','Requires strict route verification','Pregnancy','Paediatric','On an anticoagulant'],correct:[0,1,2]},
+    haz:{opts:['Fatal if administered by the wrong (intrathecal) route','Mild nausea','Hair loss only','Skin rash'],c:0},
+    act:{opts:[{t:'Label and dispense for IV use ONLY with clear route warnings; never allow intrathecal administration',safe:true,correct:true},{t:'Supply without any route restriction',safe:false,correct:false},{t:'Allow it to be given intrathecally if convenient',safe:false,correct:false},{t:'Dispense unlabelled',safe:false,correct:false}]},
+    hint:'Vincristine is fatal if given into the spine. It must be labelled and dispensed for IV use ONLY, with strict route verification.'},
+
+   {n:8,pt:{name:'Ward request',age:50,sex:'—'},rx:'Heparin — strength must be confirmed',
+    scenario:'A request simply says "heparin". The store has a low-strength flush (10 units/mL) and a high-strength therapeutic vial (5000 units/mL). Confusing the two has caused fatal overdoses.',
+    ha:{opts:['Anticoagulant — high-alert','Simple saline','Vitamin','Antacid'],c:0},
+    factors:{opts:['Look-alike concentrations (10 vs 5000 units/mL)','High-alert anticoagulant','Risk of massive overdose','Pregnancy','Paediatric','On a statin'],correct:[0,1,2]},
+    haz:{opts:['Massive overdose / haemorrhage from the wrong concentration','Constipation','Low blood sugar','Rash'],c:0},
+    act:{opts:[{t:'Confirm the exact strength required, independently double-check the vial, and label it clearly',safe:true,correct:true},{t:'Supply whichever heparin vial is nearest',safe:false,correct:false},{t:'Assume they want the strong one',safe:false,correct:false},{t:'Mix the two strengths together',safe:false,correct:false}]},
+    hint:'Heparin comes in wildly different strengths that look alike. Always confirm the exact concentration and independently double-check before supplying.'},
+
+   {n:9,pt:{name:'Baby (paediatric)',age:1,sex:'Male'},rx:'Paediatric liquid medicine — weight-based (child 9 kg)',
+    scenario:'A 1-year-old weighing 9 kg is prescribed a medicine. Paediatric doses are weight-based, and a decimal-point (ten-fold) error can be fatal.',
+    ha:{opts:['High-risk patient — paediatric weight-based dosing','Low-risk routine adult dose','Vitamin','Antacid'],c:0},
+    factors:{opts:['Paediatric patient','Low body weight','Weight-based dosing required','Risk of a ten-fold (decimal) error','Pregnancy','Elderly'],correct:[0,1,2,3]},
+    haz:{opts:['Ten-fold (decimal) dosing error / overdose','Low blood pressure','Constipation','Weight gain'],c:0},
+    act:{opts:[{t:'Independently recalculate the weight-based dose and double-check it before dispensing',safe:true,correct:true},{t:'Dispense the standard adult dose',safe:false,correct:false},{t:'Estimate the dose without a calculation',safe:false,correct:false},{t:'Round the dose up "to be safe"',safe:false,correct:false}]},
+    hint:'Children are high-risk because doses are weight-based and a misplaced decimal is a ten-fold overdose. Independently recalculate and double-check.'},
+
+   {n:10,pt:{name:'Deepa R',age:30,sex:'Female'},rx:'Enalapril (prescribed during pregnancy)',
+    scenario:'A pregnant woman (12 weeks) is prescribed enalapril (an ACE inhibitor) for blood pressure. ACE inhibitors are contraindicated in pregnancy.',
+    ha:{opts:['Teratogenic medicine in a high-risk (pregnant) patient','Pregnancy-safe vitamin','Simple painkiller','Antacid'],c:0},
+    factors:{opts:['Pregnancy','Teratogenic (harmful to the baby) medicine','Contraindicated in pregnancy','Paediatric','Elderly','On an anticoagulant'],correct:[0,1,2]},
+    haz:{opts:['Harm to the developing baby (teratogenicity)','Mild indigestion','Weight gain','Hair loss'],c:0},
+    act:{opts:[{t:'Do not dispense — contact the prescriber for a pregnancy-safe alternative and counsel the patient',safe:true,correct:true},{t:'Dispense exactly as prescribed',safe:false,correct:false},{t:'Halve the dose and dispense',safe:false,correct:false},{t:'Tell her to take it only occasionally',safe:false,correct:false}]},
+    hint:'ACE inhibitors are contraindicated in pregnancy. Do not dispense — contact the prescriber for a pregnancy-safe alternative.'}
+  ];
+
+  $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
+  $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+esc(r.label)+'</td><td>'+r.max+'</td></tr>';}).join('')+'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
+
+  var sel=$('caseSel');
+  sel.innerHTML=CASES.map(function(c){return '<option value="'+(c.n-1)+'">Case '+c.n+' — '+esc(c.rx.split(/[\s—]/)[0])+'</option>';}).join('');
+  sel.addEventListener('change',function(){ loadCase(parseInt(this.value,10)); });
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var state=null;
+  function loadCase(ci){
+    state={ci:ci,flag:'',haClass:null,factors:{},haz:null,act:null,check:false,note:'',submitted:false,result:null};
+    var c=CASES[ci];
+    $('scCase').textContent='Case '+c.n; $('scScore').textContent='—'; $('scRes').textContent='—';
+    $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+    renderStation();
+  }
+
+  function renderStation(){
+    var c=CASES[state.ci]; var h='';
+    h+='<div class="card"><span class="step">Case '+c.n+'</span>'
+      +'<h2 style="margin-top:6px">'+esc(c.pt.name)+' · '+c.pt.age+(c.pt.sex&&c.pt.sex!=='—'?' · '+esc(c.pt.sex):'')+'</h2>'
+      +'<h3>Situation</h3><p>'+esc(c.scenario)+'</p>'
+      +'<h3>Prescription / request</h3><p><b>'+esc(c.rx)+'</b></p>'
+      +(c.hint?'<details class="help"><summary>Need a hint?</summary><div class="hb">'+esc(c.hint)+'</div></details>':'')
+      +'</div>';
+
+    h+='<div class="card"><span class="step">Step 1</span> <b>High-alert medicine / high-risk situation?</b>'
+      +'<div class="seg" id="flagSeg" style="margin-top:8px"><button type="button" data-fl="yes">Yes — flag it</button><button type="button" data-fl="no">No — routine</button></div>'
+      +'<label class="f" style="margin-top:12px">If flagged, what is it?</label>'
+      +'<div id="haMcq">'+c.ha.opts.map(function(o,k){return '<button type="button" class="opt" data-ha="'+k+'">'+esc(o)+'</button>';}).join('')+'</div></div>';
+
+    h+='<div class="card"><span class="step">Step 2</span> <b>High-risk patient factors</b>'
+      +'<p class="note">Tick every factor that applies to this patient / order.</p>'
+      +'<div class="cl" id="riskList">'+c.factors.opts.map(function(o,i){return '<label><input type="checkbox" data-rf="'+i+'"><span>'+o+'</span></label>';}).join('')+'</div></div>';
+
+    h+='<div class="card"><span class="step">Step 3</span> <b>The specific hazard</b>'
+      +'<div id="hazMcq">'+c.haz.opts.map(function(o,k){return '<button type="button" class="opt" data-hz="'+k+'">'+esc(o)+'</button>';}).join('')+'</div></div>';
+
+    h+='<div class="card"><span class="step">Step 4</span> <b>Correct risk-reduction action</b>'
+      +'<div id="actMcq">'+c.act.opts.map(function(o,k){return '<button type="button" class="opt" data-ac="'+k+'">'+o.t+'</button>';}).join('')+'</div></div>';
+
+    h+='<div class="card"><span class="step">Step 5</span> <b>Safety confirmation &amp; rationale</b>'
+      +'<div class="cl" style="margin-top:6px"><label><input type="checkbox" id="safeChk"><span>I have identified the high-alert medicine, the high-risk factors and the correct safeguard before acting.</span></label></div>'
+      +'<label class="f" style="margin-top:10px">Rationale for your decision</label>'
+      +'<textarea id="noteBox" placeholder="Why is this the correct, safest action for this high-risk patient / high-alert medicine?"></textarea></div>';
+
+    h+='<div class="card"><button class="btn" id="submitBtn">Submit &amp; evaluate</button>'
+      +'<span class="muted" style="font-size:12.5px;margin-left:10px">Auto-scored against the 100-mark rubric.</span></div>';
+
+    $('caseArea').innerHTML=h;
+    document.querySelectorAll('#flagSeg button').forEach(function(b){ b.addEventListener('click',function(){ state.flag=b.getAttribute('data-fl'); document.querySelectorAll('#flagSeg button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); }); });
+    document.querySelectorAll('#haMcq .opt').forEach(function(b){ b.addEventListener('click',function(){ state.haClass=+b.getAttribute('data-ha'); document.querySelectorAll('#haMcq .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); }); });
+    document.querySelectorAll('#riskList input').forEach(function(cb){ cb.addEventListener('change',function(){ state.factors[cb.getAttribute('data-rf')]=cb.checked; }); });
+    document.querySelectorAll('#hazMcq .opt').forEach(function(b){ b.addEventListener('click',function(){ state.haz=+b.getAttribute('data-hz'); document.querySelectorAll('#hazMcq .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); }); });
+    document.querySelectorAll('#actMcq .opt').forEach(function(b){ b.addEventListener('click',function(){ state.act=+b.getAttribute('data-ac'); document.querySelectorAll('#actMcq .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); }); });
+    $('safeChk').addEventListener('change',function(){ state.check=this.checked; });
+    $('noteBox').addEventListener('input',function(){ state.note=this.value; });
+    $('submitBtn').addEventListener('click',evaluate);
+  }
+
+  function evaluate(){
+    var c=CASES[state.ci]; var name=($('cName').value||'').trim()||'Candidate', reg=($('cReg').value||'').trim();
+    var sc={}, fb={};
+    /* 1 high-alert flag + class (20) */
+    var flagOK=state.flag==='yes';
+    var classOK=state.haClass===c.ha.c;
+    sc.ha=(flagOK?10:0)+(classOK?10:0);
+    fb.ha=(flagOK&&classOK)?'Correctly flagged and classified.':(flagOK?'Flagged, but the class was not correct.':'This high-alert / high-risk situation was not flagged.');
+    /* 2 patient risk factors (20) */
+    var corr=c.factors.correct, total=corr.length, hits=0, wrong=0;
+    c.factors.opts.forEach(function(_,i){ var picked=!!state.factors[i]; var isCorrect=corr.indexOf(i)>=0; if(picked&&isCorrect)hits++; if(picked&&!isCorrect)wrong++; });
+    sc.risk=Math.max(0,Math.round((hits-wrong)/total*20));
+    fb.risk=hits+' of '+total+' risk factors identified'+(wrong?(' ('+wrong+' incorrect)'):'')+'.';
+    /* 3 hazard (20) */
+    var hazOK=state.haz===c.haz.c; sc.haz=hazOK?20:0; fb.haz=hazOK?'Correct hazard identified.':'The specific hazard was not correctly identified.';
+    /* 4 action (25) */
+    var pick=(state.act!=null)?c.act.opts[state.act]:null;
+    var unsafe=(pick&&!pick.safe);
+    sc.act=(pick&&pick.correct)?25:((pick&&pick.safe)?12:0);
+    fb.act=(pick&&pick.correct)?'Correct, safest risk-reduction action.':(unsafe?'UNSAFE action chosen for a high-alert medicine.':'A safe but not optimal action was chosen.');
+    /* 5 documentation (15) */
+    var noteOK=(state.note||'').trim().length>=15;
+    sc.doc=(noteOK?9:0)+(state.check?6:0);
+    fb.doc=(noteOK?'Rationale documented. ':'Rationale too brief. ')+(state.check?'Safety checks confirmed.':'Safety checks not confirmed.');
+
+    var tot=RUBRIC.reduce(function(a,r){return a+(sc[r.k]||0);},0);
+    var pct=Math.round(tot/MAXTOTAL*100);
+    var critical=unsafe;
+    var pass=pct>=50 && !critical;
+    state.result={name:name,reg:reg,total:tot,pct:pct,pass:pass,critical:critical,sc:sc,fb:fb,action:pick?pick.t:'(none)'};
+    state.submitted=true;
+    $('scScore').textContent=tot+'/'+MAXTOTAL; $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+pct+'%)';
+    renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+
+  function buildAuto(){
+    if(!state||!state.submitted) return null;
+    var c=CASES[state.ci], r=state.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Case '+c.n+' — '+esc(c.pt.name)+'</h3>';
+    h+='<p style="margin:2px 0"><b>Situation:</b> '+esc(c.scenario)+'</p>';
+    h+='<p style="margin:2px 0"><b>Prescription / request:</b> '+esc(c.rx)+'</p>';
+    h+='<p style="margin:6px 0"><b>Action taken:</b> '+esc(r.action)+'</p>';
+    if((state.note||'').trim()) h+='<p style="margin:2px 0"><b>Rationale:</b> '+esc(state.note)+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
+      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
+      +'<tr style="background:#f3e2e2;font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">'+MAXTOTAL+'</td></tr></table>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'+(r.critical?' (PATIENT-SAFETY ERROR: unsafe action for a high-alert medicine)':'')+'</p>';
+    return h;
+  }
+
+  function renderReport(){
+    var c=CASES[state.ci], r=state.result;
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Score</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">of '+MAXTOTAL+'</div></div>'
+      +'<div class="repbox"><div class="rv">'+c.n+'</div><div class="rl">Case</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+esc(c.pt.name)+'</div>';
+    if(r.critical) html+='<div class="note" style="color:var(--danger);font-weight:600;margin:-4px 0 10px">Choosing an unsafe action for a life-threatening high-alert medicine is a patient-safety error and fails the station regardless of total marks.</div>';
+    html+='<div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Score</th><th>Max</th></tr></thead><tbody>'
+      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'<div class="note" style="margin-top:2px">'+esc(r.fb[x.k]||'')+'</div></td><td>'+(r.sc[x.k]||0)+'</td><td>'+x.max+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr></tbody></table></div>';
+    html+='<div class="row no-print" style="margin-top:14px"><button class="btn gold" onclick="window.print()">Download / Print record</button>'
+      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 3 · Unit 3 — Identifying High-Risk Patients & High-Alert Medicines',title:'Identifying High-Risk Patients & High-Alert Medicines',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Patient & high-alert medicine', placeholder:'e.g. Case 3 — methotrexate daily-dosing error'},
+      minWords:400,
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return state.result?state.result.pct:null; },
+      autoResultText:function(){ return state.result?((state.result.pass?'PASS':'FAIL')+' '+state.result.pct+'%'):''; }
+    });
+  }
+
+  function switchTab(p){ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+
+  loadCase(0);
+})();
+</script>
+</body>
+</html>

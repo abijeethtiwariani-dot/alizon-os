@@ -75,6 +75,18 @@
     procedure:['Read each scenario and identify the ethical / legal issue.','Decide the correct action based on consent, confidentiality and data-protection rules.','For EHR access, confirm a legitimate care relationship before viewing.','Document consent for any substitution or data sharing.','Report medication errors honestly through the correct workflow.','Complete the practical record and self-assessment.'],
     method:['For each case, ask: do I have consent, a care relationship and a lawful basis?','Choose “need-to-know” access — no care role, no access.','Be transparent — inform patients and document consent for substitutions.','Never conceal an error; report it through the proper channel.','Reflect on each decision in your report.']
    },
+   highrisk:{
+    practicalNo:'Module 3 · Unit 3 · Practical 3',
+    title:'Identifying High-Risk Patients & High-Alert Medicines',
+    aim:'To identify <b>high-alert medicines</b> and <b>high-risk patients</b>, recognise the specific hazard, and apply the correct risk-reduction (safety) action.',
+    principle:'Some medicines carry a <b>heightened risk of serious harm</b> when used in error — <b>high-alert medicines</b> (anticoagulants, insulin, opioids, cytotoxics, concentrated electrolytes, narrow-therapeutic-index drugs). Some patients are more vulnerable to harm — <b>high-risk patients</b> (elderly, renal/hepatic impairment, pregnancy, children, low body weight, polypharmacy). The greatest danger is a high-alert medicine in a high-risk patient; extra safeguards (independent double-checks, monitoring, dose verification, clear labelling) reduce that risk.',
+    principleNote:'<b>Key point:</b> the highest danger is a HIGH-ALERT medicine given to a HIGH-RISK patient — that combination always needs extra safeguards.',
+    theory:'High-alert medicines (as listed by bodies such as ISMP) are not involved in <em>more</em> errors, but their errors are far more <b>catastrophic</b> — e.g. methotrexate taken daily instead of weekly, undiluted IV potassium given as a bolus, or vincristine given intrathecally. Standardised safety actions — the “five rights”, independent double-checks, monitoring, and pharmacist verification — prevent these harms.',
+    requirements:['Patient records &amp; medication list','List of high-alert medicines','Patient risk-factor checklist','Monitoring / independent double-check protocols','Reporting &amp; escalation pathway'],
+    procedure:['Review the patient and their medicines.','Flag any high-alert medicine and identify its class.','Identify the high-risk patient factors.','Determine the specific hazard for this patient.','Apply the correct risk-reduction (safety) action.','Document the decision, confirm the safety checks and escalate if needed.'],
+    method:['For each patient ask: is any medicine <b>high-alert</b>, and is the patient <b>high-risk</b>?','If both are true, add extra safeguards (double-check, monitor, verify the dose).','Name exactly what could go wrong (the specific hazard).','Choose the safeguard that removes that hazard.','Document your rationale and confirm your checks.'],
+    methodNote:'<b>Golden rule:</b> never dispense an obviously dangerous high-alert order (e.g. daily methotrexate, undiluted IV potassium, vincristine for intrathecal use) — hold and clarify with the prescriber.'
+   },
    clinicalsim:{
     practicalNo:'Module 8 · Practical',
     title:'Clinical Simulation Suite',
