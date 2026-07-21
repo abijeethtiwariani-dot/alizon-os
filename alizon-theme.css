@@ -3,6 +3,11 @@
    Loaded LAST in every portal so it overrides the brand CSS variables.
    Cardinal red #8c1515 primary (white text) · white surfaces · editorial serif.
    =================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap');
+/* Site-wide typography pattern (matches the live app): Source Sans body,
+   Source Serif Pro headings. Loaded last so it unifies every page; headings
+   that set their own serif font keep it. */
+body{font-family:'Source Sans 3','Source Sans Pro',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif !important;}
 :root{
   /* primary -> Stanford cardinal */
   --crimson:#8c1515 !important;
