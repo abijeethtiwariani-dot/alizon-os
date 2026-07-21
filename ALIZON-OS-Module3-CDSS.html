@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Module 3 · Clinical Decision Support Systems (CDSS) — Alert Management</title>
+<script>try{if((localStorage.getItem('pracTheme')||'dark')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)}
+  .scorechip b{color:var(--gold)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:6px}
+  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:5px 0}
+  .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:480px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],select,textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:60px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .ehr{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+  .ehr .e{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .ehr .e b{display:block;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  .ehr .e.alert-a{border-color:rgba(196,38,46,.4)}
+  .alertc{border:1.5px solid var(--line);border-left:4px solid var(--warn);border-radius:12px;padding:14px 16px;margin-top:12px;background:var(--panel2)}
+  .alertc .at{font-size:13.5px;font-weight:600;display:flex;gap:8px;align-items:flex-start;margin-bottom:10px}
+  .alertc .at .ic{color:var(--warn);font-size:16px;flex:none}
+  .alertc .arow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+  .alertc textarea{margin-top:8px;min-height:44px}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 3 · Unit 1 — Clinical Decision Support Systems (CDSS)</div>
+    <h1 class="serif">CDSS Alert Management Console</h1>
+    <p><b>Aim —</b> To review a patient's EHR and new prescription, interpret the alerts generated by a Clinical Decision Support System, triage each alert by severity, take the correct clinical action and safely manage alert fatigue.
+      <span class="muted">Duration 60 minutes · One case per student · 100-mark rubric · Pass 50%.</span></p>
+    <div class="chips">
+      <div class="scorechip">Case <b id="scCase">—</b></div>
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">CDSS Console</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
+    <div class="card"><h2>Components of a CDSS</h2>
+      <div class="tw"><table><thead><tr><th>Component</th><th>Role</th></tr></thead><tbody>
+        <tr><td><b>Knowledge base</b></td><td>Clinical rules, drug data, interaction &amp; allergy databases</td></tr>
+        <tr><td><b>Inference engine</b></td><td>Applies the rules to patient data to generate alerts &amp; recommendations</td></tr>
+        <tr><td><b>Communication / EHR link</b></td><td>Pulls patient data from the EHR and pushes alerts into the prescribing workflow</td></tr>
+        <tr><td><b>Alerts &amp; reminders</b></td><td>Interruptive and non-interruptive prompts at the point of prescribing/dispensing</td></tr>
+      </tbody></table></div></div>
+    <div class="card"><h2>Alert severity &amp; correct action</h2>
+      <div class="tw"><table><thead><tr><th>Severity</th><th>Meaning &amp; correct action</th></tr></thead><tbody>
+        <tr><td><b>Critical</b></td><td>Contraindicated / life-threatening — <b>never override</b>. Hold &amp; contact prescriber, or do not dispense.</td></tr>
+        <tr><td><b>Major</b></td><td>Clinically significant — hold &amp; contact prescriber, or adjust the regimen.</td></tr>
+        <tr><td><b>Minor</b></td><td>Low clinical value — accept &amp; proceed or override with a brief reason (avoid alert fatigue).</td></tr>
+      </tbody></table></div>
+      <p class="note">Actions: Accept &amp; proceed · Override with documented reason · Adjust dose/regimen · Hold &amp; contact prescriber · Do not dispense (contraindicated).</p>
+    </div>
+    <div class="card"><h2>Faculty assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
+      <p class="note">Overriding or accepting a <b>Critical</b> alert is a patient-safety error and fails the station.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card"><h2>Candidate &amp; case assignment</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+        <div><label class="f">Assigned case</label><select id="caseSel"></select></div>
+      </div>
+    </div>
+    <div id="caseArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>Practical record &amp; assessment</h2>
+      <p class="muted" id="repEmpty">Triage the CDSS alerts and submit to generate your assessment, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js"></script>
+<script src="alizon-practical-report.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+
+  var TASKS=['Review the patient’s EHR (allergies, current medicines, labs, conditions)','Review the new prescription',
+    'Read each CDSS alert generated','Classify the severity of each alert','Decide the correct action for each alert',
+    'Override low-value alerts appropriately (avoid alert fatigue)','Never override a critical / contraindicated alert',
+    'Document your clinical decision and any override reasons','Escalate to the prescriber when required'];
+  var RUBRIC=[
+    {k:'sev', label:'Alert severity classification', max:30},
+    {k:'act', label:'Correct action / decision workflow', max:40},
+    {k:'safe',label:'Patient-safety (critical-alert handling)', max:20},
+    {k:'doc', label:'Documentation of decisions', max:10}];
+  var MAXTOTAL=RUBRIC.reduce(function(a,r){return a+r.max;},0);
+  var SEV=['Critical','Major','Minor'];
+  var ACTIONS=[['accept','Accept & proceed'],['override','Override with documented reason'],['adjust','Adjust dose / regimen'],['contact','Hold & contact prescriber'],['reject','Do not dispense — contraindicated']];
+  var ACTLABEL={}; ACTIONS.forEach(function(a){ACTLABEL[a[0]]=a[1];});
+
+  var CASES=[
+   {n:1,pt:{name:'Rasheed K',age:68,sex:'Male',dx:'Urinary tract infection'},rx:'Ciprofloxacin 500 mg BD × 5 days',
+    ehr:{allergies:'None documented',meds:'Warfarin 5 mg OD (INR 2.5)',labs:'eGFR 48 ml/min',cond:'Atrial fibrillation'},
+    alerts:[
+     {t:'Drug interaction — Ciprofloxacin increases the effect of Warfarin (bleeding / raised INR).',sev:'Major',act:['contact','adjust'],why:'Significant interaction — clarify with prescriber, monitor INR or choose an alternative antibiotic.'},
+     {t:'Renal dosing — eGFR 48: review ciprofloxacin dose.',sev:'Minor',act:['adjust','accept'],why:'Mild impairment — usually only needs review.'},
+     {t:'Duplicate alert — ciprofloxacin was dispensed 8 months ago.',sev:'Minor',act:['accept','override'],why:'Historic, not a current duplicate — low value.'}]},
+   {n:2,pt:{name:'Meera S',age:41,sex:'Female',dx:'Acute tonsillitis'},rx:'Amoxicillin 500 mg TID',
+    ehr:{allergies:'Penicillin — ANAPHYLAXIS',meds:'None',labs:'Normal',cond:'—'},
+    alerts:[
+     {t:'Allergy alert — Amoxicillin is a penicillin; the patient has documented anaphylaxis to penicillin.',sev:'Critical',act:['reject','contact'],why:'Absolute contraindication — do not dispense; contact prescriber for a non-penicillin alternative.'},
+     {t:'Dose within normal range.',sev:'Minor',act:['accept'],why:'No dosing issue.'}]},
+   {n:3,pt:{name:'Iqbal M',age:63,sex:'Male',dx:'Type-2 diabetes'},rx:'Metformin 1000 mg BD',
+    ehr:{allergies:'None',meds:'Gliclazide 80 mg OD',labs:'eGFR 24 ml/min (severe CKD)',cond:'Chronic kidney disease'},
+    alerts:[
+     {t:'Contraindication — Metformin with eGFR below 30: lactic-acidosis risk.',sev:'Critical',act:['reject','contact'],why:'Contraindicated below eGFR 30 — hold and contact the prescriber.'},
+     {t:'Therapeutic duplication — two glucose-lowering agents.',sev:'Minor',act:['accept','override'],why:'Combination therapy is common and intentional.'}]},
+   {n:4,pt:{name:'Sunita R',age:59,sex:'Female',dx:'Nausea (on cardiology follow-up)'},rx:'Ondansetron 8 mg IV',
+    ehr:{allergies:'None',meds:'Amiodarone 200 mg OD',labs:'Potassium 3.4 mmol/L',cond:'Arrhythmia'},
+    alerts:[
+     {t:'QT prolongation — Ondansetron with Amiodarone: additive QT-interval risk.',sev:'Major',act:['contact','adjust'],why:'Additive QT prolongation — clarify, consider ECG or an alternative antiemetic.'},
+     {t:'Low potassium (3.4 mmol/L) further increases QT risk.',sev:'Major',act:['contact','adjust'],why:'Hypokalaemia compounds QT risk — flag for correction.'}]},
+   {n:5,pt:{name:'David P',age:66,sex:'Male',dx:'Acute back pain'},rx:'Diclofenac 50 mg TID',
+    ehr:{allergies:'None',meds:'Enalapril 10 mg OD, Furosemide 40 mg OD',labs:'eGFR 55 ml/min',cond:'Hypertension'},
+    alerts:[
+     {t:'“Triple whammy” — NSAID + ACE inhibitor + diuretic: acute kidney-injury risk.',sev:'Major',act:['contact','reject'],why:'High AKI risk — avoid the NSAID; contact prescriber for alternative analgesia.'},
+     {t:'GI risk — NSAID prescribed without gastroprotection.',sev:'Minor',act:['adjust','contact'],why:'Consider PPI cover — minor compared with the renal risk.'}]},
+   {n:6,pt:{name:'Anjali T',age:37,sex:'Female',dx:'Post-operative pain'},rx:'Tramadol 50 mg QDS',
+    ehr:{allergies:'None',meds:'Diazepam 5 mg PRN, Sertraline 50 mg OD',labs:'Normal',cond:'Anxiety, depression'},
+    alerts:[
+     {t:'CNS depression — Tramadol with Diazepam: additive sedation / respiratory depression.',sev:'Major',act:['contact','adjust'],why:'Additive CNS depression — clarify need, use lowest dose, monitor.'},
+     {t:'Serotonin syndrome — Tramadol with Sertraline.',sev:'Major',act:['contact'],why:'Serotonergic combination — flag for prescriber review.'}]},
+   {n:7,pt:{name:'Harish V',age:60,sex:'Male',dx:'Hyperlipidaemia'},rx:'Rosuvastatin 10 mg OD',
+    ehr:{allergies:'None',meds:'Atorvastatin 40 mg OD',labs:'Normal',cond:'—'},
+    alerts:[
+     {t:'Therapeutic duplication — two statins (Atorvastatin + Rosuvastatin).',sev:'Major',act:['contact','reject'],why:'Duplicate statin — clarify which to continue; do not dispense both.'},
+     {t:'Formulary alert — brand vs generic substitution.',sev:'Minor',act:['accept','override'],why:'Administrative — low clinical value.'}]},
+   {n:8,pt:{name:'Priya N',age:28,sex:'Female',dx:'Deep-vein thrombosis'},rx:'Warfarin 5 mg OD',
+    ehr:{allergies:'None',meds:'Folic acid 5 mg OD',labs:'—',cond:'Pregnant — 8 weeks'},
+    alerts:[
+     {t:'Pregnancy contraindication — Warfarin is teratogenic in pregnancy.',sev:'Critical',act:['reject','contact'],why:'Teratogenic — contraindicated; contact prescriber (LMWH is preferred).'},
+     {t:'Dose within normal range.',sev:'Minor',act:['accept'],why:'No dosing issue.'}]},
+   {n:9,pt:{name:'Arjun (paediatric)',age:4,sex:'Male',dx:'Fever'},rx:'Paracetamol 500 mg QDS',
+    ehr:{allergies:'None',meds:'None',labs:'Weight 16 kg',cond:'—'},
+    alerts:[
+     {t:'Dose alert — Paracetamol 500 mg exceeds the paediatric dose for 16 kg (≈ 240 mg/dose at 15 mg/kg).',sev:'Major',act:['adjust','contact'],why:'Overdose risk — recalculate to a weight-based dose.'},
+     {t:'Frequency check — QDS dosing interval.',sev:'Minor',act:['accept','adjust'],why:'Frequency acceptable once the dose is corrected.'}]},
+   {n:10,pt:{name:'Latha K',age:57,sex:'Female',dx:'Stable hypertension'},rx:'Amlodipine 5 mg OD',
+    ehr:{allergies:'None',meds:'Atenolol 50 mg OD',labs:'Normal',cond:'—'},
+    alerts:[
+     {t:'Minor interaction — Amlodipine with Atenolol: commonly and safely combined for blood pressure.',sev:'Minor',act:['accept','override'],why:'Beneficial combination — accept; over-escalation causes alert fatigue.'},
+     {t:'Therapeutic duplication — two antihypertensive agents.',sev:'Minor',act:['accept','override'],why:'Intentional combination therapy — accept.'},
+     {t:'Reminder — check blood pressure at the next visit.',sev:'Minor',act:['accept'],why:'Informational reminder — accept.'}]}
+  ];
+
+  $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
+  $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+esc(r.label)+'</td><td>'+r.max+'</td></tr>';}).join('')+'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
+
+  var sel=$('caseSel');
+  sel.innerHTML=CASES.map(function(c){return '<option value="'+(c.n-1)+'">Case '+c.n+' — '+esc(c.rx.split(' ')[0])+'</option>';}).join('');
+  sel.addEventListener('change',function(){ loadCase(parseInt(this.value,10)); });
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var state=null;
+  function loadCase(ci){
+    state={ci:ci,alerts:CASES[ci].alerts.map(function(){return{sev:'',act:'',reason:''};}),note:'',submitted:false,result:null};
+    var c=CASES[ci];
+    $('scCase').textContent='Case '+c.n; $('scScore').textContent='—'; $('scRes').textContent='—';
+    $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+    renderStation();
+  }
+
+  function renderStation(){
+    var c=CASES[state.ci]; var h='';
+    h+='<div class="card"><span class="step">Case '+c.n+'</span>'
+      +'<h2 style="margin-top:6px">New prescription — '+esc(c.rx)+'</h2>'
+      +'<p class="muted">'+esc(c.pt.name)+' · '+c.pt.age+' · '+esc(c.pt.sex)+' · '+esc(c.pt.dx)+'</p>'
+      +'<h3>Patient EHR (auto-linked to the CDSS)</h3>'
+      +'<div class="ehr">'
+      +'<div class="e'+(/anaphylaxis|penicillin/i.test(c.ehr.allergies)?' alert-a':'')+'"><b>Allergies</b>'+esc(c.ehr.allergies)+'</div>'
+      +'<div class="e"><b>Current medicines</b>'+esc(c.ehr.meds)+'</div>'
+      +'<div class="e"><b>Labs</b>'+esc(c.ehr.labs)+'</div>'
+      +'<div class="e"><b>Conditions</b>'+esc(c.ehr.cond)+'</div>'
+      +'</div></div>';
+
+    h+='<div class="card"><span class="step">CDSS Alerts</span> <b>Triage each alert generated by the system</b>'
+      +'<p class="note">For each alert: classify its <b>severity</b>, choose the correct <b>action</b>, and document a reason where you override. Never override a critical alert.</p>'
+      +c.alerts.map(function(a,i){
+        return '<div class="alertc" data-i="'+i+'"><div class="at"><span class="ic">⚠</span><span>'+esc(a.t)+'</span></div>'
+          +'<div class="arow">'
+          +'<div><label class="f">Severity</label><select data-sev="'+i+'"><option value="">Select…</option>'+SEV.map(function(s){return '<option>'+s+'</option>';}).join('')+'</select></div>'
+          +'<div><label class="f">Action</label><select data-act="'+i+'"><option value="">Select…</option>'+ACTIONS.map(function(x){return '<option value="'+x[0]+'">'+esc(x[1])+'</option>';}).join('')+'</select></div>'
+          +'</div>'
+          +'<textarea data-reason="'+i+'" placeholder="Document your reason / clinical justification (required if overriding)"></textarea>'
+          +'</div>';
+      }).join('')
+      +'</div>';
+
+    h+='<div class="card"><span class="step">Clinical decision</span> <b>Final decision note</b>'
+      +'<textarea id="noteBox" placeholder="Summarise your overall clinical decision — what you accepted, adjusted, held or escalated, and why." style="margin-top:8px"></textarea></div>';
+
+    h+='<div class="card"><button class="btn" id="submitBtn">Submit &amp; evaluate alert triage</button>'
+      +'<span class="muted" style="font-size:12.5px;margin-left:10px">Auto-scored against the 100-mark rubric.</span></div>';
+
+    $('caseArea').innerHTML=h;
+    document.querySelectorAll('[data-sev]').forEach(function(s){ s.addEventListener('change',function(){ state.alerts[+s.getAttribute('data-sev')].sev=s.value; }); });
+    document.querySelectorAll('[data-act]').forEach(function(s){ s.addEventListener('change',function(){ state.alerts[+s.getAttribute('data-act')].act=s.value; }); });
+    document.querySelectorAll('[data-reason]').forEach(function(t){ t.addEventListener('input',function(){ state.alerts[+t.getAttribute('data-reason')].reason=t.value; }); });
+    $('noteBox').addEventListener('input',function(){ state.note=this.value; });
+    $('submitBtn').addEventListener('click',evaluate);
+  }
+
+  function evaluate(){
+    var c=CASES[state.ci]; var name=($('cName').value||'').trim()||'Candidate', reg=($('cReg').value||'').trim();
+    var n=c.alerts.length, sevHits=0, actHits=0, unsafe=0, overrideMissingReason=0;
+    c.alerts.forEach(function(a,i){
+      var st=state.alerts[i];
+      if(st.sev===a.sev) sevHits++;
+      if(a.act.indexOf(st.act)>=0) actHits++;
+      if(a.sev==='Critical' && (st.act==='accept'||st.act==='override')) unsafe++;
+      if(st.act==='override' && !(st.reason||'').trim()) overrideMissingReason++;
+    });
+    var sc={};
+    sc.sev=Math.round(sevHits/n*30);
+    sc.act=Math.round(actHits/n*40);
+    sc.safe=unsafe>0?0:20;
+    var noteOK=(state.note||'').trim().length>=15;
+    sc.doc=(noteOK?6:0)+(overrideMissingReason===0?4:0);
+    var tot=RUBRIC.reduce(function(a,r){return a+(sc[r.k]||0);},0);
+    var pct=Math.round(tot/MAXTOTAL*100);
+    var critical=unsafe>0;
+    var pass=pct>=50 && !critical;
+    var fb={
+      sev:sevHits+'/'+n+' alerts correctly graded.',
+      act:actHits+'/'+n+' alerts actioned correctly.',
+      safe:critical?('A CRITICAL alert was accepted or overridden — patient-safety error.'):'All critical alerts safely held / escalated.',
+      doc:(noteOK?'Decision documented. ':'Decision note too brief. ')+(overrideMissingReason?('Missing reason on '+overrideMissingReason+' override(s).'):'Override reasons recorded.')
+    };
+    state.result={name:name,reg:reg,total:tot,pct:pct,pass:pass,critical:critical,sc:sc,fb:fb};
+    state.submitted=true;
+    $('scScore').textContent=tot+'/'+MAXTOTAL; $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+pct+'%)';
+    renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+
+  function buildAuto(){
+    if(!state||!state.submitted) return null;
+    var c=CASES[state.ci], r=state.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Case '+c.n+' — '+esc(c.rx)+'</h3>';
+    h+='<p style="margin:2px 0"><b>Patient:</b> '+esc(c.pt.name)+' · '+c.pt.age+'/'+esc(c.pt.sex)+' · '+esc(c.pt.dx)+'</p>';
+    h+='<p style="margin:2px 0"><b>EHR:</b> allergies '+esc(c.ehr.allergies)+'; meds '+esc(c.ehr.meds)+'; labs '+esc(c.ehr.labs)+'; '+esc(c.ehr.cond)+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:11.5px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">CDSS alert</th><th>Your severity</th><th>Your action</th></tr>'
+      +c.alerts.map(function(a,i){var st=state.alerts[i];return '<tr><td>'+esc(a.t)+'</td><td align="center">'+esc(st.sev||'—')+'</td><td align="center">'+esc(ACTLABEL[st.act]||'—')+'</td></tr>';}).join('')
+      +'</table>';
+    if((state.note||'').trim()) h+='<p style="margin-top:8px"><b>Clinical decision:</b> '+esc(state.note)+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
+      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
+      +'<tr style="background:#f3e2e2;font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">'+MAXTOTAL+'</td></tr></table>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'+(r.critical?' (PATIENT-SAFETY ERROR: critical alert not safely handled)':'')+'</p>';
+    return h;
+  }
+
+  function renderReport(){
+    var c=CASES[state.ci], r=state.result;
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Score</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">of '+MAXTOTAL+'</div></div>'
+      +'<div class="repbox"><div class="rv">'+c.alerts.length+'</div><div class="rl">Alerts triaged</div></div>'
+      +'<div class="repbox"><div class="rv">'+c.n+'</div><div class="rl">Case</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+esc(c.rx.split(' ')[0])+' CDSS alert triage</div>';
+    if(r.critical) html+='<div class="note" style="color:var(--danger);font-weight:600;margin:-4px 0 10px">Accepting or overriding a critical alert is a patient-safety error and fails the station regardless of total marks.</div>';
+    html+='<div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Score</th><th>Max</th></tr></thead><tbody>'
+      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'<div class="note" style="margin-top:2px">'+esc(r.fb[x.k]||'')+'</div></td><td>'+(r.sc[x.k]||0)+'</td><td>'+x.max+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr></tbody></table></div>';
+    html+='<div class="row no-print" style="margin-top:14px"><button class="btn gold" onclick="window.print()">Download / Print record</button>'
+      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 3 · Unit 1 — Clinical Decision Support Systems (CDSS)',title:'CDSS Alert Management Console',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Prescription & key alert', placeholder:'e.g. Case 2 — Amoxicillin, penicillin-allergy alert'},
+      minWords:400,
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return state.result?state.result.pct:null; },
+      autoResultText:function(){ return state.result?((state.result.pass?'PASS':'FAIL')+' '+state.result.pct+'%'):''; }
+    });
+  }
+
+  function switchTab(p){ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+
+  loadCase(0);
+})();
+</script>
+</body>
+</html>
