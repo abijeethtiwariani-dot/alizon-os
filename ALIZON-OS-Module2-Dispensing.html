@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Module 2 · Digital Dispensing (FEFO/FIFO) & Patient Counselling</title>
+<script>try{if((localStorage.getItem('pracTheme')||'dark')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f2f0ec; --panel:#ffffff; --panel2:#f7f5f1; --pill:#efece7;
+    --ink:#1c1a1f; --muted:#6b6570; --line:rgba(24,18,26,.12);
+    --crimson:#C40D16; --crimson-deep:#9E0C13; --gold:#A16207; --gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A; --danger:#C4262E; --warn:#B45309;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);
+  }
+  html.dark{
+    --bg:#070810; --panel:#12131c; --panel2:#0e0f18; --pill:#1a1c28;
+    --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.1);
+    --crimson:#e2434b; --crimson-deep:#C40D16; --gold:#D9A441; --gold-soft:rgba(217,164,65,.16);
+    --success:#38d08a; --danger:#f0666d; --warn:#e0a44a;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 80px}
+  .serif{font-family:'Source Serif Pro',Georgia,serif}
+  /* hero */
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:75ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);
+    border:1px solid var(--line)}
+  .scorechip b{color:var(--gold)}
+  /* tabs */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);
+    border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)}
+  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);
+    box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)}
+  .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;
+    background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block;margin-bottom:2px}
+  .done-pill{font-size:11px;font-weight:700;color:var(--success);margin-left:8px}
+  /* tables */
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:520px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)}
+  tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right}
+  .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  /* rack rows (clickable) */
+  .rack{display:flex;flex-direction:column;gap:8px}
+  .rrow{display:grid;grid-template-columns:44px 1fr;gap:0;border:1.5px solid var(--line);border-radius:12px;
+    overflow:hidden;cursor:pointer;transition:.15s;background:var(--panel2)}
+  .rrow:hover{border-color:var(--gold)}
+  .rrow.sel{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .rrow.expired{opacity:.72}
+  .rrow .rn{display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--crimson);color:#fff}
+  .rrow .rd{padding:10px 12px;display:flex;flex-wrap:wrap;gap:3px 14px;align-items:baseline}
+  .rrow .rd b{font-size:13.5px}
+  .rrow .rd span{font-size:11.5px;color:var(--muted)}
+  .rrow .rd .exp{color:var(--warn);font-weight:600}
+  .rrow .rd .badexp{color:var(--danger);font-weight:700}
+  .rrow .qtybox{grid-column:1/-1;padding:0 12px 10px;display:none;gap:8px;align-items:center}
+  .rrow.sel .qtybox{display:flex}
+  .rrow .qtybox label{font-size:11.5px;color:var(--muted)}
+  .rrow .qtybox input{width:90px}
+  /* forms */
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],input[type=number],select{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);
+    background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  /* checklist */
+  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px 16px;margin-top:6px}
+  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;cursor:pointer;padding:5px 0}
+  .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
+  /* mcq */
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);
+    background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)}
+  .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  /* buttons */
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;
+    padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn:disabled{opacity:.5;cursor:not-allowed;filter:none}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn.sm{padding:8px 16px;font-size:12.5px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  /* label preview */
+  .lbl{background:#fff;color:#111;border:1px dashed #999;border-radius:10px;padding:14px 16px;margin-top:10px;font-size:12.5px;max-width:360px}
+  .lbl .lh{font-weight:800;color:#8c1515;font-size:13px;border-bottom:1px solid #ddd;padding-bottom:6px;margin-bottom:6px}
+  .lbl .lr{display:flex;justify-content:space-between;gap:10px;padding:1px 0}
+  /* report */
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .fb{font-size:12.5px;margin-top:8px;padding:9px 12px;border-radius:9px;display:none}
+  .fb.show{display:block}
+  .fb.ok{background:rgba(30,142,90,.12);color:var(--success)}
+  .fb.no{background:rgba(196,38,46,.1);color:var(--danger)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  @media print{
+    .tabs,.btn,.no-print{display:none!important}
+    body{background:#fff}
+    .panel{display:block!important}
+    .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 2 · Unit 1 — Digital Pharmacy &amp; E-Prescription Systems</div>
+    <h1 class="serif">Digital Dispensing Using FEFO/FIFO Principles &amp; Patient Counselling</h1>
+    <p><b>Aim —</b> To accurately dispense prescribed medications using a digital pharmacy system by selecting the correct
+      drug on <b>FEFO/FIFO</b> principles, verifying product details, documenting the dispensing process and providing
+      appropriate patient counselling. <span class="muted">Duration 60 minutes · One unique case per student · 110-mark competency rubric.</span></p>
+    <div class="chips">
+      <div class="scorechip">Case <b id="scCase">—</b></div>
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Dispensing Station</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <!-- ===================== BRIEFING ===================== -->
+  <section class="panel on" id="p-brief">
+    <div class="card">
+      <h2>Student tasks</h2>
+      <p class="muted">During the dispensing station you must:</p>
+      <div class="cl" id="taskRef"></div>
+    </div>
+    <div class="card">
+      <h2>Patient counselling checklist</h2>
+      <p class="muted">Every dispensing must be accompanied by counselling covering:</p>
+      <div class="cl" id="counRef"></div>
+    </div>
+    <div class="card">
+      <h2>Drug-specific counselling hints</h2>
+      <div class="tw"><table><thead><tr><th>Drug</th><th>Counselling hint</th></tr></thead><tbody id="hintTbl"></tbody></table></div>
+    </div>
+    <div class="card">
+      <h2>Faculty assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
+      <p class="note">Objective criteria are auto-scored by the digital system; professional conduct is confirmed on completion of all steps. Pass mark: 50%.</p>
+    </div>
+  </section>
+
+  <!-- ===================== STATION ===================== -->
+  <section class="panel" id="p-station">
+    <div class="card">
+      <h2>Candidate &amp; case assignment</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+        <div><label class="f">Assigned case</label>
+          <select id="caseSel"></select></div>
+      </div>
+      <p class="note">Each student is assigned <b>one unique prescription</b>. Your examiner will tell you your case number.</p>
+    </div>
+
+    <div id="caseArea"></div>
+  </section>
+
+  <!-- ===================== REPORT ===================== -->
+  <section class="panel" id="p-report">
+    <div class="card" id="repCard">
+      <h2>Practical record &amp; assessment</h2>
+      <p class="muted" id="repEmpty">Complete the dispensing station and submit to generate your assessment.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var TODAY=202607; // fixed clinic date (Jul 2026) — expiry validity is judged against this
+  function ym(s){ var p=String(s).split('-'); return parseInt(p[0],10)*100+parseInt(p[1],10); }
+  var MON=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmt(s){ if(!s) return '—'; var p=String(s).split('-'); return MON[parseInt(p[1],10)]+' '+p[0]; }
+  function expired(s){ return ym(s)<TODAY; }
+
+  /* ---- reference lists ---- */
+  var TASKS=['Verify patient identity','Verify prescription validity','Locate the prescribed medicine',
+    'Verify the correct drug strength','Verify dosage form','Check batch number','Check manufacturing date',
+    'Check expiry date','Apply FEFO (First Expiry First Out)','Apply FIFO (First In First Out) if expiry is identical',
+    'Check stock availability','Dispense the correct quantity','Generate dispensing label','Update digital inventory',
+    'Record in the electronic medication record','Provide patient counselling'];
+  var COUNSEL=['Medicine name','Purpose of the medicine','Dose','Frequency','Duration','Route of administration',
+    'Before / after food','Storage conditions','Missed-dose advice','Common side effects','Important precautions','Follow-up advice'];
+  var HINTS=[
+    ['Metformin','Take with food to reduce stomach upset.'],
+    ['Amlodipine','May cause dizziness; rise slowly from sitting or lying positions.'],
+    ['Amoxicillin','Complete the full antibiotic course even if symptoms improve.'],
+    ['Pantoprazole','Take 30 minutes before breakfast.'],
+    ['Levothyroxine','Take on an empty stomach with water; avoid calcium or iron within 4 hours.'],
+    ['Atorvastatin','Preferably take in the evening; avoid excessive grapefruit juice.'],
+    ['Salbutamol Inhaler','Demonstrate correct inhaler technique; rinse mouth if using a steroid combination.'],
+    ['Insulin','Store unopened pens/vials in the refrigerator; rotate injection sites.'],
+    ['Iron & Folic Acid','Take with vitamin C-rich drinks if tolerated; stools may become dark.'],
+    ['Diclofenac','Take after food; avoid taking with other NSAIDs unless advised.']];
+  var RUBRIC=[
+    {k:'presc',  label:'Prescription verification', max:10},
+    {k:'drug',   label:'Drug selection',            max:15},
+    {k:'strength',label:'Strength verification',    max:10},
+    {k:'batch',  label:'Batch verification',        max:10},
+    {k:'fefo',   label:'FEFO / FIFO application',    max:15},
+    {k:'qty',    label:'Quantity dispensed',        max:10},
+    {k:'doc',    label:'Digital documentation',     max:10},
+    {k:'counsel',label:'Patient counselling',       max:20},
+    {k:'conduct',label:'Professional conduct',      max:10}];
+  var MAXTOTAL=RUBRIC.reduce(function(a,r){return a+r.max;},0);
+
+  /* ---- 10 cases ---- (exp as YYYY-MM; judged against TODAY 2026-07) */
+  var CASES=[
+   {n:1,pt:{name:'Rajan Menon',age:54,sex:'Male',dx:'Type 2 Diabetes Mellitus',pid:'RX-2601'},
+    rx:{drug:'Metformin',strength:'500 mg',form:'Tablet',dose:'1 tablet',freq:'twice daily',dur:'30 days',qty:60},
+    challenge:'Three Metformin 500 mg batches are available — dispense the batch with the earliest expiry (FEFO).',
+    principle:'FEFO', counsel:2,
+    rack:[
+     {id:'A1',drug:'Metformin',strength:'500 mg',form:'Tablet',batch:'MET5-018',mfg:'2025-01',exp:'2026-10',qty:100},
+     {id:'A2',drug:'Metformin',strength:'500 mg',form:'Tablet',batch:'MET5-024',mfg:'2025-04',exp:'2027-03',qty:80},
+     {id:'A3',drug:'Metformin',strength:'500 mg',form:'Tablet',batch:'MET5-031',mfg:'2025-08',exp:'2028-01',qty:120},
+     {id:'A4',drug:'Metformin',strength:'850 mg',form:'Tablet',batch:'MET8-007',mfg:'2025-02',exp:'2026-12',qty:60},
+     {id:'A5',drug:'Glimepiride',strength:'2 mg',form:'Tablet',batch:'GLM-014',mfg:'2025-03',exp:'2026-11',qty:90}],
+    plan:[{id:'A1',qty:60}]},
+
+   {n:2,pt:{name:'Sheela Thomas',age:61,sex:'Female',dx:'Hypertension',pid:'RX-2602'},
+    rx:{drug:'Amlodipine',strength:'5 mg',form:'Tablet',dose:'1 tablet',freq:'once daily',dur:'30 days',qty:30},
+    challenge:'Amlodipine 5 mg and 10 mg are stored together — select the correct strength (then FEFO).',
+    principle:'FEFO', counsel:1,
+    rack:[
+     {id:'A1',drug:'Amlodipine',strength:'5 mg',form:'Tablet',batch:'AML5-101',mfg:'2025-02',exp:'2026-11',qty:60},
+     {id:'A2',drug:'Amlodipine',strength:'10 mg',form:'Tablet',batch:'AML10-044',mfg:'2025-01',exp:'2026-09',qty:50},
+     {id:'A3',drug:'Amlodipine',strength:'5 mg',form:'Tablet',batch:'AML5-118',mfg:'2025-07',exp:'2027-04',qty:90},
+     {id:'A4',drug:'Amlodipine',strength:'10 mg',form:'Tablet',batch:'AML10-052',mfg:'2025-05',exp:'2026-12',qty:40},
+     {id:'A5',drug:'Atenolol',strength:'50 mg',form:'Tablet',batch:'ATN-020',mfg:'2025-03',exp:'2026-10',qty:70}],
+    plan:[{id:'A1',qty:30}]},
+
+   {n:3,pt:{name:'Fathima Basheer',age:29,sex:'Female',dx:'Respiratory tract infection',pid:'RX-2603'},
+    rx:{drug:'Amoxicillin',strength:'500 mg',form:'Capsule',dose:'1 capsule',freq:'thrice daily',dur:'7 days',qty:21},
+    challenge:'One Amoxicillin batch has expired and another is valid — dispense only the valid batch.',
+    principle:'FEFO', counsel:2,
+    rack:[
+     {id:'A1',drug:'Amoxicillin',strength:'500 mg',form:'Capsule',batch:'AMX-EXP',mfg:'2023-12',exp:'2026-02',qty:40},
+     {id:'A2',drug:'Amoxicillin',strength:'500 mg',form:'Capsule',batch:'AMX-220',mfg:'2024-11',exp:'2026-11',qty:100},
+     {id:'A3',drug:'Amoxicillin',strength:'250 mg',form:'Capsule',batch:'AMX2-118',mfg:'2025-01',exp:'2026-10',qty:60},
+     {id:'A4',drug:'Azithromycin',strength:'500 mg',form:'Tablet',batch:'AZI-030',mfg:'2025-02',exp:'2026-12',qty:30},
+     {id:'A5',drug:'Amoxicillin',strength:'500 mg',form:'Capsule',batch:'AMX-231',mfg:'2025-06',exp:'2027-03',qty:80}],
+    plan:[{id:'A2',qty:21}]},
+
+   {n:4,pt:{name:'George Kurian',age:47,sex:'Male',dx:'Gastro-oesophageal reflux disease',pid:'RX-2604'},
+    rx:{drug:'Pantoprazole',strength:'40 mg',form:'Tablet',dose:'1 tablet',freq:'once daily before breakfast',dur:'30 days',qty:30},
+    challenge:'Two 40 mg batches share the same expiry but different receipt dates — apply FIFO (earliest received).',
+    principle:'FIFO', counsel:3,
+    rack:[
+     {id:'A1',drug:'Pantoprazole',strength:'40 mg',form:'Tablet',batch:'PAN-A',mfg:'2025-01',recd:'2025-02',exp:'2027-02',qty:60},
+     {id:'A2',drug:'Pantoprazole',strength:'40 mg',form:'Tablet',batch:'PAN-B',mfg:'2025-06',recd:'2025-07',exp:'2027-02',qty:60},
+     {id:'A3',drug:'Pantoprazole',strength:'20 mg',form:'Tablet',batch:'PAN2-09',mfg:'2025-03',exp:'2026-11',qty:40},
+     {id:'A4',drug:'Rabeprazole',strength:'20 mg',form:'Tablet',batch:'RAB-011',mfg:'2025-02',exp:'2026-10',qty:50},
+     {id:'A5',drug:'Pantoprazole',strength:'40 mg',form:'Tablet',batch:'PAN-C',mfg:'2025-09',recd:'2025-10',exp:'2027-08',qty:70}],
+    plan:[{id:'A1',qty:30}]},
+
+   {n:5,pt:{name:'Latha Nair',age:58,sex:'Female',dx:'Hyperlipidaemia',pid:'RX-2605'},
+    rx:{drug:'Atorvastatin',strength:'20 mg',form:'Tablet',dose:'1 tablet',freq:'at night',dur:'30 days',qty:30},
+    challenge:'Similar-looking 10 mg and 20 mg packs are adjacent — verify strength carefully, then FEFO.',
+    principle:'FEFO', counsel:5,
+    rack:[
+     {id:'A1',drug:'Atorvastatin',strength:'10 mg',form:'Tablet',batch:'ATV10-07',mfg:'2025-01',exp:'2026-10',qty:80},
+     {id:'A2',drug:'Atorvastatin',strength:'20 mg',form:'Tablet',batch:'ATV20-14',mfg:'2025-02',exp:'2026-11',qty:60},
+     {id:'A3',drug:'Atorvastatin',strength:'20 mg',form:'Tablet',batch:'ATV20-22',mfg:'2025-07',exp:'2027-03',qty:90},
+     {id:'A4',drug:'Atorvastatin',strength:'40 mg',form:'Tablet',batch:'ATV40-05',mfg:'2025-03',exp:'2026-12',qty:40},
+     {id:'A5',drug:'Rosuvastatin',strength:'10 mg',form:'Tablet',batch:'RSV-018',mfg:'2025-02',exp:'2026-09',qty:50}],
+    plan:[{id:'A2',qty:30}]},
+
+   {n:6,pt:{name:'Anwar Ali',age:42,sex:'Male',dx:'Hypothyroidism',pid:'RX-2606'},
+    rx:{drug:'Levothyroxine',strength:'50 mcg',form:'Tablet',dose:'1 tablet',freq:'once daily, fasting',dur:'30 days',qty:30},
+    challenge:'Strengths 25, 50 and 100 mcg are available — dispense the prescribed 50 mcg and counsel on fasting.',
+    principle:'FEFO', counsel:4,
+    rack:[
+     {id:'A1',drug:'Levothyroxine',strength:'25 mcg',form:'Tablet',batch:'LT25-11',mfg:'2025-01',exp:'2026-10',qty:60},
+     {id:'A2',drug:'Levothyroxine',strength:'50 mcg',form:'Tablet',batch:'LT50-08',mfg:'2025-02',exp:'2026-11',qty:70},
+     {id:'A3',drug:'Levothyroxine',strength:'100 mcg',form:'Tablet',batch:'LT100-04',mfg:'2025-01',exp:'2026-09',qty:50},
+     {id:'A4',drug:'Levothyroxine',strength:'50 mcg',form:'Tablet',batch:'LT50-15',mfg:'2025-07',exp:'2027-04',qty:90},
+     {id:'A5',drug:'Liothyronine',strength:'20 mcg',form:'Tablet',batch:'LIO-003',mfg:'2025-03',exp:'2026-12',qty:30}],
+    plan:[{id:'A2',qty:30}]},
+
+   {n:7,pt:{name:'Priya Das',age:34,sex:'Female',dx:'Bronchial asthma',pid:'RX-2607'},
+    rx:{drug:'Salbutamol',strength:'100 mcg',form:'Inhaler',dose:'2 puffs',freq:'as needed',dur:'1 unit',qty:1},
+    challenge:'Check device expiry — one inhaler is expired. Dispense a valid device and counsel on technique.',
+    principle:'FEFO', counsel:6,
+    rack:[
+     {id:'A1',drug:'Salbutamol',strength:'100 mcg',form:'Inhaler',batch:'SLB-EXP',mfg:'2024-05',exp:'2026-05',qty:5},
+     {id:'A2',drug:'Salbutamol',strength:'100 mcg',form:'Inhaler',batch:'SLB-210',mfg:'2025-02',exp:'2026-12',qty:12},
+     {id:'A3',drug:'Salbutamol',strength:'100 mcg',form:'Inhaler',batch:'SLB-233',mfg:'2025-08',exp:'2027-08',qty:8},
+     {id:'A4',drug:'Budesonide',strength:'200 mcg',form:'Inhaler',batch:'BUD-014',mfg:'2025-03',exp:'2026-10',qty:6},
+     {id:'A5',drug:'Ipratropium',strength:'20 mcg',form:'Inhaler',batch:'IPR-009',mfg:'2025-02',exp:'2026-09',qty:4}],
+    plan:[{id:'A2',qty:1}]},
+
+   {n:8,pt:{name:'Mohan Pillai',age:66,sex:'Male',dx:'Insulin-dependent diabetes',pid:'RX-2608'},
+    rx:{drug:'Human Insulin',strength:'100 IU/ml',form:'Injection',dose:'as directed',freq:'subcutaneous',dur:'1 vial',qty:1},
+    challenge:'Verify cold-chain storage, expiry and batch. Dispense the correct 100 IU/ml valid vial.',
+    principle:'FEFO', counsel:7,
+    rack:[
+     {id:'A1',drug:'Human Insulin',strength:'40 IU/ml',form:'Injection',batch:'INS40-06',mfg:'2025-02',exp:'2026-11',qty:10,store:'Cold 2–8°C'},
+     {id:'A2',drug:'Human Insulin',strength:'100 IU/ml',form:'Injection',batch:'INS100-12',mfg:'2025-01',exp:'2026-10',qty:15,store:'Cold 2–8°C'},
+     {id:'A3',drug:'Human Insulin',strength:'100 IU/ml',form:'Injection',batch:'INS100-20',mfg:'2025-06',exp:'2027-02',qty:9,store:'Cold 2–8°C'},
+     {id:'A4',drug:'Human Insulin',strength:'100 IU/ml',form:'Injection',batch:'INS100-EXP',mfg:'2024-04',exp:'2026-04',qty:5,store:'Cold 2–8°C'},
+     {id:'A5',drug:'Insulin Glargine',strength:'100 IU/ml',form:'Injection',batch:'INS-GLA',mfg:'2025-02',exp:'2026-12',qty:7,store:'Cold 2–8°C'}],
+    plan:[{id:'A2',qty:1}]},
+
+   {n:9,pt:{name:'Divya Raj',age:26,sex:'Female',dx:'Iron-deficiency anaemia (antenatal)',pid:'RX-2609'},
+    rx:{drug:'Ferrous Sulphate + Folic Acid',strength:'—',form:'Tablet',dose:'1 tablet',freq:'once daily',dur:'30 days',qty:30},
+    challenge:'Select the correct combination product by FEFO and counsel on food interactions and dark stools.',
+    principle:'FEFO', counsel:8,
+    rack:[
+     {id:'A1',drug:'Ferrous Sulphate + Folic Acid',strength:'—',form:'Tablet',batch:'IFA-030',mfg:'2025-01',exp:'2026-10',qty:100},
+     {id:'A2',drug:'Ferrous Sulphate + Folic Acid',strength:'—',form:'Tablet',batch:'IFA-041',mfg:'2025-05',exp:'2027-01',qty:120},
+     {id:'A3',drug:'Folic Acid',strength:'5 mg',form:'Tablet',batch:'FOL-012',mfg:'2025-02',exp:'2026-11',qty:80},
+     {id:'A4',drug:'Ferrous Ascorbate',strength:'100 mg',form:'Tablet',batch:'FAS-019',mfg:'2025-01',exp:'2026-09',qty:60},
+     {id:'A5',drug:'Ferrous Sulphate + Folic Acid',strength:'—',form:'Tablet',batch:'IFA-EXP',mfg:'2024-03',exp:'2026-03',qty:40}],
+    plan:[{id:'A1',qty:30}]},
+
+   {n:10,pt:{name:'Suresh Babu',age:39,sex:'Male',dx:'Acute lower-back pain',pid:'RX-2610'},
+    rx:{drug:'Diclofenac',strength:'50 mg',form:'Tablet',dose:'1 tablet',freq:'twice daily after food',dur:'15 days',qty:30},
+    challenge:'The earliest-expiry batch holds only 20 tablets — dispense 20 (FEFO) then 10 from the next batch, and document both.',
+    principle:'FEFO (split)', counsel:9,
+    rack:[
+     {id:'A1',drug:'Diclofenac',strength:'50 mg',form:'Tablet',batch:'DIC-A',mfg:'2025-01',exp:'2026-11',qty:20},
+     {id:'A2',drug:'Diclofenac',strength:'50 mg',form:'Tablet',batch:'DIC-B',mfg:'2025-04',exp:'2027-03',qty:100},
+     {id:'A3',drug:'Diclofenac',strength:'100 mg SR',form:'Tablet',batch:'DIC100-07',mfg:'2025-02',exp:'2026-10',qty:60},
+     {id:'A4',drug:'Aceclofenac',strength:'100 mg',form:'Tablet',batch:'ACE-011',mfg:'2025-03',exp:'2026-12',qty:50},
+     {id:'A5',drug:'Diclofenac',strength:'50 mg',form:'Tablet',batch:'DIC-C',mfg:'2025-08',exp:'2027-08',qty:90}],
+    plan:[{id:'A1',qty:20},{id:'A2',qty:10}]}
+  ];
+
+  /* drug-specific counselling MCQ (correct + distractors), indexed by CASES[i].counsel */
+  var CMCQ=[
+   /*0 Metformin */   {q:'Take with food to reduce stomach upset.',d:['Take on a completely empty stomach only','Crush and take with hot milk','Take only at bedtime regardless of meals']},
+   /*1 Amlodipine */  {q:'Rise slowly from sitting/lying — it may cause dizziness.',d:['Stop the moment your BP feels normal','Always take with grapefruit juice','Double the dose whenever you miss one']},
+   /*2 Amoxicillin */ {q:'Complete the full antibiotic course even if you feel better.',d:['Stop as soon as symptoms improve','Share leftover capsules with family','Take only on days you have fever']},
+   /*3 Pantoprazole */{q:'Take 30 minutes before breakfast.',d:['Take right after a heavy meal','Take at bedtime with an antacid','Chew the tablet for faster action']},
+   /*4 Levothyroxine */{q:'Take on an empty stomach; avoid calcium/iron within 4 hours.',d:['Take immediately after milk','Take with breakfast for better absorption','Take at night with dinner']},
+   /*5 Atorvastatin */{q:'Preferably take in the evening; avoid excess grapefruit juice.',d:['Take with a high-fat breakfast','Take with antacids for absorption','Take only when chest pain occurs']},
+   /*6 Salbutamol */  {q:'Use correct inhaler technique; rinse mouth if a steroid combination.',d:['Swallow the inhaler contents','Use only when unconscious','Store the inhaler in a freezer']},
+   /*7 Insulin */     {q:'Store unopened vials refrigerated and rotate injection sites.',d:['Keep the vial in direct sunlight','Inject the same spot every day','Freeze the insulin before use']},
+   /*8 Iron+Folic */  {q:'Take with vitamin-C rich drinks if tolerated; stools may darken (harmless).',d:['Take with tea/coffee to boost absorption','Stop immediately if stools darken','Always take with an antacid']},
+   /*9 Diclofenac */  {q:'Take after food; avoid combining with other NSAIDs unless advised.',d:['Take on an empty stomach for speed','Combine freely with other painkillers','Take with alcohol to enhance effect']}
+  ];
+
+  /* ================= state ================= */
+  var state=null;
+  function newState(ci){
+    return {ci:ci, verify:{}, sel:{}, label:false, inv:false, coun:{}, hint:null, submitted:false, result:null};
+  }
+
+  /* ================= briefing render ================= */
+  $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
+  $('counRef').innerHTML=COUNSEL.map(function(t){return '<label><input type="checkbox" disabled><span>'+esc(t)+'</span></label>';}).join('');
+  $('hintTbl').innerHTML=HINTS.map(function(h){return '<tr><td><b>'+esc(h[0])+'</b></td><td>'+esc(h[1])+'</td></tr>';}).join('');
+  $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+esc(r.label)+'</td><td>'+r.max+'</td></tr>';}).join('')
+    +'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
+
+  /* ================= case selector ================= */
+  var sel=$('caseSel');
+  sel.innerHTML=CASES.map(function(c){return '<option value="'+(c.n-1)+'">Case '+c.n+' — '+esc(c.rx.drug)+' '+esc(c.rx.strength==='—'?'':c.rx.strength)+'</option>';}).join('');
+  sel.addEventListener('change',function(){ loadCase(parseInt(this.value,10)); });
+
+  /* prefill candidate from the portal profile if present */
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}');
+    if(pf&&pf.name) $('cName').value=pf.name; if(pf&&pf.reg) $('cReg').value=pf.reg; }catch(e){}
+
+  function loadCase(ci){
+    state=newState(ci);
+    var c=CASES[ci];
+    $('scCase').textContent='Case '+c.n;
+    $('scScore').textContent='—'; $('scRes').textContent='—';
+    renderStation();
+    $('repBody').style.display='none'; $('repEmpty').style.display='';
+  }
+
+  /* ================= station render ================= */
+  function renderStation(){
+    var c=CASES[state.ci];
+    var h='';
+    /* case + prescription */
+    h+='<div class="card"><span class="step">Case '+c.n+'</span>'
+      +'<h2 style="margin-top:6px">'+esc(c.rx.drug)+(c.rx.strength==='—'?'':' '+esc(c.rx.strength))+'</h2>'
+      +'<p class="muted">'+esc(c.challenge)+'</p>'
+      +'<h3>Patient details</h3>'
+      +'<div class="tw"><table><tbody>'
+      +'<tr><td><b>Name</b></td><td>'+esc(c.pt.name)+'</td><td><b>Age / Sex</b></td><td>'+c.pt.age+' · '+esc(c.pt.sex)+'</td></tr>'
+      +'<tr><td><b>Diagnosis</b></td><td>'+esc(c.pt.dx)+'</td><td><b>Prescription ID</b></td><td>'+esc(c.pt.pid)+'</td></tr>'
+      +'</tbody></table></div>'
+      +'<h3>Electronic prescription</h3>'
+      +'<div class="tw"><table><thead><tr><th>Drug</th><th>Strength</th><th>Form</th><th>Dosage</th><th>Duration</th><th>Qty</th></tr></thead><tbody>'
+      +'<tr><td><b>'+esc(c.rx.drug)+'</b></td><td>'+esc(c.rx.strength)+'</td><td>'+esc(c.rx.form)+'</td><td>'+esc(c.rx.dose+' '+c.rx.freq)+'</td><td>'+esc(c.rx.dur)+'</td><td><b>'+c.rx.qty+'</b></td></tr>'
+      +'</tbody></table></div></div>';
+
+    /* step 1 verify */
+    h+='<div class="card"><span class="step">Step 1</span> <b id="d1">Verify patient &amp; prescription</b>'
+      +'<div class="cl" id="verifyList">'
+      +['Patient identity confirmed','Prescription is valid &amp; complete','Prescriber &amp; date checked','No known allergy conflict']
+        .map(function(t,i){return '<label><input type="checkbox" data-v="'+i+'"><span>'+t+'</span></label>';}).join('')
+      +'</div></div>';
+
+    /* step 2 drug rack */
+    h+='<div class="card"><span class="step">Step 2</span> <b id="d2">Digital drug rack — select the batch(es) to dispense</b>'
+      +'<p class="note">Click the correct rack. Apply FEFO (earliest expiry first) / FIFO (earliest received if expiry is identical). Never dispense an expired or wrong-strength product.</p>'
+      +'<div class="rack" id="rack">'
+      +c.rack.map(function(r){
+        var ex=expired(r.exp);
+        return '<div class="rrow'+(ex?' expired':'')+'" data-id="'+r.id+'">'
+          +'<div class="rn">'+r.id+'</div>'
+          +'<div class="rd"><b>'+esc(r.drug)+' '+esc(r.strength==='—'?'':r.strength)+'</b>'
+            +'<span>'+esc(r.form)+'</span>'
+            +'<span>Batch '+esc(r.batch)+'</span>'
+            +'<span>Mfg '+fmt(r.mfg)+'</span>'
+            +'<span class="'+(ex?'badexp':'exp')+'">Exp '+fmt(r.exp)+(ex?' · EXPIRED':'')+'</span>'
+            +(r.recd?'<span>Recd '+fmt(r.recd)+'</span>':'')
+            +(r.store?'<span>'+esc(r.store)+'</span>':'')
+            +'<span>Qty '+r.qty+'</span></div>'
+          +'<div class="qtybox"><label>Dispense qty from '+r.id+'</label><input type="number" min="0" data-qid="'+r.id+'" value="0"></div>'
+          +'</div>';
+      }).join('')
+      +'</div></div>';
+
+    /* step 3 dispense / label / inventory */
+    h+='<div class="card"><span class="step">Step 3</span> <b id="d3">Dispense, label &amp; update inventory</b>'
+      +'<div class="row" style="margin-top:10px">'
+      +'<button class="btn ghost sm" id="genLabel">Generate dispensing label</button>'
+      +'<button class="btn ghost sm" id="updInv">Update digital inventory</button>'
+      +'<span class="done-pill" id="d3done"></span></div>'
+      +'<div id="labelWrap"></div></div>';
+
+    /* step 4 counselling */
+    var mcq=CMCQ[c.counsel];
+    var opts=[mcq.q].concat(mcq.d); // correct is index 0
+    h+='<div class="card"><span class="step">Step 4</span> <b id="d4">Patient counselling</b>'
+      +'<p class="note">Tick each point you counselled the patient on:</p>'
+      +'<div class="cl" id="counList">'
+      +COUNSEL.map(function(t,i){return '<label><input type="checkbox" data-c="'+i+'"><span>'+esc(t)+'</span></label>';}).join('')
+      +'</div>'
+      +'<h3>Most important advice for this medicine</h3>'
+      +'<div id="mcq">'+opts.map(function(o,k){return '<button type="button" class="opt" data-o="'+k+'">'+esc(o)+'</button>';}).join('')+'</div>'
+      +'</div>';
+
+    /* submit */
+    h+='<div class="card"><div class="row">'
+      +'<button class="btn" id="submitBtn">Submit &amp; evaluate dispensing</button>'
+      +'<span class="muted" style="font-size:12.5px">Your work is auto-scored against the 110-mark competency rubric.</span></div></div>';
+
+    $('caseArea').innerHTML=h;
+    wireStation();
+  }
+
+  function wireStation(){
+    /* verify */
+    [].forEach.call(document.querySelectorAll('#verifyList input'),function(cb){
+      cb.addEventListener('change',function(){ state.verify[cb.getAttribute('data-v')]=cb.checked; });
+    });
+    /* rack select */
+    [].forEach.call(document.querySelectorAll('#rack .rrow'),function(row){
+      row.addEventListener('click',function(e){
+        if(e.target.tagName==='INPUT') return; // don't toggle when editing qty
+        var id=row.getAttribute('data-id');
+        if(state.sel[id]){ delete state.sel[id]; row.classList.remove('sel'); }
+        else { state.sel[id]=0; row.classList.add('sel');
+          var qi=row.querySelector('input[data-qid]'); if(qi&&!parseInt(qi.value,10)){ qi.value=''; qi.focus(); } }
+      });
+    });
+    [].forEach.call(document.querySelectorAll('#rack input[data-qid]'),function(inp){
+      inp.addEventListener('input',function(){ state.sel[inp.getAttribute('data-qid')]=parseInt(inp.value,10)||0; });
+    });
+    /* label + inventory */
+    $('genLabel').addEventListener('click',function(){ state.label=true; drawLabel(); mark(); });
+    $('updInv').addEventListener('click',function(){ state.inv=true; mark(); });
+    function mark(){ $('d3done').textContent=(state.label?'Label ✓ ':'')+(state.inv?'Inventory ✓':''); }
+    /* counselling */
+    [].forEach.call(document.querySelectorAll('#counList input'),function(cb){
+      cb.addEventListener('change',function(){ state.coun[cb.getAttribute('data-c')]=cb.checked; });
+    });
+    [].forEach.call(document.querySelectorAll('#mcq .opt'),function(b){
+      b.addEventListener('click',function(){
+        state.hint=parseInt(b.getAttribute('data-o'),10);
+        [].forEach.call(document.querySelectorAll('#mcq .opt'),function(x){x.classList.remove('pick');});
+        b.classList.add('pick');
+      });
+    });
+    $('submitBtn').addEventListener('click',evaluate);
+  }
+
+  function drawLabel(){
+    var c=CASES[state.ci];
+    var lines=Object.keys(state.sel).map(function(id){
+      var r=c.rack.filter(function(x){return x.id===id;})[0];
+      return r?('Batch '+r.batch+' × '+(state.sel[id]||0)):'';
+    }).filter(Boolean).join(' · ');
+    $('labelWrap').innerHTML='<div class="lbl"><div class="lh">ALIZON PHARMACY — DISPENSING LABEL</div>'
+      +'<div class="lr"><span>Patient</span><b>'+esc(c.pt.name)+'</b></div>'
+      +'<div class="lr"><span>Medicine</span><b>'+esc(c.rx.drug)+' '+esc(c.rx.strength==='—'?'':c.rx.strength)+'</b></div>'
+      +'<div class="lr"><span>Directions</span><b>'+esc(c.rx.dose+' '+c.rx.freq)+'</b></div>'
+      +'<div class="lr"><span>Quantity</span><b>'+esc(String(Object.keys(state.sel).reduce(function(a,k){return a+(state.sel[k]||0);},0)))+'</b></div>'
+      +'<div class="lr"><span>Batch(es)</span><b>'+esc(lines||'—')+'</b></div>'
+      +'<div class="lr"><span>Rx ID</span><b>'+esc(c.pt.pid)+'</b></div></div>';
+  }
+
+  /* ================= evaluation engine ================= */
+  function correctFefoBatch(c){
+    // among same drug+strength as rx, not expired → earliest expiry; tie → earliest received (FIFO)
+    var pool=c.rack.filter(function(r){ return r.drug===c.rx.drug && r.strength===c.rx.strength && !expired(r.exp); });
+    pool.sort(function(a,b){ var e=ym(a.exp)-ym(b.exp); if(e!==0) return e;
+      return ym(a.recd||a.mfg)-ym(b.recd||b.mfg); });
+    return pool;
+  }
+  function evaluate(){
+    var c=CASES[state.ci];
+    var sc={}; var fb={};
+    /* candidate identity */
+    var name=($('cName').value||'').trim()||'Candidate';
+    var reg=($('cReg').value||'').trim();
+
+    /* selected rows with qty */
+    var selIds=Object.keys(state.sel);
+    var selRows=selIds.map(function(id){return c.rack.filter(function(x){return x.id===id;})[0];}).filter(Boolean);
+    var planIds=c.plan.map(function(p){return p.id;});
+    var totalDispensed=selIds.reduce(function(a,id){return a+(state.sel[id]||0);},0);
+
+    /* 1 prescription verification (10) */
+    var vCount=[0,1,2,3].filter(function(i){return state.verify[i];}).length;
+    sc.presc=Math.round(vCount/4*10);
+    fb.presc=vCount===4?'All verification steps completed.':'Only '+vCount+'/4 verification steps completed.';
+
+    /* 2 drug selection (15) — all selected rows are the correct drug */
+    var anyExpiredSel=selRows.some(function(r){return expired(r.exp);});
+    var allRightDrug=selRows.length>0 && selRows.every(function(r){return r.drug===c.rx.drug;});
+    sc.drug=allRightDrug?15:(selRows.some(function(r){return r.drug===c.rx.drug;})?7:0);
+    fb.drug=allRightDrug?'Correct medicine selected.':'A wrong drug was selected — check the prescription drug name.';
+
+    /* 3 strength (10) */
+    var allRightStrength=selRows.length>0 && selRows.every(function(r){return r.strength===c.rx.strength;});
+    sc.strength=allRightStrength?10:0;
+    fb.strength=allRightStrength?'Correct strength verified.':'Strength does not match the prescription.';
+
+    /* 4 batch verification (10) — selected batch set equals plan set */
+    var selSet=selIds.slice().sort().join(','), planSet=planIds.slice().sort().join(',');
+    sc.batch=selSet===planSet?10:(selIds.some(function(id){return planIds.indexOf(id)>=0;})?5:0);
+    fb.batch=selSet===planSet?'Correct batch(es) chosen.':'Batch selection does not match the FEFO/FIFO-correct batch(es).';
+
+    /* 5 FEFO/FIFO (15) — correct principle + no expired dispensed */
+    var fefoPool=correctFefoBatch(c);
+    var correctFefoIds=c.plan.map(function(p){return p.id;});
+    var fefoOK=(selSet===planSet) && !anyExpiredSel;
+    sc.fefo=fefoOK?15:(anyExpiredSel?0:(selIds.some(function(id){return correctFefoIds.indexOf(id)>=0;})?7:0));
+    fb.fefo=anyExpiredSel?'An EXPIRED product was dispensed — critical error.':(fefoOK?(c.principle+' correctly applied.'):'FEFO/FIFO not correctly applied.');
+
+    /* 6 quantity (10) — total matches and per-batch matches plan */
+    var perOK=c.plan.every(function(p){return (state.sel[p.id]||0)===p.qty;}) && selIds.length===planIds.length;
+    sc.qty=(totalDispensed===c.rx.qty && perOK)?10:(totalDispensed===c.rx.qty?6:0);
+    fb.qty=(totalDispensed===c.rx.qty&&perOK)?'Correct quantity dispensed'+(c.plan.length>1?' and correctly split across batches.':'.'):(totalDispensed===c.rx.qty?'Total quantity right, but the batch split is incorrect.':'Dispensed '+totalDispensed+' of '+c.rx.qty+' required.');
+
+    /* 7 documentation (10) */
+    sc.doc=(state.label?5:0)+(state.inv?5:0);
+    fb.doc=(state.label&&state.inv)?'Label generated and inventory updated.':'Missing: '+[!state.label?'dispensing label':'',!state.inv?'inventory update':''].filter(Boolean).join(' & ')+'.';
+
+    /* 8 counselling (20) — checklist(12) + correct hint(8) */
+    var cCount=COUNSEL.filter(function(_,i){return state.coun[i];}).length;
+    var hintOK=state.hint===0;
+    sc.counsel=Math.round(cCount/COUNSEL.length*12)+(hintOK?8:0);
+    fb.counsel=(cCount===COUNSEL.length?'Full counselling checklist. ':cCount+'/'+COUNSEL.length+' counselling points covered. ')+(hintOK?'Key drug advice correct.':'Key drug-specific advice was not identified.');
+
+    /* 9 professional conduct (10) — no expired/wrong dispensed + all steps attempted */
+    var stepsDone=(vCount>0)&&(selRows.length>0)&&(state.label||state.inv)&&(cCount>0)&&(state.hint!=null);
+    sc.conduct=(!anyExpiredSel && allRightDrug && stepsDone)?10:(stepsDone?5:2);
+    fb.conduct=(!anyExpiredSel&&allRightDrug&&stepsDone)?'Safe, complete and systematic dispensing.':'Some steps incomplete or an unsafe product was selected.';
+
+    var total=RUBRIC.reduce(function(a,r){return a+(sc[r.k]||0);},0);
+    var pct=Math.round(total/MAXTOTAL*100);
+    /* critical dispensing error — dispensing an expired or wrong medicine fails the station outright */
+    var critical=selRows.length>0 && (anyExpiredSel || !allRightDrug);
+    var critMsg=anyExpiredSel?'An EXPIRED product was dispensed.':(!allRightDrug?'A wrong medicine was dispensed.':'');
+    var pass=pct>=50 && !critical;
+    state.result={name:name,reg:reg,total:total,pct:pct,pass:pass,critical:critical,critMsg:critMsg,sc:sc,fb:fb,dispensed:totalDispensed,
+      batches:selRows.map(function(r){return r.batch+'×'+(state.sel[r.id]||0);}).join(', ')};
+    state.submitted=true;
+
+    $('scScore').textContent=total+'/'+MAXTOTAL;
+    $('scRes').textContent=pass?'PASS ('+pct+'%)':'FAIL ('+pct+'%)';
+    renderReport();
+    saveRecord();
+    switchTab('report');
+    window.scrollTo(0,0);
+  }
+
+  /* ================= report ================= */
+  function renderReport(){
+    var c=CASES[state.ci], r=state.result;
+    $('repEmpty').style.display='none';
+    var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Score</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">of '+MAXTOTAL+' marks</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.dispensed+'</div><div class="rl">units dispensed</div></div>'
+      +'<div class="repbox"><div class="rv">'+c.n+'</div><div class="rl">Case</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')
+      +(r.critical?' — CRITICAL DISPENSING ERROR: '+esc(r.critMsg):'')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')
+      +' · '+esc(c.rx.drug)+' '+esc(c.rx.strength==='—'?'':c.rx.strength)+' · dispensed '+esc(r.batches||'—')+'</div>';
+    if(r.critical) html+='<div class="note" style="color:var(--danger);font-weight:600;margin:-4px 0 10px">A patient-safety error (expired or wrong medicine) is an automatic fail regardless of total marks — this is how real dispensing competency is assessed.</div>';
+    html+='<div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Score</th><th>Max</th></tr></thead><tbody>'
+      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'<div class="note" style="margin-top:2px">'+esc(r.fb[x.k]||'')+'</div></td><td>'+ (r.sc[x.k]||0) +'</td><td>'+x.max+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr>'
+      +'</tbody></table></div>';
+    html+='<div class="row no-print" style="margin-top:14px">'
+      +'<button class="btn gold" onclick="window.print()">Download / Print record</button>'
+      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  /* ================= persist ================= */
+  function saveRecord(){
+    var c=CASES[state.ci], r=state.result;
+    var rec={module:'Module 2',unit:'Unit 1',practical:'Digital Dispensing (FEFO/FIFO) & Counselling',
+      caseNo:c.n,drug:c.rx.drug,name:r.name,reg:r.reg,total:r.total,max:MAXTOTAL,pct:r.pct,pass:r.pass};
+    try{ var log=JSON.parse(localStorage.getItem('alizonPracticalLog')||'[]'); if(!Array.isArray(log))log=[];
+      log.push(rec); localStorage.setItem('alizonPracticalLog',JSON.stringify(log.slice(-200))); }catch(e){}
+    try{ if(window.parent&&window.parent!==window) window.parent.postMessage({type:'alizon-practical-complete',record:rec},'*'); }catch(e){}
+  }
+
+  /* ================= tabs / theme ================= */
+  function switchTab(p){
+    [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);});
+    [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);});
+  }
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){
+    var dark=document.documentElement.classList.toggle('dark');
+    try{ localStorage.setItem('pracTheme',dark?'dark':'light'); }catch(e){}
+  });
+
+  /* boot */
+  loadCase(0);
+})();
+</script>
+</body>
+</html>
