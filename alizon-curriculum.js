@@ -185,102 +185,199 @@
     if(h.ojt) parts.push('OJT '+h.ojt); if(h.intern) parts.push('Intern '+h.intern);
     return parts.join(' · ');
   }
+  function letterhead(){
+    return '<header class="d-lh">'
+      +'<img class="d-lh-logo" src="/alizon-logo.png" alt="Alizon crest" onerror="this.style.display=\'none\'">'
+      +'<div class="d-lh-txt">'
+        +'<div class="d-lh-name">Alizon School of Medical &amp; Digital Intelligence</div>'
+        +'<div class="d-lh-tag">Advancing Artificial Intelligence in Healthcare Education</div>'
+        +'<div class="d-lh-addr">Thiruvananthapuram, Kerala, India&nbsp; ·&nbsp; www.alizon.in</div>'
+      +'</div>'
+      +'</header>'
+      +'<div class="d-lh-affil">An initiative under <b>ASAP Kerala</b> — Additional Skill Acquisition Programme, Department of Higher Education, Government of Kerala&nbsp; ·&nbsp; Registered with <b>Kerala Startup Mission</b></div>';
+  }
+  function statTile(label,val){
+    if(val==null||val==='') return '';
+    return '<div class="d-stat"><span class="ds-v">'+esc(val)+'</span><span class="ds-l">'+esc(label)+'</span></div>';
+  }
   function render(el, course){
     if(!el) return;
-    if(!course){ el.innerHTML='<div class="cur-empty">No syllabus uploaded for this course yet.</div>'; return; }
+    if(!course){ el.innerHTML='<div class="cur-empty">Choose a course above to view its official curriculum &amp; syllabus.</div>'; return; }
     var m=course.meta||{}, mods=course.modules||[];
     var totH=mods.reduce(function(a,x){return a+((x.hours&&x.hours.total)||0);},0);
-    var html='<div class="alz-cur">';
-    html+='<div class="cur-head"><div class="cur-code">'+esc(m.code||'')+(m.category?' · '+esc(m.category):'')+'</div>'
-      +'<h3 class="cur-title">'+esc(m.name||'Curriculum')+'</h3>'
-      +'<div class="cur-meta">'
-      +(m.duration&&m.duration.total?'<span><b>Duration:</b> '+esc(m.duration.total)+'</span>':(totH?'<span><b>Duration:</b> '+totH+' hrs</span>':''))
-      +(m.maxMarks?'<span><b>Max marks:</b> '+esc(m.maxMarks)+'</span>':'')
-      +(m.passMark?'<span><b>Pass:</b> '+esc(m.passMark)+'</span>':'')
-      +(m.mode?'<span><b>Mode:</b> '+esc(m.mode)+'</span>':'')
-      +'<span><b>Modules:</b> '+mods.length+'</span>'
+
+    var html='<article class="alz-doc" id="alzDoc">';
+    html+=letterhead();
+
+    /* toolbar (screen only) */
+    html+='<div class="d-actions no-print"><button type="button" class="d-print" onclick="window.print()">Print / Save as PDF</button></div>';
+
+    /* document title band */
+    html+='<div class="d-title">'
+      +'<div class="d-kicker">Curriculum &amp; Syllabus</div>'
+      +'<h2 class="d-name">'+esc(m.name||'Curriculum')+'</h2>'
+      +'<div class="d-sub">'
+        +(m.code?'<span>Programme code&nbsp; <b>'+esc(m.code)+'</b></span>':'')
+        +(m.category?'<span>'+esc(m.category)+'</span>':'')
       +'</div></div>';
 
-    /* summary table: hours + marks */
+    /* overview stat tiles */
+    var dur=(m.duration&&m.duration.total)||(totH?totH+' hours':'');
+    html+='<div class="d-stats">'
+      + statTile('Duration', dur)
+      + statTile('Total training hours', totH?totH+' hrs':'')
+      + statTile('Modules', mods.length)
+      + statTile('Maximum marks', m.maxMarks)
+      + statTile('Pass criterion', m.passMark)
+      +'</div>';
+    if(m.mode) html+='<div class="d-mode"><span class="dm-l">Mode of delivery</span><span class="dm-v">'+esc(m.mode)+'</span></div>';
+
+    /* assessment & hours structure table */
+    html+='<h3 class="d-sec">Assessment &amp; Hours Structure</h3>';
     html+='<div class="cur-tblwrap"><table class="cur-tbl"><thead>'
-      +'<tr><th rowspan="2">#</th><th rowspan="2">Module</th><th colspan="5">Hours</th><th colspan="5">Continuous Eval</th><th colspan="5">End-course Exam</th></tr>'
+      +'<tr><th rowspan="2">#</th><th rowspan="2">Module</th><th colspan="5">Training Hours</th><th colspan="5">Continuous Evaluation</th><th colspan="5">End-course Examination</th></tr>'
       +'<tr><th>T</th><th>P</th><th>OJT</th><th>Int</th><th>Tot</th><th>T</th><th>P</th><th>Att</th><th>Asg</th><th>Tot</th><th>Th</th><th>Pr</th><th>Prj</th><th>Viva</th><th>Tot</th></tr>'
       +'</thead><tbody>';
+    var sumH={t:0,p:0,ojt:0,intern:0,total:0}, sumCE={t:0,p:0,att:0,asgn:0,total:0}, sumEC={theory:0,practical:0,project:0,viva:0,total:0};
     mods.forEach(function(x){
       var h=x.hours||{}, ce=x.ce||{}, ec=x.ece||{};
+      ['t','p','ojt','intern','total'].forEach(function(k){ sumH[k]+=num(h[k]); });
+      ['t','p','att','asgn','total'].forEach(function(k){ sumCE[k]+=num(ce[k]); });
+      ['theory','practical','project','viva','total'].forEach(function(k){ sumEC[k]+=num(ec[k]); });
       function c(v){ return '<td>'+(v?v:'<span class="z">–</span>')+'</td>'; }
       html+='<tr><td class="mno">'+esc(x.no)+'</td><td class="mnm">'+esc(x.name)+'</td>'
         +c(h.t)+c(h.p)+c(h.ojt)+c(h.intern)+'<td class="tot">'+(h.total||'')+'</td>'
         +c(ce.t)+c(ce.p)+c(ce.att)+c(ce.asgn)+'<td class="tot">'+(ce.total||'')+'</td>'
         +c(ec.theory)+c(ec.practical)+c(ec.project)+c(ec.viva)+'<td class="tot">'+(ec.total||'')+'</td></tr>';
     });
+    function tc(v){ return '<td>'+(v||'<span class="z">–</span>')+'</td>'; }
+    html+='<tr class="trow"><td></td><td class="mnm">Total</td>'
+      +tc(sumH.t)+tc(sumH.p)+tc(sumH.ojt)+tc(sumH.intern)+'<td class="tot">'+(sumH.total||'')+'</td>'
+      +tc(sumCE.t)+tc(sumCE.p)+tc(sumCE.att)+tc(sumCE.asgn)+'<td class="tot">'+(sumCE.total||'')+'</td>'
+      +tc(sumEC.theory)+tc(sumEC.practical)+tc(sumEC.project)+tc(sumEC.viva)+'<td class="tot">'+(sumEC.total||'')+'</td></tr>';
     html+='</tbody></table></div>';
+    html+='<div class="d-legend">T — Theory&nbsp; ·&nbsp; P — Practical&nbsp; ·&nbsp; OJT — On-the-Job Training&nbsp; ·&nbsp; Int — Internship&nbsp; ·&nbsp; Att — Attendance&nbsp; ·&nbsp; Asg — Assignment&nbsp; ·&nbsp; Th — Theory&nbsp; ·&nbsp; Pr — Practical&nbsp; ·&nbsp; Prj — Project</div>';
 
-    /* module detail cards */
-    html+='<div class="cur-mods">';
+    /* detailed syllabus — formal expanded sections */
+    html+='<h3 class="d-sec">Detailed Syllabus</h3>';
+    html+='<div class="d-mods">';
     mods.forEach(function(x){
       var h=x.hours||{};
-      html+='<details class="cur-mod"><summary><span class="cm-no">Module '+esc(x.no)+'</span>'
-        +'<span class="cm-nm">'+esc(x.name)+'</span>'
-        +'<span class="cm-h">'+(h.total?h.total+' hrs':'')+(x.ece&&x.ece.total?' · '+x.ece.total+' marks (exam)':'')+'</span></summary>'
-        +'<div class="cm-body">';
-      if(hoursChips(h)) html+='<div class="cm-chips">'+esc(hoursChips(h))+' · Total '+(h.total||0)+' hrs</div>';
-      if(x.objective) html+='<div class="cm-sec"><b>Objective</b><p>'+nlToBr(x.objective)+'</p></div>';
-      if(x.outcome) html+='<div class="cm-sec"><b>Outcome</b><p>'+nlToBr(x.outcome)+'</p></div>';
-      if(x.methodology) html+='<div class="cm-sec"><b>Methodology &amp; Tools</b><p>'+nlToBr(x.methodology)+'</p></div>';
+      html+='<section class="d-mod">'
+        +'<div class="d-mod-h"><span class="d-mod-no">Module '+esc(x.no)+'</span>'
+        +'<h4 class="d-mod-nm">'+esc(x.name)+'</h4>'
+        +'<span class="d-mod-meta">'+(h.total?h.total+' hrs':'')+(x.ece&&x.ece.total?'&nbsp; ·&nbsp; '+x.ece.total+' exam marks':'')+'</span></div>'
+        +'<div class="d-mod-b">';
+      if(hoursChips(h)) html+='<div class="d-chips">'+esc(hoursChips(h))+'&nbsp; ·&nbsp; Total '+(h.total||0)+' hrs</div>';
+      if(x.objective)   html+='<div class="d-field"><span class="d-field-l">Learning Objective</span><p>'+nlToBr(x.objective)+'</p></div>';
+      if(x.outcome)     html+='<div class="d-field"><span class="d-field-l">Learning Outcome</span><p>'+nlToBr(x.outcome)+'</p></div>';
+      if(x.methodology) html+='<div class="d-field"><span class="d-field-l">Methodology &amp; Tools</span><p>'+nlToBr(x.methodology)+'</p></div>';
       if(x.units&&x.units.length){
-        html+='<div class="cm-sec"><b>Units &amp; Topics</b><div class="cm-units">';
+        html+='<div class="d-field"><span class="d-field-l">Units &amp; Topics</span><div class="d-units">';
         x.units.forEach(function(u){
-          html+='<div class="cm-unit"><div class="cu-h"><span class="cu-no">'+(u.no?'Unit '+esc(u.no):'')+'</span>'
-            +(u.total?'<span class="cu-hrs">'+u.total+' hrs</span>':'')+'</div>'
-            +'<div class="cu-t">'+nlToBr(u.topics)+'</div></div>';
+          html+='<div class="d-unit"><div class="du-h"><span class="du-no">'+(u.no?'Unit '+esc(u.no):'Unit')+'</span>'
+            +(u.total?'<span class="du-hrs">'+u.total+' hrs</span>':'')+'</div>'
+            +'<div class="du-t">'+nlToBr(u.topics)+'</div></div>';
         });
         html+='</div></div>';
       }
-      html+='</div></details>';
+      html+='</div></section>';
     });
-    html+='</div></div>';
+    html+='</div>';
+
+    /* document footer */
+    html+='<footer class="d-foot">'
+      +'<div class="d-foot-rule"></div>'
+      +'<p>This curriculum is delivered in accordance with the ASAP Kerala framework. '
+      +'The document is issued by the Controller of Examinations, Alizon School of Medical &amp; Digital Intelligence, and is a system-generated academic record.</p>'
+      +'<div class="d-foot-brand">Alizon School of Medical &amp; Digital Intelligence&nbsp; ·&nbsp; Thiruvananthapuram, Kerala&nbsp; ·&nbsp; www.alizon.in</div>'
+      +'</footer>';
+
+    html+='</article>';
     el.innerHTML=html;
   }
 
   /* inject styles once */
   if(!document.getElementById('alzCurCss')){
     var st=document.createElement('style'); st.id='alzCurCss';
-    st.textContent='.alz-cur{color:var(--ink,#2e2d29);font-family:inherit}'
-      +'.alz-cur .cur-head{margin-bottom:16px}'
-      +'.alz-cur .cur-code{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9a7b3f}'
-      +'.alz-cur .cur-title{font-family:"Source Serif Pro",Georgia,serif;font-size:22px;font-weight:700;margin-top:4px;color:inherit}'
-      +'.alz-cur .cur-meta{display:flex;gap:8px 18px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:#6e6a63}'
-      +'.alz-cur .cur-meta b{color:inherit}'
-      +'.alz-cur .cur-tblwrap{overflow-x:auto;border:1px solid rgba(0,0,0,.1);border-radius:10px;margin:6px 0 20px}'
-      +'.alz-cur .cur-tbl{border-collapse:collapse;width:100%;min-width:760px;font-size:12px}'
-      +'.alz-cur .cur-tbl th{background:#8c1515;color:#fff;font-weight:600;padding:7px 6px;text-align:center;border:1px solid rgba(255,255,255,.15);font-size:11px}'
-      +'.alz-cur .cur-tbl td{padding:7px 6px;text-align:center;border:1px solid rgba(0,0,0,.08);color:#2e2d29}'
-      +'.alz-cur .cur-tbl td.mno{font-weight:700;color:#8c1515}'
-      +'.alz-cur .cur-tbl td.mnm{text-align:left;font-weight:600;min-width:200px}'
-      +'.alz-cur .cur-tbl td.tot{font-weight:700;background:#faf3f3}'
-      +'.alz-cur .cur-tbl .z{color:#c9c2ba}'
-      +'.alz-cur .cur-tbl tbody tr:nth-child(even){background:#faf8f6}'
-      +'.alz-cur .cur-mods{display:flex;flex-direction:column;gap:10px}'
-      +'.alz-cur .cur-mod{border:1px solid rgba(0,0,0,.1);border-radius:10px;background:#fff;overflow:hidden}'
-      +'.alz-cur .cur-mod>summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px 16px;flex-wrap:wrap}'
-      +'.alz-cur .cur-mod>summary::-webkit-details-marker{display:none}'
-      +'.alz-cur .cur-mod .cm-no{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:#8c1515;border-radius:100px;padding:4px 12px;flex:none}'
-      +'.alz-cur .cur-mod .cm-nm{font-family:"Source Serif Pro",Georgia,serif;font-size:16px;font-weight:600;flex:1;min-width:180px}'
-      +'.alz-cur .cur-mod .cm-h{font-size:12px;color:#6e6a63;font-weight:600}'
-      +'.alz-cur .cur-mod[open]>summary{border-bottom:1px solid rgba(0,0,0,.08);background:#faf8f6}'
-      +'.alz-cur .cm-body{padding:14px 18px 18px}'
-      +'.alz-cur .cm-chips{font-size:12px;font-weight:600;color:#8c1515;background:rgba(140,21,21,.06);border:1px solid rgba(140,21,21,.16);border-radius:100px;padding:6px 14px;display:inline-block;margin-bottom:12px}'
-      +'.alz-cur .cm-sec{margin-top:12px}'
-      +'.alz-cur .cm-sec>b{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9a7b3f;display:block;margin-bottom:5px}'
-      +'.alz-cur .cm-sec p{font-size:13.5px;line-height:1.6;color:#2e2d29}'
-      +'.alz-cur .cm-units{display:flex;flex-direction:column;gap:8px}'
-      +'.alz-cur .cm-unit{border:1px solid rgba(0,0,0,.09);border-left:3px solid #9a7b3f;border-radius:8px;padding:10px 14px;background:#faf8f6}'
-      +'.alz-cur .cu-h{display:flex;gap:10px;align-items:center;margin-bottom:4px}'
-      +'.alz-cur .cu-no{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8c1515}'
-      +'.alz-cur .cu-hrs{margin-left:auto;font-size:11.5px;font-weight:600;color:#6e6a63}'
-      +'.alz-cur .cu-t{font-size:13px;line-height:1.55;color:#2e2d29}'
-      +'.alz-cur .cur-empty{color:#6e6a63;font-size:14px;padding:20px 0;text-align:center}';
+    st.textContent=
+       '.alz-doc{--cr:#8c1515;--cr2:#6b0f0f;--gold:#9a7b3f;--ink:#26221f;--muted:#6e6a63;'
+      +'max-width:900px;margin:0 auto;color:var(--ink);font-family:"Source Sans 3","Source Sans Pro",-apple-system,Helvetica,Arial,sans-serif}'
+      /* ---- letterhead ---- */
+      +'.alz-doc .d-lh{display:flex;align-items:center;gap:18px;padding-bottom:16px;border-bottom:2.5px solid var(--cr)}'
+      +'.alz-doc .d-lh-logo{width:66px;height:66px;object-fit:contain;flex:none}'
+      +'.alz-doc .d-lh-name{font-family:"Source Serif Pro",Georgia,serif;font-size:clamp(18px,2.6vw,25px);font-weight:700;color:var(--cr);line-height:1.15;letter-spacing:.2px}'
+      +'.alz-doc .d-lh-tag{font-size:12.5px;font-style:italic;color:var(--muted);margin-top:3px}'
+      +'.alz-doc .d-lh-addr{font-size:11.5px;letter-spacing:.04em;color:#8a827b;margin-top:5px;font-weight:600}'
+      +'.alz-doc .d-lh-affil{font-size:11px;line-height:1.5;color:#5f5a54;background:linear-gradient(90deg,rgba(154,123,63,.1),rgba(154,123,63,.02));border-left:3px solid var(--gold);padding:7px 12px;margin-top:10px;border-radius:0 6px 6px 0}'
+      +'.alz-doc .d-lh-affil b{color:var(--cr2)}'
+      /* ---- actions ---- */
+      +'.alz-doc .d-actions{display:flex;justify-content:flex-end;margin:16px 0 4px}'
+      +'.alz-doc .d-print{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--cr);background:#fff;border:1px solid rgba(140,21,21,.4);border-radius:100px;padding:9px 18px}'
+      +'.alz-doc .d-print:hover{background:var(--cr);color:#fff}'
+      /* ---- title band ---- */
+      +'.alz-doc .d-title{text-align:center;padding:14px 0 6px;margin-top:6px}'
+      +'.alz-doc .d-kicker{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}'
+      +'.alz-doc .d-name{font-family:"Source Serif Pro",Georgia,serif;font-size:clamp(20px,3.2vw,27px);font-weight:700;color:var(--ink);margin:8px 0 0;line-height:1.25}'
+      +'.alz-doc .d-sub{display:flex;gap:10px 20px;justify-content:center;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--muted)}'
+      +'.alz-doc .d-sub b{color:var(--cr)}'
+      /* ---- stat tiles ---- */
+      +'.alz-doc .d-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:22px 0 8px}'
+      +'.alz-doc .d-stat{border:1px solid rgba(0,0,0,.1);border-top:3px solid var(--cr);border-radius:10px;padding:14px 14px;text-align:center;background:#fff;box-shadow:0 8px 22px -18px rgba(20,18,16,.4)}'
+      +'.alz-doc .ds-v{display:block;font-family:"Source Serif Pro",Georgia,serif;font-size:19px;font-weight:700;color:var(--cr);line-height:1.2}'
+      +'.alz-doc .ds-l{display:block;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:6px}'
+      +'.alz-doc .d-mode{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-top:12px;border:1px solid rgba(0,0,0,.1);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:11px 15px;background:#faf8f6}'
+      +'.alz-doc .dm-l{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);flex:none}'
+      +'.alz-doc .dm-v{font-size:13.5px;font-weight:600;color:var(--ink)}'
+      /* ---- section heading ---- */
+      +'.alz-doc .d-sec{font-family:"Source Serif Pro",Georgia,serif;font-size:17px;font-weight:700;color:var(--ink);margin:30px 0 12px;padding-bottom:7px;border-bottom:1px solid rgba(140,21,21,.2);display:flex;align-items:center;gap:9px}'
+      +'.alz-doc .d-sec:before{content:"";width:8px;height:18px;background:var(--cr);border-radius:2px;display:inline-block}'
+      /* ---- table ---- */
+      +'.alz-doc .cur-tblwrap{overflow-x:auto;border:1px solid rgba(0,0,0,.12);border-radius:10px}'
+      +'.alz-doc .cur-tbl{border-collapse:collapse;width:100%;min-width:780px;font-size:12px}'
+      +'.alz-doc .cur-tbl th{background:var(--cr);color:#fff;font-weight:600;padding:8px 6px;text-align:center;border:1px solid rgba(255,255,255,.18);font-size:10.5px;letter-spacing:.02em}'
+      +'.alz-doc .cur-tbl td{padding:8px 6px;text-align:center;border:1px solid rgba(0,0,0,.08);color:var(--ink)}'
+      +'.alz-doc .cur-tbl td.mno{font-weight:700;color:var(--cr)}'
+      +'.alz-doc .cur-tbl td.mnm{text-align:left;font-weight:600;min-width:210px}'
+      +'.alz-doc .cur-tbl td.tot{font-weight:700;background:#faf3f3}'
+      +'.alz-doc .cur-tbl .z{color:#c9c2ba}'
+      +'.alz-doc .cur-tbl tbody tr:nth-child(even){background:#faf8f6}'
+      +'.alz-doc .cur-tbl tr.trow td{background:#2b2320;color:#fff;font-weight:700;border-color:rgba(255,255,255,.14)}'
+      +'.alz-doc .cur-tbl tr.trow td.tot{background:#1c1613}'
+      +'.alz-doc .cur-tbl tr.trow .z{color:rgba(255,255,255,.4)}'
+      +'.alz-doc .d-legend{font-size:10.5px;color:var(--muted);margin:8px 2px 0;line-height:1.6}'
+      /* ---- module sections ---- */
+      +'.alz-doc .d-mods{display:flex;flex-direction:column;gap:16px}'
+      +'.alz-doc .d-mod{border:1px solid rgba(0,0,0,.12);border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 10px 26px -22px rgba(20,18,16,.45)}'
+      +'.alz-doc .d-mod-h{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:13px 18px;background:linear-gradient(90deg,rgba(140,21,21,.06),rgba(140,21,21,0));border-bottom:1px solid rgba(140,21,21,.14)}'
+      +'.alz-doc .d-mod-no{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--cr);border-radius:100px;padding:5px 13px;flex:none}'
+      +'.alz-doc .d-mod-nm{font-family:"Source Serif Pro",Georgia,serif;font-size:16.5px;font-weight:700;flex:1;min-width:180px;margin:0;color:var(--ink)}'
+      +'.alz-doc .d-mod-meta{font-size:12px;color:var(--muted);font-weight:600}'
+      +'.alz-doc .d-mod-b{padding:16px 20px 18px}'
+      +'.alz-doc .d-chips{font-size:11.5px;font-weight:700;color:var(--cr);background:rgba(140,21,21,.06);border:1px solid rgba(140,21,21,.16);border-radius:100px;padding:6px 14px;display:inline-block;margin-bottom:14px}'
+      +'.alz-doc .d-field{margin-top:14px}'
+      +'.alz-doc .d-field:first-child{margin-top:0}'
+      +'.alz-doc .d-field-l{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:6px}'
+      +'.alz-doc .d-field p{font-size:13.5px;line-height:1.65;color:var(--ink);margin:0}'
+      +'.alz-doc .d-units{display:flex;flex-direction:column;gap:9px}'
+      +'.alz-doc .d-unit{border:1px solid rgba(0,0,0,.09);border-left:3px solid var(--gold);border-radius:8px;padding:11px 15px;background:#faf8f6}'
+      +'.alz-doc .du-h{display:flex;gap:10px;align-items:center;margin-bottom:5px}'
+      +'.alz-doc .du-no{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cr)}'
+      +'.alz-doc .du-hrs{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted)}'
+      +'.alz-doc .du-t{font-size:13px;line-height:1.6;color:var(--ink)}'
+      /* ---- footer ---- */
+      +'.alz-doc .d-foot{margin-top:30px}'
+      +'.alz-doc .d-foot-rule{height:2px;background:linear-gradient(90deg,var(--cr),var(--gold));border-radius:2px}'
+      +'.alz-doc .d-foot p{font-size:11.5px;line-height:1.6;color:var(--muted);margin:12px 0 8px;text-align:center}'
+      +'.alz-doc .d-foot-brand{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--cr);text-align:center}'
+      +'.cur-empty{color:#6e6a63;font-size:14px;padding:26px 0;text-align:center}'
+      /* ---- print: clean official A4 document, chrome hidden ---- */
+      +'@media print{body{background:#fff!important}'
+      +'.nav,.strip,.pick,.admin,footer,#alizonBack,.alz-back,.no-print{display:none!important}'
+      +'main,.wrap,.box{padding:0!important;margin:0!important;border:none!important;box-shadow:none!important;max-width:none!important;background:#fff!important}'
+      +'.alz-doc{max-width:none}'
+      +'.alz-doc .d-mod,.alz-doc .d-stat,.alz-doc .cur-tblwrap{box-shadow:none!important;break-inside:avoid}'
+      +'.alz-doc .d-sec{break-after:avoid}}';
     document.head.appendChild(st);
   }
 
