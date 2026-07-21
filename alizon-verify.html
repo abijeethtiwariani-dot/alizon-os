@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify — Student & Employee Verification | Alizon School of Medical & Digital Intelligence</title>
+<meta name="description" content="Verify an Alizon student by registration number, or look up an Alizon employee by name and department. Official verification service of Alizon School of Medical & Digital Intelligence, Kerala.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.alizon.in/alizon-verify">
+<link rel="icon" href="alizon-logo.png">
+<script src="firebase-sync.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --crimson:#8c1515; --crimson-deep:#6b0f0f; --gold:#9a7b3f; --ink:#2e2d29; --muted:#6e6a63;
+    --line:rgba(0,0,0,.12); --paper:#faf8f6; --ok:#1E8E5A; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Source Sans 3','Source Sans Pro',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;min-height:100vh;display:flex;flex-direction:column}
+  a{color:inherit;text-decoration:none}
+  .serif{font-family:'Source Serif Pro',Georgia,serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px;width:100%}
+
+  .nav{background:var(--crimson);box-shadow:0 2px 14px rgba(60,8,8,.25)}
+  .nav .in{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:12px;min-height:60px}
+  .nav img{width:32px;height:32px;object-fit:contain;filter:brightness(0) invert(1)}
+  .nav .bt b{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;color:#fff;display:block;line-height:1.05}
+  .nav .bt small{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#eecfcf;font-weight:600}
+  .nav nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+  .nav nav a{color:#fff;font-size:13.5px;font-weight:500;padding:8px 12px;border-radius:4px}
+  .nav nav a:hover{background:rgba(0,0,0,.2)}
+  .nav nav a.pri{background:#fff;color:var(--crimson-deep);font-weight:600}
+
+  .strip{background:#181512;color:#fff;padding:34px 0 30px}
+  .strip .ey{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#e8b4b4}
+  .strip h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.9rem,5vw,2.9rem);font-weight:600;margin-top:8px}
+  .strip p{color:#c9c2ba;font-size:14px;margin-top:10px;max-width:64ch;line-height:1.6}
+
+  main{flex:1;padding:34px 0 60px}
+  .tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+  .tab{cursor:pointer;font-weight:600;font-size:14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:100px;padding:10px 20px;font-family:inherit}
+  .tab.on{border-color:transparent;color:#fff;background:var(--crimson)}
+  .panel{display:none}
+  .panel.on{display:block}
+  .box{background:#fff;border:1px solid var(--line);border-top:3px solid var(--crimson);border-radius:12px;padding:26px;box-shadow:0 12px 34px -22px rgba(20,18,16,.25)}
+  .box h2{font-family:'Source Serif Pro',Georgia,serif;font-size:22px;font-weight:600;margin-bottom:4px}
+  .box .hint{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+  .fld{flex:1;min-width:220px}
+  .fld label{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .fld input,.fld select{width:100%;padding:12px 14px;border:1px solid rgba(0,0,0,.18);border-radius:8px;font:inherit;font-size:14.5px;background:#fff;color:var(--ink)}
+  .fld input:focus,.fld select:focus{outline:2px solid rgba(140,21,21,.35);border-color:var(--crimson)}
+  .btn{cursor:pointer;font-family:inherit;font-weight:600;font-size:14px;border:none;color:#fff;background:var(--crimson);border-radius:8px;padding:13px 26px;white-space:nowrap}
+  .btn:hover{background:var(--crimson-deep)}
+  .err{color:#b1040e;font-size:13.5px;font-weight:600;margin-top:12px}
+  .result{margin-top:20px}
+  .vcard{border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:10px;padding:20px 22px;background:var(--paper)}
+  .vcard.miss{border-left-color:#b1040e}
+  .vcard .vh{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .vcard .av{width:56px;height:56px;border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(140,21,21,.25);background:#fff}
+  .vcard .mono{width:56px;height:56px;border-radius:50%;flex:none;background:linear-gradient(135deg,#8c1515,#4c0a0a);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Source Serif Pro',Georgia,serif;font-size:22px;font-weight:700}
+  .vcard .nm{font-family:'Source Serif Pro',Georgia,serif;font-size:20px;font-weight:700}
+  .vcard .badge{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;background:#e7f5ec;color:var(--ok);border:1px solid #b9e0c8}
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:16px}
+  .vi{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 13px}
+  .vi .k{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .vi .v{font-size:14px;font-weight:600;margin-top:2px;word-break:break-word}
+  .dlist{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .drow{display:flex;gap:14px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px 16px;background:#fff}
+  .drow .av,.drow .mono{width:44px;height:44px;font-size:17px}
+  .drow .info b{font-family:'Source Serif Pro',Georgia,serif;font-size:16px;font-weight:600;display:block}
+  .drow .info small{font-size:12.5px;color:var(--muted)}
+  .drow .dept{margin-left:auto;font-size:12px;font-weight:600;color:var(--crimson);background:rgba(140,21,21,.07);border:1px solid rgba(140,21,21,.18);border-radius:100px;padding:6px 13px;white-space:nowrap}
+  .privacy{font-size:12px;color:var(--muted);margin-top:16px;line-height:1.6}
+  footer{background:var(--crimson);color:#f3e2e2;padding:26px 24px;text-align:center;font-size:12.5px}
+  footer a{color:#fff;font-weight:600}
+</style>
+<link rel="stylesheet" href="alizon-theme.css">
+</head>
+<body>
+
+<div class="nav"><div class="in">
+  <img src="alizon-logo.png" alt="Alizon logo">
+  <div class="bt"><b class="serif">Alizon</b><small>Verification Service</small></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="alizon-results.html">Results</a>
+    <a href="alizon-exam.html">Examinations</a>
+    <a class="pri" href="ASMDI-dashboard.html">Student Portal &#8599;</a>
+  </nav>
+</div></div>
+
+<div class="strip"><div class="wrap">
+  <div class="ey">Official Verification</div>
+  <h1 class="serif">Verify a Student or Employee</h1>
+  <p>Confirm that a person is genuinely associated with Alizon School of Medical &amp; Digital Intelligence.
+    Verify a student by registration number, or look up an employee by name and department.</p>
+</div></div>
+
+<main><div class="wrap">
+  <div class="tabs">
+    <button class="tab on" data-tab="student" type="button">Verify a Student</button>
+    <button class="tab" data-tab="employee" type="button">Employee Directory</button>
+  </div>
+
+  <!-- STUDENT -->
+  <div class="panel on" id="p-student">
+    <div class="box">
+      <h2>Verify a student</h2>
+      <div class="hint">Enter the student's registration number (e.g. ALZ102) to confirm their name, programme, batch and standing. For privacy, contact details are not shown.</div>
+      <div class="row">
+        <div class="fld"><label>Registration number</label><input type="text" id="s-reg" placeholder="e.g. ALZ102" autocomplete="off"></div>
+        <button class="btn" id="s-go" type="button">Verify</button>
+      </div>
+      <div class="err" id="s-err"></div>
+      <div class="result" id="s-out"></div>
+    </div>
+  </div>
+
+  <!-- EMPLOYEE -->
+  <div class="panel" id="p-employee">
+    <div class="box">
+      <h2>Employee directory &amp; verification</h2>
+      <div class="hint">Search by name or filter by department to find and verify an Alizon employee. Shows name, designation, department and office. For privacy, personal and salary details are not shown.</div>
+      <div class="row">
+        <div class="fld"><label>Search by name or designation</label><input type="text" id="e-q" placeholder="e.g. Nithya, or Faculty" autocomplete="off"></div>
+        <div class="fld" style="max-width:240px"><label>Department</label><select id="e-dept"><option value="">All departments</option></select></div>
+        <button class="btn" id="e-go" type="button">Search</button>
+      </div>
+      <div class="err" id="e-err"></div>
+      <div class="result" id="e-out"></div>
+    </div>
+  </div>
+
+  <div class="privacy">This verification service reads only the official records maintained by the Alizon office and shows a limited, verification-appropriate set of fields. It does not display contact numbers, addresses, identity numbers, salary or other personal data. For full records, sign in to the relevant portal.</div>
+</div></main>
+
+<footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
+  <a href="https://www.alizongov.com" target="_blank" rel="noopener">alizongov.com</a> &middot; <a href="index.html">alizon.in</a></footer>
+
+<script>
+(function(){
+  'use strict';
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function J(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}}
+  function norm(v){return String(v||'').toLowerCase().replace(/\s+/g,'');}
+  function initials(n){return String(n||'').trim().split(/\s+/).slice(0,2).map(function(w){return w.charAt(0).toUpperCase();}).join('')||'A';}
+  function whenAuthed(cb,t){t=t||0;try{if(window.firebase&&firebase.auth&&firebase.auth().currentUser){cb(1);return;}}catch(e){}if(t>25){cb(0);return;}setTimeout(function(){whenAuthed(cb,t+1);},400);}
+  var OFFICES={tvm:'Thiruvananthapuram (HQ)',delhi:'New Delhi',blr:'Bengaluru',usa:'USA Chapter'};
+
+  /* chunked photo (student roster URL or office registry phimg) */
+  var ic={};
+  function loadPhimg(meta,el){ if(!meta||!meta.id||!el) return; if(ic[meta.id]){el.src=ic[meta.id];return;}
+    whenAuthed(function(ok){ if(!ok||!window.firebase||!firebase.firestore) return; var db=firebase.firestore(),g=[];
+      for(var i=0;i<(meta.chunks||1);i++) g.push(db.collection('sync').doc('phimg_'+meta.id+'_'+i).get());
+      Promise.all(g).then(function(sn){var b=sn.map(function(x){return (x.exists&&x.data()&&x.data().value)||'';}).join('');if(!b)return;ic[meta.id]='data:image/jpeg;base64,'+b;el.src=ic[meta.id];}).catch(function(){}); }); }
+  function photoMap(){ var o=J('alizonPhotos',{}); return (o&&typeof o==='object'&&!Array.isArray(o))?o:{}; }
+  function avatar(name,role,id,directUrl){
+    if(directUrl) return '<img class="av" src="'+esc(directUrl)+'" alt="" onerror="this.outerHTML=\'<div class=mono>'+esc(initials(name))+'</div>\'">';
+    var meta=photoMap()[role+':'+norm(id)];
+    if(meta&&meta.id) return '<img class="av" data-ph="'+esc(meta.id)+':'+(meta.chunks||1)+'" alt="">';
+    return '<div class="mono">'+esc(initials(name))+'</div>';
+  }
+  function hookPhotos(scope){ (scope||document).querySelectorAll('img[data-ph]').forEach(function(im){ var p=String(im.getAttribute('data-ph')).split(':'); loadPhimg({id:p[0],chunks:parseInt(p[1],10)||1},im); im.removeAttribute('data-ph'); }); }
+
+  function students(){ return (J('alizonStudents',[])||[]).filter(function(s){return s&&(s.reg||s.name);}); }
+  function employees(){ var d=J('alizonHR',{}); return (d&&Array.isArray(d.EMP)?d.EMP:[]).filter(function(e){return e&&(e.empid||e.name);}); }
+
+  /* ---- tabs ---- */
+  document.querySelectorAll('.tab').forEach(function(b){ b.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');}); b.classList.add('on');
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+    document.getElementById('p-'+b.getAttribute('data-tab')).classList.add('on');
+  }); });
+
+  /* ---- student verify ---- */
+  function verifyStudent(){
+    var q=norm((document.getElementById('s-reg')||{}).value);
+    var err=document.getElementById('s-err'), out=document.getElementById('s-out');
+    err.textContent=''; out.innerHTML='';
+    if(!q){ err.textContent='Enter a registration number.'; return; }
+    var st=students().filter(function(s){return norm(s.reg)===q;})[0];
+    if(!st){ out.innerHTML='<div class="vcard miss"><div class="vh"><div class="mono">?</div><div><div class="nm serif">Not verified</div></div></div>'
+      +'<div class="privacy" style="margin-top:12px">No student record matches <b>'+esc((document.getElementById('s-reg')||{}).value)+'</b>. Check the registration number, or contact the office.</div></div>'; return; }
+    var dir=st.photo||st.photoUrl||st.pic||'';
+    out.innerHTML='<div class="vcard"><div class="vh">'+avatar(st.name,'student',st.reg,dir)
+      +'<div style="flex:1"><div class="nm serif">'+esc((st.salutation?st.salutation+' ':'')+(st.name||''))+'</div></div>'
+      +'<span class="badge">Verified student</span></div>'
+      +'<div class="vgrid">'
+      +vi('Registration no',st.reg)+vi('Programme',st.programme||st.course)+vi('Batch',st.batch)
+      +vi('Status',st.status||'Enrolled')+'</div>'
+      +'<div class="privacy">Verified against the official Alizon student register. Personal contact details are withheld.</div></div>';
+    hookPhotos(out);
+  }
+  function vi(k,v){ return v?('<div class="vi"><div class="k">'+esc(k)+'</div><div class="v">'+esc(v)+'</div></div>'):''; }
+
+  /* ---- employee directory ---- */
+  function fillDepts(){
+    var sel=document.getElementById('e-dept'); if(!sel) return;
+    var set={}; employees().forEach(function(e){ var d=e.dept||e.department; if(d) set[d]=1; });
+    var cur=sel.value;
+    sel.innerHTML='<option value="">All departments</option>'+Object.keys(set).sort().map(function(d){return '<option>'+esc(d)+'</option>';}).join('');
+    if(cur) sel.value=cur;
+  }
+  function searchEmployees(){
+    var q=norm((document.getElementById('e-q')||{}).value), dept=(document.getElementById('e-dept')||{}).value||'';
+    var err=document.getElementById('e-err'), out=document.getElementById('e-out');
+    err.textContent=''; out.innerHTML='';
+    var list=employees().filter(function(e){
+      var okd=!dept||String(e.dept||e.department||'')===dept;
+      var hay=norm([e.name,e.desig,e.dept||e.department,e.empid].join(' '));
+      return okd && (!q || hay.indexOf(q)>-1);
+    });
+    if(!q && !dept){ err.textContent='Type a name/designation or pick a department.'; return; }
+    if(!list.length){ out.innerHTML='<div class="privacy">No employees match your search.</div>'; return; }
+    out.innerHTML='<div class="privacy" style="margin-top:0;margin-bottom:8px">'+list.length+' match'+(list.length===1?'':'es')+'</div><div class="dlist">'
+      +list.slice(0,50).map(function(e){
+        var dept=e.dept||e.department||'';
+        return '<div class="drow">'+avatar(e.name,'employee',e.empid,e.photo||e.photoUrl||e.pic||'')
+          +'<div class="info"><b>'+esc((e.salut?e.salut+' ':'')+(e.name||''))+'</b><small>'+esc(e.desig||e.emptype||'Staff')
+          +(e.empid?' · '+esc(e.empid):'')+(OFFICES[e.office]||e.office?' · '+esc(OFFICES[e.office]||e.office):'')+'</small></div>'
+          +(dept?'<span class="dept">'+esc(dept)+'</span>':'')+'</div>';
+      }).join('')+'</div>'
+      +'<div class="privacy">Verified against the official Alizon employee register. Personal, identity and salary details are withheld.</div>';
+    hookPhotos(out);
+  }
+
+  var sg=document.getElementById('s-go'); if(sg) sg.addEventListener('click',verifyStudent);
+  var eg=document.getElementById('e-go'); if(eg) eg.addEventListener('click',searchEmployees);
+  var sr=document.getElementById('s-reg'); if(sr) sr.addEventListener('keydown',function(e){ if(e.key==='Enter') verifyStudent(); });
+  var eq=document.getElementById('e-q'); if(eq) eq.addEventListener('keydown',function(e){ if(e.key==='Enter') searchEmployees(); });
+  /* fill departments once the roster syncs in */
+  fillDepts(); var tries=0; var iv=setInterval(function(){ fillDepts(); if(++tries>20) clearInterval(iv); }, 1500);
+  window.addEventListener('storage',function(e){ if(e.key==='alizonHR') fillDepts(); });
+})();
+</script>
+</body>
+</html>
