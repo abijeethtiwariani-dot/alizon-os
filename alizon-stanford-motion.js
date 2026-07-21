@@ -33,7 +33,7 @@
   ready(function () {
 
     /* ---------- 1) hero entrance ---------- */
-    var heroTxt = document.querySelector('.hero .txt');
+    var heroTxt = document.querySelector('.hero .txt') || document.querySelector('.hero .in');
     if (heroTxt) {
       var tl = g.timeline({ defaults: { ease: 'power3.out' } });
       var h1 = heroTxt.querySelector('h1'), p = heroTxt.querySelector('p');
@@ -58,6 +58,7 @@
       '.stat',
       '.topic .lead', '.topic .rows', '.rows',
       '.deg-band .in > *', '.spot .in > *',
+      '.zhead', '.gc', '.ben', '.story',
       '.login-grid > *', '.rd-box', '.cta h2'
     ].join(',');
 
@@ -87,7 +88,7 @@
     /* hero visual: art/photo drifts slower than the page */
     var visInner = document.querySelector('.hero .vis svg, .hero .vis .photo');
     var visWrap = document.querySelector('.hero .vis');
-    if (visWrap) {
+    if (visWrap && document.querySelector('.hero .txt')) {
       Array.prototype.forEach.call(document.querySelectorAll('.hero .vis svg, .hero .vis .photo'), function (el) {
         g.fromTo(el, { yPercent: -3 }, {
           yPercent: 3, ease: 'none',
