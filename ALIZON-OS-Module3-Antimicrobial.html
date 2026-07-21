@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Module 3 · Selection of Safe &amp; Effective Antimicrobial Therapy</title>
+<script>try{if((localStorage.getItem('pracTheme')||'dark')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)} .scorechip b{color:var(--gold)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:6px}
+  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:5px 0} .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:480px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  select,textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  select:focus,textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:64px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+  .facts .e{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .facts .e b{display:block;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  .facts .e.warnf{border-color:rgba(196,38,46,.4)}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .opt .rt{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
+  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
+  details.help>summary::-webkit-details-marker{display:none}
+  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
+  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 3 · Unit 2 — Selection of Safe &amp; Effective Antimicrobial Therapy</div>
+    <h1 class="serif">Selection of Safe &amp; Effective Antimicrobial Therapy</h1>
+    <p><b>Aim —</b> To select the safest, most effective and most appropriate antimicrobial for a patient using the infection, culture &amp; sensitivity (antibiogram), allergy, kidney function and pregnancy status, applying antimicrobial-stewardship principles.
+      <span class="muted">Duration 60 minutes · One case per student · 100-mark rubric · Pass 50%.</span></p>
+    <div class="chips">
+      <div class="scorechip">Case <b id="scCase">—</b></div>
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Prescribing Station</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div class="guide">
+      <h2>New to antimicrobial selection? Start here</h2>
+      <p>Choosing an antibiotic is not just "which one kills the bug". A good choice must be <b>Safe</b>, <b>Effective</b>, and <b>appropriate</b> (stewardship). Work through each case like this:</p>
+      <ol>
+        <li><b>Identify the infection &amp; likely organism</b> — use the site of infection and any culture &amp; sensitivity (antibiogram) result.</li>
+        <li><b>Effective?</b> — the antibiotic must cover the organism and be <b>sensitive</b> on the antibiogram (not resistant).</li>
+        <li><b>Safe?</b> — check <b>allergy</b>, <b>pregnancy</b> and <b>kidney function</b>. Never choose a drug the patient is allergic to or that is contraindicated.</li>
+        <li><b>Stewardship</b> — pick the <b>narrowest</b> effective agent, the right route (oral if possible), and de-escalate once cultures are back. Save broad-spectrum drugs for when they are truly needed.</li>
+      </ol>
+      <p style="margin-top:8px">Unsure on a case? Open <b>“Need a hint?”</b> in the station.</p>
+    </div>
+    <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
+    <div class="card"><h2>Common safety rules to remember</h2>
+      <div class="tw"><table><thead><tr><th>Situation</th><th>Avoid / caution</th></tr></thead><tbody>
+        <tr><td><b>Penicillin allergy</b></td><td>Avoid penicillins &amp; co-amoxiclav; use a macrolide, doxycycline (caution with cephalosporins)</td></tr>
+        <tr><td><b>Pregnancy</b></td><td>Avoid fluoroquinolones (ciprofloxacin) &amp; tetracyclines (doxycycline); trimethoprim in 1st trimester</td></tr>
+        <tr><td><b>Poor kidney function</b></td><td>Avoid nitrofurantoin (eGFR &lt; 45); dose-adjust or avoid nephrotoxic agents (e.g. gentamicin)</td></tr>
+        <tr><td><b>Stewardship</b></td><td>Use the narrowest effective agent; de-escalate from broad-spectrum once cultures return</td></tr>
+      </tbody></table></div></div>
+    <div class="card"><h2>Faculty assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
+      <p class="note">Choosing an antibiotic the patient is allergic to, or that is contraindicated (pregnancy / kidney), is a patient-safety error and fails the station.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card"><h2>Candidate &amp; case assignment</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+        <div><label class="f">Assigned case</label><select id="caseSel"></select></div>
+      </div>
+    </div>
+    <div id="caseArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>Practical record &amp; assessment</h2>
+      <p class="muted" id="repEmpty">Select the antimicrobial and submit to generate your assessment, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js"></script>
+<script src="alizon-practical-report.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+
+  var TASKS=['Identify the infection and the likely / cultured organism','Read the culture & sensitivity (antibiogram)',
+    'Check the patient for allergy, pregnancy and kidney function','Select an antimicrobial that is EFFECTIVE (organism sensitive)',
+    'Ensure the choice is SAFE (no allergy / contraindication)','Apply stewardship — narrowest effective agent, right route',
+    'Confirm you have checked allergy, renal function and pregnancy','Document the rationale for your choice'];
+  var RUBRIC=[
+    {k:'org', label:'Organism / infection identification', max:15},
+    {k:'eff', label:'Effective choice (organism sensitive)', max:30},
+    {k:'safe',label:'Safe choice (allergy / contraindications)', max:25},
+    {k:'stew',label:'Antimicrobial stewardship', max:20},
+    {k:'doc', label:'Rationale & safety documentation', max:10}];
+  var MAXTOTAL=RUBRIC.reduce(function(a,r){return a+r.max;},0);
+
+  /* abx option: {name, route, eff, safe, spectrum:'narrow'|'broad', pref} */
+  var CASES=[
+   {n:1,pt:{name:'Neha S',age:24,sex:'Female'},dx:'Uncomplicated lower urinary tract infection',
+    scenario:'A healthy 24-year-old woman has 2 days of dysuria and urinary frequency. No fever or flank pain. Not pregnant.',
+    culture:'Urine culture: E. coli. Sensitive: nitrofurantoin, fosfomycin. Resistant: amoxicillin, trimethoprim.',
+    factors:{allergy:'None',renal:'Normal (eGFR 90)',preg:'Not pregnant',sev:'Mild'},
+    org:{q:'Most likely organism?',o:['E. coli','Staphylococcus aureus','Candida','Group A Streptococcus'],c:0},
+    abx:[
+     {name:'Nitrofurantoin',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:true},
+     {name:'Amoxicillin',route:'PO',eff:false,safe:true,spectrum:'narrow',pref:false},
+     {name:'Ciprofloxacin',route:'PO',eff:true,safe:true,spectrum:'broad',pref:false},
+     {name:'Trimethoprim',route:'PO',eff:false,safe:true,spectrum:'narrow',pref:false},
+     {name:'Ceftriaxone',route:'IV',eff:true,safe:true,spectrum:'broad',pref:false}],
+    hint:'Simple UTI in a healthy adult. Nitrofurantoin is first-line and narrow-spectrum — the culture shows it is sensitive. Ciprofloxacin/ceftriaxone would work but are reserved (stewardship).'},
+
+   {n:2,pt:{name:'Thomas J',age:60,sex:'Male'},dx:'Community-acquired pneumonia',
+    scenario:'A 60-year-old man with cough, fever and breathlessness. Chest X-ray confirms pneumonia.',
+    culture:'Likely Streptococcus pneumoniae (empirical — no culture yet).',
+    factors:{allergy:'PENICILLIN — rash/swelling',renal:'Normal',preg:'—',sev:'Moderate'},
+    org:{q:'Most likely organism?',o:['Streptococcus pneumoniae','Pseudomonas aeruginosa','MRSA','Candida'],c:0},
+    abx:[
+     {name:'Amoxicillin',route:'PO',eff:true,safe:false,spectrum:'narrow',pref:false},
+     {name:'Co-amoxiclav',route:'PO',eff:true,safe:false,spectrum:'broad',pref:false},
+     {name:'Doxycycline',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:true},
+     {name:'Clarithromycin',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:false},
+     {name:'Piperacillin-tazobactam',route:'IV',eff:true,safe:true,spectrum:'broad',pref:false}],
+    hint:'The patient has a penicillin allergy — amoxicillin and co-amoxiclav are unsafe. A macrolide or doxycycline covers pneumonia safely and is narrow-spectrum.'},
+
+   {n:3,pt:{name:'Aisha R',age:28,sex:'Female'},dx:'Urinary tract infection in pregnancy',
+    scenario:'A 28-year-old woman, 20 weeks pregnant, with dysuria and frequency.',
+    culture:'Urine culture: E. coli. Sensitive: cephalexin, nitrofurantoin, amoxicillin.',
+    factors:{allergy:'None',renal:'Normal',preg:'PREGNANT — 20 weeks',sev:'Mild'},
+    org:{q:'Most likely organism?',o:['E. coli','MRSA','Pseudomonas','Candida'],c:0},
+    abx:[
+     {name:'Cephalexin',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:true},
+     {name:'Ciprofloxacin',route:'PO',eff:true,safe:false,spectrum:'broad',pref:false},
+     {name:'Doxycycline',route:'PO',eff:false,safe:false,spectrum:'narrow',pref:false},
+     {name:'Trimethoprim',route:'PO',eff:true,safe:false,spectrum:'narrow',pref:false},
+     {name:'Nitrofurantoin',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:false}],
+    hint:'She is pregnant. Avoid ciprofloxacin (fluoroquinolone) and doxycycline (tetracycline); trimethoprim is best avoided too. A cephalosporin such as cephalexin is safe and effective.'},
+
+   {n:4,pt:{name:'Gopal M',age:71,sex:'Male'},dx:'Severe sepsis, source unknown',
+    scenario:'A 71-year-old man is hypotensive, febrile and confused with a raised lactate. The source is not yet identified and he is critically unwell.',
+    culture:'Cultures sent; results pending.',
+    factors:{allergy:'None',renal:'eGFR 60',preg:'—',sev:'Severe / life-threatening'},
+    org:{q:'Best initial approach?',o:['Broad-spectrum empirical IV antibiotics now, de-escalate later','Wait for culture results before any antibiotic','Narrow oral antibiotic','No antibiotic — observe'],c:0},
+    abx:[
+     {name:'Piperacillin-tazobactam',route:'IV',eff:true,safe:true,spectrum:'broad',pref:true},
+     {name:'Amoxicillin',route:'PO',eff:false,safe:true,spectrum:'narrow',pref:false},
+     {name:'Nitrofurantoin',route:'PO',eff:false,safe:true,spectrum:'narrow',pref:false},
+     {name:'Ceftriaxone',route:'IV',eff:true,safe:true,spectrum:'broad',pref:false},
+     {name:'No antibiotic yet',route:'—',eff:false,safe:true,spectrum:'narrow',pref:false}],
+    hint:'This is severe sepsis — here broad-spectrum IV therapy started urgently is the correct, life-saving choice (then de-escalate). A narrow oral agent would be inadequate.'},
+
+   {n:5,pt:{name:'Suresh P',age:55,sex:'Male'},dx:'MRSA wound infection',
+    scenario:'A 55-year-old man with a spreading surgical-wound infection. Swab has grown MRSA.',
+    culture:'Wound swab: MRSA. Sensitive: vancomycin, doxycycline, clindamycin. Resistant: flucloxacillin.',
+    factors:{allergy:'None',renal:'Normal',preg:'—',sev:'Moderate–severe'},
+    org:{q:'Organism identified?',o:['MRSA (meticillin-resistant S. aureus)','E. coli','Pseudomonas','Candida'],c:0},
+    abx:[
+     {name:'Flucloxacillin',route:'IV',eff:false,safe:true,spectrum:'narrow',pref:false},
+     {name:'Vancomycin',route:'IV',eff:true,safe:true,spectrum:'broad',pref:true},
+     {name:'Doxycycline',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:false},
+     {name:'Amoxicillin',route:'PO',eff:false,safe:true,spectrum:'narrow',pref:false},
+     {name:'Ciprofloxacin',route:'PO',eff:false,safe:true,spectrum:'broad',pref:false}],
+    hint:'MRSA is resistant to flucloxacillin and other beta-lactams. Use an agent it is sensitive to — vancomycin (IV, for significant infection) or doxycycline for milder disease.'},
+
+   {n:6,pt:{name:'Balan K',age:68,sex:'Male'},dx:'UTI with poor kidney function',
+    scenario:'A 68-year-old man with a UTI. He has chronic kidney disease with an eGFR of 20 ml/min.',
+    culture:'Urine culture: E. coli. Sensitive: trimethoprim, cephalexin. Resistant: amoxicillin.',
+    factors:{allergy:'None',renal:'eGFR 20 (severe CKD)',preg:'—',sev:'Mild–moderate'},
+    org:{q:'Most likely organism?',o:['E. coli','MRSA','Candida','Group A Streptococcus'],c:0},
+    abx:[
+     {name:'Nitrofurantoin',route:'PO',eff:false,safe:false,spectrum:'narrow',pref:false},
+     {name:'Trimethoprim (renal-adjusted)',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:true},
+     {name:'Cephalexin (renal-adjusted)',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:false},
+     {name:'Gentamicin',route:'IV',eff:true,safe:false,spectrum:'broad',pref:false},
+     {name:'Amoxicillin',route:'PO',eff:false,safe:true,spectrum:'narrow',pref:false}],
+    hint:'With eGFR 20, nitrofurantoin is contraindicated (ineffective + toxic) and gentamicin is nephrotoxic. Choose a sensitive agent with a renal dose adjustment, e.g. trimethoprim or cephalexin.'},
+
+   {n:7,pt:{name:'Mary G',age:72,sex:'Female'},dx:'Clostridioides difficile colitis',
+    scenario:'A 72-year-old woman develops profuse watery diarrhoea after a course of clindamycin. Stool test is positive for C. difficile toxin.',
+    culture:'Stool: C. difficile toxin positive.',
+    factors:{allergy:'None',renal:'Normal',preg:'—',sev:'Moderate'},
+    org:{q:'Causative organism?',o:['Clostridioides difficile','E. coli','Norovirus','Salmonella'],c:0},
+    abx:[
+     {name:'Stop clindamycin + oral vancomycin',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:true},
+     {name:'Continue clindamycin + loperamide',route:'PO',eff:false,safe:false,spectrum:'narrow',pref:false},
+     {name:'Oral metronidazole',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:false},
+     {name:'Broad-spectrum IV antibiotics',route:'IV',eff:false,safe:true,spectrum:'broad',pref:false},
+     {name:'Ciprofloxacin',route:'PO',eff:false,safe:true,spectrum:'broad',pref:false}],
+    hint:'First, stop the offending antibiotic (clindamycin). Treat C. difficile with oral vancomycin (or metronidazole). Antimotility drugs like loperamide are harmful here.'},
+
+   {n:8,pt:{name:'Kiran (paediatric)',age:10,sex:'Male'},dx:'Streptococcal pharyngitis',
+    scenario:'A 10-year-old boy with fever, sore throat and tender neck glands; rapid test positive for Group A Streptococcus. No allergies.',
+    culture:'Throat: Group A Streptococcus (Strep. pyogenes).',
+    factors:{allergy:'None',renal:'Normal',preg:'—',sev:'Mild'},
+    org:{q:'Organism identified?',o:['Group A Streptococcus','Staphylococcus aureus','E. coli','Pseudomonas'],c:0},
+    abx:[
+     {name:'Penicillin V',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:true},
+     {name:'Co-amoxiclav',route:'PO',eff:true,safe:true,spectrum:'broad',pref:false},
+     {name:'Azithromycin',route:'PO',eff:true,safe:true,spectrum:'narrow',pref:false},
+     {name:'Ciprofloxacin',route:'PO',eff:false,safe:true,spectrum:'broad',pref:false},
+     {name:'Vancomycin',route:'IV',eff:true,safe:true,spectrum:'broad',pref:false}],
+    hint:'Group A Strep throat responds to narrow-spectrum penicillin V — the stewardship first choice with no allergy. Broad agents are unnecessary.'},
+
+   {n:9,pt:{name:'Ravi N',age:64,sex:'Male'},dx:'Pseudomonas bloodstream infection',
+    scenario:'A 64-year-old man with hospital-acquired sepsis. Blood culture grows Pseudomonas aeruginosa.',
+    culture:'Blood culture: Pseudomonas aeruginosa. Sensitive: ceftazidime, piperacillin-tazobactam. Resistant: ceftriaxone, amoxicillin.',
+    factors:{allergy:'None',renal:'eGFR 70',preg:'—',sev:'Severe'},
+    org:{q:'Organism identified?',o:['Pseudomonas aeruginosa','Streptococcus pneumoniae','E. coli','MRSA'],c:0},
+    abx:[
+     {name:'Ceftazidime',route:'IV',eff:true,safe:true,spectrum:'broad',pref:true},
+     {name:'Ceftriaxone',route:'IV',eff:false,safe:true,spectrum:'broad',pref:false},
+     {name:'Amoxicillin',route:'PO',eff:false,safe:true,spectrum:'narrow',pref:false},
+     {name:'Piperacillin-tazobactam',route:'IV',eff:true,safe:true,spectrum:'broad',pref:false},
+     {name:'Nitrofurantoin',route:'PO',eff:false,safe:true,spectrum:'narrow',pref:false}],
+    hint:'Pseudomonas needs an anti-pseudomonal agent. The antibiogram shows it is sensitive to ceftazidime (and piptazo) but resistant to ceftriaxone — so ceftriaxone would fail.'},
+
+   {n:10,pt:{name:'Lakshmi V',age:66,sex:'Female'},dx:'De-escalation after empirical therapy',
+    scenario:'A 66-year-old woman started on empirical piperacillin-tazobactam for sepsis is now clinically improving. Her blood culture has returned.',
+    culture:'Blood culture: E. coli. Sensitive: co-amoxiclav, ciprofloxacin, gentamicin.',
+    factors:{allergy:'None',renal:'Normal',preg:'—',sev:'Improving'},
+    org:{q:'Best stewardship step now?',o:['De-escalate to a narrow agent guided by sensitivities','Continue broad piptazo unchanged','Stop all antibiotics immediately','Add vancomycin'],c:0},
+    abx:[
+     {name:'De-escalate to co-amoxiclav',route:'PO/IV',eff:true,safe:true,spectrum:'narrow',pref:true},
+     {name:'Continue piperacillin-tazobactam',route:'IV',eff:true,safe:true,spectrum:'broad',pref:false},
+     {name:'Stop all antibiotics now',route:'—',eff:false,safe:true,spectrum:'narrow',pref:false},
+     {name:'Add vancomycin',route:'IV',eff:false,safe:true,spectrum:'broad',pref:false},
+     {name:'Switch to ciprofloxacin',route:'PO',eff:true,safe:true,spectrum:'broad',pref:false}],
+    hint:'The patient is improving and the culture shows a sensitive E. coli. Good stewardship = de-escalate from broad piptazo to a narrower agent it is sensitive to (co-amoxiclav).'}
+  ];
+
+  $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
+  $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+esc(r.label)+'</td><td>'+r.max+'</td></tr>';}).join('')+'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
+
+  var sel=$('caseSel');
+  sel.innerHTML=CASES.map(function(c){return '<option value="'+(c.n-1)+'">Case '+c.n+' — '+esc(c.dx)+'</option>';}).join('');
+  sel.addEventListener('change',function(){ loadCase(parseInt(this.value,10)); });
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var state=null;
+  function loadCase(ci){
+    state={ci:ci,org:null,abx:null,check:false,note:'',submitted:false,result:null};
+    var c=CASES[ci];
+    $('scCase').textContent='Case '+c.n; $('scScore').textContent='—'; $('scRes').textContent='—';
+    $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+    renderStation();
+  }
+
+  function renderStation(){
+    var c=CASES[state.ci]; var h='';
+    h+='<div class="card"><span class="step">Case '+c.n+'</span>'
+      +'<h2 style="margin-top:6px">'+esc(c.dx)+'</h2>'
+      +'<h3>Patient condition</h3><p>'+esc(c.scenario)+'</p>'
+      +(c.culture?'<h3>Culture &amp; sensitivity (antibiogram)</h3><p>'+esc(c.culture)+'</p>':'')
+      +'<h3>Patient factors</h3>'
+      +'<div class="facts">'
+      +'<div class="e'+(/anaphylaxis|penicillin|—\b/i.test(c.factors.allergy)&&!/None/.test(c.factors.allergy)?' warnf':'')+'"><b>Allergy</b>'+esc(c.factors.allergy)+'</div>'
+      +'<div class="e'+(/severe|CKD|20|24/i.test(c.factors.renal)?' warnf':'')+'"><b>Kidney function</b>'+esc(c.factors.renal)+'</div>'
+      +'<div class="e'+(/PREGNANT/i.test(c.factors.preg)?' warnf':'')+'"><b>Pregnancy</b>'+esc(c.factors.preg)+'</div>'
+      +'<div class="e"><b>Severity</b>'+esc(c.factors.sev)+'</div>'
+      +'</div>'
+      +(c.hint?'<details class="help"><summary>Need a hint?</summary><div class="hb">'+esc(c.hint)+'</div></details>':'')
+      +'</div>';
+
+    h+='<div class="card"><span class="step">Step 1</span> <b>'+esc(c.org.q)+'</b>'
+      +'<div id="orgMcq">'+c.org.o.map(function(o,k){return '<button type="button" class="opt" data-org="'+k+'">'+esc(o)+'</button>';}).join('')+'</div></div>';
+
+    h+='<div class="card"><span class="step">Step 2</span> <b>Select the antimicrobial therapy</b>'
+      +'<p class="note">Choose the option that is effective, safe and the most appropriate (narrowest) for this patient.</p>'
+      +'<div id="abxOpts">'+c.abx.map(function(a,k){return '<button type="button" class="opt" data-abx="'+k+'">'+esc(a.name)+(a.route&&a.route!=='—'?'<span class="rt">'+esc(a.route)+'</span>':'')+'</button>';}).join('')+'</div></div>';
+
+    h+='<div class="card"><span class="step">Step 3</span> <b>Safety confirmation &amp; rationale</b>'
+      +'<div class="cl" style="margin-top:6px"><label><input type="checkbox" id="safeChk"><span>I have checked this patient\'s <b>allergy</b>, <b>kidney function</b> and <b>pregnancy</b> status before choosing.</span></label></div>'
+      +'<label class="f" style="margin-top:10px">Rationale for your choice</label>'
+      +'<textarea id="noteBox" placeholder="Why is this the safest, most effective and most appropriate antibiotic for this patient?"></textarea></div>';
+
+    h+='<div class="card"><button class="btn" id="submitBtn">Submit &amp; evaluate selection</button>'
+      +'<span class="muted" style="font-size:12.5px;margin-left:10px">Auto-scored against the 100-mark rubric.</span></div>';
+
+    $('caseArea').innerHTML=h;
+    document.querySelectorAll('#orgMcq .opt').forEach(function(b){ b.addEventListener('click',function(){ state.org=+b.getAttribute('data-org'); document.querySelectorAll('#orgMcq .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); }); });
+    document.querySelectorAll('#abxOpts .opt').forEach(function(b){ b.addEventListener('click',function(){ state.abx=+b.getAttribute('data-abx'); document.querySelectorAll('#abxOpts .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); }); });
+    $('safeChk').addEventListener('change',function(){ state.check=this.checked; });
+    $('noteBox').addEventListener('input',function(){ state.note=this.value; });
+    $('submitBtn').addEventListener('click',evaluate);
+  }
+
+  function evaluate(){
+    var c=CASES[state.ci]; var name=($('cName').value||'').trim()||'Candidate', reg=($('cReg').value||'').trim();
+    var sc={}, fb={};
+    var orgOK=state.org===c.org.c;
+    sc.org=orgOK?15:0; fb.org=orgOK?'Organism / infection correctly identified.':'Organism or best approach not correctly identified.';
+
+    var pick=(state.abx!=null)?c.abx[state.abx]:null;
+    var chosen=pick?pick.name:'(none)';
+    sc.eff=(pick&&pick.eff)?30:0;
+    fb.eff=(pick&&pick.eff)?'Effective — the organism is sensitive to this agent.':'Not effective — the organism is resistant or the agent does not cover it.';
+    sc.safe=(pick&&pick.safe)?25:0;
+    var unsafe=(pick&&!pick.safe);
+    fb.safe=unsafe?'UNSAFE — the patient is allergic to, or this drug is contraindicated for, this patient.':'Safe — no allergy or contraindication for this patient.';
+    /* stewardship: preferred narrow choice = full; effective+safe but broader = half */
+    sc.stew=(pick&&pick.pref)?20:((pick&&pick.eff&&pick.safe)?10:0);
+    fb.stew=(pick&&pick.pref)?'Best stewardship choice — narrowest effective, appropriate route.':((pick&&pick.eff&&pick.safe)?'Works, but a narrower / more appropriate option was preferred.':'Poor stewardship — inappropriate choice.');
+    var noteOK=(state.note||'').trim().length>=15;
+    sc.doc=(noteOK?6:0)+(state.check?4:0);
+    fb.doc=(noteOK?'Rationale documented. ':'Rationale too brief. ')+(state.check?'Safety checks confirmed.':'Safety checks not confirmed.');
+
+    var tot=RUBRIC.reduce(function(a,r){return a+(sc[r.k]||0);},0);
+    var pct=Math.round(tot/MAXTOTAL*100);
+    var critical=unsafe; /* choosing an allergic/contraindicated antibiotic = safety fail */
+    var pass=pct>=50 && !critical;
+    state.result={name:name,reg:reg,chosen:chosen,total:tot,pct:pct,pass:pass,critical:critical,sc:sc,fb:fb};
+    state.submitted=true;
+    $('scScore').textContent=tot+'/'+MAXTOTAL; $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+pct+'%)';
+    renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+
+  function buildAuto(){
+    if(!state||!state.submitted) return null;
+    var c=CASES[state.ci], r=state.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Case '+c.n+' — '+esc(c.dx)+'</h3>';
+    h+='<p style="margin:2px 0"><b>Patient:</b> '+esc(c.pt.name)+' · '+c.pt.age+'/'+esc(c.pt.sex)+'</p>';
+    h+='<p style="margin:2px 0"><b>Scenario:</b> '+esc(c.scenario)+'</p>';
+    if(c.culture) h+='<p style="margin:2px 0"><b>Culture &amp; sensitivity:</b> '+esc(c.culture)+'</p>';
+    h+='<p style="margin:2px 0"><b>Patient factors:</b> allergy '+esc(c.factors.allergy)+'; kidney '+esc(c.factors.renal)+'; pregnancy '+esc(c.factors.preg)+'; severity '+esc(c.factors.sev)+'</p>';
+    h+='<p style="margin:6px 0"><b>Antimicrobial chosen:</b> '+esc(r.chosen)+'</p>';
+    if((state.note||'').trim()) h+='<p style="margin:2px 0"><b>Rationale:</b> '+esc(state.note)+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
+      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
+      +'<tr style="background:#f3e2e2;font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">'+MAXTOTAL+'</td></tr></table>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'+(r.critical?' (PATIENT-SAFETY ERROR: allergic / contraindicated antibiotic selected)':'')+'</p>';
+    return h;
+  }
+
+  function renderReport(){
+    var c=CASES[state.ci], r=state.result;
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Score</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">of '+MAXTOTAL+'</div></div>'
+      +'<div class="repbox"><div class="rv" style="font-size:15px">'+esc(r.chosen.split(' ')[0])+'</div><div class="rl">Your choice</div></div>'
+      +'<div class="repbox"><div class="rv">'+c.n+'</div><div class="rl">Case</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+esc(c.dx)+'</div>';
+    if(r.critical) html+='<div class="note" style="color:var(--danger);font-weight:600;margin:-4px 0 10px">Selecting an antibiotic the patient is allergic to, or that is contraindicated, is a patient-safety error and fails the station regardless of total marks.</div>';
+    html+='<div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Score</th><th>Max</th></tr></thead><tbody>'
+      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'<div class="note" style="margin-top:2px">'+esc(r.fb[x.k]||'')+'</div></td><td>'+(r.sc[x.k]||0)+'</td><td>'+x.max+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr></tbody></table></div>';
+    html+='<div class="row no-print" style="margin-top:14px"><button class="btn gold" onclick="window.print()">Download / Print record</button>'
+      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 3 · Unit 2 — Selection of Safe & Effective Antimicrobial Therapy',title:'Selection of Safe & Effective Antimicrobial Therapy',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Infection & antibiotic chosen', placeholder:'e.g. Case 2 — CAP, doxycycline'},
+      minWords:400,
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return state.result?state.result.pct:null; },
+      autoResultText:function(){ return state.result?((state.result.pass?'PASS':'FAIL')+' '+state.result.pct+'%'):''; }
+    });
+  }
+
+  function switchTab(p){ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+
+  loadCase(0);
+})();
+</script>
+</body>
+</html>
