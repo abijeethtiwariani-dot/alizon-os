@@ -161,6 +161,25 @@
       });
       return window.AlizonPracticalSubmit;
     },
-    submit:function(opts,report){ doSubmit(opts||{},report||{}); }
+    submit:function(opts,report){ doSubmit(opts||{},report||{}); },
+    /* build the letterheaded report and open it in a printable window for download / Save-as-PDF */
+    download:function(opts,report){
+      opts=opts||{}; report=report||{};
+      var p=profile();
+      var name=(report.name||p.name||'').trim()||'Candidate', reg=(report.reg||p.reg||'').trim();
+      var html=wrapReport({module:opts.module,programme:opts.programme,resultText:report.resultText,html:report.html||''},name,reg);
+      var w=null; try{ w=window.open('','_blank'); }catch(e){ w=null; }
+      if(!w){ alert('Please allow pop-ups to download your report.'); return; }
+      w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+esc((opts.title||'Practical Report'))+' — Alizon</title>'
+        +'<style>@page{size:A4;margin:15mm}*{box-sizing:border-box}body{margin:0;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+        +'.dlbar{position:fixed;top:0;left:0;right:0;background:#8c1515;color:#fff;padding:10px 16px;font-family:Arial,Helvetica,sans-serif;font-size:13px;display:flex;gap:12px;align-items:center;z-index:99}'
+        +'.dlbar b{flex:1}.dlbar button{cursor:pointer;font:inherit;font-weight:700;border:none;border-radius:100px;padding:8px 18px;background:#fff;color:#8c1515}'
+        +'.doc{padding:70px 22px 40px}@media print{.dlbar{display:none}.doc{padding:0}}</style></head><body>'
+        +'<div class="dlbar"><b>Alizon Practical Report</b><button onclick="window.print()">⤓ Download / Save as PDF</button></div>'
+        +'<div class="doc">'+html+'</div>'
+        +'<scr'+'ipt>setTimeout(function(){try{window.print();}catch(e){}},500);</scr'+'ipt>'
+        +'</body></html>');
+      w.document.close();
+    }
   };
 })();

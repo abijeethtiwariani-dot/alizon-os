@@ -100,12 +100,19 @@
         var pct=null,rt=''; try{ pct=opts.autoPct?opts.autoPct():null; }catch(e){} try{ rt=opts.autoResultText?opts.autoResultText():''; }catch(e){}
         var reportObj={html:body,name:name,reg:reg,pct:pct,resultText:rt};
 
+        var subOpts=opts.submitOpts||{module:opts.module,title:opts.title,programme:opts.programme};
         host.querySelector('#aprOut').innerHTML='<div class="apr-preview">'+body+'</div>'
+          +'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">'
           +'<button type="button" class="apr-btn" id="aprSubmit">⤴ Submit report to faculty</button>'
-          +'<span style="font-size:12px;color:var(--muted,#6e6a63);margin-left:10px">Review your report above, then submit.</span>';
+          +'<button type="button" class="apr-btn" id="aprDownload" style="background:#fff;color:#8c1515;border:1.5px solid #8c1515">⤓ Download PDF</button>'
+          +'<span style="font-size:12px;color:var(--muted,#6e6a63)">Review your report above, then submit and/or download it.</span></div>';
         host.querySelector('#aprSubmit').addEventListener('click',function(){
-          if(window.AlizonPracticalSubmit) AlizonPracticalSubmit.submit(opts.submitOpts||{module:opts.module,title:opts.title,programme:opts.programme},reportObj);
+          if(window.AlizonPracticalSubmit) AlizonPracticalSubmit.submit(subOpts,reportObj);
           else alert('Submission service not loaded — please refresh and try again.');
+        });
+        host.querySelector('#aprDownload').addEventListener('click',function(){
+          if(window.AlizonPracticalSubmit&&AlizonPracticalSubmit.download) AlizonPracticalSubmit.download(subOpts,reportObj);
+          else alert('Download service not loaded — please refresh and try again.');
         });
         host.querySelector('#aprOut').scrollIntoView({behavior:'smooth',block:'nearest'});
       });
