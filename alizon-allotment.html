@@ -68,6 +68,15 @@
   .msg{font-size:13px;font-weight:600;margin-top:10px}
   .msg.ok{color:var(--ok)} .msg.err{color:#b1040e}
   .empty{color:var(--muted);text-align:center;padding:26px;font-size:14px}
+  .bcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .bcard{display:block;background:#fff;border:1px solid var(--line);border-top:3px solid var(--crimson);border-radius:12px;padding:20px 22px;box-shadow:0 10px 30px -18px rgba(20,18,16,.22);transition:.2s}
+  .bcard:hover{transform:translateY(-4px);box-shadow:0 20px 44px -20px rgba(140,21,21,.28)}
+  .bcard .bt{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700}
+  .bcard .bs{font-size:13px;color:var(--muted);margin-top:4px}
+  .bcard .bseats{font-size:12.5px;font-weight:600;color:var(--crimson);margin-top:12px;display:inline-block;background:rgba(140,21,21,.06);border:1px solid rgba(140,21,21,.16);border-radius:100px;padding:6px 14px}
+  .bcard .go{font-size:13px;font-weight:600;color:var(--crimson);margin-top:12px;display:block}
+  .backlink{display:inline-flex;align-items:center;gap:6px;color:var(--crimson);font-weight:600;font-size:14px;margin-bottom:16px}
+  .backlink:hover{text-decoration:underline}
   footer{background:var(--crimson);color:#f3e2e2;padding:26px 24px;text-align:center;font-size:12.5px}
   footer a{color:#fff;font-weight:600}
 </style>
@@ -105,11 +114,12 @@
     <div class="msg" id="csvMsg"></div>
   </div>
 
-  <div class="pick">
-    <div><label>Batch</label><select id="batchSel"><option value="">Select a batch…</option></select></div>
+  <div id="landing">
+    <div class="head" style="margin-bottom:16px"><h2 class="serif">Batches</h2><span class="sub">Open a batch to view its seat allotment</span></div>
+    <div id="batchCards" class="bcards"><div class="empty">No allotment published yet.</div></div>
   </div>
 
-  <div id="allotView"><div class="empty">Choose a batch to view its seat allotment.</div></div>
+  <div id="detail" style="display:none"></div>
 </div></main>
 
 <footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
@@ -127,33 +137,45 @@
   var CATCODE={ 'open / merit':'OPEN','open':'OPEN','merit':'OPEN','obc / sebc (kerala)':'SEBC','obc':'SEBC','sebc':'SEBC','ews':'EWS','scheduled caste (sc)':'SC','sc':'SC','scheduled tribe (st)':'ST','st':'ST' };
   function catCode(v){ return CATCODE[String(v||'').toLowerCase().trim()] || String(v||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4) || 'OPEN'; }
 
-  function fillBatches(){
-    var sel=document.getElementById('batchSel'); if(!sel) return;
+  var curBatch=params.get('batch')||'';
+
+  /* landing: batch cards; each opens the detail on its own page (?batch=…) */
+  function renderLanding(){
+    var host=document.getElementById('batchCards'); if(!host) return;
     var s=store(), keys=Object.keys(s).sort();
-    var cur=sel.value;
-    sel.innerHTML='<option value="">Select a batch…</option>'+keys.map(function(k){ var a=s[k]; return '<option value="'+esc(k)+'">'+esc(k)+(a.allotted?' — '+a.allotted+'/'+a.seats+' seats':'')+'</option>'; }).join('');
-    if(cur && s[cur]) sel.value=cur; else if(keys.length) { sel.value=keys[keys.length-1]; show(); }
+    if(!keys.length){ host.innerHTML='<div class="empty">No allotment published yet.</div>'; return; }
+    host.innerHTML=keys.map(function(k){ var a=s[k];
+      return '<a class="bcard" href="?batch='+encodeURIComponent(k)+'"><div class="bt serif">'+esc(k)+'</div>'
+        +'<div class="bs">'+esc(a.course||'')+'</div>'
+        +'<span class="bseats">'+(a.allotted||0)+' / '+(a.seats||40)+' seats allotted</span>'
+        +'<span class="go">View allotment &rarr;</span></a>';
+    }).join('');
   }
-  function show(){
-    var sel=document.getElementById('batchSel'), host=document.getElementById('allotView'); if(!sel||!host) return;
-    var a=store()[sel.value];
-    if(!a){ host.innerHTML='<div class="empty">No allotment published for this batch yet.</div>'; return; }
-    var q=(a.quota||[]).map(function(x){ return '<span class="qchip"><b>'+esc(x.label)+'</b> · '+x.seats+'</span>'; }).join('');
+
+  /* detail: a secondary view (own URL). Privacy — counts only, never a person’s category/caste or domicile. */
+  function renderDetail(){
+    var a=store()[curBatch], host=document.getElementById('detail');
+    document.getElementById('landing').style.display='none';
+    var ab=document.getElementById('adminBox'); if(ab) ab.style.display='none';
+    host.style.display='';
+    if(!a){ host.innerHTML='<a class="backlink" href="alizon-allotment.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>All batches</a><div class="empty">No allotment published for this batch yet.</div>'; return; }
     var rows=(a.rows||[]).slice().sort(function(x,y){ var xs=x.seat||999, ys=y.seat||999; return xs-ys || (x.rank||0)-(y.rank||0); });
+    /* seat counts per category (numbers only) */
+    var counts={}; rows.forEach(function(r){ if(r.status==='Allotted'){ var c=catCode(r.cat||r.catLabel); counts[c]=(counts[c]||0)+1; } });
+    var q=(a.quota||[]).map(function(x){ return '<span class="qchip"><b>'+esc(x.label)+'</b> · '+(counts[x.code]||0)+' of '+x.seats+'</span>'; }).join('');
     var body=rows.map(function(r){
-      var cc=catCode(r.cat||r.catLabel);
       return '<tr><td class="seat">'+(r.seat||'—')+'</td><td class="rank">'+(r.rank||'')+'</td>'
         +'<td class="reg">'+esc(r.reg||'')+'</td><td>'+esc(r.name||'')+'</td>'
-        +'<td><span class="cat '+cc+'">'+esc(r.catLabel||r.cat||'')+'</span></td>'
-        +'<td>'+esc(r.quota||'')+'</td><td>'+esc(r.district||'')+'</td>'
         +'<td><span class="st '+esc(r.status||'')+'">'+esc(r.status||'')+'</span></td></tr>';
     }).join('');
-    host.innerHTML='<div class="head"><h2 class="serif">'+esc(a.batch||sel.value)+'</h2>'
+    host.innerHTML='<a class="backlink" href="alizon-allotment.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>All batches</a>'
+      +'<div class="head"><h2 class="serif">'+esc(a.batch||curBatch)+'</h2>'
       +'<span class="sub">'+esc(a.course||'')+' · '+(a.allotted||rows.filter(function(r){return r.status==="Allotted";}).length)+' of '+(a.seats||40)+' seats allotted</span></div>'
       +'<div class="quota">'+q+'</div>'
-      +'<div class="tblwrap"><table class="al"><thead><tr><th>Seat</th><th>Rank</th><th>Reg No</th><th>Name</th><th>Category</th><th>Quota</th><th>District</th><th>Status</th></tr></thead><tbody>'+body+'</tbody></table></div>';
+      +'<div class="tblwrap"><table class="al"><thead><tr><th>Seat</th><th>Rank</th><th>Reg No</th><th>Name</th><th>Status</th></tr></thead><tbody>'+body+'</tbody></table></div>'
+      +'<div class="privacy" style="font-size:12px;color:var(--muted);margin-top:14px;line-height:1.6">Reservation is applied per Government of India &amp; Kerala state norms. Only the seat counts per category are shown above — individual reservation category and personal details are not published.</div>';
   }
-  document.getElementById('batchSel').addEventListener('change',show);
+  function fillBatches(){ if(curBatch) renderDetail(); else renderLanding(); }
 
   /* ---- CSV parse/export (admin) ---- */
   function parseCSV(text){
@@ -195,21 +217,22 @@
       };
       r.readAsText(file);
     });
-    document.getElementById('csvExport').addEventListener('click',function(){ exportCsv(document.getElementById('batchSel').value); });
+    document.getElementById('csvExport').addEventListener('click',function(){ exportCsv(curBatch); });
     document.getElementById('dlTemplate').addEventListener('click',function(ev){ ev.preventDefault();
       dl('allotment-template.csv','Batch,Seat,Rank,RegNo,Name,Category,Quota,District,Status\nBatch 2026 - 8,1,1,ALZ200,Example Name,OPEN,Open / Merit,Ernakulam,Allotted\n'); });
   }
   var DEFQUOTA=[{code:'OPEN',label:'Open / Merit',seats:20},{code:'SEBC',label:'OBC / SEBC (Kerala)',seats:12},{code:'EWS',label:'EWS',seats:4},{code:'SC',label:'Scheduled Caste (SC)',seats:3},{code:'ST',label:'Scheduled Tribe (ST)',seats:1}];
   function dl(name,text){ var b=new Blob([text],{type:'text/csv;charset=utf-8'}); var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},300); }
-  function exportCsv(b){ var a=store()[b]; if(!a){ return; }
-    var head='Batch,Seat,Rank,RegNo,Name,Category,Quota,District,Status\n';
-    var body=(a.rows||[]).map(function(r){ return [b,r.seat,r.rank,r.reg,r.name,r.catLabel||r.cat,r.quota,r.district,r.status].map(function(v){ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(','); }).join('\n');
-    dl('allotment-'+b.replace(/[^A-Za-z0-9]+/g,'-')+'.csv', head+body); }
+  function exportCsv(b){ var s=store(); var keys=b&&s[b]?[b]:Object.keys(s); if(!keys.length){ return; }
+    var head='Batch,Seat,Rank,RegNo,Name,Category,Quota,District,Status\n', lines=[];
+    keys.forEach(function(k){ (s[k].rows||[]).forEach(function(r){ lines.push([k,r.seat,r.rank,r.reg,r.name,r.catLabel||r.cat,r.quota,r.district,r.status].map(function(v){ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(',')); }); });
+    dl('allotment-'+((b||'all').replace(/[^A-Za-z0-9]+/g,'-'))+'.csv', head+lines.join('\n')); }
 
   fillBatches();
   window.addEventListener('storage',function(e){ if(e.key==='alizonAllotment') fillBatches(); });
   var tries=0; var iv=setInterval(function(){ fillBatches(); if(++tries>15) clearInterval(iv); }, 1500);
 })();
 </script>
+<script src="alizon-back.js"></script>
 </body>
 </html>
