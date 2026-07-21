@@ -344,7 +344,7 @@
       /* ---- title band ---- */
       +'.alz-doc .d-title{text-align:center;padding:14px 0 6px;margin-top:6px}'
       +'.alz-doc .d-kicker{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}'
-      +'.alz-doc .d-name{font-family:"Source Serif Pro",Georgia,serif;font-size:clamp(20px,3.2vw,27px);font-weight:700;color:var(--ink);margin:8px 0 0;line-height:1.25}'
+      +'.alz-doc .d-name{font-family:"Source Serif Pro",Georgia,serif;font-size:clamp(20px,3.2vw,27px);font-weight:700;color:var(--cr);margin:8px 0 0;line-height:1.25}'
       +'.alz-doc .d-sub{display:flex;gap:10px 20px;justify-content:center;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--muted)}'
       +'.alz-doc .d-sub b{color:var(--cr)}'
       /* ---- stat tiles ---- */
@@ -368,8 +368,8 @@
       +'.alz-doc .cur-tbl td.tot{font-weight:700;background:#faf3f3}'
       +'.alz-doc .cur-tbl .z{color:#c9c2ba}'
       +'.alz-doc .cur-tbl tbody tr:nth-child(even){background:#faf8f6}'
-      +'.alz-doc .cur-tbl tr.trow td{background:#2b2320;color:#fff;font-weight:700;border-color:rgba(255,255,255,.14)}'
-      +'.alz-doc .cur-tbl tr.trow td.tot{background:#1c1613}'
+      +'.alz-doc .cur-tbl tr.trow td{background:var(--cr);color:#fff;font-weight:700;border-color:rgba(255,255,255,.18)}'
+      +'.alz-doc .cur-tbl tr.trow td.tot{background:var(--cr2)}'
       +'.alz-doc .cur-tbl tr.trow .z{color:rgba(255,255,255,.4)}'
       +'.alz-doc .d-legend{font-size:10.5px;color:var(--muted);margin:8px 2px 0;line-height:1.6}'
       /* ---- module sections ---- */
@@ -388,7 +388,7 @@
       +'.alz-doc .d-mod[open] .d-mod-tg{transform:rotate(45deg)}'
       +'.alz-doc .d-empty2{font-size:12.5px;color:var(--muted);font-style:italic}'
       +'.alz-doc .d-mod-no{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--cr);border-radius:100px;padding:5px 13px;flex:none}'
-      +'.alz-doc .d-mod-nm{font-family:"Source Serif Pro",Georgia,serif;font-size:16.5px;font-weight:700;flex:1;min-width:180px;margin:0;color:var(--ink)}'
+      +'.alz-doc .d-mod-nm{font-family:"Source Serif Pro",Georgia,serif;font-size:16.5px;font-weight:700;flex:1;min-width:180px;margin:0;color:var(--cr)}'
       +'.alz-doc .d-mod-meta{font-size:12px;color:var(--muted);font-weight:600}'
       +'.alz-doc .d-mod-b{padding:16px 20px 18px}'
       +'.alz-doc .d-chips{font-size:11.5px;font-weight:700;color:var(--cr);background:rgba(140,21,21,.06);border:1px solid rgba(140,21,21,.16);border-radius:100px;padding:6px 14px;display:inline-block;margin-bottom:14px}'
