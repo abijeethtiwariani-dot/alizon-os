@@ -1925,8 +1925,7 @@ function moduleResultBadge(moduleUnit, progName){
       '<div style="mso-element:footer" id="f1"><p class="MsoFooter">Page <span style=\'mso-field-code:" PAGE "\'>1</span> of <span style=\'mso-field-code:" NUMPAGES "\'>1</span> · Official course note · ALIZON OS</p></div>'+
       '<div class="h">'+(BRAND_LOGO?`<img src="${BRAND_LOGO}">`:'')+'<div class="n">Alizon School of Medical &amp; Digital Intelligence</div>'+
       `<div class="d">${unitLine}</div></div>`+
-      `<h1>${esc(n.title||'Notes')}</h1><div class="sub">${esc(m.title)}${n.unit?' — '+esc(n.unit):''}</div><p>${esc(n.body||'')}</p></div><script src="alizon-pdf-open.js"></script>
-</body></html>`;
+      `<h1>${esc(n.title||'Notes')}</h1><div class="sub">${esc(m.title)}${n.unit?' — '+esc(n.unit):''}</div><p>${esc(n.body||'')}</p></div></body></html>`;
     const blob=new Blob(['﻿'+html],{type:'application/msword'});
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
     a.download=(m.unit+'_'+(n.title||'Notes')).replace(/[^A-Za-z0-9]+/g,'_')+'.doc';
