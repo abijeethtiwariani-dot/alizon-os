@@ -1649,6 +1649,21 @@ section.blk{padding:clamp(48px,6vw,72px) 0}
 footer{background:var(--crimson);color:#f3e2e2;padding:32px 24px;text-align:center;font-size:13px}
 footer a{color:#fff;font-weight:600}
 footer a:hover{text-decoration:underline}</style>
+<style id="tmarqcss">
+  .tmarq{position:relative;overflow:hidden;padding:6px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+  .ttrack{display:flex;gap:18px;width:max-content;animation:tslide 60s linear infinite}
+  .tmarq:hover .ttrack{animation-play-state:paused}
+  @keyframes tslide{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+  @media(prefers-reduced-motion:reduce){.ttrack{animation:none}.tmarq{overflow-x:auto}}
+  .ttile{flex:0 0 auto;width:300px;background:#fff;border:1px solid rgba(0,0,0,.09);border-top:3px solid #8c1515;border-radius:14px;padding:20px;box-shadow:0 10px 30px -18px rgba(20,18,16,.25);display:flex;flex-direction:column;min-height:190px}
+  .ttile .q{font-family:'Source Serif Pro',Georgia,serif;font-size:14.5px;line-height:1.5;color:#2e2d29;flex:1}
+  .ttile .q::before{content:"\201C";color:#8c1515;font-size:28px;line-height:0;vertical-align:-10px;margin-right:3px}
+  .ttile .who{display:flex;gap:11px;align-items:center;margin-top:14px;border-top:1px solid rgba(0,0,0,.08);padding-top:13px}
+  .ttile .who img{width:42px;height:42px;border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(140,21,21,.25);background:#faf8f6}
+  .ttile .who .mono{width:42px;height:42px;border-radius:50%;flex:none;background:linear-gradient(135deg,#8c1515,#4c0a0a);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Source Serif Pro',Georgia,serif;font-size:16px;font-weight:700}
+  .ttile .who b{display:block;font-family:'Source Serif Pro',Georgia,serif;font-size:13.5px;font-weight:600;line-height:1.2}
+  .ttile .who small{display:block;font-size:11px;color:#6e6a63;margin-top:2px}
+</style>
 </head>
 <body>
 <a class="az-skip" href="#top">Skip to content</a>
@@ -2830,8 +2845,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
     var phMap={}; try{ var pm=JSON.parse(localStorage.getItem('alizonPhotos')||'{}'); if(pm&&typeof pm==='object') phMap=pm; }catch(e){}
     var rosterPh={}; try{ (JSON.parse(localStorage.getItem('alizonStudents')||'[]')||[]).forEach(function(st){
       if(st&&st.reg&&(st.photo||st.photoUrl||st.pic)) rosterPh[String(st.reg).toLowerCase().replace(/\s+/g,'')]=String(st.photo||st.photoUrl||st.pic); });}catch(e){}
-    host.innerHTML='<div class="tgrid">'+list.map(function(f){
-      /* photo priority: delegate-uploaded (wfimg) → office registry photo by reg (phimg) → monogram */
+    function tile(f){
       var av;
       if(f.photo&&f.photo.id){
         av='<img data-wf="wfimg_:'+esc(f.photo.id)+':'+(f.photo.chunks||1)+'" alt="'+esc(f.name)+'">';
@@ -2843,12 +2857,15 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
         else av='<div class="mono">'+esc(initials(f.name))+'</div>';
       }
       var sub=[f.course,f.batch].filter(Boolean).join(' · ');
-      return '<article class="tcard"><div class="q">'+esc(f.text)+'”</div>'
+      var qt=String(f.text||''); if(qt.length>150) qt=qt.slice(0,150)+'\u2026';
+      return '<article class="ttile"><div class="q">'+esc(qt)+'”</div>'
         +'<div class="who">'+av+'<div><b>'+esc(f.name||'Alizon student')+'</b>'
-        +(sub?'<small>'+esc(sub)+'</small>':'')
-        +(f.college?'<small>'+esc(f.college)+'</small>':'')
-        +'</div></div></article>';
-    }).join('')+'</div>';
+        +(sub?'<small>'+esc(sub)+'</small>':'')+'</div></div></article>';
+    }
+    /* small tiles auto-sliding left-to-right; tiles duplicated for a seamless loop */
+    var tiles=list.map(tile).join('');
+    var loop = list.length<6 ? tiles+tiles+tiles : tiles+tiles;
+    host.innerHTML='<div class="tmarq"><div class="ttrack">'+loop+'</div></div>';
     host.querySelectorAll('img[data-wf]').forEach(function(im){
       var p=String(im.getAttribute('data-wf')).split(':');
       loadChunkImg({pfx:p[0],id:p[1],chunks:parseInt(p[2],10)||1}, im);
