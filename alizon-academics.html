@@ -44,9 +44,13 @@
   .serif{font-family:'Source Serif Pro',Georgia,serif}
   .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
 
-  /* ===== two-tier header ===== */
-  .topbar{position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(60,8,8,.25)}
-  .util{background:var(--crimson-deep);border-bottom:1px solid rgba(0,0,0,.18)}
+  /* ===== two-tier header — transparent over hero, animates to solid on scroll ===== */
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:50;transition:box-shadow .5s cubic-bezier(0,0,.2,1),background-color .5s ease}
+  .topbar::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(15,8,8,.55),rgba(15,8,8,0));opacity:1;transition:opacity .5s ease;pointer-events:none}
+  .topbar.scrolled::before{opacity:0}
+  .topbar.scrolled{box-shadow:0 2px 16px rgba(60,8,8,.32)}
+  .util{background:transparent;border-bottom:1px solid rgba(255,255,255,0);transition:background-color .5s ease,border-color .5s ease}
+  .topbar.scrolled .util{background:var(--crimson-deep);border-bottom:1px solid rgba(0,0,0,.18)}
   .util .in{max-width:1240px;margin:0 auto;padding:8px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .util .lbl{color:#fff;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-right:4px}
   .util .pill{color:#fff;font-size:12.5px;font-weight:500;padding:5px 14px;border-radius:100px;background:rgba(255,255,255,.14);transition:.2s;white-space:nowrap}
@@ -54,7 +58,8 @@
   .util .srch{margin-left:auto;display:flex;align-items:center;gap:8px;background:#fff;border-radius:100px;padding:6px 14px;min-width:220px;color:var(--muted)}
   .util .srch svg{width:14px;height:14px;flex:none;opacity:.6}
   .util .srch input{border:0;outline:0;font:inherit;font-size:13px;width:100%;background:transparent;color:var(--ink)}
-  .main-nav{background:var(--crimson)}
+  .main-nav{background:transparent;transition:background-color .5s ease}
+  .topbar.scrolled .main-nav{background:var(--crimson)}
   .main-nav .in{max-width:1240px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:14px;min-height:62px}
   .main-nav img{width:34px;height:34px;object-fit:contain;filter:brightness(0) invert(1)}
   .main-nav .bt{color:#fff}
@@ -72,7 +77,7 @@
   }
 
   /* ===== full-bleed hero (image/changeable) with centered title ===== */
-  .hero{position:relative;min-height:clamp(340px,56vh,560px);display:flex;align-items:center;justify-content:center;text-align:center;
+  .hero{position:relative;margin-top:-106px;padding-top:106px;min-height:clamp(446px,64vh,620px);display:flex;align-items:center;justify-content:center;text-align:center;
     background:radial-gradient(120% 130% at 50% 8%,#b1040e 0%,#8c1515 34%,#5c0d0d 68%,#2a0606 100%);overflow:hidden}
   .hero .vis{position:absolute;inset:0;z-index:0}
   .hero .vis svg{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
@@ -89,6 +94,7 @@
   .hero .scrollbar a svg{width:15px;height:15px}
 
   /* ===== light intro ===== */
+  #intro,#why,#impact,#stories,#benefits{scroll-margin-top:112px}
   .intro{padding:clamp(48px,7vw,80px) 0;text-align:center}
   .intro .ey{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--crimson)}
   .intro h2{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.8rem,4.4vw,2.7rem);font-weight:600;margin-top:10px;line-height:1.12}
@@ -413,6 +419,16 @@
   window.addEventListener('storage',function(e){ if(e.key==='alizonWsFeedback') render(true); });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){render(true);}); else render(true);
   setInterval(function(){ render(false); }, 6000);
+})();
+
+/* ===== scroll-aware header (transparent over hero -> solid cardinal) ===== */
+(function(){
+  var bar=document.querySelector('.topbar'); if(!bar) return;
+  var ticking=false;
+  function upd(){ ticking=false; if(window.scrollY>60) bar.classList.add('scrolled'); else bar.classList.remove('scrolled'); }
+  function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(upd); } }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  upd();
 })();
 
 /* ===== carousels (auto-scroll + arrow nav, matches alizongov.com) ===== */
