@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Module 2 · Electronic ADR Reporting & Pharmacovigilance</title>
+<script>try{if((localStorage.getItem('pracTheme')||'dark')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f2f0ec; --panel:#ffffff; --panel2:#f7f5f1; --pill:#efece7;
+    --ink:#1c1a1f; --muted:#6b6570; --line:rgba(24,18,26,.12);
+    --crimson:#C40D16; --crimson-deep:#9E0C13; --gold:#A16207; --gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A; --danger:#C4262E; --warn:#B45309;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);
+  }
+  html.dark{
+    --bg:#070810; --panel:#12131c; --panel2:#0e0f18; --pill:#1a1c28;
+    --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.1);
+    --crimson:#e2434b; --crimson-deep:#C40D16; --gold:#D9A441; --gold-soft:rgba(217,164,65,.16);
+    --success:#38d08a; --danger:#f0666d; --warn:#e0a44a;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)}
+  .scorechip b{color:var(--gold)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:6px}
+  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;cursor:pointer;padding:5px 0}
+  .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:480px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)}
+  tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right}
+  .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],input[type=number],input[type=date],select,textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:72px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .ro{background:var(--pill);opacity:.9}
+  .seg{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .seg button{cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:100px;padding:8px 15px}
+  .seg button:hover{border-color:var(--gold)} .seg button.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 2 · Unit 4 — Digital Inventory, ADR &amp; Compliance Systems</div>
+    <h1 class="serif">Electronic ADR Reporting &amp; Pharmacovigilance Using a Digital Reporting System</h1>
+    <p><b>Aim —</b> To identify, document, assess and electronically report a suspected Adverse Drug Reaction (ADR) using a digital pharmacovigilance reporting system.
+      <span class="muted">Duration 60 minutes · One case per student · 100-mark competency rubric · Pass 50%.</span></p>
+    <div class="chips">
+      <div class="scorechip">Case <b id="scCase">—</b></div>
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">ADR Reporting Station</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
+    <div class="card"><h2>Patient counselling</h2><p class="muted">Explain to the patient:</p><div class="cl" id="counRef"></div></div>
+    <div class="card"><h2>Learning outcomes</h2><div class="cl" id="loRef"></div></div>
+    <div class="card"><h2>Faculty assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
+      <p class="note">Objective criteria are auto-scored; the written report is graded by faculty. Mis-classifying a serious ADR as non-serious triggers a patient-safety flag.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card"><h2>Candidate &amp; case assignment</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+        <div><label class="f">Assigned case</label><select id="caseSel"></select></div>
+      </div>
+      <p class="note">Each student is assigned one unique ADR case.</p>
+    </div>
+    <div id="caseArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>Practical record &amp; assessment</h2>
+      <p class="muted" id="repEmpty">Complete the ADR reporting station and submit to generate your assessment, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js"></script>
+<script src="alizon-practical-report.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+
+  var TASKS=['Review the patient’s clinical history','Review the prescribed medicines','Identify the suspected ADR',
+    'Identify the suspected medicine','Assess the severity of the reaction','Determine the probable causality',
+    'Complete the electronic ADR reporting form','Attach supporting clinical information',
+    'Submit the report to the Pharmacovigilance Centre','Document patient counselling'];
+  var COUNSEL=['What happened','Why the medicine may have caused the reaction','Medicines to avoid in future',
+    'When to seek immediate medical care','Importance of reporting future ADRs','Follow-up instructions'];
+  var OUTCOMES=['Learn','Detect suspected ADRs from patient information','Differentiate common adverse effects from serious reactions',
+    'Complete an electronic ADR report accurately','Apply basic causality assessment principles',
+    'Counsel patients on medicine safety & future precautions','Understand the role of pharmacovigilance in medication safety'];
+  var RUBRIC=[
+    {k:'adr',   label:'Identification of suspected ADR', max:20},
+    {k:'drug',  label:'Identification of suspected drug', max:15},
+    {k:'form',  label:'Completion of electronic ADR form', max:20},
+    {k:'caus',  label:'Causality assessment', max:15},
+    {k:'doc',   label:'Documentation accuracy', max:10},
+    {k:'coun',  label:'Patient counselling', max:20}];
+  var MAXTOTAL=RUBRIC.reduce(function(a,r){return a+r.max;},0);
+  var CAUSAL=['Certain','Probable','Possible','Unlikely'];
+
+  /* 10 cases */
+  var CASES=[
+   {n:1,pt:{id:'PV-2601',age:29,sex:'Female',wt:'58 kg'},drug:'Amoxicillin',strength:'500 mg',freq:'TID',brand:'Mox',mfg:'Cipla Ltd',
+    presentation:'Generalized skin rash appearing 2 days after starting the antibiotic.',
+    adr:['Drug-induced skin rash (suspected penicillin allergy)','Fungal skin infection','Contact dermatitis from soap','Heat rash'],adrC:0,
+    severity:'Moderate',serious:false,caus:'Probable',
+    coun:['Avoid penicillin antibiotics in future and carry an allergy alert card.','Continue the antibiotic and ignore the rash.','Apply more soap to clear the rash.','Double the dose to overcome the reaction.'],counC:0},
+   {n:2,pt:{id:'PV-2602',age:52,sex:'Male',wt:'74 kg'},drug:'Metformin',strength:'500 mg',freq:'BD',brand:'Glyciphage',mfg:'Franco-Indian',
+    presentation:'Persistent diarrhoea and abdominal discomfort since starting the medicine.',
+    adr:['Gastrointestinal intolerance to metformin','Food poisoning','Viral gastroenteritis','Lactose intolerance'],adrC:0,
+    severity:'Mild',serious:false,caus:'Probable',
+    coun:['Take with food; symptoms usually settle — report if they persist.','Stop the diabetes medicine permanently.','Skip meals to reduce diarrhoea.','Take a double dose to build tolerance.'],counC:0},
+   {n:3,pt:{id:'PV-2603',age:61,sex:'Male',wt:'70 kg'},drug:'Diclofenac',strength:'50 mg',freq:'TID',brand:'Voveran',mfg:'Novartis',
+    presentation:'Severe gastric pain with black, tarry stools.',
+    adr:['NSAID-induced gastrointestinal bleeding','Simple indigestion','Iron-rich diet effect','Constipation'],adrC:0,
+    severity:'Severe',serious:true,caus:'Probable',
+    coun:['Stop the tablet and seek urgent medical care — black stools suggest GI bleeding.','Take an antacid and continue the NSAID.','Wait a week and review at the next visit.','Increase the dose for better pain relief.'],counC:0},
+   {n:4,pt:{id:'PV-2604',age:58,sex:'Female',wt:'66 kg'},drug:'Amlodipine',strength:'5 mg',freq:'OD',brand:'Amlong',mfg:'Micro Labs',
+    presentation:'Bilateral ankle swelling developing after one week of therapy.',
+    adr:['Amlodipine-induced peripheral oedema','Deep vein thrombosis','Kidney failure','Heart attack'],adrC:0,
+    severity:'Mild',serious:false,caus:'Probable',
+    coun:['Do not stop the medicine on your own — consult your physician about the swelling.','Stop the BP medicine immediately.','Apply a tight bandage and continue.','Take a diuretic without advice.'],counC:0},
+   {n:5,pt:{id:'PV-2605',age:64,sex:'Male',wt:'80 kg'},drug:'Enalapril',strength:'5 mg',freq:'OD',brand:'Envas',mfg:'Cadila',
+    presentation:'Persistent dry cough since starting the blood-pressure medicine.',
+    adr:['ACE-inhibitor-induced dry cough','Common cold','Asthma','Tuberculosis'],adrC:0,
+    severity:'Mild',serious:false,caus:'Probable',
+    coun:['The dry cough can be caused by this BP medicine; your doctor may switch you to an alternative.','Take a cough syrup and continue indefinitely.','Stop drinking water to reduce the cough.','Ignore it — it is unrelated to the medicine.'],counC:0},
+   {n:6,pt:{id:'PV-2606',age:45,sex:'Male',wt:'72 kg'},drug:'Ciprofloxacin',strength:'500 mg',freq:'BD',brand:'Ciplox',mfg:'Cipla Ltd',
+    presentation:'Pain and swelling of the Achilles tendon during the antibiotic course.',
+    adr:['Fluoroquinolone-associated tendinopathy','Ankle sprain','Gout','Muscle cramp'],adrC:0,
+    severity:'Moderate',serious:true,caus:'Probable',
+    coun:['Stop the antibiotic and avoid strenuous activity; get the tendon reviewed.','Massage the tendon and keep exercising.','Continue and add a painkiller only.','Double the antibiotic to finish sooner.'],counC:0},
+   {n:7,pt:{id:'PV-2607',age:66,sex:'Male',wt:'68 kg'},drug:'Human Insulin',strength:'100 IU/ml',freq:'S/C',brand:'Huminsulin',mfg:'Eli Lilly',
+    presentation:'Sweating, tremors and dizziness; capillary blood glucose 48 mg/dL.',
+    adr:['Insulin-induced hypoglycaemia','Anxiety attack','Dehydration','Common cold'],adrC:0,
+    severity:'Severe',serious:true,caus:'Certain',
+    coun:['Take fast-acting sugar now; always carry glucose and recognise hypoglycaemia signs.','Take extra insulin to feel better.','Lie down and wait without eating.','Skip the next three meals.'],counC:0},
+   {n:8,pt:{id:'PV-2608',age:57,sex:'Female',wt:'64 kg'},drug:'Atorvastatin',strength:'20 mg',freq:'HS',brand:'Atorva',mfg:'Zydus',
+    presentation:'Muscle pain and weakness with elevated creatine kinase (CK).',
+    adr:['Statin-associated myopathy','Normal exercise soreness','Vitamin deficiency','Arthritis'],adrC:0,
+    severity:'Moderate',serious:true,caus:'Probable',
+    coun:['Report muscle pain; the statin may need to be stopped and blood tests done.','Exercise harder to relieve the pain.','Take the statin twice daily instead.','Ignore muscle pain — it is harmless.'],counC:0},
+   {n:9,pt:{id:'PV-2609',age:34,sex:'Female',wt:'60 kg'},drug:'Carbamazepine',strength:'200 mg',freq:'BD',brand:'Tegretol',mfg:'Novartis',
+    presentation:'Fever, widespread rash and oral ulcers.',
+    adr:['Stevens–Johnson Syndrome (serious skin reaction)','Chickenpox','Mouth ulcer from spicy food','Measles'],adrC:0,
+    severity:'Severe',serious:true,caus:'Probable',
+    coun:['This is an emergency — stop the drug and go to hospital immediately.','Apply cream to the rash and continue the drug.','Take paracetamol and review next week.','Increase fluids only and carry on.'],counC:0},
+   {n:10,pt:{id:'PV-2610',age:27,sex:'Female',wt:'55 kg'},drug:'Ferrous Sulphate',strength:'200 mg',freq:'OD',brand:'Fefol',mfg:'GSK',
+    presentation:'Nausea, constipation and dark-coloured stools.',
+    adr:['Expected iron-related gastrointestinal effects','Gastrointestinal bleeding','Food poisoning','Liver failure'],adrC:0,
+    severity:'Mild',serious:false,caus:'Probable',
+    coun:['Dark stools are an expected, harmless effect; take with vitamin C and continue.','Stop iron and seek emergency care for the dark stools.','Take iron with tea to reduce nausea.','Double the dose to relieve constipation.'],counC:0}
+  ];
+
+  /* ---- briefing ---- */
+  $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
+  $('counRef').innerHTML=COUNSEL.map(function(t){return '<label><input type="checkbox" disabled><span>'+esc(t)+'</span></label>';}).join('');
+  $('loRef').innerHTML=OUTCOMES.slice(1).map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
+  $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+esc(r.label)+'</td><td>'+r.max+'</td></tr>';}).join('')+'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
+
+  var sel=$('caseSel');
+  sel.innerHTML=CASES.map(function(c){return '<option value="'+(c.n-1)+'">Case '+c.n+' — '+esc(c.drug)+'</option>';}).join('');
+  sel.addEventListener('change',function(){ loadCase(parseInt(this.value,10)); });
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var state=null;
+  function loadCase(ci){
+    state={ci:ci,adr:null,drug:null,caus:null,severity:'',serious:'',coun:{},counPick:null,mgmt:{},submitted:false,result:null};
+    var c=CASES[ci];
+    $('scCase').textContent='Case '+c.n; $('scScore').textContent='—'; $('scRes').textContent='—';
+    $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+    renderStation();
+  }
+
+  function renderStation(){
+    var c=CASES[state.ci]; var h='';
+    h+='<div class="card"><span class="step">Case '+c.n+'</span>'
+      +'<h2 style="margin-top:6px">'+esc(c.drug)+' '+esc(c.strength)+'</h2>'
+      +'<h3>Clinical presentation</h3><p>'+esc(c.presentation)+'</p>'
+      +'<h3>Patient history &amp; prescription (from the EHR)</h3>'
+      +'<div class="tw"><table><tbody>'
+      +'<tr><td><b>Patient ID</b></td><td>'+esc(c.pt.id)+'</td><td><b>Age / Sex</b></td><td>'+c.pt.age+' · '+esc(c.pt.sex)+'</td><td><b>Weight</b></td><td>'+esc(c.pt.wt)+'</td></tr>'
+      +'<tr><td><b>Prescribed</b></td><td colspan="5">'+esc(c.drug+' '+c.strength+' '+c.freq)+' · '+esc(c.brand)+' ('+esc(c.mfg)+')</td></tr>'
+      +'</tbody></table></div></div>';
+
+    /* Step 1 identify ADR */
+    h+='<div class="card"><span class="step">Step 1</span> <b>Identify the suspected ADR</b>'
+      +'<div id="adrMcq">'+c.adr.map(function(o,k){return '<button type="button" class="opt" data-adr="'+k+'">'+esc(o)+'</button>';}).join('')+'</div></div>';
+
+    /* Step 2 identify suspected drug */
+    h+='<div class="card"><span class="step">Step 2</span> <b>Identify the suspected medicine</b>'
+      +'<div style="margin-top:8px;max-width:340px"><select id="drugSel"><option value="">Select the suspected drug…</option>'
+      +'<option value="'+esc(c.drug)+'">'+esc(c.drug)+' '+esc(c.strength)+'</option>'
+      +'<option value="none">No drug is responsible</option>'
+      +'<option value="other">Another (unlisted) drug</option></select></div></div>';
+
+    /* Step 3 electronic ADR form */
+    h+='<div class="card"><span class="step">Step 3</span> <b>Electronic ADR reporting form</b>'
+      +'<h3>Suspected drug details</h3><div class="grid2">'
+      +'<div><label class="f">Generic name</label><input type="text" id="f-generic" placeholder="Generic name of suspected drug"></div>'
+      +'<div><label class="f">Brand name</label><input type="text" id="f-brand" value="'+esc(c.brand)+'"></div>'
+      +'<div><label class="f">Strength</label><input type="text" id="f-strength" placeholder="e.g. '+esc(c.strength)+'"></div>'
+      +'<div><label class="f">Batch number</label><input type="text" id="f-batch" placeholder="Batch no."></div>'
+      +'<div><label class="f">Manufacturer</label><input type="text" id="f-mfg" value="'+esc(c.mfg)+'"></div>'
+      +'<div><label class="f">Start date</label><input type="date" id="f-start"></div>'
+      +'<div><label class="f">Stop date</label><input type="date" id="f-stop"></div></div>'
+      +'<h3>Adverse drug reaction</h3><div class="grid2">'
+      +'<div><label class="f">Date of onset</label><input type="date" id="f-onset"></div>'
+      +'<div><label class="f">Severity</label><select id="f-severity"><option value="">Select…</option><option>Mild</option><option>Moderate</option><option>Severe</option></select></div>'
+      +'<div><label class="f">Outcome</label><select id="f-outcome"><option value="">Select…</option><option>Recovered</option><option>Recovering</option><option>Not yet recovered</option><option>Fatal</option><option>Unknown</option></select></div>'
+      +'<div><label class="f">Serious?</label><select id="f-serious"><option value="">Select…</option><option value="serious">Serious</option><option value="non">Non-serious</option></select></div></div>'
+      +'<div style="margin-top:12px"><label class="f">Description of reaction</label><textarea id="f-desc" placeholder="Describe the reaction, timeline and relevant findings…"></textarea></div>'
+      +'<h3>Management</h3><div class="cl" id="mgmtList">'
+      +['Suspected drug discontinued','Dose reduced','Alternative medicine started','Hospitalization required'].map(function(t,i){return '<label><input type="checkbox" data-m="'+i+'"><span>'+esc(t)+'</span></label>';}).join('')
+      +'</div>'
+      +'<h3>Reporter information</h3><div class="grid2">'
+      +'<div><label class="f">Reporter (student) name</label><input type="text" id="f-rep" placeholder="Your name"></div>'
+      +'<div><label class="f">Date</label><input type="date" id="f-repdate"></div>'
+      +'<div><label class="f">Digital signature (type your name)</label><input type="text" id="f-sign" placeholder="Sign by typing your name"></div></div></div>';
+
+    /* Step 4 causality */
+    h+='<div class="card"><span class="step">Step 4</span> <b>Causality assessment (WHO-UMC)</b>'
+      +'<div class="seg" id="causSeg" style="margin-top:8px">'+CAUSAL.map(function(x){return '<button type="button" data-c="'+esc(x)+'">'+esc(x)+'</button>';}).join('')+'</div></div>';
+
+    /* Step 5 counselling */
+    h+='<div class="card"><span class="step">Step 5</span> <b>Patient counselling</b>'
+      +'<p class="note">Tick each point you counselled the patient on:</p>'
+      +'<div class="cl" id="counList">'+COUNSEL.map(function(t,i){return '<label><input type="checkbox" data-co="'+i+'"><span>'+esc(t)+'</span></label>';}).join('')+'</div>'
+      +'<h3>Most important advice for this patient</h3>'
+      +'<div id="counMcq">'+c.coun.map(function(o,k){return '<button type="button" class="opt" data-cp="'+k+'">'+esc(o)+'</button>';}).join('')+'</div></div>';
+
+    h+='<div class="card"><button class="btn" id="submitBtn">Submit ADR report &amp; evaluate</button>'
+      +'<span class="muted" style="font-size:12.5px;margin-left:10px">Auto-scored against the 100-mark rubric.</span></div>';
+
+    $('caseArea').innerHTML=h;
+    wire();
+  }
+
+  function wire(){
+    document.querySelectorAll('#adrMcq .opt').forEach(function(b){ b.addEventListener('click',function(){ state.adr=+b.getAttribute('data-adr'); document.querySelectorAll('#adrMcq .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); }); });
+    $('drugSel').addEventListener('change',function(){ state.drug=this.value; });
+    document.querySelectorAll('#counMcq .opt').forEach(function(b){ b.addEventListener('click',function(){ state.counPick=+b.getAttribute('data-cp'); document.querySelectorAll('#counMcq .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); }); });
+    document.querySelectorAll('#causSeg button').forEach(function(b){ b.addEventListener('click',function(){ state.caus=b.getAttribute('data-c'); document.querySelectorAll('#causSeg button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); }); });
+    document.querySelectorAll('#counList input').forEach(function(cb){ cb.addEventListener('change',function(){ state.coun[cb.getAttribute('data-co')]=cb.checked; }); });
+    document.querySelectorAll('#mgmtList input').forEach(function(cb){ cb.addEventListener('change',function(){ state.mgmt[cb.getAttribute('data-m')]=cb.checked; }); });
+    $('submitBtn').addEventListener('click',evaluate);
+  }
+
+  function val(id){ var e=$(id); return e?(e.value||'').trim():''; }
+
+  function evaluate(){
+    var c=CASES[state.ci]; var sc={}, fb={};
+    var name=val('cName')||'Candidate', reg=val('cReg');
+
+    /* 1 identify ADR (20) */
+    var adrOK=state.adr===c.adrC;
+    sc.adr=adrOK?20:0; fb.adr=adrOK?'Correct ADR identified.':'The suspected ADR was not correctly identified.';
+
+    /* 2 identify suspected drug (15) */
+    var drugOK=state.drug===c.drug;
+    sc.drug=drugOK?15:0; fb.drug=drugOK?'Correct suspected medicine identified.':'The suspected medicine was not correctly identified.';
+
+    /* 3 form completion (20) */
+    var fields=['f-generic','f-strength','f-onset','f-severity','f-outcome','f-serious','f-desc','f-rep','f-sign'];
+    var filled=fields.filter(function(f){return val(f);}).length;
+    var mgmtAny=Object.keys(state.mgmt).some(function(k){return state.mgmt[k];});
+    var total=fields.length+1; var got=filled+(mgmtAny?1:0);
+    sc.form=Math.round(got/total*20);
+    fb.form=(got===total)?'Electronic ADR form fully completed.':('Form '+got+'/'+total+' key fields completed.');
+
+    /* 4 causality (15) */
+    var causOK=state.caus===c.caus;
+    var adjacent = state.caus && (CAUSAL.indexOf(state.caus)>=0) && Math.abs(CAUSAL.indexOf(state.caus)-CAUSAL.indexOf(c.caus))===1;
+    sc.caus=causOK?15:(adjacent?8:0);
+    fb.caus=causOK?('Causality correctly assessed as '+c.caus+'.'):(state.caus?('Assessed '+state.caus+'; expected '+c.caus+'.'):'Causality not assessed.');
+
+    /* 5 documentation accuracy (10) — generic matches drug, severity & seriousness correct */
+    var genMatch=val('f-generic') && c.drug.toLowerCase().indexOf(val('f-generic').toLowerCase().split(' ')[0])>=0;
+    var sevMatch=val('f-severity')===c.severity;
+    var serVal=val('f-serious'); var serMatch=(serVal==='serious')===c.serious && serVal!=='';
+    var misSerious = c.serious && serVal==='non'; /* serious reaction marked non-serious = safety error */
+    sc.doc=(genMatch?4:0)+(sevMatch?3:0)+(serMatch?3:0);
+    if(misSerious) sc.doc=0;
+    fb.doc=misSerious?'PATIENT-SAFETY ERROR: a serious reaction was recorded as non-serious.'
+      :((genMatch&&sevMatch&&serMatch)?'Documentation accurate and consistent.':'Some documented details do not match the case (drug/severity/seriousness).');
+
+    /* 6 counselling (20) */
+    var cCount=COUNSEL.filter(function(_,i){return state.coun[i];}).length;
+    var counOK=state.counPick===c.counC;
+    sc.coun=Math.round(cCount/COUNSEL.length*12)+(counOK?8:0);
+    fb.coun=(cCount===COUNSEL.length?'Full counselling checklist. ':cCount+'/'+COUNSEL.length+' points covered. ')+(counOK?'Key safety advice correct.':'Key safety advice was not identified.');
+
+    var tot=RUBRIC.reduce(function(a,r){return a+(sc[r.k]||0);},0);
+    var pct=Math.round(tot/MAXTOTAL*100);
+    var critical=misSerious; /* mis-classifying a serious ADR fails the station */
+    var pass=pct>=50 && !critical;
+    state.result={name:name,reg:reg,total:tot,pct:pct,pass:pass,critical:critical,sc:sc,fb:fb};
+    state.submitted=true;
+
+    $('scScore').textContent=tot+'/'+MAXTOTAL; $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+pct+'%)';
+    renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+
+  function buildAuto(){
+    if(!state||!state.submitted) return null;
+    var c=CASES[state.ci], r=state.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Case '+c.n+' — '+esc(c.drug)+' '+esc(c.strength)+'</h3>';
+    h+='<p style="margin:2px 0"><b>Patient:</b> '+esc(c.pt.id)+' · '+c.pt.age+'/'+esc(c.pt.sex)+' · '+esc(c.pt.wt)+'</p>';
+    h+='<p style="margin:2px 0"><b>Suspected reaction:</b> '+esc(c.presentation)+'</p>';
+    h+='<p style="margin:2px 0"><b>Your assessment:</b> severity '+esc(val('f-severity')||'—')+' · '+(val('f-serious')==='serious'?'Serious':(val('f-serious')==='non'?'Non-serious':'—'))+' · causality '+esc(state.caus||'—')+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
+      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
+      +'<tr style="background:#f3e2e2;font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">'+MAXTOTAL+'</td></tr></table>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'+(r.critical?' (PATIENT-SAFETY ERROR: serious ADR marked non-serious)':'')+'</p>';
+    return h;
+  }
+
+  function renderReport(){
+    var c=CASES[state.ci], r=state.result;
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Score</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">of '+MAXTOTAL+'</div></div>'
+      +'<div class="repbox"><div class="rv">'+c.n+'</div><div class="rl">Case</div></div>'
+      +'<div class="repbox"><div class="rv">'+esc(c.drug.split(' ')[0])+'</div><div class="rl">Suspected drug</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+esc(c.drug)+' ADR report</div>';
+    if(r.critical) html+='<div class="note" style="color:var(--danger);font-weight:600;margin:-4px 0 10px">A serious ADR classified as non-serious is a patient-safety error and fails the station regardless of total marks.</div>';
+    html+='<div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Score</th><th>Max</th></tr></thead><tbody>'
+      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'<div class="note" style="margin-top:2px">'+esc(r.fb[x.k]||'')+'</div></td><td>'+(r.sc[x.k]||0)+'</td><td>'+x.max+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr></tbody></table></div>';
+    html+='<div class="row no-print" style="margin-top:14px"><button class="btn gold" onclick="window.print()">Download / Print record</button>'
+      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 2 · Unit 4 — Electronic ADR Reporting & Pharmacovigilance',title:'Electronic ADR Reporting & Pharmacovigilance',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Suspected drug & reaction', placeholder:'e.g. Case 1 — Amoxicillin, skin rash'},
+      minWords:400,
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return state.result?state.result.pct:null; },
+      autoResultText:function(){ return state.result?((state.result.pass?'PASS':'FAIL')+' '+state.result.pct+'%'):''; }
+    });
+  }
+
+  function switchTab(p){ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+
+  loadCase(0);
+})();
+</script>
+</body>
+</html>
