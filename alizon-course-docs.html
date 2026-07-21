@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Documents — Alizon School of Medical & Digital Intelligence</title>
+<meta name="description" content="Filterable examination documents — timetables, notifications, circulars, question papers and orders for each AI healthcare course at Alizon School of Medical & Digital Intelligence.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.alizon.in/alizon-course-docs">
+<meta property="og:site_name" content="Alizon School of Medical & Digital Intelligence">
+<meta property="og:title" content="Course Documents — Alizon School">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.alizon.in/alizon-course-docs">
+<meta property="og:image" content="https://www.alizon.in/alizon-logo.png">
+<link rel="icon" href="alizon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<script src="firebase-sync.js"></script>
+<style>
+  :root{ --crimson:#8c1515; --crimson-deep:#6b0f0f; --gold:#9a7b3f;
+    --ink:#2e2d29; --muted:#6e6a63; --line:rgba(140,21,21,.15); }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Source Sans 3','Source Sans Pro',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#fff,#faf8f6);color:var(--ink);
+    -webkit-font-smoothing:antialiased;min-height:100vh}
+  a{color:inherit;text-decoration:none}
+  .top{background:#fff;border-bottom:1px solid rgba(0,0,0,.08);position:sticky;top:0;z-index:10}
+  .top .in{max-width:980px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:12px}
+  .top img{width:30px;height:30px;object-fit:contain}
+  .top .bt b{font-family:'Source Serif Pro',Georgia,serif;font-size:17px;display:block;line-height:1.1}
+  .top .bt small{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--crimson);font-weight:600}
+  .top .sp{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+  .top .sp a{font-size:13.5px;font-weight:500;padding:8px 16px;border-radius:100px;border:1px solid rgba(0,0,0,.12);transition:.2s}
+  .top .sp a:hover{border-color:var(--crimson);color:var(--crimson)}
+  .wrap{max-width:980px;margin:0 auto;padding:26px 20px 80px}
+  .crumb{font-size:13px;color:var(--muted);margin-bottom:12px}
+  .crumb a{color:var(--crimson);font-weight:600}
+  .hero .ey{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,4vw,2.1rem);font-weight:700;margin-top:6px}
+  .hero p{color:var(--muted);font-size:14px;margin-top:6px}
+
+  .filters{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:16px;margin:22px 0 18px;
+    box-shadow:0 8px 26px rgba(20,18,16,.05);display:flex;flex-wrap:wrap;gap:14px;align-items:end}
+  .filters .fld{flex:1;min-width:180px}
+  .filters label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .filters input,.filters select{width:100%;padding:11px 13px;border-radius:10px;border:1px solid rgba(0,0,0,.15);font:inherit;color:var(--ink);background:#fff}
+  .filters input:focus,.filters select:focus{outline:none;border-color:var(--crimson);box-shadow:0 0 0 3px rgba(140,21,21,.12)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+  .chip{font-size:13px;font-weight:600;padding:8px 15px;border-radius:100px;border:1px solid rgba(140,21,21,.25);
+    background:#fff;color:var(--crimson);cursor:pointer;transition:.15s}
+  .chip:hover{background:rgba(140,21,21,.06)}
+  .chip.on{background:linear-gradient(120deg,var(--crimson),var(--crimson-deep));color:#fff;border-color:transparent}
+  .chip .n{opacity:.7;font-weight:700;margin-left:5px}
+  .chip.on .n{opacity:.85}
+
+  .count{font-size:13px;color:var(--muted);margin:0 2px 12px}
+  .list{display:flex;flex-direction:column;gap:12px}
+  .doc{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:16px 18px;
+    box-shadow:0 6px 20px rgba(20,18,16,.04);display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+  .doc .meta{flex:none;min-width:96px}
+  .doc .cat{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:3px 9px;border-radius:100px;background:rgba(140,21,21,.1);color:var(--crimson)}
+  .doc .dt{display:block;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);margin-top:7px}
+  .doc .body{flex:1;min-width:220px}
+  .doc .body b{font-size:15.5px;font-weight:600;display:block}
+  .doc .body p{font-size:13.5px;color:var(--muted);margin:5px 0 0;line-height:1.55;white-space:pre-wrap}
+  .doc .act{flex:none;display:flex;gap:8px;align-items:center}
+  .lk{font-size:13px;font-weight:600;color:var(--crimson);border:1px solid rgba(140,21,21,.35);
+    padding:8px 15px;border-radius:100px;background:transparent;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .lk:hover{background:var(--crimson);color:#fff}
+  .lk[disabled]{opacity:.5;cursor:wait}
+  .empty{text-align:center;color:var(--muted);font-size:14px;padding:44px 12px;background:#fff;border:1px dashed var(--line);border-radius:14px}
+  .missing{max-width:560px;margin:60px auto;text-align:center}
+  .missing a{color:var(--crimson);font-weight:600}
+  @media print{.top,.filters,.chips{display:none}}
+</style>
+<link rel="stylesheet" href="alizon-theme.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <img src="alizon-logo.png" alt="">
+  <div class="bt"><b>Course Documents</b><small>ALIZON OS · Examination Office</small></div>
+  <div class="sp"><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a></div>
+</div></div>
+
+<div class="wrap">
+  <div class="crumb" id="crumb"></div>
+  <div class="hero">
+    <div class="ey">Course Documents</div>
+    <h1 id="hTitle">—</h1>
+    <p>Filter examination documents by type, search the title, and sort by date.</p>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="filters">
+    <div class="fld"><label>Search</label><input id="q" placeholder="Search title or text…" autocomplete="off"></div>
+    <div class="fld" style="max-width:200px"><label>Sort by date</label>
+      <select id="sort"><option value="new">Newest first</option><option value="old">Oldest first</option></select></div>
+  </div>
+
+  <div class="count" id="count"></div>
+  <div class="list" id="list"></div>
+
+  <div class="missing" id="noCourse" style="display:none">
+    <h2 style="font-family:'Source Serif Pro',Georgia,serif">Course not specified</h2>
+    <p style="color:var(--muted);margin:10px 0 16px">Open a course from the <a href="alizon-results.html">Results page</a> or the <a href="alizon-exam.html">Examinations page</a>.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var params; try{ params=new URLSearchParams(location.search); }catch(e){ params=new URLSearchParams(''); }
+  var course=params.get('course');
+  var curCat=(params.get('cat')||'all').toLowerCase();
+  if(!course){ document.getElementById('noCourse').style.display='block';
+    document.querySelector('.chips').style.display='none'; document.querySelector('.filters').style.display='none';
+    document.getElementById('count').style.display='none'; return; }
+
+  var CATS=[['all','All documents'],['timetable','Examination Timetable'],['notification','Examination Notifications'],
+            ['circular','Instructions · Circulars · Proformas'],['paper','Previous Question Papers'],['order','Orders']];
+  var LABEL={}; CATS.forEach(function(c){ LABEL[c[0]]=c[1]; });
+
+  document.getElementById('crumb').innerHTML='<a href="alizon-course.html?course='+encodeURIComponent(course)+'">← '+esc(course)+' course desk</a>';
+  document.getElementById('hTitle').textContent=course;
+  document.title='ALIZON OS · '+course+' — Course Documents';
+
+  function docs(){ try{var a=JSON.parse(localStorage.getItem('alizonExamDocs')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
+  function forCourse(d){ var c=(d.course||'').trim(); return !c || c==='all' || c.toLowerCase()===course.toLowerCase(); }
+  function all(){ return docs().filter(function(d){return d && d.on!==false && forCourse(d);}); }
+
+  var _sig='';
+  function render(force){
+    var sig=''; try{ sig=(localStorage.getItem('alizonExamDocs')||'').length; }catch(e){}
+    if(!force && sig===_sig) return; _sig=sig;
+
+    var items=all();
+    /* category chips with live counts */
+    var chips=document.getElementById('chips');
+    chips.innerHTML=CATS.map(function(c){
+      var n=c[0]==='all'?items.length:items.filter(function(d){return d.cat===c[0];}).length;
+      return '<button type="button" class="chip'+(c[0]===curCat?' on':'')+'" data-cat="'+c[0]+'">'+esc(c[1])+'<span class="n">'+n+'</span></button>';
+    }).join('');
+    chips.querySelectorAll('.chip').forEach(function(b){
+      b.addEventListener('click',function(){ curCat=b.getAttribute('data-cat');
+        try{ params.set('cat',curCat); history.replaceState(null,'','?'+params.toString()); }catch(e){}
+        render(true);
+      });
+    });
+
+    var q=((document.getElementById('q')||{}).value||'').trim().toLowerCase();
+    var sort=(document.getElementById('sort')||{}).value||'new';
+    var rows=items.filter(function(d){ return curCat==='all' || d.cat===curCat; })
+      .filter(function(d){ if(!q) return true; return (String(d.title||'')+' '+String(d.body||'')).toLowerCase().indexOf(q)>=0; })
+      .sort(function(a,b){ var r=String(b.date||'').localeCompare(String(a.date||'')); return sort==='old'?-r:r; });
+
+    document.getElementById('count').textContent=rows.length+' document'+(rows.length===1?'':'s')
+      +(curCat==='all'?'':' in '+LABEL[curCat])+(q?' matching “'+q+'”':'');
+
+    var list=document.getElementById('list');
+    if(!rows.length){ list.innerHTML='<div class="empty">No documents'+(curCat==='all'?'':' under '+esc(LABEL[curCat]))+(q?' matching your search':'')+' for this course yet.</div>'; return; }
+    list.innerHTML=rows.map(function(d){
+      return '<div class="doc"><div class="meta"><span class="cat">'+esc(LABEL[d.cat]||d.cat||'Document')+'</span>'
+        +(d.date?'<span class="dt">'+esc(d.date)+'</span>':'')+'</div>'
+        +'<div class="body"><b>'+esc(d.title||'Untitled')+'</b>'+(d.body?'<p>'+esc(d.body)+'</p>':'')+'</div>'
+        +'<div class="act">'
+        +(d.link?'<a class="lk" href="'+esc(d.link)+'" target="_blank" rel="noopener">Open ↗</a>':'')
+        +(d.file?'<button type="button" class="lk" data-xf="'+esc(d.file.id)+'" data-xfn="'+(d.file.chunks||1)+'" data-xfname="'+esc(d.file.name||'document.pdf')+'">Open PDF</button>':'')
+        +'</div></div>';
+    }).join('');
+  }
+
+  ['q','sort'].forEach(function(id){ var el=document.getElementById(id);
+    if(el) el.addEventListener('input',function(){ render(true); }); });
+
+  /* uploaded PDFs: chunked in Firestore sync/xdfile_<id>_<n> */
+  function whenAuthed(cb,tries){ tries=tries||0;
+    try{ if(window.firebase&&firebase.auth&&firebase.auth().currentUser){ cb(true); return; } }catch(e){}
+    if(tries>22){ cb(false); return; }
+    setTimeout(function(){ whenAuthed(cb,tries+1); },400);
+  }
+  document.addEventListener('click',function(ev){
+    var b=ev.target.closest('button[data-xf]'); if(!b||b.disabled) return;
+    var id=b.getAttribute('data-xf'), n=parseInt(b.getAttribute('data-xfn'),10)||1, name=b.getAttribute('data-xfname')||'document.pdf';
+    var w=null; try{ w=window.open('about:blank','_blank'); }catch(e){}
+    b.disabled=true; var old=b.textContent; b.textContent='Loading…';
+    whenAuthed(function(ok){
+      if(!ok||!window.firebase||!firebase.firestore){ b.disabled=false; b.textContent=old; if(w)w.close(); alert('Could not connect to the document store. Please try again.'); return; }
+      var db=firebase.firestore(); var gets=[];
+      for(var i=0;i<n;i++) gets.push(db.collection('sync').doc('xdfile_'+id+'_'+i).get());
+      Promise.all(gets).then(function(snaps){
+        var b64=snaps.map(function(s){ return (s.exists&&s.data()&&s.data().value)||''; }).join('');
+        if(!b64) throw new Error('empty');
+        var bin=atob(b64), bytes=new Uint8Array(bin.length);
+        for(var j=0;j<bin.length;j++) bytes[j]=bin.charCodeAt(j);
+        var url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));
+        if(w){ w.location=url; } else { var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+        b.disabled=false; b.textContent=old;
+      }).catch(function(){ b.disabled=false; b.textContent=old; if(w)w.close(); alert('Could not load the PDF. Please try again.'); });
+    });
+  });
+
+  window.addEventListener('storage',function(e){ if(e.key==='alizonExamDocs') render(true); });
+  render(true);
+  setInterval(function(){ render(false); }, 5000);
+})();
+</script>
+<script src="alizon-back.js"></script>
+</body>
+</html>

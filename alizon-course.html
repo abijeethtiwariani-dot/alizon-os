@@ -41,6 +41,19 @@
   .hero .ey{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
   .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:700;margin-top:8px}
   .hero p{color:var(--muted);font-size:14.5px;margin-top:8px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+  .tile{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:18px;
+    padding:22px 22px 20px;box-shadow:0 10px 30px rgba(20,18,16,.05);transition:transform .18s,box-shadow .18s,border-color .18s;position:relative}
+  .tile:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(20,18,16,.12);border-color:var(--line)}
+  .tile .tcnt{position:absolute;top:16px;right:16px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:100px;
+    background:rgba(140,21,21,.1);color:var(--crimson)}
+  .tile b{font-family:'Source Serif Pro',Georgia,serif;font-size:17.5px;font-weight:700;padding-right:60px;line-height:1.25}
+  .tile p{font-size:13px;color:var(--muted);line-height:1.5;flex:1}
+  .tile .arw{font-size:13.5px;font-weight:600;color:var(--crimson);margin-top:8px}
+  .tile.feat{background:linear-gradient(135deg,var(--crimson),var(--crimson-deep));border-color:transparent;color:#fff}
+  .tile.feat b,.tile.feat .arw{color:#fff}
+  .tile.feat p{color:rgba(255,255,255,.85)}
+  .tile.feat .tcnt{background:rgba(255,255,255,.2);color:#fff}
   .card{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:20px;padding:26px 26px 18px;
     box-shadow:0 10px 32px rgba(20,18,16,.06)}
   .exs-row{border-bottom:1px solid var(--line)}
@@ -97,7 +110,7 @@
     <h1 id="hCourse">—</h1>
     <p>Results, timetable, notifications and documents for this course.</p>
   </div>
-  <div class="card"><div id="deskList"></div></div>
+  <div class="tiles" id="deskTiles"></div>
   <div class="missing" id="noCourse" style="display:none">
     <h2 style="font-family:'Source Serif Pro',Georgia,serif">Course not specified</h2>
     <p style="color:var(--muted);margin:10px 0 16px">Open a course from the <a href="alizon-results.html">Results page</a> or the <a href="alizon-exam.html">Examinations page</a>.</p>
@@ -109,7 +122,7 @@
   var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
   var course=null;
   try{ course=new URLSearchParams(location.search).get('course'); }catch(e){}
-  if(!course){ document.getElementById('noCourse').style.display='block'; document.querySelector('.card').style.display='none'; return; }
+  if(!course){ document.getElementById('noCourse').style.display='block'; document.getElementById('deskTiles').style.display='none'; return; }
   document.getElementById('tCourse').textContent=course;
   document.getElementById('hCourse').textContent=course;
   document.title='ALIZON OS · '+course+' — Course Desk';
@@ -118,118 +131,45 @@
   function docs(){ try{var a=JSON.parse(localStorage.getItem('alizonExamDocs')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
   function forCourse(d){ var c=(d.course||'').trim(); return !c || c==='all' || c.toLowerCase()===course.toLowerCase(); }
 
-  var CATS=[['timetable','Examination Timetable'],['notification','Examination Notifications'],
-            ['circular','Instructions · Circulars · Proformas'],['paper','Previous Question Papers'],['order','Orders']];
+  var CATS=[['timetable','Examination Timetable','Date sheets and exam schedules for this course.'],
+            ['notification','Examination Notifications','Official examination notices and announcements.'],
+            ['circular','Instructions · Circulars · Proformas','Guidelines, circulars and downloadable proformas.'],
+            ['paper','Previous Question Papers','Past question papers for reference and practice.'],
+            ['order','Orders','Examination orders issued by the office.']];
+  var cq='?course='+encodeURIComponent(course);
 
   var _sig='';
   function render(force){
-    var host=document.getElementById('deskList'); if(!host) return;
+    var host=document.getElementById('deskTiles'); if(!host) return;
     var sig=''; try{ sig=(localStorage.getItem('alizonResults')||'').length+':'+(localStorage.getItem('alizonExamDocs')||'').length; }catch(e){}
     if(!force && sig===_sig && host.innerHTML) return;
     _sig=sig;
-    /* preserve open folders + typed lookup values across a data refresh */
-    var openCats=[].map.call(host.querySelectorAll('.exs-row.open'),function(r){return r.getAttribute('data-cat');});
-    var vReg=(document.getElementById('cd-reg')||{}).value||'', vBatch=(document.getElementById('cd-batch')||{}).value||'';
     var R=loadResults();
     var courseKey=Object.keys(R.courses||{}).find(function(c){return c.toLowerCase()===course.toLowerCase();});
     var mods=courseKey?Object.keys(R.courses[courseKey].modules||{}):[];
     var all=docs().filter(function(d){return d && d.on!==false && forCourse(d);});
+
+    function tile(href,cnt,cntLabel,title,desc,feat){
+      return '<a class="tile'+(feat?' feat':'')+'" href="'+href+'">'
+        +'<span class="tcnt">'+cnt+(cntLabel?' '+cntLabel:'')+'</span>'
+        +'<b>'+esc(title)+'</b><p>'+esc(desc)+'</p><span class="arw">Open →</span></a>';
+    }
+
     var html='';
-
-    /* Results folder (open by default) */
-    html+='<div class="exs-row open" data-cat="results"><div class="exs-head" role="button" tabindex="0" aria-expanded="true"><b>Examination Results</b>'
-      +'<span class="exs-cnt">'+mods.length+' published</span><span class="exs-tg">＋</span></div>'
-      +'<div class="exs-body"><div class="mods">'
-      +(function(){
-          if(!mods.length) return '<div class="exs-empty">No results published for this course yet.</div>';
-          var groups={};
-          mods.forEach(function(m){ var mod=R.courses[courseKey].modules[m];
-            var b=(mod.batch||'').trim()||'All batches'; (groups[b]=groups[b]||[]).push({name:m,mod:mod}); });
-          return Object.keys(groups).map(function(b){
-            var items=groups[b];
-            return '<div class="cd-batch"><div class="cd-bhead"><b>'+esc(b)+'</b>'
-              +'<span class="exs-cnt">'+items.length+' module'+(items.length>1?'s':'')+'</span>'
-              +'<button type="button" class="lk cd-bgo" data-b="'+esc(b==='All batches'?'':b)+'">Check result →</button></div>'
-              +items.map(function(it){ return '<div class="exs-item"><span class="tt"><b>'+esc(it.name)+'</b><small>'+((it.mod.rows||[]).length)+' students · published '+(it.mod.at?new Date(it.mod.at).toLocaleDateString():'—')+'</small></span></div>'; }).join('')
-              +'</div>';
-          }).join('');
-        })()
-      +'</div>'
-      +'<div class="resrow"><div><label>Registration number</label><input id="cd-reg" placeholder="e.g. ALZ102" autocomplete="off"></div>'
-      +'<div><label>Batch</label><input id="cd-batch" placeholder="e.g. Batch 2026 - 7" autocomplete="off"></div>'
-      +'<button class="go" id="cd-go">View my result</button></div>'
-      +'<div class="note">Opens your official module-wise statement — print or save as PDF there.</div>'
-      +'</div></div>';
-
+    /* Results — dedicated results page */
+    html+=tile('alizon-results.html'+cq, mods.length, mods.length===1?'module':'modules',
+      'Examination Results','Enter your registration number to view your module-wise statement of results.', true);
+    /* One dedicated page per document category */
     CATS.forEach(function(c){
-      var items=all.filter(function(d){return d.cat===c[0];}).sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));});
-      html+='<div class="exs-row" data-cat="'+c[0]+'"><div class="exs-head" role="button" tabindex="0" aria-expanded="false"><b>'+c[1]+'</b>'
-        +'<span class="exs-cnt">'+items.length+'</span><span class="exs-tg">＋</span></div>'
-        +'<div class="exs-body">'
-        +(items.length? items.map(function(d){
-            return '<div class="exs-item"><span class="dt">'+esc(d.date||'')+'</span>'
-              +'<span class="tt"><b>'+esc(d.title||'Untitled')+'</b>'+(d.body?'<p>'+esc(d.body)+'</p>':'')+'</span>'
-              +(d.link?'<a class="lk" href="'+esc(d.link)+'" target="_blank" rel="noopener">Open ↗</a>':'')
-              +(d.file?'<button type="button" class="lk" data-xf="'+esc(d.file.id)+'" data-xfn="'+(d.file.chunks||1)+'" data-xfname="'+esc(d.file.name||'document.pdf')+'">Open PDF</button>':'')
-              +'</div>';
-          }).join('') : '<div class="exs-empty">Nothing published for this course yet.</div>')
-        +'</div></div>';
+      var n=all.filter(function(d){return d.cat===c[0];}).length;
+      html+=tile('alizon-course-docs.html'+cq+'&cat='+c[0], n, '', c[1], c[2], false);
     });
+    /* All documents + filter page */
+    html+=tile('alizon-course-docs.html'+cq, all.length, all.length===1?'document':'documents',
+      'All Documents · Filter','Browse and filter every document for this course by type, keyword and date.', false);
+
     host.innerHTML=html;
-
-    if(openCats.length){ host.querySelectorAll('.exs-row').forEach(function(r){ var on=openCats.indexOf(r.getAttribute('data-cat'))>=0 || (r.getAttribute('data-cat')==='results' && !host.dataset.touched); r.classList.toggle('open',on); var hh=r.querySelector('.exs-head'); if(hh)hh.setAttribute('aria-expanded',on?'true':'false'); }); }
-    if(vReg&&document.getElementById('cd-reg')) document.getElementById('cd-reg').value=vReg;
-    if(vBatch&&document.getElementById('cd-batch')) document.getElementById('cd-batch').value=vBatch;
-    host.querySelectorAll('.exs-head').forEach(function(h){
-      function tg(){ var r=h.parentElement; var open=r.classList.toggle('open'); h.setAttribute('aria-expanded',open?'true':'false'); }
-      h.addEventListener('click',tg);
-      h.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tg(); } });
-    });
-    var go=document.getElementById('cd-go');
-    if(go) go.addEventListener('click',function(){
-      var r=(document.getElementById('cd-reg').value||'').trim(), b=(document.getElementById('cd-batch').value||'').trim();
-      if(!r){ document.getElementById('cd-reg').focus(); return; }
-      location.href='alizon-results.html?course='+encodeURIComponent(course)+'&reg='+encodeURIComponent(r)+(b?'&batch='+encodeURIComponent(b):'');
-    });
-    ['cd-reg','cd-batch'].forEach(function(id){ var el=document.getElementById(id);
-      if(el) el.addEventListener('keydown',function(e){ if(e.key==='Enter'&&go) go.click(); }); });
-    host.querySelectorAll('.cd-bgo').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        var b=btn.getAttribute('data-b')||'';
-        var bi=document.getElementById('cd-batch'), ri=document.getElementById('cd-reg');
-        if(bi&&b) bi.value=b;
-        var row=host.querySelector('.exs-row[data-cat="results"]'); if(row) row.classList.add('open');
-        if(ri){ ri.scrollIntoView({behavior:'smooth',block:'center'}); ri.focus(); }
-      });
-    });
   }
-
-  /* uploaded PDFs: chunked in Firestore sync/xdfile_<id>_<n> */
-  function whenAuthed(cb,tries){ tries=tries||0;
-    try{ if(window.firebase&&firebase.auth&&firebase.auth().currentUser){ cb(true); return; } }catch(e){}
-    if(tries>22){ cb(false); return; }
-    setTimeout(function(){ whenAuthed(cb,tries+1); },400);
-  }
-  document.addEventListener('click',function(ev){
-    var b=ev.target.closest('button[data-xf]'); if(!b||b.disabled) return;
-    var id=b.getAttribute('data-xf'), n=parseInt(b.getAttribute('data-xfn'),10)||1, name=b.getAttribute('data-xfname')||'document.pdf';
-    var w=null; try{ w=window.open('about:blank','_blank'); }catch(e){}
-    b.disabled=true; var old=b.textContent; b.textContent='Loading…';
-    whenAuthed(function(ok){
-      if(!ok||!window.firebase||!firebase.firestore){ b.disabled=false; b.textContent=old; if(w)w.close(); alert('Could not connect to the document store. Please try again.'); return; }
-      var db=firebase.firestore(); var gets=[];
-      for(var i=0;i<n;i++) gets.push(db.collection('sync').doc('xdfile_'+id+'_'+i).get());
-      Promise.all(gets).then(function(snaps){
-        var b64=snaps.map(function(s){ return (s.exists&&s.data()&&s.data().value)||''; }).join('');
-        if(!b64) throw new Error('empty');
-        var bin=atob(b64), bytes=new Uint8Array(bin.length);
-        for(var j=0;j<bin.length;j++) bytes[j]=bin.charCodeAt(j);
-        var url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));
-        if(w){ w.location=url; } else { var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
-        b.disabled=false; b.textContent=old;
-      }).catch(function(){ b.disabled=false; b.textContent=old; if(w)w.close(); alert('Could not load the PDF. Please try again.'); });
-    });
-  });
 
   window.addEventListener('storage',function(e){ if(e.key==='alizonExamDocs'||e.key==='alizonResults') render(true); });
   render(true);
