@@ -1,0 +1,27 @@
+{
+  "name": "Alizon OS — School of Medical & Digital Intelligence",
+  "short_name": "Alizon OS",
+  "description": "Alizon School of Medical & Digital Intelligence — student portal, results, examinations, allotment and course desk.",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#8c1515",
+  "theme_color": "#8c1515",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["education", "medical"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Student Portal", "short_name": "Portal", "url": "/ASMDI-dashboard", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Check Results", "short_name": "Results", "url": "/alizon-results", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Examinations", "short_name": "Exams", "url": "/alizon-exam", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Seat Allotment", "short_name": "Allotment", "url": "/alizon-allotment", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
