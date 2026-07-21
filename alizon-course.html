@@ -170,7 +170,7 @@
             return '<div class="exs-item"><span class="dt">'+esc(d.date||'')+'</span>'
               +'<span class="tt"><b>'+esc(d.title||'Untitled')+'</b>'+(d.body?'<p>'+esc(d.body)+'</p>':'')+'</span>'
               +(d.link?'<a class="lk" href="'+esc(d.link)+'" target="_blank" rel="noopener">Open ↗</a>':'')
-              +(d.file?'<button type="button" class="lk" data-xf="'+esc(d.file.id)+'" data-xfn="'+(d.file.chunks||1)+'" data-xfname="'+esc(d.file.name||'document.pdf')+'">📄 Open PDF</button>':'')
+              +(d.file?'<button type="button" class="lk" data-xf="'+esc(d.file.id)+'" data-xfn="'+(d.file.chunks||1)+'" data-xfname="'+esc(d.file.name||'document.pdf')+'">Open PDF</button>':'')
               +'</div>';
           }).join('') : '<div class="exs-empty">Nothing published for this course yet.</div>')
         +'</div></div>';

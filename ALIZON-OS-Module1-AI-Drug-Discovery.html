@@ -1095,7 +1095,7 @@ function update(fromInput){
   // checks
   const checksEl=document.getElementById('checks');
   checksEl.innerHTML=lipinski(state).map(r=>`<div class="chk ${r.pass?'pass':'fail'}">
-      <span class="mk">${r.pass?'✓':'✕'}</span><span>${r.k}</span><span class="v">${r.v}</span></div>`).join('');
+      <span class="mk">${r.pass?'✓':''}</span><span>${r.k}</span><span class="v">${r.v}</span></div>`).join('');
   // radar
   drawRadar(state);
   // verdict
@@ -1145,7 +1145,7 @@ function renderChallengeStatus(){
   let html=`<div class="cstatus">
     <div class="cdiag"><b style="color:var(--warn)">Diagnosis — ${c.drug}:</b> ${c.fault}</div>
     <div class="cgoals">`+
-    results.map(r=>`<div class="chk ${r.ok?'pass':'fail'}"><span class="mk">${r.ok?'✓':'✕'}</span><span>${r.label}</span></div>`).join('')+
+    results.map(r=>`<div class="chk ${r.ok?'pass':'fail'}"><span class="mk">${r.ok?'✓':''}</span><span>${r.label}</span></div>`).join('')+
     `</div><div class="chintline"><b>Hint:</b> ${c.hint}</div>`+
     (c.method?`<details class="cmethod"><summary>&#9656; Show step-by-step method</summary><ol>${c.method.map(m=>`<li>${m}</li>`).join('')}</ol></details>`:'');
   if(solved){

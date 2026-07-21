@@ -217,7 +217,7 @@
       <div class="ddrow">
         <div><label class="f">Drug A</label><select id="ixA"></select></div>
         <div><label class="f">Drug B</label><select id="ixB"></select></div>
-        <button class="btn" id="ixGo">Screen ⚡</button>
+        <button class="btn" id="ixGo">Screen</button>
       </div>
       <div class="ix" id="ixOut"></div>
 
@@ -304,7 +304,7 @@ function paint(){
   const done=Object.keys(S.casesDone).length;
   document.getElementById('scCases').textContent=done+'/3';
   document.getElementById('scIx').textContent=S.ixCount;
-  document.getElementById('scRenal').textContent=S.renal===null?'—':(S.renal?'✔':'✘');
+  document.getElementById('scRenal').textContent=S.renal===null?'—':(S.renal?'✔':'');
   document.getElementById('scRx').textContent=S.rx===null?'—':S.rx+'%';
   document.getElementById('scTotal').textContent=total();
   document.getElementById('repCases').textContent=done+'/3';
@@ -422,7 +422,7 @@ function openCase(c){
       if(!o.ok)btn.classList.add('wrong');else pts+=10;
       const fb=document.getElementById('fbx');
       fb.className='fb show '+(o.ok?'good':'bad');
-      fb.innerHTML='<b>'+(o.ok?'✔ Correct':'✘ Not quite')+'</b>'+esc(o.fb);
+      fb.innerHTML='<b>'+(o.ok?'✔ Correct':'Not quite')+'</b>'+esc(o.fb);
       const nx=document.createElement('button');nx.className='nextbtn';nx.textContent=(i+1<c.steps.length)?'Next question →':'Finish case ✓';
       nx.onclick=()=>{i++;step();};caseQ.appendChild(nx);
     });
@@ -488,7 +488,7 @@ document.getElementById('chalCheck').onclick=()=>{
   });
   if(ok){S.chalPts+=15;}
   out.className='ix show';
-  out.innerHTML=(ok?'<span class="sev none">✔ Correct — +15 pts</span>':'<span class="sev major">✘ The risky pair was '+esc(chalPair.a)+' + '+esc(chalPair.b)+'</span>')+
+  out.innerHTML=(ok?'<span class="sev none">✔ Correct — +15 pts</span>':'<span class="sev major">The risky pair was '+esc(chalPair.a)+' + '+esc(chalPair.b)+'</span>')+
     '<div class="mech">'+esc(chalPair.mech)+'</div><div class="mgmt"><b>Management:</b> '+esc(chalPair.mgmt)+'</div>';
   paint();
 };
@@ -502,8 +502,8 @@ function crcl(){
   let v=((140-age)*wt)/(72*scr);if(sex==='F')v*=0.85;return Math.round(v);
 }
 const DOSES=[
- {d:'Metformin',r:v=>v>=45?'Full dose (max 2 g/day)':v>=30?'Max 1 g/day — monitor 3-monthly':'✘ Contraindicated — stop'},
- {d:'Nitrofurantoin',r:v=>v>=45?'Usual dose':'✘ Avoid — ineffective & toxic'},
+ {d:'Metformin',r:v=>v>=45?'Full dose (max 2 g/day)':v>=30?'Max 1 g/day — monitor 3-monthly':'Contraindicated — stop'},
+ {d:'Nitrofurantoin',r:v=>v>=45?'Usual dose':'Avoid — ineffective & toxic'},
  {d:'Enoxaparin (treatment)',r:v=>v>=30?'1 mg/kg BD':'Reduce to 1 mg/kg OD + anti-Xa monitoring'},
  {d:'Apixaban (AF)',r:v=>v>=25?'5 mg BD (2.5 mg BD if 2 of: ≥80 y, ≤60 kg, SCr ≥1.5)':'Specialist review'},
  {d:'Gabapentin',r:v=>v>=60?'Up to 3.6 g/day':v>=30?'Max ~1.4 g/day':'Max 600–700 mg/day'},
@@ -545,7 +545,7 @@ function newRenal(){
       if(S.renal===null&&ok)S.renalPts+=15;
       S.renal=ok;
       const out=document.getElementById('renalOut');out.className='ix show';
-      out.innerHTML=(ok?'<span class="sev none">✔ Correct — +15 pts</span>':'<span class="sev major">✘ Review</span>')+
+      out.innerHTML=(ok?'<span class="sev none">✔ Correct — +15 pts</span>':'<span class="sev major">Review</span>')+
         '<div class="mech">'+esc(rc.calc)+'</div><div class="mgmt">'+esc(rc.why)+'</div>';
       paint();
     };box.appendChild(c);});

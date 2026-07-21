@@ -1588,7 +1588,7 @@ function renderEmpTable(){
       <td style="text-align:right">
         <button class="btn mini" onclick="genFor(${i})">Generate doc</button>
         <button class="btn mini" onclick="editEmp(${i})">Edit</button>
-        <button class="btn mini" onclick="delEmp(${i})" title="Delete">✕</button>
+        <button class="btn mini" onclick="delEmp(${i})" title="Delete"></button>
       </td></tr>`;
   }).join('');
   $('empRows').innerHTML=rows||`<tr><td colspan="10" class="empty" style="padding:18px">No employees match. Add one with “+ Add employee”.</td></tr>`;
@@ -1703,7 +1703,7 @@ function renderInbox(){
       <td>${r.status==='Pending'
         ? `<input data-rn="${r.id}" placeholder="Note to staff (optional)" style="width:120px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);border-radius:8px;font-family:inherit;padding:6px 8px;font-size:12px">
            <button class="btn mini" data-rok="${r.id}" style="color:#3fbf90">✔ Ready</button>
-           <button class="btn mini" data-rno="${r.id}" style="color:#ff8a90">✕ Decline</button>`
+           <button class="btn mini" data-rno="${r.id}" style="color:#ff8a90">Decline</button>`
         : '—'}</td></tr>`;
   }).join(''):'<tr><td colspan="6" style="color:var(--muted)">No requests yet.</td></tr>';
   document.querySelectorAll('[data-rok]').forEach(b=>b.onclick=()=>actReq(b.dataset.rok,'Ready'));

@@ -344,7 +344,7 @@
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
     <a data-sec="adm-engage"><span class="aic"></span> Alerts &amp; Attendance <b class="cnt" id="cntEngage" style="background:var(--crimson)"></b></a>
     <a data-sec="adm-links"><span class="aic"></span> Links</a>
-    <span class="ngl">🌐 Website</span>
+    <span class="ngl">Website</span>
     <a data-sec="adm-content"><span class="aic"></span> Website Content</a>
     <a data-sec="adm-news"><span class="aic"></span> Website News</a>
     <a data-sec="adm-workshops"><span class="aic"></span> Workshops <b class="cnt" id="cntWs" style="background:var(--gold)"></b></a>
@@ -839,7 +839,7 @@
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
         <button class="cadd" id="ex-bkall" style="background:var(--pill);border-color:var(--line);color:var(--ink)">Select / clear all filtered</button>
         <button class="cadd" id="ex-bkapprove" style="background:rgba(46,139,106,.16);border-color:rgba(46,139,106,.45);color:var(--success)">✔ Approve selected</button>
-        <button class="cadd" id="ex-bkreject" style="background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">✘ Reject selected</button>
+        <button class="cadd" id="ex-bkreject" style="background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">Reject selected</button>
         <button class="cadd" id="ex-bkapply" style="background:var(--gold-soft);border-color:rgba(217,164,65,.45);color:var(--gold)">Apply venue / date / purpose to selected</button>
       </div>
       <div class="hint" style="margin-top:6px">Tick rows below (or use Select all), then apply an action. Approve issues a hall-ticket number to each ticked applicant.</div>
@@ -913,7 +913,7 @@
 
 <div id="docView">
   <div class="dv-top">
-    <button id="dvClose">✕ Close</button>
+    <button id="dvClose">Close</button>
     <div class="dv-ttl" id="dvTitle">Student submission</div>
     <button id="dvPrint">Print</button>
   </div>
@@ -1016,8 +1016,8 @@ function renderMaster(){
     +'<span style="flex:1.6;min-width:240px"><small style="opacity:.6;display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Sub course details</small>'
     +'<input value="'+cmEsc(p.course||'')+'" data-cms="'+i+'" style="width:100%"></span>'
     +'<span style="opacity:.6;font-size:11.5px;align-self:center;white-space:nowrap">'+(p.modules||[]).length+' modules</span>'
-    +'<button class="cadd" data-cmsave="'+i+'" style="white-space:nowrap">💾 Save</button>'
-    +'<button class="eview" data-cmdel="'+i+'" title="Delete this course">🗑</button>'
+    +'<button class="cadd" data-cmsave="'+i+'" style="white-space:nowrap">Save</button>'
+    +'<button class="eview" data-cmdel="'+i+'" title="Delete this course"></button>'
     +'</div>').join('') || '<div class="hint">No courses yet — add one below.</div>';
   el.querySelectorAll('[data-cmsave]').forEach(b=>b.onclick=()=>{
     const i=+b.dataset.cmsave; const p=PROGRAMS[i]; if(!p) return;
@@ -1119,16 +1119,16 @@ function render(){
             <span class="mu">${esc(m.unit)}</span>
             <div class="mt"><b>${esc(m.title)}</b><small>${esc(m.desc)}</small></div>
             <span class="st ${m.status==='live'&&m.href?'live':'soon'}">${m.status==='live'&&m.href?'Live':'Soon'}</span>
-            <button class="delm" data-p="${pi}" data-m="${mi}" title="Remove course">✕</button>
+            <button class="delm" data-p="${pi}" data-m="${mi}" title="Remove course"></button>
           </div>
-          <details class="mcontent"><summary>⚙ Manage units · notes · videos (${(m.units||[]).length} units · ${(m.notes||[]).length} notes · ${(m.videos||[]).length} videos)</summary>
+          <details class="mcontent"><summary>Manage units · notes · videos (${(m.units||[]).length} units · ${(m.notes||[]).length} notes · ${(m.videos||[]).length} videos)</summary>
             <div class="cbody">
               <div class="cblock"><div class="ct">Units / subjects</div>
-                <div class="clist">${(m.units||[]).map((u,ui)=>`<div class="citem"><div class="cinfo"><b>${esc(u)}</b></div><button class="cx" data-du data-p="${pi}" data-m="${mi}" data-u="${ui}">✕</button></div>`).join('')||'<div class="cnote">No units yet.</div>'}</div>
+                <div class="clist">${(m.units||[]).map((u,ui)=>`<div class="citem"><div class="cinfo"><b>${esc(u)}</b></div><button class="cx" data-du data-p="${pi}" data-m="${mi}" data-u="${ui}"></button></div>`).join('')||'<div class="cnote">No units yet.</div>'}</div>
                 <div class="crow"><input placeholder="Unit 1 – …" data-uin data-p="${pi}" data-m="${mi}"><button class="cadd" data-uadd data-p="${pi}" data-m="${mi}">Add unit</button></div>
               </div>
               <div class="cblock"><div class="ct">Class videos (YouTube)</div>
-                <div class="clist">${(m.videos||[]).map((v,vi)=>`<div class="citem"><div class="cinfo"><b>${esc(v.title)}</b><small>${v.unit?esc(v.unit)+' · ':''}${esc(v.url)}</small></div><button class="cx" data-dv data-p="${pi}" data-m="${mi}" data-v="${vi}">✕</button></div>`).join('')||'<div class="cnote">No class videos yet.</div>'}</div>
+                <div class="clist">${(m.videos||[]).map((v,vi)=>`<div class="citem"><div class="cinfo"><b>${esc(v.title)}</b><small>${v.unit?esc(v.unit)+' · ':''}${esc(v.url)}</small></div><button class="cx" data-dv data-p="${pi}" data-m="${mi}" data-v="${vi}"></button></div>`).join('')||'<div class="cnote">No class videos yet.</div>'}</div>
                 <div class="crow n"><input placeholder="Video title — e.g. Unit 1 Class Recording" data-vt data-p="${pi}" data-m="${mi}"></div>
                 <div class="crow"><input placeholder="YouTube link (https://youtu.be/… or watch?v=…)" data-vu data-p="${pi}" data-m="${mi}"><select data-vs data-p="${pi}" data-m="${mi}">${uopts}</select></div>
                 <div class="crow n"><button class="cadd" data-vadd data-p="${pi}" data-m="${mi}">＋ Add class video</button></div>
@@ -1139,7 +1139,7 @@ function render(){
                   <div class="cinfo"><b>${esc(n.title)}</b><small>${n.unit?esc(n.unit)+' · ':''}${(String(n.body||'').match(/\S+/g)||[]).length} words</small></div>
                   <button class="eview" data-npv data-p="${pi}" data-m="${mi}" data-n="${ni}" style="padding:6px 11px;font-size:11.5px">Preview</button>
                   <button class="eview" data-nrv data-p="${pi}" data-m="${mi}" data-n="${ni}" style="padding:6px 11px;font-size:11.5px;${n.published===false?'color:var(--success)':'color:var(--crimson)'}">${n.published===false?'▲ Publish':'⊘ Revoke'}</button>
-                  <button class="cx" data-dn data-p="${pi}" data-m="${mi}" data-n="${ni}">✕</button></div>`).join('')||'<div class="cnote">No notes yet — type one below; it publishes to the student portal on the official letterhead and can be revoked any time.</div>'}</div>
+                  <button class="cx" data-dn data-p="${pi}" data-m="${mi}" data-n="${ni}"></button></div>`).join('')||'<div class="cnote">No notes yet — type one below; it publishes to the student portal on the official letterhead and can be revoked any time.</div>'}</div>
                 <div class="crow n"><input placeholder="Note title — e.g. Unit 1 Lecture Notes" data-nt data-p="${pi}" data-m="${mi}"></div>
                 <div class="crow n"><select data-ns data-p="${pi}" data-m="${mi}">${uopts}</select></div>
                 <textarea placeholder="Type/paste the note content — students read & download it on the official Alizon letterhead." data-nb data-p="${pi}" data-m="${mi}"></textarea>
@@ -1325,7 +1325,7 @@ function renderEval(){
       <input type="number" min="0" max="100" placeholder="Mark /100" value="${m!=null?esc(m):''}" data-eg="${esc(s.id)}" style="width:130px">
       <input placeholder="Feedback to student${s.status==='rejected'?' (rejection reason sent)':''}" value="${esc(s.feedback||'')}" data-ef="${esc(s.id)}" style="flex:1">
       <button class="cadd" data-esave="${esc(s.id)}">Save</button>
-      ${s.status==='rejected'?'':`<button class="cadd" data-erej="${esc(s.id)}" style="background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">✘ Reject — redo</button>`}
+      ${s.status==='rejected'?'':`<button class="cadd" data-erej="${esc(s.id)}" style="background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">Reject — redo</button>`}
     </div></div>`;
   }).join('');
   el.querySelectorAll('[data-evtab]').forEach(b=>b.addEventListener('click',()=>setEvalTab(b.dataset.evtab)));
@@ -1371,7 +1371,7 @@ function renderGriev(){
       <span class="badge2 ${g.status==='resolved'?'done':'new'}">${g.status==='resolved'?'Resolved':'Open'}</span>
       <div class="cinfo"><b>${esc(g.subject||'Grievance')} <small style="color:var(--gold)">· ${esc(g.category||'General')}</small></b>
         <small>${esc(g.name||'Anonymous')}${g.reg?' · '+esc(g.reg):''} · ${fmt(g.ts)}</small></div>
-      <button class="cx" data-gdel="${esc(g.id)}">✕</button></div>
+      <button class="cx" data-gdel="${esc(g.id)}"></button></div>
     <div style="font-size:13px;color:#d7d7dd;white-space:pre-wrap">${esc(g.message||'')}</div>
     <textarea placeholder="Reply to the student…" data-gr="${esc(g.id)}">${esc(g.response||'')}</textarea>
     <div class="crow n"><button class="cadd" data-gresolve="${esc(g.id)}">${g.status==='resolved'?'Update reply':'Reply & resolve'}</button></div>
@@ -1388,7 +1388,7 @@ function renderFaculty(){
   const el=document.getElementById('facList'); const fs=DB('alizonFaculty',FACULTY_SEED);
   el.innerHTML=fs.map(f=>`<div class="citem"><div class="cinfo"><b>${esc(f.name)}</b><small>${esc(f.dept)}${f.email?' · '+esc(f.email):''}</small></div>
     <span class="badge2 ${f.country==='USA'?'usa':'ind'}">${esc(f.country||'—')}</span>
-    <button class="cx" data-fdel="${esc(f.id)}">✕</button></div>`).join('')||'<div class="cnote">No faculty.</div>';
+    <button class="cx" data-fdel="${esc(f.id)}"></button></div>`).join('')||'<div class="cnote">No faculty.</div>';
   el.querySelectorAll('[data-fdel]').forEach(b=>b.addEventListener('click',()=>{ setDB('alizonFaculty',DB('alizonFaculty',FACULTY_SEED).filter(x=>x.id!==b.dataset.fdel)); renderFaculty(); }));
 }
 document.getElementById('fc-add').addEventListener('click',()=>{
@@ -1402,7 +1402,7 @@ function renderSched(){
   const el=document.getElementById('schList'); const ss=DB('alizonSchedule',SCHED_SEED);
   el.innerHTML=ss.map(s=>`<div class="citem"><div class="cinfo"><b>${esc(s.title)} <small style="color:var(--gold)">· ${esc(s.module||'')}</small></b>
     <small>${esc(s.date||'')} ${esc(s.time||'')} · ${esc(s.mode||'')}${s.link?' · '+esc(s.link):''}</small></div>
-    <button class="cx" data-scdel="${esc(s.id)}">✕</button></div>`).join('')||'<div class="cnote">No schedules.</div>';
+    <button class="cx" data-scdel="${esc(s.id)}"></button></div>`).join('')||'<div class="cnote">No schedules.</div>';
   el.querySelectorAll('[data-scdel]').forEach(b=>b.addEventListener('click',()=>{ setDB('alizonSchedule',DB('alizonSchedule',SCHED_SEED).filter(x=>x.id!==b.dataset.scdel)); renderSched(); }));
 }
 document.getElementById('sc-add').addEventListener('click',()=>{
@@ -1417,7 +1417,7 @@ function renderLinks(){
   const el=document.getElementById('lnkList'); const ls=DB('alizonLinks',LINK_SEED);
   el.innerHTML=ls.map(l=>`<div class="citem"><div class="cinfo"><b>${esc(l.title)}</b><small>${esc(l.url)}</small></div>
     <span class="badge2 ${l.type==='Assessment'?'usa':'ind'}">${esc(l.type||'Link')}</span>
-    <button class="cx" data-lkdel="${esc(l.id)}">✕</button></div>`).join('')||'<div class="cnote">No links.</div>';
+    <button class="cx" data-lkdel="${esc(l.id)}"></button></div>`).join('')||'<div class="cnote">No links.</div>';
   el.querySelectorAll('[data-lkdel]').forEach(b=>b.addEventListener('click',()=>{ setDB('alizonLinks',DB('alizonLinks',LINK_SEED).filter(x=>x.id!==b.dataset.lkdel)); renderLinks(); }));
 }
 document.getElementById('lk-add').addEventListener('click',()=>{
@@ -1437,7 +1437,7 @@ function renderAnnounce(){
     <span class="badge2 ${it.source==='auto'?'ind':'usa'}" style="flex:none">${it.source==='auto'?'Auto':'Manual'}</span>
     <div class="cinfo"><input data-antext="${i}" value="${esc(it.text)}"><small>${esc(it.programme||'')}${it.module?(it.programme?' · ':'')+esc(it.module):''}${it.href?' · '+esc(it.href):''} · ${fmt(it.ts)}</small></div>
     <button class="cadd" data-ansave="${i}" style="padding:6px 11px;font-size:11.5px">Save</button>
-    <button class="cx" data-andel="${i}">✕</button></div>`).join(''):'<div class="cnote">No announcements yet — one is added automatically when a course goes live, or add a manual one above.</div>';
+    <button class="cx" data-andel="${i}"></button></div>`).join(''):'<div class="cnote">No announcements yet — one is added automatically when a course goes live, or add a manual one above.</div>';
   el.querySelectorAll('[data-ansave]').forEach(b=>b.addEventListener('click',()=>{
     const a=loadAnnounce(), i=+b.dataset.ansave, inp=el.querySelector(`[data-antext="${i}"]`);
     if(!a.items[i]||!inp)return; const v=inp.value.trim(); if(!v){toast('Announcement text cannot be empty');return;}
@@ -1938,7 +1938,7 @@ function renderResultsAdmin(){
     bl.innerHTML=Object.keys(bset).map(b=>`<option value="${esc(b)}">`).join(''); }
   let n=0, rowsHtml='';
   courses.forEach(c=>{ Object.keys(R.courses[c].modules||{}).forEach(m=>{ const mod=R.courses[c].modules[m]; n++;
-    rowsHtml+=`<tr><td>${esc(c)}</td><td>${esc(m)}</td><td>${esc(mod.batch||'All')}</td><td class="num">${(mod.rows||[]).length}</td><td>${esc((mod.cols||[]).join(', ')||'—')}</td><td class="num">${mod.at?fmt(mod.at):'—'}</td><td style="white-space:nowrap"><button class="btn resEdit" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px">✎ Students</button> <button class="btn resDel" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px;border-color:var(--crimson);color:var(--crimson)">Remove</button></td></tr>`;
+    rowsHtml+=`<tr><td>${esc(c)}</td><td>${esc(m)}</td><td>${esc(mod.batch||'All')}</td><td class="num">${(mod.rows||[]).length}</td><td>${esc((mod.cols||[]).join(', ')||'—')}</td><td class="num">${mod.at?fmt(mod.at):'—'}</td><td style="white-space:nowrap"><button class="btn resEdit" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px">Students</button> <button class="btn resDel" data-c="${esc(c)}" data-m="${esc(m)}" style="padding:4px 10px;font-size:12px;border-color:var(--crimson);color:var(--crimson)">Remove</button></td></tr>`;
   }); });
   document.getElementById('res-count').textContent=n?'· '+n+' module'+(n>1?'s':'')+' published':'';
   const tb=document.getElementById('resTable');
@@ -1962,10 +1962,10 @@ function editResult(c,m){
    +'<div style="overflow-x:auto;max-height:46vh;overflow-y:auto"><table class="stt" id="reTbl"><tr><th>Reg no</th><th>Name</th>'+cols.map(cl=>'<th>'+esc(cl)+'</th>').join('')+'<th></th></tr>'
    +(mod.rows||[]).map(r=>'<tr><td><input value="'+reEsc(r.reg)+'" data-f="reg" style="width:110px"></td><td><input value="'+reEsc(r.name)+'" data-f="name" style="width:160px"></td>'
      +cols.map(cl=>'<td><input value="'+reEsc(r.v&&r.v[cl])+'" data-col="'+reEsc(cl)+'" style="width:90px"></td>').join('')
-     +'<td><button class="eview reDelRow" title="Delete this student from the result">🗑</button></td></tr>').join('')
+     +'<td><button class="eview reDelRow" title="Delete this student from the result"></button></td></tr>').join('')
    +'</table></div>'
    +'<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><button class="cadd" id="reAddRow">＋ Add student</button>'
-   +'<button class="cadd" id="reSave">💾 Save &amp; publish changes</button>'
+   +'<button class="cadd" id="reSave">Save &amp; publish changes</button>'
    +'<button class="eview" id="reClose">Close without saving</button></div></div>';
   host.scrollIntoView({behavior:'smooth',block:'nearest'});
   function wireDel(scope){ scope.querySelectorAll('.reDelRow').forEach(b=>b.onclick=()=>b.closest('tr').remove()); }
@@ -1973,7 +1973,7 @@ function editResult(c,m){
   document.getElementById('reAddRow').onclick=()=>{
     const tbl=document.getElementById('reTbl'); const tr=document.createElement('tr');
     tr.innerHTML='<td><input data-f="reg" style="width:110px" placeholder="ALZ000"></td><td><input data-f="name" style="width:160px"></td>'
-      +cols.map(cl=>'<td><input data-col="'+reEsc(cl)+'" style="width:90px"></td>').join('')+'<td><button class="eview reDelRow">🗑</button></td>';
+      +cols.map(cl=>'<td><input data-col="'+reEsc(cl)+'" style="width:90px"></td>').join('')+'<td><button class="eview reDelRow"></button></td>';
     tbl.appendChild(tr); wireDel(tr); tr.querySelector('input').focus();
   };
   document.getElementById('reClose').onclick=()=>{ host.innerHTML=''; };
@@ -2064,11 +2064,11 @@ function renderXDocs(){
   const a=loadXDocs().slice().sort((x,y)=>String(y.date||'').localeCompare(String(x.date||'')));
   el.innerHTML=a.length? a.map(d=>'<div class="citem" style="align-items:flex-start">'
     +'<span style="font-family:ui-monospace,monospace;font-size:11px;opacity:.7;min-width:80px">'+escXD(d.date||'')+'</span>'
-    +'<span style="flex:1"><b>'+escXD(d.title||'')+'</b> <small style="opacity:.65">· '+(XD_CATS[d.cat]||d.cat)+' · '+(d.course?escXD(d.course):'All courses')+(d.link?' · has link':'')+(d.file?' · 📄 '+escXD(d.file.name):'')+'</small>'
+    +'<span style="flex:1"><b>'+escXD(d.title||'')+'</b> <small style="opacity:.65">· '+(XD_CATS[d.cat]||d.cat)+' · '+(d.course?escXD(d.course):'All courses')+(d.link?' · has link':'')+(d.file?' · '+escXD(d.file.name):'')+'</small>'
     +(d.body?'<div style="font-size:12px;opacity:.7;white-space:pre-wrap;margin-top:2px">'+escXD(d.body)+'</div>':'')+'</span>'
-    +'<button class="eview" data-xdedit="'+escXD(d.id)+'" title="Edit this item">✎ Edit</button>'
+    +'<button class="eview" data-xdedit="'+escXD(d.id)+'" title="Edit this item">Edit</button>'
     +'<button class="eview" data-xdtoggle="'+escXD(d.id)+'">'+(d.on===false?'▲ Publish':'⊘ Unpublish')+'</button>'
-    +'<button class="eview" data-xddel="'+escXD(d.id)+'">🗑</button>'
+    +'<button class="eview" data-xddel="'+escXD(d.id)+'"></button>'
     +'</div>').join('') : '<div class="hint">Nothing published yet.</div>';
   el.querySelectorAll('[data-xdedit]').forEach(b=>b.onclick=()=>{
     const d=loadXDocs().find(x=>String(x.id)===b.dataset.xdedit); if(!d) return;
@@ -2079,7 +2079,7 @@ function renderXDocs(){
     document.getElementById('xd-date').value=d.date||'';
     document.getElementById('xd-link').value=d.link||'';
     document.getElementById('xd-body').value=d.body||'';
-    const add=document.getElementById('xd-add'); add.textContent='💾 Save changes';
+    const add=document.getElementById('xd-add'); add.textContent='Save changes';
     add.scrollIntoView({behavior:'smooth',block:'center'});
     toast('Editing "'+(d.title||'')+'" — change the fields and press Save'+(d.file?' (uploaded PDF is kept unless you pick a new file)':''));
   });
@@ -2166,12 +2166,12 @@ function renderNews(){
   const a=loadNews();
   el.innerHTML=a.length? a.map((d,i)=>'<div class="citem" style="align-items:flex-start">'
     +'<span style="font-family:ui-monospace,monospace;font-size:11px;opacity:.7;min-width:80px">'+escXD(d.date||'')+'</span>'
-    +'<span style="flex:1"><b>'+escXD(d.title||'')+'</b> <small style="opacity:.65">· '+escXD(d.cat||'')+(i===0?' · ★ SPOTLIGHT':'')+(d.img?' · 📷 uploaded':'')+(d.imgUrl?' · 📷 url':'')+'</small>'
+    +'<span style="flex:1"><b>'+escXD(d.title||'')+'</b> <small style="opacity:.65">· '+escXD(d.cat||'')+(i===0?' · SPOTLIGHT':'')+(d.img?' · uploaded':'')+(d.imgUrl?' · url':'')+'</small>'
     +(d.body?'<div style="font-size:12px;opacity:.7;margin-top:2px">'+escXD(String(d.body).slice(0,140))+'…</div>':'')+'</span>'
-    +(i>0?'<button class="eview" data-nwtop="'+escXD(d.id)+'" title="Make this the spotlight">★ Top</button>':'')
-    +'<button class="eview" data-nwedit="'+escXD(d.id)+'">✎ Edit</button>'
+    +(i>0?'<button class="eview" data-nwtop="'+escXD(d.id)+'" title="Make this the spotlight">Top</button>':'')
+    +'<button class="eview" data-nwedit="'+escXD(d.id)+'">Edit</button>'
     +'<button class="eview" data-nwtoggle="'+escXD(d.id)+'">'+(d.on===false?'▲ Publish':'⊘ Unpublish')+'</button>'
-    +'<button class="eview" data-nwdel="'+escXD(d.id)+'">🗑</button>'
+    +'<button class="eview" data-nwdel="'+escXD(d.id)+'"></button>'
     +'</div>').join('') : '<div class="hint">No stories yet — publish the first one above.</div>';
   el.querySelectorAll('[data-nwtop]').forEach(b=>b.onclick=()=>{ const arr=loadNews(); const i=arr.findIndex(x=>String(x.id)===b.dataset.nwtop); if(i>0){ const [d]=arr.splice(i,1); arr.unshift(d); saveNews(arr); renderNews(); toast('"'+(d.title||'')+'" is now the spotlight'); } });
   el.querySelectorAll('[data-nwedit]').forEach(b=>b.onclick=()=>{
@@ -2180,7 +2180,7 @@ function renderNews(){
     document.getElementById('nw-cat').value=d.cat||''; document.getElementById('nw-title').value=d.title||'';
     document.getElementById('nw-date').value=d.date||''; document.getElementById('nw-body').value=d.body||'';
     document.getElementById('nw-imgurl').value=d.imgUrl||''; document.getElementById('nw-link').value=d.link||'';
-    const add=document.getElementById('nw-add'); add.textContent='💾 Save story changes';
+    const add=document.getElementById('nw-add'); add.textContent='Save story changes';
     add.scrollIntoView({behavior:'smooth',block:'center'});
     toast('Editing "'+(d.title||'')+'"'+(d.img?' — uploaded photo kept unless you choose a new one':''));
   });
@@ -2240,8 +2240,8 @@ function renderExams(){ renderXDocs();
           <small>${esc(comps)}${c.purpose?' · '+esc(c.purpose):''}${c.ts?' · created '+fmt(c.ts):''}</small></div>
         <span class="badge2 ${c.active?'done':''}" style="${c.active?'':'color:var(--muted);background:var(--pill)'}">${c.active?'Active':'Off'}</span>
         <label class="eview" style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" class="ex-ctoggle" data-id="${esc(c.id)}"${c.active?' checked':''}> Active</label>
-        <button class="eview ex-cedit" data-id="${esc(c.id)}" title="Edit cycle">✎</button>
-        <button class="cx ex-cdel" data-id="${esc(c.id)}" title="Delete cycle">✕</button>
+        <button class="eview ex-cedit" data-id="${esc(c.id)}" title="Edit cycle"></button>
+        <button class="cx ex-cdel" data-id="${esc(c.id)}" title="Delete cycle"></button>
       </div>`;
     }).join(''):'<div class="hint" style="padding:6px 2px">No exam cycles yet — create one above to open an exam window.</div>';
     cl.querySelectorAll('.ex-ctoggle').forEach(b=>b.addEventListener('change',()=>{
@@ -2258,7 +2258,7 @@ function renderExams(){ renderXDocs();
       document.getElementById('ex-cviva').checked=!!(c.components&&c.components.viva);
       document.getElementById('ex-cprac').checked=!!(c.components&&c.components.practical);
       document.getElementById('ex-cfinal').checked=!!(c.components&&c.components.final);
-      const btn=document.getElementById('ex-caddbtn'); btn.textContent='💾 Save cycle changes';
+      const btn=document.getElementById('ex-caddbtn'); btn.textContent='Save cycle changes';
       btn.scrollIntoView({behavior:'smooth',block:'center'});
       toast('Editing cycle "'+(c.name||'')+'" — press Save when done');
     }));
@@ -2316,7 +2316,7 @@ function renderExams(){ renderXDocs();
             <small>Batch ${esc(a.batch||'—')} · ${esc(a.programme||'—')} · ${esc(a.cycleName||'')} · ${esc(comps)} · applied ${a.appliedAt?fmt(a.appliedAt):'—'}${st==='approved'&&a.hallTicketNo?' · HT '+esc(a.hallTicketNo):''}</small></div>
           <span class="badge2 ind" title="Modules completed per assignment+self+practical rule" style="flex:none">${done} module${done===1?'':'s'} completed</span>
           ${st!=='approved'?`<button class="cadd ex-approve" data-id="${esc(a.id)}" style="padding:6px 12px;font-size:12px;background:rgba(46,139,106,.16);border-color:rgba(46,139,106,.45);color:var(--success)">✔ Approve</button>`:''}
-          ${st!=='rejected'?`<button class="cadd ex-reject" data-id="${esc(a.id)}" style="padding:6px 12px;font-size:12px;background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">✘ Reject</button>`:''}
+          ${st!=='rejected'?`<button class="cadd ex-reject" data-id="${esc(a.id)}" style="padding:6px 12px;font-size:12px;background:var(--crimson-soft);border-color:rgba(196,13,22,.45);color:var(--crimson)">Reject</button>`:''}
         </div>
         ${editor}
       </div>`;
@@ -2923,7 +2923,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       var st=f.status==='approved'?'<b style="color:#1E8E5A">Live on Testimonials ✓</b>':f.status==='rejected'?'<b style="color:#b1040e">Rejected</b>':'<b style="color:#8a6116">Pending</b>';
       return '<div class="citem" style="align-items:flex-start;gap:10px;flex-wrap:wrap">'
         +'<div style="flex:1;min-width:260px"><b>'+wsEsc(f.name)+'</b>'
-        +' <span class="hint">'+wsEsc([f.course,f.batch].filter(Boolean).join(' · '))+(f.college?' · '+wsEsc(f.college):'')+(f.photo&&f.photo.id?' · 📷 photo':' · no photo')+(f.src==='seed'?' · seeded':'')+'</span>'
+        +' <span class="hint">'+wsEsc([f.course,f.batch].filter(Boolean).join(' · '))+(f.college?' · '+wsEsc(f.college):'')+(f.photo&&f.photo.id?' · photo':' · no photo')+(f.src==='seed'?' · seeded':'')+'</span>'
         +'<div class="hint" style="margin-top:4px">“'+wsEsc(String(f.text||'').slice(0,220))+(String(f.text||'').length>220?'…':'')+'”</div>'
         +'<div class="hint">'+st+'</div></div>'
         +(f.status!=='approved'?'<button class="cadd" data-wfa="'+wsEsc(f.id)+'">Approve</button>':'')

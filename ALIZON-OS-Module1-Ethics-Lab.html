@@ -170,7 +170,7 @@
 <div class="wrap">
   <div class="hero">
     <div class="mod">Module 1 · Unit 3 · Practical 2 · Pharmacy AI</div>
-    <h1>⚖ Ethics, Regulation &amp; Data Protection Lab</h1>
+    <h1>Ethics, Regulation &amp; Data Protection Lab</h1>
     <p class="sub">A 10-practical simulation manual for digital pharmacy: ethical decisions, e-prescription verification,
     confidentiality, EHR documentation, digital consent, error reporting, cybersecurity, audit trails, compliance audit
     and a full capstone workflow. <b>12–15 hours · 10 sessions.</b></p>
@@ -509,7 +509,7 @@ function runMCQset(p,items,label,capstone){
       if(!ok)btn.classList.add('wrong'); else got+=10;
       rows.push([i+1,it.tag||'',o[0],it.opts.find(x=>x[1])[0],ok]);
       const fb=document.getElementById('fbx');fb.className='fb show '+(ok?'good':'bad');
-      fb.innerHTML='<b>'+(ok?'✔ Correct':'✘ Not quite')+'</b>'+esc(o[2]);
+      fb.innerHTML='<b>'+(ok?'✔ Correct':'Not quite')+'</b>'+esc(o[2]);
       const nx=document.createElement('button');nx.className='btn';nx.textContent=(i+1<items.length)?'Next →':'Finish ✓';
       nx.onclick=()=>{i++;step();};body.appendChild(nx);
     });
@@ -541,7 +541,7 @@ function runP2(p){
     if(Object.keys(marks).length<keys.length){alert('Mark every parameter first.');return;}
     let got=0;
     const rows=keys.map(k=>{const ok=marks[k]===P2KEY[k][1];if(ok)got++;
-      return `<tr><td>${esc(P2KEY[k][0])}</td><td class="${P2KEY[k][1]==='ok'?'okc':'badc'}">${P2KEY[k][1]==='ok'?'Present':'Missing/invalid'}</td><td class="${ok?'okc':'badc'}">${ok?'✔ you agreed':'✘ you marked '+(marks[k]==='ok'?'present':'missing')}</td><td>${esc(P2KEY[k][2])}</td></tr>`;});
+      return `<tr><td>${esc(P2KEY[k][0])}</td><td class="${P2KEY[k][1]==='ok'?'okc':'badc'}">${P2KEY[k][1]==='ok'?'Present':'Missing/invalid'}</td><td class="${ok?'okc':'badc'}">${ok?'✔ you agreed':'you marked '+(marks[k]==='ok'?'present':'missing')}</td><td>${esc(P2KEY[k][2])}</td></tr>`;});
     body.querySelector('#p2out').outerHTML=`<h3>Observation sheet</h3><table class="obs"><tr><th>Parameter</th><th>Truth</th><th>Your audit</th><th>Note</th></tr>${rows.join('')}</table>
       <div class="hint"><b>Viva:</b> an e-prescription is legally valid when it identifies a registered prescriber (name + registration no.), is dated and not expired, identifies the patient, states drug/dose/duration, and carries a verifiable digital signature (with QR/code where required).</div>`+
       finish('p2',got,keys.length);
@@ -578,7 +578,7 @@ function runP3(p){
       if(!rOk)btn.classList.add('wrong');
       rows.push([c.who,c.dec===1?'approve':'reject',c.reasons.find(x=>x[1])[0]]);
       const fb=document.getElementById('fbx');fb.className='fb show '+((decOk&&rOk)?'good':'bad');
-      fb.innerHTML='<b>'+(decOk&&rOk?'✔ Correct ('+pts+'/20)':'✘ '+pts+'/20')+'</b>'+esc(c.why);
+      fb.innerHTML='<b>'+(decOk&&rOk?'✔ Correct ('+pts+'/20)':''+pts+'/20')+'</b>'+esc(c.why);
       const nx=document.createElement('button');nx.className='btn';nx.textContent=i+1<P3.length?'Next request →':'Finish ✓';
       nx.onclick=()=>{i++;step();};body.appendChild(nx);
     });
@@ -614,7 +614,7 @@ function runP4(p){
     ];
     const got=checks.filter(c=>c[1]).length;
     document.getElementById('p4out').outerHTML='<h3>Validation result</h3><table class="obs"><tr><th>Check</th><th>Result</th></tr>'+
-      checks.map(c=>`<tr><td>${esc(c[0])}</td><td class="${c[1]?'okc':'badc'}">${c[1]?'✔ pass':'✘ fail'}</td></tr>`).join('')+'</table>'+
+      checks.map(c=>`<tr><td>${esc(c[0])}</td><td class="${c[1]?'okc':'badc'}">${c[1]?'✔ pass':'fail'}</td></tr>`).join('')+'</table>'+
       finish('p4',got,checks.length);
     document.getElementById('p4go').remove();
   };
@@ -650,7 +650,7 @@ function runP5(p){
     body.querySelectorAll('[data-vk]').forEach(x=>{x.disabled=true;if(x.dataset.ok==='1')x.classList.add('right');});
     if(!vivaOk)b.classList.add('wrong');
     const fb=document.getElementById('fbv');fb.className='fb show '+(vivaOk?'good':'bad');
-    fb.textContent=vivaOk?'✔ Correct.':'✘ Informed consent must be explicit, understood and documented.';});
+    fb.textContent=vivaOk?'✔ Correct.':'Informed consent must be explicit, understood and documented.';});
   document.getElementById('p5go').onclick=()=>{
     const sig=document.getElementById('c-sig').value.trim();
     const okOtp=otp&&document.getElementById('c-otp').value.trim()===otp;
@@ -660,7 +660,7 @@ function runP5(p){
     const got=checks.filter(c=>c[1]).length;
     const ts=new Date().toLocaleString('en-GB');
     document.getElementById('p5out').outerHTML='<h3>Consent record</h3><table class="obs"><tr><th>Check</th><th>Result</th></tr>'+
-      checks.map(c=>`<tr><td>${esc(c[0])}</td><td class="${c[1]?'okc':'badc'}">${c[1]?'✔':'✘'}</td></tr>`).join('')+
+      checks.map(c=>`<tr><td>${esc(c[0])}</td><td class="${c[1]?'okc':'badc'}">${c[1]?'✔':''}</td></tr>`).join('')+
       `<tr><td><b>Timestamp</b></td><td>${ts}</td></tr></table>`+
       finish('p5',got,checks.length,(got===checks.length?'Consent was informed, understood and verifiably captured.':'Consent was NOT fully informed — review the failed checks.'));
     document.getElementById('p5go').remove();
@@ -693,7 +693,7 @@ function runP6(p){
     document.getElementById('p6out').outerHTML='<h3>Incident report generated</h3><table class="obs">'+
       `<tr><th>Incident no.</th><td>${inc}</td></tr><tr><th>Date</th><td>${new Date().toLocaleString('en-GB')}</td></tr>`+
       `<tr><th>Drug</th><td>Cetirizine 10 mg dispensed vs Sertraline 50 mg prescribed</td></tr>`+
-      checks.map(c=>`<tr><th>${esc(c[0])}</th><td class="${c[1]?'okc':'badc'}">${c[1]?'✔':'✘'}</td></tr>`).join('')+'</table>'+
+      checks.map(c=>`<tr><th>${esc(c[0])}</th><td class="${c[1]?'okc':'badc'}">${c[1]?'✔':''}</td></tr>`).join('')+'</table>'+
       finish('p6',got,checks.length,'Near-misses deserve full reports — that is how patient-safety systems learn.');
     document.getElementById('p6go').remove();
   };
@@ -742,7 +742,7 @@ function runP8(p){
     if(Object.keys(marks).length<P8.length){alert('Mark every log entry first.');return;}
     let got=0;
     const rows=P8.map((r,i)=>{const ok=marks[i]===r[3];if(ok)got++;
-      return `<tr><td>${r[0]} · ${esc(r[1])}</td><td class="${r[3]?'badc':'okc'}">${r[3]?'Suspicious':'Authorized'}</td><td class="${ok?'okc':'badc'}">${ok?'✔':'✘'}</td><td>${esc(r[4])}</td></tr>`;});
+      return `<tr><td>${r[0]} · ${esc(r[1])}</td><td class="${r[3]?'badc':'okc'}">${r[3]?'Suspicious':'Authorized'}</td><td class="${ok?'okc':'badc'}">${ok?'✔':''}</td><td>${esc(r[4])}</td></tr>`;});
     document.getElementById('p8out').outerHTML='<h3>Verification</h3><table class="obs"><tr><th>Entry</th><th>Truth</th><th>You</th><th>Why</th></tr>'+rows.join('')+'</table>'+
       '<div class="hint"><b>Outcome:</b> audit trails answer who / what / when / authorized — accountability is impossible without them.</div>'+
       finish('p8',got,P8.length);
@@ -765,7 +765,7 @@ function runP9(p){
     if(Object.keys(marks).length<P9.length){alert('Mark every requirement first.');return;}
     let got=0;
     const rows=P9.map((r,i)=>{const ok=marks[i]===r[1];if(ok)got++;
-      return `<tr><td>${esc(r[0])}</td><td class="${r[1]?'okc':'badc'}">${r[1]?'Compliant':'Non-compliant'}</td><td class="${ok?'okc':'badc'}">${ok?'✔':'✘'}</td><td>${esc(r[2])}</td></tr>`;});
+      return `<tr><td>${esc(r[0])}</td><td class="${r[1]?'okc':'badc'}">${r[1]?'Compliant':'Non-compliant'}</td><td class="${ok?'okc':'badc'}">${ok?'✔':''}</td><td>${esc(r[2])}</td></tr>`;});
     const compl=Math.round(P9.filter(r=>r[1]).length/P9.length*100);
     document.getElementById('p9out').outerHTML='<h3>Audit checklist</h3><table class="obs"><tr><th>Requirement</th><th>Truth</th><th>Your audit</th><th>Note</th></tr>'+rows.join('')+'</table>'+
       `<div class="hint"><b>Pharmacy compliance score: ${compl}%</b> — your audit accuracy: ${Math.round(got/P9.length*100)}%.</div>`+

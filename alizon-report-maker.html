@@ -381,7 +381,7 @@ function renderSections(){
     <div class="sec"><div class="sh">
         <input data-i="${i}" data-k="t" value="${esc(s.t).replace(/"/g,'&quot;')}" placeholder="Section heading">
         <button class="mv" data-up="${i}" title="Move up">↑</button>
-        <button class="del" data-del="${i}" title="Remove">✕</button></div>
+        <button class="del" data-del="${i}" title="Remove"></button></div>
       <textarea data-i="${i}" data-k="b" placeholder="Write ${esc(s.t||'this section')} here…">${esc(s.b)}</textarea></div>`).join('');
   host.querySelectorAll('input[data-k],textarea[data-k]').forEach(el=>el.addEventListener('input',()=>{sections[+el.dataset.i][el.dataset.k]=el.value;render();}));
   host.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{sections.splice(+b.dataset.del,1);renderSections();render();}));

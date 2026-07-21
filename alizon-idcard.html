@@ -108,7 +108,7 @@
     <button class="cat on" data-cat="student">Student</button>
     <button class="cat" data-cat="faculty">Faculty</button>
     <button class="cat" data-cat="employee">Employee</button>
-    <button class="cat bulk" id="bulkBtn">▤ Bulk print</button>
+    <button class="cat bulk" id="bulkBtn">Bulk print</button>
   </div>
 
   <div class="grid" id="single">
@@ -138,7 +138,7 @@
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
       <b style="font-size:14px">Bulk ID cards</b>
       <select class="search" id="bulkBatch" style="width:auto;margin:0;min-width:200px"></select>
-      <button class="abtn primary" id="bulkPrint">🖨 Print all</button>
+      <button class="abtn primary" id="bulkPrint">Print all</button>
       <span class="stagehint" id="bulkCount"></span>
     </div>
     <div class="sheet" id="bulkSheet"></div>
@@ -360,8 +360,8 @@ function select(m){
   var isAdmin=(sessionStorage.getItem('alizonAdminAuth')==='1')||!!(new URLSearchParams(location.search).get('admin'));
   $('stage').innerHTML=cardHtml(m)+
     '<div class="btnrow"><button class="abtn primary" id="dlPng">⬇ Download ID card (PNG)</button>'+
-    '<button class="abtn" id="prCard">🖨 Print / Save as PDF</button></div>'+
-    (isAdmin?'<div class="phbar"><input type="file" id="phFile" accept="image/*"><button class="abtn" id="phUp">📷 Upload photo</button>'+
+    '<button class="abtn" id="prCard">Print / Save as PDF</button></div>'+
+    (isAdmin?'<div class="phbar"><input type="file" id="phFile" accept="image/*"><button class="abtn" id="phUp">Upload photo</button>'+
       (photoMap()[photoKey(m)]?'<button class="abtn" id="phRm">Remove photo</button>':'')+
       '<span class="stagehint" id="phMsg"></span></div>':'')+
     '<div class="stagehint">Photo-less cards use initials. Photos upload once and appear on ID cards, portals and testimonials.</div>';
@@ -528,7 +528,7 @@ $('bulkPrint').addEventListener('click',printAll);
     if(!m){ $('selfStage').innerHTML='<div class="empty">No '+selfCat+' record found for <b>'+esc(q)+'</b>.<br><small>Check your ID or ask the office to sync your details.</small></div>'; return; }
     $('selfStage').innerHTML=cardHtml(m)+
       '<div class="btnrow"><button class="abtn primary" id="selfDl">⬇ Download ID card (PNG)</button>'+
-      '<button class="abtn" id="selfPr">🖨 Print / Save as PDF</button></div>';
+      '<button class="abtn" id="selfPr">Print / Save as PDF</button></div>';
     $('selfDl').addEventListener('click',function(){downloadPng(m);});
     $('selfPr').addEventListener('click',function(){printOne(m);});
     hydratePhotos($('selfStage'));
