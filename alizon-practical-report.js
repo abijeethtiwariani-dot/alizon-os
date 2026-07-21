@@ -22,6 +22,19 @@
   function niceDate(){ try{ return new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return ''; } }
   /* pull the Aim from the on-page experiment sheet (Module-1-Unit-1 style report format) */
   function aimFromBrief(){ try{ var d=document.querySelector('.ebx details, .acc details'); if(d){ var p=d.querySelector('.ebx-body p, .body p'); if(p) return p.innerHTML; } }catch(e){} return ''; }
+  /* upload a PDF as chunked Firestore docs (sync/xdfile_<id>_<n>) — same store as portal documents */
+  function xdUploadPdf(file,id){
+    return new Promise(function(resolve,reject){
+      if(!(window.firebase&&firebase.firestore)){ reject(new Error('no-firebase')); return; }
+      var db=firebase.firestore(), r=new FileReader();
+      r.onload=function(){ try{
+        var b64=String(r.result).split(',')[1]||''; var CH=700000, n=Math.max(1,Math.ceil(b64.length/CH)), ops=[];
+        for(var i=0;i<n;i++) ops.push(db.collection('sync').doc('xdfile_'+id+'_'+i).set({value:b64.slice(i*CH,(i+1)*CH)}));
+        Promise.all(ops).then(function(){ resolve({id:id,name:file.name,chunks:n}); }).catch(reject);
+      }catch(e){ reject(e); } };
+      r.onerror=reject; r.readAsDataURL(file);
+    });
+  }
 
   var DEFAULT_SECTIONS=[
     {key:'principle',label:'Principle (in your own words)',hint:'Explain the scientific principle behind this practical and how it relates to the outcome…'},
@@ -76,6 +89,10 @@
         +'</div>'
         +(opts.titleField?fld('apr-titlefield',opts.titleField.label,opts.titleField.placeholder,''):'')
         +sections.map(function(s){ return area('apr-'+s.key,s.label,s.hint); }).join('')
+        +((opts.attachments&&opts.attachments.length)?('<div class="apr-fld" style="margin-top:6px"><label>Attach your work (PDF)</label>'
+          +'<div style="font-size:12px;color:var(--muted,#6e6a63);margin:-2px 0 8px">Upload up to '+opts.attachments.length+' PDF file(s) of your work — they will be attached to your report for faculty.</div>'
+          +opts.attachments.map(function(a,i){ return '<div style="margin-bottom:8px"><div style="font-size:12.5px;font-weight:600;margin-bottom:4px">'+esc(a.label)+'</div><input type="file" accept="application/pdf,.pdf" id="apr-att-'+i+'" style="font-size:12.5px"></div>'; }).join('')
+          +'</div>'):'')
         +'<div class="apr-wc" id="aprWcWrap">Your writing: <b id="aprWc">0</b> / '+minWords+' words minimum</div>'
         +'<button type="button" class="apr-btn" id="aprGen" disabled>Generate report</button>'
         +'<div class="apr-out" id="aprOut"></div>'
@@ -117,9 +134,27 @@
           +'<button type="button" class="apr-btn" id="aprSubmit">⤴ Submit report to faculty</button>'
           +'<button type="button" class="apr-btn" id="aprDownload" style="background:#fff;color:#8c1515;border:1.5px solid #8c1515">⤓ Download PDF</button>'
           +'<span style="font-size:12px;color:var(--muted,#6e6a63)">Review your report above, then submit and/or download it.</span></div>';
+        /* collect any attached PDF files */
+        function attFiles(){ var out=[]; (opts.attachments||[]).forEach(function(a,i){ var el=host.querySelector('#apr-att-'+i); if(el&&el.files&&el.files[0]) out.push({label:a.label,file:el.files[0]}); }); return out; }
         host.querySelector('#aprSubmit').addEventListener('click',function(){
-          if(window.AlizonPracticalSubmit) AlizonPracticalSubmit.submit(subOpts,reportObj);
-          else alert('Submission service not loaded — please refresh and try again.');
+          if(!window.AlizonPracticalSubmit){ alert('Submission service not loaded — please refresh and try again.'); return; }
+          var files=attFiles(), btn=this;
+          if(!files.length){ AlizonPracticalSubmit.submit(subOpts,reportObj); return; }
+          if(!(window.firebase&&firebase.firestore)){ alert('Upload service is still connecting — please wait a moment and try again.'); return; }
+          btn.disabled=true; btn.textContent='Uploading '+files.length+' file(s)…';
+          (async function(){
+            var atts=[];
+            try{
+              for(var i=0;i<files.length;i++){
+                var id='P'+Date.now()+'-'+Math.floor((window.crypto&&crypto.getRandomValues?crypto.getRandomValues(new Uint32Array(1))[0]:Math.random()*1e9))+'-'+i;
+                var ref=await xdUploadPdf(files[i].file,id); ref.label=files[i].label; atts.push(ref);
+              }
+            }catch(e){ btn.disabled=false; btn.textContent='⤴ Submit report to faculty'; alert('Could not upload your PDF(s). Please check your connection and try again.'); return; }
+            var attHtml='<h3 style="'+RT+'">Attached Work (PDF)</h3>'+atts.map(function(a){ return '<p style="'+PB+';white-space:normal;margin:2px 0"><b>'+esc(a.label)+':</b> <button type="button" data-xf="'+esc(a.id)+'" data-xfn="'+a.chunks+'" data-xfname="'+esc(a.name)+'" style="cursor:pointer;font:inherit;font-weight:700;color:#8c1515;background:#fff;border:1px solid #8c1515;border-radius:100px;padding:4px 12px">⤓ Open '+esc(a.name)+'</button></p>'; }).join('');
+            var subReport={html:reportObj.html+attHtml,name:reportObj.name,reg:reportObj.reg,pct:reportObj.pct,resultText:reportObj.resultText,attachments:atts};
+            AlizonPracticalSubmit.submit(subOpts,subReport);
+            btn.disabled=false; btn.textContent='✓ Submitted';
+          })();
         });
         host.querySelector('#aprDownload').addEventListener('click',function(){
           if(window.AlizonPracticalSubmit&&AlizonPracticalSubmit.download) AlizonPracticalSubmit.download(subOpts,reportObj);

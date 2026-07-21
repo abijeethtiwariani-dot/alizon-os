@@ -145,9 +145,10 @@
 
 <script src="firebase-sync.js"></script>
 <script src="alizon-practical-submit.js?v=3"></script>
-<script src="alizon-practical-report.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
 <script src="alizon-experiment-data.js?v=4"></script>
+<script src="alizon-pdf-open.js"></script>
 <script>
 (function(){
   'use strict';
@@ -361,6 +362,12 @@
       container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
       titleField:{label:'Research task &amp; AI-use decision', placeholder:'e.g. Case 1 — hallucinated references, verified before citing'},
       minWords:400,
+      attachments:[
+        {label:'1. Literature Review / References (PDF)'},
+        {label:'2. Data & Statistical Analysis (PDF)'},
+        {label:'3. Draft Manuscript / Write-up (PDF)'},
+        {label:'4. Additional Supporting File (PDF)'}
+      ],
       autoResult:function(){ return buildAuto()||''; },
       autoPct:function(){ return state.result?state.result.pct:null; },
       autoResultText:function(){ return state.result?((state.result.pass?'PASS':'FAIL')+' '+state.result.pct+'%'):''; }
