@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seat Allotment | Alizon School of Medical & Digital Intelligence</title>
+<meta name="description" content="Batch-wise seat allotment at Alizon School of Medical & Digital Intelligence, Kerala — reservation-based (India & Kerala state quotas) merit allotment list for every batch.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.alizon.in/alizon-allotment">
+<link rel="icon" href="alizon-logo.png">
+<script src="firebase-sync.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --crimson:#8c1515; --crimson-deep:#6b0f0f; --gold:#9a7b3f; --ink:#2e2d29; --muted:#6e6a63; --line:rgba(0,0,0,.12); --paper:#faf8f6; --ok:#1E8E5A; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Source Sans 3','Source Sans Pro',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;min-height:100vh;display:flex;flex-direction:column}
+  a{color:inherit;text-decoration:none}
+  .serif{font-family:'Source Serif Pro',Georgia,serif}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px;width:100%}
+  .nav{background:var(--crimson);box-shadow:0 2px 14px rgba(60,8,8,.25)}
+  .nav .in{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:12px;min-height:60px}
+  .nav img{width:32px;height:32px;object-fit:contain;filter:brightness(0) invert(1)}
+  .nav .bt b{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;color:#fff;display:block;line-height:1.05}
+  .nav .bt small{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#eecfcf;font-weight:600}
+  .nav nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+  .nav nav a{color:#fff;font-size:13.5px;font-weight:500;padding:8px 12px;border-radius:4px}
+  .nav nav a:hover{background:rgba(0,0,0,.2)}
+  .nav nav a.pri{background:#fff;color:var(--crimson-deep);font-weight:600}
+  .strip{background:#181512;color:#fff;padding:34px 0 30px}
+  .strip .ey{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#e8b4b4}
+  .strip h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.9rem,5vw,2.9rem);font-weight:600;margin-top:8px}
+  .strip p{color:#c9c2ba;font-size:14px;margin-top:10px;max-width:74ch;line-height:1.6}
+  main{flex:1;padding:30px 0 60px}
+  .pick{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:20px}
+  .pick label{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .pick select{padding:12px 14px;border:1px solid rgba(0,0,0,.18);border-radius:8px;font:inherit;font-size:14.5px;background:#fff;min-width:280px;max-width:100%}
+  .head{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;margin-bottom:14px}
+  .head h2{font-family:'Source Serif Pro',Georgia,serif;font-size:22px;font-weight:700}
+  .head .sub{font-size:13px;color:var(--muted)}
+  .quota{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .qchip{background:var(--paper);border:1px solid var(--line);border-radius:100px;padding:7px 15px;font-size:12.5px}
+  .qchip b{color:var(--crimson)}
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 34px -22px rgba(20,18,16,.2)}
+  table.al{border-collapse:collapse;width:100%;min-width:720px;font-size:13.5px}
+  table.al th{background:var(--crimson);color:#fff;font-weight:600;padding:11px 12px;text-align:left;font-size:12px;letter-spacing:.02em;position:sticky;top:0}
+  table.al td{padding:11px 12px;border-bottom:1px solid rgba(0,0,0,.07)}
+  table.al tbody tr:nth-child(even){background:var(--paper)}
+  table.al td.seat{font-weight:700;color:var(--crimson);text-align:center}
+  table.al td.rank{text-align:center;color:var(--muted)}
+  table.al td.reg{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--crimson-deep)}
+  .cat{font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap}
+  .cat.OPEN{background:#eef2f7;color:#334}
+  .cat.SEBC{background:#fdf3e0;color:#8a6116}
+  .cat.EWS{background:#eaf3ee;color:#1E8E5A}
+  .cat.SC{background:#f3ecfb;color:#6b21a8}
+  .cat.ST{background:#fbecec;color:#b1040e}
+  .st{font-size:11.5px;font-weight:700}
+  .st.Allotted{color:var(--ok)} .st.Waitlist{color:#8a6116}
+  .btn{cursor:pointer;font-family:inherit;font-weight:600;font-size:13.5px;border:none;color:#fff;background:var(--crimson);border-radius:8px;padding:11px 20px}
+  .btn:hover{background:var(--crimson-deep)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .admin{background:var(--paper);border:1px dashed rgba(140,21,21,.3);border-radius:12px;padding:20px 22px;margin-bottom:22px}
+  .admin h3{font-family:'Source Serif Pro',Georgia,serif;font-size:17px;font-weight:600;margin-bottom:4px}
+  .admin .hint{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+  .admin .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .msg{font-size:13px;font-weight:600;margin-top:10px}
+  .msg.ok{color:var(--ok)} .msg.err{color:#b1040e}
+  .empty{color:var(--muted);text-align:center;padding:26px;font-size:14px}
+  footer{background:var(--crimson);color:#f3e2e2;padding:26px 24px;text-align:center;font-size:12.5px}
+  footer a{color:#fff;font-weight:600}
+</style>
+<link rel="stylesheet" href="alizon-theme.css">
+</head>
+<body>
+<div class="nav"><div class="in">
+  <img src="alizon-logo.png" alt="Alizon logo">
+  <div class="bt"><b class="serif">Alizon</b><small>Seat Allotment</small></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="alizon-results.html">Results</a>
+    <a href="alizon-syllabus.html">Syllabus</a>
+    <a class="pri" href="ASMDI-dashboard.html">Student Portal &#8599;</a>
+  </nav>
+</div></div>
+
+<div class="strip"><div class="wrap">
+  <div class="ey">Admissions</div>
+  <h1 class="serif">Seat Allotment</h1>
+  <p>Batch-wise merit &amp; reservation allotment — India and Kerala state quotas (Open / Merit, OBC-SEBC, EWS,
+    Scheduled Caste and Scheduled Tribe). Select a batch to view its allotment list.</p>
+</div></div>
+
+<main><div class="wrap">
+  <div class="admin" id="adminBox" style="display:none">
+    <h3>Upload / update allotment (CSV)</h3>
+    <div class="hint">Upload a CSV with columns: <b>Batch, Seat, Rank, RegNo, Name, Category, Quota, District, Status</b>.
+      Rows are grouped by batch and published live. <a href="#" id="dlTemplate" style="color:var(--crimson);font-weight:600">Download a template</a>.</div>
+    <div class="row">
+      <input type="file" id="csvFile" accept=".csv">
+      <button class="btn" id="csvUp">Read &amp; publish</button>
+      <button class="btn ghost" id="csvExport">Export current batch (CSV)</button>
+    </div>
+    <div class="msg" id="csvMsg"></div>
+  </div>
+
+  <div class="pick">
+    <div><label>Batch</label><select id="batchSel"><option value="">Select a batch…</option></select></div>
+  </div>
+
+  <div id="allotView"><div class="empty">Choose a batch to view its seat allotment.</div></div>
+</div></main>
+
+<footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
+  <a href="https://www.alizongov.com" target="_blank" rel="noopener">alizongov.com</a> &middot; <a href="index.html">alizon.in</a></footer>
+
+<script>
+(function(){
+  'use strict';
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function J(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}}
+  var params=new URLSearchParams(location.search);
+  var isAdmin=(sessionStorage.getItem('alizonAdminAuth')==='1')||!!params.get('admin');
+  function store(){ var o=J('alizonAllotment',{}); return (o&&typeof o==='object'&&!Array.isArray(o))?o:{}; }
+  function save(o){ try{ localStorage.setItem('alizonAllotment', JSON.stringify(o)); }catch(e){} }
+  var CATCODE={ 'open / merit':'OPEN','open':'OPEN','merit':'OPEN','obc / sebc (kerala)':'SEBC','obc':'SEBC','sebc':'SEBC','ews':'EWS','scheduled caste (sc)':'SC','sc':'SC','scheduled tribe (st)':'ST','st':'ST' };
+  function catCode(v){ return CATCODE[String(v||'').toLowerCase().trim()] || String(v||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4) || 'OPEN'; }
+
+  function fillBatches(){
+    var sel=document.getElementById('batchSel'); if(!sel) return;
+    var s=store(), keys=Object.keys(s).sort();
+    var cur=sel.value;
+    sel.innerHTML='<option value="">Select a batch…</option>'+keys.map(function(k){ var a=s[k]; return '<option value="'+esc(k)+'">'+esc(k)+(a.allotted?' — '+a.allotted+'/'+a.seats+' seats':'')+'</option>'; }).join('');
+    if(cur && s[cur]) sel.value=cur; else if(keys.length) { sel.value=keys[keys.length-1]; show(); }
+  }
+  function show(){
+    var sel=document.getElementById('batchSel'), host=document.getElementById('allotView'); if(!sel||!host) return;
+    var a=store()[sel.value];
+    if(!a){ host.innerHTML='<div class="empty">No allotment published for this batch yet.</div>'; return; }
+    var q=(a.quota||[]).map(function(x){ return '<span class="qchip"><b>'+esc(x.label)+'</b> · '+x.seats+'</span>'; }).join('');
+    var rows=(a.rows||[]).slice().sort(function(x,y){ var xs=x.seat||999, ys=y.seat||999; return xs-ys || (x.rank||0)-(y.rank||0); });
+    var body=rows.map(function(r){
+      var cc=catCode(r.cat||r.catLabel);
+      return '<tr><td class="seat">'+(r.seat||'—')+'</td><td class="rank">'+(r.rank||'')+'</td>'
+        +'<td class="reg">'+esc(r.reg||'')+'</td><td>'+esc(r.name||'')+'</td>'
+        +'<td><span class="cat '+cc+'">'+esc(r.catLabel||r.cat||'')+'</span></td>'
+        +'<td>'+esc(r.quota||'')+'</td><td>'+esc(r.district||'')+'</td>'
+        +'<td><span class="st '+esc(r.status||'')+'">'+esc(r.status||'')+'</span></td></tr>';
+    }).join('');
+    host.innerHTML='<div class="head"><h2 class="serif">'+esc(a.batch||sel.value)+'</h2>'
+      +'<span class="sub">'+esc(a.course||'')+' · '+(a.allotted||rows.filter(function(r){return r.status==="Allotted";}).length)+' of '+(a.seats||40)+' seats allotted</span></div>'
+      +'<div class="quota">'+q+'</div>'
+      +'<div class="tblwrap"><table class="al"><thead><tr><th>Seat</th><th>Rank</th><th>Reg No</th><th>Name</th><th>Category</th><th>Quota</th><th>District</th><th>Status</th></tr></thead><tbody>'+body+'</tbody></table></div>';
+  }
+  document.getElementById('batchSel').addEventListener('change',show);
+
+  /* ---- CSV parse/export (admin) ---- */
+  function parseCSV(text){
+    var rows=[], i=0, n=text.length, field='', row=[], q=false;
+    function pushf(){ row.push(field); field=''; }
+    function pushr(){ pushf(); rows.push(row); row=[]; }
+    for(;i<n;i++){ var ch=text[i];
+      if(q){ if(ch==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else q=false; } else field+=ch; }
+      else { if(ch==='"') q=true; else if(ch===',') pushf(); else if(ch==='\r'){} else if(ch==='\n') pushr(); else field+=ch; }
+    }
+    if(field!==''||row.length) pushr();
+    return rows.filter(function(r){ return r.some(function(c){return String(c).trim();}); });
+  }
+  if(isAdmin){
+    document.getElementById('adminBox').style.display='';
+    document.getElementById('csvUp').addEventListener('click',function(){
+      var f=document.getElementById('csvFile'), msg=document.getElementById('csvMsg');
+      var file=f&&f.files&&f.files[0]; if(!file){ msg.className='msg err'; msg.textContent='Choose a CSV file first.'; return; }
+      var r=new FileReader();
+      r.onload=function(){
+        try{
+          var rows=parseCSV(String(r.result)); if(rows.length<2){ msg.className='msg err'; msg.textContent='CSV has no data rows.'; return; }
+          var hdr=rows[0].map(function(h){return String(h).toLowerCase().trim();});
+          function col(names){ for(var k=0;k<names.length;k++){ var idx=hdr.indexOf(names[k]); if(idx>-1) return idx; } return -1; }
+          var ci={ batch:col(['batch']), seat:col(['seat','seat no','seatno']), rank:col(['rank']), reg:col(['regno','reg no','reg','registration','registration number']),
+            name:col(['name','full name']), cat:col(['category','reservation','reservation category']), quota:col(['quota','allotted quota']), district:col(['district','domicile district']), status:col(['status']) };
+          if(ci.batch<0||ci.name<0){ msg.className='msg err'; msg.textContent='CSV must include at least Batch and Name columns.'; return; }
+          var s=store(), touched={};
+          for(var i=1;i<rows.length;i++){ var rw=rows[i]; var b=String(rw[ci.batch]||'').trim(); if(!b) continue;
+            if(!s[b]||!touched[b]){ s[b]={ batch:b, course:(s[b]&&s[b].course)||'', seats:(s[b]&&s[b].seats)||40, quota:(s[b]&&s[b].quota)||DEFQUOTA, rows:[], generatedAt:Date.now() }; touched[b]=1; }
+            var cat=ci.cat>-1?String(rw[ci.cat]||'').trim():'';
+            s[b].rows.push({ seat:ci.seat>-1?String(rw[ci.seat]||'').trim():'', rank:ci.rank>-1?Number(rw[ci.rank])||'':'', reg:ci.reg>-1?String(rw[ci.reg]||'').trim():'',
+              name:String(rw[ci.name]||'').trim(), cat:catCode(cat), catLabel:cat||'Open / Merit', quota:ci.quota>-1?String(rw[ci.quota]||'').trim():'',
+              district:ci.district>-1?String(rw[ci.district]||'').trim():'', status:ci.status>-1?(String(rw[ci.status]||'').trim()||'Allotted'):'Allotted' });
+          }
+          Object.keys(touched).forEach(function(b){ s[b].allotted=s[b].rows.filter(function(r){return r.status==='Allotted';}).length; });
+          save(s); fillBatches(); msg.className='msg ok'; msg.textContent='Published '+Object.keys(touched).length+' batch(es), '+(rows.length-1)+' rows — live for students.';
+        }catch(e){ msg.className='msg err'; msg.textContent='Could not read CSV: '+((e&&e.message)||e); }
+      };
+      r.readAsText(file);
+    });
+    document.getElementById('csvExport').addEventListener('click',function(){ exportCsv(document.getElementById('batchSel').value); });
+    document.getElementById('dlTemplate').addEventListener('click',function(ev){ ev.preventDefault();
+      dl('allotment-template.csv','Batch,Seat,Rank,RegNo,Name,Category,Quota,District,Status\nBatch 2026 - 8,1,1,ALZ200,Example Name,OPEN,Open / Merit,Ernakulam,Allotted\n'); });
+  }
+  var DEFQUOTA=[{code:'OPEN',label:'Open / Merit',seats:20},{code:'SEBC',label:'OBC / SEBC (Kerala)',seats:12},{code:'EWS',label:'EWS',seats:4},{code:'SC',label:'Scheduled Caste (SC)',seats:3},{code:'ST',label:'Scheduled Tribe (ST)',seats:1}];
+  function dl(name,text){ var b=new Blob([text],{type:'text/csv;charset=utf-8'}); var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},300); }
+  function exportCsv(b){ var a=store()[b]; if(!a){ return; }
+    var head='Batch,Seat,Rank,RegNo,Name,Category,Quota,District,Status\n';
+    var body=(a.rows||[]).map(function(r){ return [b,r.seat,r.rank,r.reg,r.name,r.catLabel||r.cat,r.quota,r.district,r.status].map(function(v){ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(','); }).join('\n');
+    dl('allotment-'+b.replace(/[^A-Za-z0-9]+/g,'-')+'.csv', head+body); }
+
+  fillBatches();
+  window.addEventListener('storage',function(e){ if(e.key==='alizonAllotment') fillBatches(); });
+  var tries=0; var iv=setInterval(function(){ fillBatches(); if(++tries>15) clearInterval(iv); }, 1500);
+})();
+</script>
+</body>
+</html>
