@@ -1687,9 +1687,14 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
   const sel=document.getElementById('lg-prog');
   function fillLoginSelect(){
     if(!sel) return;
-    const programs=loadPrograms(), act=activeProgramId();
-    sel.innerHTML=programs.map(p=>`<option value="${p.id}" ${p.id===act?'selected':''}>${esc(p.name)}</option>`).join('')
+    let programs=[]; try{ programs=loadPrograms()||[]; }catch(e){}
+    if(!programs.length){ try{ const raw=JSON.parse(localStorage.getItem('alizonPrograms')||'[]'); if(Array.isArray(raw)) programs=raw.filter(p=>p&&(p.name||p.id)); }catch(e){} }
+    let act=''; try{ act=activeProgramId(); }catch(e){}
+    const cur=sel.value;
+    sel.innerHTML='<option value="" disabled'+(cur?'':' selected')+'>Select your course / programme…</option>'
+      +programs.map(p=>`<option value="${p.id}" ${p.id===act?'selected':''}>${esc(p.name)}</option>`).join('')
       +'<option value="__workshop">Workshop delegate — Workshop Portal</option>';
+    if(cur){ try{ sel.value=cur; }catch(e){} }
   }
   /* workshop delegates sign in at their own portal */
   if(sel && !sel.__wsHook){ sel.__wsHook=1;
@@ -1702,6 +1707,12 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
 
   fillLoginSelect();
   renderTabs();
+  /* programmes arrive from the cloud ~1-2s after load — keep refilling until the dropdown is populated */
+  var __lgTries=0; var __lgIv=setInterval(function(){
+    fillLoginSelect();
+    if((loadPrograms().length && sel && sel.options.length>2) || ++__lgTries>25) clearInterval(__lgIv);
+  }, 700);
+  window.addEventListener('storage',function(e){ if(e.key==='alizonPrograms') fillLoginSelect(); });
   /* refresh when returning from the admin portal (bfcache / tab focus) */
   window.addEventListener('pageshow',()=>{ fillLoginSelect(); renderTabs(); });
 })();
@@ -2837,5 +2848,26 @@ function moduleResultBadge(moduleUnit, progName){
 })();
 </script>
 <script src="alizon-back.js"></script>
+<script>
+/* robust login programme dropdown — populate #lg-prog directly from the synced list */
+(function(){
+  function fill(){
+    var sel=document.getElementById('lg-prog'); if(!sel) return false;
+    var progs=[]; try{ progs=(JSON.parse(localStorage.getItem('alizonPrograms')||'[]')||[]).filter(function(p){return p&&(p.name||p.id);}); }catch(e){}
+    if(!progs.length) return false;
+    var cur=sel.value;
+    sel.innerHTML='<option value="" disabled'+(cur?'':' selected')+'>Select your course / programme…</option>'
+      +progs.map(function(p){ return '<option value="'+String(p.id||'').replace(/"/g,'&quot;')+'">'+String(p.name||p.id).replace(/</g,'&lt;')+'</option>'; }).join('')
+      +'<option value="__workshop">Workshop delegate — Workshop Portal</option>';
+    if(cur){ try{ sel.value=cur; }catch(e){} }
+    if(!sel.__wsHook2){ sel.__wsHook2=1; sel.addEventListener('change',function(){ if(sel.value==='__workshop') location.href='workshop-portal'; }); }
+    return true;
+  }
+  var n=0, iv=setInterval(function(){ if(fill() || ++n>60) clearInterval(iv); }, 500);
+  window.addEventListener('storage',function(e){ if(e.key==='alizonPrograms') fill(); });
+  window.addEventListener('pageshow',fill);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fill); else fill();
+})();
+</script>
 </body>
 </html>
