@@ -199,6 +199,8 @@
   </section>
 </div>
 
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js"></script>
 <script>
 (function(){
   'use strict';
@@ -666,6 +668,29 @@
   $('themeBtn').addEventListener('click',function(){
     var dark=document.documentElement.classList.toggle('dark');
     try{ localStorage.setItem('pracTheme',dark?'dark':'light'); }catch(e){}
+  });
+
+  /* ===== faculty submission ===== */
+  function buildReport(){
+    if(!state||!state.submitted||!state.result) return null;
+    var c=CASES[state.ci], r=state.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Case '+c.n+' — '+esc(c.rx.drug)+' '+esc(c.rx.strength==='—'?'':c.rx.strength)+'</h3>';
+    h+='<p style="margin:2px 0"><b>Patient:</b> '+esc(c.pt.name)+' · '+c.pt.age+'/'+esc(c.pt.sex)+' · '+esc(c.pt.dx)+' · Rx '+esc(c.pt.pid)+'</p>';
+    h+='<p style="margin:2px 0"><b>Prescription:</b> '+esc(c.rx.drug+' '+c.rx.strength+' '+c.rx.form+', '+c.rx.dose+' '+c.rx.freq+', '+c.rx.dur+', Qty '+c.rx.qty)+'</p>';
+    h+='<p style="margin:2px 0"><b>Dispensed:</b> '+esc(r.batches||'—')+' ('+r.dispensed+' units) · Principle: '+esc(c.principle)+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
+      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
+      +'<tr style="background:#f3e2e2;font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">'+MAXTOTAL+'</td></tr></table>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'+(r.critical?' (CRITICAL ERROR: '+esc(r.critMsg)+')':'')+'</p>';
+    return {html:h, pct:r.pct, resultText:(r.pass?'PASS':'FAIL')+' '+r.pct+'%', name:r.name, reg:r.reg};
+  }
+  if(window.AlizonPracticalSubmit) AlizonPracticalSubmit.mount({
+    module:'Module 2 · Unit 1 — Digital Dispensing (FEFO/FIFO)',
+    title:'Digital Dispensing — FEFO/FIFO & Patient Counselling',
+    programme:'Pharmacy AI',
+    getReport:buildReport,
+    incompleteMsg:'Complete the dispensing station and click "Submit & evaluate dispensing" first — then submit your report to faculty.'
   });
 
   /* boot */

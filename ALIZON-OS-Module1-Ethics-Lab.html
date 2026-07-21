@@ -813,5 +813,21 @@ document.getElementById('vivaList').innerHTML=VIVA.map((q,i)=>
 
 drawGrid();paint();
 </script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js"></script>
+<script>
+window.AlizonPracticalSubmit&&AlizonPracticalSubmit.mount({
+  module:'Module 1 · Unit 3 — Ethics, Regulation & Data Protection Lab',
+  title:'Ethics, Regulation & Data Protection Lab',
+  programme:'Pharmacy AI',
+  getReport:function(){
+    var g=document.getElementById('repGrid'); var v=document.getElementById('repVerdict');
+    if(!g||!g.children.length) return null;
+    var vt=v?v.textContent:''; if(/Complete the practicals to unlock/i.test(vt)) return null;
+    return {html:'<div>'+g.outerHTML+(v?('<p style="margin-top:10px;font-weight:700">'+v.textContent+'</p>'):'')+'</div>', resultText:vt};
+  },
+  incompleteMsg:'Complete at least one practical to build your report, then submit it to faculty.'
+});
+</script>
 </body>
 </html>

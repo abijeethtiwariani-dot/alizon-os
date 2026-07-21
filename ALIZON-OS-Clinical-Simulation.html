@@ -611,5 +611,22 @@ document.getElementById('rxCheck').onclick=()=>{
 
 paint();
 </script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js"></script>
+<script>
+window.AlizonPracticalSubmit&&AlizonPracticalSubmit.mount({
+  module:'Module 8 · Clinical Simulation Suite',
+  title:'Clinical Simulation Suite',
+  programme:'Pharmacy AI',
+  getReport:function(){
+    var t=document.getElementById('repTotal'), c=document.getElementById('repCases');
+    var done=(t&&parseInt(t.textContent,10)>0)||(c&&!/^0\//.test((c.textContent||'').trim()));
+    if(!done) return null;
+    var grid=document.querySelector('#p-report .repgrid'), ai=document.getElementById('repAI');
+    return {html:'<div>'+(grid?grid.outerHTML:'')+(ai?('<p style="margin-top:10px">'+esc(ai.textContent)+'</p>'):'')+'</div>'};
+  },
+  incompleteMsg:'Complete at least one simulation case to build your report, then submit it to faculty.'
+});
+</script>
 </body>
 </html>

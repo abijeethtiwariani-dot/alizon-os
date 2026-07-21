@@ -1315,5 +1315,16 @@ function remeasure(){ resizeCanvas(); lastStructKey=null; setMolecule(); update(
 window.addEventListener('load', remeasure);
 setTimeout(remeasure, 300); setTimeout(remeasure, 1200);
 </script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js"></script>
+<script>
+window.AlizonPracticalSubmit&&AlizonPracticalSubmit.mount({
+  module:'Module 1 · Unit 1 — AI Drug Discovery Lab',
+  title:'AI Drug Discovery Lab',
+  programme:'Pharmacy AI',
+  getReport:function(){ var el=document.getElementById('report'); if(!el||el.offsetParent===null||!(el.innerHTML||'').trim()) return null; return {html:el.innerHTML}; },
+  incompleteMsg:'Generate your lab report first (Report section → Generate report), then submit it to faculty.'
+});
+</script>
 </body>
 </html>
