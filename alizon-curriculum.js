@@ -210,7 +210,10 @@
     html+=letterhead();
 
     /* toolbar (screen only) */
-    html+='<div class="d-actions no-print"><button type="button" class="d-print" onclick="window.print()">Print / Save as PDF</button></div>';
+    html+='<div class="d-actions no-print">'
+      +'<button type="button" class="d-print d-dl" onclick="AlizonCurriculum.printDoc()">Download PDF</button>'
+      +'<button type="button" class="d-print d-pr" onclick="AlizonCurriculum.printDoc()">Print</button>'
+      +'</div>';
 
     /* document title band */
     html+='<div class="d-title">'
@@ -258,20 +261,24 @@
     html+='</tbody></table></div>';
     html+='<div class="d-legend">T — Theory&nbsp; ·&nbsp; P — Practical&nbsp; ·&nbsp; OJT — On-the-Job Training&nbsp; ·&nbsp; Int — Internship&nbsp; ·&nbsp; Att — Attendance&nbsp; ·&nbsp; Asg — Assignment&nbsp; ·&nbsp; Th — Theory&nbsp; ·&nbsp; Pr — Practical&nbsp; ·&nbsp; Prj — Project</div>';
 
-    /* detailed syllabus — formal expanded sections */
-    html+='<h3 class="d-sec">Detailed Syllabus</h3>';
+    /* detailed syllabus — collapsible module accordion (click a module to reveal its detail) */
+    html+='<div class="d-secrow"><h3 class="d-sec">Detailed Syllabus</h3>'
+      +'<button type="button" class="d-expand no-print" onclick="AlizonCurriculum.toggleAll(this)">Expand all</button></div>';
+    html+='<div class="d-hint no-print">Click a module to view its objectives, outcomes and topics.</div>';
     html+='<div class="d-mods">';
     mods.forEach(function(x){
       var h=x.hours||{};
-      html+='<section class="d-mod">'
-        +'<div class="d-mod-h"><span class="d-mod-no">Module '+esc(x.no)+'</span>'
-        +'<h4 class="d-mod-nm">'+esc(x.name)+'</h4>'
-        +'<span class="d-mod-meta">'+(h.total?h.total+' hrs':'')+(x.ece&&x.ece.total?'&nbsp; ·&nbsp; '+x.ece.total+' exam marks':'')+'</span></div>'
+      html+='<details class="d-mod">'
+        +'<summary class="d-mod-h"><span class="d-mod-no">Module '+esc(x.no)+'</span>'
+        +'<span class="d-mod-nm">'+esc(x.name)+'</span>'
+        +'<span class="d-mod-meta">'+(h.total?h.total+' hrs':'')+(x.ece&&x.ece.total?'&nbsp; ·&nbsp; '+x.ece.total+' marks':'')+'</span>'
+        +'<span class="d-mod-tg" aria-hidden="true">+</span></summary>'
         +'<div class="d-mod-b">';
-      if(hoursChips(h)) html+='<div class="d-chips">'+esc(hoursChips(h))+'&nbsp; ·&nbsp; Total '+(h.total||0)+' hrs</div>';
-      if(x.objective)   html+='<div class="d-field"><span class="d-field-l">Learning Objective</span><p>'+nlToBr(x.objective)+'</p></div>';
-      if(x.outcome)     html+='<div class="d-field"><span class="d-field-l">Learning Outcome</span><p>'+nlToBr(x.outcome)+'</p></div>';
-      if(x.methodology) html+='<div class="d-field"><span class="d-field-l">Methodology &amp; Tools</span><p>'+nlToBr(x.methodology)+'</p></div>';
+      var any=false;
+      if(hoursChips(h)){ html+='<div class="d-chips">'+esc(hoursChips(h))+'&nbsp; ·&nbsp; Total '+(h.total||0)+' hrs</div>'; any=true; }
+      if(x.objective){   html+='<div class="d-field"><span class="d-field-l">Learning Objective</span><p>'+nlToBr(x.objective)+'</p></div>'; any=true; }
+      if(x.outcome){     html+='<div class="d-field"><span class="d-field-l">Learning Outcome</span><p>'+nlToBr(x.outcome)+'</p></div>'; any=true; }
+      if(x.methodology){ html+='<div class="d-field"><span class="d-field-l">Methodology &amp; Tools</span><p>'+nlToBr(x.methodology)+'</p></div>'; any=true; }
       if(x.units&&x.units.length){
         html+='<div class="d-field"><span class="d-field-l">Units &amp; Topics</span><div class="d-units">';
         x.units.forEach(function(u){
@@ -279,9 +286,10 @@
             +(u.total?'<span class="du-hrs">'+u.total+' hrs</span>':'')+'</div>'
             +'<div class="du-t">'+nlToBr(u.topics)+'</div></div>';
         });
-        html+='</div></div>';
+        html+='</div></div>'; any=true;
       }
-      html+='</div></section>';
+      if(!any) html+='<div class="d-empty2">Detailed topics for this module will be published shortly.</div>';
+      html+='</div></details>';
     });
     html+='</div>';
 
@@ -295,6 +303,21 @@
 
     html+='</article>';
     el.innerHTML=html;
+  }
+
+  /* expand / collapse all module sections */
+  function toggleAll(btn){
+    var scope=(btn&&btn.closest)?btn.closest('.alz-doc'):null;
+    var mods=(scope||document).querySelectorAll('.d-mod');
+    var anyClosed=false; [].forEach.call(mods,function(d){ if(!d.open) anyClosed=true; });
+    [].forEach.call(mods,function(d){ d.open=anyClosed; });
+    if(btn) btn.textContent=anyClosed?'Collapse all':'Expand all';
+  }
+  /* open every module then invoke the browser print dialog (Save as PDF or print) */
+  function printDoc(){
+    [].forEach.call(document.querySelectorAll('.alz-doc .d-mod'),function(d){ d.open=true; });
+    var btn=document.querySelector('.alz-doc .d-expand'); if(btn) btn.textContent='Collapse all';
+    setTimeout(function(){ try{ window.print(); }catch(e){} }, 60);
   }
 
   /* inject styles once */
@@ -312,9 +335,12 @@
       +'.alz-doc .d-lh-affil{font-size:11px;line-height:1.5;color:#5f5a54;background:linear-gradient(90deg,rgba(154,123,63,.1),rgba(154,123,63,.02));border-left:3px solid var(--gold);padding:7px 12px;margin-top:10px;border-radius:0 6px 6px 0}'
       +'.alz-doc .d-lh-affil b{color:var(--cr2)}'
       /* ---- actions ---- */
-      +'.alz-doc .d-actions{display:flex;justify-content:flex-end;margin:16px 0 4px}'
-      +'.alz-doc .d-print{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--cr);background:#fff;border:1px solid rgba(140,21,21,.4);border-radius:100px;padding:9px 18px}'
-      +'.alz-doc .d-print:hover{background:var(--cr);color:#fff}'
+      +'.alz-doc .d-actions{display:flex;justify-content:flex-end;gap:10px;margin:16px 0 4px}'
+      +'.alz-doc .d-print{cursor:pointer;font:inherit;font-size:13px;font-weight:600;border-radius:100px;padding:9px 20px}'
+      +'.alz-doc .d-dl{color:#fff;background:var(--cr);border:1px solid var(--cr)}'
+      +'.alz-doc .d-dl:hover{background:var(--cr2)}'
+      +'.alz-doc .d-pr{color:var(--cr);background:#fff;border:1px solid rgba(140,21,21,.4)}'
+      +'.alz-doc .d-pr:hover{background:var(--cr);color:#fff}'
       /* ---- title band ---- */
       +'.alz-doc .d-title{text-align:center;padding:14px 0 6px;margin-top:6px}'
       +'.alz-doc .d-kicker{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}'
@@ -347,9 +373,20 @@
       +'.alz-doc .cur-tbl tr.trow .z{color:rgba(255,255,255,.4)}'
       +'.alz-doc .d-legend{font-size:10.5px;color:var(--muted);margin:8px 2px 0;line-height:1.6}'
       /* ---- module sections ---- */
-      +'.alz-doc .d-mods{display:flex;flex-direction:column;gap:16px}'
+      +'.alz-doc .d-secrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:30px 0 4px;padding-bottom:7px;border-bottom:1px solid rgba(140,21,21,.2)}'
+      +'.alz-doc .d-secrow .d-sec{margin:0;padding:0;border:none}'
+      +'.alz-doc .d-expand{cursor:pointer;font:inherit;font-size:12px;font-weight:600;color:var(--cr);background:#fff;border:1px solid rgba(140,21,21,.35);border-radius:100px;padding:6px 15px;flex:none}'
+      +'.alz-doc .d-expand:hover{background:var(--cr);color:#fff}'
+      +'.alz-doc .d-hint{font-size:12px;color:var(--muted);margin:0 2px 12px}'
+      +'.alz-doc .d-mods{display:flex;flex-direction:column;gap:12px}'
       +'.alz-doc .d-mod{border:1px solid rgba(0,0,0,.12);border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 10px 26px -22px rgba(20,18,16,.45)}'
-      +'.alz-doc .d-mod-h{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:13px 18px;background:linear-gradient(90deg,rgba(140,21,21,.06),rgba(140,21,21,0));border-bottom:1px solid rgba(140,21,21,.14)}'
+      +'.alz-doc summary.d-mod-h{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:13px 18px;cursor:pointer;list-style:none;user-select:none;background:linear-gradient(90deg,rgba(140,21,21,.06),rgba(140,21,21,0))}'
+      +'.alz-doc summary.d-mod-h::-webkit-details-marker{display:none}'
+      +'.alz-doc summary.d-mod-h:hover{background:linear-gradient(90deg,rgba(140,21,21,.11),rgba(140,21,21,.02))}'
+      +'.alz-doc .d-mod[open]>summary.d-mod-h{border-bottom:1px solid rgba(140,21,21,.14)}'
+      +'.alz-doc .d-mod-tg{width:24px;height:24px;border-radius:50%;background:var(--cr);color:#fff;display:grid;place-items:center;font-size:17px;font-weight:700;line-height:1;flex:none;transition:transform .2s}'
+      +'.alz-doc .d-mod[open] .d-mod-tg{transform:rotate(45deg)}'
+      +'.alz-doc .d-empty2{font-size:12.5px;color:var(--muted);font-style:italic}'
       +'.alz-doc .d-mod-no{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--cr);border-radius:100px;padding:5px 13px;flex:none}'
       +'.alz-doc .d-mod-nm{font-family:"Source Serif Pro",Georgia,serif;font-size:16.5px;font-weight:700;flex:1;min-width:180px;margin:0;color:var(--ink)}'
       +'.alz-doc .d-mod-meta{font-size:12px;color:var(--muted);font-weight:600}'
@@ -373,13 +410,15 @@
       +'.cur-empty{color:#6e6a63;font-size:14px;padding:26px 0;text-align:center}'
       /* ---- print: clean official A4 document, chrome hidden ---- */
       +'@media print{body{background:#fff!important}'
-      +'.nav,.strip,.pick,.admin,footer,#alizonBack,.alz-back,.no-print{display:none!important}'
+      +'.nav,.strip,.pick,.admin,footer,#alizonBack,.alz-back,.no-print,.alz-doc .d-mod-tg{display:none!important}'
       +'main,.wrap,.box{padding:0!important;margin:0!important;border:none!important;box-shadow:none!important;max-width:none!important;background:#fff!important}'
       +'.alz-doc{max-width:none}'
       +'.alz-doc .d-mod,.alz-doc .d-stat,.alz-doc .cur-tblwrap{box-shadow:none!important;break-inside:avoid}'
       +'.alz-doc .d-sec{break-after:avoid}}';
     document.head.appendChild(st);
+    /* Ctrl/Cmd+P or OS print: open every module so the PDF shows the full syllabus */
+    window.addEventListener('beforeprint',function(){ [].forEach.call(document.querySelectorAll('.alz-doc .d-mod'),function(d){ d.open=true; }); });
   }
 
-  window.AlizonCurriculum={ parseWorkbook:parseWorkbook, render:render, courseKey:courseKey, get:get, list:list, findForCourse:findForCourse, store:store };
+  window.AlizonCurriculum={ parseWorkbook:parseWorkbook, render:render, courseKey:courseKey, get:get, list:list, findForCourse:findForCourse, store:store, toggleAll:toggleAll, printDoc:printDoc };
 })();
