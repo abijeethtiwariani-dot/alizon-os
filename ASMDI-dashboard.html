@@ -1640,7 +1640,8 @@ const DEFAULT_PROGRAMS=[
       'Unit 3 – Pharmacogenomics & Antibiogram Analysis',
       'Unit 4 – Predictive Pharmacovigilance']},
     {unit:'Module 4',title:'AI in Drug Development, Vaccines & Injectables',desc:'AI in drug discovery, sterile products, injectables and vaccine cold-chain.',status:'live',href:'ALIZON-OS-Module4-AIResearch.html',practicals:[
-      {title:'Practical 1 · AI Support in Scientific Research & Data Analysis (Unit 2)',href:'ALIZON-OS-Module4-AIResearch.html'}],units:[
+      {title:'Practical 1 · AI Support in Scientific Research & Data Analysis (Unit 2)',href:'ALIZON-OS-Module4-AIResearch.html'},
+      {title:'Practical 2 · Digital Vaccine Cold-Chain Monitoring & Compliance (Unit 4)',href:'ALIZON-OS-Module4-ColdChain.html'}],units:[
       'Unit 1 – AI in Drug Discovery & Molecular Targeting',
       'Unit 2 – AI Support in Scientific Research & Data Analysis',
       'Unit 3 – Injectable Medicines & Sterile Products',
@@ -3303,8 +3304,16 @@ function moduleResultBadge(moduleUnit, progName){
         var sm=null;
         for(var k=0;k<sp.modules.length;k++){ if(sp.modules[k].unit===dm.unit){ sm=sp.modules[k]; break; } }
         if(!sm) return;
-        if(dm.practicals&&dm.practicals.length&&!(sm.practicals&&sm.practicals.length)){
-          try{ sm.practicals=JSON.parse(JSON.stringify(dm.practicals)); changed=true; }catch(e){}
+        /* union practicals by href — additive, so a NEWLY added lab always reaches
+           students even when the cloud copy is older. Never removes admin entries. */
+        if(dm.practicals&&dm.practicals.length){
+          if(!Array.isArray(sm.practicals)) sm.practicals=[];
+          dm.practicals.forEach(function(dpr){
+            if(!dpr||!dpr.href) return;
+            var has=false;
+            for(var q=0;q<sm.practicals.length;q++){ if(sm.practicals[q]&&sm.practicals[q].href===dpr.href){ has=true; break; } }
+            if(!has){ sm.practicals.push({title:dpr.title,href:dpr.href}); changed=true; }
+          });
         }
         if(dm.href&&!sm.href){ sm.href=dm.href; changed=true; }
         if(dm.status==='live'&&sm.status!=='live'){ sm.status='live'; changed=true; }

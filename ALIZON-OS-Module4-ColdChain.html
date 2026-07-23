@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Module 4 · Unit 4 — Digital Vaccine Cold-Chain Monitoring &amp; Compliance</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --cold:#0E7490;--cold-soft:rgba(14,116,144,.12);
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --cold:#38bdf8;--cold-soft:rgba(56,189,248,.14);
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:80ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)}
+  .scorechip b{color:var(--gold)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
+  .tab.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--card-shadow);padding:18px 20px;margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;margin-bottom:4px}
+  .card h3{font-size:14.5px;margin-bottom:8px}
+  .step-tag{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--cold);border-radius:100px;padding:3px 11px;display:inline-block;margin-bottom:8px}
+  .marks{float:right;font-size:11.5px;font-weight:700;color:var(--gold);background:var(--gold-soft);border-radius:100px;padding:3px 10px}
+  .muted{color:var(--muted);font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .q{margin:12px 0;padding:12px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}
+  .q>b{display:block;font-size:13.5px;margin-bottom:8px}
+  .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .opt{cursor:pointer;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:100px;background:var(--panel);border:1px solid var(--line);color:var(--ink)}
+  .opt.sel{background:var(--cold);border-color:var(--cold);color:#fff}
+  .opt.ok{background:var(--success);border-color:var(--success);color:#fff}
+  .opt.bad{background:var(--danger);border-color:var(--danger);color:#fff}
+  input[type=text],input[type=number],textarea,select{width:100%;font:inherit;font-size:13px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);margin-top:4px}
+  textarea{min-height:70px;resize:vertical}
+  label.ck{display:flex;gap:9px;align-items:flex-start;font-size:13px;margin:7px 0;cursor:pointer}
+  label.ck input{margin-top:3px;flex:none}
+  .btn{cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;color:#fff;background:var(--crimson);border:0;border-radius:100px;padding:11px 22px}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .fb{margin-top:10px;font-size:13px;padding:10px 13px;border-radius:10px;display:none}
+  .fb.show{display:block}
+  .fb.good{background:rgba(30,142,90,.12);border:1px solid rgba(30,142,90,.35);color:var(--success)}
+  .fb.bad{background:rgba(196,38,46,.1);border:1px solid rgba(196,38,46,.32);color:var(--danger)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  /* dashboard */
+  .dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+  .dtile{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .dtile small{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .dtile b{font-size:21px;font-weight:800}
+  /* alert */
+  .alert{border-left:4px solid var(--danger);background:rgba(196,38,46,.08);border-radius:0 12px 12px 0;padding:12px 15px;margin:10px 0}
+  .alert b{color:var(--danger)}
+  /* flow + timeline */
+  .flow{display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+  .fnode{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;text-align:center}
+  .fnode.dec{border-color:var(--gold);color:var(--gold);font-weight:700}
+  .farr{text-align:center;color:var(--muted)}
+  .tl{border-left:2px solid var(--line);margin-left:8px;padding-left:16px}
+  .tl li{list-style:none;margin:10px 0;position:relative;font-size:13px}
+  .tl li:before{content:'';position:absolute;left:-22px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--cold)}
+  /* animated journey */
+  .journey{position:relative;height:64px;border:1px dashed var(--line);border-radius:12px;background:var(--panel2);overflow:hidden;margin:10px 0}
+  .jtrack{position:absolute;top:50%;left:0;right:0;height:2px;background:var(--line)}
+  .jstop{position:absolute;top:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:var(--cold)}
+  .jlabel{position:absolute;top:calc(50% + 12px);transform:translateX(-50%);font-size:9.5px;color:var(--muted);white-space:nowrap}
+  .jvial{position:absolute;top:calc(50% - 20px);font-size:16px;animation:jmove 9s linear infinite}
+  @keyframes jmove{0%{left:2%}100%{left:96%}}
+  @media(prefers-reduced-motion:reduce){.jvial{animation:none;left:2%}}
+  /* qr */
+  .qrbox{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .qr{width:132px;height:132px;flex:none;background:#fff;padding:8px;border-radius:10px;border:1px solid var(--line)}
+  .badge{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:100px;padding:3px 10px}
+  .b-ok{background:rgba(30,142,90,.14);color:var(--success)}
+  .b-warn{background:var(--gold-soft);color:var(--gold)}
+  .b-bad{background:rgba(196,38,46,.12);color:var(--danger)}
+  .guide{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:16px;margin-bottom:6px}
+  .guide ol{padding-left:20px;font-size:13.4px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Module 4 · Unit 4 · Vaccines &amp; Cold-Chain Analytics</div>
+    <h1>Digital Vaccine Cold-Chain Monitoring &amp; Compliance Simulation</h1>
+    <p>End-to-end digital cold chain of a COVID-19 vaccine consignment — from manufacturer to vaccination centre. Verify the shipment, read the IoT temperature log, grade the excursion, decide whether the vaccine may be used, distribute by FEFO and generate a QR-verified compliance report. <b>Duration 9.5 hours (integrated practical).</b></p>
+    <div class="chips">
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Cold-Chain Console</button>
+    <button class="tab" data-p="deliver">Digital Deliverables</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <!-- ══════════ BRIEFING ══════════ -->
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="coldchain"></div>
+
+    <div class="guide">
+      <h2>New to the cold chain? Start here</h2>
+      <p class="muted" style="margin-bottom:8px">Vaccines are living biology in a vial. Keep them between <b>+2&nbsp;°C and +8&nbsp;°C</b> or they quietly lose potency — the vial looks exactly the same either way. Your job is to prove, with data, that this consignment stayed safe.</p>
+      <ol>
+        <li><b>Verify what arrived</b> against what was promised — manufacturer, batch, quantity, expiry.</li>
+        <li><b>Scan the QR</b> so the carton's identity and journey are traceable.</li>
+        <li><b>Read the temperature log</b> — find the peak and how long it stayed out of range.</li>
+        <li><b>Grade the excursion</b> against the WHO stability table, not by eye.</li>
+        <li><b>Decide</b>: accept, quarantine &amp; investigate, or discard (only with authorisation).</li>
+        <li><b>Distribute by FEFO</b>, document the dispatch, report any AEFI, then audit and sign off.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>Your consignment</h2>
+      <table>
+        <tr><th>Vaccine</th><td>COVID-19 Vaccine — 500 vials</td></tr>
+        <tr><th>Manufacturer</th><td>ABC Biologics</td></tr>
+        <tr><th>Batch number</th><td><b>CV240725</b></td></tr>
+        <tr><th>Manufactured</th><td>01 July 2026</td></tr>
+        <tr><th>Expiry</th><td>31 December 2026</td></tr>
+        <tr><th>Required storage</th><td><b>+2 °C to +8 °C</b></td></tr>
+        <tr><th>Your role</th><td>Digital Pharmacy &amp; Vaccine Logistics Officer, District Vaccine Store</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Assessment</h2>
+      <table>
+        <tr><th>Skill</th><th style="text-align:right">Marks</th></tr>
+        <tr><td>Shipment verification</td><td style="text-align:right">10</td></tr>
+        <tr><td>QR verification &amp; traceability</td><td style="text-align:right">10</td></tr>
+        <tr><td>Temperature analysis</td><td style="text-align:right">20</td></tr>
+        <tr><td>Cold-chain decision making</td><td style="text-align:right">20</td></tr>
+        <tr><td>FEFO implementation</td><td style="text-align:right">10</td></tr>
+        <tr><td>Digital documentation</td><td style="text-align:right">10</td></tr>
+        <tr><td>ADR / AEFI reporting</td><td style="text-align:right">10</td></tr>
+        <tr><td>Final compliance report</td><td style="text-align:right">10</td></tr>
+        <tr><td><b>Console total</b></td><td style="text-align:right"><b>100</b></td></tr>
+        <tr><td>Digital deliverables (graphs, animation, dashboard…)</td><td style="text-align:right">20</td></tr>
+      </table>
+      <div class="alert"><b>Critical failure:</b> releasing this consignment for use without assessing the excursion, or discarding stock on your own authority, fails the practical regardless of marks earned — exactly as it would in a real immunization programme.</div>
+    </div>
+  </section>
+
+  <!-- ══════════ CONSOLE ══════════ -->
+  <section class="panel" id="p-station">
+
+    <!-- STEP 1 -->
+    <div class="card">
+      <span class="marks">10 marks</span><span class="step-tag">Step 1 · Shipment arrival</span>
+      <h3>Verify the consignment against the dispatch advice</h3>
+      <table>
+        <tr><th>Parameter</th><th>Dispatch advice</th><th>Physically received</th></tr>
+        <tr><td>Manufacturer</td><td>ABC Biologics</td><td>ABC Biologics</td></tr>
+        <tr><td>Batch</td><td>CV240725</td><td>CV240725</td></tr>
+        <tr><td>Quantity</td><td>500 vials</td><td>500 vials</td></tr>
+        <tr><td>Expiry</td><td>31 Dec 2026</td><td>31 Dec 2026</td></tr>
+        <tr><td>Temperature logger</td><td>Attached</td><td>Attached &amp; running</td></tr>
+      </table>
+      <div class="q"><b>1.1 Does the consignment match the dispatch advice on all five parameters?</b>
+        <div class="opts" data-q="s1match">
+          <button class="opt" data-v="yes">Yes — all match</button>
+          <button class="opt" data-v="no">No — there is a mismatch</button>
+        </div></div>
+      <div class="q"><b>1.2 The vaccine expires 31 Dec 2026 and today is within the shelf life. Can it be accepted into stock on expiry grounds?</b>
+        <div class="opts" data-q="s1expiry">
+          <button class="opt" data-v="accept">Yes — in date, accept</button>
+          <button class="opt" data-v="reject">No — reject, too close to expiry</button>
+        </div></div>
+      <div class="q"><b>1.3 What must you do <em>before</em> the delivery vehicle leaves?</b>
+        <div class="opts" data-q="s1before">
+          <button class="opt" data-v="log">Download the temperature logger and complete the receipt check</button>
+          <button class="opt" data-v="later">Sign now, inspect the logger later when there is time</button>
+        </div></div>
+      <div class="fb" id="fb1"></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="card">
+      <span class="marks">10 marks</span><span class="step-tag">Step 2 · QR verification</span>
+      <h3>Scan each carton and confirm traceability</h3>
+      <p class="muted">Three cartons arrived. Scan each QR code and compare it with the physical carton label.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+        <button class="btn ghost" id="scanBtn">⌗ Scan all cartons</button>
+      </div>
+      <div id="scanOut" style="display:none">
+        <table>
+          <tr><th>Carton</th><th>Label batch</th><th>QR batch</th><th>Route</th><th>Status</th></tr>
+          <tr><td>C-01</td><td>CV240725</td><td>CV240725</td><td>Plant → Hub → District</td><td><span class="badge b-ok">Match</span></td></tr>
+          <tr><td>C-02</td><td>CV240725</td><td><b style="color:var(--danger)">CV240711</b></td><td>Plant → Hub → District</td><td><span class="badge b-bad">Mismatch</span></td></tr>
+          <tr><td>C-03</td><td>CV240725</td><td>CV240725</td><td>Plant → Hub → District</td><td><span class="badge b-ok">Match</span></td></tr>
+        </table>
+      </div>
+      <div class="q"><b>2.1 After scanning, what is the correct action?</b>
+        <div class="opts" data-q="s2act">
+          <button class="opt" data-v="quarantine">Quarantine carton C-02, raise a digital alert and notify the supplier</button>
+          <button class="opt" data-v="accept">Accept all three — the label says CV240725 anyway</button>
+          <button class="opt" data-v="relabel">Re-label C-02 to CV240725 so the stock entry matches</button>
+        </div></div>
+      <div class="q"><b>2.2 Why does QR traceability matter in an immunization programme?</b>
+        <div class="opts" data-q="s2why">
+          <button class="opt" data-v="recall">It links every vial to batch, route and temperature history — enabling rapid recall and AEFI investigation</button>
+          <button class="opt" data-v="speed">It speeds up unloading the truck</button>
+        </div></div>
+      <div class="fb" id="fb2"></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="card">
+      <span class="marks">20 marks</span><span class="step-tag">Step 3 · IoT temperature log</span>
+      <h3>Read the transport temperature trace</h3>
+      <p class="muted">Continuous IoT log for the transport leg. The shaded band is the safe range <b>+2 °C to +8 °C</b>.</p>
+      <div id="chartHost"></div>
+      <div class="grid2">
+        <div class="q"><b>3.1 Peak temperature reached (°C)</b>
+          <input type="number" id="s3peak" placeholder="e.g. 9" step="0.1"></div>
+        <div class="q"><b>3.2 How long was it above 8 °C? (hours)</b>
+          <input type="number" id="s3dur" placeholder="e.g. 1" step="0.5"></div>
+      </div>
+      <div class="q"><b>3.3 Was there a cold-chain breach?</b>
+        <div class="opts" data-q="s3breach">
+          <button class="opt" data-v="yes">Yes — the trace went above 8 °C</button>
+          <button class="opt" data-v="no">No — it stayed within range throughout</button>
+        </div></div>
+      <div class="q"><b>3.4 Was there any <em>freezing</em> excursion (below 0 °C)?</b>
+        <div class="opts" data-q="s3freeze">
+          <button class="opt" data-v="no">No — the trace never fell below 0 °C</button>
+          <button class="opt" data-v="yes">Yes — the vaccine was frozen at some point</button>
+        </div></div>
+      <div class="fb" id="fb3"></div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="card">
+      <span class="marks">part of documentation</span><span class="step-tag">Step 4 · Refrigerator inspection</span>
+      <h3>Inspect the ice-lined vaccine refrigerator</h3>
+      <table>
+        <tr><th>Parameter</th><th>Reading</th></tr>
+        <tr><td>Current internal temperature</td><td><b>+3 °C</b></td></tr>
+        <tr><td>Alarm system</td><td>Working</td></tr>
+        <tr><td>Power backup</td><td>Available</td></tr>
+        <tr><td>Door open time during inspection</td><td>12 seconds</td></tr>
+        <tr><td>Door seal / ice lining</td><td>Intact</td></tr>
+      </table>
+      <div class="q"><b>4.1 Tick every parameter you have physically verified and recorded</b>
+        <label class="ck"><input type="checkbox" class="s4"> Internal temperature within +2 to +8 °C</label>
+        <label class="ck"><input type="checkbox" class="s4"> Alarm system functional</label>
+        <label class="ck"><input type="checkbox" class="s4"> Power backup available</label>
+        <label class="ck"><input type="checkbox" class="s4"> Door seal and ice lining intact</label>
+        <label class="ck"><input type="checkbox" class="s4"> Inspection sheet completed and signed</label>
+      </div>
+      <div class="fb" id="fb4"></div>
+    </div>
+
+    <!-- STEP 5 + 6 -->
+    <div class="card">
+      <span class="marks">20 marks</span><span class="step-tag">Steps 5 &amp; 6 · AI alert &amp; stability decision</span>
+      <h3>Grade the excursion and decide</h3>
+      <div class="alert">
+        <b>⚠ AI COLD-CHAIN ALERT</b><br>
+        Temperature exceeded <b>8 °C</b> · Maximum recorded <b>11 °C</b> · Duration <b>2 hours</b> · Risk level <b>Moderate</b><br>
+        <span class="muted">Recommended action: inspect vaccine · hold distribution · notify supervisor</span>
+      </div>
+      <div class="q"><b>5.1 Do you accept the AI recommendation?</b>
+        <div class="opts" data-q="s5ai">
+          <button class="opt" data-v="accept">Accept — hold distribution and investigate</button>
+          <button class="opt" data-v="reject">Reject — the vaccine looks fine, release it</button>
+        </div>
+        <div style="margin-top:8px"><b style="font-size:12.5px">Justify your decision</b>
+        <textarea id="s5reason" placeholder="Which parameters triggered the alert, and why do you agree or disagree?"></textarea></div>
+      </div>
+
+      <h3 style="margin-top:14px">WHO / National excursion stability guide</h3>
+      <table>
+        <tr><th>Exposure</th><th>Decision</th></tr>
+        <tr><td>Held below 8 °C throughout</td><td>Safe — continue use</td></tr>
+        <tr><td>Above 8 °C for under 30 minutes</td><td>Accept</td></tr>
+        <tr><td><b>Above 8 °C for 1–2 hours</b></td><td><b>Investigate — quarantine pending assessment</b></td></tr>
+        <tr><td>Above 8 °C for more than 4 hours</td><td>Discard (with authorisation)</td></tr>
+      </table>
+      <div class="q"><b>6.1 Your consignment was above 8 °C for 2 hours (peak 11 °C). What is the correct decision?</b>
+        <div class="opts" data-q="s6dec">
+          <button class="opt" data-v="quarantine">Quarantine and investigate — keep refrigerated, notify supervisor</button>
+          <button class="opt" data-v="accept">Accept and distribute immediately</button>
+          <button class="opt" data-v="discard">Discard the whole consignment now</button>
+        </div></div>
+      <div class="fb" id="fb5"></div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="card">
+      <span class="marks">10 marks</span><span class="step-tag">Step 7 · FEFO distribution</span>
+      <h3>Order the batches for distribution</h3>
+      <table>
+        <tr><th>Batch</th><th>Expiry</th><th>Received</th></tr>
+        <tr><td>CV240510</td><td>Sep 2026</td><td>10 May 2026</td></tr>
+        <tr><td>CV240725</td><td>Dec 2026</td><td>Today</td></tr>
+        <tr><td>CV240801</td><td>Jan 2027</td><td>01 Aug 2026</td></tr>
+      </table>
+      <div class="q"><b>7.1 Select the correct FEFO distribution order (first out → last out)</b>
+        <div class="opts" data-q="s7order">
+          <button class="opt" data-v="correct">CV240510 → CV240725 → CV240801</button>
+          <button class="opt" data-v="fifo">CV240510 → CV240801 → CV240725</button>
+          <button class="opt" data-v="wrong">CV240725 → CV240510 → CV240801</button>
+        </div></div>
+      <div class="q"><b>7.2 Why FEFO rather than FIFO for vaccines?</b>
+        <div class="opts" data-q="s7why">
+          <button class="opt" data-v="expiry">Because remaining shelf life, not arrival order, decides what must be used first</button>
+          <button class="opt" data-v="arrival">Because the oldest delivery should always leave first</button>
+        </div></div>
+      <div class="fb" id="fb7"></div>
+    </div>
+
+    <!-- STEP 8 -->
+    <div class="card">
+      <span class="marks">10 marks</span><span class="step-tag">Step 8 · Digital dispatch</span>
+      <h3>Dispatch 200 doses to the requesting hospital</h3>
+      <div class="grid2">
+        <div class="q"><b>Receiving centre</b><input type="text" id="s8centre" placeholder="e.g. District Hospital, Kannur"></div>
+        <div class="q"><b>Transport box / carrier ID</b><input type="text" id="s8box" placeholder="e.g. VC-BOX-12 with conditioned ice packs"></div>
+        <div class="q"><b>Courier / driver name</b><input type="text" id="s8courier" placeholder="e.g. R. Menon"></div>
+        <div class="q"><b>Dispatch time</b><input type="text" id="s8time" placeholder="e.g. 15:20"></div>
+      </div>
+      <button class="btn ghost" id="dispatchBtn">Generate dispatch record</button>
+      <div id="dispatchOut" style="display:none;margin-top:10px" class="q">
+        <b>Dispatch ID <span style="color:var(--cold)">VC45871</span> created</b>
+        <div class="muted">Chain of custody recorded: batch, quantity, box, courier, dispatch time and receiving centre.</div>
+      </div>
+      <div class="fb" id="fb8"></div>
+    </div>
+
+    <!-- STEP 9 -->
+    <div class="card">
+      <span class="marks">10 marks</span><span class="step-tag">Step 9 · AEFI / ADR reporting</span>
+      <h3>A vaccinated patient reports fever, injection-site swelling and dizziness</h3>
+      <div class="grid2">
+        <div class="q"><b>Batch implicated</b><input type="text" id="s9batch" placeholder="Batch number"></div>
+        <div class="q"><b>Patient ID</b><input type="text" id="s9pid" placeholder="e.g. PT-20416"></div>
+        <div class="q"><b>Vaccinator / centre</b><input type="text" id="s9vacc" placeholder="e.g. Nurse S. Raj, PHC Thalassery"></div>
+        <div class="q"><b>Severity</b>
+          <select id="s9sev">
+            <option value="">Select…</option>
+            <option value="mild">Mild — expected reactogenicity</option>
+            <option value="moderate">Moderate — requires observation</option>
+            <option value="severe">Severe / serious — hospitalisation</option>
+          </select></div>
+      </div>
+      <div class="q"><b>Symptoms &amp; action taken</b><textarea id="s9sym" placeholder="Describe onset, symptoms, treatment given and follow-up."></textarea></div>
+      <div class="fb" id="fb9"></div>
+    </div>
+
+    <!-- STEP 10 -->
+    <div class="card">
+      <span class="marks">10 marks</span><span class="step-tag">Step 10 · Compliance audit</span>
+      <h3>Confirm every parameter is evidenced</h3>
+      <div class="q">
+        <label class="ck"><input type="checkbox" class="s10"> Batch verified against dispatch advice</label>
+        <label class="ck"><input type="checkbox" class="s10"> QR codes scanned and mismatch actioned</label>
+        <label class="ck"><input type="checkbox" class="s10"> Temperature log downloaded and analysed</label>
+        <label class="ck"><input type="checkbox" class="s10"> Refrigerator inspected and recorded</label>
+        <label class="ck"><input type="checkbox" class="s10"> AI alert reviewed and decision justified</label>
+        <label class="ck"><input type="checkbox" class="s10"> FEFO order applied to distribution</label>
+        <label class="ck"><input type="checkbox" class="s10"> AEFI / ADR reported against the batch</label>
+        <label class="ck"><input type="checkbox" class="s10"> Dispatch and chain of custody documented</label>
+      </div>
+      <div class="fb" id="fb10"></div>
+    </div>
+
+    <div class="card" style="text-align:center">
+      <button class="btn" id="evalBtn">Evaluate my cold-chain management</button>
+      <div class="muted" style="margin-top:8px">You can revise your answers and re-evaluate.</div>
+      <div class="fb" id="fbAll"></div>
+    </div>
+  </section>
+
+  <!-- ══════════ DELIVERABLES ══════════ -->
+  <section class="panel" id="p-deliver">
+    <div class="card">
+      <h2>Digital deliverables — mandatory <span class="marks">20 marks</span></h2>
+      <p class="muted">This practical is a <b>digital portfolio project</b>, not a written record. Alongside your report you must submit the following. Tick each item once it is attached.</p>
+    </div>
+
+    <div class="card">
+      <h3>1 · Cold-chain temperature trend graph <span class="marks">4 marks</span></h3>
+      <p class="muted">Reproduce this trace in Excel / Sheets / any charting tool and mark the safe zone, the excursion and its duration.</p>
+      <div id="chartHost2"></div>
+      <label class="ck"><input type="checkbox" class="dv"> Temperature trend graph attached, with safe zone and excursion labelled</label>
+    </div>
+
+    <div class="card">
+      <h3>2 · Cold-chain workflow animation <span class="marks">4 marks</span></h3>
+      <p class="muted">Produce a <b>30–60 second animation</b> (Canva, PowerPoint, Vyond, Animaker or any AI animation tool) showing the vaccine's full journey. Storyboard below — the vial travels the chain:</p>
+      <div class="journey" id="journey"><div class="jtrack"></div><div class="jvial">💉</div></div>
+      <div class="flow" style="margin-top:8px">
+        <div class="fnode">Manufacturer → Quality check → Cold storage → Transport vehicle</div>
+        <div class="farr">▼</div>
+        <div class="fnode">IoT temperature monitoring → District vaccine store → Vaccination centre</div>
+        <div class="farr">▼</div>
+        <div class="fnode">Patient → AEFI reporting → Compliance dashboard</div>
+      </div>
+      <label class="ck"><input type="checkbox" class="dv"> 30–60 s workflow animation attached (link or file)</label>
+    </div>
+
+    <div class="card">
+      <h3>3 · Interactive dashboard <span class="marks">4 marks</span></h3>
+      <p class="muted">Your live figures from this session — rebuild this as your own dashboard.</p>
+      <div class="dash" id="dashHost"></div>
+      <label class="ck"><input type="checkbox" class="dv"> Dashboard built and screenshot attached</label>
+    </div>
+
+    <div class="card">
+      <h3>4 · Decision flowchart &amp; 5 · vaccine journey timeline <span class="marks">3 marks</span></h3>
+      <div class="grid2">
+        <div>
+          <h3 style="font-size:13px">Decision flowchart</h3>
+          <div class="flow">
+            <div class="fnode">Shipment received</div><div class="farr">▼</div>
+            <div class="fnode">Scan QR · verify batch</div><div class="farr">▼</div>
+            <div class="fnode">Check temperature log</div><div class="farr">▼</div>
+            <div class="fnode dec">Held at 2–8 °C?</div><div class="farr">▼</div>
+            <div class="fnode">Yes → store &nbsp;|&nbsp; No → quarantine</div><div class="farr">▼</div>
+            <div class="fnode">Notify supervisor → stability assessment</div><div class="farr">▼</div>
+            <div class="fnode">Safe → continue use &nbsp;|&nbsp; Unsafe → discard</div>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:13px">Vaccine journey timeline</h3>
+          <ul class="tl">
+            <li>Manufacturing</li><li>Quality testing</li><li>Packaging &amp; QR labelling</li>
+            <li>Cold storage at plant</li><li>Refrigerated transport</li><li>Regional warehouse</li>
+            <li>District vaccine store</li><li>Hospital / PHC storage</li><li>Vaccination</li><li>Safety monitoring (AEFI)</li>
+          </ul>
+        </div>
+      </div>
+      <label class="ck"><input type="checkbox" class="dv"> Flowchart and timeline attached</label>
+    </div>
+
+    <div class="card">
+      <h3>6 · QR code &amp; traceability <span class="marks">2 marks</span></h3>
+      <div class="qrbox">
+        <svg class="qr" id="qrSim" viewBox="0 0 29 29" shape-rendering="crispEdges" aria-label="Simulated vaccine QR code"></svg>
+        <div style="flex:1;min-width:220px">
+          <p class="muted" style="margin-bottom:6px">Generate a real QR linking to a digital record containing:</p>
+          <div class="muted" style="font-size:12.5px;line-height:1.9">
+            Vaccine name · Batch number · Manufacturer · Manufacturing date · Expiry date ·
+            Storage temperature · Current location · Transport history · Temperature history · Vaccination status
+          </div>
+        </div>
+      </div>
+      <p class="muted" style="font-size:11.5px;margin-top:6px">The block above is a visual simulation for your report layout — generate a genuine scannable QR with any QR generator.</p>
+      <label class="ck"><input type="checkbox" class="dv"> Scannable QR code generated and record linked</label>
+    </div>
+
+    <div class="card">
+      <h3>7 · AI decision explanation <span class="marks">3 marks</span></h3>
+      <div class="q"><b>Why did the AI raise the alert, which parameters triggered it, did you accept it — and would you decide the same way? Explain.</b>
+        <textarea id="dvAI" placeholder="Explain the trigger parameters (peak temperature, duration above 8 °C), your decision, and your clinical reasoning."></textarea></div>
+      <label class="ck"><input type="checkbox" class="dv"> AI decision analysis written</label>
+    </div>
+
+    <div class="card">
+      <h3>8 · Final digital compliance report</h3>
+      <p class="muted">Student details · shipment details · temperature graph · workflow diagram · dashboard screenshot · QR screenshot · AI decision summary · compliance checklist · faculty verification · digital signature · conclusion.</p>
+      <label class="ck"><input type="checkbox" class="dv"> Final compliance report compiled</label>
+      <div class="fb" id="fbDv"></div>
+    </div>
+  </section>
+
+  <!-- ══════════ REPORT ══════════ -->
+  <section class="panel" id="p-report">
+    <div class="card">
+      <h2>Your result</h2>
+      <div id="resultBox" class="muted">Complete the Cold-Chain Console and press <b>Evaluate</b> to see your score breakdown here.</div>
+    </div>
+    <div class="card">
+      <h2>Reflection questions</h2>
+      <ol class="muted" style="padding-left:20px;line-height:1.9;font-size:13.4px">
+        <li>Why are vaccines stored between 2–8 °C?</li>
+        <li>What happens if a vaccine freezes?</li>
+        <li>Why is continuous IoT monitoring better than manual recording?</li>
+        <li>What exactly is a cold-chain breach?</li>
+        <li>Why is FEFO important for vaccines?</li>
+        <li>What action follows an AI-identified temperature excursion?</li>
+        <li>When should vaccines be discarded — and on whose authority?</li>
+        <li>How does QR coding improve traceability and recall?</li>
+        <li>Why must AEFI be reported against the batch?</li>
+        <li>How does digital monitoring reduce vaccine wastage?</li>
+      </ol>
+    </div>
+    <div id="reportWriter" style="display:none"></div>
+  </section>
+
+</div>
+
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=5"></script>
+<script>
+(function(){
+  'use strict';
+  function $(id){ return document.getElementById(id); }
+  window.update=function(){};   /* parent theme-switch hook (no canvas to redraw) */
+
+  /* ---------- theme ---------- */
+  var tb=$('themeBtn');
+  if(tb) tb.addEventListener('click',function(){
+    var dark=document.documentElement.classList.toggle('dark');
+    try{ localStorage.setItem('pracTheme',dark?'dark':'light'); }catch(e){}
+  });
+
+  /* ---------- tabs ---------- */
+  var tabs=document.querySelectorAll('.tab');
+  tabs.forEach(function(t){ t.addEventListener('click',function(){
+    tabs.forEach(function(x){ x.classList.remove('on'); });
+    document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
+    t.classList.add('on');
+    var p=$('p-'+t.dataset.p); if(p) p.classList.add('on');
+    if(t.dataset.p==='report') mountWriter();
+    if(t.dataset.p==='deliver') renderDash();
+    window.scrollTo(0,0);
+  }); });
+
+  /* ---------- option pickers ---------- */
+  var state={};
+  document.querySelectorAll('.opts').forEach(function(g){
+    g.querySelectorAll('.opt').forEach(function(b){
+      b.addEventListener('click',function(){
+        g.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('sel','ok','bad'); });
+        b.classList.add('sel');
+        state[g.dataset.q]=b.dataset.v;
+      });
+    });
+  });
+
+  /* ---------- temperature data + chart ---------- */
+  var TEMPS=[{t:'8 AM',v:5},{t:'9 AM',v:5},{t:'10 AM',v:6},{t:'11 AM',v:8},{t:'12 PM',v:11},{t:'1 PM',v:10},{t:'2 PM',v:6}];
+  var PEAK=11, HOURS_ABOVE=2;   /* 12 PM and 1 PM readings are above 8 °C */
+
+  function chartSVG(){
+    var W=700,H=250,L=44,R=14,T=14,B=34;
+    var pw=W-L-R, ph=H-T-B, maxY=14;
+    function x(i){ return L + (i*(pw/(TEMPS.length-1))); }
+    function y(v){ return T + ph - (v/maxY)*ph; }
+    var pts=TEMPS.map(function(d,i){ return x(i)+','+y(d.v); }).join(' ');
+    var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="Vaccine transport temperature trace">';
+    /* safe band 2–8 */
+    s+='<rect x="'+L+'" y="'+y(8)+'" width="'+pw+'" height="'+(y(2)-y(8))+'" fill="rgba(30,142,90,.14)"/>';
+    s+='<text x="'+(L+6)+'" y="'+(y(8)-5)+'" font-size="10" fill="var(--success)">safe zone 2–8 °C</text>';
+    /* gridlines */
+    [0,2,4,6,8,10,12,14].forEach(function(v){
+      s+='<line x1="'+L+'" y1="'+y(v)+'" x2="'+(W-R)+'" y2="'+y(v)+'" stroke="var(--line)" stroke-width="1"/>';
+      s+='<text x="'+(L-8)+'" y="'+(y(v)+3)+'" font-size="10" fill="var(--muted)" text-anchor="end">'+v+'</text>';
+    });
+    /* 8 °C threshold */
+    s+='<line x1="'+L+'" y1="'+y(8)+'" x2="'+(W-R)+'" y2="'+y(8)+'" stroke="var(--danger)" stroke-dasharray="5 4" stroke-width="1.5"/>';
+    /* trace */
+    s+='<polyline points="'+pts+'" fill="none" stroke="var(--cold)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>';
+    TEMPS.forEach(function(d,i){
+      var breach=d.v>8;
+      s+='<circle cx="'+x(i)+'" cy="'+y(d.v)+'" r="'+(breach?5:4)+'" fill="'+(breach?'var(--danger)':'var(--cold)')+'"/>';
+      s+='<text x="'+x(i)+'" y="'+(y(d.v)-11)+'" font-size="10.5" font-weight="700" fill="'+(breach?'var(--danger)':'var(--ink)')+'" text-anchor="middle">'+d.v+'°</text>';
+      s+='<text x="'+x(i)+'" y="'+(H-12)+'" font-size="10" fill="var(--muted)" text-anchor="middle">'+d.t+'</text>';
+    });
+    return s+'</svg>';
+  }
+  function paintCharts(){
+    var a=$('chartHost'), b=$('chartHost2');
+    if(a) a.innerHTML=chartSVG();
+    if(b) b.innerHTML=chartSVG();
+  }
+
+  /* ---------- simulated QR block (visual only) ---------- */
+  function paintQR(){
+    var el=$('qrSim'); if(!el) return;
+    var N=29, seed=240725, out='';
+    function rnd(){ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; }
+    function finder(ox,oy){
+      var s='';
+      for(var i=0;i<7;i++)for(var j=0;j<7;j++){
+        var edge=(i===0||i===6||j===0||j===6), core=(i>=2&&i<=4&&j>=2&&j<=4);
+        if(edge||core) s+='<rect x="'+(ox+j)+'" y="'+(oy+i)+'" width="1" height="1" fill="#111"/>';
+      }
+      return s;
+    }
+    for(var r=0;r<N;r++)for(var c=0;c<N;c++){
+      var inF=(r<8&&c<8)||(r<8&&c>N-9)||(r>N-9&&c<8);
+      if(inF) continue;
+      if(rnd()>0.52) out+='<rect x="'+c+'" y="'+r+'" width="1" height="1" fill="#111"/>';
+    }
+    el.innerHTML=out+finder(0,0)+finder(N-7,0)+finder(0,N-7);
+  }
+
+  /* ---------- live dashboard ---------- */
+  function renderDash(){
+    var host=$('dashHost'); if(!host) return;
+    var dispatched=$('dispatchOut') && $('dispatchOut').style.display!=='none' ? 200 : 0;
+    var quarantined=(state.s6dec==='quarantine')?500:0;
+    var adr=($('s9sev')&&$('s9sev').value)?1:0;
+    var audit=document.querySelectorAll('.s10:checked').length;
+    var pct=Math.round((audit/8)*100);
+    var tiles=[
+      ['Vaccines received',500],['Dispatched',dispatched],['Remaining',500-dispatched],
+      ['Fridge temperature','3 °C'],['Temperature alerts',1],['Expired vials',0],
+      ['Quarantined',quarantined],['AEFI reports',adr],['Audit compliance',pct+'%']
+    ];
+    host.innerHTML=tiles.map(function(t){
+      return '<div class="dtile"><small>'+t[0]+'</small><b>'+t[1]+'</b></div>';
+    }).join('');
+  }
+  ['change','input'].forEach(function(ev){ document.addEventListener(ev,function(){ renderDash(); }); });
+
+  /* ---------- scan + dispatch ---------- */
+  var scanBtn=$('scanBtn');
+  if(scanBtn) scanBtn.addEventListener('click',function(){ $('scanOut').style.display=''; scanBtn.textContent='✓ Cartons scanned'; });
+  var dBtn=$('dispatchBtn');
+  if(dBtn) dBtn.addEventListener('click',function(){ $('dispatchOut').style.display=''; renderDash(); });
+
+  /* ---------- evaluation ---------- */
+  function fb(id,ok,msg){ var e=$(id); if(!e) return; e.className='fb show '+(ok?'good':'bad'); e.innerHTML=msg; }
+  function val(id){ var e=$(id); return e?String(e.value||'').trim():''; }
+  var result=null;
+
+  function evaluate(){
+    var marks={}, notes=[], critical=false;
+
+    /* 1 · shipment verification /10 */
+    var m1=0;
+    if(state.s1match==='yes') m1+=4;
+    if(state.s1expiry==='accept') m1+=3;
+    if(state.s1before==='log') m1+=3;
+    marks.shipment=m1;
+    fb('fb1', m1>=7, m1>=7
+      ? 'Correct — all five parameters match, the vaccine is in date, and the logger must be downloaded before the vehicle leaves.'
+      : 'Review: the consignment does match on all five parameters, it is in date, and the temperature logger must be read <b>before</b> the vehicle departs.');
+
+    /* 2 · QR /10 */
+    var m2=0;
+    if(state.s2act==='quarantine') m2+=6;
+    if(state.s2why==='recall') m2+=4;
+    marks.qr=m2;
+    fb('fb2', m2>=6, m2>=6
+      ? 'Correct — carton C-02 carries a different batch to its label and must be quarantined and reported, never re-labelled.'
+      : 'Carton C-02 scans as <b>CV240711</b> but is labelled CV240725. Quarantine it and alert the supplier — re-labelling would destroy traceability.');
+
+    /* 3 · temperature analysis /20 */
+    var m3=0;
+    var peak=parseFloat(val('s3peak')), dur=parseFloat(val('s3dur'));
+    if(!isNaN(peak) && Math.abs(peak-PEAK)<0.51) m3+=7;
+    if(!isNaN(dur) && Math.abs(dur-HOURS_ABOVE)<0.51) m3+=7;
+    if(state.s3breach==='yes') m3+=3;
+    if(state.s3freeze==='no') m3+=3;
+    marks.temperature=m3;
+    fb('fb3', m3>=14, m3>=14
+      ? 'Correct — peak <b>11 °C</b>, above 8 °C for <b>2 hours</b> (12 PM and 1 PM), and no freezing excursion.'
+      : 'Read the trace again: the peak is <b>11 °C</b> at 12 PM and the trace stays above 8 °C for <b>2 hours</b>. It never falls below 0 °C, so there is no freezing excursion.');
+
+    /* 4 · fridge inspection (feeds documentation) */
+    var s4=document.querySelectorAll('.s4:checked').length;
+    fb('fb4', s4>=4, s4>=4 ? 'Refrigerator inspection recorded.' : 'Record every parameter — an unverified fridge invalidates the storage claim in your report.');
+
+    /* 5+6 · decision making /20 */
+    var m5=0;
+    if(state.s5ai==='accept') m5+=6;
+    if(val('s5reason').length>=40) m5+=4;
+    if(state.s6dec==='quarantine') m5+=10;
+    if(state.s6dec==='accept'){ critical=true; notes.push('Released the consignment for use without assessing a 2-hour excursion.'); }
+    if(state.s6dec==='discard'){ notes.push('Discarded stock without authorisation — quarantine and escalate instead.'); }
+    marks.decision=m5;
+    fb('fb5', m5>=14, m5>=14
+      ? 'Correct — 2 hours above 8 °C falls in the <b>1–2 hour "investigate"</b> band: quarantine, keep refrigerated and escalate.'
+      : 'A 2-hour excursion above 8 °C sits in the <b>investigate</b> band. Accept the AI hold, quarantine the stock and notify your supervisor — do not release it, and do not discard it on your own authority.');
+
+    /* 7 · FEFO /10 */
+    var m7=0;
+    if(state.s7order==='correct') m7+=6;
+    if(state.s7why==='expiry') m7+=4;
+    marks.fefo=m7;
+    fb('fb7', m7>=6, m7>=6
+      ? 'Correct — earliest expiry leaves first: CV240510 (Sep) → CV240725 (Dec) → CV240801 (Jan).'
+      : 'FEFO orders by <b>expiry</b>, not arrival: CV240510 (Sep 2026) → CV240725 (Dec 2026) → CV240801 (Jan 2027).');
+
+    /* 8 · documentation /10  (dispatch + fridge inspection) */
+    var m8=0;
+    var dispatched=$('dispatchOut') && $('dispatchOut').style.display!=='none';
+    if(dispatched) m8+=3;
+    ['s8centre','s8box','s8courier','s8time'].forEach(function(k){ if(val(k)) m8+=1; });
+    m8+=Math.min(3,Math.round(s4*3/5));
+    marks.documentation=Math.min(10,m8);
+    fb('fb8', marks.documentation>=6, marks.documentation>=6
+      ? 'Dispatch documented — chain of custody is unbroken.'
+      : 'Complete every dispatch field and generate the dispatch record; an incomplete chain of custody cannot be audited.');
+
+    /* 9 · AEFI /10 */
+    var m9=0;
+    if(val('s9batch')) m9+=3;
+    if(val('s9pid')) m9+=2;
+    if(val('s9vacc')) m9+=2;
+    if(val('s9sev')) m9+=1;
+    if(val('s9sym').length>=25) m9+=2;
+    marks.adr=m9;
+    fb('fb9', m9>=6, m9>=6
+      ? 'AEFI report captured against the batch — this is how programme-wide safety signals are detected.'
+      : 'An AEFI report must name the <b>batch</b>, patient, vaccinator, severity and symptoms — without the batch the report cannot support a safety signal.');
+
+    /* 10 · compliance audit /10 */
+    var s10=document.querySelectorAll('.s10:checked').length;
+    marks.audit=Math.round((s10/8)*10);
+    fb('fb10', s10>=6, s10>=6 ? 'Compliance audit complete.' : 'Evidence every audit parameter before signing the report.');
+
+    var total=marks.shipment+marks.qr+marks.temperature+marks.decision+marks.fefo+marks.documentation+marks.adr+marks.audit;
+    var pct=Math.round(total);
+    var pass=(pct>=60)&&!critical;
+    result={pct:pct,pass:pass,marks:marks,critical:critical,notes:notes};
+
+    $('scScore').textContent=total+' / 100';
+    $('scRes').textContent=critical?'CRITICAL FAIL':(pass?'PASS':'FAIL');
+
+    fb('fbAll', pass, (critical
+      ? '<b>Critical failure.</b> '+notes.join(' ')+' In a real programme this is a reportable patient-safety event.'
+      : (pass ? '<b>Pass — '+pct+'%.</b> Cold chain managed and evidenced correctly.'
+              : '<b>Fail — '+pct+'%.</b> Review the feedback above and re-evaluate.')));
+
+    renderResult(); renderDash();
+    var rt=document.querySelector('.tab[data-p="report"]'); if(rt) rt.classList.add('pulse');
+  }
+  var eb=$('evalBtn'); if(eb) eb.addEventListener('click',evaluate);
+
+  function renderResult(){
+    var host=$('resultBox'); if(!host||!result) return;
+    var rows=[
+      ['Shipment verification',result.marks.shipment,10],
+      ['QR verification &amp; traceability',result.marks.qr,10],
+      ['Temperature analysis',result.marks.temperature,20],
+      ['Cold-chain decision making',result.marks.decision,20],
+      ['FEFO implementation',result.marks.fefo,10],
+      ['Digital documentation',result.marks.documentation,10],
+      ['ADR / AEFI reporting',result.marks.adr,10],
+      ['Final compliance report',result.marks.audit,10]
+    ];
+    var dv=document.querySelectorAll('.dv:checked').length;
+    host.innerHTML='<table><tr><th>Skill</th><th style="text-align:right">Marks</th></tr>'+
+      rows.map(function(r){ return '<tr><td>'+r[0]+'</td><td style="text-align:right"><b>'+r[1]+'</b> / '+r[2]+'</td></tr>'; }).join('')+
+      '<tr><td><b>Total</b></td><td style="text-align:right"><b>'+result.pct+' / 100</b></td></tr>'+
+      '<tr><td>Digital deliverables attached</td><td style="text-align:right">'+dv+' / 8</td></tr>'+
+      '</table>'+
+      (result.critical?'<div class="alert"><b>Critical failure:</b> '+result.notes.join(' ')+'</div>'
+       :'<div class="muted" style="margin-top:8px">Result: <b>'+(result.pass?'PASS':'FAIL')+'</b> ('+result.pct+'%). Pass mark 60%.</div>');
+  }
+
+  /* ---------- report writer ---------- */
+  var OPTS={module:'Module 4 · Unit 4 — Vaccines & Cold-Chain Analytics',title:'Digital Vaccine Cold-Chain Monitoring & Compliance Simulation',programme:'Pharmacy AI'};
+  var mounted=false;
+  function mountWriter(){
+    var host=$('reportWriter'); if(!host) return;
+    host.style.display='';
+    if(mounted||!window.AlizonPracticalReport) return;
+    mounted=true;
+    AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Consignment & key decision', placeholder:'e.g. Batch CV240725 — 2 h excursion above 8 °C, quarantined'},
+      minWords:400,
+      autoResult:function(){
+        if(!result) return '';
+        var m=result.marks;
+        return 'Cold-chain simulation — batch CV240725 (500 vials). '
+          +'Peak transport temperature 11 °C with a 2-hour excursion above 8 °C; no freezing excursion. '
+          +'Decision taken: '+(state.s6dec==='quarantine'?'quarantine and investigate':(state.s6dec==='accept'?'accepted for distribution':(state.s6dec==='discard'?'discarded':'not recorded')))+'. '
+          +'Marks — shipment '+m.shipment+'/10, QR '+m.qr+'/10, temperature '+m.temperature+'/20, decision '+m.decision+'/20, '
+          +'FEFO '+m.fefo+'/10, documentation '+m.documentation+'/10, AEFI '+m.adr+'/10, audit '+m.audit+'/10. '
+          +'Total '+result.pct+'/100 — '+(result.critical?'CRITICAL FAIL':(result.pass?'PASS':'FAIL'))+'.';
+      },
+      autoPct:function(){ return result?result.pct:null; },
+      autoResultText:function(){ return result?((result.critical?'CRITICAL FAIL':(result.pass?'PASS':'FAIL'))+' '+result.pct+'%'):''; }
+    });
+  }
+
+  /* ---------- boot ---------- */
+  paintCharts(); paintQR(); renderDash();
+})();
+</script>
+</body>
+</html>
