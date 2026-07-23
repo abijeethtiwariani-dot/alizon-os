@@ -1082,17 +1082,8 @@
     </div>
 
     <div class="dsec on" id="sec-overview">
-<!-- admin new-module banner (rendered only when announcements are active) -->
-    <div class="annbanner" id="annBanner" style="display:none"></div>
-    <div class="alertstrip" id="alertStrip"></div>
-    <div class="stu-tile" id="stuTile" style="display:none"></div>
-<!-- keep legacy render targets alive (populated by existing IIFEs), hidden -->
-    <div style="display:none">
-      <div class="card profcard" id="profCard"></div>
-      <span id="tdDate"></span><div class="today-tl" id="todayTL"></div>
-    </div>
 
-<!-- ═══════════ OAK-FORMAT CAMPUS OVERVIEW ═══════════ -->
+<!-- ═══════════ OAK-FORMAT CAMPUS BANNER (top) ═══════════ -->
     <div class="oak-hero" id="oakHero">
       <div class="oak-hero-bg" id="oakHeroBg"></div>
       <div class="oak-hero-cards">
@@ -1114,6 +1105,16 @@
           <a class="oak-help-btn" data-dsec="sec-faculty">Raise a grievance →</a>
         </div>
       </div>
+    </div>
+
+<!-- alerts + profile now come UNDER the banner -->
+    <div class="annbanner" id="annBanner" style="display:none"></div>
+    <div class="alertstrip" id="alertStrip"></div>
+    <div class="stu-tile" id="stuTile" style="display:none"></div>
+<!-- keep legacy render targets alive (populated by existing IIFEs), hidden -->
+    <div style="display:none">
+      <div class="card profcard" id="profCard"></div>
+      <span id="tdDate"></span><div class="today-tl" id="todayTL"></div>
     </div>
 
     <div class="oak-grid">
@@ -3028,7 +3029,7 @@ function moduleResultBadge(moduleUnit, progName){
 #app a:focus-visible, #app button:focus-visible, #app input:focus-visible, #app select:focus-visible, #app textarea:focus-visible{ outline-color:#1B1D21 !important; }
 
 /* ═══════════ OAK-format campus overview components ═══════════ */
-#app .oak-hero{position:relative;border-radius:24px;overflow:hidden;margin-bottom:16px;min-height:250px;display:flex;flex-direction:column;justify-content:flex-end}
+#app .oak-hero{position:relative;border-radius:24px;overflow:hidden;margin-bottom:16px;min-height:320px;display:flex;flex-direction:column;justify-content:flex-end}
 #app .oak-hero-bg{position:absolute;inset:0;
   background:radial-gradient(130% 150% at 80% -30%,rgba(174,197,59,.55),transparent 55%),
     radial-gradient(90% 130% at 105% 120%,rgba(120,150,180,.45),transparent 60%),
