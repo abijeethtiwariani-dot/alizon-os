@@ -9,6 +9,7 @@
   var R = cfg.root || '#app';
   var MOUNT = cfg.mount || R;
   var TITLE = cfg.title || 'Overview';
+  var EDITABLE = !!cfg.editable;   /* only admin may change the cover photo */
 
   /* ---------- 1) theme + hero CSS (every rule scoped under R) ---------- */
   var css = ([
@@ -73,10 +74,12 @@
     var s=ls('alizonStudents',[]),f=ls('alizonFaculty',[]),p=ls('alizonPrograms',[]);
     var nS=(Array.isArray(s)&&s.length)||248, nF=(Array.isArray(f)&&f.length)||9, nP=(Array.isArray(p)&&p.length)||4;
     function stat(icon,label,n){return '<div class="oak-stat"><div class="t"><span class="oak-chip"><i>'+icon+'</i> '+label+'</span><span style="color:#9aa0aa">⋯</span></div><div class="b"><b class="oak-num">'+Number(n).toLocaleString()+'</b><span class="oak-arrow">↗</span></div></div>';}
-    return '<div class="oak-hero" id="oakHero"><div class="oak-hero-bg" id="oakHeroBg"></div>'+
+    var coverUI = EDITABLE ?
       '<button class="oak-cover-btn" id="oakCoverBtn"><span>◈</span> Cover photo</button>'+
       '<button class="oak-cover-rm" id="oakCoverRm">✕</button>'+
-      '<input type="file" id="oakCoverInput" accept="image/*" style="display:none">'+
+      '<input type="file" id="oakCoverInput" accept="image/*" style="display:none">' : '';
+    return '<div class="oak-hero" id="oakHero"><div class="oak-hero-bg" id="oakHeroBg"></div>'+
+      coverUI+
       '<div class="oak-hero-head">'+TITLE+'</div>'+
       '<div class="oak-hero-cards">'+
         stat('◗','Students',nS)+stat('❖','Faculty',nF)+stat('▤','Programmes',nP)+
@@ -85,24 +88,37 @@
   }
 
   /* ---------- 3) cover upload ---------- */
+  function getCover(){
+    var img='';
+    try{ var c=JSON.parse(localStorage.getItem('alizonContent')||'{}'); if(c&&c.heroCover) img=c.heroCover; }catch(e){}
+    if(!img){ try{ img=localStorage.getItem('alizonHeroCover')||''; }catch(e){} }
+    return img;
+  }
+  function setCover(data){
+    var c={}; try{ c=JSON.parse(localStorage.getItem('alizonContent')||'{}'); }catch(e){}
+    if(!c||typeof c!=='object') c={};
+    if(data) c.heroCover=data; else delete c.heroCover;
+    /* saved into the synced CMS content doc so an admin's cover reaches every device */
+    try{ localStorage.setItem('alizonContent',JSON.stringify(c)); }catch(e){ alert('Picture too large to save — try a smaller one.'); }
+  }
   function applyCover(){
     var hero=document.getElementById('oakHero'),bg=document.getElementById('oakHeroBg');if(!hero||!bg)return;
-    var img='';try{img=localStorage.getItem('alizonHeroCover')||'';}catch(e){}
+    var img=getCover();
     if(img){bg.style.backgroundImage='url('+img+')';hero.classList.add('has-cover');}
     else{bg.style.backgroundImage='';hero.classList.remove('has-cover');}
   }
   function wireCover(){
+    if(!EDITABLE) return;
     var btn=document.getElementById('oakCoverBtn'),inp=document.getElementById('oakCoverInput'),rm=document.getElementById('oakCoverRm');
     if(!btn||btn.__w)return;btn.__w=1;
     btn.addEventListener('click',function(){inp.click();});
-    if(rm)rm.addEventListener('click',function(){try{localStorage.removeItem('alizonHeroCover');}catch(e){}applyCover();});
+    if(rm)rm.addEventListener('click',function(){setCover('');applyCover();});
     inp.addEventListener('change',function(){var file=inp.files&&inp.files[0];if(!file)return;
       var rd=new FileReader();rd.onload=function(){var im=new Image();
-        im.onload=function(){var mw=1500,sc=Math.min(1,mw/im.width),w=Math.round(im.width*sc),h=Math.round(im.height*sc);
+        im.onload=function(){var mw=1400,sc=Math.min(1,mw/im.width),w=Math.round(im.width*sc),h=Math.round(im.height*sc);
           var cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(im,0,0,w,h);
-          var data;try{data=cv.toDataURL('image/jpeg',0.78);}catch(e){alert('Could not process that image.');return;}
-          try{localStorage.setItem('alizonHeroCover',data);}catch(e){alert('Picture too large to save on this device — try a smaller one.');return;}
-          applyCover();};
+          var data;try{data=cv.toDataURL('image/jpeg',0.74);}catch(e){alert('Could not process that image.');return;}
+          setCover(data); applyCover();};
         im.onerror=function(){alert('Could not read that image.');};im.src=rd.result;};
       rd.readAsDataURL(file);inp.value='';});
   }
