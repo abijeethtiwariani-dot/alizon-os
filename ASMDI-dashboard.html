@@ -2263,8 +2263,15 @@ function moduleResultBadge(moduleUnit, progName){
     el.querySelectorAll('a.join[data-annid]').forEach(function(b){ b.addEventListener('click',function(e){ e.preventDefault(); var it=items.find(function(x){return String(x.id)===b.getAttribute('data-annid');}); if(it) annOpen(it); }); });
   }
 
-  function renderUpdates(){ const acts=loadAct(),el=document.getElementById('updList');
-    el.innerHTML=acts.length?acts.slice(0,8).map(x=>`<div class="upd"><span class="ud ${esc(x.type||'update')}"></span><div>${esc(x.text)}</div><span class="utime">${fmt(x.ts)}</span></div>`).join(''):'<div class="dl-empty">No updates yet.</div>'; }
+  /* Students only ever see DELIBERATE announcements (Faculty portal →
+     Announcements → "Post announcement", or anything flagged student:true from
+     the back end). Internal admin activity — uploads, edits, approvals,
+     evaluations, grievance actions — is never surfaced to students. */
+  function isAnnounce(a){ return !!a && (a.student===true || (a.type||'')==='announce'); }
+  function studentFeed(){ try{ return loadAct().filter(isAnnounce); }catch(e){ return []; } }
+
+  function renderUpdates(){ const acts=studentFeed(),el=document.getElementById('updList');
+    el.innerHTML=acts.length?acts.slice(0,8).map(x=>`<div class="upd"><span class="ud announce"></span><div>${esc(x.text)}</div><span class="utime">${fmt(x.ts)}</span></div>`).join(''):'<div class="dl-empty">No announcements yet.</div>'; }
   function renderSchedule(){ const ss=DB('alizonSchedule',SCHED_SEED),el=document.getElementById('schList');
     el.innerHTML=ss.length?ss.map(s=>`<div class="dl-item"><div class="di"><b>${esc(s.title)}</b><span>${esc(s.module||'')} · ${esc(s.date||'')} ${esc(s.time||'')} · ${esc(s.mode||'')}</span></div>${s.link?`<a class="join" href="${esc(s.link)}" target="_blank" rel="noopener">Join</a>`:''}</div>`).join(''):'<div class="dl-empty">No sessions scheduled.</div>'; }
   function renderLinks(){ const ls=DB('alizonLinks',LINK_SEED),el=document.getElementById('lnkList');
@@ -2284,8 +2291,8 @@ function moduleResultBadge(moduleUnit, progName){
 
   const bell=document.getElementById('bellBtn'), notif=document.getElementById('notif'), badge=document.getElementById('bellBadge');
   const seen=()=>{ try{return +localStorage.getItem('alizonNotifSeen')||0;}catch(e){return 0;} };
-  function updateBadge(){ const n=loadAct().filter(a=>a.ts>seen()).length; if(n>0){badge.style.display='';badge.textContent=n>9?'9+':n;} else badge.style.display='none'; }
-  function renderNotif(){ const acts=loadAct(); notif.innerHTML='<h5>Notifications</h5>'+(acts.length?acts.slice(0,12).map(x=>`<div class="upd"><span class="ud ${esc(x.type||'update')}"></span><div>${esc(x.text)}</div><span class="utime">${fmt(x.ts)}</span></div>`).join(''):'<div class="dl-empty" style="padding:14px">No notifications.</div>'); }
+  function updateBadge(){ const n=studentFeed().filter(a=>a.ts>seen()).length; if(n>0){badge.style.display='';badge.textContent=n>9?'9+':n;} else badge.style.display='none'; }
+  function renderNotif(){ const acts=studentFeed(); notif.innerHTML='<h5>Notifications</h5>'+(acts.length?acts.slice(0,12).map(x=>`<div class="upd"><span class="ud announce"></span><div>${esc(x.text)}</div><span class="utime">${fmt(x.ts)}</span></div>`).join(''):'<div class="dl-empty" style="padding:14px">No announcements.</div>'); }
   bell.addEventListener('click',e=>{ e.stopPropagation(); const o=notif.classList.toggle('open'); if(o){ renderNotif(); try{localStorage.setItem('alizonNotifSeen',Date.now());}catch(e){} updateBadge(); } });
   document.addEventListener('click',e=>{ if(!notif.contains(e.target) && !bell.contains(e.target)) notif.classList.remove('open'); });
 
