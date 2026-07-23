@@ -41,6 +41,8 @@
   .top a,.top button{font-size:13px;text-decoration:none;color:var(--ink);cursor:pointer;font-family:inherit;
     border:1px solid var(--line);background:var(--pill);padding:9px 15px;border-radius:100px;transition:.2s}
   .top a:hover,.top button:hover{border-color:rgba(217,164,65,.4)}
+  .top a.back-dash{background:linear-gradient(135deg,#dff06a,#c6e000);color:#2c3300;border-color:transparent;font-weight:700}
+  .top a.back-dash:hover{filter:brightness(1.06);border-color:transparent}
 
   .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:26px 22px 80px}
 
@@ -102,7 +104,7 @@
     <div class="sp">
       <button id="printBtn">Print</button>
       <button id="switchBtn">↺ Switch student</button>
-      <a href="ASMDI-dashboard.html">← Portal</a>
+      <a href="ASMDI-dashboard.html" class="back-dash">← Back to Dashboard</a>
     </div>
   </div>
 </header>
