@@ -153,6 +153,15 @@
       .then(function(){ if (auth.currentUser) console.log('[alizon-fb] device bootstrap ok — syncing shared data'); });
   }
 
+  /* Let the login screen force an immediate roster pull if a student submits
+     before the background bootstrap has finished (prevents false "wrong password"). */
+  window.alizonForceSync = function(){
+    try{
+      if (auth && auth.currentUser){ pullAuthKeys(); }
+      else { bootTried = false; bootstrapDevice(); }
+    }catch(e){ console.warn('[alizon-fb] forceSync', e && e.message); }
+  };
+
   load('firebase-app-compat.js')
     .then(function(){ return load('firebase-auth-compat.js'); })
     .then(function(){ return load('firebase-firestore-compat.js'); })
