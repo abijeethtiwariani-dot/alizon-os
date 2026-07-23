@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 340" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfe8cf"/>
+      <stop offset="0.55" stop-color="#c7d8cf"/>
+      <stop offset="1" stop-color="#b9cdd8"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#e6f57a"/>
+      <stop offset="1" stop-color="#c6e000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lime" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#aec53b"/>
+      <stop offset="1" stop-color="#7f9a1f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1440" height="340" fill="url(#sky)"/>
+  <circle cx="1120" cy="70" r="230" fill="url(#sun)"/>
+  <!-- soft bokeh -->
+  <circle cx="1260" cy="120" r="70" fill="#ffffff" opacity="0.16"/>
+  <circle cx="980" cy="60" r="46" fill="#ffffff" opacity="0.14"/>
+  <circle cx="1330" cy="230" r="54" fill="#c6e000" opacity="0.18"/>
+  <!-- ECG / heartbeat line (medical) -->
+  <path d="M0 250 H420 l30 -70 l34 150 l40 -210 l34 250 l30 -120 H720" fill="none" stroke="url(#lime)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+  <!-- node network (digital intelligence) -->
+  <g stroke="#5c6b12" stroke-width="1.6" opacity="0.5">
+    <line x1="900" y1="180" x2="1000" y2="140"/><line x1="1000" y1="140" x2="1080" y2="210"/>
+    <line x1="1080" y1="210" x2="1180" y2="170"/><line x1="1000" y1="140" x2="1120" y2="90"/>
+    <line x1="1180" y1="170" x2="1280" y2="220"/><line x1="900" y1="180" x2="1080" y2="210"/>
+  </g>
+  <g fill="#3a5a12">
+    <circle cx="900" cy="180" r="6"/><circle cx="1000" cy="140" r="7"/><circle cx="1080" cy="210" r="6"/>
+    <circle cx="1180" cy="170" r="7"/><circle cx="1120" cy="90" r="6"/><circle cx="1280" cy="220" r="6"/>
+  </g>
+  <!-- wordmark -->
+  <text x="70" y="150" font-family="Georgia, 'Source Serif Pro', serif" font-weight="800" font-size="82" fill="#1b2b17" opacity="0.92">ALIZON OS</text>
+  <text x="74" y="192" font-family="Arial, sans-serif" font-weight="700" font-size="20" letter-spacing="5" fill="#3a5a12" opacity="0.9">SCHOOL OF MEDICAL &amp; DIGITAL INTELLIGENCE</text>
+</svg>

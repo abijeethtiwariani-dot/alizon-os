@@ -40,8 +40,8 @@
     '{R} .oak-hero{position:relative;border-radius:24px;overflow:hidden;margin:0 0 18px}',
     '{R} .oak-hero-bg{position:absolute;inset:0;background:radial-gradient(130% 150% at 80% -30%,rgba(174,197,59,.55),transparent 55%),radial-gradient(90% 130% at 105% 120%,rgba(120,150,180,.45),transparent 60%),linear-gradient(120deg,#c9d3b6,#e9edd9 58%,#e4ebf3)}',
     '{R} .oak-hero-bg:after{content:"ALIZON";position:absolute;right:26px;top:2px;font-weight:800;font-size:64px;letter-spacing:.06em;color:rgba(27,29,33,.06);font-family:"Source Serif Pro",Georgia,serif}',
-    '{R} .oak-hero.has-cover .oak-hero-bg{background-size:cover;background-position:center}',
-    '{R} .oak-hero.has-cover .oak-hero-bg:after{display:none}',
+    '{R} .oak-hero.has-cover .oak-hero-bg,{R} .oak-hero.has-default .oak-hero-bg{background-size:cover;background-position:center}',
+    '{R} .oak-hero.has-cover .oak-hero-bg:after,{R} .oak-hero.has-default .oak-hero-bg:after{display:none}',
     '{R} .oak-hero.has-cover .oak-hero-bg:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,18,8,.34),rgba(14,18,8,.12) 46%,rgba(255,255,255,.06))}',
     '{R} .oak-cover-btn{position:absolute;top:12px;right:14px;z-index:4;display:inline-flex;align-items:center;gap:6px;background:rgba(27,29,33,.82);color:#fff;border:0;border-radius:100px;padding:7px 13px;font-size:11.5px;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}',
     '{R} .oak-cover-btn span{color:#c6e000;font-size:10px}',
@@ -88,24 +88,21 @@
   }
 
   /* ---------- 3) cover upload ---------- */
+  var DEFAULT_COVER = 'assets/hero-default.svg';
   function getCover(){
-    var img='';
-    try{ var c=JSON.parse(localStorage.getItem('alizonContent')||'{}'); if(c&&c.heroCover) img=c.heroCover; }catch(e){}
-    if(!img){ try{ img=localStorage.getItem('alizonHeroCover')||''; }catch(e){} }
+    var img=''; try{ img=localStorage.getItem('alizonHeroCover')||''; }catch(e){}
+    if(img==='[]'||img==='null') img='';
     return img;
   }
   function setCover(data){
-    var c={}; try{ c=JSON.parse(localStorage.getItem('alizonContent')||'{}'); }catch(e){}
-    if(!c||typeof c!=='object') c={};
-    if(data) c.heroCover=data; else delete c.heroCover;
-    /* saved into the synced CMS content doc so an admin's cover reaches every device */
-    try{ localStorage.setItem('alizonContent',JSON.stringify(c)); }catch(e){ alert('Picture too large to save — try a smaller one.'); }
+    /* dedicated synced key — admin sets it, every device (students) pulls it */
+    try{ localStorage.setItem('alizonHeroCover', data||''); }catch(e){ alert('Picture too large to save — try a smaller one.'); }
   }
   function applyCover(){
     var hero=document.getElementById('oakHero'),bg=document.getElementById('oakHeroBg');if(!hero||!bg)return;
     var img=getCover();
-    if(img){bg.style.backgroundImage='url('+img+')';hero.classList.add('has-cover');}
-    else{bg.style.backgroundImage='';hero.classList.remove('has-cover');}
+    if(img){ bg.style.backgroundImage='url('+img+')'; hero.classList.add('has-cover'); hero.classList.remove('has-default'); }
+    else{ bg.style.backgroundImage='url('+DEFAULT_COVER+')'; hero.classList.add('has-default'); hero.classList.remove('has-cover'); }
   }
   function wireCover(){
     if(!EDITABLE) return;
