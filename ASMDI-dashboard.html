@@ -1811,6 +1811,8 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
   window.addEventListener('storage',function(e){ if(e.key==='alizonPrograms') fillLoginSelect(); });
   /* refresh when returning from the admin portal (bfcache / tab focus) */
   window.addEventListener('pageshow',()=>{ fillLoginSelect(); renderTabs(); });
+  /* expose so the practical-wiring merge can refresh the module list after cloud sync */
+  window.__renderProgs=renderTabs;
 })();
 
 /* ===== shared: a student's own evaluated results for a given module ===== */
@@ -3242,6 +3244,51 @@ function moduleResultBadge(moduleUnit, progName){
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(boot,60);});else setTimeout(boot,60);
   var ov=document.querySelector('.side .nav a[data-dsec="sec-overview"]');if(ov)ov.addEventListener('click',function(){setTimeout(boot,90);});
   var lf=document.getElementById('loginForm');if(lf)lf.addEventListener('submit',function(){setTimeout(boot,650);});
+})();
+</script>
+<script id="pracWire">
+/* Practical wiring repair.
+   The cloud copy of alizonPrograms predates the Module 2/3/4 labs, so it
+   overrides the code and students see "coming soon" with no practicals.
+   This backfills ONLY the missing practical wiring (status/href/practicals/units)
+   from DEFAULT_PROGRAMS — it never reseeds, so admin-added programmes,
+   renamed courses, notes and videos are preserved. */
+(function(){
+  if(window.__pracWire) return; window.__pracWire=1;
+  function merge(){
+    if(typeof DEFAULT_PROGRAMS==='undefined') return false;
+    var stored=null;
+    try{ stored=JSON.parse(localStorage.getItem('alizonPrograms')||'null'); }catch(e){ return false; }
+    if(!Array.isArray(stored)||!stored.length) return false;
+    var changed=false;
+    DEFAULT_PROGRAMS.forEach(function(dp){
+      var sp=null;
+      for(var i=0;i<stored.length;i++){ if(dp.id&&stored[i].id===dp.id){ sp=stored[i]; break; } }
+      if(!sp) for(var j=0;j<stored.length;j++){ if(stored[j].name===dp.name){ sp=stored[j]; break; } }
+      if(!sp||!Array.isArray(sp.modules)) return;
+      (dp.modules||[]).forEach(function(dm){
+        var sm=null;
+        for(var k=0;k<sp.modules.length;k++){ if(sp.modules[k].unit===dm.unit){ sm=sp.modules[k]; break; } }
+        if(!sm) return;
+        if(dm.practicals&&dm.practicals.length&&!(sm.practicals&&sm.practicals.length)){
+          try{ sm.practicals=JSON.parse(JSON.stringify(dm.practicals)); changed=true; }catch(e){}
+        }
+        if(dm.href&&!sm.href){ sm.href=dm.href; changed=true; }
+        if(dm.status==='live'&&sm.status!=='live'){ sm.status='live'; changed=true; }
+        if(dm.units&&dm.units.length&&!(sm.units&&sm.units.length)){ sm.units=dm.units.slice(); changed=true; }
+      });
+    });
+    if(changed){
+      try{ localStorage.setItem('alizonPrograms',JSON.stringify(stored)); }catch(e){}
+      try{ if(typeof window.__renderProgs==='function') window.__renderProgs(); }catch(e){}
+      try{ console.log('[alizon] practical wiring restored'); }catch(e){}
+    }
+    return changed;
+  }
+  window.__pracWireRun=merge;
+  /* run after first paint and again as the cloud copy lands */
+  [500,1600,3200,6000,10000].forEach(function(ms){ setTimeout(merge,ms); });
+  window.addEventListener('storage',function(e){ if(e.key==='alizonPrograms') setTimeout(merge,120); });
 })();
 </script>
 </body>
