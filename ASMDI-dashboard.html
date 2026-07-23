@@ -1065,7 +1065,7 @@
     <div class="topbar">
       <div class="hello">
         <h2>Good morning, Aarav</h2>
-        <p id="helloSub">Semester 4 · Tuesday, 8 July 2026</p>
+        <p id="helloSub"></p>
       </div>
       <div class="top-actions">
         <div class="search"><span style="color:#5d6075">⌕</span><input placeholder="Search courses, labs, people…"></div>
@@ -1076,7 +1076,7 @@
         </div>
         <div class="userchip" onclick="location.href='alizon-student-profile.html'" style="cursor:pointer" title="Open my profile">
           <div class="avatar">AK</div>
-          <div class="uname">Aarav K.<small>Student · Sem 4</small></div>
+          <div class="uname">Aarav K.<small>Student</small></div>
         </div>
       </div>
     </div>
@@ -1264,7 +1264,7 @@
           <div class="setsub">Shown on your dashboard and pre-filled into assessments &amp; grievances.</div>
           <div class="gform">
             <input id="set-name" placeholder="Display name — e.g. Aarav K.">
-            <div class="g2"><input id="set-reg" placeholder="Registration no. — e.g. ALZ102"><input id="set-sem" placeholder="Semester — e.g. 4"></div>
+            <div class="g2"><input id="set-reg" placeholder="Registration no. — e.g. ALZ102"><input id="set-sem" placeholder="Intake cycle — set from your batch" readonly title="Your intake cycle is set from your batch by the office"></div>
             <input id="set-email" type="email" placeholder="Email">
             <button class="gv-btn" id="set-save">Save profile<span class="set-ok" id="set-saved">✓ Saved</span></button>
           </div>
@@ -1690,6 +1690,26 @@ function loadPrograms(){
 function activeProgramId(){ try{ return localStorage.getItem('alizonActiveProgram')||'pharmacy'; }catch(e){ return 'pharmacy'; } }
 function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram',id); }catch(e){} }
 
+/* ===== Intake cycles (certificate courses have NO semesters) =====
+   Certificate courses run two intakes a year — July and December — and their
+   modules are measured in hours. Only degree pathways use semesters.
+   The cycle is derived from the student's batch (e.g. "2026 - 7" -> July Cycle 2026). */
+function studentBatch(){ try{ return (JSON.parse(localStorage.getItem('alizonProfile')||'{}').batch)||''; }catch(e){ return ''; } }
+function cycleLabel(batch){
+  var s=String(batch==null||batch===undefined?studentBatch():batch||'');
+  if(!s) return '';
+  var y=(s.match(/(20\d{2})/)||[])[1]||'';
+  var mm=s.match(/20\d{2}\D+(\d{1,2})/), m=mm?parseInt(mm[1],10):null;
+  if(m===null||isNaN(m)){ var t=s.match(/(\d{1,2})\s*$/); m=t?parseInt(t[1],10):null; }
+  if(m===null||isNaN(m)) return s;                 /* unknown format — show the batch as-is */
+  return ((m>=10||m<=3)?'December Cycle':'July Cycle')+(y?' '+y:'');
+}
+function todayLong(){
+  try{ return new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); }
+  catch(e){ return ''; }
+}
+window.cycleLabel=cycleLabel;
+
 (function(){
   const overlay=document.getElementById('practical');
   const frame=document.getElementById('pracFrame');
@@ -1738,7 +1758,10 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
     if(!prog){ gridEl.innerHTML='<div class="emptymod">No programme selected.</div>'; return; }
     titleEl.textContent=prog.name+' · Virtual Practicals';
     const live=prog.modules.filter(m=>m.status==='live'&&m.href).length;
+    /* certificate courses are hour-based, not semester-based */
+    const totalHours=prog.modules.reduce((s,m)=>s+(parseFloat(m.hours)||0),0);
     subEl.textContent=(prog.course?prog.course+' — ':'')+prog.modules.length+' module'+(prog.modules.length!==1?'s':'')+
+      (totalHours?(' · '+totalHours+' hours'):'')+
       (live?(' · '+live+' available now'):' · content coming soon');
     if(!prog.modules.length){ gridEl.innerHTML='<div class="emptymod">No modules added yet. An admin can add courses from the Admin Portal.</div>'; return; }
     gridEl.innerHTML=prog.modules.map((m,i)=>{
@@ -1747,6 +1770,7 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
       const nNotes=(m.notes||[]).length, nVid=(m.videos||[]).length;
       const meta=[]; if(nVid)meta.push(nVid+' video'+(nVid!==1?'s':'')); if(nNotes)meta.push(nNotes+' note'+(nNotes!==1?'s':''));
       if(m.units&&m.units.length)meta.unshift(m.units.length+' units');
+      if(m.hours)meta.unshift(m.hours+' hours');
       const rb=moduleResultBadge(m.unit, prog.name);
       return `<div class="modcard ${isLive?'live':'soon'}" role="button" tabindex="0" data-i="${i}">
         <div class="modtop"><span class="modtag">${esc(m.unit)}</span>
@@ -1775,7 +1799,7 @@ function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram'
       <span class="pcount">your programme</span></span>`:'';
     renderModules(prog);
     const hs=document.getElementById('helloSub');
-    if(hs&&prog) hs.textContent=prog.name+' · Semester 4 · Tuesday, 8 July 2026';
+    if(hs&&prog){ const cyc=cycleLabel(); hs.textContent=prog.name+(cyc?' · '+cyc:'')+' · '+todayLong(); }
   }
   window.__renderPractrograms=renderTabs;
 
@@ -2535,7 +2559,7 @@ function moduleResultBadge(moduleUnit, progName){
     if(h2){const h=new Date().getHours(),g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
       h2.textContent=g+', '+p.name.trim().split(/\s+/)[0];}
     const un=document.querySelector('.userchip .uname');
-    if(un)un.innerHTML=esc(p.name)+'<small>Student · '+(p.batch?esc(p.batch):'Sem '+esc(p.sem||'4'))+'</small>';
+    if(un)un.innerHTML=esc(p.name)+'<small>Student'+(p.batch?' · '+esc(window.cycleLabel?window.cycleLabel(p.batch):p.batch):'')+'</small>';
     const av=document.querySelector('.userchip .avatar');
     if(av)av.textContent=p.name.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
   }
@@ -2547,7 +2571,9 @@ function moduleResultBadge(moduleUnit, progName){
     paintRoster({reg:el('set-reg').value});
   });
   window.__applyProfile=function(p){
-    ['name','reg','sem','email'].forEach(k=>{ if(p&&p[k]!==undefined&&el('set-'+k))el('set-'+k).value=p[k]; });
+    ['name','reg','email'].forEach(k=>{ if(p&&p[k]!==undefined&&el('set-'+k))el('set-'+k).value=p[k]; });
+    /* certificate courses have no semester — show the intake cycle from the batch */
+    if(el('set-sem')) el('set-sem').value=(window.cycleLabel?window.cycleLabel(p&&p.batch):((p&&p.batch)||''))||'';
     applyProfile(p||{});
   };
   el('set-save').addEventListener('click',()=>{
