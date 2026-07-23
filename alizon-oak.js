@@ -37,7 +37,7 @@
     '{R} input,{R} select,{R} textarea{background:#fff !important;border:1px solid #E3E6EA !important;color:#1B1D21 !important}',
     '{R} input:focus,{R} select:focus,{R} textarea:focus{border-color:#AEC53B !important;box-shadow:0 0 0 3px rgba(174,197,59,.22) !important}',
     /* ---- hero ---- */
-    '{R} .oak-hero{position:relative;border-radius:24px;overflow:hidden;margin:0 0 18px}',
+    '{R} .oak-hero{position:relative;border-radius:24px;overflow:hidden;margin:0 0 18px;min-height:250px;display:flex;flex-direction:column;justify-content:flex-end}',
     '{R} .oak-hero-bg{position:absolute;inset:0;background:radial-gradient(130% 150% at 80% -30%,rgba(174,197,59,.55),transparent 55%),radial-gradient(90% 130% at 105% 120%,rgba(120,150,180,.45),transparent 60%),linear-gradient(120deg,#c9d3b6,#e9edd9 58%,#e4ebf3)}',
     '{R} .oak-hero-bg:after{content:"ALIZON";position:absolute;right:26px;top:2px;font-weight:800;font-size:64px;letter-spacing:.06em;color:rgba(27,29,33,.06);font-family:"Source Serif Pro",Georgia,serif}',
     '{R} .oak-hero.has-cover .oak-hero-bg,{R} .oak-hero.has-default .oak-hero-bg{background-size:cover;background-position:center}',
