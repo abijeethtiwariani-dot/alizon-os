@@ -62,7 +62,12 @@
 <!-- ===== ALL LABS GRID ===== -->
 <section style="background:#faf9f7">
   <div class="in">
-    <div class="section-head"><span class="eyebrow">All Modules</span><h2>The full practical catalogue</h2><p>Every lab is browser-based, AI-scored and available through the student portal.</p></div>
+    <div class="section-head"><span class="eyebrow">All Modules</span><h2>The full practical catalogue</h2><p>Practicals are available to logged-in Alizon students. A few may be opened to outside participants by the office.</p></div>
+    <div id="labAdmin" style="display:none;background:#faf0f0;border:1px dashed rgba(177,4,14,.3);border-radius:12px;padding:20px 22px;margin-bottom:24px">
+      <h3 style="font-family:var(--serif);margin:0 0 4px">Admin — practical access</h3>
+      <p style="font-size:12.5px;color:var(--muted);margin:0 0 12px">All practicals are <b>locked to logged-in students</b> by default. Tick a practical to <b>open it to everyone</b> (outside participants), untick to lock it again.</p>
+      <div id="labAdminList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px 20px"></div>
+    </div>
     <div class="grid">
 
       <a class="card" href="ALIZON-OS-Module1-AI-Drug-Discovery.html" style="color:inherit"><div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2v6l-4 8a4 4 0 0 0 4 6h4a4 4 0 0 0 4-6l-4-8V2"/><path d="M8 2h8M7 16h10"/></svg></div><div class="body"><span class="badge">Module 1</span><h3>AI Drug Discovery</h3><p>Hands-on molecular workflows and AI-assisted screening mapped to the syllabus.</p><span class="more">Open lab →</span></div></a>
@@ -118,5 +123,52 @@
 </footer>
 
 <script src="alizon-clone.js?v=2" defer></script>
+<script>
+(function(){
+  function get(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}}
+  function set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  var params=new URLSearchParams(location.search);
+  var isAdmin=(function(){try{return sessionStorage.getItem('alizonAdminAuth')==='1';}catch(e){return false;}})()||!!params.get('admin');
+  var prof=get('alizonProfile',null); var isStudent=!!(prof&&(prof.reg||prof.name));
+  function openList(){var o=get('alizonLabAccess',[]);return Array.isArray(o)?o.map(function(x){return String(x).toLowerCase();}):[];}
+  var cards=[].slice.call(document.querySelectorAll('a.card[href^="ALIZON-OS-"]'));
+  function fileOf(a){return (a.getAttribute('href')||'').split('/').pop().toLowerCase();}
+  function decorate(){
+    var open=openList();
+    cards.forEach(function(a){
+      var f=fileOf(a); var badge=a.querySelector('.badge');
+      var old=a.querySelector('.lab-status'); if(old)old.remove();
+      var isOpen=open.indexOf(f)>=0, allowed=isOpen||isStudent||isAdmin;
+      var st=document.createElement('span'); st.className='lab-status';
+      st.style.cssText='display:inline-block;font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:6px;white-space:nowrap';
+      if(isOpen){ st.textContent='● Open to all'; st.style.background='#eaf3ee'; st.style.color='#1E8E5A'; }
+      else { st.textContent='🔒 Students only'; st.style.background='#faf0f0'; st.style.color='#b1040e'; }
+      if(badge&&badge.after) badge.after(st); else if(badge) badge.parentNode.insertBefore(st,badge.nextSibling);
+      a.onclick=function(e){
+        if(allowed) return true;
+        e.preventDefault();
+        location.href='ASMDI-dashboard.html?next='+encodeURIComponent(f);
+        return false;
+      };
+    });
+  }
+  decorate();
+  if(isAdmin){
+    var box=document.getElementById('labAdmin'); if(box)box.style.display='';
+    var listEl=document.getElementById('labAdminList'), open=openList();
+    listEl.innerHTML=cards.map(function(a){var f=fileOf(a),name=((a.querySelector('h3')||{}).textContent||f);
+      return '<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" data-lab="'+f+'"'+(open.indexOf(f)>=0?' checked':'')+'> '+name+'</label>';}).join('');
+    listEl.addEventListener('change',function(e){
+      var cb=e.target; if(!cb.getAttribute||!cb.getAttribute('data-lab'))return;
+      var cur=get('alizonLabAccess',[]); if(!Array.isArray(cur))cur=[];
+      var f=cb.getAttribute('data-lab');
+      cur=cur.filter(function(x){return String(x).toLowerCase()!==f;});
+      if(cb.checked)cur.push(f);
+      set('alizonLabAccess',cur); decorate();
+    });
+  }
+  window.addEventListener('storage',function(e){if(e&&e.key==='alizonLabAccess')decorate();});
+})();
+</script>
 </body>
 </html>

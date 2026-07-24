@@ -2596,7 +2596,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 <script src="vendor/gsap.min.js"></script>
 <script src="vendor/ScrollTrigger.min.js"></script>
 <script src="alizon-motion.js"></script>
-<script src="alizon-cms.js?v=20260721c"></script>
+<script src="alizon-cms.js?v=4c"></script>
 <script>window.ALIZON_OAK={root:'body',mount:'.wrap',title:'Campus Overview',editable:true}</script>
 <script src="alizon-oak.js?v=1"></script>
 <script>
@@ -2639,7 +2639,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   function cms(){ return (window.__alizonCMS && typeof window.__alizonCMS.get==='function') ? window.__alizonCMS : null; }
   function ready(){
     var C=cms();
-    if(!C){ if(++tries<40){ setTimeout(ready,250); } else { var h=document.getElementById('cmsForm'); if(h) h.innerHTML='<div class="ahint">Could not load the content editor — check that alizon-cms.js is present next to this file.</div>'; } return; }
+    if(!C){ if(++tries<40){ setTimeout(ready,250); } else { var h=document.getElementById('cmsForm'); if(h) h.innerHTML='<div class="ahint">Could not load the content editor — check that alizon-cms.js?v=4 is present next to this file.</div>'; } return; }
     build(C);
   }
   function fieldList(C){
@@ -2649,31 +2649,87 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     if(Array.isArray(f)) return f;
     return Object.keys(f).map(function(k){ var v=f[k]; if(typeof v==='string') return {key:k,label:k,area:'General'}; v=v||{}; return {key:k,label:v.label||k,area:v.area||v.group,multiline:v.multiline||v.type==='textarea'}; });
   }
+  var CMS_CSS='<style>'+
+    '#cmsForm .cmsSearch{width:100%;padding:10px 12px;border:1px solid rgba(0,0,0,.18);border-radius:10px;font:inherit;font-size:13.5px;margin-bottom:14px;box-sizing:border-box}'+
+    '#cmsForm .cmsPage{border:1px solid var(--line);border-radius:11px;margin-bottom:10px;overflow:hidden;background:rgba(255,255,255,.5)}'+
+    '#cmsForm .cmsPageHead{width:100%;text-align:left;background:rgba(140,21,21,.07);border:0;cursor:pointer;font:inherit;font-weight:700;font-size:14.5px;color:var(--ink);padding:13px 16px;display:flex;justify-content:space-between;align-items:center}'+
+    '#cmsForm .cmsPageHead .n{color:var(--muted);font-weight:500;font-size:12px}'+
+    '#cmsForm .cmsPageBody{display:none;padding:2px 12px 10px}'+
+    '#cmsForm .cmsPage.open>.cmsPageBody{display:block}'+
+    '#cmsForm .cmsPage.open>.cmsPageHead .tg{transform:rotate(90deg)}'+
+    '#cmsForm .cmsPageHead .tg{color:var(--crimson);transition:.2s;font-size:12px}'+
+    '#cmsForm .cmsSec{border-top:1px solid var(--line)}'+
+    '#cmsForm .cmsSecHead{width:100%;text-align:left;background:none;border:0;cursor:pointer;font:inherit;font-weight:600;font-size:13px;color:var(--gold);padding:10px 4px;display:flex;justify-content:space-between;align-items:center}'+
+    '#cmsForm .cmsSecHead .tg{color:var(--crimson);font-size:15px}'+
+    '#cmsForm .cmsSecBody{display:none;padding:0 2px 10px}'+
+    '#cmsForm .cmsSec.open>.cmsSecBody{display:block}'+
+    '#cmsForm .cmsRow{margin-bottom:10px}'+
+    '#cmsForm .cmsRow label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:0 0 3px}'+
+    '#cmsForm .cmsRow input,#cmsForm .cmsRow textarea{width:100%;padding:8px 11px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font:inherit;font-size:13px;box-sizing:border-box;background:#fff;color:var(--ink)}'+
+    '#cmsForm .cmsRow img{max-height:52px;margin-top:6px;border:1px solid var(--line);border-radius:6px;display:block}'+
+  '</style>';
   function build(C){
     var host=document.getElementById('cmsForm'); if(!host) return;
     var fs=fieldList(C);
-    if(!fs.length){ host.innerHTML='<div class="ahint">No editable fields were found. Update alizon-cms.js to register website fields.</div>'; return; }
-    var groups={}, order=[];
-    fs.forEach(function(f){ var a=(f&&(f.area||f.group))||'General'; if(!groups[a]){ groups[a]=[]; order.push(a); } groups[a].push(f); });
+    if(!fs.length){ host.innerHTML='<div class="ahint">No editable fields were found. Update alizon-cms.js?v=4 to register website fields.</div>'; return; }
+    /* group into  Page → Section → fields  (area = "Page — Section") */
+    var tree={}, pageOrder=[];
+    fs.forEach(function(f){
+      var area=(f&&(f.area||f.group))||'General', parts=area.split(/\s[—–-]\s/), page, sec;
+      if(parts.length>1){ page=parts[0].trim(); sec=parts.slice(1).join(' — ').trim(); } else { page=area.trim(); sec='Details'; }
+      if(!tree[page]){ tree[page]={secs:{},order:[]}; pageOrder.push(page); }
+      if(!tree[page].secs[sec]){ tree[page].secs[sec]=[]; tree[page].order.push(sec); }
+      tree[page].secs[sec].push(f);
+    });
+    function fieldRow(f){
+      var row=document.createElement('div'); row.className='cmsRow';
+      var key=f&&(f.key||f.id); if(!key) return row;
+      var val=''; try{ var g=C.get(key); if(g!=null) val=String(g); }catch(e){}
+      var lab=document.createElement('label'); lab.textContent=(f.label||key);
+      row.setAttribute('data-label',(f.label||key).toLowerCase());
+      var isImg=(f.type==='image'), multi=!!(f.multiline||f.type==='textarea'||(!isImg&&val.length>90));
+      var ctl=document.createElement(multi?'textarea':'input'); if(multi) ctl.rows=3;
+      ctl.value=val;
+      if(!val) ctl.placeholder = f.def ? String(f.def) : (isImg?'https://… image URL':'');
+      ctl.setAttribute('data-cms-key',key);
+      row.appendChild(lab); row.appendChild(ctl);
+      if(isImg && val){ var im=document.createElement('img'); im.src=val; im.onerror=function(){this.style.display='none';}; row.appendChild(im); }
+      return row;
+    }
     var frag=document.createDocumentFragment();
-    order.forEach(function(a){
-      var h=document.createElement('h3'); h.textContent=a;
-      h.style.cssText='font-size:15px;margin:18px 0 8px;color:var(--gold)';
-      frag.appendChild(h);
-      groups[a].forEach(function(f){
-        var key=f&&(f.key||f.id); if(!key) return;
-        var val=''; try{ var g=C.get(key); if(g!=null) val=String(g); }catch(e){}
-        var lab=document.createElement('label'); lab.textContent=(f.label||key);
-        lab.style.cssText='display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:0 0 4px';
-        var multi=!!(f.multiline||f.type==='textarea'||val.length>90);
-        var ctl=document.createElement(multi?'textarea':'input');
-        if(multi) ctl.rows=3;
-        ctl.value=val;
-        if(!val && f.def) ctl.placeholder=String(f.def);
-        ctl.setAttribute('data-cms-key',key);
-        ctl.style.cssText='width:100%;padding:9px 12px;border:1px solid rgba(0,0,0,.15);border-radius:9px;font:inherit;font-size:13.5px;margin-bottom:12px;box-sizing:border-box;background:rgba(255,255,255,.72);color:var(--ink)';
-        frag.appendChild(lab); frag.appendChild(ctl);
+    var wrap=document.createElement('div'); wrap.innerHTML=CMS_CSS; frag.appendChild(wrap);
+    var search=document.createElement('input'); search.className='cmsSearch'; search.placeholder='🔍  Search a field (e.g. hero, stat, image)…';
+    search.addEventListener('input',function(){
+      var q=this.value.toLowerCase().trim();
+      host.querySelectorAll('.cmsPage').forEach(function(pg){
+        var pv=false;
+        pg.querySelectorAll('.cmsSec').forEach(function(sc){
+          var sv=false;
+          sc.querySelectorAll('.cmsRow').forEach(function(r){ var hit=!q||r.getAttribute('data-label').indexOf(q)>=0; r.style.display=hit?'':'none'; if(hit)sv=true; });
+          sc.style.display=sv?'':'none'; sc.classList.toggle('open', !!q && sv); if(!q) sc.classList.remove('open');
+          if(sv)pv=true;
+        });
+        pg.style.display=pv?'':'none'; pg.classList.toggle('open', !!q && pv); if(!q) pg.classList.remove('open');
       });
+    });
+    frag.appendChild(search);
+    pageOrder.forEach(function(page){
+      var pg=document.createElement('div'); pg.className='cmsPage';
+      var ph=document.createElement('button'); ph.type='button'; ph.className='cmsPageHead';
+      var nfields=0; tree[page].order.forEach(function(s){nfields+=tree[page].secs[s].length;});
+      ph.innerHTML='<span>'+page+' <span class="n">· '+nfields+' fields</span></span><span class="tg">▶</span>';
+      ph.addEventListener('click',function(){ pg.classList.toggle('open'); });
+      var body=document.createElement('div'); body.className='cmsPageBody';
+      tree[page].order.forEach(function(sec){
+        var sc=document.createElement('div'); sc.className='cmsSec';
+        var sh=document.createElement('button'); sh.type='button'; sh.className='cmsSecHead';
+        sh.innerHTML='<span>'+sec+'</span><span class="tg">+</span>';
+        sh.addEventListener('click',function(){ var o=sc.classList.toggle('open'); sh.querySelector('.tg').textContent=o?'–':'+'; });
+        var sb=document.createElement('div'); sb.className='cmsSecBody';
+        tree[page].secs[sec].forEach(function(f){ sb.appendChild(fieldRow(f)); });
+        sc.appendChild(sh); sc.appendChild(sb); body.appendChild(sc);
+      });
+      pg.appendChild(ph); pg.appendChild(body); frag.appendChild(pg);
     });
     host.innerHTML=''; host.appendChild(frag);
   }
