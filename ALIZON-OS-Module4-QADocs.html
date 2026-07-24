@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALIZON OS · Module 4 · Digital Quality &amp; Safety Documentation in Pharmaceutical Manufacturing</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --acc:#3A5BB0;--acc-soft:rgba(58,91,176,.12);
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --acc:#7aa0ef;--acc-soft:rgba(122,160,239,.14);
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:80ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)}
+  .scorechip b{color:var(--gold)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
+  .tab.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--card-shadow);padding:18px 20px;margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;margin-bottom:4px}
+  .card h3{font-size:14.5px;margin-bottom:8px}
+  .step-tag{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--acc);border-radius:100px;padding:3px 11px;display:inline-block;margin-bottom:8px}
+  .marks{float:right;font-size:11.5px;font-weight:700;color:var(--gold);background:var(--gold-soft);border-radius:100px;padding:3px 10px}
+  .muted{color:var(--muted);font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .q{margin:12px 0;padding:12px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}
+  .q>b{display:block;font-size:13.5px;margin-bottom:8px}
+  .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .opt{cursor:pointer;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:100px;background:var(--panel);border:1px solid var(--line);color:var(--ink)}
+  .opt.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+  input[type=text],input[type=number],textarea,select{width:100%;font:inherit;font-size:13px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);margin-top:4px}
+  textarea{min-height:70px;resize:vertical}
+  label.ck{display:flex;gap:9px;align-items:flex-start;font-size:13px;margin:7px 0;cursor:pointer}
+  label.ck input{margin-top:3px;flex:none}
+  .btn{cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;color:#fff;background:var(--crimson);border:0;border-radius:100px;padding:11px 22px}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .fb{margin-top:10px;font-size:13px;padding:10px 13px;border-radius:10px;display:none}
+  .fb.show{display:block}
+  .fb.good{background:rgba(30,142,90,.12);border:1px solid rgba(30,142,90,.35);color:var(--success)}
+  .fb.bad{background:rgba(196,38,46,.1);border:1px solid rgba(196,38,46,.32);color:var(--danger)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  .pill{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:100px;padding:3px 10px}
+  .p-ok{background:rgba(30,142,90,.14);color:var(--success)}
+  .p-bad{background:rgba(196,38,46,.12);color:var(--danger)}
+  .p-warn{background:var(--gold-soft);color:var(--gold)}
+  .dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+  .dtile{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .dtile small{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .dtile b{font-size:21px;font-weight:800}
+  .alert{border-left:4px solid var(--warn);background:rgba(180,83,9,.08);border-radius:0 12px 12px 0;padding:12px 15px;margin:10px 0}
+  .alert b{color:var(--warn)}
+  .flow{display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+  .fnode{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;text-align:center}
+  .fnode.dec{border-color:var(--gold);color:var(--gold);font-weight:700}
+  .farr{text-align:center;color:var(--muted)}
+  .qrbox{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .qr{width:132px;height:132px;flex:none;background:#fff;padding:8px;border-radius:10px;border:1px solid var(--line)}
+  .guide{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:16px;margin-bottom:6px}
+  .guide ol{padding-left:20px;font-size:13.4px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Module 4 · Quality &amp; Safety Documentation</div>
+    <h1>Digital Quality &amp; Safety Documentation in Pharmaceutical Manufacturing</h1>
+    <p>Act as the Quality Assurance officer for a batch of <b>Paracetamol 500&nbsp;mg tablets</b>: review the Batch Manufacturing Record, verify raw materials and QC results, record a deviation and its CAPA, assess recall risk, and make an evidence-based GMP <b>batch-release decision</b>. <b>Duration 3 hours.</b></p>
+    <div class="chips">
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">QA Documentation</button>
+    <button class="tab" data-p="deliver">Digital Documents</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <!-- BRIEFING -->
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="qadocs"></div>
+
+    <div class="guide">
+      <h2>New to GMP documentation? Start here</h2>
+      <p class="muted" style="margin-bottom:8px">In manufacturing, <b>"not documented = not done."</b> A batch is released on the strength of its <b>records</b>, not on how the tablets look. Your job is to prove — with complete, in-specification, signed documentation — that this batch is safe to release.</p>
+      <ol>
+        <li><b>Review the BMR</b> — every entry present, correct, calculated and signed.</li>
+        <li><b>Verify materials</b> against their Certificate of Analysis.</li>
+        <li><b>Judge each result</b> against its <b>specification</b>, not by eye.</li>
+        <li><b>Record the deviation</b>, its root cause and risk; raise <b>CAPA</b>.</li>
+        <li><b>Assess recall risk</b> from complaints, then <b>Release / Hold / Reject</b> with justification.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>Your batch</h2>
+      <table>
+        <tr><th>Product</th><td>Paracetamol 500 mg Tablets</td></tr>
+        <tr><th>Batch number</th><td><b>PCM-500-2607</b></td></tr>
+        <tr><th>Manufactured</th><td>18 July 2026</td></tr>
+        <tr><th>Expiry</th><td>July 2028</td></tr>
+        <tr><th>Batch size</th><td>100,000 tablets</td></tr>
+        <tr><th>Your role</th><td>Quality Assurance (QA) Officer</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Assessment rubric (100 marks)</h2>
+      <table>
+        <tr><th>Component</th><th style="text-align:right">Marks</th></tr>
+        <tr><td>Batch Manufacturing Record review</td><td style="text-align:right">15</td></tr>
+        <tr><td>Raw-material verification</td><td style="text-align:right">10</td></tr>
+        <tr><td>In-process &amp; QC documentation</td><td style="text-align:right">20</td></tr>
+        <tr><td>Deviation &amp; CAPA documentation</td><td style="text-align:right">20</td></tr>
+        <tr><td>Batch-release decision</td><td style="text-align:right">15</td></tr>
+        <tr><td>Digital dashboard &amp; graphs</td><td style="text-align:right">10</td></tr>
+        <tr><td>Workflow diagram &amp; QR code</td><td style="text-align:right">5</td></tr>
+        <tr><td>Report quality &amp; documentation</td><td style="text-align:right">5</td></tr>
+        <tr><td><b>Total</b></td><td style="text-align:right"><b>100</b></td></tr>
+      </table>
+      <div class="alert"><b>Critical failure:</b> releasing the batch while a deviation is open, a QC result fails, or documentation is incomplete fails the practical regardless of marks — exactly as it would trigger a regulatory action in a real facility.</div>
+    </div>
+  </section>
+
+  <!-- STATION -->
+  <section class="panel" id="p-station">
+
+    <!-- STEP 1 -->
+    <div class="card">
+      <span class="marks">15 marks</span><span class="step-tag">Step 1 · Batch Manufacturing Record</span>
+      <h3>Review the BMR for completeness and accuracy</h3>
+      <table>
+        <tr><th>Field</th><th>BMR entry</th></tr>
+        <tr><td>Product name</td><td>Paracetamol 500 mg Tablets</td></tr>
+        <tr><td>Batch number</td><td>PCM-500-2607</td></tr>
+        <tr><td>Manufacturing date</td><td>18 July 2026</td></tr>
+        <tr><td>Expiry date</td><td>July 2028</td></tr>
+        <tr><td>Batch size</td><td>100,000 tablets</td></tr>
+        <tr><td>Equipment used</td><td>Compression machine CM-04 (calibrated)</td></tr>
+        <tr><td>Operator signature</td><td>S. Kumar ✓</td></tr>
+        <tr><td>QA signature</td><td style="color:var(--danger)"><b>— missing —</b></td></tr>
+      </table>
+      <div class="q"><b>1.1 Which record issues can you identify? (tick all that apply)</b>
+        <label class="ck"><input type="checkbox" class="s1" data-k="qa"> QA signature is missing</label>
+        <label class="ck"><input type="checkbox" class="s1" data-k="op"> Operator signature is missing</label>
+        <label class="ck"><input type="checkbox" class="s1" data-k="expiry"> Expiry date is missing</label>
+        <label class="ck"><input type="checkbox" class="s1" data-k="none"> No issues — the BMR is complete</label>
+      </div>
+      <div class="q"><b>1.2 Can the batch be released while a required signature is missing from the BMR?</b>
+        <div class="opts" data-q="s1rel">
+          <button class="opt" data-v="no">No — an incomplete BMR must be corrected before release</button>
+          <button class="opt" data-v="yes">Yes — the product is fine, the signature can be added later</button>
+        </div></div>
+      <div class="fb" id="fb1"></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="card">
+      <span class="marks">10 marks</span><span class="step-tag">Step 2 · Raw-material verification</span>
+      <h3>Verify each material against its Certificate of Analysis</h3>
+      <table>
+        <tr><th>Material</th><th>Supplier</th><th>Batch</th><th>CoA</th><th>Expiry</th></tr>
+        <tr><td>Paracetamol API</td><td>PharmaChem Ltd</td><td>PA-2231</td><td><span class="pill p-ok">Present</span></td><td>2027</td></tr>
+        <tr><td>Starch (binder)</td><td>ExciCorp</td><td>ST-8842</td><td><span class="pill p-ok">Present</span></td><td>2027</td></tr>
+        <tr><td>Magnesium stearate</td><td>LubriPharm</td><td>MG-1190</td><td><span class="pill p-bad">Missing</span></td><td>2026</td></tr>
+      </table>
+      <div class="q"><b>2.1 Magnesium stearate arrived without a Certificate of Analysis. What is the correct action?</b>
+        <div class="opts" data-q="s2coa">
+          <button class="opt" data-v="reject">Reject / quarantine the material — do not use it until a valid CoA is provided</button>
+          <button class="opt" data-v="use">Use it anyway — magnesium stearate is only a lubricant</button>
+        </div></div>
+      <div class="q"><b>2.2 Why must every raw material be verified before use?</b>
+        <div class="opts" data-q="s2why">
+          <button class="opt" data-v="quality">Material quality directly determines product quality and patient safety, and must be traceable</button>
+          <button class="opt" data-v="cost">To keep purchasing costs down</button>
+        </div></div>
+      <div class="fb" id="fb2"></div>
+    </div>
+
+    <!-- STEP 3 + 4 -->
+    <div class="card">
+      <span class="marks">20 marks</span><span class="step-tag">Steps 3 &amp; 4 · In-process &amp; QC results</span>
+      <h3>Judge every result against its specification</h3>
+      <table>
+        <tr><th>Parameter</th><th>Specification</th><th>Result</th><th>Verdict</th></tr>
+        <tr><td>Tablet weight</td><td>650 ± 5% mg</td><td>648 mg</td><td><span class="pill p-ok">Pass</span></td></tr>
+        <tr><td>Hardness</td><td>5–8 kg/cm²</td><td>6.2</td><td><span class="pill p-ok">Pass</span></td></tr>
+        <tr><td>Friability</td><td>&lt; 1%</td><td>0.45%</td><td><span class="pill p-ok">Pass</span></td></tr>
+        <tr><td>Disintegration</td><td>&lt; 15 min</td><td>9 min</td><td><span class="pill p-ok">Pass</span></td></tr>
+        <tr><td>Assay</td><td>95–105%</td><td>99.2%</td><td><span class="pill p-ok">Pass</span></td></tr>
+        <tr><td>Dissolution</td><td>&ge; 80% in 30 min</td><td>94%</td><td><span class="pill p-ok">Pass</span></td></tr>
+        <tr><td>Content uniformity</td><td>Within limits</td><td>Complies</td><td><span class="pill p-ok">Pass</span></td></tr>
+        <tr><td>Microbial limit</td><td>Within limits</td><td>Complies</td><td><span class="pill p-ok">Pass</span></td></tr>
+      </table>
+      <div class="q"><b>3.1 Do the in-process and QC results meet all specifications?</b>
+        <div class="opts" data-q="s3meet">
+          <button class="opt" data-v="yes">Yes — every parameter is within specification</button>
+          <button class="opt" data-v="no">No — one or more parameters fail</button>
+        </div></div>
+      <div class="q"><b>3.2 Tablet weight is 648 mg against 650 ± 5% mg. Is that within specification?</b>
+        <div class="opts" data-q="s3weight">
+          <button class="opt" data-v="in">In specification (617.5–682.5 mg)</button>
+          <button class="opt" data-v="out">Out of specification</button>
+        </div></div>
+      <div class="fb" id="fb3"></div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="card">
+      <span class="marks">part of Deviation &amp; CAPA</span><span class="step-tag">Step 5 · Deviation report</span>
+      <h3>Record the production deviation</h3>
+      <div class="alert"><b>Deviation:</b> during compression, the machine speed exceeded the approved limit for <b>12 minutes</b>.</div>
+      <div class="grid2">
+        <div class="q"><b>Root-cause analysis</b><textarea id="d1root" placeholder="e.g. speed-control setpoint drifted; no automatic high-speed alarm; operator did not detect the excursion."></textarea></div>
+        <div class="q"><b>Product risk assessment</b><textarea id="d1risk" placeholder="e.g. higher speed can affect weight/hardness uniformity — assess against the in-process results for that period."></textarea></div>
+      </div>
+      <div class="q"><b>Immediate action taken</b><textarea id="d1act" placeholder="e.g. machine stopped and reset to approved speed; tablets from the affected period segregated and tested."></textarea></div>
+      <div class="fb" id="fb5"></div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="card">
+      <span class="marks">20 marks (with Step 5)</span><span class="step-tag">Step 6 · CAPA</span>
+      <h3>Corrective and Preventive Action</h3>
+      <div class="grid2">
+        <div class="q"><b>Corrective action (fix this occurrence)</b><textarea id="d2corr" placeholder="e.g. recalibrate compression machine CM-04; retrain the operator on speed limits."></textarea></div>
+        <div class="q"><b>Preventive action (stop it recurring)</b><textarea id="d2prev" placeholder="e.g. install automatic high-speed monitoring alarms; add a daily calibration checklist."></textarea></div>
+      </div>
+      <div class="q"><b>6.1 What is the essential difference between corrective and preventive action?</b>
+        <div class="opts" data-q="s6capa">
+          <button class="opt" data-v="right">Corrective fixes the current problem; preventive changes the system so it cannot recur</button>
+          <button class="opt" data-v="wrong">They are the same thing with different names</button>
+        </div></div>
+      <div class="fb" id="fb6"></div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="card">
+      <span class="marks">recall risk</span><span class="step-tag">Step 7 · Recall risk assessment</span>
+      <h3>Three complaints of tablet breakage received</h3>
+      <div class="q"><b>7.1 Given complaints of breakage on a batch with an open deviation, what should you do? (tick all that apply)</b>
+        <label class="ck"><input type="checkbox" class="s7" data-k="invest"> Open a complaint investigation</label>
+        <label class="ck"><input type="checkbox" class="s7" data-k="quarantine"> Quarantine the batch pending the outcome</label>
+        <label class="ck"><input type="checkbox" class="s7" data-k="test"> Carry out additional testing (e.g. friability/hardness on retained samples)</label>
+        <label class="ck"><input type="checkbox" class="s7" data-k="ignore"> Ignore — three complaints is normal</label>
+      </div>
+      <div class="q"><b>Document your recall decision &amp; justification</b><textarea id="d3recall" placeholder="e.g. quarantine + investigate before any release decision; recall only if distributed stock is implicated."></textarea></div>
+      <div class="fb" id="fb7"></div>
+    </div>
+
+    <!-- STEP 8 -->
+    <div class="card">
+      <span class="marks">15 marks</span><span class="step-tag">Step 8 · Batch-release decision</span>
+      <h3>Make the QA decision on the full record set</h3>
+      <p class="muted">Consider: QA signature missing on the BMR · magnesium stearate CoA missing · an open compression-speed deviation · complaints of breakage under investigation. QC results themselves are in specification.</p>
+      <div class="q"><b>8.1 What is the correct batch-release decision now?</b>
+        <div class="opts" data-q="s8dec">
+          <button class="opt" data-v="hold">⚠ Hold — resolve the open items (signature, CoA, deviation, complaints) before deciding</button>
+          <button class="opt" data-v="release">✅ Release — the QC results all pass</button>
+          <button class="opt" data-v="reject">❌ Reject the batch outright</button>
+        </div></div>
+      <div class="q"><b>Scientific justification for your decision</b><textarea id="d4just" placeholder="Justify against GMP: an open deviation, missing CoA and incomplete BMR mean the batch cannot be released until closed and documented, even though QC passes."></textarea></div>
+      <div class="fb" id="fb8"></div>
+    </div>
+
+    <div class="card" style="text-align:center">
+      <button class="btn" id="evalBtn">Evaluate my QA documentation</button>
+      <div class="muted" style="margin-top:8px">You can revise your answers and re-evaluate.</div>
+      <div class="fb" id="fbAll"></div>
+    </div>
+  </section>
+
+  <!-- DELIVERABLES -->
+  <section class="panel" id="p-deliver">
+    <div class="card">
+      <h2>Digital documents &amp; visualisation <span class="marks">15 marks</span></h2>
+      <p class="muted">Alongside your report, prepare and attach the following. Tick each once done.</p>
+    </div>
+
+    <div class="card">
+      <h3>Documents to generate</h3>
+      <label class="ck"><input type="checkbox" class="dv"> Batch Manufacturing Record (BMR)</label>
+      <label class="ck"><input type="checkbox" class="dv"> Batch Packaging Record (BPR)</label>
+      <label class="ck"><input type="checkbox" class="dv"> Quality Control Report</label>
+      <label class="ck"><input type="checkbox" class="dv"> Certificate of Analysis (CoA)</label>
+      <label class="ck"><input type="checkbox" class="dv"> Deviation Report</label>
+      <label class="ck"><input type="checkbox" class="dv"> CAPA Report</label>
+      <label class="ck"><input type="checkbox" class="dv"> Product Release Authorisation</label>
+      <label class="ck"><input type="checkbox" class="dv"> Batch Traceability Report</label>
+    </div>
+
+    <div class="card">
+      <h3>1 · Production quality dashboard <span class="marks">part of 10</span></h3>
+      <p class="muted">Your live figures — rebuild this as your own dashboard.</p>
+      <div class="dash" id="dashHost"></div>
+      <label class="ck"><input type="checkbox" class="dv"> Dashboard built and screenshot attached</label>
+    </div>
+
+    <div class="card">
+      <h3>2 · QC trend graph <span class="marks">part of 10</span></h3>
+      <p class="muted">Assay (%) across recent batches — reproduce and mark the 95–105% specification band.</p>
+      <div id="chartHost"></div>
+      <label class="ck"><input type="checkbox" class="dv"> QC trend graph attached with specification band</label>
+    </div>
+
+    <div class="card">
+      <h3>3 · Batch workflow diagram <span class="marks">part of 5</span></h3>
+      <div class="flow">
+        <div class="fnode">Raw material receipt</div><div class="farr">▼</div>
+        <div class="fnode">Quality inspection</div><div class="farr">▼</div>
+        <div class="fnode">Manufacturing</div><div class="farr">▼</div>
+        <div class="fnode">In-process quality check</div><div class="farr">▼</div>
+        <div class="fnode">Quality control testing</div><div class="farr">▼</div>
+        <div class="fnode dec">Deviation review → CAPA</div><div class="farr">▼</div>
+        <div class="fnode">QA approval</div><div class="farr">▼</div>
+        <div class="fnode">Batch release → Market distribution</div>
+      </div>
+      <label class="ck"><input type="checkbox" class="dv"> Workflow diagram attached</label>
+    </div>
+
+    <div class="card">
+      <h3>4 · Traceability QR code <span class="marks">part of 5</span></h3>
+      <div class="qrbox">
+        <svg class="qr" id="qrSim" viewBox="0 0 29 29" shape-rendering="crispEdges" aria-label="Simulated batch QR code"></svg>
+        <div style="flex:1;min-width:220px">
+          <p class="muted" style="margin-bottom:6px">Generate a real QR linking to the batch record: product name · batch number · manufacturing &amp; expiry dates · QC status · release status · CoA · traceability information.</p>
+          <p class="muted" style="font-size:11.5px">The block is a layout simulation — generate a genuine scannable QR with any generator.</p>
+        </div>
+      </div>
+      <label class="ck"><input type="checkbox" class="dv"> Scannable QR generated and record linked</label>
+    </div>
+
+    <div class="card">
+      <h3>5 · Optional 1-minute animation</h3>
+      <p class="muted">Raw-material inspection → manufacturing → quality testing → documentation → batch approval → product release.</p>
+      <label class="ck"><input type="checkbox" class="dv"> Animation attached (optional — link or file)</label>
+    </div>
+
+    <div class="card">
+      <h3>Reflection on quality &amp; patient safety</h3>
+      <div class="q"><textarea id="dvReflect" placeholder="Why does complete documentation protect patients? How did the open deviation and missing records affect your release decision?"></textarea></div>
+      <label class="ck"><input type="checkbox" class="dv"> Reflection written</label>
+      <div class="fb" id="fbDv"></div>
+    </div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="panel" id="p-report">
+    <div class="card">
+      <h2>Your result</h2>
+      <div id="resultBox" class="muted">Complete the QA Documentation station and press <b>Evaluate</b> to see your score breakdown here.</div>
+    </div>
+    <div class="card">
+      <h2>Reflection questions</h2>
+      <ol class="muted" style="padding-left:20px;line-height:1.9;font-size:13.4px">
+        <li>Why is "not documented = not done" a core GMP principle?</li>
+        <li>What is the difference between QA and QC?</li>
+        <li>What must a deviation report contain?</li>
+        <li>How do corrective and preventive actions differ?</li>
+        <li>Why can a batch with passing QC still be held?</li>
+        <li>When is a product recall required?</li>
+        <li>Why must every raw material carry a Certificate of Analysis?</li>
+        <li>How does batch traceability enable a rapid recall?</li>
+        <li>Who is authorised to release a batch, and on what basis?</li>
+        <li>How does digital documentation improve GMP compliance?</li>
+      </ol>
+    </div>
+    <div id="reportWriter" style="display:none"></div>
+  </section>
+
+</div>
+
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=6"></script>
+<script>
+(function(){
+  'use strict';
+  function $(id){ return document.getElementById(id); }
+  window.update=function(){};
+
+  var tb=$('themeBtn');
+  if(tb) tb.addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+
+  var tabs=document.querySelectorAll('.tab');
+  tabs.forEach(function(t){ t.addEventListener('click',function(){
+    tabs.forEach(function(x){x.classList.remove('on');});
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+    t.classList.add('on'); var p=$('p-'+t.dataset.p); if(p)p.classList.add('on');
+    if(t.dataset.p==='report') mountWriter();
+    if(t.dataset.p==='deliver'){ renderDash(); paintChart(); paintQR(); }
+    window.scrollTo(0,0);
+  }); });
+
+  var state={};
+  document.querySelectorAll('.opts').forEach(function(g){
+    g.querySelectorAll('.opt').forEach(function(b){ b.addEventListener('click',function(){
+      g.querySelectorAll('.opt').forEach(function(x){x.classList.remove('sel');});
+      b.classList.add('sel'); state[g.dataset.q]=b.dataset.v;
+    }); });
+  });
+
+  /* QC assay trend across batches */
+  var ASSAY=[{b:'2601',v:98.4},{b:'2603',v:101.2},{b:'2604',v:99.8},{b:'2606',v:97.6},{b:'2607',v:99.2}];
+  function chartSVG(){
+    var W=700,H=240,L=44,R=14,T=14,B=32, pw=W-L-R, ph=H-T-B, lo=92,hi=107;
+    function x(i){return L+(i*(pw/(ASSAY.length-1)));}
+    function y(v){return T+ph-((v-lo)/(hi-lo))*ph;}
+    var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="Assay trend across batches">';
+    s+='<rect x="'+L+'" y="'+y(105)+'" width="'+pw+'" height="'+(y(95)-y(105))+'" fill="rgba(30,142,90,.13)"/>';
+    s+='<text x="'+(L+6)+'" y="'+(y(105)-5)+'" font-size="10" fill="var(--success)">specification 95–105%</text>';
+    [95,100,105].forEach(function(v){ s+='<line x1="'+L+'" y1="'+y(v)+'" x2="'+(W-R)+'" y2="'+y(v)+'" stroke="var(--line)"/>'; s+='<text x="'+(L-8)+'" y="'+(y(v)+3)+'" font-size="10" fill="var(--muted)" text-anchor="end">'+v+'</text>'; });
+    var pts=ASSAY.map(function(d,i){return x(i)+','+y(d.v);}).join(' ');
+    s+='<polyline points="'+pts+'" fill="none" stroke="var(--acc)" stroke-width="2.6" stroke-linejoin="round"/>';
+    ASSAY.forEach(function(d,i){ s+='<circle cx="'+x(i)+'" cy="'+y(d.v)+'" r="4" fill="var(--acc)"/>'; s+='<text x="'+x(i)+'" y="'+(y(d.v)-10)+'" font-size="10" font-weight="700" fill="var(--ink)" text-anchor="middle">'+d.v+'</text>'; s+='<text x="'+x(i)+'" y="'+(H-11)+'" font-size="10" fill="var(--muted)" text-anchor="middle">B'+d.b+'</text>'; });
+    return s+'</svg>';
+  }
+  function paintChart(){ var c=$('chartHost'); if(c) c.innerHTML=chartSVG(); }
+
+  function paintQR(){
+    var el=$('qrSim'); if(!el) return; var N=29, seed=5002607, out='';
+    function rnd(){ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; }
+    function finder(ox,oy){ var s=''; for(var i=0;i<7;i++)for(var j=0;j<7;j++){ var edge=(i===0||i===6||j===0||j===6),core=(i>=2&&i<=4&&j>=2&&j<=4); if(edge||core) s+='<rect x="'+(ox+j)+'" y="'+(oy+i)+'" width="1" height="1" fill="#111"/>'; } return s; }
+    for(var r=0;r<N;r++)for(var c=0;c<N;c++){ var inF=(r<8&&c<8)||(r<8&&c>N-9)||(r>N-9&&c<8); if(inF)continue; if(rnd()>0.5) out+='<rect x="'+c+'" y="'+r+'" width="1" height="1" fill="#111"/>'; }
+    el.innerHTML=out+finder(0,0)+finder(N-7,0)+finder(0,N-7);
+  }
+
+  function renderDash(){
+    var host=$('dashHost'); if(!host) return;
+    var decided=state.s8dec, released=(decided==='release')?1:0, rejected=(decided==='reject')?1:0;
+    var capaClosed=($('d2corr')&&$('d2corr').value.trim()&&$('d2prev')&&$('d2prev').value.trim())?1:0;
+    var tiles=[['Batches produced',1],['Batches released',released],['Batches rejected',rejected],['Deviations reported',1],['CAPA closed',capaClosed],['Product complaints',3]];
+    host.innerHTML=tiles.map(function(t){return '<div class="dtile"><small>'+t[0]+'</small><b>'+t[1]+'</b></div>';}).join('');
+  }
+  ['change','input'].forEach(function(ev){ document.addEventListener(ev,function(){ renderDash(); }); });
+
+  function fb(id,ok,msg){ var e=$(id); if(!e)return; e.className='fb show '+(ok?'good':'bad'); e.innerHTML=msg; }
+  function val(id){ var e=$(id); return e?String(e.value||'').trim():''; }
+  function checks(cls){ var o={}; document.querySelectorAll('.'+cls).forEach(function(c){ o[c.dataset.k]=c.checked; }); return o; }
+  var result=null;
+
+  function evaluate(){
+    var m={}, critical=false, notes=[];
+
+    /* 1 · BMR /15 */
+    var c1=checks('s1'), s1=0;
+    if(c1.qa) s1+=6;
+    if(!c1.op) s1+=2;            /* operator sig present — not flagging it wrongly */
+    if(!c1.expiry) s1+=2;        /* expiry present */
+    if(!c1.none) s1+=2;
+    if(state.s1rel==='no') s1+=3;
+    m.bmr=Math.min(15,s1);
+    fb('fb1', m.bmr>=10, m.bmr>=10 ? 'Correct — the only issue is the <b>missing QA signature</b>; operator signature and expiry are present. An incomplete BMR must be corrected before release.' : 'Look again: only the <b>QA signature</b> is missing (operator signature and expiry are present). A BMR with a missing required signature cannot support a release.');
+
+    /* 2 · materials /10 */
+    var s2=0; if(state.s2coa==='reject') s2+=6; if(state.s2why==='quality') s2+=4; m.materials=s2;
+    fb('fb2', m.materials>=6, m.materials>=6 ? 'Correct — a material without a valid CoA must be quarantined/rejected; material quality drives product quality and traceability.' : 'Magnesium stearate has <b>no CoA</b> — quarantine/reject it until one is provided. Every material must be verified because its quality determines the product’s.');
+
+    /* 3 · in-process & QC /20 */
+    var s3=0; if(state.s3meet==='yes') s3+=12; if(state.s3weight==='in') s3+=8; m.qc=s3;
+    fb('fb3', m.qc>=14, m.qc>=14 ? 'Correct — every parameter is in specification, and 648 mg sits inside 650 ± 5% (617.5–682.5 mg).' : 'All eight parameters pass, and 648 mg is <b>within</b> 650 ± 5% (617.5–682.5 mg). The QC package itself is compliant.');
+
+    /* 5+6 · deviation & CAPA /20 */
+    var s5=0;
+    if(val('d1root').length>=25) s5+=4;
+    if(val('d1risk').length>=20) s5+=3;
+    if(val('d1act').length>=15) s5+=3;
+    if(val('d2corr').length>=15) s5+=4;
+    if(val('d2prev').length>=15) s5+=4;
+    if(state.s6capa==='right') s5+=2;
+    m.capa=Math.min(20,s5);
+    fb('fb5', val('d1root').length>=25, val('d1root').length>=25 ? 'Deviation documented — root cause, risk and immediate action recorded.' : 'A deviation report needs a <b>root-cause analysis</b>, a <b>product-risk assessment</b> and the <b>immediate action</b> taken — not just a note that it happened.');
+    fb('fb6', state.s6capa==='right', state.s6capa==='right' ? 'Correct — corrective action fixes the current occurrence; preventive action changes the system so it cannot recur.' : 'Corrective action fixes <b>this</b> occurrence (recalibrate, retrain); preventive action stops it <b>recurring</b> (alarms, checklists).');
+
+    /* 7 · recall risk (feeds decision) */
+    var c7=checks('s7');
+    var recallOk=(c7.invest&&c7.quarantine&&c7.test&&!c7.ignore);
+    fb('fb7', recallOk, recallOk ? 'Correct — investigate, quarantine and test; do not dismiss complaints on a batch with an open deviation.' : 'With breakage complaints on a batch that also has an open deviation, you <b>investigate, quarantine and test</b> — you never ignore them.');
+
+    /* 8 · release decision /15 */
+    var s8=0;
+    if(state.s8dec==='hold') s8+=9;
+    if(val('d4just').length>=40) s8+=6;
+    if(state.s8dec==='release'){ critical=true; notes.push('Released the batch with an open deviation, a missing CoA and an incomplete BMR.'); }
+    if(state.s8dec==='reject'){ s8=Math.min(s8,6); notes.push('Outright rejection is premature — the correct step is to HOLD and resolve the open items first.'); }
+    m.release=s8;
+    fb('fb8', s8>=9 && state.s8dec==='hold', state.s8dec==='hold' ? 'Correct — <b>hold</b> the batch: resolve the missing QA signature, the missing CoA, close the deviation and the complaint investigation before any release, even though QC passes.' : (state.s8dec==='release' ? 'A batch with an <b>open deviation, missing CoA and incomplete BMR</b> must never be released — passing QC is not enough.' : 'Rejecting outright is premature: the correct action is to <b>hold</b> and resolve the open items, then decide.'));
+
+    /* documentation & dashboard credit */
+    var dv=document.querySelectorAll('.dv:checked').length;
+    m.docs=Math.min(10,Math.round(dv/17*10));      /* dashboard & graphs (10) */
+    m.diagram=Math.min(5,Math.round(dv/17*5));      /* workflow & QR (5) */
+    m.report=val('dvReflect').length>=40?5:(val('dvReflect').length>=15?3:0);  /* report quality (5) */
+
+    var total=m.bmr+m.materials+m.qc+m.capa+m.release+m.docs+m.diagram+m.report;
+    var pct=Math.round(total);
+    var pass=(pct>=60)&&!critical;
+    result={pct:pct,pass:pass,marks:m,critical:critical,notes:notes};
+
+    $('scScore').textContent=total+' / 100';
+    $('scRes').textContent=critical?'CRITICAL FAIL':(pass?'PASS':'FAIL');
+    fb('fbAll', pass, critical ? '<b>Critical failure.</b> '+notes.join(' ')+' In a real facility this is a reportable GMP breach.' : (pass ? '<b>Pass — '+pct+'%.</b> Documentation reviewed and the batch correctly held pending closure.' : '<b>Fail — '+pct+'%.</b> Review the feedback above and re-evaluate.'));
+    renderResult(); renderDash();
+  }
+  var eb=$('evalBtn'); if(eb) eb.addEventListener('click',evaluate);
+
+  function renderResult(){
+    var host=$('resultBox'); if(!host||!result) return; var m=result.marks;
+    var rows=[['BMR review',m.bmr,15],['Raw-material verification',m.materials,10],['In-process & QC documentation',m.qc,20],['Deviation & CAPA',m.capa,20],['Batch-release decision',m.release,15],['Dashboard & graphs',m.docs,10],['Workflow diagram & QR',m.diagram,5],['Report quality',m.report,5]];
+    host.innerHTML='<table><tr><th>Component</th><th style="text-align:right">Marks</th></tr>'+rows.map(function(r){return '<tr><td>'+r[0]+'</td><td style="text-align:right"><b>'+r[1]+'</b> / '+r[2]+'</td></tr>';}).join('')+'<tr><td><b>Total</b></td><td style="text-align:right"><b>'+result.pct+' / 100</b></td></tr></table>'+(result.critical?'<div class="alert"><b>Critical failure:</b> '+result.notes.join(' ')+'</div>':'<div class="muted" style="margin-top:8px">Result: <b>'+(result.pass?'PASS':'FAIL')+'</b> ('+result.pct+'%). Pass mark 60%.</div>');
+  }
+
+  var OPTS={module:'Module 4 · Quality & Safety Documentation',title:'Digital Quality & Safety Documentation in Pharmaceutical Manufacturing',programme:'Pharmacy AI'};
+  var mounted=false;
+  function mountWriter(){
+    var host=$('reportWriter'); if(!host) return; host.style.display='';
+    if(mounted||!window.AlizonPracticalReport) return; mounted=true;
+    AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Batch & release decision', placeholder:'e.g. Batch PCM-500-2607 — held pending QA signature, CoA and deviation closure'},
+      minWords:400,
+      autoResult:function(){ if(!result) return ''; var m=result.marks;
+        return 'GMP documentation review — Paracetamol 500 mg, batch PCM-500-2607. QC results in specification; open items: missing QA signature, missing magnesium-stearate CoA, open compression-speed deviation, breakage complaints under investigation. Decision: '+(state.s8dec==='hold'?'HOLD pending closure':(state.s8dec==='release'?'released':(state.s8dec==='reject'?'rejected':'not recorded')))+'. Marks — BMR '+m.bmr+'/15, materials '+m.materials+'/10, QC '+m.qc+'/20, deviation & CAPA '+m.capa+'/20, release '+m.release+'/15, dashboard '+m.docs+'/10, diagram & QR '+m.diagram+'/5, report '+m.report+'/5. Total '+result.pct+'/100 — '+(result.critical?'CRITICAL FAIL':(result.pass?'PASS':'FAIL'))+'.'; },
+      autoPct:function(){ return result?result.pct:null; },
+      autoResultText:function(){ return result?((result.critical?'CRITICAL FAIL':(result.pass?'PASS':'FAIL'))+' '+result.pct+'%'):''; }
+    });
+  }
+
+  paintChart(); paintQR(); renderDash();
+})();
+</script>
+</body>
+</html>

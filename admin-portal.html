@@ -351,6 +351,7 @@
     <a data-sec="adm-students"><span class="aic"></span> Students <b class="cnt" id="cntStud" style="background:var(--gold)"></b></a>
     <a data-sec="adm-results"><span class="aic"></span> Results</a>
     <a data-sec="adm-eval"><span class="aic">✔</span> Evaluation <b class="cnt" id="cntEval"></b></a>
+    <a data-sec="adm-resetmarks"><span class="aic">↺</span> Reset Practical Marks</a>
     <a data-sec="adm-exams"><span class="aic"></span> Exams <b class="cnt" id="cntExams" style="background:var(--gold)"></b></a>
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
     <a data-sec="adm-engage"><span class="aic"></span> Alerts &amp; Attendance <b class="cnt" id="cntEngage" style="background:var(--crimson)"></b></a>
@@ -533,6 +534,25 @@
     <h2>✔ Submissions &amp; Evaluation</h2>
     <div class="ahint">Grade student practicals &amp; self-assessments. Grades &amp; feedback reflect on the student portal.</div>
     <div class="clist" id="evalList"></div>
+  </section>
+
+  <section class="apanel asec" id="adm-resetmarks">
+    <h2>↺ Reset Practical Marks</h2>
+    <div class="ahint">Reset a student's practical results so they can attempt the practical again, or just clear a mark for re-evaluation. Changes sync to the student portal. <b>This cannot be undone.</b></div>
+    <div style="margin:16px 0 6px">
+      <label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Find a student</label>
+      <input id="rmSearch" placeholder="Registration number or name — e.g. ALZ102 or Gopika" style="width:100%;max-width:440px;font:inherit;padding:10px 13px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
+    </div>
+    <div id="rmList" style="margin-top:12px"></div>
+
+    <details style="margin-top:24px;border:1px solid rgba(196,38,46,.28);border-radius:12px;padding:0 14px;background:rgba(196,38,46,.04)">
+      <summary style="cursor:pointer;padding:13px 0;font-weight:700;color:var(--crimson)">⚠ Bulk reset — clear every student's practical marks</summary>
+      <div style="padding:0 0 16px">
+        <p class="ahint" style="margin:0 0 10px">Clears the marks on <b>every</b> practical submission across <b>all</b> students. The submissions stay but become ungraded so faculty can re-evaluate. Type <b>RESET</b> to enable.</p>
+        <input id="rmBulkConfirm" placeholder="Type RESET" style="width:180px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
+        <button id="rmBulkClear" disabled style="margin-left:8px;background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:10px 18px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;opacity:.5">Clear all practical marks</button>
+      </div>
+    </details>
   </section>
 
   <section class="apanel asec" id="adm-griev">
@@ -1705,7 +1725,7 @@ function dbResetAll(){ var inp=document.getElementById('dbReset'),note=document.
   setTimeout(function(){ location.reload(); },800); }
 function renderData(){ var b=document.getElementById('dbBackup'); if(b&&!b._w){b._w=1;b.addEventListener('click',dbBackup);} var r=document.getElementById('dbResetBtn'); if(r&&!r._w){r._w=1;r.addEventListener('click',dbResetAll);} }
 
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-resetmarks','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -2996,6 +3016,99 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   });
   var nav=document.querySelector('[data-sec="adm-media"]'); if(nav) nav.addEventListener('click',function(){ setTimeout(fill,60); });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fill); else fill();
+})();
+</script>
+
+<!-- ══════════ Reset Practical Marks ══════════ -->
+<script>
+(function(){
+  'use strict';
+  function subs(){ try{var a=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]');return Array.isArray(a)?a:[];}catch(e){return[];} }
+  function save(a){ try{ if(typeof setDB==='function') setDB('alizonSubmissions',a); else localStorage.setItem('alizonSubmissions',JSON.stringify(a)); }catch(e){} }
+  function log(t){ try{ if(typeof logAct==='function') logAct(t,'update'); }catch(e){} }
+  function refreshEval(){ try{ if(typeof renderEval==='function') renderEval(); }catch(e){} }
+  function note(m){ try{ if(typeof toast==='function') toast(m); }catch(e){} }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function isPractical(s){ return !!s && (s.type==='practical' || /practical/i.test(s.typeLabel||'')); }
+  /* remove the mark but keep the submission — reverts to its pre-grade state */
+  function ungrade(s){ delete s.mark; s.grade=''; s.feedback=''; delete s.evaluatedAt; s.status = s.ai ? 'ai-evaluated' : 'submitted'; }
+  var BTN_DEL='background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer';
+  var BTN_N ='background:var(--pill);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:6px 12px;font-size:12px;cursor:pointer';
+
+  var searchEl, listEl;
+  function render(){
+    listEl=document.getElementById('rmList'); searchEl=document.getElementById('rmSearch');
+    if(!listEl) return;
+    var q=(searchEl&&searchEl.value||'').trim().toLowerCase();
+    if(!q){ listEl.innerHTML='<div class="ahint">Enter a registration number or name to see that student’s practicals.</div>'; return; }
+    var all=subs().filter(function(s){ return isPractical(s) && ((String(s.reg||'').toLowerCase().indexOf(q)>=0)||(String(s.name||'').toLowerCase().indexOf(q)>=0)); });
+    if(!all.length){ listEl.innerHTML='<div class="ahint">No practical submissions found for “'+esc(q)+'”.</div>'; return; }
+    var by={}; all.forEach(function(s){ var k=String(s.reg||s.name||'—'); (by[k]=by[k]||[]).push(s); });
+    var html='';
+    Object.keys(by).forEach(function(k){
+      var arr=by[k], nm=arr[0].name||'';
+      html+='<div style="border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px">'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'
+        +'<b>'+esc(nm)+' <span style="color:var(--muted);font-weight:500">· '+esc(arr[0].reg||'')+'</span></b>'
+        +'<button data-rmall="'+esc(k)+'" style="'+BTN_DEL+'">Reset all '+arr.length+' mark'+(arr.length>1?'s':'')+'</button></div>'
+        +'<table style="width:100%;margin-top:10px;font-size:13px;border-collapse:collapse">'
+        +'<tr style="color:var(--muted);font-size:11px;text-transform:uppercase"><th align="left">Practical</th><th>Mark</th><th>Status</th><th></th></tr>';
+      arr.forEach(function(s){
+        var mk=(s.mark!=null? esc(s.mark)+'/100' : (s.ai&&s.ai.grade? esc(s.ai.grade)+' (AI)':'—'));
+        html+='<tr style="border-top:1px solid var(--line)"><td style="padding:7px 4px">'+esc(s.module||s.title||'Practical')+'</td>'
+          +'<td align="center">'+mk+'</td><td align="center">'+esc(s.status||'')+'</td>'
+          +'<td align="right" style="white-space:nowrap"><button data-rmclear="'+esc(s.id)+'" title="Keep the submission, clear the mark" style="'+BTN_N+'">Clear mark</button> '
+          +'<button data-rmdel="'+esc(s.id)+'" title="Delete so the student can redo the practical" style="'+BTN_DEL+'">Remove &amp; redo</button></td></tr>';
+      });
+      html+='</table></div>';
+    });
+    listEl.innerHTML=html;
+  }
+
+  document.addEventListener('click',function(e){
+    var t=e.target && e.target.closest ? e.target.closest('[data-rmclear],[data-rmdel],[data-rmall]') : null;
+    if(!t) return;
+    var all=subs();
+    if(t.getAttribute('data-rmclear')){
+      var id=t.getAttribute('data-rmclear'); var s=all.filter(function(x){return String(x.id)===id;})[0]; if(!s)return;
+      if(!confirm('Clear the mark for this practical?\n\nThe student’s submission stays, but it goes back to ungraded so it can be re-evaluated.'))return;
+      ungrade(s); save(all); log('Reset practical mark — '+(s.name||'student')+' · '+(s.module||'')); note('Mark cleared'); render(); refreshEval();
+    } else if(t.getAttribute('data-rmdel')){
+      var id2=t.getAttribute('data-rmdel'); var s2=all.filter(function(x){return String(x.id)===id2;})[0]; if(!s2)return;
+      if(!confirm('Remove this practical submission so '+(s2.name||'the student')+' can do it again?\n\nThis deletes their submitted work and their mark. It cannot be undone.'))return;
+      all=all.filter(function(x){return String(x.id)!==id2;}); save(all);
+      log('Removed practical for redo — '+(s2.name||'student')+' · '+(s2.module||'')); note('Removed — student can redo'); render(); refreshEval();
+    } else if(t.getAttribute('data-rmall')){
+      var key=t.getAttribute('data-rmall');
+      var theirs=all.filter(function(x){return isPractical(x)&&String(x.reg||x.name||'—')===key;});
+      if(!theirs.length)return;
+      if(!confirm('Reset (clear the marks on) all '+theirs.length+' practical'+(theirs.length>1?'s':'')+' for '+(theirs[0].name||'this student')+'?\n\nThe submissions stay but become ungraded.'))return;
+      theirs.forEach(ungrade); save(all); log('Reset all practical marks — '+(theirs[0].name||'student')); note('All marks cleared for this student'); render(); refreshEval();
+    }
+  });
+
+  function bindBulk(){
+    var conf=document.getElementById('rmBulkConfirm'), btn=document.getElementById('rmBulkClear');
+    if(!conf||!btn||btn.__b)return; btn.__b=1;
+    conf.addEventListener('input',function(){ var ok=conf.value.trim().toUpperCase()==='RESET'; btn.disabled=!ok; btn.style.opacity=ok?'1':'.5'; });
+    btn.addEventListener('click',function(){
+      if(conf.value.trim().toUpperCase()!=='RESET')return;
+      var all=subs(), n=0;
+      all.forEach(function(s){ if(isPractical(s)&&(s.mark!=null||s.status==='evaluated')){ ungrade(s); n++; } });
+      if(!confirm('Clear the marks on '+n+' practical submission'+(n===1?'':'s')+' across ALL students?\n\nThis cannot be undone.'))return;
+      save(all); conf.value=''; btn.disabled=true; btn.style.opacity='.5';
+      log('Bulk reset ALL practical marks ('+n+' submissions)'); note(n+' practical marks cleared'); render(); refreshEval();
+    });
+  }
+
+  function boot(){
+    searchEl=document.getElementById('rmSearch'); listEl=document.getElementById('rmList');
+    if(searchEl&&!searchEl.__b){ searchEl.__b=1; searchEl.addEventListener('input',render); }
+    bindBulk(); render();
+  }
+  window.renderResetMarks=boot;
+  var nav=document.querySelector('[data-sec="adm-resetmarks"]'); if(nav) nav.addEventListener('click',function(){ setTimeout(boot,40); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
 </script>
 </body>
