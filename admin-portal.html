@@ -2615,13 +2615,15 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   function seed(){
     var C=window.__alizonCMS; var form=document.getElementById('cmsForm');
     if(!C||!form||!form.querySelector('[data-cms-key]')){ setTimeout(seed,400); return; }
-    fetch('alizon-home.html').then(function(r){return r.text();}).then(function(html){
-      var doc=new DOMParser().parseFromString(html,'text/html');
+    function imgOf(el){ if(!el) return ''; if(el.tagName==='IMG') return el.getAttribute('src')||''; if(el.getAttribute && el.getAttribute('data-slides')) return el.getAttribute('data-slides'); return ''; }
+    var pages=['alizon-home.html','alizon-clone-home.html','alizon-os.html','os-practicals.html','alizon-allotment.html','alizon-results.html'];
+    Promise.all(pages.map(function(p){ return fetch(p).then(function(r){return r.text();}).catch(function(){return '';}); })).then(function(htmls){
+      var docs=htmls.map(function(h){ return new DOMParser().parseFromString(h,'text/html'); });
       var store={}; try{ store=JSON.parse(localStorage.getItem('alizonContent')||'{}')||{}; }catch(e){}
       C.fields.forEach(function(f){
         var ctl=form.querySelector('[data-cms-key="'+f.key+'"]'); if(!ctl) return;
-        var els=doc.querySelectorAll(f.sel); var el=els[f.idx||0];
-        var def=textOf(el, f.part);
+        var el=null; for(var d=0; d<docs.length && !el; d++){ el=docs[d].querySelectorAll(f.sel)[f.idx||0]||null; }
+        var def = el ? (f.type==='image' ? imgOf(el) : textOf(el, f.part)) : '';
         if(def){ ctl.placeholder=def; if(!ctl.value){ ctl.value=(typeof store[f.key]==='string'&&store[f.key].trim())?store[f.key]:def; } }
       });
     }).catch(function(){});

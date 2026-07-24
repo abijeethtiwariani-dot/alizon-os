@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow">
+<title>Career &amp; Skill Development — ALIZON OS | Alizon School of Medical &amp; Digital Intelligence</title>
+<meta name="description" content="ALIZON OS Career hub — build an ATS-friendly CV, browse job/internship/training vacancies, and register for mock interviews and skill-development sessions.">
+<link rel="stylesheet" href="alizon-clone.css?v=2">
+<script src="firebase-sync.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js" defer></script>
+<script src="alizon-clone.js?v=2" defer></script>
+<style>
+  .career-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:-20px auto 30px;max-width:var(--maxw)}
+  .career-tabs button{border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:600;font-family:var(--sans);
+    padding:9px 18px;border-radius:9999px;cursor:pointer;font-size:.95rem;transition:.18s}
+  .career-tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+  .cv-wrap{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+  .cv-form label{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
+  .cv-form input,.cv-form textarea,.cv-form select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px}
+  .cv-form textarea{min-height:70px;resize:vertical}
+  .cv-form .rowset{border:1px dashed var(--line);border-radius:10px;padding:12px;margin:8px 0}
+  .cv-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+  .mini{font-size:13px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600;font-family:var(--sans)}
+  .mini.pri{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+  /* CV preview + ATS templates */
+  #cvPaper{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow-lg);padding:40px 44px;color:#111;
+    font-family:'Source Sans Pro',Arial,sans-serif;font-size:13px;line-height:1.5;min-height:600px}
+  #cvPaper h1{font-family:'Source Serif Pro',Georgia,serif;font-size:26px;margin:0 0 2px}
+  #cvPaper .contact{color:#444;font-size:12.5px;margin-bottom:14px}
+  #cvPaper h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid #111;padding-bottom:3px;margin:18px 0 8px}
+  #cvPaper .item{margin-bottom:10px}
+  #cvPaper .item .r1{display:flex;justify-content:space-between;gap:10px;font-weight:700}
+  #cvPaper .item .r2{color:#555;font-style:italic;font-size:12.5px}
+  #cvPaper ul{margin:5px 0 0;padding-left:18px}
+  /* template: modern (cardinal accents) */
+  #cvPaper.tpl-modern h1{color:var(--crimson)}
+  #cvPaper.tpl-modern h2{color:var(--crimson);border-bottom-color:var(--crimson)}
+  /* template: minimal (thin, no rules) */
+  #cvPaper.tpl-minimal h2{border-bottom:none;color:#111;letter-spacing:.12em}
+  #cvPaper.tpl-minimal h1{font-family:'Source Sans Pro',Arial,sans-serif;font-weight:700}
+  /* vacancy + event cards */
+  .vac{display:flex;flex-direction:column;gap:6px}
+  .vac .badge{align-self:flex-start}
+  .vac .meta{color:var(--muted);font-size:.9rem}
+  .adminbar{background:#faf0f0;border:1px dashed rgba(177,4,14,.3);border-radius:12px;padding:20px 22px;margin-bottom:26px}
+  .adminbar h3{font-family:var(--serif);margin:0 0 4px}
+  .adminbar .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+  .adminbar input,.adminbar select,.adminbar textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px}
+  .upi-box{display:flex;gap:24px;align-items:center;flex-wrap:wrap;background:#faf9f7;border:1px solid var(--line);border-radius:12px;padding:22px}
+  .upi-box img{width:170px;height:170px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px}
+  .free-badge{display:inline-block;background:#eaf3ee;color:#1E8E5A;font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:100px}
+  @media(max-width:860px){.cv-wrap{grid-template-columns:1fr}}
+  /* print: only the CV paper */
+  @media print{
+    body *{visibility:hidden!important}
+    #cvPaper,#cvPaper *{visibility:visible!important}
+    #cvPaper{position:absolute;left:0;top:0;width:100%;border:none;box-shadow:none;padding:0}
+  }
+  .f{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13.5px;margin-bottom:2px}
+  .l{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 4px}
+  .two2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="azsitehdr">
+  <div class="azhdr-util"><div class="in">
+    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON&nbsp;OS<small>Practical Learning Platform</small></span></a>
+    <div class="util-r"><span class="lbl">Information for:</span>
+      <a href="ASMDI-dashboard.html">ALIZON OS Portal</a><a href="alizon-faculty-portal.html">Faculty &amp; Staff Login</a><a href="alizon-results.html">Results</a><a href="alizon-verify.html">Verify</a><a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
+    </div>
+    <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div></div>
+  <div class="azhdr-nav"><nav class="in">
+    <div class="navlinks2">
+      <a href="alizon-os.html">Overview</a><a href="os-practicals.html">Practicals</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a><a href="alizon-career.html" class="active">Career</a><a href="index.html">Institution</a>
+    </div>
+    <a class="btn btn-primary" style="padding:9px 20px;font-size:.95rem" href="ASMDI-dashboard.html">Enter Portal ↗</a>
+  </nav></div>
+  <div class="azhdr-tick"><span class="tag"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5a2 2 0 1 1 4 0 7 7 0 0 1 4 6v3a4 4 0 0 0 2 3H4a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg> Career</span><div class="track">Free CV builder for Alizon students<span class="sep">•</span>New internship &amp; training vacancies posted<span class="sep">•</span>Register for the next mock-interview session</div></div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero short" style="padding:0">
+  <img class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp" alt="Career development">
+  <div class="in">
+    <span class="eyebrow" style="color:#ffd7d9">ALIZON OS · Career</span>
+    <h1 style="margin-top:12px">Career &amp; Skill Development</h1>
+    <p class="sub">Build an ATS-friendly CV, discover jobs, internships and training, and register for mock interviews and career-boosting sessions — <b>free for Alizon students</b>.</p>
+    <div class="cta"><a class="btn btn-primary" href="alizon-cv.html">Build my CV</a><a class="btn btn-ghost" href="#vacancies">Browse vacancies</a></div>
+  </div>
+</section>
+<div class="explore">Free for Alizon students ▾</div>
+
+<main>
+<div class="career-tabs">
+  <button class="on" data-go="cv">CV Builder</button>
+  <button data-go="vacancies">Vacancies &amp; Internships</button>
+  <button data-go="sessions">Career Sessions</button>
+</div>
+
+<!-- ===== CV BUILDER ===== -->
+<section id="cv">
+  <div class="in">
+    <div class="section-head"><span class="eyebrow">CV Builder</span><h2>Build an ATS-ready CV</h2><p>A full builder with career-specific modules (Medical, Engineering, Management and more), 6 templates, live ATS match score, QR code and PDF/DOCX export — <b>free for Alizon students</b>.</p></div>
+    <div style="text-align:center"><a class="btn btn-primary" href="alizon-cv.html">Open the CV Builder →</a></div>
+  </div>
+</section>
+
+<!-- ===== VACANCIES ===== -->
+<section id="vacancies" style="background:#faf9f7">
+  <div class="in">
+    <div class="section-head"><span class="eyebrow">Opportunities</span><h2>Vacancies, Internships &amp; Training</h2><p>Openings shared by the Alizon placement cell. Apply directly through each posting.</p></div>
+    <div class="adminbar" id="admVac" style="display:none">
+      <h3>Admin — post a vacancy</h3>
+      <div style="margin:6px 0 12px;padding:12px;border:1px solid rgba(177,4,14,.2);border-radius:10px;background:#fff">
+        <b style="font-size:13px">Auto-post from a job document</b>
+        <div style="font-size:12px;color:var(--muted);margin:2px 0 8px">Upload a .docx in the Alizon job-posting format — the fields below fill in automatically. Review, then Publish.</div>
+        <input type="file" id="nvDoc" accept=".docx" onchange="parseDocx(this)"> <span id="nvDocMsg" style="font-size:12.5px;color:var(--crimson);font-weight:600"></span>
+      </div>
+      <div class="grid2" style="margin:10px 0">
+        <select id="nvType"><option>Placement Job</option><option>Internship</option><option>8th Sem Internship</option><option>Placement Drive</option><option>Training</option></select>
+        <input id="nvTitle" placeholder="Job title">
+        <input id="nvOrg" placeholder="Organisation (· hiring partner)">
+        <input id="nvLoc" placeholder="Location(s)">
+        <input id="nvStipend" placeholder="Stipend / Salary">
+        <input id="nvFee" placeholder="Application fee">
+        <input id="nvLink" placeholder="Apply link (https://…)">
+        <input id="nvDeadline" placeholder="Last date to apply">
+      </div>
+      <textarea id="nvDesc" placeholder="About / description" style="margin-bottom:10px"></textarea>
+      <button class="mini pri" onclick="addVacancy()">Publish vacancy</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px" id="vacFilters">
+      <button class="mini on" data-f="all">All</button><button class="mini" data-f="Placement Job">Placement Jobs</button><button class="mini" data-f="Internship">Internships</button><button class="mini" data-f="8th Sem Internship">8th Sem</button><button class="mini" data-f="Placement Drive">Placement Drives</button><button class="mini" data-f="Training">Training</button>
+    </div>
+    <div class="grid" id="vacList"></div>
+  </div>
+</section>
+
+<!-- ===== CAREER SESSIONS ===== -->
+<section id="sessions">
+  <div class="in">
+    <div class="section-head"><span class="eyebrow">Skill Development</span><h2>Mock Interviews &amp; Career Sessions</h2><p>Live sessions on interview skills, communication and career readiness. <span class="free-badge">Free for Alizon students</span> &nbsp;Outsiders may join for a small fee.</p></div>
+    <div class="adminbar" id="admEvt" style="display:none">
+      <h3>Admin — publish a session</h3>
+      <div class="grid2" style="margin:10px 0">
+        <input id="neTitle" placeholder="Session title">
+        <input id="neDate" placeholder="Date &amp; time (e.g. 20 Aug 2026, 4 PM)">
+        <input id="neMode" placeholder="Mode (Online / Campus)">
+        <input id="neReg" placeholder="Registration link (https://…)">
+        <input id="neFee" placeholder="Outsider fee (e.g. 199)">
+      </div>
+      <textarea id="neDesc" placeholder="What the session covers" style="margin-bottom:10px"></textarea>
+      <button class="mini pri" onclick="addEvent()">Publish session</button>
+    </div>
+    <div class="grid" id="evtList"></div>
+
+    <div style="margin-top:40px">
+      <div class="section-head" style="margin-bottom:20px"><span class="eyebrow">For outside participants</span><h2 style="font-size:clamp(1.5rem,3vw,2rem)">Payment</h2><p>Alizon students attend free. Outside participants pay the session fee via UPI and share the transaction ID when registering.</p></div>
+      <div class="upi-box">
+        <img id="upiQr" src="" alt="UPI QR code" onerror="this.style.display='none'">
+        <div>
+          <div style="font-weight:700;font-size:1.1rem" id="upiName">Alizon School of Medical &amp; Digital Intelligence</div>
+          <div style="color:var(--muted);margin:4px 0">UPI ID: <b id="upiId">—</b></div>
+          <div style="color:var(--muted)">Fee (outsiders): <b id="upiFee">—</b></div>
+          <p style="font-size:13px;color:var(--muted);max-width:44ch;margin-top:10px">Scan the QR or pay to the UPI ID above, then enter your UPI transaction reference in the session registration form.</p>
+        </div>
+      </div>
+      <div class="adminbar" id="admPay" style="display:none;margin-top:20px">
+        <h3>Admin — payment settings</h3>
+        <div class="grid2" style="margin:10px 0">
+          <input id="pyId" placeholder="UPI ID (e.g. alizon@okhdfc)">
+          <input id="pyFee" placeholder="Default outsider fee (e.g. ₹199)">
+          <input id="pyQr" placeholder="UPI QR image URL">
+        </div>
+        <button class="mini pri" onclick="savePay()">Save payment settings</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site">
+  <div class="in">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:14px"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON OS<small style="color:#bdbdbd">Practical Learning Platform</small></span></a>
+        <p style="color:#bdbdbd;max-width:34ch">Career &amp; skill development for Alizon students — CV building, vacancies and readiness sessions.</p>
+      </div>
+      <div><h4>Career</h4><a href="#cv">CV Builder</a><a href="#vacancies">Vacancies</a><a href="#sessions">Sessions</a></div>
+      <div><h4>Platform</h4><a href="os-practicals.html">Practicals</a><a href="alizon-results.html">Results</a><a href="ASMDI-dashboard.html">ALIZON OS Portal</a></div>
+      <div><h4>Institution</h4><a href="https://alizongov.com" target="_blank" rel="noopener">Official Website ↗</a><a href="index.html">Home</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Alizon School of Medical &amp; Digital Intelligence</span><span>alizongov.com · alizon.in</span></div>
+  </div>
+</footer>
+
+<script>
+/* ---------- helpers ---------- */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function getJSON(k,def){try{var v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
+function setJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+var params=new URLSearchParams(location.search);
+var isAdmin=(sessionStorage.getItem('alizonAdminAuth')==='1')||!!params.get('admin');
+
+/* ---------- tabs (smooth scroll to section) ---------- */
+document.querySelectorAll('.career-tabs button').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.career-tabs button').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on');
+    var el=$(b.getAttribute('data-go')); if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+
+/* ================= CV BUILDER ================= */
+function rowTpl(kind){
+  if(kind==='edu') return '<div class="rowset"><input placeholder="Qualification / Course" data-k="deg"><input placeholder="Institution" data-k="inst" style="margin-top:6px"><input placeholder="Year (e.g. 2024–2026)" data-k="yr" style="margin-top:6px"><button class="mini" type="button" style="margin-top:6px" onclick="this.parentNode.remove();renderCV()">Remove</button></div>';
+  return '<div class="rowset"><input placeholder="Role / Title" data-k="role"><input placeholder="Organisation" data-k="org" style="margin-top:6px"><input placeholder="Duration (e.g. Jun–Aug 2025)" data-k="dur" style="margin-top:6px"><textarea placeholder="Key points (one per line)" data-k="pts" style="margin-top:6px"></textarea><button class="mini" type="button" style="margin-top:6px" onclick="this.parentNode.remove();renderCV()">Remove</button></div>';
+}
+function addRow(kind,data){
+  var host=$(kind==='edu'?'cvEdu':'cvExp'); var d=document.createElement('div'); d.innerHTML=rowTpl(kind); var node=d.firstChild; host.appendChild(node);
+  if(data){ node.querySelectorAll('[data-k]').forEach(function(i){ if(data[i.getAttribute('data-k')]!=null) i.value=data[i.getAttribute('data-k')]; }); }
+  node.querySelectorAll('input,textarea').forEach(function(i){i.addEventListener('input',renderCV);});
+  renderCV();
+}
+function collectRows(kind){
+  var host=$(kind==='edu'?'cvEdu':'cvExp'); var out=[];
+  host.querySelectorAll('.rowset').forEach(function(r){var o={};r.querySelectorAll('[data-k]').forEach(function(i){o[i.getAttribute('data-k')]=i.value;});out.push(o);});
+  return out;
+}
+function renderCV(){
+  $('cvPaper').className=$('cvTpl').value;
+  $('pvName').textContent=$('cvName').value||'Your Name';
+  $('pvRole').textContent=$('cvRole').value||'';
+  $('pvContact').textContent=$('cvContact').value||'';
+  var sum=$('cvSummary').value.trim();
+  $('pvSummaryWrap').style.display=sum?'':'none'; $('pvSummary').textContent=sum;
+  /* education */
+  var edu=collectRows('edu').filter(function(e){return e.deg||e.inst;});
+  $('pvEduWrap').innerHTML = edu.length? '<h2>Education</h2>'+edu.map(function(e){return '<div class="item"><div class="r1"><span>'+esc(e.deg)+'</span><span>'+esc(e.yr)+'</span></div><div class="r2">'+esc(e.inst)+'</div></div>';}).join(''):'';
+  /* experience */
+  var exp=collectRows('exp').filter(function(e){return e.role||e.org;});
+  $('pvExpWrap').innerHTML = exp.length? '<h2>Experience &amp; Internships</h2>'+exp.map(function(e){var pts=(e.pts||'').split('\n').filter(function(x){return x.trim();});return '<div class="item"><div class="r1"><span>'+esc(e.role)+'</span><span>'+esc(e.dur)+'</span></div><div class="r2">'+esc(e.org)+'</div>'+(pts.length?'<ul>'+pts.map(function(p){return '<li>'+esc(p)+'</li>';}).join('')+'</ul>':'')+'</div>';}).join(''):'';
+  /* skills */
+  var sk=$('cvSkills').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  $('pvSkillsWrap').innerHTML = sk.length? '<h2>Skills</h2><div>'+sk.map(esc).join(' &nbsp;·&nbsp; ')+'</div>':'';
+  /* certs */
+  var ce=$('cvCerts').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  $('pvCertsWrap').innerHTML = ce.length? '<h2>Certifications &amp; Projects</h2><ul>'+ce.map(function(c){return '<li>'+esc(c)+'</li>';}).join('')+'</ul>':'';
+}
+['cvTpl','cvName','cvRole','cvContact','cvSummary','cvSkills','cvCerts'].forEach(function(id){var el=$(id);if(el)el.addEventListener('input',renderCV);});
+function saveCV(){setJSON('alizonCV',{tpl:$('cvTpl').value,name:$('cvName').value,role:$('cvRole').value,contact:$('cvContact').value,summary:$('cvSummary').value,skills:$('cvSkills').value,certs:$('cvCerts').value,edu:collectRows('edu'),exp:collectRows('exp')});alert('Draft saved in this browser.');}
+function loadCV(alertIt){var d=getJSON('alizonCV',null);if(!d){if(alertIt)alert('No saved draft found.');return;}
+  $('cvTpl').value=d.tpl||'tpl-classic';$('cvName').value=d.name||'';$('cvRole').value=d.role||'';$('cvContact').value=d.contact||'';$('cvSummary').value=d.summary||'';$('cvSkills').value=d.skills||'';$('cvCerts').value=d.certs||'';
+  $('cvEdu').innerHTML='';$('cvExp').innerHTML='';(d.edu||[]).forEach(function(e){addRow('edu',e);});(d.exp||[]).forEach(function(e){addRow('exp',e);});renderCV();}
+function clearCV(){if(!confirm('Clear all fields?'))return;['cvName','cvRole','cvContact','cvSummary','cvSkills','cvCerts'].forEach(function(id){$(id).value='';});$('cvEdu').innerHTML='';$('cvExp').innerHTML='';renderCV();}
+function downloadCV(){renderCV();window.print();}
+
+/* ================= VACANCIES ================= */
+var DEF_VAC=[
+ {type:'Internship',title:'Graduate Civil Apprentice Internship',org:'KSRRDA · ASAP Kerala',loc:'Idukki, Palakkad, Kasaragod, Wayanad',stipend:'₹10,000/month',fee:'₹500',link:'#',deadline:'25-07-2026',vacancies:'4',workMode:'On-site',duration:'1 Year',qualification:'B.Tech (Civil Engineering)',spec:'Civil Engineering',desc:'One-year Graduate Apprenticeship in civil infrastructure for B.Tech Civil graduates via ASAP Kerala.'},
+ {type:'Placement Job',title:'Pharmacy Assistant (AI-enabled)',org:'MediCare Hospitals',loc:'Thiruvananthapuram',link:'#',deadline:'30 Aug 2026',desc:'Digital dispensing and inventory using AI tools.'},
+ {type:'8th Sem Internship',title:'Data Science 8th-Sem Internship',org:'HealthTech Kerala',loc:'Kochi',stipend:'₹8,000/month',link:'#',deadline:'15 Aug 2026',desc:'Final-semester internship for pre-final / final year students.'}
+];
+var vacFilter='all', pendingVac=null;
+function vacCard(v,i){
+  var meta=[v.org,v.loc].filter(Boolean).join(' · ');
+  var sub=[v.stipend?('Stipend: '+v.stipend):'',v.deadline?('Last date: '+v.deadline):''].filter(Boolean).join(' · ');
+  return '<div class="card"><div class="body vac"><span class="badge">'+esc(v.type)+'</span><h3>'+esc(v.title)+'</h3><div class="meta">'+esc(meta)+'</div><p>'+esc((v.desc||'').slice(0,150))+((v.desc||'').length>150?'…':'')+'</p>'+(sub?'<div class="meta">'+esc(sub)+'</div>':'')+'<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:8px"><a class="more" style="cursor:pointer" onclick="viewVac('+i+')">View details →</a>'+(v.link&&/^https?:/i.test(v.link)?'<a class="more" href="'+esc(v.link)+'" target="_blank" rel="noopener">Apply →</a>':'')+(isAdmin?'<a class="more" style="cursor:pointer;color:#a32d2d" onclick="delVac('+i+')">Delete</a>':'')+'</div></div></div>';
+}
+function renderVac(){
+  var list=getJSON('alizonVacancies',DEF_VAC), host=$('vacList'), html='', shown=0;
+  list.forEach(function(v,i){ if(vacFilter==='all'||v.type===vacFilter){ html+=vacCard(v,i); shown++; } });
+  host.innerHTML = shown? html : '<p style="color:var(--muted)">No openings in this category right now.</p>';
+}
+function addVacancy(){var list=getJSON('alizonVacancies',DEF_VAC.slice());
+  var v={type:$('nvType').value,title:$('nvTitle').value,org:$('nvOrg').value,loc:$('nvLoc').value,stipend:$('nvStipend').value,fee:$('nvFee').value,link:$('nvLink').value,deadline:$('nvDeadline').value,desc:$('nvDesc').value};
+  if(pendingVac){v.qualification=pendingVac.qualification;v.spec=pendingVac.spec;v.vacancies=pendingVac.vacancies;v.workMode=pendingVac.workMode;v.duration=pendingVac.duration;v.full=pendingVac.full;}
+  if(!v.title){alert('Add a job title first.');return;}
+  list.unshift(v);setJSON('alizonVacancies',list);
+  ['nvTitle','nvOrg','nvLoc','nvStipend','nvFee','nvLink','nvDeadline','nvDesc'].forEach(function(id){$(id).value='';});
+  $('nvDocMsg').textContent='';pendingVac=null;renderVac();}
+function delVac(i){if(!confirm('Delete this vacancy?'))return;var list=getJSON('alizonVacancies',DEF_VAC.slice());list.splice(i,1);setJSON('alizonVacancies',list);renderVac();}
+function viewVac(i){var list=getJSON('alizonVacancies',DEF_VAC),v=list[i];if(!v)return;
+  var rows=[['Type',v.type],['Organisation',v.org],['Location(s)',v.loc],['Vacancies',v.vacancies],['Stipend / Salary',v.stipend],['Application fee',v.fee],['Duration',v.duration],['Work mode',v.workMode],['Qualification',v.qualification],['Specialization',v.spec],['Last date to apply',v.deadline]];
+  var h='<span class="badge">'+esc(v.type)+'</span><h2 style="margin:8px 0 4px;font-family:var(--serif)">'+esc(v.title)+'</h2>';
+  h+='<table style="width:100%;font-size:13.5px;border-collapse:collapse;margin-top:8px">'+rows.filter(function(r){return r[1];}).map(function(r){return '<tr><td style="padding:5px 12px 5px 0;color:var(--muted);white-space:nowrap;vertical-align:top">'+esc(r[0])+'</td><td style="padding:5px 0">'+esc(r[1])+'</td></tr>';}).join('')+'</table>';
+  if(v.desc)h+='<h3 style="margin:16px 0 6px;font-family:var(--serif)">About</h3><p style="font-size:13.5px;line-height:1.6">'+esc(v.desc)+'</p>';
+  if(v.full)h+='<details style="margin-top:12px"><summary style="cursor:pointer;font-weight:600;color:var(--crimson)">Full posting</summary><pre style="white-space:pre-wrap;font:inherit;font-size:12.5px;color:#333;margin-top:8px">'+esc(v.full)+'</pre></details>';
+  if(v.link&&/^https?:/i.test(v.link))h+='<div style="margin-top:18px"><a class="btn btn-primary" href="'+esc(v.link)+'" target="_blank" rel="noopener">Apply now →</a></div>';
+  $('vacModalBody').innerHTML=h;$('vacModal').style.display='';}
+function closeVac(){$('vacModal').style.display='none';}
+function deriveType(s){s=(s||'').toLowerCase();
+  if(/8th\s*sem|8th\s*semester|final\s*sem|pre-?final/.test(s))return '8th Sem Internship';
+  if(/placement\s*drive|recruitment\s*drive|\bdrive\b/.test(s))return 'Placement Drive';
+  if(/intern|apprentice|trainee/.test(s))return 'Internship';
+  if(/training|bootcamp/.test(s))return 'Training';
+  return 'Placement Job';}
+function parseJobText(t){t=t.replace(/\r/g,'');
+  var L=['Job Title','Organization','Organisation','Hiring Partner','Department','Job Role','Employment Type','Industry','Duration','Number of Vacancies','Stipend / Salary','Stipend/Salary','Salary','Application Fee','Registration Fee','Work Mode','Location\\(s\\)','Work Locations','Experience Required','Qualification','Eligible Courses','Eligible Specializations','Application Start Date','Last Date to Apply','Expected Joining Date','Job Category','Application Status','Official Website','Application Link','Email','Phone','Website'];
+  var alt=L.join('|'),norm=t.replace(new RegExp('\\s*('+alt+')\\s*:','g'),'\n$1:'),map={};
+  norm.split('\n').forEach(function(ln){var m=ln.match(new RegExp('^('+alt+')\\s*:\\s*(.*)$'));if(m)map[m[1]]=(m[2]||'').trim();});
+  var about='',am=t.match(/About the Opportunity\s*([\s\S]*?)(Vacancy Details|Eligibility Criteria|Key Responsibilities|$)/i);if(am)about=am[1].replace(/\s+/g,' ').trim();
+  return {map:map,about:about,full:t};}
+function parseDocx(input){var f=input.files[0];if(!f)return;var msg=$('nvDocMsg');msg.textContent='Reading…';
+  var r=new FileReader();r.onload=function(){
+    if(!window.mammoth){msg.textContent='Parser still loading — try again in a second.';return;}
+    mammoth.extractRawText({arrayBuffer:r.result}).then(function(res){
+      var p=parseJobText(res.value),m=p.map,title=m['Job Title']||'';
+      $('nvType').value=deriveType((m['Job Category']||'')+' '+(m['Employment Type']||'')+' '+title);
+      $('nvTitle').value=title;
+      $('nvOrg').value=(m['Organization']||m['Organisation']||'')+(m['Hiring Partner']?' · '+m['Hiring Partner']:'');
+      $('nvLoc').value=m['Location(s)']||m['Work Locations']||'';
+      $('nvStipend').value=m['Stipend / Salary']||m['Stipend/Salary']||m['Salary']||'';
+      $('nvFee').value=m['Application Fee']||m['Registration Fee']||'';
+      var link=m['Application Link']||m['Official Website']||'';$('nvLink').value=/^https?:/i.test(link)?link:'';
+      $('nvDeadline').value=m['Last Date to Apply']||'';
+      $('nvDesc').value=p.about||'';
+      pendingVac={qualification:m['Qualification']||'',spec:m['Eligible Specializations']||m['Eligible Courses']||'',vacancies:m['Number of Vacancies']||'',workMode:m['Work Mode']||'',duration:m['Duration']||'',full:p.full};
+      msg.textContent='✓ Parsed — review the fields, then click Publish vacancy.';
+    }).catch(function(){msg.textContent='Could not read this .docx file.';});
+  };r.readAsArrayBuffer(f);}
+document.querySelectorAll('#vacFilters [data-f]').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('#vacFilters [data-f]').forEach(function(x){x.classList.remove('on');});b.classList.add('on');vacFilter=b.getAttribute('data-f');renderVac();});});
+
+/* ================= EVENTS ================= */
+var DEF_EVT=[
+ {title:'Mock Interview Marathon',date:'20 Aug 2026, 4:00 PM',mode:'Online',reg:'#',fee:'199',desc:'One-on-one mock interviews with feedback from industry mentors.'},
+ {title:'Resume & LinkedIn Workshop',date:'27 Aug 2026, 3:00 PM',mode:'Campus',reg:'#',fee:'149',desc:'Make your CV and profile recruiter-ready.'}
+];
+function renderEvt(){
+  var list=getJSON('alizonCareerEvents',DEF_EVT); var host=$('evtList');
+  host.innerHTML = list.length? list.map(function(e,i){return '<div class="card"><div class="body vac"><span class="badge">Session</span><h3>'+esc(e.title)+'</h3><div class="meta">'+esc(e.date)+' · '+esc(e.mode)+'</div><p>'+esc(e.desc)+'</p><div class="meta"><span class="free-badge">Students free</span> &nbsp; Outsiders: ₹'+esc(e.fee||'—')+'</div><a class="more" style="cursor:pointer" onclick="regEvent('+i+')">Register →</a>'+(isAdmin?' <button class="mini" style="margin-top:8px" onclick="delEvt('+i+')">Delete</button>':'')+'</div></div>';}).join('') : '<p style="color:var(--muted)">No upcoming sessions announced yet.</p>';
+}
+function addEvent(){var list=getJSON('alizonCareerEvents',DEF_EVT.slice());list.unshift({title:$('neTitle').value,date:$('neDate').value,mode:$('neMode').value,reg:$('neReg').value,fee:$('neFee').value,desc:$('neDesc').value});setJSON('alizonCareerEvents',list);['neTitle','neDate','neMode','neReg','neFee','neDesc'].forEach(function(id){$(id).value='';});renderEvt();}
+function delEvt(i){var list=getJSON('alizonCareerEvents',DEF_EVT.slice());list.splice(i,1);setJSON('alizonCareerEvents',list);renderEvt();}
+
+/* ================= PAYMENT (UPI) ================= */
+function renderPay(){
+  var p=getJSON('alizonCareerPay',{id:'alizon@upi',fee:'₹199',qr:''});
+  $('upiId').textContent=p.id||'—'; $('upiFee').textContent=p.fee||'—';
+  if(p.qr){$('upiQr').src=p.qr;$('upiQr').style.display='';}else{$('upiQr').style.display='none';}
+  if(isAdmin){$('pyId').value=p.id||'';$('pyFee').value=p.fee||'';$('pyQr').value=p.qr||'';}
+}
+function savePay(){setJSON('alizonCareerPay',{id:$('pyId').value,fee:$('pyFee').value,qr:$('pyQr').value});renderPay();alert('Payment settings saved.');}
+
+/* ================= SESSION REGISTRATION ================= */
+var pendingReg=null;
+function regEvent(i){var list=getJSON('alizonCareerEvents',DEF_EVT),e=list[i];if(!e)return;
+  var pay=getJSON('alizonCareerPay',{id:'alizon@upi',fee:'₹199',qr:''});
+  var fee=e.fee?('₹'+e.fee):(pay.fee||'₹199');
+  $('regBody').innerHTML='<h2 style="font-family:var(--serif);margin:0 0 4px">Register — '+esc(e.title)+'</h2>'+
+    '<div style="color:var(--muted);font-size:13px;margin-bottom:12px">'+esc(e.date)+' · '+esc(e.mode)+'</div>'+
+    '<label class="l">Full name *</label><input class="f" id="rgName">'+
+    '<div class="two2"><div><label class="l">Email *</label><input class="f" id="rgEmail"></div><div><label class="l">Phone *</label><input class="f" id="rgPhone"></div></div>'+
+    '<label class="l">Are you an Alizon student? *</label><select class="f" id="rgWho" onchange="regWho()"><option value="">— select —</option><option value="student">Yes — Alizon student (free)</option><option value="outside">No — outside participant ('+esc(fee)+')</option></select>'+
+    '<div id="rgExtra"></div>'+
+    '<div id="rgAction" style="margin-top:14px"><button class="mini pri" onclick="submitReg('+i+')">Continue</button></div>'+
+    '<div id="rgPay" style="display:none;margin-top:16px"></div>';
+  $('regModal').style.display='';}
+function regWho(){var w=$('rgWho').value;
+  $('rgExtra').innerHTML = w==='student' ? '<label class="l">Registration / Roll number *</label><input class="f" id="rgReg"><label class="l">Batch / Course</label><input class="f" id="rgBatch">'
+    : w==='outside' ? '<label class="l">College / Organisation *</label><input class="f" id="rgOrg"><label class="l">City</label><input class="f" id="rgCity">' : '';}
+function submitReg(i){
+  var name=$('rgName').value.trim(),email=$('rgEmail').value.trim(),phone=$('rgPhone').value.trim(),who=$('rgWho').value;
+  if(!name||!email||!phone||!who){alert('Please fill name, email, phone and student status.');return;}
+  var list=getJSON('alizonCareerEvents',DEF_EVT),e=list[i]||{};
+  var reg={session:e.title||'',date:e.date||'',name:name,email:email,phone:phone,type:who};
+  if(who==='student'){
+    reg.regno=($('rgReg')||{}).value||'';reg.batch=($('rgBatch')||{}).value||'';
+    if(!reg.regno){alert('Enter your registration number.');return;}
+    reg.fee='Free';reg.paid=true;saveReg(reg);
+    $('rgAction').style.display='none';$('rgPay').style.display='';
+    $('rgPay').innerHTML='<div class="free-badge" style="font-size:1rem">✓ Registered — free for Alizon students</div><p style="font-size:13px;color:var(--muted);margin-top:8px">You are confirmed for '+esc(e.title)+'. Details will be sent to your email/phone.</p>';
+  } else {
+    reg.org=($('rgOrg')||{}).value||'';reg.city=($('rgCity')||{}).value||'';
+    if(!reg.org){alert('Enter your college / organisation.');return;}
+    var pay=getJSON('alizonCareerPay',{id:'alizon@upi',fee:'₹199',qr:''});
+    reg.fee=e.fee?('₹'+e.fee):(pay.fee||'₹199');reg.paid=false;pendingReg=reg;
+    $('rgAction').style.display='none';$('rgPay').style.display='';
+    $('rgPay').innerHTML='<h3 style="font-family:var(--serif);margin:0 0 4px">Payment — '+esc(reg.fee)+'</h3>'+
+      '<p style="font-size:13px;color:var(--muted)">Scan the QR or pay to the UPI ID, then enter the transaction reference to confirm.</p>'+
+      (pay.qr?'<img src="'+esc(pay.qr)+'" alt="UPI QR" style="width:180px;height:180px;object-fit:contain;border:1px solid var(--line);border-radius:10px;padding:6px;margin:10px 0;background:#fff">':'<p style="color:var(--crimson);font-size:13px">Payment QR will be added by the office.</p>')+
+      '<div style="font-size:14px">UPI ID: <b>'+esc(pay.id||'—')+'</b></div>'+
+      '<label class="l">UPI transaction reference *</label><input class="f" id="rgTxn" placeholder="e.g. 4321XXXXXX">'+
+      '<button class="mini pri" style="margin-top:10px" onclick="confirmPay()">I have paid — confirm registration</button>';
+  }
+}
+function confirmPay(){var txn=($('rgTxn')||{}).value||'';if(!txn.trim()){alert('Enter your UPI transaction reference.');return;}
+  pendingReg.txn=txn.trim();pendingReg.paid=true;saveReg(pendingReg);
+  $('rgPay').innerHTML='<div class="free-badge" style="font-size:1rem">✓ Registration submitted</div><p style="font-size:13px;color:var(--muted);margin-top:8px">Thank you. We will verify your payment (ref '+esc(txn)+') and email your confirmation.</p>';pendingReg=null;}
+function saveReg(reg){try{reg.ts=new Date().toISOString();}catch(e){}var all=getJSON('alizonCareerRegs',[]);all.push(reg);setJSON('alizonCareerRegs',all);}
+function closeReg(){$('regModal').style.display='none';}
+
+/* ================= BOOT ================= */
+(function(){
+  if(isAdmin){['admVac','admEvt','admPay'].forEach(function(id){var e=$(id);if(e)e.style.display='';});}
+  addRow('edu');addRow('exp');loadCV(false);renderCV();
+  renderVac();renderEvt();renderPay();
+  /* live cross-device refresh */
+  window.addEventListener('storage',function(e){if(!e)return;if(e.key==='alizonVacancies')renderVac();if(e.key==='alizonCareerEvents')renderEvt();if(e.key==='alizonCareerPay')renderPay();});
+})();
+</script>
+<div id="vacModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);overflow:auto;padding:40px 16px">
+  <div style="max-width:760px;margin:0 auto;background:#fff;border-radius:14px;padding:30px 34px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.4)">
+    <button onclick="closeVac()" aria-label="Close" style="position:absolute;top:14px;right:16px;border:0;background:none;font-size:22px;cursor:pointer;color:#666">✕</button>
+    <div id="vacModalBody"></div>
+  </div>
+</div>
+<div id="regModal" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,.55);overflow:auto;padding:40px 16px">
+  <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:14px;padding:28px 30px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.4)">
+    <button onclick="closeReg()" aria-label="Close" style="position:absolute;top:12px;right:14px;border:0;background:none;font-size:22px;cursor:pointer;color:#666">✕</button>
+    <div id="regBody"></div>
+  </div>
+</div>
+</body>
+</html>

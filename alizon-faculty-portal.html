@@ -366,8 +366,18 @@ function faculty(){ try{const a=JSON.parse(localStorage.getItem('alizonFaculty')
     let who=null;
     if(id.toLowerCase()==='admin' && pw==='admin123') who={name:'Administrator',email:'admin',master:true};
     else{
-      const f=faculty().find(x=>String(x.email||'').toLowerCase()===id.toLowerCase()||String(x.name||'').toLowerCase()===id.toLowerCase());
-      if(f && (pw===f.email || pw==='faculty123')) who={name:f.name,email:f.email,dept:f.dept};
+      /* 1) admin-created staff/faculty accounts (Admin → Staff & Faculty): login ID / email + the password set by admin */
+      var emp=null;
+      try{ var hr=JSON.parse(localStorage.getItem('alizonHR')||'{}'); var EMP=Array.isArray(hr.EMP)?hr.EMP:[];
+        emp=EMP.find(function(x){ return x && x.status!=='left' && [x.empid,x.email,x.name].some(function(v){ return v && String(v).toLowerCase()===id.toLowerCase(); }); });
+      }catch(e){}
+      if(emp && emp.password && pw===String(emp.password)){
+        who={name:emp.name,email:emp.email||emp.empid,dept:emp.dept||'',empid:emp.empid,access:emp.access||{}};
+      } else {
+        /* 2) legacy faculty roster fallback */
+        const f=faculty().find(x=>String(x.email||'').toLowerCase()===id.toLowerCase()||String(x.name||'').toLowerCase()===id.toLowerCase());
+        if(f && (pw===f.email || pw===f.password || pw==='faculty123')) who={name:f.name,email:f.email,dept:f.dept};
+      }
     }
     if(!who){ $('gf-err').classList.add('show'); return; }
     try{ if(window.alizonAuth) window.alizonAuth.signIn(who.master?'admin':id, pw, who.master?'admin':'faculty'); }catch(x){}

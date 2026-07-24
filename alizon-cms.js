@@ -162,7 +162,50 @@
     { key: 'acad-b6-t', label: 'Benefit 6 — title', sel:'#acB6T', idx:0, area:'Academics — Benefits' },
     { key: 'acad-b6-d', label: 'Benefit 6 — text',  sel:'#acB6D', idx:0, area:'Academics — Benefits', multiline:true },
 
-    { key: 'acad-cta-h', label: 'Closing CTA — heading', sel:'#acCtaH', idx:0, area:'Academics — Closing CTA', def:'Start your journey with Alizon' }
+    { key: 'acad-cta-h', label: 'Closing CTA — heading', sel:'#acCtaH', idx:0, area:'Academics — Closing CTA', def:'Start your journey with Alizon' },
+
+    /* ============ CLONE HOME PAGE (alizon-clone-home.html) ============ */
+    { key:'ch-hero-h1',  label:'Hero — headline',            sel:'#ch-hero-h1',  idx:0, area:'Home — Hero' },
+    { key:'ch-hero-sub', label:'Hero — subtitle',            sel:'#ch-hero-sub', idx:0, area:'Home — Hero', multiline:true },
+    { key:'ch-hero-b1',  label:'Hero — button 1 text',       sel:'#ch-hero-b1',  idx:0, area:'Home — Hero' },
+    { key:'ch-hero-b2',  label:'Hero — button 2 text',       sel:'#ch-hero-b2',  idx:0, area:'Home — Hero' },
+    { key:'ch-hero-img', label:'Hero — image URLs (pipe | separated for carousel)', sel:'#ch-hero', idx:0, area:'Home — Hero', type:'image', multiline:true },
+
+    { key:'ch-ab-ey',  label:'About — eyebrow',   sel:'#ch-ab-ey',  idx:0, area:'Home — About' },
+    { key:'ch-ab-h',   label:'About — heading',   sel:'#ch-ab-h',   idx:0, area:'Home — About' },
+    { key:'ch-ab-p1',  label:'About — paragraph 1',sel:'#ch-ab-p1', idx:0, area:'Home — About', multiline:true },
+    { key:'ch-ab-p2',  label:'About — paragraph 2',sel:'#ch-ab-p2', idx:0, area:'Home — About', multiline:true },
+    { key:'ch-ab-img', label:'About — image URL', sel:'#ch-ab-img', idx:0, area:'Home — About', type:'image' },
+
+    { key:'ch-pr-h',   label:'Programs — heading',  sel:'#ch-pr-h',   idx:0, area:'Home — Programs' },
+    { key:'ch-pr-sub', label:'Programs — subtitle', sel:'#ch-pr-sub', idx:0, area:'Home — Programs', multiline:true },
+    { key:'ch-pr1-t',  label:'Program 1 — title',   sel:'#ch-pr1-t',  idx:0, area:'Home — Programs' },
+    { key:'ch-pr1-img',label:'Program 1 — image URL',sel:'#ch-pr1-img',idx:0, area:'Home — Programs', type:'image' },
+    { key:'ch-pr2-t',  label:'Program 2 — title',   sel:'#ch-pr2-t',  idx:0, area:'Home — Programs' },
+    { key:'ch-pr2-img',label:'Program 2 — image URL',sel:'#ch-pr2-img',idx:0, area:'Home — Programs', type:'image' },
+    { key:'ch-pr3-t',  label:'Program 3 — title',   sel:'#ch-pr3-t',  idx:0, area:'Home — Programs' },
+    { key:'ch-pr3-img',label:'Program 3 — image URL',sel:'#ch-pr3-img',idx:0, area:'Home — Programs', type:'image' },
+    { key:'ch-pr4-t',  label:'Program 4 — title',   sel:'#ch-pr4-t',  idx:0, area:'Home — Programs' },
+    { key:'ch-pr4-img',label:'Program 4 — image URL',sel:'#ch-pr4-img',idx:0, area:'Home — Programs', type:'image' },
+
+    { key:'ch-nw-h',  label:'News — heading',   sel:'#ch-nw-h',  idx:0, area:'Home — Campus News' },
+    { key:'ch-nw1-t', label:'News 1 — title',   sel:'#ch-nw1-t', idx:0, area:'Home — Campus News' },
+    { key:'ch-nw2-t', label:'News 2 — title',   sel:'#ch-nw2-t', idx:0, area:'Home — Campus News' },
+    { key:'ch-nw3-t', label:'News 3 — title',   sel:'#ch-nw3-t', idx:0, area:'Home — Campus News' },
+
+    { key:'ch-im-h', label:'Impact — heading', sel:'#ch-im-h', idx:0, area:'Home — Impact' },
+    { key:'ch-st1', label:'Stat 1 — number', sel:'#ch-st1', idx:0, area:'Home — Impact' },
+    { key:'ch-sl1', label:'Stat 1 — label',  sel:'#ch-sl1', idx:0, area:'Home — Impact' },
+    { key:'ch-st2', label:'Stat 2 — number', sel:'#ch-st2', idx:0, area:'Home — Impact' },
+    { key:'ch-sl2', label:'Stat 2 — label',  sel:'#ch-sl2', idx:0, area:'Home — Impact' },
+    { key:'ch-st3', label:'Stat 3 — number', sel:'#ch-st3', idx:0, area:'Home — Impact' },
+    { key:'ch-sl3', label:'Stat 3 — label',  sel:'#ch-sl3', idx:0, area:'Home — Impact' },
+    { key:'ch-st4', label:'Stat 4 — number', sel:'#ch-st4', idx:0, area:'Home — Impact' },
+    { key:'ch-sl4', label:'Stat 4 — label',  sel:'#ch-sl4', idx:0, area:'Home — Impact' },
+
+    { key:'ch-cta-h', label:'CTA — heading',   sel:'#ch-cta-h', idx:0, area:'Home — Call to Action' },
+    { key:'ch-cta-p', label:'CTA — paragraph', sel:'#ch-cta-p', idx:0, area:'Home — Call to Action', multiline:true },
+    { key:'ch-cta-b', label:'CTA — button text',sel:'#ch-cta-b',idx:0, area:'Home — Call to Action' }
   ];
 
   var fieldByKey = {};
@@ -193,6 +236,13 @@
     var el = findEl(f);
     if (!el) return null;
     try {
+      if (f.type === 'image') {
+        if (el.tagName === 'IMG') return el.getAttribute('src') || '';
+        if (el.hasAttribute && el.hasAttribute('data-slides')) return (el.getAttribute('data-slides') || '').split('|')[0];
+        var bg = (el.style && el.style.backgroundImage) || '';
+        var m = bg.match(/url\(["']?([^"')]+)["']?\)/);
+        return m ? m[1] : '';
+      }
       var raw;
       if (f.part === 'text') {
         var tn = firstTextNode(el);
@@ -208,6 +258,15 @@
     var el = findEl(f);
     if (!el) return false;
     try {
+      if (f.type === 'image') {
+        if (el.tagName === 'IMG') { el.setAttribute('src', text); }
+        else if (el.hasAttribute && el.hasAttribute('data-slides')) {
+          el.setAttribute('data-slides', text);
+          var bg0 = el.querySelector ? el.querySelector('.bg') : null;
+          if (bg0) bg0.setAttribute('src', (text || '').split('|')[0]);
+        } else { el.style.backgroundImage = 'url("' + text + '")'; el.style.backgroundSize = 'cover'; el.style.backgroundPosition = 'center'; }
+        return true;
+      }
       if (f.part === 'text') {
         var tn = firstTextNode(el);
         if (tn) tn.nodeValue = text;

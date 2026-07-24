@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow">
+<title>ATS CV Builder — ALIZON OS | Alizon School of Medical &amp; Digital Intelligence</title>
+<meta name="description" content="Free AI-ready ATS CV builder for Alizon students — career-category modules, unlimited sections, 6 templates, live ATS score, PDF/DOCX export.">
+<link rel="stylesheet" href="alizon-clone.css?v=2">
+<script src="firebase-sync.js" defer></script>
+<style>
+  main{padding:0 0 70px}
+  .cvb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;max-width:1320px;margin:0 auto;padding:28px 24px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-md)}
+  .acc{border-bottom:1px solid var(--line)}
+  .acc:last-child{border-bottom:none}
+  .acc>button{width:100%;text-align:left;background:none;border:0;cursor:pointer;font:inherit;font-weight:700;font-family:var(--serif);
+    font-size:1.02rem;color:var(--ink);padding:15px 18px;display:flex;justify-content:space-between;align-items:center}
+  .acc>button .tg{color:var(--crimson);font-size:1.3rem;transition:.2s}
+  .acc.open>button .tg{transform:rotate(45deg)}
+  .acc .body{display:none;padding:4px 18px 20px}
+  .acc.open .body{display:block}
+  label.l{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 4px}
+  input.f,textarea.f,select.f{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13.5px}
+  textarea.f{min-height:60px;resize:vertical}
+  .two2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .rowset{border:1px dashed var(--line);border-radius:10px;padding:12px;margin:10px 0;position:relative}
+  .rowset .del{position:absolute;top:8px;right:8px;font-size:12px;color:var(--crimson);background:none;border:0;cursor:pointer;font-weight:700}
+  .mini{font-size:13px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600;font-family:var(--sans)}
+  .mini.pri{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+  .tagbox{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .tag{background:#faf0f0;color:var(--crimson);border:1px solid rgba(177,4,14,.2);border-radius:100px;padding:4px 10px;font-size:12.5px;font-weight:600;display:inline-flex;gap:6px;align-items:center}
+  .tag b{cursor:pointer}
+  /* right rail */
+  .rail{position:sticky;top:170px;align-self:start}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
+  .score{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+  .ring{--p:0;width:58px;height:58px;border-radius:50%;flex:none;background:conic-gradient(var(--crimson) calc(var(--p)*1%),#eee 0);display:grid;place-items:center}
+  .ring i{width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:800;font-style:normal;font-size:14px}
+  #paper{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow-lg);padding:38px 42px;color:#111;
+    font-family:'Source Sans Pro',Arial,sans-serif;font-size:12.5px;line-height:1.5}
+  #paper h1{font-family:'Source Serif Pro',Georgia,serif;font-size:25px;margin:0 0 2px}
+  #paper .role{font-weight:700;color:#333;margin-bottom:2px}
+  #paper .contact{color:#444;font-size:11.5px;margin-bottom:12px}
+  #paper h2{font-size:12px;letter-spacing:.09em;text-transform:uppercase;border-bottom:1.5px solid #111;padding-bottom:3px;margin:16px 0 7px}
+  #paper .item{margin-bottom:9px}
+  #paper .item .r1{display:flex;justify-content:space-between;gap:10px;font-weight:700}
+  #paper .item .r2{color:#555;font-style:italic;font-size:11.5px}
+  #paper ul{margin:4px 0 0;padding-left:17px}
+  #paper .kv{display:flex;flex-wrap:wrap;gap:4px 16px}
+  #paper .photo{float:right;width:92px;height:112px;object-fit:cover;border:1px solid #ccc;margin:0 0 8px 12px}
+  #paper .sig{margin-top:14px;font-size:11.5px}
+  #paper .qr{float:right;width:74px;height:74px;margin:0 0 6px 12px}
+  /* templates */
+  #paper.t-modern h1{color:var(--crimson)} #paper.t-modern h2{color:var(--crimson);border-bottom-color:var(--crimson)}
+  #paper.t-executive h2{background:#111;color:#fff;border:none;padding:4px 8px;letter-spacing:.14em}
+  #paper.t-academic{font-family:Georgia,'Times New Roman',serif} #paper.t-academic h2{border-bottom:1px solid #111}
+  #paper.t-healthcare h1{color:#0f6e56} #paper.t-healthcare h2{color:#0f6e56;border-bottom-color:#0f6e56}
+  #paper.t-technical{font-family:'Source Sans Pro',Arial} #paper.t-technical h2{border-left:4px solid var(--crimson);border-bottom:none;padding:2px 0 2px 8px}
+  @media(max-width:980px){.cvb{grid-template-columns:1fr}.rail{position:static}}
+  @media print{ body *{visibility:hidden!important} #paper,#paper *{visibility:visible!important} #paper{position:absolute;left:0;top:0;width:100%;border:none;box-shadow:none;padding:0} }
+</style>
+</head>
+<body>
+
+<header id="azsitehdr">
+  <div class="azhdr-util"><div class="in">
+    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON&nbsp;OS<small>Practical Learning Platform</small></span></a>
+    <div class="util-r"><span class="lbl">Information for:</span>
+      <a href="ASMDI-dashboard.html">ALIZON OS Portal</a><a href="alizon-career.html">Career</a><a href="alizon-results.html">Results</a><a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
+    </div>
+    <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div></div>
+  <div class="azhdr-nav"><nav class="in">
+    <div class="navlinks2"><a href="alizon-os.html">Overview</a><a href="alizon-career.html">Career</a><a href="alizon-cv.html" class="active">CV Builder</a><a href="os-practicals.html">Practicals</a><a href="index.html">Institution</a></div>
+    <a class="btn btn-primary" style="padding:9px 20px;font-size:.95rem" href="alizon-career.html">← Career Hub</a>
+  </nav></div>
+</header>
+
+<section class="hero short" style="padding:0;min-height:34vh">
+  <img class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Facademics%2Fab1d26ed-88dd-4dd4-8a0f-7da0c010359e-large.webp" alt="">
+  <div class="in"><span class="eyebrow" style="color:#ffd7d9">ALIZON OS · Career</span>
+    <h1 style="margin-top:10px;font-size:clamp(2rem,4vw,3.2rem)">ATS CV Builder</h1>
+    <p class="sub" style="font-size:1.1rem">Pick your field, fill the modules, choose a template and export an ATS-ready CV — free for Alizon students.</p>
+  </div>
+</section>
+
+<main>
+<div class="cvb">
+  <!-- ============ LEFT: FORM ============ -->
+  <div class="panel" id="form">
+    <!-- Career category -->
+    <div class="acc open"><button type="button">1 · Career Category<span class="tg">+</span></button><div class="body">
+      <label class="l">Career field</label>
+      <select class="f" id="category">
+        <option value="">— Select —</option>
+        <option>Medical &amp; Healthcare</option><option>Engineering &amp; Technology</option><option>Business &amp; Management</option>
+        <option>Commerce</option><option>Science</option><option>Arts &amp; Humanities</option><option>Law</option>
+        <option>Education</option><option>Hospitality &amp; Tourism</option><option>Aviation</option><option>Design</option><option>Other</option>
+      </select>
+      <div class="two2"><div><label class="l">Qualification</label><input class="f" id="qual" placeholder="e.g. B.Pharm / B.Tech / MBBS"></div>
+        <div><label class="l">Specialization / Branch</label><input class="f" id="branch" placeholder="e.g. Clinical Pharmacy / CSE-AI"></div></div>
+    </div></div>
+
+    <!-- Personal -->
+    <div class="acc open"><button type="button">2 · Personal Information<span class="tg">+</span></button><div class="body">
+      <div class="two2"><div><label class="l">Full name</label><input class="f" id="p_name"></div>
+      <div><label class="l">Professional title</label><input class="f" id="p_title" placeholder="e.g. Registered Pharmacist"></div></div>
+      <div class="three"><div><label class="l">Phone</label><input class="f" id="p_phone"></div>
+      <div><label class="l">Email</label><input class="f" id="p_email"></div>
+      <div><label class="l">Location</label><input class="f" id="p_loc" placeholder="City, State"></div></div>
+      <div class="two2"><div><label class="l">LinkedIn</label><input class="f" id="p_linkedin"></div>
+      <div><label class="l">Portfolio / Website</label><input class="f" id="p_web"></div></div>
+      <div class="three"><div><label class="l">GitHub</label><input class="f" id="p_github"></div>
+      <div><label class="l">Google Scholar / ORCID</label><input class="f" id="p_scholar"></div>
+      <div><label class="l">Other profile</label><input class="f" id="p_other"></div></div>
+      <div class="three"><div><label class="l">Nationality</label><input class="f" id="p_nat"></div>
+      <div><label class="l">Gender (optional)</label><input class="f" id="p_gender"></div>
+      <div><label class="l">DOB (optional)</label><input class="f" id="p_dob"></div></div>
+      <label class="l">Profile photo (optional)</label><input class="f" type="file" id="p_photo" accept="image/*">
+    </div></div>
+
+    <!-- Summary -->
+    <div class="acc"><button type="button">3 · Professional Summary<span class="tg">+</span></button><div class="body">
+      <div class="two2"><div><label class="l">Total experience</label><input class="f" id="s_exp" placeholder="e.g. 2 years"></div>
+      <div><label class="l">Industry</label><input class="f" id="s_ind"></div></div>
+      <label class="l">Career objective / summary</label><textarea class="f" id="s_obj" placeholder="2–3 lines highlighting strengths, specialization and goals."></textarea>
+    </div></div>
+
+    <!-- Competencies + skills -->
+    <div class="acc"><button type="button">4 · Skills &amp; Competencies<span class="tg">+</span></button><div class="body">
+      <label class="l">Core competencies (Enter to add)</label><input class="f" data-tag="comp" placeholder="Leadership, Communication, Critical Thinking…"><div class="tagbox" id="tags_comp"></div>
+      <label class="l">Technical skills (Enter to add)</label><input class="f" data-tag="tech" placeholder="Programming, Software, Equipment, AI tools…"><div class="tagbox" id="tags_tech"></div>
+      <label class="l">Languages known (Enter to add)</label><input class="f" data-tag="lang" placeholder="English (Fluent), Malayalam (Native)…"><div class="tagbox" id="tags_lang"></div>
+    </div></div>
+
+    <!-- Repeatable sections mount here -->
+    <div id="repeatMount"></div>
+
+    <!-- Profession-specific -->
+    <div class="acc" id="profAcc" style="display:none"><button type="button"><span id="profTitle">Profession-specific</span><span class="tg">+</span></button><div class="body">
+      <p style="font-size:12.5px;color:var(--muted);margin:0 0 6px" id="profHint"></p>
+      <input class="f" data-tag="prof" id="profInput" placeholder="Add a profession-specific skill and press Enter"><div class="tagbox" id="tags_prof"></div>
+    </div></div>
+
+    <!-- Extras -->
+    <div class="acc"><button type="button">Extras · Hobbies · Declaration · Signature<span class="tg">+</span></button><div class="body">
+      <label class="l">Hobbies / interests</label><input class="f" id="x_hobbies">
+      <label class="l">Declaration</label><textarea class="f" id="x_decl" placeholder="I hereby declare that the above information is true to the best of my knowledge.">I hereby declare that the above information is true to the best of my knowledge and belief.</textarea>
+      <label class="l">Signature (typed) / place</label><input class="f" id="x_sign" placeholder="Name & place">
+    </div></div>
+  </div>
+
+  <!-- ============ RIGHT: PREVIEW + TOOLS ============ -->
+  <div class="rail">
+    <div class="toolbar">
+      <select class="f mini" id="tpl" style="width:auto;padding:8px 12px">
+        <option value="t-classic">Classic</option><option value="t-modern">Modern</option><option value="t-executive">Executive</option>
+        <option value="t-academic">Academic</option><option value="t-healthcare">Healthcare</option><option value="t-technical">Technical</option>
+      </select>
+      <button class="mini pri" onclick="exportPDF()">⬇ PDF</button>
+      <button class="mini" onclick="exportDOCX()">⬇ DOCX</button>
+      <button class="mini" onclick="saveCV()">Save</button>
+      <button class="mini" onclick="newVersion()">Duplicate</button>
+      <select class="f mini" id="versions" style="width:auto;padding:8px 12px" onchange="loadVersion(this.value)"><option value="">Versions…</option></select>
+    </div>
+    <div class="score">
+      <div class="ring" id="ring"><i id="scoreN">0%</i></div>
+      <div style="flex:1"><b style="font-size:.95rem">ATS match score</b>
+        <div style="font-size:12px;color:var(--muted)" id="scoreHint">Paste a job description below to score your CV.</div></div>
+    </div>
+    <textarea class="f" id="jd" placeholder="Paste the target job description here to compute your ATS match, missing keywords and suggestions…" style="min-height:70px;margin-bottom:8px"></textarea>
+    <button class="mini" onclick="runATS()">Run ATS check</button>
+    <div id="atsOut" style="font-size:12.5px;color:var(--muted);margin:10px 0 16px"></div>
+    <div id="paper" class="t-classic"></div>
+  </div>
+</div>
+</main>
+
+<footer class="site"><div class="in"><div class="foot-bottom" style="border:none;padding:0">
+  <span>© 2026 Alizon School of Medical &amp; Digital Intelligence · Free ATS CV builder for students</span>
+  <span><a href="alizon-career.html" style="color:#c9c9c9">← Back to Career Hub</a></span>
+</div></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ---------------- helpers ---------------- */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function nl2(s){return esc(s).split('\n').filter(function(x){return x.trim();});}
+
+/* accordion */
+document.querySelectorAll('.acc>button').forEach(function(b){b.addEventListener('click',function(){b.parentNode.classList.toggle('open');});});
+
+/* ---------------- repeatable sections config ---------------- */
+var SECTIONS=[
+ {id:'edu',title:'5 · Education',fields:[['deg','Degree / Course'],['inst','University / Institution'],['spec','Specialization'],['score','CGPA / %'],['yr','Year (2022–2026)']]},
+ {id:'exp',title:'6 · Work Experience',fields:[['role','Designation'],['org','Company / Hospital'],['dept','Department'],['type','Employment type'],['dur','Duration'],['pts','Responsibilities & achievements (one per line)','ta']]},
+ {id:'intern',title:'7 · Internships',fields:[['role','Role'],['org','Organisation'],['dur','Duration'],['pts','Key points (one per line)','ta']]},
+ {id:'proj',title:'8 · Projects',fields:[['title','Title'],['role','Role'],['tech','Technologies'],['desc','Description','ta'],['link','GitHub / Demo / Portfolio']]},
+ {id:'cert',title:'9 · Certifications',fields:[['name','Certificate name'],['iss','Issuer'],['date','Issue date'],['cid','Credential ID'],['url','Credential URL']]},
+ {id:'pub',title:'10 · Publications',fields:[['title','Title'],['venue','Journal / Conference / Book / Patent'],['date','Date'],['doi','DOI / URL']]},
+ {id:'conf',title:'11 · Conferences & CME',fields:[['title','Title'],['role','Speaker / Attendee / Poster'],['date','Date']]},
+ {id:'award',title:'12 · Awards & Memberships',fields:[['name','Award / Membership'],['org','Body (IEEE, IMA, IPA…)'],['date','Year']]},
+ {id:'vol',title:'13 · Volunteer Experience',fields:[['role','Role'],['org','Organisation'],['dur','Duration']]},
+ {id:'ref',title:'14 · References',fields:[['name','Name'],['pos','Position'],['contact','Email / Phone']]}
+];
+var store={comp:[],tech:[],lang:[],prof:[]}; /* tag stores */
+SECTIONS.forEach(function(s){ store[s.id]=[]; });
+
+/* build repeatable accordions */
+(function buildRepeats(){
+  var host=$('repeatMount'), html='';
+  SECTIONS.forEach(function(s){
+    html+='<div class="acc"><button type="button">'+s.title+'<span class="tg">+</span></button><div class="body">'+
+      '<div id="list_'+s.id+'"></div><button class="mini" type="button" onclick="addRow(\''+s.id+'\')">+ Add</button></div></div>';
+  });
+  host.innerHTML=html;
+  host.querySelectorAll('.acc>button').forEach(function(b){b.addEventListener('click',function(){b.parentNode.classList.toggle('open');});});
+  SECTIONS.forEach(function(s){ addRow(s.id); });
+})();
+
+function secDef(id){for(var i=0;i<SECTIONS.length;i++)if(SECTIONS[i].id===id)return SECTIONS[i];}
+function addRow(id,data){
+  var s=secDef(id),host=$('list_'+id),d=document.createElement('div');d.className='rowset';
+  var h='<button class="del" type="button" onclick="this.parentNode.remove();render()">✕ remove</button>';
+  s.fields.forEach(function(f){ var ta=f[2]==='ta';
+    h+='<label class="l">'+f[1]+'</label>'+(ta?'<textarea class="f" data-k="'+f[0]+'"></textarea>':'<input class="f" data-k="'+f[0]+'">'); });
+  d.innerHTML=h;host.appendChild(d);
+  if(data)d.querySelectorAll('[data-k]').forEach(function(i){if(data[i.getAttribute('data-k')]!=null)i.value=data[i.getAttribute('data-k')];});
+  d.querySelectorAll('input,textarea').forEach(function(i){i.addEventListener('input',render);});
+  render();
+}
+function collect(id){var out=[];$('list_'+id).querySelectorAll('.rowset').forEach(function(r){var o={};r.querySelectorAll('[data-k]').forEach(function(i){o[i.getAttribute('data-k')]=i.value;});out.push(o);});return out;}
+
+/* ---------------- tag inputs ---------------- */
+document.addEventListener('keydown',function(e){
+  var t=e.target; if(!t.getAttribute||!t.getAttribute('data-tag'))return;
+  if(e.key==='Enter'){e.preventDefault();var k=t.getAttribute('data-tag');var v=t.value.trim();if(v){store[k].push(v);t.value='';renderTags(k);render();}}
+});
+function renderTags(k){$('tags_'+k).innerHTML=store[k].map(function(v,i){return '<span class="tag">'+esc(v)+' <b onclick="rmTag(\''+k+'\','+i+')">✕</b></span>';}).join('');}
+function rmTag(k,i){store[k].splice(i,1);renderTags(k);render();}
+
+/* ---------------- profession-specific ---------------- */
+var PROF={
+ 'Medical & Healthcare':{t:'Clinical / Medical modules',h:'Registration no., council, clinical departments, procedures, EHR (Epic/Cerner), GCP, pharmacovigilance…'},
+ 'Engineering & Technology':{t:'Engineering modules',h:'Languages, frameworks, databases, cloud (AWS/Azure), DevOps (Docker/K8s), AI (TensorFlow/PyTorch), CAD, PLC/SCADA…'},
+ 'Business & Management':{t:'Management modules',h:'Sales, HR, Finance, ERP/CRM, SAP, Power BI, Business Analytics…'},
+ 'Commerce':{t:'Commerce modules',h:'GST, Tally, SAP, QuickBooks, Taxation, Audit, Payroll…'},
+ 'Law':{t:'Legal modules',h:'Bar Council registration, practice area, court experience, legal drafting…'},
+ 'Education':{t:'Teaching modules',h:'Teaching subjects, curriculum development, classroom management, EdTech…'},
+ 'Design':{t:'Design modules',h:'Adobe Suite, Figma, Sketch, Blender, portfolio (Behance/Dribbble)…'}
+};
+$('category').addEventListener('change',function(){
+  var p=PROF[this.value];var acc=$('profAcc');
+  if(p){acc.style.display='';$('profTitle').textContent=p.t;$('profHint').textContent=p.h;}else{acc.style.display='none';}
+  render();
+});
+
+/* ---------------- photo ---------------- */
+var photoData='';
+$('p_photo').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){photoData=r.result;render();};r.readAsDataURL(f);});
+
+/* ---------------- live preview ---------------- */
+['category','qual','branch','p_name','p_title','p_phone','p_email','p_loc','p_linkedin','p_web','p_github','p_scholar','p_other','p_nat','p_gender','p_dob','s_exp','s_ind','s_obj','x_hobbies','x_decl','x_sign','tpl'].forEach(function(id){var el=$(id);if(el)el.addEventListener('input',render);});
+$('tpl').addEventListener('change',render);
+
+function line(){var a=[];for(var i=0;i<arguments.length;i++)if(arguments[i])a.push(arguments[i]);return a.join(' · ');}
+function render(){
+  var P=$('paper');P.className=$('tpl').value;
+  var links=line($('p_linkedin').value,$('p_web').value,$('p_github').value,$('p_scholar').value,$('p_other').value);
+  var contact=line($('p_phone').value,$('p_email').value,$('p_loc').value);
+  var h='';
+  if(photoData) h+='<img class="photo" src="'+photoData+'" alt="">';
+  var qrEl='<span id="qrslot"></span>';
+  h+='<h1>'+(esc($('p_name').value)||'Your Name')+'</h1>';
+  if($('p_title').value)h+='<div class="role">'+esc($('p_title').value)+'</div>';
+  if(contact)h+='<div class="contact">'+esc(contact)+'</div>';
+  if(links)h+='<div class="contact">'+esc(links)+'</div>';
+  if($('s_obj').value){h+='<h2>Professional Summary</h2><div>'+esc($('s_obj').value)+'</div>';}
+  /* skills */
+  if(store.comp.length){h+='<h2>Core Competencies</h2><div class="kv">'+store.comp.map(function(x){return esc(x);}).join(' &nbsp;·&nbsp; ')+'</div>';}
+  if(store.tech.length){h+='<h2>Technical Skills</h2><div class="kv">'+store.tech.map(esc).join(' &nbsp;·&nbsp; ')+'</div>';}
+  if(store.prof.length){var p=PROF[$('category').value];h+='<h2>'+(p?esc(p.t):'Specialised Skills')+'</h2><div class="kv">'+store.prof.map(esc).join(' &nbsp;·&nbsp; ')+'</div>';}
+  /* education */
+  var edu=collect('edu').filter(function(e){return e.deg||e.inst;});
+  if(edu.length)h+='<h2>Education</h2>'+edu.map(function(e){return '<div class="item"><div class="r1"><span>'+esc(e.deg)+(e.spec?' — '+esc(e.spec):'')+'</span><span>'+esc(e.yr)+'</span></div><div class="r2">'+esc(e.inst)+(e.score?' · '+esc(e.score):'')+'</div></div>';}).join('');
+  /* experience + internships */
+  function block(id,head){var arr=collect(id).filter(function(e){return e.role||e.org||e.title;});if(!arr.length)return '';
+    return '<h2>'+head+'</h2>'+arr.map(function(e){var pts=nl2(e.pts||e.desc||'');return '<div class="item"><div class="r1"><span>'+esc(e.role||e.title)+'</span><span>'+esc(e.dur||e.date)+'</span></div>'+((e.org||e.dept||e.tech)?'<div class="r2">'+esc(line(e.org,e.dept,e.type,e.tech))+'</div>':'')+(pts.length?'<ul>'+pts.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>':'')+(e.link?'<div class="r2">'+esc(e.link)+'</div>':'')+'</div>';}).join('');}
+  h+=block('exp','Work Experience');
+  h+=block('intern','Internships');
+  h+=block('proj','Projects');
+  /* certifications */
+  var cert=collect('cert').filter(function(e){return e.name;});
+  if(cert.length)h+='<h2>Certifications</h2>'+cert.map(function(e){return '<div class="item"><div class="r1"><span>'+esc(e.name)+'</span><span>'+esc(e.date)+'</span></div><div class="r2">'+esc(line(e.iss,e.cid,e.url))+'</div></div>';}).join('');
+  /* publications */
+  var pub=collect('pub').filter(function(e){return e.title;});
+  if(pub.length)h+='<h2>Publications</h2>'+pub.map(function(e){return '<div class="item"><div class="r1"><span>'+esc(e.title)+'</span><span>'+esc(e.date)+'</span></div><div class="r2">'+esc(line(e.venue,e.doi))+'</div></div>';}).join('');
+  var conf=collect('conf').filter(function(e){return e.title;});
+  if(conf.length)h+='<h2>Conferences &amp; CME</h2>'+conf.map(function(e){return '<div class="item"><div class="r1"><span>'+esc(e.title)+'</span><span>'+esc(e.date)+'</span></div><div class="r2">'+esc(e.role)+'</div></div>';}).join('');
+  var aw=collect('award').filter(function(e){return e.name;});
+  if(aw.length)h+='<h2>Awards &amp; Memberships</h2><ul>'+aw.map(function(e){return '<li>'+esc(line(e.name,e.org,e.date))+'</li>';}).join('')+'</ul>';
+  var vol=collect('vol').filter(function(e){return e.role||e.org;});
+  if(vol.length)h+='<h2>Volunteer Experience</h2>'+vol.map(function(e){return '<div class="item"><div class="r1">'+esc(e.role)+'</div><div class="r2">'+esc(line(e.org,e.dur))+'</div></div>';}).join('');
+  if(store.lang.length)h+='<h2>Languages</h2><div class="kv">'+store.lang.map(esc).join(' &nbsp;·&nbsp; ')+'</div>';
+  if($('x_hobbies').value)h+='<h2>Interests</h2><div>'+esc($('x_hobbies').value)+'</div>';
+  var ref=collect('ref').filter(function(e){return e.name;});
+  if(ref.length)h+='<h2>References</h2>'+ref.map(function(e){return '<div class="item"><div class="r1">'+esc(e.name)+'</div><div class="r2">'+esc(line(e.pos,e.contact))+'</div></div>';}).join('');
+  if($('x_decl').value)h+='<div class="sig"><b>Declaration:</b> '+esc($('x_decl').value)+'</div>';
+  if($('x_sign').value)h+='<div class="sig">'+esc($('x_sign').value)+'</div>';
+  P.innerHTML=qrEl+h;
+  /* QR to portfolio/linkedin */
+  var ql=$('p_web').value||$('p_linkedin').value||$('p_github').value;
+  if(ql && window.QRCode){try{new QRCode($('qrslot'),{text:ql,width:74,height:74,correctLevel:QRCode.CorrectLevel.M});$('qrslot').className='qr';}catch(e){}}
+}
+
+/* ---------------- ATS scoring (heuristic) ---------------- */
+var STOP='a an the and or of to in for on with at by from is are be as your you we our will this that job role position company work team using skills experience ability strong good excellent required must should candidate'.split(' ');
+var ACTION=['developed','implemented','led','managed','designed','optimized','built','created','improved','analyzed','delivered','coordinated','achieved','reduced','increased','automated','conducted','trained'];
+function toks(s){return (s.toLowerCase().match(/[a-z][a-z+#.]{2,}/g)||[]).filter(function(w){return STOP.indexOf(w)<0;});}
+function runATS(){
+  var jd=$('jd').value.trim();var out=$('atsOut');
+  if(!jd){out.innerHTML='Paste a job description above, then run the check.';return;}
+  var cv=($('paper').textContent||'').toLowerCase();
+  var jwords={};toks(jd).forEach(function(w){jwords[w]=(jwords[w]||0)+1;});
+  var keys=Object.keys(jwords).sort(function(a,b){return jwords[b]-jwords[a];}).slice(0,30);
+  var have=keys.filter(function(w){return cv.indexOf(w)>=0;});
+  var miss=keys.filter(function(w){return cv.indexOf(w)<0;});
+  var score=Math.round(have.length/Math.max(keys.length,1)*100);
+  /* small bonuses/penalties */
+  var av=ACTION.filter(function(a){return cv.indexOf(a)>=0;}).length; score=Math.min(100,score+Math.min(av,6));
+  var flags=[]; if(photoData)flags.push('Photo present — some ATS ignore images; keep a text-only version too.');
+  if(!$('s_obj').value)flags.push('Add a professional summary with target keywords.');
+  if(av<3)flags.push('Use more action verbs (e.g. '+ACTION.slice(0,6).join(', ')+').');
+  setScore(score);
+  out.innerHTML='<b>Matched ('+have.length+'/'+keys.length+'):</b> '+have.map(esc).join(', ')+
+    '<br><b style="color:var(--crimson)">Missing keywords:</b> '+(miss.length?miss.map(esc).join(', '):'none 🎉')+
+    (flags.length?'<br><b>Suggestions:</b><ul style="margin:4px 0 0;padding-left:18px">'+flags.map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ul>':'');
+}
+function setScore(n){$('scoreN').textContent=n+'%';$('ring').style.setProperty('--p',n);$('scoreHint').textContent=n>=75?'Strong match':n>=50?'Moderate — add missing keywords':'Low — tailor your CV to the JD';}
+
+/* ---------------- export ---------------- */
+function exportPDF(){render();window.print();}
+function exportDOCX(){
+  render();
+  var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt}h1{font-size:20pt}h2{font-size:12pt;border-bottom:1px solid #000;text-transform:uppercase}</style></head><body>'+$('paper').innerHTML.replace(/<img[^>]*class="qr"[^>]*>/,'')+'</body></html>';
+  var blob=new Blob(['﻿'+html],{type:'application/msword'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(($('p_name').value||'cv').replace(/\s+/g,'_'))+'.doc';a.click();
+}
+
+/* ---------------- save / versions ---------------- */
+function snapshot(){var o={simple:{},tags:store,tpl:$('tpl').value,photo:photoData};
+  ['category','qual','branch','p_name','p_title','p_phone','p_email','p_loc','p_linkedin','p_web','p_github','p_scholar','p_other','p_nat','p_gender','p_dob','s_exp','s_ind','s_obj','x_hobbies','x_decl','x_sign'].forEach(function(id){o.simple[id]=$(id).value;});
+  o.rows={};SECTIONS.forEach(function(s){o.rows[s.id]=collect(s.id);});return o;}
+function restore(o){if(!o)return;
+  for(var id in o.simple){if($(id))$(id).value=o.simple[id];}
+  store=o.tags||store;['comp','tech','lang','prof'].forEach(renderTags);
+  if(o.photo){photoData=o.photo;}
+  $('tpl').value=o.tpl||'t-classic';
+  SECTIONS.forEach(function(s){$('list_'+s.id).innerHTML='';(o.rows&&o.rows[s.id]||[{}]).forEach(function(r){addRow(s.id,r);});});
+  if($('category').value&&PROF[$('category').value]){$('profAcc').style.display='';$('profTitle').textContent=PROF[$('category').value].t;$('profHint').textContent=PROF[$('category').value].h;}
+  render();}
+function saveCV(){localStorage.setItem('alizonCVv2',JSON.stringify(snapshot()));alert('CV saved in this browser.');}
+function newVersion(){var v=JSON.parse(localStorage.getItem('alizonCVVersions')||'[]');v.push({name:($('p_name').value||'CV')+' — '+(v.length+1),data:snapshot()});localStorage.setItem('alizonCVVersions',JSON.stringify(v));fillVersions();alert('Saved as a new version.');}
+function fillVersions(){var v=JSON.parse(localStorage.getItem('alizonCVVersions')||'[]');$('versions').innerHTML='<option value="">Versions…</option>'+v.map(function(x,i){return '<option value="'+i+'">'+esc(x.name)+'</option>';}).join('');}
+function loadVersion(i){if(i==='')return;var v=JSON.parse(localStorage.getItem('alizonCVVersions')||'[]');if(v[i])restore(v[i].data);}
+
+/* ---------------- boot ---------------- */
+(function(){var saved=localStorage.getItem('alizonCVv2');if(saved){try{restore(JSON.parse(saved));}catch(e){render();}}else{render();}fillVersions();})();
+</script>
+</body>
+</html>
