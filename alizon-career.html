@@ -178,6 +178,11 @@
         </div>
         <button class="mini pri" onclick="savePay()">Save payment settings</button>
       </div>
+      <div class="adminbar" id="admRegs" style="display:none;margin-top:20px">
+        <h3>Admin — session registrations <span id="regCount" style="font-weight:400;color:var(--muted);font-size:13px"></span></h3>
+        <div style="margin:8px 0;display:flex;gap:8px"><button class="mini" onclick="exportRegs()">⬇ Export CSV</button><button class="mini" onclick="clearRegs()">Clear all</button></div>
+        <div style="overflow-x:auto"><table id="regsTable" style="width:100%;border-collapse:collapse;font-size:13px"></table></div>
+      </div>
     </div>
   </div>
 </section>
@@ -397,12 +402,24 @@ function saveReg(reg){try{reg.ts=new Date().toISOString();}catch(e){}var all=get
 function closeReg(){$('regModal').style.display='none';}
 
 /* ================= BOOT ================= */
+function renderRegs(){
+  var regs=getJSON('alizonCareerRegs',[]); var c=$('regCount'); if(c)c.textContent='('+regs.length+')';
+  var t=$('regsTable'); if(!t)return;
+  if(!regs.length){t.innerHTML='<tr><td style="color:var(--muted);padding:8px">No registrations yet.</td></tr>';return;}
+  var head='<tr style="text-align:left;border-bottom:2px solid var(--line)"><th style="padding:6px 8px">Name</th><th>Type</th><th>Session</th><th>Contact</th><th>Fee</th><th>Paid</th><th>Txn ref</th><th></th></tr>';
+  t.innerHTML=head+regs.map(function(r,i){return '<tr style="border-bottom:1px solid var(--line)"><td style="padding:6px 8px">'+esc(r.name)+(r.org?'<br><small style="color:var(--muted)">'+esc(r.org)+'</small>':'')+(r.regno?'<br><small style="color:var(--muted)">'+esc(r.regno)+'</small>':'')+'</td><td>'+(r.type==='student'?'Student':'Outsider')+'</td><td>'+esc(r.session)+'</td><td>'+esc(r.email)+'<br>'+esc(r.phone)+'</td><td>'+esc(r.fee||'')+'</td><td>'+(r.paid?'✓':'—')+'</td><td>'+esc(r.txn||'')+'</td><td><button class="mini" onclick="delReg('+i+')">✕</button></td></tr>';}).join('');
+}
+function delReg(i){var regs=getJSON('alizonCareerRegs',[]);regs.splice(i,1);setJSON('alizonCareerRegs',regs);renderRegs();}
+function clearRegs(){if(confirm('Clear ALL registrations?')){setJSON('alizonCareerRegs',[]);renderRegs();}}
+function exportRegs(){var regs=getJSON('alizonCareerRegs',[]);var cols=['name','type','session','date','email','phone','org','regno','batch','city','fee','paid','txn','ts'];
+  var csv=cols.join(',')+'\n'+regs.map(function(r){return cols.map(function(c){return '"'+String(r[c]==null?'':r[c]).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='session-registrations.csv';a.click();}
+
 (function(){
-  if(isAdmin){['admVac','admEvt','admPay'].forEach(function(id){var e=$(id);if(e)e.style.display='';});}
-  addRow('edu');addRow('exp');loadCV(false);renderCV();
-  renderVac();renderEvt();renderPay();
+  if(isAdmin){['admVac','admEvt','admPay','admRegs'].forEach(function(id){var e=$(id);if(e)e.style.display='';});}
+  renderVac();renderEvt();renderPay();renderRegs();
   /* live cross-device refresh */
-  window.addEventListener('storage',function(e){if(!e)return;if(e.key==='alizonVacancies')renderVac();if(e.key==='alizonCareerEvents')renderEvt();if(e.key==='alizonCareerPay')renderPay();});
+  window.addEventListener('storage',function(e){if(!e)return;if(e.key==='alizonVacancies')renderVac();if(e.key==='alizonCareerEvents')renderEvt();if(e.key==='alizonCareerPay')renderPay();if(e.key==='alizonCareerRegs')renderRegs();});
 })();
 </script>
 <div id="vacModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);overflow:auto;padding:40px 16px">

@@ -4,7 +4,7 @@
    - HTML navigations: network-first (fresh pages when online) → cache → offline page.
    - Static assets (css/js/img/fonts): stale-while-revalidate.
 */
-const VERSION = 'alizon-os-v3';
+const VERSION = 'alizon-os-v4';
 const STATIC_CACHE = 'alizon-static-' + VERSION;
 const PAGE_CACHE   = 'alizon-pages-'  + VERSION;
 
