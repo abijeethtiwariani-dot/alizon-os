@@ -58,6 +58,15 @@
   #paper.t-academic{font-family:Georgia,'Times New Roman',serif} #paper.t-academic h2{border-bottom:1px solid #111}
   #paper.t-healthcare h1{color:#0f6e56} #paper.t-healthcare h2{color:#0f6e56;border-bottom-color:#0f6e56}
   #paper.t-technical{font-family:'Source Sans Pro',Arial} #paper.t-technical h2{border-left:4px solid var(--crimson);border-bottom:none;padding:2px 0 2px 8px}
+  /* ---- more themes ---- */
+  #paper.t-navy h1{color:#12305e} #paper.t-navy h2{color:#12305e;border-bottom-color:#12305e}
+  #paper.t-teal h1{color:#0f6e56} #paper.t-teal h2{color:#0f6e56;border-bottom-color:#0f6e56}
+  #paper.t-slate h1{color:#222} #paper.t-slate h2{color:#333;border-bottom-color:#999;letter-spacing:.06em}
+  #paper.t-accent h2{border-bottom:none;border-left:5px solid var(--crimson);padding:1px 0 1px 10px;background:#faf0f0;color:var(--crimson)}
+  #paper.t-elegant{font-family:Georgia,serif} #paper.t-elegant h1{font-weight:400;letter-spacing:.04em} #paper.t-elegant h2{border-bottom:1px solid #bbb;letter-spacing:.16em;font-weight:400;color:#333}
+  #paper.t-caps h1{text-transform:uppercase;letter-spacing:.04em} #paper.t-caps h2{background:#111;color:#fff;border:none;padding:5px 10px;letter-spacing:.18em}
+  #paper.t-compact{font-size:11.5px;line-height:1.4} #paper.t-compact h1{font-size:21px} #paper.t-compact h2{font-size:11px;margin:11px 0 5px;border-bottom-width:1px}
+  #paper.t-sidebar h1{color:var(--crimson)} #paper.t-sidebar h2{border-bottom:none;border-left:3px solid #ddd;padding-left:9px;color:#444} #paper.t-sidebar{border-left:6px solid var(--crimson)!important;padding-left:34px}
   @media(max-width:980px){.cvb{grid-template-columns:1fr}.rail{position:static}}
   @page{ margin:0; size:A4; }
   @media print{
@@ -162,8 +171,11 @@
   <div class="rail">
     <div class="toolbar">
       <select class="f mini" id="tpl" style="width:auto;padding:8px 12px">
-        <option value="t-classic">Classic</option><option value="t-modern">Modern</option><option value="t-executive">Executive</option>
-        <option value="t-academic">Academic</option><option value="t-healthcare">Healthcare</option><option value="t-technical">Technical</option>
+        <option value="t-classic">Classic</option><option value="t-modern">Modern (cardinal)</option><option value="t-executive">Executive</option>
+        <option value="t-academic">Academic</option><option value="t-healthcare">Healthcare (teal)</option><option value="t-technical">Technical</option>
+        <option value="t-navy">Corporate Navy</option><option value="t-teal">Teal</option><option value="t-slate">Slate (minimal)</option>
+        <option value="t-accent">Accent Bar</option><option value="t-elegant">Elegant Serif</option><option value="t-caps">Bold Caps</option>
+        <option value="t-compact">Compact</option><option value="t-sidebar">Sidebar Accent</option>
       </select>
       <button class="mini pri" onclick="exportPDF()">⬇ PDF</button>
       <button class="mini" onclick="exportDOCX()">⬇ DOCX</button>
