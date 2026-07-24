@@ -112,7 +112,7 @@
   <div class="ey">Admissions</div>
   <h1 class="serif">Seat Allotment</h1>
   <p>Batch-wise merit &amp; reservation allotment — India and Kerala state quotas (Open / Merit, OBC-SEBC, EWS,
-    Scheduled Caste and Scheduled Tribe). Select a batch to view its allotment list.</p>
+    Scheduled Caste and Scheduled Tribe). Open a course to view its allotment batches and syllabus.</p>
 </div></div>
 
 <main><div class="wrap">
@@ -152,44 +152,99 @@
   function catCode(v){ return CATCODE[String(v||'').toLowerCase().trim()] || String(v||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4) || 'OPEN'; }
 
   var curBatch=params.get('batch')||'';
+  var curCourse=params.get('course')||'';
+  var BACK='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
 
-  /* landing: batch cards; each opens the detail on its own page (?batch=…) */
-  function renderLanding(){
+  /* ---- sample allotments seeded for every course (overridden by any CSV upload) ---- */
+  var SEED_QUOTA=[{code:'OPEN',label:'Open / Merit',seats:20},{code:'SEBC',label:'OBC / SEBC (Kerala)',seats:12},{code:'EWS',label:'EWS',seats:4},{code:'SC',label:'Scheduled Caste (SC)',seats:3},{code:'ST',label:'Scheduled Tribe (ST)',seats:1}];
+  var SEED_NAMES=['Aarav Menon','Gopika B','Fathima Riza','Sanjay Pillai','Meera Thomas','Anil Kumar','Priya Suresh','Rohit Nair','Aswathi K P','Nandana R','Kiran Chacko','Ashwin Menon','Devika S','Irfan Ali','Neha Raj','Vishnu Prasad'];
+  var SEED_CATS=['OPEN','OPEN','SEBC','OPEN','EWS','SEBC','SC','OPEN','OPEN','ST','SEBC','OPEN','OPEN','SEBC','EWS','OPEN'];
+  var SEED_LABEL={OPEN:'Open / Merit',SEBC:'OBC / SEBC (Kerala)',EWS:'EWS',SC:'Scheduled Caste (SC)',ST:'Scheduled Tribe (ST)'};
+  function seedRows(prefix,n){ var out=[]; for(var i=0;i<n;i++){ var c=SEED_CATS[i%SEED_CATS.length]; out.push({seat:i+1,rank:i+1,reg:prefix+(200+i),name:SEED_NAMES[i%SEED_NAMES.length],cat:c,catLabel:SEED_LABEL[c],status:'Allotted'}); } return out; }
+  var CYCLE='July Cycle 2026';
+  var SEED_COURSES=[['Paramedical AI','PMA',14],['Pharmacy AI','PHA',16],['Medical AI','MED',12],['Hospital Administration AI','HAD',10]];
+  var ALLOT_SEED={};
+  SEED_COURSES.forEach(function(c){ var key=c[0]+' · '+CYCLE; var rows=seedRows(c[1],c[2]);
+    ALLOT_SEED[key]={batch:key,course:c[0],seats:40,quota:SEED_QUOTA,rows:rows,allotted:rows.length,demo:true}; });
+
+  /* Real published allotment when any exists; the sample seed is only a
+     fallback so the page is never empty for courses that have none yet. */
+  function allData(){ var out={}; var pub=store(); var keys=Object.keys(pub);
+    if(keys.length){ keys.forEach(function(k){ out[k]=pub[k]; }); }
+    else { Object.keys(ALLOT_SEED).forEach(function(k){ out[k]=ALLOT_SEED[k]; }); }
+    Object.keys(out).forEach(function(k){ var a=out[k]; if(a.allotted==null) a.allotted=(a.rows||[]).filter(function(r){return r.status==='Allotted';}).length; });
+    return out; }
+
+  /* ---- level 1: course folders ---- */
+  function renderCourses(){
     var host=document.getElementById('batchCards'); if(!host) return;
-    var s=store(), keys=Object.keys(s).sort();
-    if(!keys.length){ host.innerHTML='<div class="empty">No allotment published yet.</div>'; return; }
-    host.innerHTML=keys.map(function(k){ var a=s[k];
-      return '<a class="bcard" href="?batch='+encodeURIComponent(k)+'"><div class="bt serif">'+esc(k)+'</div>'
-        +'<div class="bs">'+esc(a.course||'')+'</div>'
-        +'<span class="bseats">'+(a.allotted||0)+' / '+(a.seats||40)+' seats allotted</span>'
-        +'<span class="go">View allotment &rarr;</span></a>';
+    document.getElementById('landing').style.display='';
+    document.getElementById('detail').style.display='none';
+    var s=allData(), byCourse={};
+    Object.keys(s).forEach(function(k){ var a=s[k]; var c=a.course||'Other'; (byCourse[c]=byCourse[c]||[]).push(a); });
+    var head=document.querySelector('#landing .head');
+    if(head) head.innerHTML='<h2 class="serif">Courses</h2><span class="sub">Open a course to view its seat-allotment batches and syllabus</span>';
+    var courses=Object.keys(byCourse).sort();
+    if(!courses.length){ host.innerHTML='<div class="empty">No allotment published yet.</div>'; return; }
+    host.innerHTML=courses.map(function(c){ var b=byCourse[c];
+      var seats=b.reduce(function(t,x){return t+(x.seats||0);},0), allot=b.reduce(function(t,x){return t+(x.allotted||0);},0);
+      return '<a class="bcard" href="?course='+encodeURIComponent(c)+'"><div class="bt serif">'+esc(c)+'</div>'
+        +'<div class="bs">'+b.length+' batch'+(b.length!==1?'es':'')+' &middot; '+allot+' / '+seats+' seats allotted</div>'
+        +'<span class="bseats">Allotment &amp; syllabus</span><span class="go">Open course &rarr;</span></a>';
     }).join('');
   }
 
-  /* detail: a secondary view (own URL). Privacy — counts only, never a person’s category/caste or domicile. */
+  /* ---- level 2: one course — its batches + syllabus folder ---- */
+  function renderCourse(course){
+    document.getElementById('landing').style.display='none';
+    var ab=document.getElementById('adminBox'); if(ab) ab.style.display='none';
+    var host=document.getElementById('detail'); host.style.display='';
+    var s=allData();
+    var batches=Object.keys(s).filter(function(k){ return (s[k].course||'')===course; }).map(function(k){ return s[k]; })
+                 .sort(function(a,b){ return String(a.batch).localeCompare(String(b.batch)); });
+    var cards=batches.map(function(a){
+      return '<a class="bcard" href="?course='+encodeURIComponent(course)+'&amp;batch='+encodeURIComponent(a.batch)+'"><div class="bt serif">'+esc(a.batch)+'</div>'
+        +'<div class="bs">'+(a.allotted||0)+' / '+(a.seats||40)+' seats allotted'+(a.demo?' &middot; sample':'')+'</div>'
+        +'<span class="go">View allotment &rarr;</span></a>';
+    }).join('') || '<div class="empty">No allotment published for this course yet.</div>';
+    var syllabus='<a class="bcard" href="alizon-syllabus.html" style="border-top-color:var(--gold,#A16207)"><div class="bt serif">Syllabus &amp; Curriculum</div>'
+      +'<div class="bs">Modules, units &amp; hours for '+esc(course)+'</div><span class="go">Open syllabus &rarr;</span></a>'
+      +'<a class="bcard" href="alizon-results.html" style="border-top-color:var(--gold,#A16207)"><div class="bt serif">Examination Results</div>'
+      +'<div class="bs">Module-wise results for '+esc(course)+'</div><span class="go">Open results &rarr;</span></a>';
+    host.innerHTML='<a class="backlink" href="alizon-allotment.html">'+BACK+'All courses</a>'
+      +'<div class="head"><h2 class="serif">'+esc(course)+'</h2><span class="sub">Seat-allotment batches &amp; course folders</span></div>'
+      +'<h3 class="serif" style="font-size:16px;margin:16px 0 10px">Allotment batches</h3>'
+      +'<div class="bcards">'+cards+'</div>'
+      +'<h3 class="serif" style="font-size:16px;margin:28px 0 10px">Course folders</h3>'
+      +'<div class="bcards">'+syllabus+'</div>';
+  }
+
+  /* ---- level 3: batch detail (privacy — counts only) ---- */
   function renderDetail(){
-    var a=store()[curBatch], host=document.getElementById('detail');
+    var a=allData()[curBatch], host=document.getElementById('detail');
     document.getElementById('landing').style.display='none';
     var ab=document.getElementById('adminBox'); if(ab) ab.style.display='none';
     host.style.display='';
-    if(!a){ host.innerHTML='<a class="backlink" href="alizon-allotment.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>All batches</a><div class="empty">No allotment published for this batch yet.</div>'; return; }
+    var backHref = (a&&a.course)?('?course='+encodeURIComponent(a.course)):(curCourse?('?course='+encodeURIComponent(curCourse)):'alizon-allotment.html');
+    var backTxt  = (a&&a.course)?esc(a.course):(curCourse?esc(curCourse):'All courses');
+    if(!a){ host.innerHTML='<a class="backlink" href="alizon-allotment.html">'+BACK+'All courses</a><div class="empty">No allotment published for this batch yet.</div>'; return; }
     var rows=(a.rows||[]).slice().sort(function(x,y){ var xs=x.seat||999, ys=y.seat||999; return xs-ys || (x.rank||0)-(y.rank||0); });
-    /* seat counts per category (numbers only) */
     var counts={}; rows.forEach(function(r){ if(r.status==='Allotted'){ var c=catCode(r.cat||r.catLabel); counts[c]=(counts[c]||0)+1; } });
-    var q=(a.quota||[]).map(function(x){ return '<span class="qchip"><b>'+esc(x.label)+'</b> · '+(counts[x.code]||0)+' of '+x.seats+'</span>'; }).join('');
+    var q=(a.quota||[]).map(function(x){ return '<span class="qchip"><b>'+esc(x.label)+'</b> &middot; '+(counts[x.code]||0)+' of '+x.seats+'</span>'; }).join('');
     var body=rows.map(function(r){
       return '<tr><td class="seat">'+(r.seat||'—')+'</td><td class="rank">'+(r.rank||'')+'</td>'
         +'<td class="reg">'+esc(r.reg||'')+'</td><td>'+esc(r.name||'')+'</td>'
         +'<td><span class="st '+esc(r.status||'')+'">'+esc(r.status||'')+'</span></td></tr>';
     }).join('');
-    host.innerHTML='<a class="backlink" href="alizon-allotment.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>All batches</a>'
+    host.innerHTML='<a class="backlink" href="'+backHref+'">'+BACK+backTxt+'</a>'
       +'<div class="head"><h2 class="serif">'+esc(a.batch||curBatch)+'</h2>'
-      +'<span class="sub">'+esc(a.course||'')+' · '+(a.allotted||rows.filter(function(r){return r.status==="Allotted";}).length)+' of '+(a.seats||40)+' seats allotted</span></div>'
+      +'<span class="sub">'+esc(a.course||'')+' &middot; '+(a.allotted||rows.filter(function(r){return r.status==="Allotted";}).length)+' of '+(a.seats||40)+' seats allotted</span></div>'
+      +(a.demo?'<div class="msg" style="color:var(--muted);font-weight:600;margin:-4px 0 12px">Sample allotment — the office replaces this by uploading the official CSV.</div>':'')
       +'<div class="quota">'+q+'</div>'
       +'<div class="tblwrap"><table class="al"><thead><tr><th>Seat</th><th>Rank</th><th>Reg No</th><th>Name</th><th>Status</th></tr></thead><tbody>'+body+'</tbody></table></div>'
       +'<div class="privacy" style="font-size:12px;color:var(--muted);margin-top:14px;line-height:1.6">Reservation is applied per Government of India &amp; Kerala state norms. Only the seat counts per category are shown above — individual reservation category and personal details are not published.</div>';
   }
-  function fillBatches(){ if(curBatch) renderDetail(); else renderLanding(); }
+  function fillBatches(){ if(curBatch) renderDetail(); else if(curCourse) renderCourse(curCourse); else renderCourses(); }
 
   /* ---- CSV parse/export (admin) ---- */
   function parseCSV(text){
