@@ -59,7 +59,13 @@
   #paper.t-healthcare h1{color:#0f6e56} #paper.t-healthcare h2{color:#0f6e56;border-bottom-color:#0f6e56}
   #paper.t-technical{font-family:'Source Sans Pro',Arial} #paper.t-technical h2{border-left:4px solid var(--crimson);border-bottom:none;padding:2px 0 2px 8px}
   @media(max-width:980px){.cvb{grid-template-columns:1fr}.rail{position:static}}
-  @media print{ body *{visibility:hidden!important} #paper,#paper *{visibility:visible!important} #paper{position:absolute;left:0;top:0;width:100%;border:none;box-shadow:none;padding:0} }
+  @page{ margin:0; size:A4; }
+  @media print{
+    html,body{margin:0!important;padding:0!important;background:#fff!important}
+    body *{visibility:hidden!important}
+    #paper,#paper *{visibility:visible!important}
+    #paper{position:absolute;left:0;top:0;width:100%;min-height:100vh;border:none;box-shadow:none;border-radius:0;padding:14mm 15mm;box-sizing:border-box}
+  }
 </style>
 </head>
 <body>
