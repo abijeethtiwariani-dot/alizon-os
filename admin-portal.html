@@ -537,22 +537,57 @@
   </section>
 
   <section class="apanel asec" id="adm-resetmarks">
-    <h2>↺ Reset Practical Marks</h2>
-    <div class="ahint">Reset a student's practical results so they can attempt the practical again, or just clear a mark for re-evaluation. Changes sync to the student portal. <b>This cannot be undone.</b></div>
+    <h2>↺ Reset &amp; Fresh Start</h2>
+    <div class="ahint">Reset practical marks — for one student, a whole <b>batch</b>, or everyone — or prepare the entire system for a fresh hand-over to students. <b>Faculty, students and allotment details are always kept.</b> Changes sync to the student portal and cannot be undone.</div>
+
+    <!-- A · reset practical marks by batch -->
+    <div style="margin:18px 0;border:1px solid var(--line);border-radius:12px;padding:14px 16px">
+      <h3 style="font-size:15px;margin-bottom:8px">Reset practical marks</h3>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+        <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Batch</label>
+          <select id="rmBatch" style="min-width:220px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"><option value="">All batches</option></select></div>
+        <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">What to reset</label>
+          <select id="rmMode" style="min-width:260px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
+            <option value="clear">Clear marks — keep submissions, re-evaluate</option>
+            <option value="remove">Remove submissions — students redo the practical</option></select></div>
+        <button id="rmBatchGo" style="background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:11px 20px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">Reset marks</button>
+      </div>
+      <div id="rmBatchInfo" class="ahint" style="margin-top:10px"></div>
+    </div>
+
+    <!-- B · find one student -->
     <div style="margin:16px 0 6px">
-      <label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Find a student</label>
+      <label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Or find one student</label>
       <input id="rmSearch" placeholder="Registration number or name — e.g. ALZ102 or Gopika" style="width:100%;max-width:440px;font:inherit;padding:10px 13px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
     </div>
     <div id="rmList" style="margin-top:12px"></div>
 
-    <details style="margin-top:24px;border:1px solid rgba(196,38,46,.28);border-radius:12px;padding:0 14px;background:rgba(196,38,46,.04)">
-      <summary style="cursor:pointer;padding:13px 0;font-weight:700;color:var(--crimson)">⚠ Bulk reset — clear every student's practical marks</summary>
-      <div style="padding:0 0 16px">
-        <p class="ahint" style="margin:0 0 10px">Clears the marks on <b>every</b> practical submission across <b>all</b> students. The submissions stay but become ungraded so faculty can re-evaluate. Type <b>RESET</b> to enable.</p>
-        <input id="rmBulkConfirm" placeholder="Type RESET" style="width:180px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
-        <button id="rmBulkClear" disabled style="margin-left:8px;background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:10px 18px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;opacity:.5">Clear all practical marks</button>
+    <!-- C · fresh start for handover -->
+    <details style="margin-top:26px;border:1px solid rgba(196,38,46,.3);border-radius:12px;padding:0 16px;background:rgba(196,38,46,.04)">
+      <summary style="cursor:pointer;padding:14px 0;font-weight:800;color:var(--crimson);font-size:15px">🚀 Fresh start — hand the system over to students</summary>
+      <div style="padding:0 0 18px">
+        <p class="ahint" style="margin:0 0 6px">Clears the ticked demo / operational data so students logging in see a clean, fresh system. <b>Always kept:</b> faculty, students, seat allotment, courses &amp; modules, syllabus and website content — so logins and content keep working.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px 18px;margin:12px 0">
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonSubmissions" checked> Practical marks &amp; submissions</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonGrievances" checked> Grievances &amp; enquiries</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonActivity,alizonAnnounce" checked> Announcements &amp; activity feed</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonNotifications,gp-notifications" checked> Notifications</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonMeetings" checked> Meetings</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonAlerts" checked> Alerts</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="gp-student-uploads,gp-doc-requests,gp-doc-folders"> Student uploads &amp; document requests</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonExamApps"> Exam applications</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonFees"> Fees / payment records</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonResults"> Published exam results</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonSchedule"> Class schedules</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonStaffReqs,alizonStaffMsgs"> Staff requests &amp; messages</label>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input id="fsConfirm" placeholder="Type RESET" style="width:180px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
+          <button id="fsGo" disabled style="background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:11px 22px;font:inherit;font-size:13.5px;font-weight:800;cursor:pointer;opacity:.5">Clear selected &amp; go fresh</button>
+        </div>
       </div>
     </details>
+    <style>.fsck{display:flex;gap:9px;align-items:center;font-size:13px;padding:6px 0;cursor:pointer}.fsck input{flex:none}</style>
   </section>
 
   <section class="apanel asec" id="adm-griev">
@@ -3032,6 +3067,11 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   function isPractical(s){ return !!s && (s.type==='practical' || /practical/i.test(s.typeLabel||'')); }
   /* remove the mark but keep the submission — reverts to its pre-grade state */
   function ungrade(s){ delete s.mark; s.grade=''; s.feedback=''; delete s.evaluatedAt; s.status = s.ai ? 'ai-evaluated' : 'submitted'; }
+  /* roster → batch lookup so resets can be scoped to a batch */
+  function roster(){ try{var a=JSON.parse(localStorage.getItem('alizonStudents')||'[]');return Array.isArray(a)?a:[];}catch(e){return[];} }
+  function regToBatch(){ var m={}; roster().forEach(function(s){ if(s.reg) m[String(s.reg).toUpperCase()]=String(s.batch||''); }); return m; }
+  function batches(){ var set={}; roster().forEach(function(s){ if(s.batch) set[s.batch]=1; }); return Object.keys(set).sort(); }
+  function inBatch(s,batch,map){ if(!batch) return true; return (map[String(s.reg||'').toUpperCase()]||'')===batch; }
   var BTN_DEL='background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer';
   var BTN_N ='background:var(--pill);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:6px 12px;font-size:12px;cursor:pointer';
 
@@ -3087,24 +3127,63 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     }
   });
 
-  function bindBulk(){
-    var conf=document.getElementById('rmBulkConfirm'), btn=document.getElementById('rmBulkClear');
-    if(!conf||!btn||btn.__b)return; btn.__b=1;
-    conf.addEventListener('input',function(){ var ok=conf.value.trim().toUpperCase()==='RESET'; btn.disabled=!ok; btn.style.opacity=ok?'1':'.5'; });
-    btn.addEventListener('click',function(){
+  /* A · reset practical marks for a batch (or all) */
+  function batchPreview(){
+    var sel=document.getElementById('rmBatch'), info=document.getElementById('rmBatchInfo'); if(!sel||!info) return;
+    var b=sel.value, map=regToBatch(); var n=subs().filter(function(s){return isPractical(s)&&inBatch(s,b,map);}).length;
+    info.textContent=n+' practical submission'+(n===1?'':'s')+(b?(' in “'+b+'”'):' (all batches)')+' will be affected.';
+  }
+  function refreshBatchSelect(){
+    var sel=document.getElementById('rmBatch'); if(!sel) return;
+    var cur=sel.value;
+    sel.innerHTML='<option value="">All batches</option>'+batches().map(function(b){return '<option value="'+esc(b)+'">'+esc(b)+'</option>';}).join('');
+    if(cur){ sel.value=cur; }
+    batchPreview();
+  }
+  function bindBatchReset(){
+    var sel=document.getElementById('rmBatch'), mode=document.getElementById('rmMode'), go=document.getElementById('rmBatchGo'), info=document.getElementById('rmBatchInfo');
+    if(!sel) return;
+    refreshBatchSelect();
+    if(go.__b) return; go.__b=1;
+    sel.addEventListener('change',batchPreview);
+    go.addEventListener('click',function(){
+      var b=sel.value, remove=(mode.value==='remove'), map=regToBatch(), all=subs();
+      var target=all.filter(function(s){return isPractical(s)&&inBatch(s,b,map);});
+      if(!target.length){ note('Nothing to reset for that selection'); return; }
+      var scope=b?('the “'+b+'” batch'):'ALL batches';
+      var verb=remove?('remove '+target.length+' practical submission'+(target.length===1?'':'s')+' (students will redo them)'):('clear the marks on '+target.length+' practical'+(target.length===1?'':'s'));
+      if(!confirm('Reset marks for '+scope+'?\n\nThis will '+verb+'. It cannot be undone.'))return;
+      if(remove){ var kill={}; target.forEach(function(s){kill[String(s.id)]=1;}); all=all.filter(function(s){return !kill[String(s.id)];}); }
+      else { target.forEach(ungrade); }
+      save(all); log((remove?'Removed':'Cleared marks on')+' '+target.length+' practical(s) — '+scope); note((remove?'Removed ':'Cleared ')+target.length+' — '+scope); render(); refreshEval(); batchPreview();
+    });
+  }
+
+  /* C · fresh start — wipe ticked demo data, keep faculty/students/allotment */
+  var OBJ_KEYS={'alizonNotifications':1,'gp-notifications':1,'gp-doc-folders':1,'gp-student-uploads':1,'gp-doc-requests':1,'alizonAnnounce':1};
+  function clearKey(k){ try{ localStorage.setItem(k, OBJ_KEYS[k]?'{}':'[]'); }catch(e){} }
+  function bindFresh(){
+    var conf=document.getElementById('fsConfirm'), go=document.getElementById('fsGo');
+    if(!conf||go.__b) return; go.__b=1;
+    conf.addEventListener('input',function(){ var ok=conf.value.trim().toUpperCase()==='RESET'; go.disabled=!ok; go.style.opacity=ok?'1':'.5'; });
+    go.addEventListener('click',function(){
       if(conf.value.trim().toUpperCase()!=='RESET')return;
-      var all=subs(), n=0;
-      all.forEach(function(s){ if(isPractical(s)&&(s.mark!=null||s.status==='evaluated')){ ungrade(s); n++; } });
-      if(!confirm('Clear the marks on '+n+' practical submission'+(n===1?'':'s')+' across ALL students?\n\nThis cannot be undone.'))return;
-      save(all); conf.value=''; btn.disabled=true; btn.style.opacity='.5';
-      log('Bulk reset ALL practical marks ('+n+' submissions)'); note(n+' practical marks cleared'); render(); refreshEval();
+      var keys=[]; document.querySelectorAll('.fs:checked').forEach(function(c){ String(c.dataset.k).split(',').forEach(function(k){k=k.trim(); if(k&&keys.indexOf(k)<0)keys.push(k);}); });
+      if(!keys.length){ note('Tick at least one category to clear'); return; }
+      if(!confirm('Fresh start: permanently clear '+keys.length+' data set(s) for a hand-over to students?\n\nKept safe: faculty, students, allotment, courses, syllabus, content.\n\nThis cannot be undone.'))return;
+      keys.forEach(clearKey);
+      conf.value=''; go.disabled=true; go.style.opacity='.5';
+      log('Fresh start — cleared: '+keys.join(', '));
+      /* refresh any admin panels that read those keys */
+      ['renderEval','renderGriev','renderActivity','renderFees','renderResultsAdmin','renderSched'].forEach(function(fn){ try{ if(typeof window[fn]==='function') window[fn](); }catch(e){} });
+      render(); note('System reset — fresh for students ✓');
     });
   }
 
   function boot(){
     searchEl=document.getElementById('rmSearch'); listEl=document.getElementById('rmList');
     if(searchEl&&!searchEl.__b){ searchEl.__b=1; searchEl.addEventListener('input',render); }
-    bindBulk(); render();
+    bindBatchReset(); bindFresh(); render();
   }
   window.renderResetMarks=boot;
   var nav=document.querySelector('[data-sec="adm-resetmarks"]'); if(nav) nav.addEventListener('click',function(){ setTimeout(boot,40); });
