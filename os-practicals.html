@@ -30,11 +30,11 @@
 
 <!-- ===== HERO ===== -->
 <section class="hero short" style="padding:0">
-  <img class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Facademics%2Fabd83179-1fb9-4c81-b1d9-086e85f40058-large.webp" alt="Virtual practicals">
+  <img id="heroImgprac" class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Facademics%2Fabd83179-1fb9-4c81-b1d9-086e85f40058-large.webp" alt="Virtual practicals">
   <div class="in">
     <span class="eyebrow" style="color:#ffd7d9">ALIZON OS · Practicals</span>
-    <h1 style="margin-top:12px">Virtual Practicals &amp; Labs</h1>
-    <p class="sub">Run rigorous, AI-scored practicals right in your browser — every lab mapped to the syllabus and built on the Aim · Principle · Theory · Requirements · Procedure · Guided-Method standard.</p>
+    <h1 id="heroH1prac" style="margin-top:12px">Virtual Practicals &amp; Labs</h1>
+    <p id="heroSubprac" class="sub">Run rigorous, AI-scored practicals right in your browser — every lab mapped to the syllabus and built on the Aim · Principle · Theory · Requirements · Procedure · Guided-Method standard.</p>
     <div class="cta"><a class="btn btn-primary" href="ASMDI-dashboard.html">Launch from the Portal ↗</a></div>
   </div>
 </section>
@@ -170,5 +170,7 @@
   window.addEventListener('storage',function(e){if(e&&e.key==='alizonLabAccess')decorate();});
 })();
 </script>
+<script src="firebase-sync.js" defer></script>
+<script src="alizon-cms.js?v=4" defer></script>
 </body>
 </html>

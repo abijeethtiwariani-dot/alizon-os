@@ -29,12 +29,12 @@
 </header>
 
 <!-- ===== HERO ===== -->
-<section class="hero" style="padding:0" data-slides="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F28fb8362-1762-471d-8579-69f69f4f7a70-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F4cc12870-3323-4f30-88d0-0061d929ec37-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F66e56b22-b560-4e50-8ef1-4dcf315d56de-large.webp">
+<section id="heroSecHome" class="hero" style="padding:0" data-slides= "https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F28fb8362-1762-471d-8579-69f69f4f7a70-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F4cc12870-3323-4f30-88d0-0061d929ec37-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F66e56b22-b560-4e50-8ef1-4dcf315d56de-large.webp">
   <img class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F28fb8362-1762-471d-8579-69f69f4f7a70-large.webp" alt="ALIZON OS platform">
   <div class="in">
     <span class="eyebrow" style="color:#ffd7d9">The Platform</span>
-    <h1 style="margin-top:12px">ALIZON OS</h1>
-    <p class="sub">The practical-learning platform of Alizon School of Medical &amp; Digital Intelligence — browser-based virtual practicals, AI-scored assessments, online examinations, results and verifiable certificates, all in one place.</p>
+    <h1 id="heroH1Home" style="margin-top:12px">ALIZON OS</h1>
+    <p id="heroSubHome" class="sub">The practical-learning platform of Alizon School of Medical &amp; Digital Intelligence — browser-based virtual practicals, AI-scored assessments, online examinations, results and verifiable certificates, all in one place.</p>
     <div class="cta">
       <a class="btn btn-primary" href="ASMDI-dashboard.html">Enter the Portal ↗</a>
       <a class="btn btn-ghost" href="#showcase">Explore the Platform</a>
@@ -139,5 +139,7 @@
 var b=document.getElementById('burger');
 if(b)b.addEventListener('click',function(){alert('Mobile menu — wire to your nav drawer');});
 </script>
+<script src="firebase-sync.js" defer></script>
+<script src="alizon-cms.js?v=4" defer></script>
 </body>
 </html>

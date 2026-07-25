@@ -2616,7 +2616,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     var C=window.__alizonCMS; var form=document.getElementById('cmsForm');
     if(!C||!form||!form.querySelector('[data-cms-key]')){ setTimeout(seed,400); return; }
     function imgOf(el){ if(!el) return ''; if(el.tagName==='IMG') return el.getAttribute('src')||''; if(el.getAttribute && el.getAttribute('data-slides')) return el.getAttribute('data-slides'); return ''; }
-    var pages=['alizon-home.html','alizon-clone-home.html','alizon-os.html','os-practicals.html','alizon-allotment.html','alizon-results.html'];
+    var pages=['alizon-home.html','alizon-clone-home.html','index.html','alizon-os.html','os-practicals.html','alizon-career.html','alizon-vacancies.html','alizon-sessions.html','alizon-cv.html','alizon-allotment.html','alizon-results.html'];
     Promise.all(pages.map(function(p){ return fetch(p).then(function(r){return r.text();}).catch(function(){return '';}); })).then(function(htmls){
       var docs=htmls.map(function(h){ return new DOMParser().parseFromString(h,'text/html'); });
       var store={}; try{ store=JSON.parse(localStorage.getItem('alizonContent')||'{}')||{}; }catch(e){}

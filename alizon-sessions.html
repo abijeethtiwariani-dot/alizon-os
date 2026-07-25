@@ -42,11 +42,11 @@
 </header>
 
 <section class="hero short" style="padding:0;min-height:38vh">
-  <img class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp" alt="">
+  <img id="heroImgsess" class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp" alt="">
   <div class="in">
     <span class="eyebrow" style="color:#ffd7d9"><a href="alizon-career.html" style="color:#ffd7d9">‹ Career</a></span>
-    <h1 style="margin-top:10px">Mock Interviews &amp; Career Sessions</h1>
-    <p class="sub">Live sessions on interview skills, communication and career readiness. <span class="free-badge">Free for Alizon students</span> &nbsp;Outsiders may join for a small fee.</p>
+    <h1 id="heroH1sess" style="margin-top:10px">Mock Interviews &amp; Career Sessions</h1>
+    <p id="heroSubsess" class="sub">Live sessions on interview skills, communication and career readiness. <span class="free-badge">Free for Alizon students</span> &nbsp;Outsiders may join for a small fee.</p>
   </div>
 </section>
 
@@ -195,5 +195,6 @@ function exportRegs(){var regs=getJSON('alizonCareerRegs',[]);var cols=['name','
   renderEvt();renderPay();renderRegs();
   window.addEventListener('storage',function(e){if(!e)return;if(e.key==='alizonCareerEvents')renderEvt();if(e.key==='alizonCareerPay')renderPay();if(e.key==='alizonCareerRegs')renderRegs();}); })();
 </script>
+<script src="alizon-cms.js?v=4" defer></script>
 </body>
 </html>

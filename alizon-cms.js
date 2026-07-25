@@ -205,7 +205,32 @@
 
     { key:'ch-cta-h', label:'CTA — heading',   sel:'#ch-cta-h', idx:0, area:'Home — Call to Action' },
     { key:'ch-cta-p', label:'CTA — paragraph', sel:'#ch-cta-p', idx:0, area:'Home — Call to Action', multiline:true },
-    { key:'ch-cta-b', label:'CTA — button text',sel:'#ch-cta-b',idx:0, area:'Home — Call to Action' }
+    { key:'ch-cta-b', label:'CTA — button text',sel:'#ch-cta-b',idx:0, area:'Home — Call to Action' },
+
+    /* ============ EVERY-PAGE HERO (image + title + subtitle) ============ */
+    { key:'home-hero-img',   label:'Hero — background image URL(s) — separate several with | for a carousel', sel:'#heroSecHome', idx:0, area:'Home Page — Hero', type:'image', multiline:true },
+    { key:'home-hero-title', label:'Hero — title',    sel:'#heroH1Home',  idx:0, area:'Home Page — Hero' },
+    { key:'home-hero-sub',   label:'Hero — subtitle', sel:'#heroSubHome', idx:0, area:'Home Page — Hero', multiline:true },
+
+    { key:'prac-hero-img',   label:'Hero — background image URL', sel:'#heroImgprac',  idx:0, area:'Practicals — Hero', type:'image' },
+    { key:'prac-hero-title', label:'Hero — title',    sel:'#heroH1prac',  idx:0, area:'Practicals — Hero' },
+    { key:'prac-hero-sub',   label:'Hero — subtitle', sel:'#heroSubprac', idx:0, area:'Practicals — Hero', multiline:true },
+
+    { key:'career-hero-img',   label:'Hero — background image URL', sel:'#heroImgcareer',  idx:0, area:'Career — Hero', type:'image' },
+    { key:'career-hero-title', label:'Hero — title',    sel:'#heroH1career',  idx:0, area:'Career — Hero' },
+    { key:'career-hero-sub',   label:'Hero — subtitle', sel:'#heroSubcareer', idx:0, area:'Career — Hero', multiline:true },
+
+    { key:'vac-hero-img',   label:'Hero — background image URL', sel:'#heroImgvac',  idx:0, area:'Vacancies — Hero', type:'image' },
+    { key:'vac-hero-title', label:'Hero — title',    sel:'#heroH1vac',  idx:0, area:'Vacancies — Hero' },
+    { key:'vac-hero-sub',   label:'Hero — subtitle', sel:'#heroSubvac', idx:0, area:'Vacancies — Hero', multiline:true },
+
+    { key:'sess-hero-img',   label:'Hero — background image URL', sel:'#heroImgsess',  idx:0, area:'Sessions — Hero', type:'image' },
+    { key:'sess-hero-title', label:'Hero — title',    sel:'#heroH1sess',  idx:0, area:'Sessions — Hero' },
+    { key:'sess-hero-sub',   label:'Hero — subtitle', sel:'#heroSubsess', idx:0, area:'Sessions — Hero', multiline:true },
+
+    { key:'cv-hero-img',   label:'Hero — background image URL', sel:'#heroImgcv',  idx:0, area:'CV Builder — Hero', type:'image' },
+    { key:'cv-hero-title', label:'Hero — title',    sel:'#heroH1cv',  idx:0, area:'CV Builder — Hero' },
+    { key:'cv-hero-sub',   label:'Hero — subtitle', sel:'#heroSubcv', idx:0, area:'CV Builder — Hero', multiline:true }
   ];
 
   var fieldByKey = {};
