@@ -2596,7 +2596,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 <script src="vendor/gsap.min.js"></script>
 <script src="vendor/ScrollTrigger.min.js"></script>
 <script src="alizon-motion.js"></script>
-<script src="alizon-cms.js?v=4c"></script>
+<script src="alizon-cms.js?v=5c"></script>
 <script>window.ALIZON_OAK={root:'body',mount:'.wrap',title:'Campus Overview',editable:true}</script>
 <script src="alizon-oak.js?v=1"></script>
 <script>
@@ -2639,7 +2639,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   function cms(){ return (window.__alizonCMS && typeof window.__alizonCMS.get==='function') ? window.__alizonCMS : null; }
   function ready(){
     var C=cms();
-    if(!C){ if(++tries<40){ setTimeout(ready,250); } else { var h=document.getElementById('cmsForm'); if(h) h.innerHTML='<div class="ahint">Could not load the content editor — check that alizon-cms.js?v=4 is present next to this file.</div>'; } return; }
+    if(!C){ if(++tries<40){ setTimeout(ready,250); } else { var h=document.getElementById('cmsForm'); if(h) h.innerHTML='<div class="ahint">Could not load the content editor — check that alizon-cms.js?v=5 is present next to this file.</div>'; } return; }
     build(C);
   }
   function fieldList(C){
@@ -2671,7 +2671,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   function build(C){
     var host=document.getElementById('cmsForm'); if(!host) return;
     var fs=fieldList(C);
-    if(!fs.length){ host.innerHTML='<div class="ahint">No editable fields were found. Update alizon-cms.js?v=4 to register website fields.</div>'; return; }
+    if(!fs.length){ host.innerHTML='<div class="ahint">No editable fields were found. Update alizon-cms.js?v=5 to register website fields.</div>'; return; }
     /* group into  Page → Section → fields  (area = "Page — Section") */
     var tree={}, pageOrder=[];
     fs.forEach(function(f){

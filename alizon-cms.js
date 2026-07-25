@@ -32,65 +32,19 @@
      ---------------------------------------------------------- */
   var fields = [
     /* ---- Hero ---- */
-    { key: 'hero-eyebrow',   label: 'Hero — eyebrow line',        sel: '.hero .eyebrow',          idx: 0, area: 'Homepage — Hero' },
-    { key: 'hero-title',     label: 'Hero — main title',          sel: '.hero h1',                idx: 0, area: 'Homepage — Hero' },
-    { key: 'hero-tagline',   label: 'Hero — tagline',             sel: '.hero .tag',              idx: 0, area: 'Homepage — Hero' },
-    { key: 'hero-lead',      label: 'Hero — lead paragraph',      sel: '.hero .lead',             idx: 0, area: 'Homepage — Hero', multiline: true },
-    { key: 'hero-cta-label', label: 'Hero — primary button text', sel: '.hero .cta .btn.primary', idx: 0, area: 'Homepage — Hero' },
-    { key: 'hero-notice',    label: 'Hero — announcement line',   sel: '.hero .price',            idx: 0, area: 'Homepage — Hero' },
 
     /* ---- Stat strip (4 numbers + 4 labels) ---- */
-    { key: 'stat-1-num',   label: 'Stat 1 — number', sel: '.strip .in .n', idx: 0, area: 'Homepage — Stats' },
-    { key: 'stat-1-label', label: 'Stat 1 — label',  sel: '.strip .in .k', idx: 0, area: 'Homepage — Stats' },
-    { key: 'stat-2-num',   label: 'Stat 2 — number', sel: '.strip .in .n', idx: 1, area: 'Homepage — Stats' },
-    { key: 'stat-2-label', label: 'Stat 2 — label',  sel: '.strip .in .k', idx: 1, area: 'Homepage — Stats' },
-    { key: 'stat-3-num',   label: 'Stat 3 — number', sel: '.strip .in .n', idx: 2, area: 'Homepage — Stats' },
-    { key: 'stat-3-label', label: 'Stat 3 — label',  sel: '.strip .in .k', idx: 2, area: 'Homepage — Stats' },
-    { key: 'stat-4-num',   label: 'Stat 4 — number', sel: '.strip .in .n', idx: 3, area: 'Homepage — Stats' },
-    { key: 'stat-4-label', label: 'Stat 4 — label',  sel: '.strip .in .k', idx: 3, area: 'Homepage — Stats' },
 
     /* ---- Programmes section ---- */
-    { key: 'prog-eyebrow',        label: 'Programmes — eyebrow',                sel: '#programmes .ey',         idx: 0, area: 'Homepage — Programmes' },
-    { key: 'prog-heading',        label: 'Programmes — heading (plain part)',   sel: '#programmes > h2',        idx: 0, area: 'Homepage — Programmes', part: 'text' },
-    { key: 'prog-heading-accent', label: 'Programmes — heading (accent part)',  sel: '#programmes > h2 .accent',idx: 0, area: 'Homepage — Programmes' },
-    { key: 'prog-sub',            label: 'Programmes — sub paragraph',          sel: '#programmes .sub',        idx: 0, area: 'Homepage — Programmes', multiline: true },
 
-    { key: 'prog-card-1-title', label: 'Card 1 (Paramedical) — title',       sel: '#programmes .pc h3',    idx: 0, area: 'Homepage — Programmes' },
-    { key: 'prog-card-1-desc',  label: 'Card 1 (Paramedical) — description', sel: '#programmes .pc p',     idx: 0, area: 'Homepage — Programmes', multiline: true },
-    { key: 'prog-card-1-meta',  label: 'Card 1 (Paramedical) — meta tags',   sel: '#programmes .pc .meta', idx: 0, area: 'Homepage — Programmes' },
-    { key: 'prog-card-2-title', label: 'Card 2 (Pharmacy) — title',          sel: '#programmes .pc h3',    idx: 1, area: 'Homepage — Programmes' },
-    { key: 'prog-card-2-desc',  label: 'Card 2 (Pharmacy) — description',    sel: '#programmes .pc p',     idx: 1, area: 'Homepage — Programmes', multiline: true },
-    { key: 'prog-card-2-meta',  label: 'Card 2 (Pharmacy) — meta tags',      sel: '#programmes .pc .meta', idx: 1, area: 'Homepage — Programmes' },
-    { key: 'prog-card-3-title', label: 'Card 3 (Medical) — title',           sel: '#programmes .pc h3',    idx: 2, area: 'Homepage — Programmes' },
-    { key: 'prog-card-3-desc',  label: 'Card 3 (Medical) — description',     sel: '#programmes .pc p',     idx: 2, area: 'Homepage — Programmes', multiline: true },
-    { key: 'prog-card-3-meta',  label: 'Card 3 (Medical) — meta tags',       sel: '#programmes .pc .meta', idx: 2, area: 'Homepage — Programmes' },
-    { key: 'prog-card-4-title', label: 'Card 4 (Hospital Admin) — title',    sel: '#programmes .pc h3',    idx: 3, area: 'Homepage — Programmes' },
-    { key: 'prog-card-4-desc',  label: 'Card 4 (Hospital Admin) — description', sel: '#programmes .pc p',  idx: 3, area: 'Homepage — Programmes', multiline: true },
-    { key: 'prog-card-4-meta',  label: 'Card 4 (Hospital Admin) — meta tags',sel: '#programmes .pc .meta', idx: 3, area: 'Homepage — Programmes' },
 
     /* ---- Practicals feature ---- */
-    { key: 'practicals-heading',        label: 'Practicals — heading (plain part)',  sel: '#practicals h2',         idx: 0, area: 'Homepage — Sections', part: 'text' },
-    { key: 'practicals-heading-accent', label: 'Practicals — heading (accent part)', sel: '#practicals h2 .accent', idx: 0, area: 'Homepage — Sections' },
-    { key: 'practicals-para',           label: 'Practicals — paragraph',             sel: '#practicals .feat p',    idx: 0, area: 'Homepage — Sections', multiline: true },
-    { key: 'practicals-bullet-1', label: 'Practicals — bullet 1', sel: '#practicals ul li', idx: 0, area: 'Homepage — Sections', part: 'text' },
-    { key: 'practicals-bullet-2', label: 'Practicals — bullet 2', sel: '#practicals ul li', idx: 1, area: 'Homepage — Sections', part: 'text' },
-    { key: 'practicals-bullet-3', label: 'Practicals — bullet 3', sel: '#practicals ul li', idx: 2, area: 'Homepage — Sections', part: 'text' },
-    { key: 'practicals-bullet-4', label: 'Practicals — bullet 4', sel: '#practicals ul li', idx: 3, area: 'Homepage — Sections', part: 'text' },
 
     /* ---- Aliz feature ---- */
-    { key: 'aliz-heading',        label: 'Aliz — heading (plain part)',  sel: '#aliz h2',         idx: 0, area: 'Homepage — Sections', part: 'text' },
-    { key: 'aliz-heading-accent', label: 'Aliz — heading (accent part)', sel: '#aliz h2 .accent', idx: 0, area: 'Homepage — Sections' },
-    { key: 'aliz-para',           label: 'Aliz — paragraph',             sel: '#aliz .feat p',    idx: 0, area: 'Homepage — Sections', multiline: true },
 
     /* ---- Assessment ---- */
-    { key: 'assessment-heading',        label: 'Assessment — heading (plain part)',  sel: '#assessment h2',         idx: 0, area: 'Homepage — Sections', part: 'text' },
-    { key: 'assessment-heading-accent', label: 'Assessment — heading (accent part)', sel: '#assessment h2 .accent', idx: 0, area: 'Homepage — Sections' },
-    { key: 'assessment-sub',            label: 'Assessment — sub paragraph',         sel: '#assessment .sub',       idx: 0, area: 'Homepage — Sections', multiline: true },
 
     /* ---- CTA block + footer ---- */
-    { key: 'cta-heading',  label: 'CTA block — heading',  sel: '.cta-blk h2', idx: 0, area: 'Homepage — CTA & Footer' },
-    { key: 'cta-sub',      label: 'CTA block — subtitle', sel: '.cta-blk p',  idx: 0, area: 'Homepage — CTA & Footer', multiline: true },
-    { key: 'footer-blurb', label: 'Footer — blurb',       sel: 'footer .in p',idx: 0, area: 'Homepage — CTA & Footer', multiline: true },
 
     /* ================================================================
        ACADEMICS PAGE (alizon-academics.html).
@@ -164,53 +118,11 @@
 
     { key: 'acad-cta-h', label: 'Closing CTA — heading', sel:'#acCtaH', idx:0, area:'Academics — Closing CTA', def:'Start your journey with Alizon' },
 
-    /* ============ CLONE HOME PAGE (alizon-clone-home.html) ============ */
-    { key:'ch-hero-h1',  label:'Hero — headline',            sel:'#ch-hero-h1',  idx:0, area:'Home — Hero' },
-    { key:'ch-hero-sub', label:'Hero — subtitle',            sel:'#ch-hero-sub', idx:0, area:'Home — Hero', multiline:true },
-    { key:'ch-hero-b1',  label:'Hero — button 1 text',       sel:'#ch-hero-b1',  idx:0, area:'Home — Hero' },
-    { key:'ch-hero-b2',  label:'Hero — button 2 text',       sel:'#ch-hero-b2',  idx:0, area:'Home — Hero' },
-    { key:'ch-hero-img', label:'Hero — image URLs (pipe | separated for carousel)', sel:'#ch-hero', idx:0, area:'Home — Hero', type:'image', multiline:true },
-
-    { key:'ch-ab-ey',  label:'About — eyebrow',   sel:'#ch-ab-ey',  idx:0, area:'Home — About' },
-    { key:'ch-ab-h',   label:'About — heading',   sel:'#ch-ab-h',   idx:0, area:'Home — About' },
-    { key:'ch-ab-p1',  label:'About — paragraph 1',sel:'#ch-ab-p1', idx:0, area:'Home — About', multiline:true },
-    { key:'ch-ab-p2',  label:'About — paragraph 2',sel:'#ch-ab-p2', idx:0, area:'Home — About', multiline:true },
-    { key:'ch-ab-img', label:'About — image URL', sel:'#ch-ab-img', idx:0, area:'Home — About', type:'image' },
-
-    { key:'ch-pr-h',   label:'Programs — heading',  sel:'#ch-pr-h',   idx:0, area:'Home — Programs' },
-    { key:'ch-pr-sub', label:'Programs — subtitle', sel:'#ch-pr-sub', idx:0, area:'Home — Programs', multiline:true },
-    { key:'ch-pr1-t',  label:'Program 1 — title',   sel:'#ch-pr1-t',  idx:0, area:'Home — Programs' },
-    { key:'ch-pr1-img',label:'Program 1 — image URL',sel:'#ch-pr1-img',idx:0, area:'Home — Programs', type:'image' },
-    { key:'ch-pr2-t',  label:'Program 2 — title',   sel:'#ch-pr2-t',  idx:0, area:'Home — Programs' },
-    { key:'ch-pr2-img',label:'Program 2 — image URL',sel:'#ch-pr2-img',idx:0, area:'Home — Programs', type:'image' },
-    { key:'ch-pr3-t',  label:'Program 3 — title',   sel:'#ch-pr3-t',  idx:0, area:'Home — Programs' },
-    { key:'ch-pr3-img',label:'Program 3 — image URL',sel:'#ch-pr3-img',idx:0, area:'Home — Programs', type:'image' },
-    { key:'ch-pr4-t',  label:'Program 4 — title',   sel:'#ch-pr4-t',  idx:0, area:'Home — Programs' },
-    { key:'ch-pr4-img',label:'Program 4 — image URL',sel:'#ch-pr4-img',idx:0, area:'Home — Programs', type:'image' },
-
-    { key:'ch-nw-h',  label:'News — heading',   sel:'#ch-nw-h',  idx:0, area:'Home — Campus News' },
-    { key:'ch-nw1-t', label:'News 1 — title',   sel:'#ch-nw1-t', idx:0, area:'Home — Campus News' },
-    { key:'ch-nw2-t', label:'News 2 — title',   sel:'#ch-nw2-t', idx:0, area:'Home — Campus News' },
-    { key:'ch-nw3-t', label:'News 3 — title',   sel:'#ch-nw3-t', idx:0, area:'Home — Campus News' },
-
-    { key:'ch-im-h', label:'Impact — heading', sel:'#ch-im-h', idx:0, area:'Home — Impact' },
-    { key:'ch-st1', label:'Stat 1 — number', sel:'#ch-st1', idx:0, area:'Home — Impact' },
-    { key:'ch-sl1', label:'Stat 1 — label',  sel:'#ch-sl1', idx:0, area:'Home — Impact' },
-    { key:'ch-st2', label:'Stat 2 — number', sel:'#ch-st2', idx:0, area:'Home — Impact' },
-    { key:'ch-sl2', label:'Stat 2 — label',  sel:'#ch-sl2', idx:0, area:'Home — Impact' },
-    { key:'ch-st3', label:'Stat 3 — number', sel:'#ch-st3', idx:0, area:'Home — Impact' },
-    { key:'ch-sl3', label:'Stat 3 — label',  sel:'#ch-sl3', idx:0, area:'Home — Impact' },
-    { key:'ch-st4', label:'Stat 4 — number', sel:'#ch-st4', idx:0, area:'Home — Impact' },
-    { key:'ch-sl4', label:'Stat 4 — label',  sel:'#ch-sl4', idx:0, area:'Home — Impact' },
-
-    { key:'ch-cta-h', label:'CTA — heading',   sel:'#ch-cta-h', idx:0, area:'Home — Call to Action' },
-    { key:'ch-cta-p', label:'CTA — paragraph', sel:'#ch-cta-p', idx:0, area:'Home — Call to Action', multiline:true },
-    { key:'ch-cta-b', label:'CTA — button text',sel:'#ch-cta-b',idx:0, area:'Home — Call to Action' },
 
     /* ============ EVERY-PAGE HERO (image + title + subtitle) ============ */
-    { key:'home-hero-img',   label:'Hero — background image URL(s) — separate several with | for a carousel', sel:'#heroSecHome', idx:0, area:'Home Page — Hero', type:'image', multiline:true },
-    { key:'home-hero-title', label:'Hero — title',    sel:'#heroH1Home',  idx:0, area:'Home Page — Hero' },
-    { key:'home-hero-sub',   label:'Hero — subtitle', sel:'#heroSubHome', idx:0, area:'Home Page — Hero', multiline:true },
+    { key:'home-hero-img',   label:'Hero — background image URL(s) — separate several with | for a carousel', sel:'#heroSecHome', idx:0, area:'Home — Hero', type:'image', multiline:true },
+    { key:'home-hero-title', label:'Hero — title',    sel:'#heroH1Home',  idx:0, area:'Home — Hero' },
+    { key:'home-hero-sub',   label:'Hero — subtitle', sel:'#heroSubHome', idx:0, area:'Home — Hero', multiline:true },
 
     { key:'prac-hero-img',   label:'Hero — background image URL', sel:'#heroImgprac',  idx:0, area:'Practicals — Hero', type:'image' },
     { key:'prac-hero-title', label:'Hero — title',    sel:'#heroH1prac',  idx:0, area:'Practicals — Hero' },
