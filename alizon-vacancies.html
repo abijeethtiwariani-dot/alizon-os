@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow">
+<title>Vacancies, Internships &amp; Training — ALIZON OS | Alizon School of Medical &amp; Digital Intelligence</title>
+<meta name="description" content="Job, internship, 8th-sem and training vacancies shared by the Alizon placement cell — apply directly.">
+<link rel="stylesheet" href="alizon-clone.css?v=2">
+<script src="firebase-sync.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js" defer></script>
+<script src="alizon-clone.js?v=2" defer></script>
+<style>
+  .mini{font-size:13px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600;font-family:var(--sans)}
+  .mini.pri{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+  .vac{display:flex;flex-direction:column;gap:6px}.vac .badge{align-self:flex-start}.vac .meta{color:var(--muted);font-size:.9rem}
+  .adminbar{background:#faf0f0;border:1px dashed rgba(177,4,14,.3);border-radius:12px;padding:20px 22px;margin-bottom:26px}
+  .adminbar h3{font-family:var(--serif);margin:0 0 4px}
+  .adminbar .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+  .adminbar input,.adminbar select,.adminbar textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px}
+</style>
+</head>
+<body>
+
+<header id="azsitehdr">
+  <div class="azhdr-util"><div class="in">
+    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON&nbsp;OS<small>Practical Learning Platform</small></span></a>
+    <div class="util-r"><span class="lbl">Information for:</span>
+      <a href="ASMDI-dashboard.html">ALIZON OS Portal</a><a href="alizon-faculty-portal.html">Faculty &amp; Staff Login</a><a href="alizon-results.html">Results</a><a href="alizon-verify.html">Verify</a><a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
+    </div>
+    <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div></div>
+  <div class="azhdr-nav"><nav class="in">
+    <div class="navlinks2"><a href="alizon-os.html">Overview</a><a href="os-practicals.html">Practicals</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a><a href="alizon-career.html" class="active">Career</a><a href="index.html">Institution</a></div>
+    <a class="btn btn-primary" style="padding:9px 20px;font-size:.95rem" href="ASMDI-dashboard.html">Enter Portal ↗</a>
+  </nav></div>
+</header>
+
+<section class="hero short" style="padding:0;min-height:38vh">
+  <img class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Facademics%2Fab1d26ed-88dd-4dd4-8a0f-7da0c010359e-large.webp" alt="">
+  <div class="in">
+    <span class="eyebrow" style="color:#ffd7d9"><a href="alizon-career.html" style="color:#ffd7d9">‹ Career</a></span>
+    <h1 style="margin-top:10px">Vacancies, Internships &amp; Training</h1>
+    <p class="sub">Openings shared by the Alizon placement cell — jobs, internships, 8th-sem placements, drives and training. Apply directly through each posting.</p>
+  </div>
+</section>
+
+<main>
+<section>
+  <div class="in">
+    <div class="adminbar" id="admVac" style="display:none">
+      <h3>Admin — post a vacancy</h3>
+      <div style="margin:6px 0 12px;padding:12px;border:1px solid rgba(177,4,14,.2);border-radius:10px;background:#fff">
+        <b style="font-size:13px">Auto-post from a job document</b>
+        <div style="font-size:12px;color:var(--muted);margin:2px 0 8px">Upload a .docx in the Alizon job-posting format — the fields below fill in automatically. Review, then Publish.</div>
+        <input type="file" id="nvDoc" accept=".docx" onchange="parseDocx(this)"> <span id="nvDocMsg" style="font-size:12.5px;color:var(--crimson);font-weight:600"></span>
+      </div>
+      <div class="grid2" style="margin:10px 0">
+        <select id="nvType"><option>Placement Job</option><option>Internship</option><option>8th Sem Internship</option><option>Placement Drive</option><option>Training</option></select>
+        <input id="nvTitle" placeholder="Job title">
+        <input id="nvOrg" placeholder="Organisation (· hiring partner)">
+        <input id="nvLoc" placeholder="Location(s)">
+        <input id="nvStipend" placeholder="Stipend / Salary">
+        <input id="nvFee" placeholder="Application fee">
+        <input id="nvLink" placeholder="Apply link (https://…)">
+        <input id="nvDeadline" placeholder="Last date to apply">
+      </div>
+      <textarea id="nvDesc" placeholder="About / description" style="margin-bottom:10px"></textarea>
+      <button class="mini pri" onclick="addVacancy()">Publish vacancy</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px" id="vacFilters">
+      <button class="mini on" data-f="all">All</button><button class="mini" data-f="Placement Job">Placement Jobs</button><button class="mini" data-f="Internship">Internships</button><button class="mini" data-f="8th Sem Internship">8th Sem</button><button class="mini" data-f="Placement Drive">Placement Drives</button><button class="mini" data-f="Training">Training</button>
+    </div>
+    <div class="grid" id="vacList"></div>
+  </div>
+</section>
+</main>
+
+<footer class="site"><div class="in"><div class="foot-bottom" style="border:none;padding:0">
+  <span>© 2026 Alizon School of Medical &amp; Digital Intelligence</span>
+  <span><a href="alizon-career.html" style="color:#c9c9c9">← Career hub</a> · alizon.in</span>
+</div></div></footer>
+
+<div id="vacModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);overflow:auto;padding:40px 16px">
+  <div style="max-width:760px;margin:0 auto;background:#fff;border-radius:14px;padding:30px 34px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.4)">
+    <button onclick="closeVac()" aria-label="Close" style="position:absolute;top:14px;right:16px;border:0;background:none;font-size:22px;cursor:pointer;color:#666">✕</button>
+    <div id="vacModalBody"></div>
+  </div>
+</div>
+
+<script>
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function getJSON(k,def){try{var v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
+function setJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+var params=new URLSearchParams(location.search);
+var isAdmin=(sessionStorage.getItem('alizonAdminAuth')==='1')||!!params.get('admin');
+var DEF_VAC=[
+ {type:'Internship',title:'Graduate Civil Apprentice Internship',org:'KSRRDA · ASAP Kerala',loc:'Idukki, Palakkad, Kasaragod, Wayanad',stipend:'₹10,000/month',fee:'₹500',link:'#',deadline:'25-07-2026',vacancies:'4',workMode:'On-site',duration:'1 Year',qualification:'B.Tech (Civil Engineering)',spec:'Civil Engineering',desc:'One-year Graduate Apprenticeship in civil infrastructure for B.Tech Civil graduates via ASAP Kerala.'},
+ {type:'Placement Job',title:'Pharmacy Assistant (AI-enabled)',org:'MediCare Hospitals',loc:'Thiruvananthapuram',link:'#',deadline:'30 Aug 2026',desc:'Digital dispensing and inventory using AI tools.'},
+ {type:'8th Sem Internship',title:'Data Science 8th-Sem Internship',org:'HealthTech Kerala',loc:'Kochi',stipend:'₹8,000/month',link:'#',deadline:'15 Aug 2026',desc:'Final-semester internship for pre-final / final year students.'}
+];
+var vacFilter='all', pendingVac=null;
+function vacCard(v,i){
+  var meta=[v.org,v.loc].filter(Boolean).join(' · ');
+  var sub=[v.stipend?('Stipend: '+v.stipend):'',v.deadline?('Last date: '+v.deadline):''].filter(Boolean).join(' · ');
+  return '<div class="card"><div class="body vac"><span class="badge">'+esc(v.type)+'</span><h3>'+esc(v.title)+'</h3><div class="meta">'+esc(meta)+'</div><p>'+esc((v.desc||'').slice(0,150))+((v.desc||'').length>150?'…':'')+'</p>'+(sub?'<div class="meta">'+esc(sub)+'</div>':'')+'<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:8px"><a class="more" style="cursor:pointer" onclick="viewVac('+i+')">View details →</a>'+(v.link&&/^https?:/i.test(v.link)?'<a class="more" href="'+esc(v.link)+'" target="_blank" rel="noopener">Apply →</a>':'')+(isAdmin?'<a class="more" style="cursor:pointer;color:#a32d2d" onclick="delVac('+i+')">Delete</a>':'')+'</div></div></div>';
+}
+function renderVac(){
+  var list=getJSON('alizonVacancies',DEF_VAC), host=$('vacList'), html='', shown=0;
+  list.forEach(function(v,i){ if(vacFilter==='all'||v.type===vacFilter){ html+=vacCard(v,i); shown++; } });
+  host.innerHTML = shown? html : '<p style="color:var(--muted)">No openings in this category right now.</p>';
+}
+function addVacancy(){var list=getJSON('alizonVacancies',DEF_VAC.slice());
+  var v={type:$('nvType').value,title:$('nvTitle').value,org:$('nvOrg').value,loc:$('nvLoc').value,stipend:$('nvStipend').value,fee:$('nvFee').value,link:$('nvLink').value,deadline:$('nvDeadline').value,desc:$('nvDesc').value};
+  if(pendingVac){v.qualification=pendingVac.qualification;v.spec=pendingVac.spec;v.vacancies=pendingVac.vacancies;v.workMode=pendingVac.workMode;v.duration=pendingVac.duration;v.full=pendingVac.full;}
+  if(!v.title){alert('Add a job title first.');return;}
+  list.unshift(v);setJSON('alizonVacancies',list);
+  ['nvTitle','nvOrg','nvLoc','nvStipend','nvFee','nvLink','nvDeadline','nvDesc'].forEach(function(id){$(id).value='';});
+  $('nvDocMsg').textContent='';pendingVac=null;renderVac();}
+function delVac(i){if(!confirm('Delete this vacancy?'))return;var list=getJSON('alizonVacancies',DEF_VAC.slice());list.splice(i,1);setJSON('alizonVacancies',list);renderVac();}
+function viewVac(i){var list=getJSON('alizonVacancies',DEF_VAC),v=list[i];if(!v)return;
+  var rows=[['Type',v.type],['Organisation',v.org],['Location(s)',v.loc],['Vacancies',v.vacancies],['Stipend / Salary',v.stipend],['Application fee',v.fee],['Duration',v.duration],['Work mode',v.workMode],['Qualification',v.qualification],['Specialization',v.spec],['Last date to apply',v.deadline]];
+  var h='<span class="badge">'+esc(v.type)+'</span><h2 style="margin:8px 0 4px;font-family:var(--serif)">'+esc(v.title)+'</h2>';
+  h+='<table style="width:100%;font-size:13.5px;border-collapse:collapse;margin-top:8px">'+rows.filter(function(r){return r[1];}).map(function(r){return '<tr><td style="padding:5px 12px 5px 0;color:var(--muted);white-space:nowrap;vertical-align:top">'+esc(r[0])+'</td><td style="padding:5px 0">'+esc(r[1])+'</td></tr>';}).join('')+'</table>';
+  if(v.desc)h+='<h3 style="margin:16px 0 6px;font-family:var(--serif)">About</h3><p style="font-size:13.5px;line-height:1.6">'+esc(v.desc)+'</p>';
+  if(v.full)h+='<details style="margin-top:12px"><summary style="cursor:pointer;font-weight:600;color:var(--crimson)">Full posting</summary><pre style="white-space:pre-wrap;font:inherit;font-size:12.5px;color:#333;margin-top:8px">'+esc(v.full)+'</pre></details>';
+  if(v.link&&/^https?:/i.test(v.link))h+='<div style="margin-top:18px"><a class="btn btn-primary" href="'+esc(v.link)+'" target="_blank" rel="noopener">Apply now →</a></div>';
+  $('vacModalBody').innerHTML=h;$('vacModal').style.display='';}
+function closeVac(){$('vacModal').style.display='none';}
+function deriveType(s){s=(s||'').toLowerCase();
+  if(/8th\s*sem|8th\s*semester|final\s*sem|pre-?final/.test(s))return '8th Sem Internship';
+  if(/placement\s*drive|recruitment\s*drive|\bdrive\b/.test(s))return 'Placement Drive';
+  if(/intern|apprentice|trainee/.test(s))return 'Internship';
+  if(/training|bootcamp/.test(s))return 'Training';
+  return 'Placement Job';}
+function parseJobText(t){t=t.replace(/\r/g,'');
+  var L=['Job Title','Organization','Organisation','Hiring Partner','Department','Job Role','Employment Type','Industry','Duration','Number of Vacancies','Stipend / Salary','Stipend/Salary','Salary','Application Fee','Registration Fee','Work Mode','Location\\(s\\)','Work Locations','Experience Required','Qualification','Eligible Courses','Eligible Specializations','Application Start Date','Last Date to Apply','Expected Joining Date','Job Category','Application Status','Official Website','Application Link','Email','Phone','Website'];
+  var alt=L.join('|'),norm=t.replace(new RegExp('\\s*('+alt+')\\s*:','g'),'\n$1:'),map={};
+  norm.split('\n').forEach(function(ln){var m=ln.match(new RegExp('^('+alt+')\\s*:\\s*(.*)$'));if(m)map[m[1]]=(m[2]||'').trim();});
+  var about='',am=t.match(/About the Opportunity\s*([\s\S]*?)(Vacancy Details|Eligibility Criteria|Key Responsibilities|$)/i);if(am)about=am[1].replace(/\s+/g,' ').trim();
+  return {map:map,about:about,full:t};}
+function parseDocx(input){var f=input.files[0];if(!f)return;var msg=$('nvDocMsg');msg.textContent='Reading…';
+  var r=new FileReader();r.onload=function(){
+    if(!window.mammoth){msg.textContent='Parser still loading — try again in a second.';return;}
+    mammoth.extractRawText({arrayBuffer:r.result}).then(function(res){
+      var p=parseJobText(res.value),m=p.map,title=m['Job Title']||'';
+      $('nvType').value=deriveType((m['Job Category']||'')+' '+(m['Employment Type']||'')+' '+title);
+      $('nvTitle').value=title;
+      $('nvOrg').value=(m['Organization']||m['Organisation']||'')+(m['Hiring Partner']?' · '+m['Hiring Partner']:'');
+      $('nvLoc').value=m['Location(s)']||m['Work Locations']||'';
+      $('nvStipend').value=m['Stipend / Salary']||m['Stipend/Salary']||m['Salary']||'';
+      $('nvFee').value=m['Application Fee']||m['Registration Fee']||'';
+      var link=m['Application Link']||m['Official Website']||'';$('nvLink').value=/^https?:/i.test(link)?link:'';
+      $('nvDeadline').value=m['Last Date to Apply']||'';
+      $('nvDesc').value=p.about||'';
+      pendingVac={qualification:m['Qualification']||'',spec:m['Eligible Specializations']||m['Eligible Courses']||'',vacancies:m['Number of Vacancies']||'',workMode:m['Work Mode']||'',duration:m['Duration']||'',full:p.full};
+      msg.textContent='✓ Parsed — review the fields, then click Publish vacancy.';
+    }).catch(function(){msg.textContent='Could not read this .docx file.';});
+  };r.readAsArrayBuffer(f);}
+document.querySelectorAll('#vacFilters [data-f]').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('#vacFilters [data-f]').forEach(function(x){x.classList.remove('on');});b.classList.add('on');vacFilter=b.getAttribute('data-f');renderVac();});});
+(function(){ if(isAdmin){var a=$('admVac');if(a)a.style.display='';} renderVac();
+  window.addEventListener('storage',function(e){if(e&&e.key==='alizonVacancies')renderVac();}); })();
+</script>
+</body>
+</html>

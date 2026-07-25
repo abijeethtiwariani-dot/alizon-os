@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index,follow">
+<title>Skill Development &amp; Mock Interviews — ALIZON OS | Alizon School of Medical &amp; Digital Intelligence</title>
+<meta name="description" content="Live mock interviews and career-readiness sessions — free for Alizon students, outside participants pay via UPI.">
+<link rel="stylesheet" href="alizon-clone.css?v=2">
+<script src="firebase-sync.js" defer></script>
+<script src="alizon-clone.js?v=2" defer></script>
+<style>
+  .mini{font-size:13px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600;font-family:var(--sans)}
+  .mini.pri{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+  .vac{display:flex;flex-direction:column;gap:6px}.vac .badge{align-self:flex-start}.vac .meta{color:var(--muted);font-size:.9rem}
+  .adminbar{background:#faf0f0;border:1px dashed rgba(177,4,14,.3);border-radius:12px;padding:20px 22px;margin-bottom:26px}
+  .adminbar h3{font-family:var(--serif);margin:0 0 4px}
+  .adminbar .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+  .adminbar input,.adminbar select,.adminbar textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px}
+  .upi-box{display:flex;gap:24px;align-items:center;flex-wrap:wrap;background:#faf9f7;border:1px solid var(--line);border-radius:12px;padding:22px}
+  .upi-box img{width:170px;height:170px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px}
+  .free-badge{display:inline-block;background:#eaf3ee;color:#1E8E5A;font-weight:700;font-size:.8rem;padding:4px 12px;border-radius:100px}
+  .f{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13.5px;margin-bottom:2px}
+  .l{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:10px 0 4px}
+  .two2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+</style>
+</head>
+<body>
+
+<header id="azsitehdr">
+  <div class="azhdr-util"><div class="in">
+    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON&nbsp;OS<small>Practical Learning Platform</small></span></a>
+    <div class="util-r"><span class="lbl">Information for:</span>
+      <a href="ASMDI-dashboard.html">ALIZON OS Portal</a><a href="alizon-faculty-portal.html">Faculty &amp; Staff Login</a><a href="alizon-results.html">Results</a><a href="alizon-verify.html">Verify</a><a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
+    </div>
+    <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div></div>
+  <div class="azhdr-nav"><nav class="in">
+    <div class="navlinks2"><a href="alizon-os.html">Overview</a><a href="os-practicals.html">Practicals</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a><a href="alizon-career.html" class="active">Career</a><a href="index.html">Institution</a></div>
+    <a class="btn btn-primary" style="padding:9px 20px;font-size:.95rem" href="ASMDI-dashboard.html">Enter Portal ↗</a>
+  </nav></div>
+</header>
+
+<section class="hero short" style="padding:0;min-height:38vh">
+  <img class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp" alt="">
+  <div class="in">
+    <span class="eyebrow" style="color:#ffd7d9"><a href="alizon-career.html" style="color:#ffd7d9">‹ Career</a></span>
+    <h1 style="margin-top:10px">Mock Interviews &amp; Career Sessions</h1>
+    <p class="sub">Live sessions on interview skills, communication and career readiness. <span class="free-badge">Free for Alizon students</span> &nbsp;Outsiders may join for a small fee.</p>
+  </div>
+</section>
+
+<main>
+<section>
+  <div class="in">
+    <div class="adminbar" id="admEvt" style="display:none">
+      <h3>Admin — publish a session</h3>
+      <div class="grid2" style="margin:10px 0">
+        <input id="neTitle" placeholder="Session title">
+        <input id="neDate" placeholder="Date &amp; time (e.g. 20 Aug 2026, 4 PM)">
+        <input id="neMode" placeholder="Mode (Online / Campus)">
+        <input id="neReg" placeholder="Registration link (https://…)">
+        <input id="neFee" placeholder="Outsider fee (e.g. 199)">
+      </div>
+      <textarea id="neDesc" placeholder="What the session covers" style="margin-bottom:10px"></textarea>
+      <button class="mini pri" onclick="addEvent()">Publish session</button>
+    </div>
+    <div class="grid" id="evtList"></div>
+
+    <div style="margin-top:44px">
+      <div class="section-head" style="margin-bottom:20px"><span class="eyebrow">For outside participants</span><h2 style="font-size:clamp(1.5rem,3vw,2rem)">Payment</h2><p>Alizon students attend free. Outside participants pay the session fee via UPI and share the transaction ID when registering.</p></div>
+      <div class="upi-box">
+        <img id="upiQr" src="" alt="UPI QR code" onerror="this.style.display='none'">
+        <div>
+          <div style="font-weight:700;font-size:1.1rem" id="upiName">Alizon School of Medical &amp; Digital Intelligence</div>
+          <div style="color:var(--muted);margin:4px 0">UPI ID: <b id="upiId">—</b></div>
+          <div style="color:var(--muted)">Fee (outsiders): <b id="upiFee">—</b></div>
+          <p style="font-size:13px;color:var(--muted);max-width:44ch;margin-top:10px">Scan the QR or pay to the UPI ID above, then enter your UPI transaction reference in the session registration form.</p>
+        </div>
+      </div>
+      <div class="adminbar" id="admPay" style="display:none;margin-top:20px">
+        <h3>Admin — payment settings</h3>
+        <div class="grid2" style="margin:10px 0">
+          <input id="pyId" placeholder="UPI ID (e.g. alizon@okhdfc)">
+          <input id="pyFee" placeholder="Default outsider fee (e.g. ₹199)">
+          <input id="pyQr" placeholder="UPI QR image URL">
+        </div>
+        <button class="mini pri" onclick="savePay()">Save payment settings</button>
+      </div>
+      <div class="adminbar" id="admRegs" style="display:none;margin-top:20px">
+        <h3>Admin — session registrations <span id="regCount" style="font-weight:400;color:var(--muted);font-size:13px"></span></h3>
+        <div style="margin:8px 0;display:flex;gap:8px"><button class="mini" onclick="exportRegs()">⬇ Export CSV</button><button class="mini" onclick="clearRegs()">Clear all</button></div>
+        <div style="overflow-x:auto"><table id="regsTable" style="width:100%;border-collapse:collapse;font-size:13px"></table></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site"><div class="in"><div class="foot-bottom" style="border:none;padding:0">
+  <span>© 2026 Alizon School of Medical &amp; Digital Intelligence</span>
+  <span><a href="alizon-career.html" style="color:#c9c9c9">← Career hub</a> · alizon.in</span>
+</div></div></footer>
+
+<div id="regModal" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,.55);overflow:auto;padding:40px 16px">
+  <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:14px;padding:28px 30px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.4)">
+    <button onclick="closeReg()" aria-label="Close" style="position:absolute;top:12px;right:14px;border:0;background:none;font-size:22px;cursor:pointer;color:#666">✕</button>
+    <div id="regBody"></div>
+  </div>
+</div>
+
+<script>
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function getJSON(k,def){try{var v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
+function setJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+var params=new URLSearchParams(location.search);
+var isAdmin=(sessionStorage.getItem('alizonAdminAuth')==='1')||!!params.get('admin');
+var DEF_EVT=[
+ {title:'Mock Interview Marathon',date:'20 Aug 2026, 4:00 PM',mode:'Online',reg:'#',fee:'199',desc:'One-on-one mock interviews with feedback from industry mentors.'},
+ {title:'Resume & LinkedIn Workshop',date:'27 Aug 2026, 3:00 PM',mode:'Campus',reg:'#',fee:'149',desc:'Make your CV and profile recruiter-ready.'}
+];
+function renderEvt(){
+  var list=getJSON('alizonCareerEvents',DEF_EVT); var host=$('evtList');
+  host.innerHTML = list.length? list.map(function(e,i){return '<div class="card"><div class="body vac"><span class="badge">Session</span><h3>'+esc(e.title)+'</h3><div class="meta">'+esc(e.date)+' · '+esc(e.mode)+'</div><p>'+esc(e.desc)+'</p><div class="meta"><span class="free-badge">Students free</span> &nbsp; Outsiders: ₹'+esc(e.fee||'—')+'</div><a class="more" style="cursor:pointer" onclick="regEvent('+i+')">Register →</a>'+(isAdmin?' <button class="mini" style="margin-top:8px" onclick="delEvt('+i+')">Delete</button>':'')+'</div></div>';}).join('') : '<p style="color:var(--muted)">No upcoming sessions announced yet.</p>';
+}
+function addEvent(){var list=getJSON('alizonCareerEvents',DEF_EVT.slice());list.unshift({title:$('neTitle').value,date:$('neDate').value,mode:$('neMode').value,reg:$('neReg').value,fee:$('neFee').value,desc:$('neDesc').value});setJSON('alizonCareerEvents',list);['neTitle','neDate','neMode','neReg','neFee','neDesc'].forEach(function(id){$(id).value='';});renderEvt();}
+function delEvt(i){var list=getJSON('alizonCareerEvents',DEF_EVT.slice());list.splice(i,1);setJSON('alizonCareerEvents',list);renderEvt();}
+function renderPay(){
+  var p=getJSON('alizonCareerPay',{id:'alizon@upi',fee:'₹199',qr:''});
+  $('upiId').textContent=p.id||'—'; $('upiFee').textContent=p.fee||'—';
+  if(p.qr){$('upiQr').src=p.qr;$('upiQr').style.display='';}else{$('upiQr').style.display='none';}
+  if(isAdmin){$('pyId').value=p.id||'';$('pyFee').value=p.fee||'';$('pyQr').value=p.qr||'';}
+}
+function savePay(){setJSON('alizonCareerPay',{id:$('pyId').value,fee:$('pyFee').value,qr:$('pyQr').value});renderPay();alert('Payment settings saved.');}
+var pendingReg=null;
+function regEvent(i){var list=getJSON('alizonCareerEvents',DEF_EVT),e=list[i];if(!e)return;
+  var pay=getJSON('alizonCareerPay',{id:'alizon@upi',fee:'₹199',qr:''});
+  var fee=e.fee?('₹'+e.fee):(pay.fee||'₹199');
+  $('regBody').innerHTML='<h2 style="font-family:var(--serif);margin:0 0 4px">Register — '+esc(e.title)+'</h2>'+
+    '<div style="color:var(--muted);font-size:13px;margin-bottom:12px">'+esc(e.date)+' · '+esc(e.mode)+'</div>'+
+    '<label class="l">Full name *</label><input class="f" id="rgName">'+
+    '<div class="two2"><div><label class="l">Email *</label><input class="f" id="rgEmail"></div><div><label class="l">Phone *</label><input class="f" id="rgPhone"></div></div>'+
+    '<label class="l">Are you an Alizon student? *</label><select class="f" id="rgWho" onchange="regWho()"><option value="">— select —</option><option value="student">Yes — Alizon student (free)</option><option value="outside">No — outside participant ('+esc(fee)+')</option></select>'+
+    '<div id="rgExtra"></div>'+
+    '<div id="rgAction" style="margin-top:14px"><button class="mini pri" onclick="submitReg('+i+')">Continue</button></div>'+
+    '<div id="rgPay" style="display:none;margin-top:16px"></div>';
+  $('regModal').style.display='';}
+function regWho(){var w=$('rgWho').value;
+  $('rgExtra').innerHTML = w==='student' ? '<label class="l">Registration / Roll number *</label><input class="f" id="rgReg"><label class="l">Batch / Course</label><input class="f" id="rgBatch">'
+    : w==='outside' ? '<label class="l">College / Organisation *</label><input class="f" id="rgOrg"><label class="l">City</label><input class="f" id="rgCity">' : '';}
+function submitReg(i){
+  var name=$('rgName').value.trim(),email=$('rgEmail').value.trim(),phone=$('rgPhone').value.trim(),who=$('rgWho').value;
+  if(!name||!email||!phone||!who){alert('Please fill name, email, phone and student status.');return;}
+  var list=getJSON('alizonCareerEvents',DEF_EVT),e=list[i]||{};
+  var reg={session:e.title||'',date:e.date||'',name:name,email:email,phone:phone,type:who};
+  if(who==='student'){
+    reg.regno=($('rgReg')||{}).value||'';reg.batch=($('rgBatch')||{}).value||'';
+    if(!reg.regno){alert('Enter your registration number.');return;}
+    reg.fee='Free';reg.paid=true;saveReg(reg);
+    $('rgAction').style.display='none';$('rgPay').style.display='';
+    $('rgPay').innerHTML='<div class="free-badge" style="font-size:1rem">✓ Registered — free for Alizon students</div><p style="font-size:13px;color:var(--muted);margin-top:8px">You are confirmed for '+esc(e.title)+'. Details will be sent to your email/phone.</p>';
+  } else {
+    reg.org=($('rgOrg')||{}).value||'';reg.city=($('rgCity')||{}).value||'';
+    if(!reg.org){alert('Enter your college / organisation.');return;}
+    var pay=getJSON('alizonCareerPay',{id:'alizon@upi',fee:'₹199',qr:''});
+    reg.fee=e.fee?('₹'+e.fee):(pay.fee||'₹199');reg.paid=false;pendingReg=reg;
+    $('rgAction').style.display='none';$('rgPay').style.display='';
+    $('rgPay').innerHTML='<h3 style="font-family:var(--serif);margin:0 0 4px">Payment — '+esc(reg.fee)+'</h3>'+
+      '<p style="font-size:13px;color:var(--muted)">Scan the QR or pay to the UPI ID, then enter the transaction reference to confirm.</p>'+
+      (pay.qr?'<img src="'+esc(pay.qr)+'" alt="UPI QR" style="width:180px;height:180px;object-fit:contain;border:1px solid var(--line);border-radius:10px;padding:6px;margin:10px 0;background:#fff">':'<p style="color:var(--crimson);font-size:13px">Payment QR will be added by the office.</p>')+
+      '<div style="font-size:14px">UPI ID: <b>'+esc(pay.id||'—')+'</b></div>'+
+      '<label class="l">UPI transaction reference *</label><input class="f" id="rgTxn" placeholder="e.g. 4321XXXXXX">'+
+      '<button class="mini pri" style="margin-top:10px" onclick="confirmPay()">I have paid — confirm registration</button>';
+  }
+}
+function confirmPay(){var txn=($('rgTxn')||{}).value||'';if(!txn.trim()){alert('Enter your UPI transaction reference.');return;}
+  pendingReg.txn=txn.trim();pendingReg.paid=true;saveReg(pendingReg);
+  $('rgPay').innerHTML='<div class="free-badge" style="font-size:1rem">✓ Registration submitted</div><p style="font-size:13px;color:var(--muted);margin-top:8px">Thank you. We will verify your payment (ref '+esc(txn)+') and email your confirmation.</p>';pendingReg=null;}
+function saveReg(reg){try{reg.ts=new Date().toISOString();}catch(e){}var all=getJSON('alizonCareerRegs',[]);all.push(reg);setJSON('alizonCareerRegs',all);}
+function closeReg(){$('regModal').style.display='none';}
+function renderRegs(){
+  var regs=getJSON('alizonCareerRegs',[]); var c=$('regCount'); if(c)c.textContent='('+regs.length+')';
+  var t=$('regsTable'); if(!t)return;
+  if(!regs.length){t.innerHTML='<tr><td style="color:var(--muted);padding:8px">No registrations yet.</td></tr>';return;}
+  var head='<tr style="text-align:left;border-bottom:2px solid var(--line)"><th style="padding:6px 8px">Name</th><th>Type</th><th>Session</th><th>Contact</th><th>Fee</th><th>Paid</th><th>Txn ref</th><th></th></tr>';
+  t.innerHTML=head+regs.map(function(r,i){return '<tr style="border-bottom:1px solid var(--line)"><td style="padding:6px 8px">'+esc(r.name)+(r.org?'<br><small style="color:var(--muted)">'+esc(r.org)+'</small>':'')+(r.regno?'<br><small style="color:var(--muted)">'+esc(r.regno)+'</small>':'')+'</td><td>'+(r.type==='student'?'Student':'Outsider')+'</td><td>'+esc(r.session)+'</td><td>'+esc(r.email)+'<br>'+esc(r.phone)+'</td><td>'+esc(r.fee||'')+'</td><td>'+(r.paid?'✓':'—')+'</td><td>'+esc(r.txn||'')+'</td><td><button class="mini" onclick="delReg('+i+')">✕</button></td></tr>';}).join('');
+}
+function delReg(i){var regs=getJSON('alizonCareerRegs',[]);regs.splice(i,1);setJSON('alizonCareerRegs',regs);renderRegs();}
+function clearRegs(){if(confirm('Clear ALL registrations?')){setJSON('alizonCareerRegs',[]);renderRegs();}}
+function exportRegs(){var regs=getJSON('alizonCareerRegs',[]);var cols=['name','type','session','date','email','phone','org','regno','batch','city','fee','paid','txn','ts'];
+  var csv=cols.join(',')+'\n'+regs.map(function(r){return cols.map(function(c){return '"'+String(r[c]==null?'':r[c]).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='session-registrations.csv';a.click();}
+(function(){ if(isAdmin){['admEvt','admPay','admRegs'].forEach(function(id){var e=$(id);if(e)e.style.display='';});}
+  renderEvt();renderPay();renderRegs();
+  window.addEventListener('storage',function(e){if(!e)return;if(e.key==='alizonCareerEvents')renderEvt();if(e.key==='alizonCareerPay')renderPay();if(e.key==='alizonCareerRegs')renderRegs();}); })();
+</script>
+</body>
+</html>
