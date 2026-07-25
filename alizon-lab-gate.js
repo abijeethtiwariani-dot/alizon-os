@@ -9,15 +9,14 @@
   function get(k, d){ try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } }
 
   var file = (location.pathname.split('/').pop() || '').toLowerCase();
-  var open = get('alizonLabAccess', []); if (!Array.isArray(open)) open = [];
-  var isOpen = open.some(function (x) { return String(x).toLowerCase() === file; });
 
   var params = new URLSearchParams(location.search);
   var isAdmin = (function(){ try { return sessionStorage.getItem('alizonAdminAuth') === '1'; } catch(e){ return false; } })() || !!params.get('admin');
   var prof = get('alizonProfile', null);
   var isStudent = !!(prof && (prof.reg || prof.name));
 
-  if (isOpen || isAdmin || isStudent) return;   /* allowed */
+  /* HARD LOCK: every practical is student/admin only — no public access. */
+  if (isAdmin || isStudent) return;   /* allowed */
 
   function block() {
     var d = document.createElement('div');

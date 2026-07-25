@@ -130,19 +130,19 @@
   var params=new URLSearchParams(location.search);
   var isAdmin=(function(){try{return sessionStorage.getItem('alizonAdminAuth')==='1';}catch(e){return false;}})()||!!params.get('admin');
   var prof=get('alizonProfile',null); var isStudent=!!(prof&&(prof.reg||prof.name));
+  try{ if(localStorage.getItem('alizonLabLockV')!=='locked2026'){ setJSON('alizonLabAccess',[]); localStorage.setItem('alizonLabLockV','locked2026'); } }catch(e){}
   function openList(){var o=get('alizonLabAccess',[]);return Array.isArray(o)?o.map(function(x){return String(x).toLowerCase();}):[];}
   var cards=[].slice.call(document.querySelectorAll('a.card[href^="ALIZON-OS-"]'));
   function fileOf(a){return (a.getAttribute('href')||'').split('/').pop().toLowerCase();}
   function decorate(){
-    var open=openList();
+    /* HARD LOCK: all practicals are student/admin only — no public access. */
+    var allowed=isStudent||isAdmin;
     cards.forEach(function(a){
       var f=fileOf(a); var badge=a.querySelector('.badge');
       var old=a.querySelector('.lab-status'); if(old)old.remove();
-      var isOpen=open.indexOf(f)>=0, allowed=isOpen||isStudent||isAdmin;
       var st=document.createElement('span'); st.className='lab-status';
-      st.style.cssText='display:inline-block;font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:6px;white-space:nowrap';
-      if(isOpen){ st.textContent='● Open to all'; st.style.background='#eaf3ee'; st.style.color='#1E8E5A'; }
-      else { st.textContent='🔒 Students only'; st.style.background='#faf0f0'; st.style.color='#b1040e'; }
+      st.style.cssText='display:inline-block;font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:6px;white-space:nowrap;background:#faf0f0;color:#b1040e';
+      st.textContent='🔒 Students only';
       if(badge&&badge.after) badge.after(st); else if(badge) badge.parentNode.insertBefore(st,badge.nextSibling);
       a.onclick=function(e){
         if(allowed) return true;
@@ -153,21 +153,8 @@
     });
   }
   decorate();
-  if(isAdmin){
-    var box=document.getElementById('labAdmin'); if(box)box.style.display='';
-    var listEl=document.getElementById('labAdminList'), open=openList();
-    listEl.innerHTML=cards.map(function(a){var f=fileOf(a),name=((a.querySelector('h3')||{}).textContent||f);
-      return '<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" data-lab="'+f+'"'+(open.indexOf(f)>=0?' checked':'')+'> '+name+'</label>';}).join('');
-    listEl.addEventListener('change',function(e){
-      var cb=e.target; if(!cb.getAttribute||!cb.getAttribute('data-lab'))return;
-      var cur=get('alizonLabAccess',[]); if(!Array.isArray(cur))cur=[];
-      var f=cb.getAttribute('data-lab');
-      cur=cur.filter(function(x){return String(x).toLowerCase()!==f;});
-      if(cb.checked)cur.push(f);
-      set('alizonLabAccess',cur); decorate();
-    });
-  }
-  window.addEventListener('storage',function(e){if(e&&e.key==='alizonLabAccess')decorate();});
+  /* admin open-to-outside panel disabled: all practicals are locked to students */
+  var _lab=document.getElementById('labAdmin'); if(_lab) _lab.style.display='none';
 })();
 </script>
 <script src="firebase-sync.js" defer></script>
