@@ -142,7 +142,49 @@
 
     { key:'cv-hero-img',   label:'Hero — background image URL', sel:'#heroImgcv',  idx:0, area:'CV Builder — Hero', type:'image' },
     { key:'cv-hero-title', label:'Hero — title',    sel:'#heroH1cv',  idx:0, area:'CV Builder — Hero' },
-    { key:'cv-hero-sub',   label:'Hero — subtitle', sel:'#heroSubcv', idx:0, area:'CV Builder — Hero', multiline:true }
+    { key:'cv-hero-sub',   label:'Hero — subtitle', sel:'#heroSubcv', idx:0, area:'CV Builder — Hero', multiline:true },
+
+    /* ============ HOME HUB — other sections ============ */
+    { key:'hb-intro-h',   label:'Intro — heading',      sel:'#hbIntroH',  idx:0, area:'Home — Intro' },
+    { key:'hb-intro-p1',  label:'Intro — paragraph 1',  sel:'#hbIntroP1', idx:0, area:'Home — Intro', multiline:true },
+    { key:'hb-intro-p2',  label:'Intro — paragraph 2',  sel:'#hbIntroP2', idx:0, area:'Home — Intro', multiline:true },
+    { key:'hb-intro-img', label:'Intro — image URL',    sel:'#hbIntroImg',idx:0, area:'Home — Intro', type:'image' },
+
+    { key:'hb-sc-h',   label:'Showcase — heading',  sel:'#hbScH',   idx:0, area:'Home — Showcase' },
+    { key:'hb-sc-sub', label:'Showcase — subtitle', sel:'#hbScSub', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c1-t', label:'Card 1 — title', sel:'#hbC1T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c1-img', label:'Card 1 — image', sel:'#hbC1Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c1-d', label:'Card 1 — description', sel:'#hbC1D', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c2-t', label:'Card 2 — title', sel:'#hbC2T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c2-img', label:'Card 2 — image', sel:'#hbC2Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c2-d', label:'Card 2 — description', sel:'#hbC2D', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c3-t', label:'Card 3 — title', sel:'#hbC3T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c3-img', label:'Card 3 — image', sel:'#hbC3Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c3-d', label:'Card 3 — description', sel:'#hbC3D', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c4-t', label:'Card 4 — title', sel:'#hbC4T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c4-img', label:'Card 4 — image', sel:'#hbC4Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c4-d', label:'Card 4 — description', sel:'#hbC4D', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c5-t', label:'Card 5 — title', sel:'#hbC5T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c5-img', label:'Card 5 — image', sel:'#hbC5Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c5-d', label:'Card 5 — description', sel:'#hbC5D', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c6-t', label:'Card 6 — title', sel:'#hbC6T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c6-img', label:'Card 6 — image', sel:'#hbC6Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c6-d', label:'Card 6 — description', sel:'#hbC6D', idx:0, area:'Home — Showcase', multiline:true },
+
+    { key:'hb-imp-h',   label:'Impact — heading',  sel:'#hbImpH',   idx:0, area:'Home — Impact' },
+    { key:'hb-imp-sub', label:'Impact — subtitle', sel:'#hbImpSub', idx:0, area:'Home — Impact', multiline:true },
+    { key:'hb-st1', label:'Stat 1 — number', sel:'#hbSt1', idx:0, area:'Home — Impact' },
+    { key:'hb-sl1', label:'Stat 1 — label',  sel:'#hbSl1', idx:0, area:'Home — Impact' },
+    { key:'hb-st2', label:'Stat 2 — number', sel:'#hbSt2', idx:0, area:'Home — Impact' },
+    { key:'hb-sl2', label:'Stat 2 — label',  sel:'#hbSl2', idx:0, area:'Home — Impact' },
+    { key:'hb-st3', label:'Stat 3 — number', sel:'#hbSt3', idx:0, area:'Home — Impact' },
+    { key:'hb-sl3', label:'Stat 3 — label',  sel:'#hbSl3', idx:0, area:'Home — Impact' },
+    { key:'hb-st4', label:'Stat 4 — number', sel:'#hbSt4', idx:0, area:'Home — Impact' },
+    { key:'hb-sl4', label:'Stat 4 — label',  sel:'#hbSl4', idx:0, area:'Home — Impact' },
+
+    { key:'hb-cta-h',   label:'CTA — heading',    sel:'#hbCtaH',   idx:0, area:'Home — Call to Action' },
+    { key:'hb-cta-p',   label:'CTA — paragraph',  sel:'#hbCtaP',   idx:0, area:'Home — Call to Action', multiline:true },
+    { key:'hb-cta-btn', label:'CTA — button text',sel:'#hbCtaBtn', idx:0, area:'Home — Call to Action' }
   ];
 
   var fieldByKey = {};
