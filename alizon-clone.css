@@ -68,7 +68,7 @@ img{max-width:100%;display:block}
 /* ===== sections ===== */
 section{padding:84px 0}
 .section-head{text-align:center;max-width:820px;margin:0 auto 48px}
-.section-head h2{font-size:clamp(2rem,5vw,4rem);line-height:1.1;margin:.3em 0 .3em}
+.section-head h2{font-size:clamp(2rem,5.6vw,5rem);line-height:1.1;font-weight:400;margin:.3em 0 .3em}
 .section-head p{color:var(--ink);font-size:clamp(1.125rem,1.2vw,1.375rem);line-height:1.8;margin:0}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
 .two img{border-radius:12px;box-shadow:var(--shadow-lg);width:100%;height:100%;object-fit:cover;max-height:440px}
@@ -262,3 +262,26 @@ html{scroll-behavior:smooth}
 .evtime{margin-top:16px;color:#555;font-size:.95rem;font-weight:500}
 @media(max-width:1000px){.evgrid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.evgrid{grid-template-columns:1fr}}
+
+/* ===== Stanford-style hero variant: bottom-left serif headline + story cycler ===== */
+.hero.stanford .in{text-align:left;margin:0;max-width:none;width:100%;padding:140px 40px 120px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;min-height:inherit}
+.hero.stanford h1{font-size:clamp(2.3rem,4.45vw,4rem);line-height:1.1;font-weight:400;text-align:left;max-width:760px;letter-spacing:-.01em}
+.hero.stanford p.sub{text-align:left;margin:18px 0 0;max-width:640px;font-size:clamp(1rem,1.2vw,1.25rem);line-height:1.35}
+.hero.stanford .cta{justify-content:flex-start;margin-top:26px}
+.hero.stanford .hero-dots{left:42px;right:auto;justify-content:flex-start;bottom:26px}
+.hero-stories{position:absolute;z-index:3;right:40px;bottom:96px;display:flex;flex-direction:column;gap:6px;max-width:460px}
+.hero-stories .hst{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:baseline;cursor:pointer;text-align:left;background:none;border:0;padding:6px 0;font-family:var(--sans)}
+.hero-stories .hst .c{position:relative;padding-left:16px;font-size:16px;font-weight:600;color:rgba(255,255,255,.7);white-space:nowrap;transition:color .3s ease}
+.hero-stories .hst .c::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:7px;height:7px;border-radius:50%;background:#fff;opacity:0;transition:opacity .3s ease}
+.hero-stories .hst .h{font-size:16px;line-height:1.35;color:rgba(255,255,255,.72);transition:color .3s ease,font-size .3s ease}
+.hero-stories .hst.on .c{color:#fff}
+.hero-stories .hst.on .c::before{opacity:1}
+.hero-stories .hst.on .h{color:#fff;font-size:19px;font-weight:600}
+@media(max-width:1100px){.hero-stories{display:none}}
+@media(max-width:700px){.hero.stanford .in{padding:120px 24px 96px}.hero.stanford .hero-dots{left:24px}}
+
+/* ===== Stanford pillar band: centered 80px serif heading + intro + pill CTA ===== */
+.pillar-band{background:#fff;text-align:center;padding:118px 24px 84px}
+.pillar-band h2{font-size:clamp(2.6rem,5.6vw,5rem);line-height:1.1;font-weight:400;letter-spacing:-.01em;color:#111;max-width:680px;margin:0 auto}
+.pillar-band p{font-size:20px;line-height:1.45;color:#111;max-width:646px;margin:28px auto 34px}
+@media(max-width:640px){.pillar-band{padding:72px 20px 56px}.pillar-band p{font-size:17px}}

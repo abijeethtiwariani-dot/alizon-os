@@ -109,13 +109,23 @@
       dots.appendChild(b); return b;
     });
     hero.appendChild(dots);
+    /* Stanford-style story cycler: [data-story] rows track + drive the carousel */
+    var stories = [].slice.call(hero.querySelectorAll('.hero-stories [data-story]'));
+    function syncStories(n){
+      stories.forEach(function(s){ s.classList.toggle('on', parseInt(s.getAttribute('data-story'), 10) === n % urls.length); });
+    }
     var cur = 0, timer;
     function go(n){
       if(n === cur) return;
       layers[cur].style.opacity = '0'; btns[cur].className = '';
       cur = n;
       layers[cur].style.opacity = '1'; btns[cur].className = 'on';
+      syncStories(cur);
     }
+    stories.forEach(function(s){
+      s.addEventListener('click', function(){ var i = parseInt(s.getAttribute('data-story'), 10); if(!isNaN(i) && i < urls.length){ go(i); restart(); } });
+    });
+    syncStories(0);
     btns.forEach(function(b, i){ b.addEventListener('click', function(){ go(i); restart(); }); });
     function restart(){ if(RM) return; clearInterval(timer); timer = setInterval(function(){ go((cur + 1) % urls.length); }, 5500); }
     restart();
