@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Alizon CMS — Admin Panel</title>
 <script src="firebase-sync.js"></script>
-<script src="alizon-cms.js?v=6"></script>
+<script src="alizon-cms.js?v=7"></script>
 <style>
   :root{--red:#c1121f;--red-d:#8a0009;--ink:#111;--muted:#6b6b6b;--line:#eceae6;--bg:#faf9f8;--card:#fff;--pink:#fbe9ea}
   *{box-sizing:border-box}
@@ -127,7 +127,7 @@ function buildTree(){
 /* fetch source pages once, to read current values (incl. images) */
 function seed(cb){
   var files={}; window.__alizonCMS.fields.forEach(function(f){});
-  var wanted=['alizon-clone-home.html','alizon-academics.html','index.html','os-practicals.html','alizon-career.html','alizon-vacancies.html','alizon-sessions.html','alizon-cv.html'];
+  var wanted=['alizon-clone-home.html','alizon-academics.html','index.html','os-practicals.html','alizon-career.html','alizon-vacancies.html','alizon-sessions.html','alizon-cv.html','alizon-exam.html','alizon-results.html','alizon-verify.html','alizon-workshops.html'];
   var left=wanted.length;
   wanted.forEach(function(fn){
     fetch(fn,{cache:'no-store'}).then(function(r){return r.text();}).then(function(h){docs[fn]=new DOMParser().parseFromString(h,'text/html');}).catch(function(){}).finally(function(){ if(--left<=0) cb(); });

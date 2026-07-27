@@ -144,6 +144,38 @@
     { key:'cv-hero-title', label:'Hero — title',    sel:'#heroH1cv',  idx:0, area:'CV Builder — Hero' },
     { key:'cv-hero-sub',   label:'Hero — subtitle', sel:'#heroSubcv', idx:0, area:'CV Builder — Hero', multiline:true },
 
+    { key:'exam-hero-img',   label:'Hero — background image URL', sel:'#heroImgexam',  idx:0, area:'Examinations — Hero', type:'image' },
+    { key:'exam-hero-title', label:'Hero — title',    sel:'#heroH1exam',  idx:0, area:'Examinations — Hero' },
+    { key:'exam-hero-sub',   label:'Hero — subtitle', sel:'#heroSubexam', idx:0, area:'Examinations — Hero', multiline:true },
+
+    { key:'results-hero-img',   label:'Hero — background image URL', sel:'#heroImgresults',  idx:0, area:'Results — Hero', type:'image' },
+    { key:'results-hero-title', label:'Hero — title',    sel:'#heroH1results',  idx:0, area:'Results — Hero' },
+    { key:'results-hero-sub',   label:'Hero — subtitle', sel:'#heroSubresults', idx:0, area:'Results — Hero', multiline:true },
+
+    { key:'verify-hero-img',   label:'Hero — background image URL', sel:'#heroImgverify',  idx:0, area:'Verify — Hero', type:'image' },
+    { key:'verify-hero-title', label:'Hero — title',    sel:'#heroH1verify',  idx:0, area:'Verify — Hero' },
+    { key:'verify-hero-sub',   label:'Hero — subtitle', sel:'#heroSubverify', idx:0, area:'Verify — Hero', multiline:true },
+
+    /* Examinations — content folders */
+    { key:'exam-apply-h',    label:'Apply — heading',  sel:'#exApplyH',   idx:0, area:'Examinations — Apply for Exam' },
+    { key:'exam-apply-hint', label:'Apply — description', sel:'#exApplyHint', idx:0, area:'Examinations — Apply for Exam', multiline:true },
+    { key:'exam-sec-h',      label:'Examination Section — heading', sel:'#exSecH', idx:0, area:'Examinations — Examination Section' },
+    { key:'exam-sec-hint',   label:'Examination Section — description', sel:'#exSecHint', idx:0, area:'Examinations — Examination Section', multiline:true },
+
+    /* Verify — content folders */
+    { key:'verify-stud-h',    label:'Student panel — heading', sel:'#vStudH', idx:0, area:'Verify — Student Panel' },
+    { key:'verify-stud-hint', label:'Student panel — description', sel:'#vStudHint', idx:0, area:'Verify — Student Panel', multiline:true },
+    { key:'verify-emp-h',     label:'Employee panel — heading', sel:'#vEmpH', idx:0, area:'Verify — Employee Panel' },
+    { key:'verify-emp-hint',  label:'Employee panel — description', sel:'#vEmpHint', idx:0, area:'Verify — Employee Panel', multiline:true },
+
+    /* Workshops */
+    { key:'ws-hero-ey',    label:'Hero — eyebrow',  sel:'#heroEyworkshops',  idx:0, area:'Workshops — Hero' },
+    { key:'ws-hero-title', label:'Hero — title',    sel:'#heroH1workshops',  idx:0, area:'Workshops — Hero' },
+    { key:'ws-hero-tag',   label:'Hero — tagline',  sel:'#heroTagworkshops', idx:0, area:'Workshops — Hero' },
+    { key:'ws-hero-sub',   label:'Hero — subtitle', sel:'#heroSubworkshops', idx:0, area:'Workshops — Hero', multiline:true },
+    { key:'ws-upcoming-h', label:'Upcoming — heading', sel:'#wsUpcomingH', idx:0, area:'Workshops — Upcoming' },
+    { key:'ws-reg-h',      label:'Register — heading', sel:'#wsRegH', idx:0, area:'Workshops — Registration' },
+
     /* ============ HOME HUB — other sections ============ */
     { key:'hb-intro-h',   label:'Intro — heading',      sel:'#hbIntroH',  idx:0, area:'Home — Intro' },
     { key:'hb-intro-p1',  label:'Intro — paragraph 1',  sel:'#hbIntroP1', idx:0, area:'Home — Intro', multiline:true },

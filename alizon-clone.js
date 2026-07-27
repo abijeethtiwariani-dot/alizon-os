@@ -44,9 +44,21 @@
     var r = el.getBoundingClientRect();
     return r.top < vh() * (frac || 0.88) && r.bottom > 0;
   }
+
+  /* ---------- home floating-glass header: glass over hero, solid on scroll ---------- */
+  var homeHdr = document.querySelector('#azsitehdr.home');
+  var homeHero = homeHdr ? document.querySelector('.hero') : null;
+  function updHeader(){
+    if(!homeHdr || !homeHero) return;
+    /* go solid once the hero has scrolled up to (roughly) the solid header height */
+    var solid = homeHero.getBoundingClientRect().bottom <= 122;
+    if(solid) homeHdr.classList.add('solid'); else homeHdr.classList.remove('solid');
+  }
+
   var ticking = false;
   function check(){
     ticking = false;
+    updHeader();
     for(var i = 0; i < revealEls.length; i++){
       var el = revealEls[i];
       if(!el.classList.contains('in') && inView(el)) el.classList.add('in');

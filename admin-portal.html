@@ -273,6 +273,44 @@
   <script src="firebase-sync.js"></script>
   <script src="print-paginate.js"></script>
 <link rel="stylesheet" href="alizon-theme.css">
+<style id="friendly-admin">
+/* ============ Friendly light reskin — match the clean Alizon CMS look ============ */
+:root{--fa-red:#c1121f;--fa-red-d:#8a0009;--fa-bg:#faf9f8;--fa-line:#eceae6;--fa-muted:#6b6b6b;--fa-pink:#fbe9ea}
+body{background:var(--fa-bg)!important;color:#2e2d29!important}
+.bgwrap{display:none!important}
+/* top bar → white */
+.top{background:#fff!important;border-bottom:1px solid var(--fa-line)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.top .bt b{color:var(--fa-red)!important}
+.top .bt small{color:var(--fa-muted)!important}
+.top a.back,.top button.reset{color:#333!important;border:1px solid var(--fa-line)!important;background:#fff!important}
+.top a.back:hover,.top button.reset:hover{background:#f5f4f3!important;border-color:#dcd8d3!important}
+/* sidebar → white, red-active (like the CMS) */
+.aside{background:#fff!important;border-right:1px solid var(--fa-line)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.anavv a{color:#333!important;border:1px solid transparent!important;border-radius:9px!important}
+.anavv a:hover{color:#111!important;background:#f5f4f3!important}
+.anavv a.on{color:#fff!important;background:var(--fa-red)!important;background-image:none!important;border-color:transparent!important;font-weight:600!important;box-shadow:0 6px 16px -8px rgba(193,18,31,.6)!important}
+.anavv a.on .aic{color:#fff!important}
+.anavv .ngl{color:#9a9a9a!important;opacity:1!important}
+.anavv a .cnt{background:var(--fa-red)!important;color:#fff!important}
+.asfoot{border-top:1px solid var(--fa-line)!important}
+.asfoot a{color:#555!important}
+.asfoot a:hover{color:var(--fa-red)!important;background:#f5f4f3!important}
+/* headings + lead */
+h1,h2,h3{color:#111!important}
+.lead p{color:var(--fa-muted)!important}
+.note{background:#fff7ea!important;border-color:#f0dca6!important;border-left-color:#e0a92e!important;color:#7a5a12!important}
+/* panels → clean white cards */
+.apanel,.prog,.newprog,.pickbar{background:#fff!important;border:1px solid var(--fa-line)!important;border-radius:16px!important;box-shadow:0 10px 30px -20px rgba(20,18,16,.18)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.apanel{--ink:#1c1a1f;--muted:#6b6570;--line:#ece9e5}
+.prog .pico,.apanel .pico{background:var(--fa-pink)!important;border:1px solid #f3d9db!important;color:var(--fa-red)!important}
+/* inputs → white */
+.apanel input,.apanel select,.apanel textarea,.prog input,.prog select,.prog textarea,.newprog input,.newprog select,.newprog textarea,.pickbar select{background:#fff!important;border:1px solid #e2ded9!important;color:#1c1a1f!important}
+.mrow{background:#faf9f7!important;border:1px solid #ece9e5!important}
+.stt th{background:#f6f4f2!important;color:#6b6570!important}
+/* Save / Add action buttons → solid red (match the CMS primary buttons) */
+.cadd,.btn.gold,.acReset,button.save,.savebtn{background:var(--fa-red)!important;background-image:none!important;color:#fff!important;border:1px solid var(--fa-red)!important;box-shadow:0 6px 16px -10px rgba(193,18,31,.6)!important}
+.cadd:hover,.btn.gold:hover,.acReset:hover,button.save:hover,.savebtn:hover{background:var(--fa-red-d)!important;border-color:var(--fa-red-d)!important}
+</style>
 </head>
 <body>
 <div class="bgwrap"></div>
@@ -2598,7 +2636,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 <script src="alizon-motion.js"></script>
 <script src="alizon-cms.js?v=6c"></script>
 <script>window.ALIZON_OAK={root:'body',mount:'.wrap',title:'Campus Overview',editable:true}</script>
-<script src="alizon-oak.js?v=1"></script>
+<script src="alizon-oak.js?v=2"></script>
 <script>
 /* CMS editor: seed defaults by fetching the real homepage */
 (function(){
