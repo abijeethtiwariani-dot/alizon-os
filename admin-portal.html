@@ -820,6 +820,16 @@ h1,h2,h3{color:#111!important}
       </div>
       <div style="margin-top:8px"><label class="hint" style="display:block;margin-bottom:4px">Venue / platform</label><input type="text" id="ws-venue" placeholder="e.g. Alizon Campus, Thiruvananthapuram · or Zoom"></div>
       <div style="margin-top:8px"><label class="hint" style="display:block;margin-bottom:4px">Short description</label><textarea id="ws-desc" rows="2" placeholder="What delegates learn, who it is for…" style="width:100%;font:inherit;padding:9px 12px;border:1px solid rgba(0,0,0,.15);border-radius:9px;box-sizing:border-box"></textarea></div>
+      <div style="margin-top:8px"><label class="hint" style="display:block;margin-bottom:4px">Event image (shown on the home "Upcoming Events" cards)</label>
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <img id="ws-img-prev" alt="" style="width:150px;height:96px;flex:none;border-radius:9px;border:1px solid rgba(0,0,0,.15);object-fit:cover;background:#f3f1ee;opacity:.3">
+          <div style="flex:1">
+            <input type="text" id="ws-img" placeholder="Paste an image link, or upload below" style="width:100%;font:inherit;padding:9px 12px;border:1px solid rgba(0,0,0,.15);border-radius:9px;box-sizing:border-box">
+            <label class="cadd" style="display:inline-flex;align-items:center;gap:7px;margin-top:8px;cursor:pointer">⬆ Upload a picture<input type="file" id="ws-img-file" accept="image/*" style="display:none"></label>
+            <div class="hint" style="margin-top:6px">JPG or PNG from your device — auto-resized. Leave blank to use a category image.</div>
+          </div>
+        </div>
+      </div>
 
       <div class="ct" style="margin-top:16px">Syllabus — drag modules from any course</div>
       <div class="ahint">Pick a course, then drag its modules into the workshop syllabus (or click a module to add it).</div>
@@ -2868,7 +2878,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   function loadWR(){ try{var a=JSON.parse(localStorage.getItem('alizonWorkshopRegs')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
   function saveWR(a){ setDB('alizonWorkshopRegs',Array.isArray(a)?a:[]); }
   function progs(){ try{ return (typeof PROGRAMS!=='undefined'&&Array.isArray(PROGRAMS))?PROGRAMS:JSON.parse(localStorage.getItem('alizonPrograms')||'[]'); }catch(e){ return []; } }
-  var WSB={editing:null, modules:[]};
+  var WSB={editing:null, modules:[], img:''};
   function $id(x){ return document.getElementById(x); }
 
   /* ---- module source pane ---- */
@@ -2924,8 +2934,9 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 
   /* ---- publish / edit / list ---- */
   function clearForm(){
-    WSB.editing=null; WSB.modules=[];
-    ['ws-title','ws-date','ws-end','ws-tstart','ws-tend','ws-seats','ws-fee','ws-venue','ws-desc'].forEach(function(id){ var el=$id(id); if(el) el.value=''; });
+    WSB.editing=null; WSB.modules=[]; WSB.img='';
+    ['ws-title','ws-date','ws-end','ws-tstart','ws-tend','ws-seats','ws-fee','ws-venue','ws-desc','ws-img'].forEach(function(id){ var el=$id(id); if(el) el.value=''; });
+    var pv=$id('ws-img-prev'); if(pv){ pv.src=''; pv.style.opacity='.3'; }
     var k=$id('ws-kind'); if(k) k.selectedIndex=0; var mo=$id('ws-mode'); if(mo) mo.selectedIndex=0;
     var b=$id('ws-pub'); if(b) b.textContent='Publish workshop';
     renderDrop(); var m=$id('ws-msg'); if(m) m.textContent='';
@@ -2989,6 +3000,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
         timeStart:($id('ws-tstart')||{}).value||'', timeEnd:($id('ws-tend')||{}).value||'',
         seats:String(($id('ws-seats')||{}).value||'').trim(), fee:String(($id('ws-fee')||{}).value||'').trim(),
         venue:String(($id('ws-venue')||{}).value||'').trim(), desc:String(($id('ws-desc')||{}).value||'').trim(),
+        img:String(($id('ws-img')||{}).value||WSB.img||'').trim(),
         modules:WSB.modules.slice(), on:true, ts:Date.now() };
       if(WSB.editing){
         var i=a.findIndex(function(w){return w.id===WSB.editing;});
@@ -3005,10 +3017,11 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     }
     if(t.hasAttribute&&t.hasAttribute('data-wsed')){
       var w=loadWs().filter(function(x){return x.id===t.getAttribute('data-wsed');})[0]; if(!w) return;
-      WSB.editing=w.id; WSB.modules=(w.modules||[]).slice();
+      WSB.editing=w.id; WSB.modules=(w.modules||[]).slice(); WSB.img=w.img||'';
       $id('ws-title').value=w.title||''; $id('ws-kind').value=w.kind||'Workshop'; $id('ws-mode').value=w.mode||'On-campus';
       $id('ws-date').value=w.date||''; $id('ws-end').value=w.endDate||''; $id('ws-tstart').value=w.timeStart||''; $id('ws-tend').value=w.timeEnd||''; $id('ws-seats').value=w.seats||'';
       $id('ws-fee').value=w.fee||''; $id('ws-venue').value=w.venue||''; $id('ws-desc').value=w.desc||'';
+      var _wi=$id('ws-img'); if(_wi) _wi.value=w.img||''; var _wp=$id('ws-img-prev'); if(_wp){ _wp.src=w.img||''; _wp.style.opacity=w.img?'1':'.3'; }
       $id('ws-pub').textContent='Save changes'; renderDrop();
       $id('ws-title').scrollIntoView({behavior:'smooth',block:'center'});
       return;
@@ -3043,6 +3056,18 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   document.addEventListener('change',function(ev){
     if(ev.target&&ev.target.id==='ws-src-course') renderSrcMods();
     if(ev.target&&(ev.target.id==='wsr-fws'||ev.target.id==='wsr-fst')) renderRegs();
+    if(ev.target&&ev.target.id==='ws-img'){ var pv=$id('ws-img-prev'); if(pv){ pv.src=ev.target.value||''; pv.style.opacity=ev.target.value?'1':'.3'; } WSB.img=ev.target.value||''; }
+    if(ev.target&&ev.target.id==='ws-img-file'){
+      var f=ev.target.files&&ev.target.files[0]; if(!f) return;
+      var rd=new FileReader();
+      rd.onload=function(){ var im=new Image();
+        im.onload=function(){ var mw=1000, sc=Math.min(1,mw/im.width), w=Math.round(im.width*sc), h=Math.round(im.height*sc);
+          var cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(im,0,0,w,h);
+          var data; try{ data=cv.toDataURL('image/jpeg',0.72); }catch(e){ alert('Could not process that image.'); return; }
+          WSB.img=data; var t=$id('ws-img'); if(t) t.value=data; var pv=$id('ws-img-prev'); if(pv){ pv.src=data; pv.style.opacity='1'; } };
+        im.onerror=function(){ alert('Could not read that image.'); }; im.src=rd.result; };
+      rd.readAsDataURL(f); ev.target.value='';
+    }
   });
 
   /* ---- ASAP / Skill-India candidate-upload CSV (exact 38-column order) ---- */
