@@ -243,3 +243,22 @@ html{scroll-behavior:smooth}
   .grid.az-bento > :nth-child(1) .more,.grid.az-bento > :nth-child(6) .more{color:var(--crimson)}
   .grid.az-bento > :nth-child(1) .badge,.grid.az-bento > :nth-child(6) .badge{background:#faf0f0;color:var(--crimson)}
 }
+
+/* ===== Upcoming Events band — auto from alizonWorkshops (home) ===== */
+.evband .section-head{margin-bottom:44px}
+.evgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.evcard{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-md);transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s cubic-bezier(.22,1,.36,1);color:inherit}
+.evcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.evimg{position:relative;height:230px;overflow:hidden;background:#eee}
+.evimg img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.evcard:hover .evimg img{transform:scale(1.06)}
+.evdate{position:absolute;left:16px;bottom:16px;background:#1b1d21;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 10px;border-radius:4px;min-width:52px;line-height:1.05}
+.evdate .m{font-size:.62rem;font-weight:700;letter-spacing:.12em}
+.evdate .d{font-size:1.35rem;font-weight:800;font-family:var(--sans)}
+.evbody{padding:20px 22px 24px;flex:1;display:flex;flex-direction:column}
+.evkick{color:var(--crimson);font-weight:700;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;margin-bottom:9px}
+.evttl{font-family:var(--sans);font-weight:700;font-size:1.15rem;line-height:1.3;color:var(--ink);margin:0 0 10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.evdesc{color:var(--muted);font-size:.95rem;line-height:1.6;margin:0;flex:1;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.evtime{margin-top:16px;color:#555;font-size:.95rem;font-weight:500}
+@media(max-width:1000px){.evgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.evgrid{grid-template-columns:1fr}}
