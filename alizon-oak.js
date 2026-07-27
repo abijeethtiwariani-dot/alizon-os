@@ -50,7 +50,7 @@
     '{R} .oak-hero.has-cover .oak-cover-rm{display:grid;place-items:center}',
     '{R} .oak-hero-head{position:relative;padding:16px 18px 0;font-family:"Source Serif Pro",Georgia,serif;font-size:20px;font-weight:800;color:#1B1D21}',
     '{R} .oak-hero.has-cover .oak-hero-head{color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.4)}',
-    '{R} .oak-hero-cards{position:relative;display:grid;grid-template-columns:repeat(3,1fr) 1.2fr;gap:13px;padding:14px 16px 16px}',
+    '{R} .oak-hero-cards{position:relative;display:grid;grid-template-columns:repeat(4,1fr) 1.2fr;gap:13px;padding:14px 16px 16px}',
     '{R} .oak-stat{background:rgba(255,255,255,.78);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);border:1px solid rgba(255,255,255,.7);border-radius:18px;padding:14px 15px;min-height:110px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 12px 30px -18px rgba(16,24,40,.35)}',
     '{R} .oak-stat .t{display:flex;align-items:center;justify-content:space-between}',
     '{R} .oak-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#1B1D21;background:#fff;border-radius:100px;padding:5px 11px;box-shadow:0 2px 6px rgba(16,24,40,.08)}',
@@ -73,6 +73,8 @@
   function heroHTML(){
     var s=ls('alizonStudents',[]),f=ls('alizonFaculty',[]),p=ls('alizonPrograms',[]);
     var nS=(Array.isArray(s)&&s.length)||248, nF=(Array.isArray(f)&&f.length)||9, nP=(Array.isArray(p)&&p.length)||4;
+    /* live count of students on a scholarship (scholarship % set and > 0) */
+    var nSch=(Array.isArray(s)?s:[]).filter(function(x){var v=String(x&&x.scholarship!=null?x.scholarship:'').replace('%','').trim();return v!==''&&!isNaN(parseFloat(v))&&parseFloat(v)>0;}).length;
     function stat(icon,label,n){return '<div class="oak-stat"><div class="t"><span class="oak-chip"><i>'+icon+'</i> '+label+'</span><span style="color:#9aa0aa">⋯</span></div><div class="b"><b class="oak-num">'+Number(n).toLocaleString()+'</b><span class="oak-arrow">↗</span></div></div>';}
     var coverUI = EDITABLE ?
       '<button class="oak-cover-btn" id="oakCoverBtn"><span>◈</span> Cover photo</button>'+
@@ -82,7 +84,7 @@
       coverUI+
       '<div class="oak-hero-head">'+TITLE+'</div>'+
       '<div class="oak-hero-cards">'+
-        stat('◗','Students',nS)+stat('❖','Faculty',nF)+stat('▤','Programmes',nP)+
+        stat('◗','Students',nS)+stat('❖','Faculty',nF)+stat('▤','Programmes',nP)+stat('✦','On Scholarship',nSch)+
         '<div class="oak-add"><b>Add New Members</b><div class="r"><a>＋ Add Student</a><a>＋ Add Faculty</a></div></div>'+
       '</div></div>';
   }

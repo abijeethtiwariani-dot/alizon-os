@@ -52,9 +52,14 @@
   .fld input[type=text],.fld textarea{width:100%;padding:10px 13px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:14px;background:#fff}
   .fld textarea{min-height:80px;resize:vertical}
   .imgfld{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff}
-  .imgfld .prev{width:150px;height:96px;flex:none;border-radius:9px;border:1px solid var(--line);object-fit:cover;background:#f3f1ee}
-  .imgfld .ctrls{flex:1}
-  .imgfld .up{display:inline-block;margin-top:8px;font-size:12.5px;font-weight:700;color:var(--red);cursor:pointer;border:1px solid var(--line);padding:7px 13px;border-radius:8px}
+  .imgfld .prev{width:150px;height:96px;flex:none;border-radius:9px;border:1px solid var(--line);object-fit:cover;background:#f3f1ee;cursor:pointer}
+  .imgfld .prev:hover{border-color:var(--red)}
+  .imgfld .ctrls{flex:1;min-width:0}
+  .imgfld .up{display:inline-flex;align-items:center;gap:8px;margin-top:10px;font-size:13.5px;font-weight:700;color:#fff;background:var(--red);cursor:pointer;border:0;padding:11px 18px;border-radius:100px;box-shadow:0 6px 16px -8px rgba(193,18,31,.6)}
+  .imgfld .up:hover{background:var(--red-d)}
+  .imgfld .up .ui{font-size:15px;line-height:1}
+  .imgfld .cap{font-size:11.5px;color:var(--muted);margin-top:8px}
+  .imgfld input[type=text]{margin-bottom:2px}
   .saverow{position:sticky;bottom:0;background:linear-gradient(180deg,transparent,var(--bg) 40%);padding:18px 0 4px;margin-top:10px;display:flex;gap:12px;align-items:center}
   .btnp{background:var(--red);color:#fff;border:0;border-radius:100px;padding:12px 30px;font-weight:700;font-size:14.5px;cursor:pointer}
   .btng{background:#fff;color:#333;border:1px solid var(--line);border-radius:100px;padding:12px 22px;font-weight:600;font-size:14px;cursor:pointer}
@@ -172,7 +177,7 @@ function showEditor(p,sec){
   fs.forEach(function(f){
     var val=currentVal(f);
     if(f.type==='image'){
-      h+='<div class="fld"><label>'+f.label+'</label><div class="imgfld"><img class="prev" data-prev="'+f.key+'" src="'+(val.split('|')[0]||'')+'" onerror="this.style.opacity=.25"><div class="ctrls"><input type="text" data-k="'+f.key+'" value="'+val.replace(/"/g,'&quot;')+'" placeholder="Image URL (or several separated by | for a carousel)"><label class="up">Upload image<input type="file" accept="image/*" data-upload="'+f.key+'" style="display:none"></label></div></div></div>';
+      h+='<div class="fld"><label>'+f.label+'</label><div class="imgfld"><img class="prev" data-prev="'+f.key+'" data-openupload="'+f.key+'" title="Click to upload a picture" src="'+(val.split('|')[0]||'')+'" onerror="this.style.opacity=.25"><div class="ctrls"><input type="text" data-k="'+f.key+'" value="'+val.replace(/"/g,'&quot;')+'" placeholder="Paste an image link, or upload below"><label class="up"><span class="ui">⬆</span> Upload a picture<input type="file" accept="image/*" data-upload="'+f.key+'" style="display:none"></label><div class="cap">Choose a JPG or PNG from your device — or paste an image link in the box above.</div></div></div></div>';
     } else {
       var multi=f.multiline||val.length>80;
       h+='<div class="fld"><label>'+f.label+'</label>'+(multi?'<textarea data-k="'+f.key+'">'+val.replace(/</g,'&lt;')+'</textarea>':'<input type="text" data-k="'+f.key+'" value="'+val.replace(/"/g,'&quot;')+'">')+'</div>';
@@ -184,6 +189,8 @@ function showEditor(p,sec){
   document.getElementById('cancel').addEventListener('click',function(){showPage(p);});
   m.querySelectorAll('[data-upload]').forEach(function(inp){inp.addEventListener('change',function(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(){var key=inp.getAttribute('data-upload');var txt=m.querySelector('[data-k="'+key+'"]');if(txt)txt.value=r.result;var pv=m.querySelector('[data-prev="'+key+'"]');if(pv){pv.src=r.result;pv.style.opacity=1;}};r.readAsDataURL(file);});});
   m.querySelectorAll('input[data-k]').forEach(function(inp){inp.addEventListener('input',function(){var pv=m.querySelector('[data-prev="'+inp.getAttribute('data-k')+'"]');if(pv){pv.src=inp.value.split('|')[0];pv.style.opacity=1;}});});
+  /* clicking the thumbnail also opens the file picker */
+  m.querySelectorAll('[data-openupload]').forEach(function(img){img.addEventListener('click',function(){var k=img.getAttribute('data-openupload');var fi=m.querySelector('input[type=file][data-upload="'+k+'"]');if(fi)fi.click();});});
   document.getElementById('save').addEventListener('click',function(){
     var obj={};m.querySelectorAll('[data-k]').forEach(function(el){var v=el.value;if(v&&v.trim())obj[el.getAttribute('data-k')]=v;else obj[el.getAttribute('data-k')]=null;});
     try{window.__alizonCMS.set(obj);}catch(e){}

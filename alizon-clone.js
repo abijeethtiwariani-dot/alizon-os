@@ -13,7 +13,7 @@
   if(!RM){
     revealEls.forEach(function(el){ el.classList.add('reveal'); });
     document.querySelectorAll('.grid').forEach(function(g){
-      [].slice.call(g.children).forEach(function(c,i){ c.style.transitionDelay = ((i % 4) * 0.09) + 's'; });
+      [].slice.call(g.children).forEach(function(c,i){ c.style.transitionDelay = ((i % 4) * 0.12) + 's'; });
     });
   }
 

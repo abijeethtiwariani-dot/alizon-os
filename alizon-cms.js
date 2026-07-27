@@ -213,6 +213,8 @@
     { key:'hb-sl3', label:'Stat 3 — label',  sel:'#hbSl3', idx:0, area:'Home — Impact' },
     { key:'hb-st4', label:'Stat 4 — number', sel:'#hbSt4', idx:0, area:'Home — Impact' },
     { key:'hb-sl4', label:'Stat 4 — label',  sel:'#hbSl4', idx:0, area:'Home — Impact' },
+    { key:'hb-st5', label:'Stat 5 — number (e.g. scholarships awarded)', sel:'#hbSt5', idx:0, area:'Home — Impact' },
+    { key:'hb-sl5', label:'Stat 5 — label',  sel:'#hbSl5', idx:0, area:'Home — Impact' },
 
     { key:'hb-cta-h',   label:'CTA — heading',    sel:'#hbCtaH',   idx:0, area:'Home — Call to Action' },
     { key:'hb-cta-p',   label:'CTA — paragraph',  sel:'#hbCtaP',   idx:0, area:'Home — Call to Action', multiline:true },
