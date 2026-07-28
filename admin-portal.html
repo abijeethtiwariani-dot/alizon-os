@@ -718,6 +718,12 @@ h1,h2,h3{color:#111!important}
     <div class="cblock" style="margin-top:18px"><div class="ct">Page hero images</div>
       <div class="ahint">Each public page's hero shows built-in artwork until you upload a photo here — JPG/PNG, auto-resized to 1080px, stored in cloud sync, live for every visitor. Remove a photo to bring the artwork back.</div>
       <div class="clist" style="margin-top:10px">
+        <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap;border:1px solid rgba(193,18,31,.25);border-radius:10px;background:#fdf7f7">
+          <div style="flex:1;min-width:200px"><b>Home page hero (main website)</b><div class="hint" id="hh-state">…</div></div>
+          <input type="file" id="hh-file" accept="image/*" style="max-width:200px">
+          <button class="cadd" id="hh-up">Set as main photo</button>
+          <button class="cadd" id="hh-rm" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove main photo</button>
+        </div>
         <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
           <div style="flex:1;min-width:200px"><b>Academics hero</b><div class="hint" data-hstate="acad-hero-img">…</div></div>
           <input type="file" data-hfile="acad-hero-img" accept="image/*" style="max-width:200px">
@@ -2865,8 +2871,48 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       refresh(); try{ typeof toast==='function'&&toast('Hero photo removed — artwork restored'); }catch(e){}
     }
   });
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',refresh); else refresh();
-  setInterval(refresh, 6000);
+  /* ---- HOME hero (main website) — carousel-aware: upload becomes slide 1, others kept ---- */
+  var HHKEY='home-hero-img';
+  function hhSlides(){ var v=String(store()[HHKEY]||'').trim(); return v?v.split('|').filter(function(x){return x.trim();}):[]; }
+  function hhFill(){
+    var el=document.getElementById('hh-state'); if(!el) return;
+    var s=hhSlides();
+    if(!s.length){ el.textContent='Using the built-in default images.'; return; }
+    var first=s[0].slice(0,60);
+    el.textContent=s.length+' slide'+(s.length>1?'s':'')+' in the hero carousel · main photo: '+(first.indexOf('data:')===0?'uploaded photo ✓':first);
+  }
+  document.addEventListener('click',function(ev){
+    var t=ev.target; if(!t||!t.id) return;
+    if(t.id==='hh-up'){
+      var f=document.getElementById('hh-file'); var file=f&&f.files&&f.files[0];
+      var el=document.getElementById('hh-state');
+      if(!file){ if(el) el.textContent='Choose an image file first.'; return; }
+      t.disabled=true; if(el) el.textContent='Processing…';
+      var rd=new FileReader();
+      rd.onload=function(){ var im=new Image();
+        im.onload=function(){
+          var mw=1400, sc=Math.min(1,mw/im.width), w=Math.round(im.width*sc), h=Math.round(im.height*sc);
+          var cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(im,0,0,w,h);
+          var data; try{ data=cv.toDataURL('image/jpeg',0.72); }catch(e){ if(el) el.textContent='Could not process that image.'; t.disabled=false; return; }
+          var o=store(); var rest=hhSlides().filter(function(x){return x.indexOf('data:')!==0;}); /* keep non-uploaded slides */
+          o[HHKEY]=[data].concat(rest).join('|'); save(o);
+          if(f) f.value=''; t.disabled=false; hhFill();
+          try{ typeof toast==='function'&&toast('Home hero photo updated — live for all visitors'); }catch(e){}
+          try{ typeof logAct==='function'&&logAct('Home hero main photo updated','update'); }catch(e){}
+        };
+        im.onerror=function(){ if(el) el.textContent='Could not read that image.'; t.disabled=false; };
+        im.src=rd.result; };
+      rd.readAsDataURL(file);
+    }
+    if(t.id==='hh-rm'){
+      var o2=store(); var s2=hhSlides().slice(1);
+      if(s2.length) o2[HHKEY]=s2.join('|'); else delete o2[HHKEY];
+      save(o2); hhFill();
+      try{ typeof toast==='function'&&toast('Main photo removed — next slide takes over'); }catch(e){}
+    }
+  });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){refresh();hhFill();}); else { refresh(); hhFill(); }
+  setInterval(function(){ refresh(); hhFill(); }, 6000);
 })();
 </script>
 <script>
