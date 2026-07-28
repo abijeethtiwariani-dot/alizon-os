@@ -730,6 +730,11 @@ h1,h2,h3{color:#111!important}
           </div>
           <div class="hint" style="margin-top:8px">The first photo is the main one visitors see; the rest rotate as a carousel. Up to 6 slides.</div>
         </div>
+        <div class="citem" style="display:block;border:1px solid rgba(193,18,31,.18);border-radius:10px;background:#fffdfb;padding:14px">
+          <b>Home page images — intro &amp; showcase tiles</b>
+          <div class="hint" style="margin:2px 0 10px">Every picture on the home page. Upload a photo or paste an image link; Reset brings back the built-in image. Changes go live for all visitors.</div>
+          <div id="hi-rows"></div>
+        </div>
         <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
           <div style="flex:1;min-width:200px"><b>Academics hero</b><div class="hint" data-hstate="acad-hero-img">…</div></div>
           <input type="file" data-hfile="acad-hero-img" accept="image/*" style="max-width:200px">
@@ -2939,7 +2944,68 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
         try{ typeof toast==='function'&&toast('Set as the main photo'); }catch(e){} }
     }
   });
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){refresh();hhFill();}); else { refresh(); hhFill(); }
+  /* ---- HOME page images (intro + 6 showcase tiles) — upload / link / reset ---- */
+  var HI=[
+    ['hb-intro-img','Intro photo (beside "What is ALIZON OS")'],
+    ['hb-c1-img','Tile 1 · Virtual Practicals & Labs'],
+    ['hb-c2-img','Tile 2 · Examinations & Hall Tickets'],
+    ['hb-c3-img','Tile 3 · Results'],
+    ['hb-c4-img','Tile 4 · Workshops & Masterclasses'],
+    ['hb-c5-img','Tile 5 · Certificates & Verification'],
+    ['hb-c6-img','Tile 6 · Student Dashboard']
+  ];
+  function hiGuard(extra){ var o=store(); var total=JSON.stringify(o).length+(extra||0);
+    return total>900000 ? 'Storage limit reached — use an image link instead, or Reset another uploaded picture first.' : ''; }
+  function hiFill(){
+    var host=document.getElementById('hi-rows'); if(!host) return;
+    var o=store();
+    host.innerHTML=HI.map(function(row){
+      var k=row[0], v=String(o[k]||'').trim();
+      var stateTxt=v ? (v.indexOf('data:')===0?'Uploaded photo ✓ live':'Custom image link live') : 'Built-in default image';
+      return '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.07)">'
+        +'<img src="'+(v?v.replace(/"/g,'&quot;'):'')+'" style="width:84px;height:52px;object-fit:cover;border-radius:7px;border:1px solid rgba(0,0,0,.12);background:#f3f1ee;'+(v?'':'opacity:.25')+'" onerror="this.style.opacity=.25">'
+        +'<div style="flex:1;min-width:170px"><b style="font-size:13px">'+row[1]+'</b><div class="hint" data-histate="'+k+'">'+stateTxt+'</div></div>'
+        +'<input type="file" data-hifile="'+k+'" accept="image/*" style="max-width:170px">'
+        +'<button class="cadd" data-hiup="'+k+'" style="font-size:12px;padding:8px 12px">Upload</button>'
+        +'<input type="text" data-hiurl="'+k+'" placeholder="…or image link" style="width:150px;font:inherit;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px">'
+        +'<button class="cadd" data-hisave="'+k+'" style="font-size:12px;padding:8px 12px">Set link</button>'
+        +'<button class="cadd" data-hirm="'+k+'" style="font-size:12px;padding:8px 12px;background:var(--pill);color:var(--muted);border-color:var(--line)">Reset</button>'
+        +'</div>';
+    }).join('');
+  }
+  function hiState(k,msg){ var el=document.querySelector('[data-histate="'+k+'"]'); if(el) el.textContent=msg; }
+  function hiSet(k,val){ var o=store(); if(val) o[k]=val; else delete o[k]; save(o); hiFill();
+    try{ typeof toast==='function'&&toast(val?'Image updated — live for all visitors':'Reset — built-in image restored'); }catch(e){}
+    try{ typeof logAct==='function'&&logAct('Home image updated ('+k+')','update'); }catch(e){} }
+  document.addEventListener('click',function(ev){
+    var t=ev.target; if(!t||!t.hasAttribute) return;
+    if(t.hasAttribute('data-hiup')){
+      var k=t.getAttribute('data-hiup');
+      var f=document.querySelector('[data-hifile="'+k+'"]'); var file=f&&f.files&&f.files[0];
+      if(!file){ hiState(k,'Choose an image file first.'); return; }
+      t.disabled=true; hiState(k,'Processing…');
+      var rd=new FileReader();
+      rd.onload=function(){ var im=new Image();
+        im.onload=function(){
+          var mw=1000, sc=Math.min(1,mw/im.width), w=Math.round(im.width*sc), h=Math.round(im.height*sc);
+          var cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(im,0,0,w,h);
+          var data; try{ data=cv.toDataURL('image/jpeg',0.62); }catch(e){ hiState(k,'Could not process that image.'); t.disabled=false; return; }
+          var g=hiGuard(data.length); if(g){ hiState(k,g); t.disabled=false; return; }
+          if(f) f.value=''; t.disabled=false; hiSet(k,data);
+        };
+        im.onerror=function(){ hiState(k,'Could not read that image.'); t.disabled=false; };
+        im.src=rd.result; };
+      rd.readAsDataURL(file);
+    }
+    if(t.hasAttribute('data-hisave')){
+      var k2=t.getAttribute('data-hisave');
+      var inp=document.querySelector('[data-hiurl="'+k2+'"]'); var v=String(inp&&inp.value||'').trim();
+      if(!v){ hiState(k2,'Paste an image link first.'); return; }
+      hiSet(k2,v);
+    }
+    if(t.hasAttribute('data-hirm')){ hiSet(t.getAttribute('data-hirm'),''); }
+  });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){refresh();hhFill();hiFill();}); else { refresh(); hhFill(); hiFill(); }
   setInterval(refresh, 6000);
 })();
 </script>
