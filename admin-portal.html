@@ -718,11 +718,17 @@ h1,h2,h3{color:#111!important}
     <div class="cblock" style="margin-top:18px"><div class="ct">Page hero images</div>
       <div class="ahint">Each public page's hero shows built-in artwork until you upload a photo here — JPG/PNG, auto-resized to 1080px, stored in cloud sync, live for every visitor. Remove a photo to bring the artwork back.</div>
       <div class="clist" style="margin-top:10px">
-        <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap;border:1px solid rgba(193,18,31,.25);border-radius:10px;background:#fdf7f7">
-          <div style="flex:1;min-width:200px"><b>Home page hero (main website)</b><div class="hint" id="hh-state">…</div></div>
-          <input type="file" id="hh-file" accept="image/*" style="max-width:200px">
-          <button class="cadd" id="hh-up">Set as main photo</button>
-          <button class="cadd" id="hh-rm" style="background:var(--pill);color:var(--muted);border-color:var(--line)">Remove main photo</button>
+        <div class="citem" style="display:block;border:1px solid rgba(193,18,31,.25);border-radius:10px;background:#fdf7f7;padding:14px">
+          <b>Home page hero (main website)</b>
+          <div class="hint" id="hh-state" style="margin:2px 0 10px">…</div>
+          <div id="hh-slides" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <input type="file" id="hh-file" accept="image/*" style="max-width:190px">
+            <button class="cadd" id="hh-up">＋ Add photo</button>
+            <input type="text" id="hh-url" placeholder="…or paste an image link" style="flex:1;min-width:180px;font:inherit;padding:9px 12px;border:1px solid rgba(0,0,0,.15);border-radius:9px">
+            <button class="cadd" id="hh-addurl">＋ Add link</button>
+          </div>
+          <div class="hint" style="margin-top:8px">The first photo is the main one visitors see; the rest rotate as a carousel. Up to 6 slides.</div>
         </div>
         <div class="citem" style="align-items:center;gap:10px;flex-wrap:wrap">
           <div style="flex:1;min-width:200px"><b>Academics hero</b><div class="hint" data-hstate="acad-hero-img">…</div></div>
@@ -2871,48 +2877,70 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       refresh(); try{ typeof toast==='function'&&toast('Hero photo removed — artwork restored'); }catch(e){}
     }
   });
-  /* ---- HOME hero (main website) — carousel-aware: upload becomes slide 1, others kept ---- */
-  var HHKEY='home-hero-img';
+  /* ---- HOME hero (main website) — full carousel manager: thumbnails, add/remove/make-main ---- */
+  var HHKEY='home-hero-img', HHMAX=6, HHBYTES=900000;
   function hhSlides(){ var v=String(store()[HHKEY]||'').trim(); return v?v.split('|').filter(function(x){return x.trim();}):[]; }
+  function hhSave(list){ var o=store(); if(list.length) o[HHKEY]=list.join('|'); else delete o[HHKEY]; save(o); hhFill();
+    try{ typeof logAct==='function'&&logAct('Home hero carousel updated ('+list.length+' slides)','update'); }catch(e){} }
   function hhFill(){
-    var el=document.getElementById('hh-state'); if(!el) return;
+    var st=document.getElementById('hh-state'), host=document.getElementById('hh-slides'); if(!st||!host) return;
     var s=hhSlides();
-    if(!s.length){ el.textContent='Using the built-in default images.'; return; }
-    var first=s[0].slice(0,60);
-    el.textContent=s.length+' slide'+(s.length>1?'s':'')+' in the hero carousel · main photo: '+(first.indexOf('data:')===0?'uploaded photo ✓':first);
+    st.textContent = s.length ? (s.length+' slide'+(s.length>1?'s':'')+' live in the hero carousel — the first is the main photo.') : 'Using the built-in default images — add a photo to take over.';
+    host.innerHTML = s.map(function(u,i){
+      return '<div style="width:150px;border:1px solid '+(i===0?'#c1121f':'rgba(0,0,0,.14)')+';border-radius:10px;overflow:hidden;background:#fff">'
+        +'<div style="position:relative"><img src="'+u.replace(/"/g,'&quot;')+'" style="width:100%;height:86px;object-fit:cover;display:block" onerror="this.style.opacity=.25">'
+        +(i===0?'<span style="position:absolute;top:6px;left:6px;background:#c1121f;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px">MAIN</span>':'')
+        +'</div><div style="display:flex;gap:4px;padding:6px">'
+        +(i>0?'<button class="cadd" data-hhmain="'+i+'" style="flex:1;font-size:11px;padding:6px 4px">★ Main</button>':'')
+        +'<button class="cadd" data-hhdel="'+i+'" style="flex:1;font-size:11px;padding:6px 4px;background:var(--pill);color:#b1040e;border-color:rgba(177,4,14,.3)">✕ Remove</button>'
+        +'</div></div>';
+    }).join('') || '';
+  }
+  function hhAdd(val,btn){
+    var s=hhSlides(), st=document.getElementById('hh-state');
+    if(s.length>=HHMAX){ if(st) st.textContent='Limit of '+HHMAX+' slides reached — remove one first.'; return; }
+    var total=(s.join('|')+val).length;
+    if(total>HHBYTES){ if(st) st.textContent='Storage limit reached — remove an uploaded photo first, or add this one as an image link instead.'; return; }
+    s.push(val); hhSave(s);
+    try{ typeof toast==='function'&&toast('Photo added to the hero carousel — live for all visitors'); }catch(e){}
+    if(btn) btn.disabled=false;
   }
   document.addEventListener('click',function(ev){
-    var t=ev.target; if(!t||!t.id) return;
+    var t=ev.target; if(!t) return;
     if(t.id==='hh-up'){
       var f=document.getElementById('hh-file'); var file=f&&f.files&&f.files[0];
-      var el=document.getElementById('hh-state');
-      if(!file){ if(el) el.textContent='Choose an image file first.'; return; }
-      t.disabled=true; if(el) el.textContent='Processing…';
+      var st=document.getElementById('hh-state');
+      if(!file){ if(st) st.textContent='Choose an image file first.'; return; }
+      t.disabled=true; if(st) st.textContent='Processing…';
       var rd=new FileReader();
       rd.onload=function(){ var im=new Image();
         im.onload=function(){
-          var mw=1400, sc=Math.min(1,mw/im.width), w=Math.round(im.width*sc), h=Math.round(im.height*sc);
+          var mw=1280, sc=Math.min(1,mw/im.width), w=Math.round(im.width*sc), h=Math.round(im.height*sc);
           var cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(im,0,0,w,h);
-          var data; try{ data=cv.toDataURL('image/jpeg',0.72); }catch(e){ if(el) el.textContent='Could not process that image.'; t.disabled=false; return; }
-          var o=store(); var rest=hhSlides().filter(function(x){return x.indexOf('data:')!==0;}); /* keep non-uploaded slides */
-          o[HHKEY]=[data].concat(rest).join('|'); save(o);
-          if(f) f.value=''; t.disabled=false; hhFill();
-          try{ typeof toast==='function'&&toast('Home hero photo updated — live for all visitors'); }catch(e){}
-          try{ typeof logAct==='function'&&logAct('Home hero main photo updated','update'); }catch(e){}
+          var data; try{ data=cv.toDataURL('image/jpeg',0.65); }catch(e){ if(st) st.textContent='Could not process that image.'; t.disabled=false; return; }
+          if(f) f.value=''; hhAdd(data,t);
         };
-        im.onerror=function(){ if(el) el.textContent='Could not read that image.'; t.disabled=false; };
+        im.onerror=function(){ if(st) st.textContent='Could not read that image.'; t.disabled=false; };
         im.src=rd.result; };
       rd.readAsDataURL(file);
     }
-    if(t.id==='hh-rm'){
-      var o2=store(); var s2=hhSlides().slice(1);
-      if(s2.length) o2[HHKEY]=s2.join('|'); else delete o2[HHKEY];
-      save(o2); hhFill();
-      try{ typeof toast==='function'&&toast('Main photo removed — next slide takes over'); }catch(e){}
+    if(t.id==='hh-addurl'){
+      var inp=document.getElementById('hh-url'); var v=String(inp&&inp.value||'').trim();
+      if(!v){ var s2=document.getElementById('hh-state'); if(s2) s2.textContent='Paste an image link first.'; return; }
+      if(inp) inp.value=''; hhAdd(v,null);
+    }
+    if(t.hasAttribute&&t.hasAttribute('data-hhdel')){
+      var i=parseInt(t.getAttribute('data-hhdel'),10); var s3=hhSlides(); s3.splice(i,1); hhSave(s3);
+      try{ typeof toast==='function'&&toast('Slide removed'); }catch(e){}
+    }
+    if(t.hasAttribute&&t.hasAttribute('data-hhmain')){
+      var j=parseInt(t.getAttribute('data-hhmain'),10); var s4=hhSlides();
+      var pick=s4.splice(j,1)[0]; if(pick){ s4.unshift(pick); hhSave(s4);
+        try{ typeof toast==='function'&&toast('Set as the main photo'); }catch(e){} }
     }
   });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){refresh();hhFill();}); else { refresh(); hhFill(); }
-  setInterval(function(){ refresh(); hhFill(); }, 6000);
+  setInterval(refresh, 6000);
 })();
 </script>
 <script>
