@@ -208,6 +208,7 @@
 
     var html='<article class="alz-doc" id="alzDoc">';
     html+=letterhead();
+    html+='<div class="d-docbody">';
 
     /* toolbar (screen only) */
     html+='<div class="d-actions no-print">'
@@ -292,6 +293,7 @@
       html+='</div></details>';
     });
     html+='</div>';
+    html+='</div>'; /* /.d-docbody */
 
     /* document footer */
     html+='<footer class="d-foot">'
@@ -317,7 +319,16 @@
   function printDoc(){
     [].forEach.call(document.querySelectorAll('.alz-doc .d-mod'),function(d){ d.open=true; });
     var btn=document.querySelector('.alz-doc .d-expand'); if(btn) btn.textContent='Collapse all';
-    setTimeout(function(){ try{ window.print(); }catch(e){} }, 60);
+    var doc=document.getElementById('alzDoc');
+    setTimeout(function(){
+      /* professional multi-page output: letterhead + affiliation repeat on every
+         A4 page and the footer carries "Page X of Y" (shared LHPrint paginator) */
+      if(window.LHPrint && doc){
+        try{ LHPrint(doc,{ headerEnd:'.d-lh-affil', footer:'.d-foot',
+          flatten:['.d-docbody','.d-mods','.d-mod','.d-mod-b','.d-units'] }); return; }catch(e){}
+      }
+      try{ window.print(); }catch(e){}
+    }, 60);
   }
 
   /* inject styles once */

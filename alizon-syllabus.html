@@ -134,6 +134,7 @@
 
   <div class="pick">
     <div><label>Course</label><select id="courseSel"><option value="">Select a course…</option></select></div>
+    <button class="btn" id="dlSyl" type="button" style="display:none;align-self:flex-end;white-space:nowrap" onclick="AlizonCurriculum.printDoc()">⬇ Download Syllabus (PDF)</button>
   </div>
 
   <div class="box" id="syllabus"><div class="cur-empty" style="color:var(--muted);text-align:center;padding:20px">Choose a course to view its syllabus.</div></div>
@@ -142,7 +143,8 @@
 <footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
   <a href="https://www.alizongov.com" target="_blank" rel="noopener">alizongov.com</a> &middot; <a href="index.html">alizon.in</a></footer>
 
-<script src="alizon-curriculum.js?v=5"></script>
+<script src="alizon-curriculum.js?v=6"></script>
+<script src="print-paginate.js"></script>
 <script>
 (function(){
   'use strict';
@@ -171,13 +173,16 @@
     if(v.indexOf('name:')===0) course=window.AlizonCurriculum.findForCourse(v.slice(5));
     else course=window.AlizonCurriculum.get(v);
     window.AlizonCurriculum.render(host, course);
+    var dl=document.getElementById('dlSyl'); if(dl) dl.style.display=course?'':'none';
   }
   document.getElementById('courseSel').addEventListener('change',function(){ if(this.value) showCourse(this.value); });
 
-  /* deep link ?course=NAME (used by the dashboard) */
+  /* deep link ?course=NAME (used by the dashboard); &download=1 opens the PDF dialog */
   var qc=params.get('course');
   function tryDeepLink(){ if(!qc) return; var c=window.AlizonCurriculum.findForCourse(qc); if(c){ var host=document.getElementById('syllabus'); window.AlizonCurriculum.render(host,c);
-      var sel=document.getElementById('courseSel'); var key=window.AlizonCurriculum.courseKey(c); if([].some.call(sel.options,function(o){return o.value===key;})) sel.value=key; } }
+      var sel=document.getElementById('courseSel'); var key=window.AlizonCurriculum.courseKey(c); if([].some.call(sel.options,function(o){return o.value===key;})) sel.value=key;
+      var dl=document.getElementById('dlSyl'); if(dl) dl.style.display='';
+      if(params.get('download')==='1') setTimeout(function(){ try{ window.AlizonCurriculum.printDoc(); }catch(e){} }, 900); } }
 
   /* ---- admin upload ---- */
   var parsed=null;
