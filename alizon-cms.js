@@ -275,8 +275,14 @@
         if (el.tagName === 'IMG') { el.setAttribute('src', text); }
         else if (el.hasAttribute && el.hasAttribute('data-slides')) {
           el.setAttribute('data-slides', text);
-          var bg0 = el.querySelector ? el.querySelector('.bg') : null;
-          if (bg0) bg0.setAttribute('src', (text || '').split('|')[0]);
+          /* refresh EVERY already-built carousel layer, not just the first —
+             layer i shows slide i; layers beyond the new list are hidden */
+          var slides = (text || '').split('|').filter(function (s) { return s.trim(); });
+          var layers = el.querySelectorAll ? el.querySelectorAll('img.bg') : [];
+          for (var li = 0; li < layers.length; li++) {
+            if (slides[li]) { layers[li].setAttribute('src', slides[li]); layers[li].style.display = ''; }
+            else { layers[li].style.opacity = '0'; layers[li].style.display = 'none'; }
+          }
         } else { el.style.backgroundImage = 'url("' + text + '")'; el.style.backgroundSize = 'cover'; el.style.backgroundPosition = 'center'; }
         return true;
       }

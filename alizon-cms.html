@@ -187,7 +187,19 @@ function showEditor(p,sec){
   m.innerHTML=h;
   document.getElementById('back').addEventListener('click',function(){showPage(p);});
   document.getElementById('cancel').addEventListener('click',function(){showPage(p);});
-  m.querySelectorAll('[data-upload]').forEach(function(inp){inp.addEventListener('change',function(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(){var key=inp.getAttribute('data-upload');var txt=m.querySelector('[data-k="'+key+'"]');if(txt)txt.value=r.result;var pv=m.querySelector('[data-prev="'+key+'"]');if(pv){pv.src=r.result;pv.style.opacity=1;}};r.readAsDataURL(file);});});
+  m.querySelectorAll('[data-upload]').forEach(function(inp){inp.addEventListener('change',function(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(){
+    /* auto-resize to keep the synced store small (big photos would break cloud sync) */
+    var im=new Image();
+    im.onload=function(){
+      var mw=1400,sc=Math.min(1,mw/im.width),w=Math.round(im.width*sc),h=Math.round(im.height*sc);
+      var cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(im,0,0,w,h);
+      var data;try{data=cv.toDataURL('image/jpeg',0.7);}catch(err){data=r.result;}
+      var key=inp.getAttribute('data-upload');var txt=m.querySelector('[data-k="'+key+'"]');if(txt)txt.value=data;
+      var pv=m.querySelector('[data-prev="'+key+'"]');if(pv){pv.src=data;pv.style.opacity=1;}
+    };
+    im.onerror=function(){alert('Could not read that image.');};
+    im.src=r.result;
+  };r.readAsDataURL(file);});});
   m.querySelectorAll('input[data-k]').forEach(function(inp){inp.addEventListener('input',function(){var pv=m.querySelector('[data-prev="'+inp.getAttribute('data-k')+'"]');if(pv){pv.src=inp.value.split('|')[0];pv.style.opacity=1;}});});
   /* clicking the thumbnail also opens the file picker */
   m.querySelectorAll('[data-openupload]').forEach(function(img){img.addEventListener('click',function(){var k=img.getAttribute('data-openupload');var fi=m.querySelector('input[type=file][data-upload="'+k+'"]');if(fi)fi.click();});});
