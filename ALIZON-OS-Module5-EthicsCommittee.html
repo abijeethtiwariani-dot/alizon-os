@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON OS · Module 5 · Ethics Committee (IEC/IRB) Approval Simulation</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)} .scorechip b{color:var(--gold)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:6px}
+  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:5px 0;cursor:pointer}
+  .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:480px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  select,textarea,input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  select:focus,textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:60px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .aibox{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:12px 14px;margin-top:8px;font-size:13px}
+  .aibox .lbl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .opt.right{border-color:var(--success);box-shadow:0 0 0 3px rgba(30,142,90,.16)} .opt.wrong{border-color:var(--danger);box-shadow:0 0 0 3px rgba(196,38,46,.14)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
+  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
+  details.help>summary::-webkit-details-marker{display:none}
+  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
+  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
+  .expl{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--success);border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.6}
+  .expl .lbl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--success);margin-bottom:3px}
+  /* dossier + checklist */
+  .dossier{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+  .dsec{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .dsec .dt{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--crimson);margin-bottom:5px}
+  .dsec p{font-size:12.5px;line-height:1.6}
+  .chkrow{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;padding:11px 0;border-top:1px solid var(--line)}
+  .chkrow:first-of-type{border-top:none}
+  .chkrow .cname{flex:1;min-width:190px;font-size:13.5px;font-weight:600}
+  .chkrow .cname small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:2px}
+  .seg{display:flex;gap:6px;flex:none}
+  .seg button{cursor:pointer;font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:100px;padding:7px 15px}
+  .seg button.on[data-v="ok"]{background:rgba(30,142,90,.14);border-color:var(--success);color:var(--success)}
+  .seg button.on[data-v="bad"]{background:rgba(196,38,46,.12);border-color:var(--danger);color:var(--danger)}
+  .seg button.truth{outline:2px dashed var(--gold);outline-offset:2px}
+  .decrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:8px}
+  .dec{cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;text-align:center;border:1.5px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:12px;padding:14px 12px}
+  .dec small{display:block;font-weight:400;font-size:11.5px;color:var(--muted);margin-top:3px}
+  .dec.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .dec.right{border-color:var(--success);box-shadow:0 0 0 3px rgba(30,142,90,.16)}
+  .dec.wrong{border-color:var(--danger);box-shadow:0 0 0 3px rgba(196,38,46,.14)}
+  .rolebox{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-left:4px solid var(--gold);border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 5 · Unit 1 · Practical 2 — Ethics Committees &amp; Regulatory Oversight</div>
+    <h1 class="serif">Ethics Committee (IEC/IRB) Approval Simulation</h1>
+    <p><b>Aim —</b> To understand the ethics review process and evaluate whether a clinical trial protocol meets <b>ethical and regulatory requirements</b> — recommending approval, modification or rejection.
+      <span class="muted">Duration 60 minutes · 8 protocol dossiers · 20-mark rubric · Pass 50%.</span></p>
+    <div class="chips">
+      <div class="scorechip">Protocol <b id="scCase">—</b></div>
+      <div class="scorechip">Role <b id="scRole">—</b></div>
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Committee Room</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="ethicscommittee"></div>
+    <div class="guide">
+      <h2>New to ethics review? Start here</h2>
+      <p>An Ethics Committee exists for <b>one purpose</b> — to protect the rights, safety and well-being of the participants. Review every protocol in this order:</p>
+      <ol>
+        <li><b>Is the science sound?</b> A study that cannot answer its question exposes people to risk for nothing — and can never be ethical.</li>
+        <li><b>Do the benefits justify the risks?</b> Never approve an unfavourable risk–benefit ratio, or a placebo arm that withholds effective treatment in a serious illness.</li>
+        <li><b>Is consent genuinely free and informed?</b> Understandable language, the right to withdraw, and no payment so large it becomes an <b>undue inducement</b>.</li>
+        <li><b>Are vulnerable participants protected?</b> Children, pregnant women, prisoners, and economically disadvantaged people need extra safeguards.</li>
+        <li><b>Are compensation and insurance in place?</b> Under the New Drugs &amp; Clinical Trials Rules 2019 these are <b>mandatory</b>.</li>
+      </ol>
+      <p style="margin-top:8px">Then separate <b>fixable paperwork</b> (→ Approved with Modifications) from <b>unethical design</b> (→ Rejected). Unsure? Open <b>“Need a hint?”</b> in the committee room.</p>
+    </div>
+    <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
+    <div class="card"><h2>The three committee decisions</h2>
+      <div class="tw"><table><thead><tr><th>Decision</th><th>When it applies</th><th>Example</th></tr></thead><tbody>
+        <tr><td><b>✅ Approved</b></td><td>All checklist domains adequate; no changes required</td><td>Complete dossier, sound science, valid consent, insurance in place</td></tr>
+        <tr><td><b>⚠ Approved with Modifications</b></td><td>Deficiencies that can be <b>corrected on paper</b> without changing the ethics of the study</td><td>Missing compensation clause, ICF too technical, unclear data-handling procedure</td></tr>
+        <tr><td><b>❌ Rejected</b></td><td>A <b>fundamental ethical violation</b> in the design itself</td><td>Coercive payment, unfavourable risk–benefit, unsafe placebo arm, unprotected vulnerable group</td></tr>
+      </tbody></table></div>
+      <p class="note">Committee membership must be <b>multidisciplinary</b> — medical, pharmacy, legal and lay/community members. The <b>Principal Investigator must not vote</b> on their own protocol (conflict of interest).</p>
+    </div>
+    <div class="card"><h2>Faculty assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
+      <p class="note"><b>Ethics fail:</b> recommending <b>Approved</b> for a protocol carrying a fundamental ethical violation fails the station regardless of total marks — that is the decision an ethics committee exists to prevent.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card"><h2>Committee member &amp; protocol assignment</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+        <div><label class="f">Your committee role</label><select id="roleSel"></select></div>
+        <div><label class="f">Protocol under review</label><select id="caseSel"></select></div>
+      </div>
+      <div id="roleBox" class="rolebox"></div>
+    </div>
+    <div id="caseArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>Committee decision report &amp; assessment</h2>
+      <p class="muted" id="repEmpty">Complete the review in the committee room and submit to generate your assessment, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=6"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+
+  var TASKS=['Assume your role on the Institutional Ethics Committee','Read the full protocol dossier and consent documents',
+    'Complete the Ethics Review Checklist (Adequate / Deficient) for all seven domains','Identify the regulatory requirement each deficiency breaches',
+    'Raise every issue affecting participant safety or rights in committee discussion','Recommend Approved, Approved with Modifications or Rejected',
+    'Write specific, actionable recommendations for protocol improvement','Submit the committee decision report'];
+
+  var RUBRIC=[
+    {k:'review', label:'Ethical Review (checklist accuracy)', max:5},
+    {k:'reg',    label:'Regulatory Compliance',               max:5},
+    {k:'disc',   label:'Committee Discussion',                max:5},
+    {k:'final',  label:'Final Recommendation',                max:5}];
+  var MAXTOTAL=RUBRIC.reduce(function(a,r){return a+r.max;},0);
+
+  var ROLES=[
+    {n:'Ethics Committee Chairperson', f:'You lead the review and must ensure every domain is examined, that dissenting views are heard, and that the final decision is recorded with written reasons. You do not let a deficiency pass because the sponsor is in a hurry.'},
+    {n:'Clinical Pharmacist',          f:'You focus on the investigational product — dose rationale, drug interactions, the Investigator Brochure, drug accountability and the safety of the treatment arms.'},
+    {n:'Physician',                    f:'You focus on clinical risk to the participant — the risk–benefit ratio, the appropriateness of inclusion and exclusion criteria, stopping rules and the management of adverse events.'},
+    {n:'Legal Expert',                 f:'You focus on regulatory and legal compliance — compensation for trial-related injury, insurance cover, data-protection law, and whether the consent process meets the New Drugs &amp; Clinical Trials Rules 2019.'},
+    {n:'Community Representative',     f:'You represent the participant, not the institution. You ask whether an ordinary person would understand the consent form, whether payment is coercive, and whether the community bears risk without benefit.'},
+    {n:'Principal Investigator',       f:'You present the protocol and answer the committee’s questions — but you have a conflict of interest and <b>must not vote</b> on your own study. Here you must review it as the committee would.'}
+  ];
+
+  var DOMAINS=[
+    {k:'sci',   n:'Scientific rationale',              d:'Is the study question valid and the design capable of answering it?'},
+    {k:'crit',  n:'Inclusion &amp; exclusion criteria',    d:'Are the criteria clear, justified and internally consistent?'},
+    {k:'rb',    n:'Risk–benefit ratio',                d:'Do the anticipated benefits justify the risks to participants?'},
+    {k:'conf',  n:'Patient confidentiality',           d:'Are personal data coded, secured and access-controlled?'},
+    {k:'comp',  n:'Compensation for trial-related injury', d:'Is compensation and insurance cover provided, as required by law?'},
+    {k:'vuln',  n:'Vulnerable populations',            d:'Are extra safeguards in place for vulnerable participants?'},
+    {k:'icf',   n:'Informed consent process',          d:'Is consent voluntary, understandable and withdrawable at any time?'}
+  ];
+
+  var DEC=[
+    {k:'approve',  n:'✅ Approved',                    s:'No changes required'},
+    {k:'modify',   n:'⚠ Approved with Modifications', s:'Correctable deficiencies'},
+    {k:'reject',   n:'❌ Rejected',                    s:'Fundamental ethical violation'}
+  ];
+
+  /* Each protocol: dossier, the TRUE state of all 7 domains, the regulatory MCQ,
+     the discussion points that MUST be raised, and the correct decision.
+     fatal:true → recommending Approval is an ethics failure. */
+  var CASES=[
+   {n:1,short:'New anti-diabetic drug',
+    title:'A Phase III trial of a new oral anti-diabetic agent in type 2 diabetes',
+    dossier:{
+      protocol:'Randomised, double-blind, active-controlled trial of a new oral anti-diabetic agent versus metformin in 900 adults with type 2 diabetes. Primary endpoint: change in HbA1c at 24 weeks. Multicentre, six sites, 12-month duration.',
+      ib:'Investigator Brochure complete: Phase I and Phase II data provided, no unexpected toxicity, dose justified from the Phase II dose-finding study.',
+      icf:'Consent form is 11 pages, written in technical English at university reading level, with no local-language version. It explains the purpose, procedures and the right to withdraw.',
+      other:'Data are coded with study numbers, held on an encrypted institutional server. <b>No compensation clause and no insurance certificate</b> are included in the submission.'},
+    truth:{sci:1,crit:1,rb:1,conf:1,comp:0,vuln:1,icf:0},
+    reg:{q:'Which regulatory requirement is breached by this submission?',
+      o:['Compensation and insurance for trial-related injury are mandatory under the New Drugs &amp; Clinical Trials Rules, 2019',
+         'Phase III trials do not require an Investigator Brochure',
+         'Multicentre trials are prohibited without central approval',
+         'HbA1c cannot be used as a primary endpoint'],c:0},
+    disc:{o:['Compensation and insurance for trial-related injury must be provided before approval',
+             'The consent form must be simplified and translated into the local language',
+             'The trial should be stopped because metformin is an unethical comparator',
+             'Participants should be paid more to improve recruitment'],c:[0,1]},
+    decision:'modify',fatal:false,
+    hint:'The science, criteria, risk–benefit and data security are all sound. Two things are missing — one is legally mandatory, one concerns whether an ordinary participant can actually understand what they are agreeing to. Both can be fixed on paper.',
+    expl:'<b>Approved with Modifications.</b> The science, inclusion criteria, risk–benefit and confidentiality are adequate. Two deficiencies exist: <b>compensation and insurance for trial-related injury are absent</b> (mandatory under the New Drugs &amp; Clinical Trials Rules, 2019), and the <b>consent form is not comprehensible</b> to an ordinary participant (technical English, no local-language version). Both are correctable on paper without changing the ethics of the study, so the correct decision is modification rather than rejection.'},
+
+   {n:2,short:'Paediatric asthma inhaler',
+    title:'A trial of a new combination inhaler in children aged 6–12 years with asthma',
+    dossier:{
+      protocol:'Randomised trial of a new combination inhaler versus standard therapy in 240 children aged 6–12 years with moderate persistent asthma. Primary endpoint: symptom-free days over 12 weeks.',
+      ib:'Adult safety data complete. No paediatric pharmacokinetic data provided, and no paediatric dose justification.',
+      icf:'A single consent form addressed to the child. <b>No parental or legal-guardian consent process and no child assent procedure</b> are described.',
+      other:'Data coded and secured. Compensation and insurance in place. No independent paediatric expert or data-safety monitoring board is named.'},
+    truth:{sci:0,crit:1,rb:0,conf:1,comp:1,vuln:0,icf:0},
+    reg:{q:'Which requirement is breached in this paediatric protocol?',
+      o:['Children cannot give legally valid consent — parental/guardian consent plus age-appropriate child assent is mandatory',
+         'Children may never be enrolled in any clinical trial',
+         'Paediatric trials do not require an Ethics Committee review',
+         'Asthma trials require no safety monitoring'],c:0},
+    disc:{o:['Parental/guardian consent and age-appropriate child assent must be obtained',
+             'Paediatric dose justification and pharmacokinetic data are required before children are exposed',
+             'The trial is acceptable because the adult safety data are complete',
+             'Children should simply be replaced with adult participants for convenience'],c:[0,1]},
+    decision:'reject',fatal:true,
+    hint:'Ask two questions: can a child aged 6 legally consent for themselves, and has the drug ever been dose-justified in children? A vulnerable group is being exposed without the safeguards that exist precisely to protect them.',
+    expl:'<b>Rejected.</b> This protocol exposes a <b>vulnerable population</b> (children) without the mandatory safeguards. Children cannot give legally valid consent — <b>parental/guardian consent plus age-appropriate assent</b> is required, and neither is described. There is <b>no paediatric dose justification or pharmacokinetic data</b>, so the risk–benefit ratio cannot be judged and the scientific basis for the paediatric dose is absent. These are failures in the design and ethics of the study itself, not paperwork, so rejection is correct.'},
+
+   {n:3,short:'Placebo in bacterial meningitis',
+    title:'A placebo-controlled trial of a new antibiotic in acute bacterial meningitis',
+    dossier:{
+      protocol:'Randomised, double-blind trial of a new antibiotic versus <b>placebo</b> in 300 adults with confirmed acute bacterial meningitis. Placebo-arm patients receive no antibiotic for the first 72 hours. Primary endpoint: survival at 14 days.',
+      ib:'Preclinical and Phase I data adequate. Effective standard antibiotic therapy for bacterial meningitis is well established and widely available.',
+      icf:'Consent form is clear, in the local language, and explains randomisation and the right to withdraw.',
+      other:'Data coded and secured. Compensation and insurance in place. Investigators appropriately qualified.'},
+    truth:{sci:0,crit:1,rb:0,conf:1,comp:1,vuln:1,icf:1},
+    reg:{q:'Why is the placebo arm unacceptable here?',
+      o:['Withholding proven effective treatment in a life-threatening condition violates the Declaration of Helsinki',
+         'Placebo-controlled trials are banned in all circumstances',
+         'Placebos may only be used in Phase I trials',
+         'Survival is not a valid endpoint'],c:0},
+    disc:{o:['Effective standard treatment must not be withheld in a life-threatening illness',
+             'The comparator should be the established standard antibiotic, not placebo',
+             'The consent form is the main problem with this protocol',
+             'The trial is acceptable because participants consented to randomisation'],c:[0,1]},
+    decision:'reject',fatal:true,
+    hint:'The paperwork here is excellent — consent, confidentiality, insurance are all fine. Look instead at what happens to the patients in one of the arms of a life-threatening illness. Consent does not make a harmful design ethical.',
+    expl:'<b>Rejected.</b> Every document is in order, which is exactly the trap. The <b>placebo arm withholds proven, life-saving antibiotic therapy for 72 hours in a life-threatening infection</b> — an unacceptable risk–benefit ratio and a direct violation of the <b>Declaration of Helsinki</b>, which permits placebo only where no proven treatment exists or withholding it causes no serious harm. Valid consent does <b>not</b> make a harmful design ethical. The comparator must be the established standard antibiotic.'},
+
+   {n:4,short:'Undue inducement',
+    title:'A bioavailability study offering ₹50,000 to unemployed volunteers',
+    dossier:{
+      protocol:'Single-dose bioavailability study in 40 healthy volunteers, requiring a 3-day residential stay and 14 blood samples. Recruitment posters are placed exclusively in a low-income neighbourhood and at an unemployment office.',
+      ib:'Investigator Brochure adequate; the drug has an established safety profile.',
+      icf:'Consent form is clear and in the local language. It offers <b>₹50,000</b> for participation — roughly four months of local average income — payable only on completion of all study visits.',
+      other:'Data coded. Compensation for injury and insurance in place. Investigators qualified.'},
+    truth:{sci:1,crit:0,rb:1,conf:1,comp:1,vuln:0,icf:0},
+    reg:{q:'What is the central ethical problem?',
+      o:['The payment is an undue inducement that compromises voluntary consent, and recruitment targets an economically vulnerable group',
+         'Healthy volunteers may never be paid anything',
+         'Bioavailability studies are prohibited',
+         'Fourteen blood samples is illegal'],c:0},
+    disc:{o:['Payment must reimburse time, travel and inconvenience — not act as an inducement that overrides free choice',
+             'Targeting recruitment at an economically disadvantaged group raises a justice concern',
+             'Paying on completion only is good practice and should be retained',
+             'The study should proceed because participants signed the consent form'],c:[0,1]},
+    decision:'reject',fatal:true,
+    hint:'Consent must be free. Ask whether someone who is unemployed can genuinely refuse four months of income — and why the posters went up only in one part of town.',
+    expl:'<b>Rejected.</b> A payment of roughly <b>four months’ income</b>, offered only to unemployed people in a low-income neighbourhood and paid <b>only on completion</b>, is an <b>undue inducement</b>: it overrides free choice, so consent cannot be genuinely voluntary. Deliberately recruiting from an economically disadvantaged group also violates the principle of <b>justice</b> — that group bears the risk while others gain the benefit. Payment may reimburse time, travel and inconvenience; it must never buy consent.'},
+
+   {n:5,short:'Complete oncology dossier',
+    title:'A Phase II trial of a targeted therapy in advanced non-small-cell lung cancer',
+    dossier:{
+      protocol:'Open-label Phase II trial of a targeted agent in 120 patients with advanced NSCLC who have progressed on standard therapy. Primary endpoint: objective response rate. Clear stopping rules and an independent Data Safety Monitoring Board are specified.',
+      ib:'Investigator Brochure complete with Phase I safety and dose-escalation data; the dose is justified.',
+      icf:'Consent form is in the local language at an appropriate reading level, explains the experimental nature, alternatives including palliative care, and the right to withdraw at any time without affecting routine care.',
+      other:'Data pseudonymised with a coded key held by the institution. Compensation and insurance certificates enclosed. Investigators qualified and the site is adequately equipped.'},
+    truth:{sci:1,crit:1,rb:1,conf:1,comp:1,vuln:1,icf:1},
+    reg:{q:'What is the committee’s regulatory position on this dossier?',
+      o:['The submission meets ICH–GCP and national requirements; no regulatory deficiency is identified',
+         'Oncology trials always require rejection at Phase II',
+         'A Data Safety Monitoring Board is prohibited',
+         'Patients who progressed on standard therapy may not be enrolled'],c:0},
+    disc:{o:['The risk–benefit ratio is acceptable given progression on standard therapy and the stopping rules',
+             'The consent process appropriately explains alternatives, including palliative care',
+             'The protocol must be rejected because the trial is open-label',
+             'Compensation should be removed to reduce sponsor costs'],c:[0,1]},
+    decision:'approve',fatal:false,
+    hint:'Work through all seven domains honestly. Not every protocol is defective — a committee that rejects a sound study delays treatment for patients who need it.',
+    expl:'<b>Approved.</b> All seven domains are adequate: the science is justified by Phase I data, the population is appropriate (progression on standard therapy), stopping rules and an independent DSMB protect participants, consent is comprehensible and explains alternatives including palliative care, data are pseudonymised, and compensation and insurance are enclosed. A committee must be willing to <b>approve a sound protocol</b> — needless rejection or delay denies patients access to treatment.'},
+
+   {n:6,short:'Unsecured patient data',
+    title:'A hypertension registry study with an unprotected data-handling plan',
+    dossier:{
+      protocol:'Observational registry of 2,000 patients on antihypertensive therapy across four hospitals, examining blood-pressure control over 12 months. Sound design and clear objectives.',
+      ib:'Not applicable — no investigational product; marketed medicines used in routine care.',
+      icf:'Consent form clear, in the local language, explains voluntary participation and withdrawal.',
+      other:'<b>Patient names, hospital numbers and phone numbers are recorded in a shared spreadsheet stored on an unencrypted cloud drive</b>, accessible to all sponsor staff. No coding or access control is described. Compensation is not applicable to observational care; insurance requirements met.'},
+    truth:{sci:1,crit:1,rb:1,conf:0,comp:1,vuln:1,icf:0},
+    reg:{q:'Which requirement does the data-handling plan breach?',
+      o:['Personal data must be pseudonymised/coded, encrypted and access-controlled to protect confidentiality',
+         'Observational studies require no ethics approval',
+         'Blood-pressure data may not be collected in India',
+         'Registries may not include more than 500 patients'],c:0},
+    disc:{o:['Data must be coded/pseudonymised, encrypted and restricted to authorised personnel',
+             'The consent form must state exactly who can access identifiable data and for how long it is retained',
+             'The study should be rejected because observational research is unscientific',
+             'Sharing identifiable data with all sponsor staff is acceptable for efficiency'],c:[0,1]},
+    decision:'modify',fatal:false,
+    hint:'The design, criteria and risk–benefit are fine, and no drug is being given. Look at where the identifiable data live and who can open the file — and ask whether the consent form told participants that.',
+    expl:'<b>Approved with Modifications.</b> The design and risk–benefit are sound and no investigational product is involved. However, <b>identifiable data (names, hospital numbers, phone numbers) are held unencrypted and are accessible to all sponsor staff</b> with no coding or access control — a clear breach of confidentiality and data-protection requirements. The consent form also fails to disclose who may access the data and for how long. These are correctable by amending the data-management plan and the consent form, so modification is the correct decision.'},
+
+   {n:7,short:'Pregnant women, unknown fetal risk',
+    title:'A trial of a new anti-nausea drug in pregnant women',
+    dossier:{
+      protocol:'Randomised trial of a new anti-nausea agent in 200 pregnant women with mild morning sickness, a self-limiting condition for which safe, effective treatments already exist.',
+      ib:'<b>No reproductive toxicology or teratogenicity studies have been conducted.</b> Animal data cover general toxicity only.',
+      icf:'Consent form is clear and in the local language, but does not mention that the effect on the fetus is unknown.',
+      other:'Data coded and secured. Compensation and insurance in place. Investigators qualified.'},
+    truth:{sci:0,crit:0,rb:0,conf:1,comp:1,vuln:0,icf:0},
+    reg:{q:'Why must this protocol not proceed as submitted?',
+      o:['Pregnant women are a vulnerable group; without teratogenicity data the fetal risk is unknown and unjustifiable for a mild, self-limiting condition with existing safe treatment',
+         'Pregnant women may never participate in any research',
+         'Anti-nausea drugs are prohibited in pregnancy research',
+         'A sample size of 200 is too small to be ethical'],c:0},
+    disc:{o:['Reproductive toxicology / teratogenicity data are required before exposing a fetus to an untested agent',
+             'The risk–benefit ratio is unacceptable when safe effective treatment already exists for a self-limiting condition',
+             'The protocol is acceptable provided the women give written consent',
+             'The consent form is adequate as written'],c:[0,1]},
+    decision:'reject',fatal:true,
+    hint:'There are two patients in every one of these participants. Ask what is known about the risk to the second one — and whether the condition being treated justifies any unknown risk at all.',
+    expl:'<b>Rejected.</b> Pregnant women are a <b>vulnerable population</b> and the fetus cannot consent. <b>No reproductive toxicology or teratogenicity data exist</b>, so the fetal risk is entirely unknown, and the condition treated is <b>mild and self-limiting with safe effective alternatives already available</b> — an unjustifiable risk–benefit ratio. The consent form compounds this by <b>not disclosing that the fetal effect is unknown</b>. This is a failure of design and ethics, not paperwork.'},
+
+   {n:8,short:'Contradictory criteria',
+    title:'A Phase III antibiotic trial with inconsistent eligibility criteria',
+    dossier:{
+      protocol:'Randomised comparative trial of a new antibiotic versus standard therapy in 1,400 adults with complicated urinary tract infection. Sound rationale and appropriate comparator.',
+      ib:'Investigator Brochure complete. The drug is renally excreted; Phase II data show accumulation in renal impairment.',
+      icf:'Consent form is clear, in the local language, and explains procedures, risks and the right to withdraw.',
+      other:'<b>Exclusion criteria exclude “patients with renal impairment”, yet the inclusion criteria explicitly permit patients on maintenance dialysis.</b> No stopping rules or dose-adjustment guidance for renal impairment are given. Data coded; compensation and insurance in place.'},
+    truth:{sci:1,crit:0,rb:0,conf:1,comp:1,vuln:1,icf:1},
+    reg:{q:'What must the committee require before this trial proceeds?',
+      o:['Eligibility criteria must be internally consistent, with dose adjustment and stopping rules defined for renal impairment',
+         'The trial must be rejected because antibiotics cannot be studied',
+         'Consent forms must be removed for infection trials',
+         'Dialysis patients can never be enrolled in any research'],c:0},
+    disc:{o:['The contradiction between the inclusion and exclusion criteria must be resolved before enrolment',
+             'Dose-adjustment guidance and stopping rules are required because the drug accumulates in renal impairment',
+             'The comparator is unethical and the trial should be rejected',
+             'The inconsistency is minor and can be resolved by the investigator during the trial'],c:[0,1]},
+    decision:'modify',fatal:false,
+    hint:'Read the two eligibility lists side by side — they contradict each other. Then ask what happens to a dialysis patient given a drug that is known to accumulate when the kidneys do not work.',
+    expl:'<b>Approved with Modifications.</b> The rationale, comparator, consent and confidentiality are sound. However the <b>eligibility criteria contradict each other</b> — renal impairment is an exclusion, yet dialysis patients are explicitly included — and because the drug is <b>renally excreted and accumulates in renal impairment</b>, there are no dose-adjustment or stopping rules to protect those patients. This creates a real safety risk, but it is resolved by <b>correcting the protocol</b> rather than abandoning the study.'}
+  ];
+
+  $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
+  $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+r.label+'</td><td>'+r.max+'</td></tr>';}).join('')+'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
+
+  var roleSel=$('roleSel');
+  roleSel.innerHTML=ROLES.map(function(r,i){return '<option value="'+i+'">'+r.n+'</option>';}).join('');
+  function paintRole(){ var r=ROLES[+roleSel.value]; $('scRole').textContent=r.n.split(' ')[0]; $('roleBox').innerHTML='<b>'+r.n+' —</b> '+r.f; }
+  roleSel.addEventListener('change',paintRole);
+
+  var sel=$('caseSel');
+  sel.innerHTML=CASES.map(function(c,i){return '<option value="'+i+'">Protocol '+c.n+' — '+esc(c.short)+'</option>';}).join('');
+  sel.addEventListener('change',function(){ loadCase(parseInt(this.value,10)); });
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var state=null;
+  function loadCase(ci){
+    state={ci:ci,chk:{},reg:null,disc:[],dec:null,note:'',submitted:false,result:null};
+    var c=CASES[ci];
+    $('scCase').textContent='Protocol '+c.n; $('scScore').textContent='—'; $('scRes').textContent='—';
+    $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+    renderStation();
+  }
+
+  function renderStation(){
+    var c=CASES[state.ci]; var h='';
+    h+='<div class="card"><span class="step">Protocol '+c.n+'</span>'
+      +'<h2 style="margin-top:6px">'+esc(c.title)+'</h2>'
+      +'<div class="dossier">'
+        +'<div class="dsec"><div class="dt">Protocol summary</div><p>'+c.dossier.protocol+'</p></div>'
+        +'<div class="dsec"><div class="dt">Investigator Brochure</div><p>'+c.dossier.ib+'</p></div>'
+        +'<div class="dsec"><div class="dt">Informed Consent Form / Patient Information</div><p>'+c.dossier.icf+'</p></div>'
+        +'<div class="dsec"><div class="dt">Data, compensation &amp; site</div><p>'+c.dossier.other+'</p></div>'
+      +'</div>'
+      +(c.hint?'<details class="help"><summary>Need a hint?</summary><div class="hb">'+esc(c.hint)+'</div></details>':'')
+      +'</div>';
+
+    h+='<div class="card"><span class="step">Step 1</span> <b>Ethics Review Checklist</b>'
+      +'<p class="note" style="margin-top:4px">Mark each domain <b>Adequate</b> or <b>Deficient</b> based on the dossier above.</p>'
+      +'<div id="chkList" style="margin-top:8px">'
+      + DOMAINS.map(function(d){
+          return '<div class="chkrow"><div class="cname">'+d.n+'<small>'+d.d+'</small></div>'
+            +'<div class="seg" data-dk="'+d.k+'">'
+            +'<button type="button" data-v="ok">Adequate</button>'
+            +'<button type="button" data-v="bad">Deficient</button></div></div>';
+        }).join('')
+      +'</div></div>';
+
+    h+='<div class="card"><span class="step">Step 2</span> <b>'+esc(c.reg.q)+'</b>'
+      +'<div id="q-reg">'+c.reg.o.map(function(o,k){return '<button type="button" class="opt" data-reg="'+k+'">'+o+'</button>';}).join('')+'</div></div>';
+
+    h+='<div class="card"><span class="step">Step 3</span> <b>Committee discussion — which points must be raised?</b>'
+      +'<p class="note" style="margin-top:4px">Select every point the committee must put on record. Selecting an incorrect point loses marks.</p>'
+      +'<div class="cl" id="discList" style="margin-top:6px">'
+      + c.disc.o.map(function(o,k){return '<label><input type="checkbox" data-disc="'+k+'"><span>'+o+'</span></label>';}).join('')
+      +'</div></div>';
+
+    h+='<div class="card"><span class="step">Step 4</span> <b>Final recommendation of the committee</b>'
+      +'<div class="decrow" id="decRow">'+DEC.map(function(d){return '<button type="button" class="dec" data-dec="'+d.k+'">'+d.n+'<small>'+d.s+'</small></button>';}).join('')+'</div>'
+      +'<label class="f" style="margin-top:12px">Recommendations for protocol improvement</label>'
+      +'<textarea id="noteBox" placeholder="State the specific, actionable changes the investigator must make — e.g. “Provide an insurance certificate and add a compensation clause; supply a local-language consent form at 8th-grade reading level.”"></textarea></div>';
+
+    h+='<div class="card"><button class="btn" id="submitBtn">Record committee decision</button>'
+      +'<span class="muted" style="font-size:12.5px;margin-left:10px">Auto-scored against the 20-mark rubric, with the model review shown after submission.</span></div>';
+    $('caseArea').innerHTML=h;
+
+    document.querySelectorAll('#chkList .seg').forEach(function(sg){
+      sg.querySelectorAll('button').forEach(function(b){
+        b.addEventListener('click',function(){
+          if(state.submitted) return;
+          var k=sg.getAttribute('data-dk');
+          state.chk[k]=(b.getAttribute('data-v')==='ok')?1:0;
+          sg.querySelectorAll('button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on');
+        });
+      });
+    });
+    document.querySelectorAll('#q-reg .opt').forEach(function(b){
+      b.addEventListener('click',function(){ if(state.submitted) return;
+        state.reg=+b.getAttribute('data-reg');
+        document.querySelectorAll('#q-reg .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); });
+    });
+    document.querySelectorAll('#discList input').forEach(function(cb){
+      cb.addEventListener('change',function(){ if(state.submitted){cb.checked=!cb.checked;return;}
+        var k=+cb.getAttribute('data-disc');
+        if(cb.checked){ if(state.disc.indexOf(k)<0) state.disc.push(k); }
+        else state.disc=state.disc.filter(function(x){return x!==k;}); });
+    });
+    document.querySelectorAll('#decRow .dec').forEach(function(b){
+      b.addEventListener('click',function(){ if(state.submitted) return;
+        state.dec=b.getAttribute('data-dec');
+        document.querySelectorAll('#decRow .dec').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); });
+    });
+    $('noteBox').addEventListener('input',function(){ state.note=this.value; });
+    $('submitBtn').addEventListener('click',evaluate);
+  }
+
+  function revealAnswers(){
+    var c=CASES[state.ci];
+    /* checklist truth */
+    document.querySelectorAll('#chkList .seg').forEach(function(sg){
+      var k=sg.getAttribute('data-dk'), t=c.truth[k];
+      sg.querySelectorAll('button').forEach(function(b){
+        var v=(b.getAttribute('data-v')==='ok')?1:0;
+        if(v===t) b.classList.add('truth');
+      });
+    });
+    document.querySelectorAll('#q-reg .opt').forEach(function(b){
+      var k=+b.getAttribute('data-reg');
+      if(k===c.reg.c) b.classList.add('right'); else if(state.reg===k) b.classList.add('wrong');
+    });
+    document.querySelectorAll('#decRow .dec').forEach(function(b){
+      var k=b.getAttribute('data-dec');
+      if(k===c.decision) b.classList.add('right'); else if(state.dec===k) b.classList.add('wrong');
+    });
+    var box=document.createElement('div'); box.className='card';
+    var decName=DEC.filter(function(d){return d.k===c.decision;})[0].n;
+    box.innerHTML='<span class="step">Model review</span> <b style="margin-left:6px">'+decName+'</b>'
+      +'<div class="expl"><div class="lbl">Why</div>'+c.expl+'</div>'
+      +'<div class="tw" style="margin-top:10px"><table><thead><tr><th>Checklist domain</th><th>Your finding</th><th>Correct finding</th></tr></thead><tbody>'
+      +DOMAINS.map(function(d){
+        var mine=(state.chk[d.k]==null)?'<span class="muted">not marked</span>':(state.chk[d.k]?'Adequate':'Deficient');
+        var tru=c.truth[d.k]?'Adequate':'Deficient';
+        var ok=(state.chk[d.k]===c.truth[d.k]);
+        return '<tr><td>'+d.n+'</td><td style="color:'+(ok?'var(--success)':'var(--danger)')+'">'+mine+'</td><td>'+tru+'</td></tr>';
+      }).join('')+'</tbody></table></div>';
+    $('caseArea').appendChild(box);
+  }
+
+  function evaluate(){
+    if(state.submitted) return;
+    var c=CASES[state.ci], name=($('cName').value||'').trim()||'Candidate', reg=($('cReg').value||'').trim();
+    var role=ROLES[+roleSel.value].n;
+    var sc={}, fb={};
+
+    /* 1 — Ethical review: checklist accuracy across the 7 domains */
+    var right=0, marked=0;
+    DOMAINS.forEach(function(d){ if(state.chk[d.k]!=null){ marked++; if(state.chk[d.k]===c.truth[d.k]) right++; } });
+    sc.review=Math.round(5*right/DOMAINS.length);
+    fb.review=right+' of '+DOMAINS.length+' checklist domains judged correctly'+(marked<DOMAINS.length?(' ('+(DOMAINS.length-marked)+' left unmarked).'):'.');
+
+    /* 2 — Regulatory compliance MCQ */
+    var regOK=state.reg===c.reg.c; sc.reg=regOK?5:0;
+    fb.reg=regOK?'Regulatory requirement correctly identified.':('Correct answer: '+c.reg.o[c.reg.c].replace(/<[^>]+>/g,'').replace(/&amp;/g,'&'));
+
+    /* 3 — Committee discussion: matched points minus incorrect ones */
+    var need=c.disc.c, got=state.disc;
+    var hit=need.filter(function(k){return got.indexOf(k)>=0;}).length;
+    var wrong=got.filter(function(k){return need.indexOf(k)<0;}).length;
+    var dscore=(hit/need.length)*5 - wrong*2.5;
+    sc.disc=Math.max(0,Math.round(dscore));
+    fb.disc=hit+' of '+need.length+' required discussion points raised'+(wrong?(', '+wrong+' incorrect point'+(wrong>1?'s':'')+' raised.'):'.');
+
+    /* 4 — Final recommendation */
+    var order={approve:0,modify:1,reject:2};
+    var decOK=state.dec===c.decision;
+    var gap=(state.dec!=null)?Math.abs(order[state.dec]-order[c.decision]):9;
+    sc.final=decOK?5:(gap===1?2:0);
+    fb.final=decOK?'Correct committee decision.':('The correct decision was '+DEC.filter(function(d){return d.k===c.decision;})[0].n.replace(/[✅⚠❌]\s*/,'')+'.');
+
+    /* ethics failure — approving a protocol with a fundamental violation */
+    var ethicsFail=(c.fatal && state.dec==='approve');
+    if(ethicsFail){ sc.final=0; fb.final='Recommending approval of a protocol carrying a fundamental ethical violation — this is the decision an ethics committee exists to prevent.'; }
+
+    var noteOK=(state.note||'').trim().length>=25;
+    if(!noteOK){ sc.disc=Math.max(0,sc.disc-1); fb.disc+=' Recommendations for improvement were missing or too brief.'; }
+
+    var tot=RUBRIC.reduce(function(a,r){return a+(sc[r.k]||0);},0);
+    var pct=Math.round(tot/MAXTOTAL*100);
+    var pass=pct>=50 && !ethicsFail;
+    state.result={name:name,reg:reg,role:role,total:tot,pct:pct,pass:pass,ethicsFail:ethicsFail,sc:sc,fb:fb};
+    state.submitted=true;
+    $('scScore').textContent=tot+'/'+MAXTOTAL; $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+pct+'%)';
+    revealAnswers(); renderReport(); mountWriter();
+  }
+
+  function buildAuto(){
+    if(!state||!state.submitted) return null;
+    var c=CASES[state.ci], r=state.result;
+    var decName=function(k){ var d=DEC.filter(function(x){return x.k===k;})[0]; return d?d.n.replace(/[✅⚠❌]\s*/,''):'(none)'; };
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Protocol '+c.n+' — '+esc(c.short)+'</h3>';
+    h+='<p style="margin:2px 0"><b>Reviewed as:</b> '+esc(r.role)+'</p>';
+    h+='<p style="margin:2px 0"><b>Protocol:</b> '+esc(c.title)+'</p>';
+    h+='<p style="margin:6px 0"><b>Committee decision:</b> '+esc(decName(state.dec))+' &nbsp;·&nbsp; <b>Correct decision:</b> '+esc(decName(c.decision))+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:8px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Ethics Review Checklist</th><th>Your finding</th><th>Correct</th></tr>'
+      +DOMAINS.map(function(d){
+        var mine=(state.chk[d.k]==null)?'not marked':(state.chk[d.k]?'Adequate':'Deficient');
+        return '<tr><td>'+d.n.replace(/&amp;/g,'&')+'</td><td align="center">'+mine+'</td><td align="center">'+(c.truth[d.k]?'Adequate':'Deficient')+'</td></tr>';
+      }).join('')+'</table>';
+    if((state.note||'').trim()) h+='<p style="margin:8px 0 2px"><b>Recommendations for improvement:</b> '+esc(state.note)+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
+      +RUBRIC.map(function(x){return '<tr><td>'+x.label.replace(/&amp;/g,'&')+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
+      +'<tr style="background:#f3e2e2;font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">'+MAXTOTAL+'</td></tr></table>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'+(r.ethicsFail?' (ETHICS FAILURE — approved a protocol with a fundamental violation)':'')+'</p>';
+    return h;
+  }
+
+  function renderReport(){
+    var c=CASES[state.ci], r=state.result;
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Score</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">of '+MAXTOTAL+'</div></div>'
+      +'<div class="repbox"><div class="rv">'+c.n+'</div><div class="rl">Protocol</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+esc(r.role)+'</div>';
+    if(r.ethicsFail) html+='<div class="note" style="color:var(--danger);font-weight:600;margin:-4px 0 10px">Recommending <b>Approval</b> for a protocol carrying a fundamental ethical violation fails the station regardless of total marks — preventing exactly this decision is why the committee exists.</div>';
+    html+='<div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Score</th><th>Max</th></tr></thead><tbody>'
+      +RUBRIC.map(function(x){return '<tr><td>'+x.label+'<div class="note" style="margin-top:2px">'+esc(r.fb[x.k]||'')+'</div></td><td>'+(r.sc[x.k]||0)+'</td><td>'+x.max+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr></tbody></table></div>';
+    html+='<div class="row no-print" style="margin-top:14px"><button class="btn gold" onclick="window.print()">Download / Print record</button>'
+      +'<button class="btn ghost" id="retryBtn">Review another protocol</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ var i=Math.floor(Math.random()*CASES.length); sel.value=i; loadCase(i); switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 5 · Unit 1 — Clinical Trials in Pharmacy',title:'Ethics Committee (IEC/IRB) Approval Simulation',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Protocol reviewed &amp; committee decision', placeholder:'e.g. Protocol 1 — new anti-diabetic drug; Approved with Modifications'},
+      minWords:400,
+      attachments:[
+        {label:'1. Ethics Review Checklist (PDF)'},
+        {label:'2. Committee Decision Report (PDF)'},
+        {label:'3. Recommendations for Protocol Improvement (PDF)'}
+      ],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return state.result?state.result.pct:null; },
+      autoResultText:function(){ return state.result?((state.result.pass?'PASS':'FAIL')+' '+state.result.pct+'%'):''; }
+    });
+  }
+
+  function switchTab(p){ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+
+  paintRole(); loadCase(0);
+})();
+</script>
+</body>
+</html>
