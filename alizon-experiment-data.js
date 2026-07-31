@@ -18,7 +18,7 @@
     method:['Read the prescription carefully — confirm the exact drug and strength (watch look-alike strengths).','Immediately ignore any expired or wrong-strength batch on the rack.','Among correct-strength, in-date batches, pick the one with the <b>earliest expiry</b> (FEFO).','If two valid batches share the same expiry, choose the earliest received (FIFO).','Enter the exact quantity; split across batches only if needed and document each batch.','Generate the label, update stock, then complete the counselling checklist.']
    },
    adr:{
-    practicalNo:'Module 2 · Unit 4 · Practical 4',
+    practicalNo:'Module 2 · Unit 4 · Practical 2',
     title:'Electronic ADR Reporting & Pharmacovigilance',
     principleNote:'<b>Key point:</b> "serious" is not the same as "severe" — an ADR is <b>serious</b> if it causes death, hospitalisation, disability or is life-threatening.',
     methodNote:'<b>Golden rule:</b> classifying a serious ADR as non-serious is a patient-safety error and fails the station — always judge seriousness carefully.',
@@ -64,7 +64,7 @@
     method:['Start from a scaffold and watch the AI gauges as you adjust each property.','Keep MW ≤ 500 and LogP around 2–3; lower TPSA below ~90 to raise predicted bioavailability.','Fix any rule violation the model flags (e.g. too many H-bond donors).','Compare candidates and keep the one with the highest drug-likeness and bioavailability.','Name your best molecule and generate the report.']
    },
    ethics:{
-    practicalNo:'Module 1 · Unit 3 · Practical',
+    practicalNo:'Module 1 · Unit 3 · Practical 2',
     title:'Ethics, Regulation & Data Protection in Digital Pharmacy',
     principleNote:'<b>Key point:</b> "need to know" governs access — no care relationship means no right to open the record, even out of curiosity.',
     methodNote:'<b>Golden rule:</b> be transparent — document consent for substitutions and never conceal a medication error; honesty protects patients.',
@@ -100,7 +100,7 @@
     methodNote:'<b>Golden rule:</b> never accept an AI output that fabricates data, invents references, plagiarises, or requires uploading identifiable patient data — that is research misconduct.'
    },
    clinicalsim:{
-    practicalNo:'Module 8 · Practical',
+    practicalNo:'Module 8 · Practical 1',
     title:'Clinical Simulation Suite',
     principleNote:'<b>Key point:</b> reduced kidney function changes the safe dose of many drugs — always check renal function before finalising a regimen.',
     methodNote:'<b>Golden rule:</b> screen every regimen for interactions and adjust renally-cleared drugs before signing off.',
@@ -112,7 +112,7 @@
     method:['Read the vitals and labs first — flag abnormal kidney function.','Run each pair of drugs through the interaction screen and act on significant hits.','Recalculate doses for any renally-cleared drug when eGFR is reduced.','Work the audit checklist line by line before signing off.','Summarise your findings and decisions in the report.']
    },
    coldchain:{
-    practicalNo:'Module 4 · Unit 4 · Practical',
+    practicalNo:'Module 4 · Unit 4 · Practical 2',
     title:'Digital Vaccine Cold-Chain Monitoring &amp; Compliance Simulation',
     principleNote:'<b>Remember:</b> a vaccine that has been outside 2–8&nbsp;°C is <b>not automatically spoiled and not automatically safe</b> — the decision depends on how high the temperature went and for how long. Always judge the excursion against the stability table, never by eye.',
     methodNote:'<b>Golden rule:</b> never release a vaccine whose stability you cannot justify, and never discard one on your own authority — <b>quarantine, document and escalate</b>. Freezing damages most COVID-19 and adsorbed vaccines permanently, so a low-temperature excursion is as serious as a high one.',
@@ -125,7 +125,7 @@
     method:['Check the paperwork <em>before</em> the vaccine leaves the vehicle — quantity, batch and expiry mismatches are far easier to resolve at the door.','Scan the QR code and compare it against the physical carton; a batch that does not match the label must never be entered into stock.','Read the temperature graph in two passes: first find the <b>peak</b>, then measure <b>how long</b> the trace stayed above 8&nbsp;°C (or below 0&nbsp;°C).','Convert the excursion into a decision using the stability table — do not judge by how the vials look.','If in doubt, move the stock to a clearly labelled <b>quarantine</b> shelf and notify the supervisor; keep it refrigerated while the decision is pending.','Apply FEFO strictly: the earliest expiry leaves first, regardless of when it arrived.','Record every movement — dispatch ID, transport box, courier, times and receiving centre — so the chain of custody is unbroken.','Report AEFI promptly against the exact batch number; this is how programme-wide safety signals are found.','Finish by generating the compliance report and checking that every audit parameter is evidenced, not just ticked.'],
    },
    qadocs:{
-    practicalNo:'Module 4 · Quality &amp; Safety Documentation · Practical',
+    practicalNo:'Module 4 · Practical 3 · Quality &amp; Safety Documentation',
     title:'Digital Quality &amp; Safety Documentation in Pharmaceutical Manufacturing',
     principleNote:'<b>Remember:</b> in GMP, <b>"not documented = not done."</b> A batch is released on the strength of its records, not on how the tablets look — an unsigned entry, a missing CoA or an un-investigated deviation is enough to hold a batch, however good the product appears.',
     methodNote:'<b>Golden rule:</b> never release a batch with an <b>open deviation, a failing QC result, or incomplete documentation</b> — and never make the release decision on your own signature when the records are incomplete. Quarantine, investigate, raise CAPA, then decide.',
@@ -186,7 +186,7 @@
     method:['Read the whole chart before the first click — the eGFR of 42 and the INR of 1.0 between them decide most of this case.','In PICO, resist the temptation to widen the population: the CKD is what makes the question difficult, so it belongs in P.','When ranking evidence, work down the pyramid rather than shuffling items — place the certain ones (systematic review, expert opinion) first and let the middle fall into place.','For every paper ask the eligibility question out loud: <em>would my patient have been enrolled?</em> That single question separates level of evidence from applicability.','In a multimorbid patient, map guideline to problem before answering — ADA and KDIGO own the diabetes and the kidney, ESC owns the rhythm.','Before confirming any drug, run the four checks the portal runs: renal contraindication, age-related risk, interaction with the existing list, and a named guideline recommendation.','In the safety emergency, sort the medicine list into <em>causes harm now</em> and <em>prevents harm now</em> — the anticoagulant belongs to the second group.','Spend the three AI mentor hints on Stages 3 and 5, where the reasoning is hardest; Stages 1, 2 and 8 reward preparation rather than help.','Write the report as though you will be off duty tomorrow — name the drug, the dose, the test, the date and the source.']
    },
    trialmanager:{
-    practicalNo:'Module 5 · Unit 1 · Capstone Simulation',
+    practicalNo:'Module 5 · Unit 1 · Practical 5 · Capstone Simulation',
     title:'Become the Clinical Trial Manager',
     principleNote:'<b>Remember:</b> a clinical trial is a <b>chain of custody over people and data</b>. Every level of this simulation is one link — phase, eligibility, consent, storage, dispensing, safety reporting, records, audit. A single broken link can harm a participant or invalidate the entire study, however well the other seven are managed.',
     methodNote:'<b>Golden rule:</b> two decisions end the trial on the spot — <b>dispensing an expired or wrong investigational product</b>, and <b>failing to report a serious adverse event to the sponsor within 24 hours</b>. Both are patient-safety failures, and no later good practice can undo them.',
