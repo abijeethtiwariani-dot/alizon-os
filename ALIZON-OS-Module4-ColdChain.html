@@ -6,804 +6,733 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, follow">
-<title>ALIZON OS · Module 4 · Unit 4 — Digital Vaccine Cold-Chain Monitoring &amp; Compliance</title>
+<title>ALIZON OS · Module 4 · Vaccine Cold-Chain Control Room</title>
 <script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
-    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
-    --cold:#0E7490;--cold-soft:rgba(14,116,144,.12);
+  :root{--bg:#f2f0ec;--panel:#fff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A;--danger:#C4262E;--warn:#B45309;--teal:#0E6F76;--ice:#2563EB;
     --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
   html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
-    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
-    --cold:#38bdf8;--cold-soft:rgba(56,189,248,.14);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;--teal:#4bc2c9;--ice:#7aa5ff;
     --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
-  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
-  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
-  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
-  .hero p{color:var(--muted);font-size:14px;max-width:80ch}
-  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
-  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)}
-  .scorechip b{color:var(--gold)}
-  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
-  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
-  .tab.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
-  .panel{display:none}.panel.on{display:block}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--card-shadow);padding:18px 20px;margin-bottom:16px}
-  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;margin-bottom:4px}
-  .card h3{font-size:14.5px;margin-bottom:8px}
-  .step-tag{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--cold);border-radius:100px;padding:3px 11px;display:inline-block;margin-bottom:8px}
-  .marks{float:right;font-size:11.5px;font-weight:700;color:var(--gold);background:var(--gold-soft);border-radius:100px;padding:3px 10px}
-  .muted{color:var(--muted);font-size:13px}
-  table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
-  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
-  th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-  .q{margin:12px 0;padding:12px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}
-  .q>b{display:block;font-size:13.5px;margin-bottom:8px}
-  .opts{display:flex;gap:8px;flex-wrap:wrap}
-  .opt{cursor:pointer;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:100px;background:var(--panel);border:1px solid var(--line);color:var(--ink)}
-  .opt.sel{background:var(--cold);border-color:var(--cold);color:#fff}
-  .opt.ok{background:var(--success);border-color:var(--success);color:#fff}
-  .opt.bad{background:var(--danger);border-color:var(--danger);color:#fff}
-  input[type=text],input[type=number],textarea,select{width:100%;font:inherit;font-size:13px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);margin-top:4px}
-  textarea{min-height:70px;resize:vertical}
-  label.ck{display:flex;gap:9px;align-items:flex-start;font-size:13px;margin:7px 0;cursor:pointer}
-  label.ck input{margin-top:3px;flex:none}
-  .btn{cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;color:#fff;background:var(--crimson);border:0;border-radius:100px;padding:11px 22px}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(13px,2.6vw,26px) 80px}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(15px,2.4vw,22px);box-shadow:var(--card-shadow);margin-bottom:15px}
+  .muted{color:var(--muted)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:10px 20px;color:#fff;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .btn:hover{filter:brightness(1.07)} .btn[disabled]{opacity:.45;cursor:not-allowed}
   .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
-  .fb{margin-top:10px;font-size:13px;padding:10px 13px;border-radius:10px;display:none}
-  .fb.show{display:block}
-  .fb.good{background:rgba(30,142,90,.12);border:1px solid rgba(30,142,90,.35);color:var(--success)}
-  .fb.bad{background:rgba(196,38,46,.1);border:1px solid rgba(196,38,46,.32);color:var(--danger)}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
-  /* dashboard */
-  .dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
-  .dtile{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
-  .dtile small{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-  .dtile b{font-size:21px;font-weight:800}
-  /* alert */
-  .alert{border-left:4px solid var(--danger);background:rgba(196,38,46,.08);border-radius:0 12px 12px 0;padding:12px 15px;margin:10px 0}
-  .alert b{color:var(--danger)}
-  /* flow + timeline */
-  .flow{display:flex;flex-direction:column;gap:6px;font-size:12.5px}
-  .fnode{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;text-align:center}
-  .fnode.dec{border-color:var(--gold);color:var(--gold);font-weight:700}
-  .farr{text-align:center;color:var(--muted)}
-  .tl{border-left:2px solid var(--line);margin-left:8px;padding-left:16px}
-  .tl li{list-style:none;margin:10px 0;position:relative;font-size:13px}
-  .tl li:before{content:'';position:absolute;left:-22px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--cold)}
-  /* animated journey */
-  .journey{position:relative;height:64px;border:1px dashed var(--line);border-radius:12px;background:var(--panel2);overflow:hidden;margin:10px 0}
-  .jtrack{position:absolute;top:50%;left:0;right:0;height:2px;background:var(--line)}
-  .jstop{position:absolute;top:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:var(--cold)}
-  .jlabel{position:absolute;top:calc(50% + 12px);transform:translateX(-50%);font-size:9.5px;color:var(--muted);white-space:nowrap}
-  .jvial{position:absolute;top:calc(50% - 20px);font-size:16px;animation:jmove 9s linear infinite}
-  @keyframes jmove{0%{left:2%}100%{left:96%}}
-  @media(prefers-reduced-motion:reduce){.jvial{animation:none;left:2%}}
-  /* qr */
-  .qrbox{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
-  .qr{width:132px;height:132px;flex:none;background:#fff;padding:8px;border-radius:10px;border:1px solid var(--line)}
-  .badge{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:100px;padding:3px 10px}
-  .b-ok{background:rgba(30,142,90,.14);color:var(--success)}
-  .b-warn{background:var(--gold-soft);color:var(--gold)}
-  .b-bad{background:rgba(196,38,46,.12);color:var(--danger)}
-  .guide{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:16px 18px;margin-bottom:16px}
-  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:16px;margin-bottom:6px}
-  .guide ol{padding-left:20px;font-size:13.4px;line-height:1.7}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
+  .btn.ok{background:linear-gradient(120deg,#0f6b45,var(--success))}
+  .btn.sm{font-size:12.5px;padding:8px 15px}
+  .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:9px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
+  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .22s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:420px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:15px}
+  .guide h2{font-size:18px;margin-bottom:6px} .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.72} .guide p{font-size:13.5px}
+
+  /* ---------- control room ---------- */
+  .opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#0d1b2a,#132c44);color:#fff;border-radius:14px;
+    padding:11px 16px;display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:14px;box-shadow:0 12px 32px -22px rgba(0,0,0,.8)}
+  .opbar .ttl{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px}
+  .opbar .m{display:flex;flex-direction:column;gap:2px;min-width:88px}
+  .opbar .m .k{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;opacity:.62}
+  .opbar .m .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+  .opbar .m.bad .v{color:#ff8a8a} .opbar .m.good .v{color:#7de3b0} .opbar .m.warn .v{color:#f3c46b}
+  .opbar .sp{margin-left:auto}
+  .clock{background:rgba(0,0,0,.32);border-radius:100px;padding:6px 15px;font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+  .siren{background:rgba(196,38,46,.55);animation:sir 1s infinite}
+  @keyframes sir{50%{opacity:.5}}
+
+  /* ---------- fridge + chart ---------- */
+  .rig{display:grid;grid-template-columns:236px 1fr;gap:15px;align-items:start;margin-bottom:15px}
+  @media(max-width:880px){.rig{grid-template-columns:1fr}}
+  .fridge{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--card-shadow)}
+  .fbody{border:3px solid #93a3b8;border-radius:11px;background:linear-gradient(180deg,#dceaf7,#c3d9ee);padding:9px;position:relative;overflow:hidden}
+  html.dark .fbody{background:linear-gradient(180deg,#1b2b3d,#132234);border-color:#3a5170}
+  .fbody.hot{background:linear-gradient(180deg,#f8ddd6,#f2c4b6);border-color:#c4736a}
+  html.dark .fbody.hot{background:linear-gradient(180deg,#3d1f1b,#2c1512)}
+  .fbody.frz{background:linear-gradient(180deg,#dfeeff,#b9d6ff);border-color:#7aa5ff}
+  .shelf{border-bottom:2px solid rgba(120,140,165,.45);padding:7px 3px;display:flex;gap:5px;flex-wrap:wrap;min-height:40px}
+  .shelf:last-child{border-bottom:none}
+  .vial{width:15px;height:26px;border-radius:3px 3px 5px 5px;background:linear-gradient(180deg,#fff,#e6eef7);border:1px solid #8fa4bd;position:relative}
+  .vial:after{content:'';position:absolute;top:-3px;left:3px;right:3px;height:4px;background:#8b93a1;border-radius:2px 2px 0 0}
+  .vial.aff{background:linear-gradient(180deg,#ffe9e4,#ffc9bb);border-color:var(--danger)}
+  .vial.quar{opacity:.45;filter:grayscale(1)}
+  .ftemp{text-align:center;font-family:'Source Serif Pro',serif;font-size:30px;font-weight:700;margin-top:10px;font-variant-numeric:tabular-nums}
+  .ftemp.ok{color:var(--success)} .ftemp.hot{color:var(--danger)} .ftemp.frz{color:var(--ice)}
+  .frange{text-align:center;font-size:11px;color:var(--muted)}
+  .door{margin-top:9px;display:flex;gap:6px;font-size:11px;justify-content:center;color:var(--muted)}
+  .door b{color:var(--ink)}
+
+  .chartbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--card-shadow)}
+  .chartbox h4{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+  .plot{position:relative;height:170px;border-left:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 0 4px 34px}
+  .band{position:absolute;left:0;right:0;background:rgba(30,142,90,.11);border-top:1px dashed rgba(30,142,90,.5);border-bottom:1px dashed rgba(30,142,90,.5)}
+  .gl{position:absolute;left:-34px;font-size:9.5px;color:var(--muted);transform:translateY(-50%)}
+  .pt{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--teal);transform:translate(-50%,50%)}
+  .pt.out{background:var(--danger);width:5px;height:5px}
+  .xlab{display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-left:34px}
+
+  .ticker{background:#0d1b2a;color:#cfe3f5;border-radius:11px;padding:10px 13px;font-family:ui-monospace,Menlo,monospace;
+    font-size:11.5px;line-height:1.75;max-height:112px;overflow-y:auto;margin-top:11px}
+  .ticker .t{color:#7de3b0} .ticker .w{color:#f3c46b} .ticker .a{color:#ff8a8a;font-weight:700}
+
+  /* ---------- decision ---------- */
+  .task{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:15px 17px;box-shadow:var(--card-shadow);margin-bottom:14px}
+  .task .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .task h3{font-size:17px;margin:7px 0 4px}
+  .task .q{font-size:14px;font-weight:600;line-height:1.55;margin:8px 0 4px}
+  .opts{display:grid;gap:7px;margin-top:9px}
+  .opt{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font:inherit;font-size:13.5px;text-align:left;color:var(--ink);
+    background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;line-height:1.5}
+  .opt:hover{border-color:var(--gold)}
+  .opt .lt{flex:none;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--pill);border:1px solid var(--line);font-size:10.5px;font-weight:800;color:var(--muted)}
+  .opt.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)} .opt.pick .lt{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .opt.right{border-color:var(--success);background:rgba(30,142,90,.07)} .opt.right .lt{background:var(--success);border-color:var(--success);color:#fff}
+  .opt.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)} .opt.wrong .lt{background:var(--danger);border-color:var(--danger);color:#fff}
+  .fb{border-radius:11px;padding:12px 15px;margin-top:12px;font-size:13.5px;line-height:1.65;border:1px solid}
+  .fb.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.34)}
+  .fb.no{background:rgba(196,38,46,.08);border-color:rgba(196,38,46,.32)}
+  .fb .hd{font-weight:800;font-size:12.5px;margin-bottom:5px}
+  .fb.ok .hd{color:var(--success)} .fb.no .hd{color:var(--danger)}
+
+  /* vials / VVM inspection */
+  .stock{display:grid;grid-template-columns:repeat(auto-fit,minmax(186px,1fr));gap:11px;margin-top:10px}
+  .sv{background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+  .sv:hover{border-color:var(--gold)} .sv.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.11)}
+  .sv.right{border-color:var(--success)} .sv.wrong{border-color:var(--danger)}
+  .sv b{font-size:13px;display:block} .sv small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.5}
+  .vvm{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;margin-top:7px;position:relative}
+  .vvm .ring{position:absolute;inset:0;border-radius:50%}
+  .vvm .sq{width:16px;height:16px;border-radius:2px}
+  .vvmlab{font-size:10.5px;color:var(--muted);margin-top:3px}
+
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:11px;margin:8px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:15px;font-weight:700;padding:13px 17px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .bar{height:8px;border-radius:100px;background:var(--pill);overflow:hidden;min-width:70px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))} .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
+  @media print{.tabs,.btn,.no-print,.opbar{display:none!important} body{background:#fff} .panel{display:block!important}}
 </style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
 </head>
 <body>
 <script src="alizon-lab-gate.js"></script>
 <div class="wrap">
-
   <div class="hero">
-    <div class="mod">Module 4 · Unit 4 · Practical 2 · Vaccines &amp; Cold-Chain Analytics</div>
-    <h1>Digital Vaccine Cold-Chain Monitoring &amp; Compliance Simulation</h1>
-    <p>End-to-end digital cold chain of a COVID-19 vaccine consignment — from manufacturer to vaccination centre. Verify the shipment, read the IoT temperature log, grade the excursion, decide whether the vaccine may be used, distribute by FEFO and generate a QR-verified compliance report. <b>Duration 9.5 hours (integrated practical).</b></p>
-    <div class="chips">
-      <div class="scorechip">Score <b id="scScore">—</b></div>
-      <div class="scorechip">Result <b id="scRes">—</b></div>
-      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
-    </div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Pharmacy AI · Module 4 · Unit 4 · Practical 2</div>
+    <h1 style="font-size:clamp(1.4rem,3.4vw,2.05rem);margin:7px 0">Vaccine Cold-Chain Control Room</h1>
+    <p class="muted" style="font-size:14px;max-width:80ch"><b>Aim —</b> To monitor a live vaccine refrigerator, recognise a temperature excursion as it develops, respond in the correct order,
+      inspect the affected stock, and reach a defensible disposition — protecting both the patients and the vaccine.</p>
   </div>
 
   <div class="tabs">
     <button class="tab on" data-p="brief">Briefing</button>
-    <button class="tab" data-p="station">Cold-Chain Console</button>
-    <button class="tab" data-p="deliver">Digital Deliverables</button>
+    <button class="tab" data-p="room">Control Room</button>
     <button class="tab" data-p="report">Result &amp; Record</button>
   </div>
 
-  <!-- ══════════ BRIEFING ══════════ -->
   <section class="panel on" id="p-brief">
     <div id="expBrief" data-exp="coldchain"></div>
-
     <div class="guide">
-      <h2>New to the cold chain? Start here</h2>
-      <p class="muted" style="margin-bottom:8px">Vaccines are living biology in a vial. Keep them between <b>+2&nbsp;°C and +8&nbsp;°C</b> or they quietly lose potency — the vial looks exactly the same either way. Your job is to prove, with data, that this consignment stayed safe.</p>
+      <h2>Your watch</h2>
+      <p>You are the pharmacist on duty in the vaccine store at <b>Alizon Teaching Hospital</b>. The refrigerator holds a live immunisation session’s stock and is logged continuously.
+        Something is going to go wrong on your watch. What matters is whether you notice it, and what you do in the first few minutes.</p>
       <ol>
-        <li><b>Verify what arrived</b> against what was promised — manufacturer, batch, quantity, expiry.</li>
-        <li><b>Scan the QR</b> so the carton's identity and journey are traceable.</li>
-        <li><b>Read the temperature log</b> — find the peak and how long it stayed out of range.</li>
-        <li><b>Grade the excursion</b> against the WHO stability table, not by eye.</li>
-        <li><b>Decide</b>: accept, quarantine &amp; investigate, or discard (only with authorisation).</li>
-        <li><b>Distribute by FEFO</b>, document the dispatch, report any AEFI, then audit and sign off.</li>
+        <li>The temperature trace is <b>live</b>. Watch it — the excursion does not announce itself politely at first.</li>
+        <li>Every stage is timed and the order of your actions is marked. <b>Quarantine comes before assessment</b>, always.</li>
+        <li>Some of the stock is recoverable and some is not. Discarding usable vaccine is scored as a real loss, not a safe default.</li>
+        <li>A <b>Vaccine Potency Index</b> tracks the doses that remain genuinely usable; a <b>Compliance Index</b> tracks whether your response would survive an audit.</li>
       </ol>
+      <p style="margin-top:8px">At the end the session runs and you see how many children were actually protected.</p>
     </div>
-
-    <div class="card">
-      <h2>Your consignment</h2>
-      <table>
-        <tr><th>Vaccine</th><td>COVID-19 Vaccine — 500 vials</td></tr>
-        <tr><th>Manufacturer</th><td>ABC Biologics</td></tr>
-        <tr><th>Batch number</th><td><b>CV240725</b></td></tr>
-        <tr><th>Manufactured</th><td>01 July 2026</td></tr>
-        <tr><th>Expiry</th><td>31 December 2026</td></tr>
-        <tr><th>Required storage</th><td><b>+2 °C to +8 °C</b></td></tr>
-        <tr><th>Your role</th><td>Digital Pharmacy &amp; Vaccine Logistics Officer, District Vaccine Store</td></tr>
-      </table>
+    <div class="card"><h2 style="font-size:18px">Assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Assessment criteria</th><th>Marks</th></tr></thead><tbody>
+        <tr><td>Detecting the excursion and reading the trace correctly</td><td>15</td></tr>
+        <tr><td>Immediate response — correct action, correct order</td><td>25</td></tr>
+        <tr><td>Stock assessment — VVM and freeze inspection</td><td>25</td></tr>
+        <tr><td>Disposition decision and escalation</td><td>20</td></tr>
+        <tr><td>Documentation and preventive action</td><td>15</td></tr>
+        <tr class="tot"><td>Total</td><td>100</td></tr>
+      </tbody></table></div>
+      <p class="muted" style="font-size:12.5px">Pass 50. The Vaccine Potency and Compliance indices are reported separately.</p>
     </div>
-
-    <div class="card">
-      <h2>Assessment</h2>
-      <table>
-        <tr><th>Skill</th><th style="text-align:right">Marks</th></tr>
-        <tr><td>Shipment verification</td><td style="text-align:right">10</td></tr>
-        <tr><td>QR verification &amp; traceability</td><td style="text-align:right">10</td></tr>
-        <tr><td>Temperature analysis</td><td style="text-align:right">20</td></tr>
-        <tr><td>Cold-chain decision making</td><td style="text-align:right">20</td></tr>
-        <tr><td>FEFO implementation</td><td style="text-align:right">10</td></tr>
-        <tr><td>Digital documentation</td><td style="text-align:right">10</td></tr>
-        <tr><td>ADR / AEFI reporting</td><td style="text-align:right">10</td></tr>
-        <tr><td>Final compliance report</td><td style="text-align:right">10</td></tr>
-        <tr><td><b>Console total</b></td><td style="text-align:right"><b>100</b></td></tr>
-        <tr><td>Digital deliverables (graphs, animation, dashboard…)</td><td style="text-align:right">20</td></tr>
-      </table>
-      <div class="alert"><b>Critical failure:</b> releasing this consignment for use without assessing the excursion, or discarding stock on your own authority, fails the practical regardless of marks earned — exactly as it would in a real immunization programme.</div>
+    <div class="card"><h2 style="font-size:18px">Achievement badges</h2>
+      <div class="badges">
+        <span class="badge">⏱ Rapid Responder</span><span class="badge">🧊 Chain Keeper</span>
+        <span class="badge">🔬 Sharp Inspector</span><span class="badge">📋 Audit Proof</span><span class="badge">🏅 Cold-Chain Master</span>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:8px" id="badgeCrit"></p>
     </div>
   </section>
 
-  <!-- ══════════ CONSOLE ══════════ -->
-  <section class="panel" id="p-station">
-
-    <!-- STEP 1 -->
-    <div class="card">
-      <span class="marks">10 marks</span><span class="step-tag">Step 1 · Shipment arrival</span>
-      <h3>Verify the consignment against the dispatch advice</h3>
-      <table>
-        <tr><th>Parameter</th><th>Dispatch advice</th><th>Physically received</th></tr>
-        <tr><td>Manufacturer</td><td>ABC Biologics</td><td>ABC Biologics</td></tr>
-        <tr><td>Batch</td><td>CV240725</td><td>CV240725</td></tr>
-        <tr><td>Quantity</td><td>500 vials</td><td>500 vials</td></tr>
-        <tr><td>Expiry</td><td>31 Dec 2026</td><td>31 Dec 2026</td></tr>
-        <tr><td>Temperature logger</td><td>Attached</td><td>Attached &amp; running</td></tr>
-      </table>
-      <div class="q"><b>1.1 Does the consignment match the dispatch advice on all five parameters?</b>
-        <div class="opts" data-q="s1match">
-          <button class="opt" data-v="yes">Yes — all match</button>
-          <button class="opt" data-v="no">No — there is a mismatch</button>
-        </div></div>
-      <div class="q"><b>1.2 The vaccine expires 31 Dec 2026 and today is within the shelf life. Can it be accepted into stock on expiry grounds?</b>
-        <div class="opts" data-q="s1expiry">
-          <button class="opt" data-v="accept">Yes — in date, accept</button>
-          <button class="opt" data-v="reject">No — reject, too close to expiry</button>
-        </div></div>
-      <div class="q"><b>1.3 What must you do <em>before</em> the delivery vehicle leaves?</b>
-        <div class="opts" data-q="s1before">
-          <button class="opt" data-v="log">Download the temperature logger and complete the receipt check</button>
-          <button class="opt" data-v="later">Sign now, inspect the logger later when there is time</button>
-        </div></div>
-      <div class="fb" id="fb1"></div>
+  <section class="panel" id="p-room">
+    <div class="card" id="setupCard">
+      <h2 style="font-size:18px">Sign in to the control room</h2>
+      <div class="grid2" style="margin-top:9px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:10px">Alizon Teaching Hospital · Vaccine Store · Fridge VS-02 · immunisation session at 14:00</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="startBtn">▶ Begin the watch</button>
+        <button class="btn ghost sm" id="themeBtn">◐ Theme</button>
+      </div>
     </div>
 
-    <!-- STEP 2 -->
-    <div class="card">
-      <span class="marks">10 marks</span><span class="step-tag">Step 2 · QR verification</span>
-      <h3>Scan each carton and confirm traceability</h3>
-      <p class="muted">Three cartons arrived. Scan each QR code and compare it with the physical carton label.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
-        <button class="btn ghost" id="scanBtn">⌗ Scan all cartons</button>
-      </div>
-      <div id="scanOut" style="display:none">
-        <table>
-          <tr><th>Carton</th><th>Label batch</th><th>QR batch</th><th>Route</th><th>Status</th></tr>
-          <tr><td>C-01</td><td>CV240725</td><td>CV240725</td><td>Plant → Hub → District</td><td><span class="badge b-ok">Match</span></td></tr>
-          <tr><td>C-02</td><td>CV240725</td><td><b style="color:var(--danger)">CV240711</b></td><td>Plant → Hub → District</td><td><span class="badge b-bad">Mismatch</span></td></tr>
-          <tr><td>C-03</td><td>CV240725</td><td>CV240725</td><td>Plant → Hub → District</td><td><span class="badge b-ok">Match</span></td></tr>
-        </table>
-      </div>
-      <div class="q"><b>2.1 After scanning, what is the correct action?</b>
-        <div class="opts" data-q="s2act">
-          <button class="opt" data-v="quarantine">Quarantine carton C-02, raise a digital alert and notify the supplier</button>
-          <button class="opt" data-v="accept">Accept all three — the label says CV240725 anyway</button>
-          <button class="opt" data-v="relabel">Re-label C-02 to CV240725 so the stock entry matches</button>
-        </div></div>
-      <div class="q"><b>2.2 Why does QR traceability matter in an immunization programme?</b>
-        <div class="opts" data-q="s2why">
-          <button class="opt" data-v="recall">It links every vial to batch, route and temperature history — enabling rapid recall and AEFI investigation</button>
-          <button class="opt" data-v="speed">It speeds up unloading the truck</button>
-        </div></div>
-      <div class="fb" id="fb2"></div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="card">
-      <span class="marks">20 marks</span><span class="step-tag">Step 3 · IoT temperature log</span>
-      <h3>Read the transport temperature trace</h3>
-      <p class="muted">Continuous IoT log for the transport leg. The shaded band is the safe range <b>+2 °C to +8 °C</b>.</p>
-      <div id="chartHost"></div>
-      <div class="grid2">
-        <div class="q"><b>3.1 Peak temperature reached (°C)</b>
-          <input type="number" id="s3peak" placeholder="e.g. 9" step="0.1"></div>
-        <div class="q"><b>3.2 How long was it above 8 °C? (hours)</b>
-          <input type="number" id="s3dur" placeholder="e.g. 1" step="0.5"></div>
-      </div>
-      <div class="q"><b>3.3 Was there a cold-chain breach?</b>
-        <div class="opts" data-q="s3breach">
-          <button class="opt" data-v="yes">Yes — the trace went above 8 °C</button>
-          <button class="opt" data-v="no">No — it stayed within range throughout</button>
-        </div></div>
-      <div class="q"><b>3.4 Was there any <em>freezing</em> excursion (below 0 °C)?</b>
-        <div class="opts" data-q="s3freeze">
-          <button class="opt" data-v="no">No — the trace never fell below 0 °C</button>
-          <button class="opt" data-v="yes">Yes — the vaccine was frozen at some point</button>
-        </div></div>
-      <div class="fb" id="fb3"></div>
-    </div>
-
-    <!-- STEP 4 -->
-    <div class="card">
-      <span class="marks">part of documentation</span><span class="step-tag">Step 4 · Refrigerator inspection</span>
-      <h3>Inspect the ice-lined vaccine refrigerator</h3>
-      <table>
-        <tr><th>Parameter</th><th>Reading</th></tr>
-        <tr><td>Current internal temperature</td><td><b>+3 °C</b></td></tr>
-        <tr><td>Alarm system</td><td>Working</td></tr>
-        <tr><td>Power backup</td><td>Available</td></tr>
-        <tr><td>Door open time during inspection</td><td>12 seconds</td></tr>
-        <tr><td>Door seal / ice lining</td><td>Intact</td></tr>
-      </table>
-      <div class="q"><b>4.1 Tick every parameter you have physically verified and recorded</b>
-        <label class="ck"><input type="checkbox" class="s4"> Internal temperature within +2 to +8 °C</label>
-        <label class="ck"><input type="checkbox" class="s4"> Alarm system functional</label>
-        <label class="ck"><input type="checkbox" class="s4"> Power backup available</label>
-        <label class="ck"><input type="checkbox" class="s4"> Door seal and ice lining intact</label>
-        <label class="ck"><input type="checkbox" class="s4"> Inspection sheet completed and signed</label>
-      </div>
-      <div class="fb" id="fb4"></div>
-    </div>
-
-    <!-- STEP 5 + 6 -->
-    <div class="card">
-      <span class="marks">20 marks</span><span class="step-tag">Steps 5 &amp; 6 · AI alert &amp; stability decision</span>
-      <h3>Grade the excursion and decide</h3>
-      <div class="alert">
-        <b>⚠ AI COLD-CHAIN ALERT</b><br>
-        Temperature exceeded <b>8 °C</b> · Maximum recorded <b>11 °C</b> · Duration <b>2 hours</b> · Risk level <b>Moderate</b><br>
-        <span class="muted">Recommended action: inspect vaccine · hold distribution · notify supervisor</span>
-      </div>
-      <div class="q"><b>5.1 Do you accept the AI recommendation?</b>
-        <div class="opts" data-q="s5ai">
-          <button class="opt" data-v="accept">Accept — hold distribution and investigate</button>
-          <button class="opt" data-v="reject">Reject — the vaccine looks fine, release it</button>
-        </div>
-        <div style="margin-top:8px"><b style="font-size:12.5px">Justify your decision</b>
-        <textarea id="s5reason" placeholder="Which parameters triggered the alert, and why do you agree or disagree?"></textarea></div>
+    <div id="live" style="display:none">
+      <div class="opbar">
+        <div class="ttl">Fridge VS-02</div>
+        <div class="m"><span class="k">Stage</span><span class="v" id="mStage">1 / 6</span></div>
+        <div class="m"><span class="k">Score</span><span class="v" id="mScore">0</span></div>
+        <div class="m" id="mPotWrap"><span class="k">Vaccine potency</span><span class="v" id="mPot">100%</span></div>
+        <div class="m" id="mCompWrap"><span class="k">Compliance</span><span class="v" id="mComp">100%</span></div>
+        <div class="sp"></div>
+        <div class="clock" id="clock">09:00</div>
       </div>
 
-      <h3 style="margin-top:14px">WHO / National excursion stability guide</h3>
-      <table>
-        <tr><th>Exposure</th><th>Decision</th></tr>
-        <tr><td>Held below 8 °C throughout</td><td>Safe — continue use</td></tr>
-        <tr><td>Above 8 °C for under 30 minutes</td><td>Accept</td></tr>
-        <tr><td><b>Above 8 °C for 1–2 hours</b></td><td><b>Investigate — quarantine pending assessment</b></td></tr>
-        <tr><td>Above 8 °C for more than 4 hours</td><td>Discard (with authorisation)</td></tr>
-      </table>
-      <div class="q"><b>6.1 Your consignment was above 8 °C for 2 hours (peak 11 °C). What is the correct decision?</b>
-        <div class="opts" data-q="s6dec">
-          <button class="opt" data-v="quarantine">Quarantine and investigate — keep refrigerated, notify supervisor</button>
-          <button class="opt" data-v="accept">Accept and distribute immediately</button>
-          <button class="opt" data-v="discard">Discard the whole consignment now</button>
-        </div></div>
-      <div class="fb" id="fb5"></div>
-    </div>
-
-    <!-- STEP 7 -->
-    <div class="card">
-      <span class="marks">10 marks</span><span class="step-tag">Step 7 · FEFO distribution</span>
-      <h3>Order the batches for distribution</h3>
-      <table>
-        <tr><th>Batch</th><th>Expiry</th><th>Received</th></tr>
-        <tr><td>CV240510</td><td>Sep 2026</td><td>10 May 2026</td></tr>
-        <tr><td>CV240725</td><td>Dec 2026</td><td>Today</td></tr>
-        <tr><td>CV240801</td><td>Jan 2027</td><td>01 Aug 2026</td></tr>
-      </table>
-      <div class="q"><b>7.1 Select the correct FEFO distribution order (first out → last out)</b>
-        <div class="opts" data-q="s7order">
-          <button class="opt" data-v="correct">CV240510 → CV240725 → CV240801</button>
-          <button class="opt" data-v="fifo">CV240510 → CV240801 → CV240725</button>
-          <button class="opt" data-v="wrong">CV240725 → CV240510 → CV240801</button>
-        </div></div>
-      <div class="q"><b>7.2 Why FEFO rather than FIFO for vaccines?</b>
-        <div class="opts" data-q="s7why">
-          <button class="opt" data-v="expiry">Because remaining shelf life, not arrival order, decides what must be used first</button>
-          <button class="opt" data-v="arrival">Because the oldest delivery should always leave first</button>
-        </div></div>
-      <div class="fb" id="fb7"></div>
-    </div>
-
-    <!-- STEP 8 -->
-    <div class="card">
-      <span class="marks">10 marks</span><span class="step-tag">Step 8 · Digital dispatch</span>
-      <h3>Dispatch 200 doses to the requesting hospital</h3>
-      <div class="grid2">
-        <div class="q"><b>Receiving centre</b><input type="text" id="s8centre" placeholder="e.g. District Hospital, Kannur"></div>
-        <div class="q"><b>Transport box / carrier ID</b><input type="text" id="s8box" placeholder="e.g. VC-BOX-12 with conditioned ice packs"></div>
-        <div class="q"><b>Courier / driver name</b><input type="text" id="s8courier" placeholder="e.g. R. Menon"></div>
-        <div class="q"><b>Dispatch time</b><input type="text" id="s8time" placeholder="e.g. 15:20"></div>
-      </div>
-      <button class="btn ghost" id="dispatchBtn">Generate dispatch record</button>
-      <div id="dispatchOut" style="display:none;margin-top:10px" class="q">
-        <b>Dispatch ID <span style="color:var(--cold)">VC45871</span> created</b>
-        <div class="muted">Chain of custody recorded: batch, quantity, box, courier, dispatch time and receiving centre.</div>
-      </div>
-      <div class="fb" id="fb8"></div>
-    </div>
-
-    <!-- STEP 9 -->
-    <div class="card">
-      <span class="marks">10 marks</span><span class="step-tag">Step 9 · AEFI / ADR reporting</span>
-      <h3>A vaccinated patient reports fever, injection-site swelling and dizziness</h3>
-      <div class="grid2">
-        <div class="q"><b>Batch implicated</b><input type="text" id="s9batch" placeholder="Batch number"></div>
-        <div class="q"><b>Patient ID</b><input type="text" id="s9pid" placeholder="e.g. PT-20416"></div>
-        <div class="q"><b>Vaccinator / centre</b><input type="text" id="s9vacc" placeholder="e.g. Nurse S. Raj, PHC Thalassery"></div>
-        <div class="q"><b>Severity</b>
-          <select id="s9sev">
-            <option value="">Select…</option>
-            <option value="mild">Mild — expected reactogenicity</option>
-            <option value="moderate">Moderate — requires observation</option>
-            <option value="severe">Severe / serious — hospitalisation</option>
-          </select></div>
-      </div>
-      <div class="q"><b>Symptoms &amp; action taken</b><textarea id="s9sym" placeholder="Describe onset, symptoms, treatment given and follow-up."></textarea></div>
-      <div class="fb" id="fb9"></div>
-    </div>
-
-    <!-- STEP 10 -->
-    <div class="card">
-      <span class="marks">10 marks</span><span class="step-tag">Step 10 · Compliance audit</span>
-      <h3>Confirm every parameter is evidenced</h3>
-      <div class="q">
-        <label class="ck"><input type="checkbox" class="s10"> Batch verified against dispatch advice</label>
-        <label class="ck"><input type="checkbox" class="s10"> QR codes scanned and mismatch actioned</label>
-        <label class="ck"><input type="checkbox" class="s10"> Temperature log downloaded and analysed</label>
-        <label class="ck"><input type="checkbox" class="s10"> Refrigerator inspected and recorded</label>
-        <label class="ck"><input type="checkbox" class="s10"> AI alert reviewed and decision justified</label>
-        <label class="ck"><input type="checkbox" class="s10"> FEFO order applied to distribution</label>
-        <label class="ck"><input type="checkbox" class="s10"> AEFI / ADR reported against the batch</label>
-        <label class="ck"><input type="checkbox" class="s10"> Dispatch and chain of custody documented</label>
-      </div>
-      <div class="fb" id="fb10"></div>
-    </div>
-
-    <div class="card" style="text-align:center">
-      <button class="btn" id="evalBtn">Evaluate my cold-chain management</button>
-      <div class="muted" style="margin-top:8px">You can revise your answers and re-evaluate.</div>
-      <div class="fb" id="fbAll"></div>
-    </div>
-  </section>
-
-  <!-- ══════════ DELIVERABLES ══════════ -->
-  <section class="panel" id="p-deliver">
-    <div class="card">
-      <h2>Digital deliverables — mandatory <span class="marks">20 marks</span></h2>
-      <p class="muted">This practical is a <b>digital portfolio project</b>, not a written record. Alongside your report you must submit the following. Tick each item once it is attached.</p>
-    </div>
-
-    <div class="card">
-      <h3>1 · Cold-chain temperature trend graph <span class="marks">4 marks</span></h3>
-      <p class="muted">Reproduce this trace in Excel / Sheets / any charting tool and mark the safe zone, the excursion and its duration.</p>
-      <div id="chartHost2"></div>
-      <label class="ck"><input type="checkbox" class="dv"> Temperature trend graph attached, with safe zone and excursion labelled</label>
-    </div>
-
-    <div class="card">
-      <h3>2 · Cold-chain workflow animation <span class="marks">4 marks</span></h3>
-      <p class="muted">Produce a <b>30–60 second animation</b> (Canva, PowerPoint, Vyond, Animaker or any AI animation tool) showing the vaccine's full journey. Storyboard below — the vial travels the chain:</p>
-      <div class="journey" id="journey"><div class="jtrack"></div><div class="jvial">💉</div></div>
-      <div class="flow" style="margin-top:8px">
-        <div class="fnode">Manufacturer → Quality check → Cold storage → Transport vehicle</div>
-        <div class="farr">▼</div>
-        <div class="fnode">IoT temperature monitoring → District vaccine store → Vaccination centre</div>
-        <div class="farr">▼</div>
-        <div class="fnode">Patient → AEFI reporting → Compliance dashboard</div>
-      </div>
-      <label class="ck"><input type="checkbox" class="dv"> 30–60 s workflow animation attached (link or file)</label>
-    </div>
-
-    <div class="card">
-      <h3>3 · Interactive dashboard <span class="marks">4 marks</span></h3>
-      <p class="muted">Your live figures from this session — rebuild this as your own dashboard.</p>
-      <div class="dash" id="dashHost"></div>
-      <label class="ck"><input type="checkbox" class="dv"> Dashboard built and screenshot attached</label>
-    </div>
-
-    <div class="card">
-      <h3>4 · Decision flowchart &amp; 5 · vaccine journey timeline <span class="marks">3 marks</span></h3>
-      <div class="grid2">
-        <div>
-          <h3 style="font-size:13px">Decision flowchart</h3>
-          <div class="flow">
-            <div class="fnode">Shipment received</div><div class="farr">▼</div>
-            <div class="fnode">Scan QR · verify batch</div><div class="farr">▼</div>
-            <div class="fnode">Check temperature log</div><div class="farr">▼</div>
-            <div class="fnode dec">Held at 2–8 °C?</div><div class="farr">▼</div>
-            <div class="fnode">Yes → store &nbsp;|&nbsp; No → quarantine</div><div class="farr">▼</div>
-            <div class="fnode">Notify supervisor → stability assessment</div><div class="farr">▼</div>
-            <div class="fnode">Safe → continue use &nbsp;|&nbsp; Unsafe → discard</div>
+      <div class="rig">
+        <div class="fridge">
+          <div class="fbody" id="fbody">
+            <div class="shelf" id="sh1"></div>
+            <div class="shelf" id="sh2"></div>
+            <div class="shelf" id="sh3"></div>
           </div>
+          <div class="ftemp ok" id="ftemp">+4.6 °C</div>
+          <div class="frange">target +2 °C to +8 °C</div>
+          <div class="door"><span>Door: <b id="doorS">closed</b></span><span>·</span><span>Alarm: <b id="alarmS">armed</b></span></div>
         </div>
-        <div>
-          <h3 style="font-size:13px">Vaccine journey timeline</h3>
-          <ul class="tl">
-            <li>Manufacturing</li><li>Quality testing</li><li>Packaging &amp; QR labelling</li>
-            <li>Cold storage at plant</li><li>Refrigerated transport</li><li>Regional warehouse</li>
-            <li>District vaccine store</li><li>Hospital / PHC storage</li><li>Vaccination</li><li>Safety monitoring (AEFI)</li>
-          </ul>
-        </div>
-      </div>
-      <label class="ck"><input type="checkbox" class="dv"> Flowchart and timeline attached</label>
-    </div>
-
-    <div class="card">
-      <h3>6 · QR code &amp; traceability <span class="marks">2 marks</span></h3>
-      <div class="qrbox">
-        <svg class="qr" id="qrSim" viewBox="0 0 29 29" shape-rendering="crispEdges" aria-label="Simulated vaccine QR code"></svg>
-        <div style="flex:1;min-width:220px">
-          <p class="muted" style="margin-bottom:6px">Generate a real QR linking to a digital record containing:</p>
-          <div class="muted" style="font-size:12.5px;line-height:1.9">
-            Vaccine name · Batch number · Manufacturer · Manufacturing date · Expiry date ·
-            Storage temperature · Current location · Transport history · Temperature history · Vaccination status
-          </div>
+        <div class="chartbox">
+          <h4>Continuous temperature log · last 12 hours</h4>
+          <div class="plot" id="plot"></div>
+          <div class="xlab"><span>21:00</span><span>01:00</span><span>05:00</span><span>09:00</span></div>
+          <div class="ticker" id="ticker"></div>
         </div>
       </div>
-      <p class="muted" style="font-size:11.5px;margin-top:6px">The block above is a visual simulation for your report layout — generate a genuine scannable QR with any QR generator.</p>
-      <label class="ck"><input type="checkbox" class="dv"> Scannable QR code generated and record linked</label>
-    </div>
 
-    <div class="card">
-      <h3>7 · AI decision explanation <span class="marks">3 marks</span></h3>
-      <div class="q"><b>Why did the AI raise the alert, which parameters triggered it, did you accept it — and would you decide the same way? Explain.</b>
-        <textarea id="dvAI" placeholder="Explain the trigger parameters (peak temperature, duration above 8 °C), your decision, and your clinical reasoning."></textarea></div>
-      <label class="ck"><input type="checkbox" class="dv"> AI decision analysis written</label>
-    </div>
-
-    <div class="card">
-      <h3>8 · Final digital compliance report</h3>
-      <p class="muted">Student details · shipment details · temperature graph · workflow diagram · dashboard screenshot · QR screenshot · AI decision summary · compliance checklist · faculty verification · digital signature · conclusion.</p>
-      <label class="ck"><input type="checkbox" class="dv"> Final compliance report compiled</label>
-      <div class="fb" id="fbDv"></div>
+      <div id="stage"></div>
     </div>
   </section>
 
-  <!-- ══════════ REPORT ══════════ -->
   <section class="panel" id="p-report">
-    <div class="card">
-      <h2>Your result</h2>
-      <div id="resultBox" class="muted">Complete the Cold-Chain Console and press <b>Evaluate</b> to see your score breakdown here.</div>
+    <div class="card"><h2 style="font-size:18px">Incident report &amp; session outcome</h2>
+      <p class="muted" id="repEmpty">Complete the watch to generate your report, then write and submit it below.</p>
+      <div id="repBody" style="display:none"></div>
     </div>
-    <div class="card">
-      <h2>Reflection questions</h2>
-      <ol class="muted" style="padding-left:20px;line-height:1.9;font-size:13.4px">
-        <li>Why are vaccines stored between 2–8 °C?</li>
-        <li>What happens if a vaccine freezes?</li>
-        <li>Why is continuous IoT monitoring better than manual recording?</li>
-        <li>What exactly is a cold-chain breach?</li>
-        <li>Why is FEFO important for vaccines?</li>
-        <li>What action follows an AI-identified temperature excursion?</li>
-        <li>When should vaccines be discarded — and on whose authority?</li>
-        <li>How does QR coding improve traceability and recall?</li>
-        <li>Why must AEFI be reported against the batch?</li>
-        <li>How does digital monitoring reduce vaccine wastage?</li>
-      </ol>
-    </div>
-    <div id="reportWriter" style="display:none"></div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
   </section>
-
 </div>
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="firebase-sync.js"></script>
 <script src="alizon-practical-submit.js?v=3"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
 <script src="alizon-experiment-data.js?v=12"></script>
+<script src="alizon-pdf-open.js"></script>
 <script>
 (function(){
   'use strict';
-  function $(id){ return document.getElementById(id); }
-  window.update=function(){};   /* parent theme-switch hook (no canvas to redraw) */
+  var $=function(i){return document.getElementById(i);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var PASS=50;
 
-  /* ---------- theme ---------- */
-  var tb=$('themeBtn');
-  if(tb) tb.addEventListener('click',function(){
-    var dark=document.documentElement.classList.toggle('dark');
-    try{ localStorage.setItem('pracTheme',dark?'dark':'light'); }catch(e){}
-  });
+  /* ---- overnight trace: 48 readings, one every 15 min from 21:00 to 09:00 ----
+     Normal until 02:00, then the door is left ajar and the temperature climbs,
+     peaking at 14.2 °C around 06:00 before recovering when staff arrive.       */
+  var TRACE=(function(){
+    var t=[], v=4.6;
+    for(var i=0;i<48;i++){
+      var hr=21+i*0.25;
+      if(i<20)      v=4.2+Math.sin(i/3)*0.5;                 /* stable */
+      else if(i<36) v=4.6+(i-20)*0.62+Math.sin(i/2)*0.35;    /* climbing */
+      else          v=14.2-(i-36)*0.78;                      /* recovering */
+      t.push({i:i,h:hr%24,v:Math.round(v*10)/10});
+    }
+    return t;
+  })();
+  var PEAK=TRACE.reduce(function(a,b){return b.v>a.v?b:a;},TRACE[0]);
+  var OUT=TRACE.filter(function(p){return p.v>8||p.v<2;});
+  var HOURS_OUT=Math.round(OUT.length*0.25*10)/10;
 
-  /* ---------- tabs ---------- */
-  var tabs=document.querySelectorAll('.tab');
-  tabs.forEach(function(t){ t.addEventListener('click',function(){
-    tabs.forEach(function(x){ x.classList.remove('on'); });
-    document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('on'); });
-    t.classList.add('on');
-    var p=$('p-'+t.dataset.p); if(p) p.classList.add('on');
-    if(t.dataset.p==='report') mountWriter();
-    if(t.dataset.p==='deliver') renderDash();
-    window.scrollTo(0,0);
-  }); });
+  /* ---- the stock in the fridge ---- */
+  var STOCK=[
+   {id:'S1', n:'Hepatitis B (adult)', b:'HB-4471', doses:20, adj:'aluminium-adjuvanted',
+    vvm:'ok', frozen:false, shelf:2,
+    usable:true, why:'Aluminium-adjuvanted, but it was <b>never frozen</b> — only heated. The VVM is well within limits and hepatitis B vaccine is relatively heat-stable, so after sponsor assessment this stock remains usable.'},
+   {id:'S2', n:'Measles–Rubella (lyophilised)', b:'MR-2210', doses:30, adj:'live, freeze-dried',
+    vvm:'end', frozen:false, shelf:1,
+    usable:false, why:'The <b>VVM inner square has reached the reference ring</b>. That is the discard point regardless of the printed expiry — this vaccine has taken more cumulative heat than it can tolerate and must not be used.'},
+   {id:'S3', n:'DTP-HepB-Hib (pentavalent)', b:'PN-9032', doses:25, adj:'aluminium-adjuvanted',
+    vvm:'ok', frozen:true, shelf:3,
+    usable:false, why:'This vial sat against the cold plate and <b>has been frozen</b> — the shake test shows rapid granular sedimentation. Freezing irreversibly destroys an aluminium-adjuvanted vaccine, and no assessment can recover it. Note the trap: its VVM looks perfect, because VVMs record heat, not freezing.'},
+   {id:'S4', n:'Tetanus–diphtheria (Td)', b:'TD-1188', doses:40, adj:'aluminium-adjuvanted',
+    vvm:'ok', frozen:false, shelf:2,
+    usable:true, why:'Heat-exposed but not frozen, VVM well within limits. Td is comparatively heat-stable; retained pending the sponsor’s written assessment.'},
+   {id:'S5', n:'Rotavirus (oral, live)', b:'RV-6605', doses:15, adj:'live, liquid',
+    vvm:'near', frozen:false, shelf:1,
+    usable:false, why:'The VVM has <b>not yet reached</b> the discard point, but this is a live liquid vaccine with the least heat tolerance in the fridge, and it has spent over four hours above 8 °C. It should be quarantined and referred — and the sponsor will not release it.'},
+   {id:'S6', n:'Diluent for MR', b:'DIL-2210', doses:30, adj:'diluent',
+    vvm:'na', frozen:false, shelf:3,
+    usable:true, why:'Diluent is not itself temperature-sensitive in the same way and has no VVM. It remains usable — though it is of no value without the vaccine it reconstitutes.'}
+  ];
 
-  /* ---------- option pickers ---------- */
-  var state={};
-  document.querySelectorAll('.opts').forEach(function(g){
-    g.querySelectorAll('.opt').forEach(function(b){
-      b.addEventListener('click',function(){
-        g.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('sel','ok','bad'); });
-        b.classList.add('sel');
-        state[g.dataset.q]=b.dataset.v;
+  /* ---- the six stages ---- */
+  var STAGES=[
+  {n:1, key:'detect', marks:15, title:'Read the trace',
+   q:'You arrive at 09:00 and open the log. What does the overnight trace show?',
+   o:['A brief fluctuation within the acceptable range — no action needed',
+      'A sustained excursion above 8 °C lasting several hours, peaking above 14 °C',
+      'A freezing event — the temperature fell below 0 °C overnight',
+      'A sensor fault — the readings are not credible'],c:1,
+   e:'The trace climbs steadily from about 02:00, breaches 8 °C, and peaks at <b>'+PEAK.v+' °C</b>, remaining out of range for roughly <b>'+HOURS_OUT+' hours</b> before recovering. This is a sustained heat excursion, not a transient blip from a door opening — the shape of the curve, a slow climb and slow recovery, is characteristic of a door left ajar.'},
+
+  {n:2, key:'first', marks:25, title:'First action',
+   q:'It is 09:02. What is your very first action?',
+   o:['Discard all the affected stock immediately so it cannot be used by mistake',
+      'Quarantine the affected stock — label it “DO NOT USE”, keep it correctly refrigerated, and separate it from usable stock',
+      'Continue the immunisation session as planned and investigate afterwards',
+      'Move the stock to the freezer to protect it from further heat'],c:1,
+   e:'<b>Quarantine first, assess second.</b> The stock must be made impossible to dispense, but kept under correct storage so that it can still be assessed and — often — released. Discarding immediately destroys both usable vaccine and the evidence; continuing the session exposes children to vaccine of unknown potency; and moving it to a freezer would destroy the adjuvanted products outright.',
+   critical:true,
+   harm:'Continuing to administer vaccine of unknown potency leaves children believing they are protected when they may not be.'},
+
+  {n:3, key:'quar', marks:0, title:'Quarantine the stock',
+   pick:true,
+   q:'Select every vial in the fridge that must be quarantined pending assessment.',
+   e:'<b>Every vial that was in the fridge during the excursion is quarantined</b> — including the ones that will later be released. Quarantine is not a judgement about potency; it is a control that prevents use until a judgement has been made. Only the diluent, which is not temperature-sensitive in the same way, may reasonably stay in circulation.'},
+
+  {n:4, key:'inspect', marks:25, title:'Inspect the stock',
+   inspect:true,
+   q:'Inspect each vial. Mark the ones that are <b>no longer usable</b>.',
+   e:'Two independent failure modes are in play. The <b>VVM records cumulative heat</b> — when the inner square is as dark as the outer ring, the vial is discarded whatever the expiry. But <b>VVMs say nothing about freezing</b>, and freezing irreversibly destroys aluminium-adjuvanted vaccines. The pentavalent vial has a perfect VVM and is ruined; the rotavirus has an unreached VVM and is still unusable because a live liquid vaccine tolerates the least heat of anything in the fridge. Reading the VVM alone catches neither.'},
+
+  {n:5, key:'dispo', marks:20, title:'Disposition and escalation',
+   q:'The session starts at 14:00. What is your disposition?',
+   o:['Discard everything that was in the fridge and cancel the session',
+      'Release everything — the vaccines look normal and the fridge is back in range',
+      'Keep the affected stock quarantined, notify the manufacturer and the immunisation programme for a written assessment, source replacement stock for the session, and document the excursion',
+      'Use the affected stock only for older children, who are less vulnerable'],c:2,
+   e:'The defensible position is <b>quarantine, refer, replace and document</b>. The manufacturer holds the stability data and issues the written assessment; the programme needs to know for supply and for the cold-chain record. Blanket discard wastes usable vaccine and is a reportable loss in its own right; blanket release gambles with children’s protection; and there is no such thing as vaccine that is “good enough for older children”.',
+   critical:true,
+   harm:'Releasing heat-damaged vaccine leaves children unprotected while their records show them as immunised — the harm is silent and may not surface for years.'},
+
+  {n:6, key:'doc', marks:15, title:'Documentation and prevention',
+   multi:true,
+   q:'Select every action required to close the incident properly.',
+   items:[
+    {t:'Record the excursion with start time, end time, peak temperature and duration out of range', ok:true},
+    {t:'Record the batch numbers and quantities of every affected vial', ok:true},
+    {t:'Complete a cold-chain incident report and notify the immunisation programme', ok:true},
+    {t:'Investigate and correct the root cause — the door seal and the door-ajar alarm', ok:true},
+    {t:'Re-map the fridge and confirm the probe is in a validated location', ok:true},
+    {t:'Delete the alarm log so the incident does not appear at the next audit', ok:false,
+     why:'Falsifying or deleting a monitoring record is a data-integrity breach and a disciplinary matter.'},
+    {t:'Reset the data logger without downloading the record first', ok:false,
+     why:'The logged trace is the evidence for the assessment. Resetting before download destroys it.'},
+    {t:'Ask staff to check the fridge more often instead of repairing the alarm', ok:false,
+     why:'Substituting human vigilance for a broken engineering control is the weakest possible corrective action.'}],
+   e:'A closed incident has four parts: <b>the record</b> (times, peak, duration, batches), <b>the notification</b>, <b>the root-cause correction</b>, and <b>verification that monitoring is sound</b>. The three rejected options are the classic bad instincts — hide it, destroy the evidence, or replace a broken engineering control with a request that people try harder.'}
+  ];
+
+  var TOTAL_M=STAGES.reduce(function(a,s){return a+s.marks;},0);   /* 15+25+0+25+20+15 = 100 */
+  $('badgeCrit').innerHTML='<b>Rapid Responder</b> — correct first action. &nbsp;·&nbsp; '
+    +'<b>Chain Keeper</b> — no usable vaccine needlessly destroyed. &nbsp;·&nbsp; '
+    +'<b>Sharp Inspector</b> — every vial correctly assessed, including the frozen one with a perfect VVM. &nbsp;·&nbsp; '
+    +'<b>Audit Proof</b> — full marks for documentation. &nbsp;·&nbsp; '
+    +'<b>Cold-Chain Master</b> — 85 or more with no patient harm.';
+
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}');
+       if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var S=null, tick=null, sel={};
+
+  function start(){
+    S={si:0,marks:0,potency:100,compliance:100,ended:false,t0:Date.now(),
+       quarantined:{},discarded:{},log:[],harmed:[],
+       name:($('cName').value||'').trim()||'Candidate',reg:($('cReg').value||'').trim()};
+    $('setupCard').style.display='none'; $('live').style.display='';
+    drawFridge(); drawPlot(); seedTicker(); paintBar();
+    clearInterval(tick);
+    tick=setInterval(function(){
+      if(!S||S.ended) return;
+      var el=Math.floor((Date.now()-S.t0)/1000);
+      var mm=(el%60), hh=9+Math.floor(el/60);
+      $('clock').textContent=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+    },1000);
+    render();
+  }
+  function paintBar(){
+    $('mStage').textContent=Math.min(S.si+1,STAGES.length)+' / '+STAGES.length;
+    $('mScore').textContent=Math.round(S.marks*10)/10;
+    $('mPot').textContent=S.potency+'%'; $('mComp').textContent=S.compliance+'%';
+    $('mPotWrap').className='m'+(S.potency>=85?' good':(S.potency>=55?' warn':' bad'));
+    $('mCompWrap').className='m'+(S.compliance>=85?' good':(S.compliance>=55?' warn':' bad'));
+  }
+  function drawFridge(){
+    [1,2,3].forEach(function(sh){
+      var vials='';
+      STOCK.filter(function(x){return x.shelf===sh;}).forEach(function(x){
+        var n=Math.max(3,Math.round(x.doses/5));
+        for(var i=0;i<n;i++) vials+='<span class="vial'+(S.quarantined[x.id]?' quar':' aff')+'" title="'+esc(x.n)+'"></span>';
       });
+      $('sh'+sh).innerHTML=vials;
     });
-  });
-
-  /* ---------- temperature data + chart ---------- */
-  var TEMPS=[{t:'8 AM',v:5},{t:'9 AM',v:5},{t:'10 AM',v:6},{t:'11 AM',v:8},{t:'12 PM',v:11},{t:'1 PM',v:10},{t:'2 PM',v:6}];
-  var PEAK=11, HOURS_ABOVE=2;   /* 12 PM and 1 PM readings are above 8 °C */
-
-  function chartSVG(){
-    var W=700,H=250,L=44,R=14,T=14,B=34;
-    var pw=W-L-R, ph=H-T-B, maxY=14;
-    function x(i){ return L + (i*(pw/(TEMPS.length-1))); }
-    function y(v){ return T + ph - (v/maxY)*ph; }
-    var pts=TEMPS.map(function(d,i){ return x(i)+','+y(d.v); }).join(' ');
-    var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="Vaccine transport temperature trace">';
-    /* safe band 2–8 */
-    s+='<rect x="'+L+'" y="'+y(8)+'" width="'+pw+'" height="'+(y(2)-y(8))+'" fill="rgba(30,142,90,.14)"/>';
-    s+='<text x="'+(L+6)+'" y="'+(y(8)-5)+'" font-size="10" fill="var(--success)">safe zone 2–8 °C</text>';
-    /* gridlines */
-    [0,2,4,6,8,10,12,14].forEach(function(v){
-      s+='<line x1="'+L+'" y1="'+y(v)+'" x2="'+(W-R)+'" y2="'+y(v)+'" stroke="var(--line)" stroke-width="1"/>';
-      s+='<text x="'+(L-8)+'" y="'+(y(v)+3)+'" font-size="10" fill="var(--muted)" text-anchor="end">'+v+'</text>';
-    });
-    /* 8 °C threshold */
-    s+='<line x1="'+L+'" y1="'+y(8)+'" x2="'+(W-R)+'" y2="'+y(8)+'" stroke="var(--danger)" stroke-dasharray="5 4" stroke-width="1.5"/>';
-    /* trace */
-    s+='<polyline points="'+pts+'" fill="none" stroke="var(--cold)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>';
-    TEMPS.forEach(function(d,i){
-      var breach=d.v>8;
-      s+='<circle cx="'+x(i)+'" cy="'+y(d.v)+'" r="'+(breach?5:4)+'" fill="'+(breach?'var(--danger)':'var(--cold)')+'"/>';
-      s+='<text x="'+x(i)+'" y="'+(y(d.v)-11)+'" font-size="10.5" font-weight="700" fill="'+(breach?'var(--danger)':'var(--ink)')+'" text-anchor="middle">'+d.v+'°</text>';
-      s+='<text x="'+x(i)+'" y="'+(H-12)+'" font-size="10" fill="var(--muted)" text-anchor="middle">'+d.t+'</text>';
-    });
-    return s+'</svg>';
+    $('fbody').className='fbody';
+    $('ftemp').textContent='+4.6 °C'; $('ftemp').className='ftemp ok';
+    $('doorS').textContent='closed'; $('alarmS').textContent='did not sound';
   }
-  function paintCharts(){
-    var a=$('chartHost'), b=$('chartHost2');
-    if(a) a.innerHTML=chartSVG();
-    if(b) b.innerHTML=chartSVG();
+  function drawPlot(){
+    var lo=0, hi=16, H=170;
+    var y=function(v){ return H-((v-lo)/(hi-lo))*H; };
+    var h='<div class="band" style="top:'+y(8)+'px;height:'+(y(2)-y(8))+'px"></div>';
+    [0,4,8,12,16].forEach(function(g){ h+='<div class="gl" style="top:'+y(g)+'px">'+g+'°</div>'; });
+    TRACE.forEach(function(p,i){
+      var out=(p.v>8||p.v<2);
+      h+='<div class="pt'+(out?' out':'')+'" style="left:'+(i/(TRACE.length-1)*100)+'%;bottom:'+(H-y(p.v))+'px" title="'+p.v+'°C"></div>';
+    });
+    $('plot').innerHTML=h;
+  }
+  function seedTicker(){
+    var lines=[
+      ['t','21:00  VS-02 monitoring active · +4.2 °C · door closed'],
+      ['t','01:45  +4.9 °C · within range'],
+      ['w','02:15  +5.4 °C · rising trend detected'],
+      ['a','03:30  +8.6 °C · UPPER LIMIT BREACHED'],
+      ['a','03:30  ALARM RAISED — no acknowledgement recorded'],
+      ['a','06:00  +'+PEAK.v+' °C · peak excursion'],
+      ['w','07:45  +10.1 °C · falling'],
+      ['t','08:40  +6.2 °C · returned to range'],
+      ['t','09:00  +4.6 °C · you take over the watch']
+    ];
+    $('ticker').innerHTML=lines.map(function(l){return '<div class="'+l[0]+'">'+esc(l[1])+'</div>';}).join('');
+    $('ticker').scrollTop=999;
   }
 
-  /* ---------- simulated QR block (visual only) ---------- */
-  function paintQR(){
-    var el=$('qrSim'); if(!el) return;
-    var N=29, seed=240725, out='';
-    function rnd(){ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; }
-    function finder(ox,oy){
-      var s='';
-      for(var i=0;i<7;i++)for(var j=0;j<7;j++){
-        var edge=(i===0||i===6||j===0||j===6), core=(i>=2&&i<=4&&j>=2&&j<=4);
-        if(edge||core) s+='<rect x="'+(ox+j)+'" y="'+(oy+i)+'" width="1" height="1" fill="#111"/>';
+  /* ================= STAGES ================= */
+  function render(){
+    paintBar();
+    if(S.si>=STAGES.length){ finish(); return; }
+    var st=STAGES[S.si];
+    sel={one:null,multi:[]};
+    var h='<div class="task"><span class="step">Stage '+st.n+' of '+STAGES.length
+      +(st.marks?' · '+st.marks+' marks':' · quarantine control')+'</span>'
+      +'<h3>'+esc(st.title)+'</h3><div class="q">'+st.q+'</div>';
+
+    if(st.pick){
+      h+='<div class="stock" id="pickW">'+STOCK.map(function(x){
+        return '<button type="button" class="sv" data-id="'+x.id+'"><b>'+esc(x.n)+'</b>'
+          +'<small>Batch '+x.b+' · '+x.doses+' doses · '+esc(x.adj)+'</small></button>';}).join('')+'</div>';
+    } else if(st.inspect){
+      h+='<div class="stock" id="inspW">'+STOCK.map(function(x){
+        var vvm='';
+        if(x.vvm==='na') vvm='<div class="vvmlab">no VVM (diluent)</div>';
+        else {
+          var inner={ok:'#eaf3ea',near:'#b9c7b9',end:'#4a4a4a'}[x.vvm];
+          vvm='<div class="vvm"><span class="ring" style="background:#2f2f2f"></span>'
+             +'<span class="ring" style="background:#f4f2ec;inset:5px"></span>'
+             +'<span class="sq" style="background:'+inner+';position:relative"></span></div>'
+             +'<div class="vvmlab">VVM · inner square vs ring</div>';
+        }
+        return '<button type="button" class="sv" data-id="'+x.id+'"><b>'+esc(x.n)+'</b>'
+          +'<small>Batch '+x.b+' · '+esc(x.adj)+'</small>'
+          +'<small>Shake test: '+(x.frozen?'<b style="color:var(--danger)">rapid granular sediment</b>':'smooth, no sediment')+'</small>'
+          +vvm+'</button>';}).join('')+'</div>'
+        +'<p class="muted" style="font-size:12.5px;margin-top:8px">Click a vial to mark it <b>no longer usable</b>. Leave the usable ones unmarked.</p>';
+    } else if(st.multi){
+      h+='<div class="opts" id="multiW">'+st.items.map(function(it,k){
+        return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+(k+1)+'</span><span>'+esc(it.t)+'</span></button>';}).join('')+'</div>';
+    } else {
+      h+='<div class="opts" id="oneW">'+st.o.map(function(o,k){
+        return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+'ABCD'[k]+'</span><span>'+esc(o)+'</span></button>';}).join('')+'</div>';
+    }
+    h+='<div id="fbk"></div><div class="row" style="margin-top:12px"><button class="btn" id="goBtn">Confirm</button></div></div>';
+    $('stage').innerHTML=h;
+
+    if(st.pick||st.inspect){
+      [].forEach.call(document.querySelectorAll('#stage .sv'),function(b){
+        b.addEventListener('click',function(){
+          var id=b.getAttribute('data-id'), i=sel.multi.indexOf(id);
+          if(i<0){ sel.multi.push(id); b.classList.add('pick'); } else { sel.multi.splice(i,1); b.classList.remove('pick'); }
+        });
+      });
+    } else if(st.multi){
+      [].forEach.call(document.querySelectorAll('#multiW .opt'),function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k'), i=sel.multi.indexOf(k);
+          if(i<0){ sel.multi.push(k); b.classList.add('pick'); } else { sel.multi.splice(i,1); b.classList.remove('pick'); }
+        });
+      });
+    } else {
+      [].forEach.call(document.querySelectorAll('#oneW .opt'),function(b){
+        b.addEventListener('click',function(){
+          sel.one=+b.getAttribute('data-k');
+          [].forEach.call(document.querySelectorAll('#oneW .opt'),function(x){x.classList.remove('pick');});
+          b.classList.add('pick');
+        });
+      });
+    }
+    $('goBtn').addEventListener('click',function(){ submit(st); });
+  }
+
+  function submit(st){
+    var got=0, ok=true, extra='';
+    if(st.pick){
+      if(!sel.multi.length){ need('Select the vials to quarantine.'); return; }
+      var want=STOCK.filter(function(x){return x.adj!=='diluent';}).map(function(x){return x.id;});
+      var missed=want.filter(function(id){return sel.multi.indexOf(id)<0;});
+      sel.multi.forEach(function(id){ S.quarantined[id]=true; });
+      ok=(missed.length===0);
+      if(!ok){ S.compliance=Math.max(0,S.compliance-15);
+        extra='<br><b>Left in circulation:</b> '+missed.map(function(id){return esc(nm(id));}).join(', ')
+          +' — any vial present during the excursion must be quarantined until assessed.'; }
+      drawFridge();
+      [].forEach.call(document.querySelectorAll('#stage .sv'),function(b){
+        var id=b.getAttribute('data-id'), shouldQ=want.indexOf(id)>=0;
+        b.classList.remove('pick'); b.classList.add(shouldQ===(sel.multi.indexOf(id)>=0)?'right':'wrong');
+      });
+    } else if(st.inspect){
+      var wrongCall=0;
+      STOCK.forEach(function(x){
+        var marked=sel.multi.indexOf(x.id)>=0;
+        var shouldMark=!x.usable;
+        var el=document.querySelector('#stage .sv[data-id="'+x.id+'"]');
+        el.classList.remove('pick');
+        if(marked===shouldMark){ got+=25/STOCK.length; el.classList.add('right'); }
+        else{ wrongCall++; el.classList.add('wrong');
+          if(marked && x.usable){ S.potency=Math.max(0,S.potency-12); S.discarded[x.id]=true; }
+          if(!marked && !x.usable){ S.potency=Math.max(0,S.potency-18); S.compliance=Math.max(0,S.compliance-12);
+            S.harmed.push(x.n); }
+        }
+      });
+      got=Math.round(got*10)/10; ok=(wrongCall===0);
+      extra='<ul style="margin:7px 0 0 17px">'+STOCK.map(function(x){
+        return '<li><b>'+esc(x.n)+'</b> — '+(x.usable?'usable':'not usable')+'. '+x.why+'</li>';}).join('')+'</ul>';
+    } else if(st.multi){
+      if(!sel.multi.length){ need('Select at least one action.'); return; }
+      var right=0, bad=[];
+      st.items.forEach(function(it,k){
+        var picked=sel.multi.indexOf(k)>=0;
+        if(picked===it.ok) right++;
+        else if(picked && !it.ok) bad.push(esc(it.t)+' — '+it.why);
+      });
+      got=Math.round((st.marks*right/st.items.length)*10)/10;
+      ok=(right===st.items.length);
+      if(bad.length){ S.compliance=Math.max(0,S.compliance-10*bad.length);
+        extra='<br><b>Unacceptable actions selected:</b><ul style="margin:5px 0 0 17px"><li>'+bad.join('</li><li>')+'</li></ul>'; }
+      [].forEach.call(document.querySelectorAll('#multiW .opt'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        /* classList.add('') throws — only mark when there is a class to add */
+        var cl=st.items[k].ok?'right':(sel.multi.indexOf(k)>=0?'wrong':'');
+        if(cl) b.classList.add(cl);
+      });
+    } else {
+      if(sel.one==null){ need('Choose an option.'); return; }
+      ok=(sel.one===st.c);
+      got=ok?st.marks:0;
+      if(!ok && st.critical){
+        S.potency=Math.max(0,S.potency-20); S.compliance=Math.max(0,S.compliance-20);
+        if(st.harm) S.harmed.push(st.harm);
       }
-      return s;
+      [].forEach.call(document.querySelectorAll('#oneW .opt'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        if(k===st.c) b.classList.add('right'); else if(sel.one===k) b.classList.add('wrong');
+      });
     }
-    for(var r=0;r<N;r++)for(var c=0;c<N;c++){
-      var inF=(r<8&&c<8)||(r<8&&c>N-9)||(r>N-9&&c<8);
-      if(inF) continue;
-      if(rnd()>0.52) out+='<rect x="'+c+'" y="'+r+'" width="1" height="1" fill="#111"/>';
-    }
-    el.innerHTML=out+finder(0,0)+finder(N-7,0)+finder(0,N-7);
+    S.marks+=got;
+    S.log.push({stage:st.n,title:st.title,got:got,max:st.marks,ok:ok});
+    var f=$('fbk');
+    f.className=''; f.innerHTML='<div class="fb '+(ok?'ok':'no')+'"><div class="hd">'
+      +(st.marks?(got+' / '+st.marks+' marks'):'Quarantine recorded')+(ok?' — correct':'')+'</div>'
+      +st.e+extra+'</div>';
+    paintBar();
+    $('goBtn').disabled=true;
+    [].forEach.call(document.querySelectorAll('#stage .opt,#stage .sv'),function(b){ b.style.pointerEvents='none'; });
+    var nx=document.createElement('button');
+    nx.className='btn gold sm'; nx.style.marginLeft='8px';
+    nx.textContent=(S.si>=STAGES.length-1)?'Run the session ▸':'Next stage ▸';
+    $('goBtn').parentNode.appendChild(nx);
+    nx.addEventListener('click',function(){ S.si++; render(); window.scrollTo({top:0,behavior:'smooth'}); });
+  }
+  function need(m){ $('fbk').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>'+esc(m)+'</div>'; }
+  function nm(id){ for(var i=0;i<STOCK.length;i++) if(STOCK[i].id===id) return STOCK[i].n; return id; }
+
+  /* ================= OUTCOME ================= */
+  function finish(){
+    if(S.ended) return;
+    S.ended=true; clearInterval(tick);
+    var total=Math.round(S.marks*10)/10;
+    var usableDoses=STOCK.filter(function(x){return x.usable && !S.discarded[x.id];})
+                         .reduce(function(a,x){return a+x.doses;},0);
+    var allDoses=STOCK.reduce(function(a,x){return a+x.doses;},0);
+    var wasted=STOCK.filter(function(x){return x.usable && S.discarded[x.id];})
+                    .reduce(function(a,x){return a+x.doses;},0);
+    var unsafeGiven=S.harmed.length;
+    var pass=(total>=PASS);
+    var docStage=S.log.filter(function(l){return l.stage===6;})[0];
+    var inspStage=S.log.filter(function(l){return l.stage===4;})[0];
+    var firstStage=S.log.filter(function(l){return l.stage===2;})[0];
+    S.result={total:total,pct:Math.round(total),pass:pass,potency:S.potency,compliance:S.compliance,
+      usableDoses:usableDoses,allDoses:allDoses,wasted:wasted,unsafeGiven:unsafeGiven,harmed:S.harmed.slice(),
+      badges:[
+        {n:'⏱ Rapid Responder',   got:!!(firstStage&&firstStage.ok), d:'Correct first action — quarantine before assessment'},
+        {n:'🧊 Chain Keeper',      got:wasted===0,                   d:'No usable vaccine needlessly destroyed'},
+        {n:'🔬 Sharp Inspector',   got:!!(inspStage&&inspStage.ok),  d:'Every vial correctly assessed, including the frozen one with a perfect VVM'},
+        {n:'📋 Audit Proof',       got:!!(docStage&&docStage.ok),    d:'Full marks for documentation and prevention'},
+        {n:'🏅 Cold-Chain Master', got:(total>=85&&unsafeGiven===0), d:'85 or more with no patient harm'}
+      ]};
+    makeQR(); renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
   }
 
-  /* ---------- live dashboard ---------- */
-  function renderDash(){
-    var host=$('dashHost'); if(!host) return;
-    var dispatched=$('dispatchOut') && $('dispatchOut').style.display!=='none' ? 200 : 0;
-    var quarantined=(state.s6dec==='quarantine')?500:0;
-    var adr=($('s9sev')&&$('s9sev').value)?1:0;
-    var audit=document.querySelectorAll('.s10:checked').length;
-    var pct=Math.round((audit/8)*100);
-    var tiles=[
-      ['Vaccines received',500],['Dispatched',dispatched],['Remaining',500-dispatched],
-      ['Fridge temperature','3 °C'],['Temperature alerts',1],['Expired vials',0],
-      ['Quarantined',quarantined],['AEFI reports',adr],['Audit compliance',pct+'%']
-    ];
-    host.innerHTML=tiles.map(function(t){
-      return '<div class="dtile"><small>'+t[0]+'</small><b>'+t[1]+'</b></div>';
-    }).join('');
-  }
-  ['change','input'].forEach(function(ev){ document.addEventListener(ev,function(){ renderDash(); }); });
-
-  /* ---------- scan + dispatch ---------- */
-  var scanBtn=$('scanBtn');
-  if(scanBtn) scanBtn.addEventListener('click',function(){ $('scanOut').style.display=''; scanBtn.textContent='✓ Cartons scanned'; });
-  var dBtn=$('dispatchBtn');
-  if(dBtn) dBtn.addEventListener('click',function(){ $('dispatchOut').style.display=''; renderDash(); });
-
-  /* ---------- evaluation ---------- */
-  function fb(id,ok,msg){ var e=$(id); if(!e) return; e.className='fb show '+(ok?'good':'bad'); e.innerHTML=msg; }
-  function val(id){ var e=$(id); return e?String(e.value||'').trim():''; }
-  var result=null;
-
-  function evaluate(){
-    var marks={}, notes=[], critical=false;
-
-    /* 1 · shipment verification /10 */
-    var m1=0;
-    if(state.s1match==='yes') m1+=4;
-    if(state.s1expiry==='accept') m1+=3;
-    if(state.s1before==='log') m1+=3;
-    marks.shipment=m1;
-    fb('fb1', m1>=7, m1>=7
-      ? 'Correct — all five parameters match, the vaccine is in date, and the logger must be downloaded before the vehicle leaves.'
-      : 'Review: the consignment does match on all five parameters, it is in date, and the temperature logger must be read <b>before</b> the vehicle departs.');
-
-    /* 2 · QR /10 */
-    var m2=0;
-    if(state.s2act==='quarantine') m2+=6;
-    if(state.s2why==='recall') m2+=4;
-    marks.qr=m2;
-    fb('fb2', m2>=6, m2>=6
-      ? 'Correct — carton C-02 carries a different batch to its label and must be quarantined and reported, never re-labelled.'
-      : 'Carton C-02 scans as <b>CV240711</b> but is labelled CV240725. Quarantine it and alert the supplier — re-labelling would destroy traceability.');
-
-    /* 3 · temperature analysis /20 */
-    var m3=0;
-    var peak=parseFloat(val('s3peak')), dur=parseFloat(val('s3dur'));
-    if(!isNaN(peak) && Math.abs(peak-PEAK)<0.51) m3+=7;
-    if(!isNaN(dur) && Math.abs(dur-HOURS_ABOVE)<0.51) m3+=7;
-    if(state.s3breach==='yes') m3+=3;
-    if(state.s3freeze==='no') m3+=3;
-    marks.temperature=m3;
-    fb('fb3', m3>=14, m3>=14
-      ? 'Correct — peak <b>11 °C</b>, above 8 °C for <b>2 hours</b> (12 PM and 1 PM), and no freezing excursion.'
-      : 'Read the trace again: the peak is <b>11 °C</b> at 12 PM and the trace stays above 8 °C for <b>2 hours</b>. It never falls below 0 °C, so there is no freezing excursion.');
-
-    /* 4 · fridge inspection (feeds documentation) */
-    var s4=document.querySelectorAll('.s4:checked').length;
-    fb('fb4', s4>=4, s4>=4 ? 'Refrigerator inspection recorded.' : 'Record every parameter — an unverified fridge invalidates the storage claim in your report.');
-
-    /* 5+6 · decision making /20 */
-    var m5=0;
-    if(state.s5ai==='accept') m5+=6;
-    if(val('s5reason').length>=40) m5+=4;
-    if(state.s6dec==='quarantine') m5+=10;
-    if(state.s6dec==='accept'){ critical=true; notes.push('Released the consignment for use without assessing a 2-hour excursion.'); }
-    if(state.s6dec==='discard'){ notes.push('Discarded stock without authorisation — quarantine and escalate instead.'); }
-    marks.decision=m5;
-    fb('fb5', m5>=14, m5>=14
-      ? 'Correct — 2 hours above 8 °C falls in the <b>1–2 hour "investigate"</b> band: quarantine, keep refrigerated and escalate.'
-      : 'A 2-hour excursion above 8 °C sits in the <b>investigate</b> band. Accept the AI hold, quarantine the stock and notify your supervisor — do not release it, and do not discard it on your own authority.');
-
-    /* 7 · FEFO /10 */
-    var m7=0;
-    if(state.s7order==='correct') m7+=6;
-    if(state.s7why==='expiry') m7+=4;
-    marks.fefo=m7;
-    fb('fb7', m7>=6, m7>=6
-      ? 'Correct — earliest expiry leaves first: CV240510 (Sep) → CV240725 (Dec) → CV240801 (Jan).'
-      : 'FEFO orders by <b>expiry</b>, not arrival: CV240510 (Sep 2026) → CV240725 (Dec 2026) → CV240801 (Jan 2027).');
-
-    /* 8 · documentation /10  (dispatch + fridge inspection) */
-    var m8=0;
-    var dispatched=$('dispatchOut') && $('dispatchOut').style.display!=='none';
-    if(dispatched) m8+=3;
-    ['s8centre','s8box','s8courier','s8time'].forEach(function(k){ if(val(k)) m8+=1; });
-    m8+=Math.min(3,Math.round(s4*3/5));
-    marks.documentation=Math.min(10,m8);
-    fb('fb8', marks.documentation>=6, marks.documentation>=6
-      ? 'Dispatch documented — chain of custody is unbroken.'
-      : 'Complete every dispatch field and generate the dispatch record; an incomplete chain of custody cannot be audited.');
-
-    /* 9 · AEFI /10 */
-    var m9=0;
-    if(val('s9batch')) m9+=3;
-    if(val('s9pid')) m9+=2;
-    if(val('s9vacc')) m9+=2;
-    if(val('s9sev')) m9+=1;
-    if(val('s9sym').length>=25) m9+=2;
-    marks.adr=m9;
-    fb('fb9', m9>=6, m9>=6
-      ? 'AEFI report captured against the batch — this is how programme-wide safety signals are detected.'
-      : 'An AEFI report must name the <b>batch</b>, patient, vaccinator, severity and symptoms — without the batch the report cannot support a safety signal.');
-
-    /* 10 · compliance audit /10 */
-    var s10=document.querySelectorAll('.s10:checked').length;
-    marks.audit=Math.round((s10/8)*10);
-    fb('fb10', s10>=6, s10>=6 ? 'Compliance audit complete.' : 'Evidence every audit parameter before signing the report.');
-
-    var total=marks.shipment+marks.qr+marks.temperature+marks.decision+marks.fefo+marks.documentation+marks.adr+marks.audit;
-    var pct=Math.round(total);
-    var pass=(pct>=60)&&!critical;
-    result={pct:pct,pass:pass,marks:marks,critical:critical,notes:notes};
-
-    $('scScore').textContent=total+' / 100';
-    $('scRes').textContent=critical?'CRITICAL FAIL':(pass?'PASS':'FAIL');
-
-    fb('fbAll', pass, (critical
-      ? '<b>Critical failure.</b> '+notes.join(' ')+' In a real programme this is a reportable patient-safety event.'
-      : (pass ? '<b>Pass — '+pct+'%.</b> Cold chain managed and evidenced correctly.'
-              : '<b>Fail — '+pct+'%.</b> Review the feedback above and re-evaluate.')));
-
-    renderResult(); renderDash();
-    var rt=document.querySelector('.tab[data-p="report"]'); if(rt) rt.classList.add('pulse');
-  }
-  var eb=$('evalBtn'); if(eb) eb.addEventListener('click',evaluate);
-
-  function renderResult(){
-    var host=$('resultBox'); if(!host||!result) return;
-    var rows=[
-      ['Shipment verification',result.marks.shipment,10],
-      ['QR verification &amp; traceability',result.marks.qr,10],
-      ['Temperature analysis',result.marks.temperature,20],
-      ['Cold-chain decision making',result.marks.decision,20],
-      ['FEFO implementation',result.marks.fefo,10],
-      ['Digital documentation',result.marks.documentation,10],
-      ['ADR / AEFI reporting',result.marks.adr,10],
-      ['Final compliance report',result.marks.audit,10]
-    ];
-    var dv=document.querySelectorAll('.dv:checked').length;
-    host.innerHTML='<table><tr><th>Skill</th><th style="text-align:right">Marks</th></tr>'+
-      rows.map(function(r){ return '<tr><td>'+r[0]+'</td><td style="text-align:right"><b>'+r[1]+'</b> / '+r[2]+'</td></tr>'; }).join('')+
-      '<tr><td><b>Total</b></td><td style="text-align:right"><b>'+result.pct+' / 100</b></td></tr>'+
-      '<tr><td>Digital deliverables attached</td><td style="text-align:right">'+dv+' / 8</td></tr>'+
-      '</table>'+
-      (result.critical?'<div class="alert"><b>Critical failure:</b> '+result.notes.join(' ')+'</div>'
-       :'<div class="muted" style="margin-top:8px">Result: <b>'+(result.pass?'PASS':'FAIL')+'</b> ('+result.pct+'%). Pass mark 60%.</div>');
+  var qrData='';
+  function makeQR(){
+    try{
+      var url='https://www.alizon.in/alizon-verify.html?reg='+encodeURIComponent(S.reg||'')+'&p=M4U4-COLDCHAIN';
+      $('qrHolder').innerHTML='';
+      if(window.QRCode){
+        new QRCode($('qrHolder'),{text:url,width:96,height:96,correctLevel:QRCode.CorrectLevel.M});
+        var cv=$('qrHolder').querySelector('canvas');
+        qrData=cv?cv.toDataURL('image/png'):(($('qrHolder').querySelector('img')||{}).src||'');
+      }
+    }catch(e){ qrData=''; }
   }
 
-  /* ---------- report writer ---------- */
-  var OPTS={module:'Module 4 · Unit 4 — Vaccines & Cold-Chain Analytics',title:'Digital Vaccine Cold-Chain Monitoring & Compliance Simulation',programme:'Pharmacy AI'};
-  var mounted=false;
-  function mountWriter(){
-    var host=$('reportWriter'); if(!host) return;
-    host.style.display='';
-    if(mounted||!window.AlizonPracticalReport) return;
-    mounted=true;
-    AlizonPracticalReport.mount({
-      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
-      titleField:{label:'Consignment & key decision', placeholder:'e.g. Batch CV240725 — 2 h excursion above 8 °C, quarantined'},
-      minWords:400,
-      autoResult:function(){
-        if(!result) return '';
-        var m=result.marks;
-        return 'Cold-chain simulation — batch CV240725 (500 vials). '
-          +'Peak transport temperature 11 °C with a 2-hour excursion above 8 °C; no freezing excursion. '
-          +'Decision taken: '+(state.s6dec==='quarantine'?'quarantine and investigate':(state.s6dec==='accept'?'accepted for distribution':(state.s6dec==='discard'?'discarded':'not recorded')))+'. '
-          +'Marks — shipment '+m.shipment+'/10, QR '+m.qr+'/10, temperature '+m.temperature+'/20, decision '+m.decision+'/20, '
-          +'FEFO '+m.fefo+'/10, documentation '+m.documentation+'/10, AEFI '+m.adr+'/10, audit '+m.audit+'/10. '
-          +'Total '+result.pct+'/100 — '+(result.critical?'CRITICAL FAIL':(result.pass?'PASS':'FAIL'))+'.';
-      },
-      autoPct:function(){ return result?result.pct:null; },
-      autoResultText:function(){ return result?((result.critical?'CRITICAL FAIL':(result.pass?'PASS':'FAIL'))+' '+result.pct+'%'):''; }
+  function buildAuto(){
+    if(!S||!S.result) return null;
+    var r=S.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Vaccine Cold-Chain Control Room — incident report</h3>';
+    h+='<p style="margin:2px 0"><b>Student:</b> '+esc(S.name)+(S.reg?' &nbsp;·&nbsp; <b>Register no.:</b> '+esc(S.reg):'')+'</p>';
+    h+='<p style="margin:2px 0"><b>Date:</b> '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})
+      +' &nbsp;·&nbsp; <b>Unit:</b> Fridge VS-02 &nbsp;·&nbsp; <b>Excursion:</b> peak '+PEAK.v+' °C, '+HOURS_OUT+' hours above 8 °C</p>';
+    h+='<p style="margin:6px 0"><b>Final score:</b> '+r.total+' / 100 &nbsp;·&nbsp; <b>Result:</b> '+(r.pass?'PASS':'FAIL')
+      +' &nbsp;·&nbsp; <b>Vaccine Potency Index:</b> '+r.potency+'% &nbsp;·&nbsp; <b>Compliance Index:</b> '+r.compliance+'%</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:8px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Stage</th><th align="left">Task</th><th>Awarded</th><th>Maximum</th></tr>'
+      +S.log.map(function(l){return '<tr><td>'+l.stage+'</td><td>'+esc(l.title)+'</td><td align="center">'
+        +(l.max?l.got:(l.ok?'correct':'incomplete'))+'</td><td align="center">'+(l.max||'—')+'</td></tr>';}).join('')
+      +'<tr style="font-weight:700"><td></td><td>Total</td><td align="center">'+r.total+'</td><td align="center">100</td></tr></table>';
+    h+='<p style="margin:10px 0 3px"><b>Session outcome</b></p><ul style="margin:0 0 0 18px;font-size:12px;line-height:1.6">';
+    h+='<li>'+r.usableDoses+' of '+r.allDoses+' doses released for the session.</li>';
+    if(r.wasted) h+='<li style="color:#b3261e">'+r.wasted+' usable doses were discarded unnecessarily — a reportable vaccine loss.</li>';
+    if(r.unsafeGiven) h+='<li style="color:#b3261e">Unsafe vaccine reached the session: '+r.harmed.map(esc).join('; ')+'</li>';
+    else h+='<li>No compromised vaccine reached a patient.</li>';
+    h+='</ul>';
+    h+='<p style="margin:9px 0 2px"><b>Badges earned:</b> '+(r.badges.filter(function(b){return b.got;}).map(function(b){return esc(b.n);}).join(' · ')||'none')+'</p>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.total+' / 100</p>';
+    h+='<p style="margin-top:8px;font-size:11px;color:#555"><b>Faculty remarks:</b> ______________________________________________</p>';
+    if(qrData) h+='<div style="margin-top:10px"><img src="'+qrData+'" width="96" height="96" alt="Verification QR">'
+      +'<div style="font-size:10px;color:#666">Scan to verify · '+esc(S.reg||'—')+' · M4-U4-COLDCHAIN</div></div>';
+    return h;
+  }
+
+  function renderReport(){
+    var r=S.result;
+    $('repEmpty').style.display='none'; var b=$('repBody'); b.style.display='';
+    var h='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">Marks / 100</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.potency+'%</div><div class="rl">Vaccine potency</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.compliance+'%</div><div class="rl">Compliance</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.usableDoses+'</div><div class="rl">Doses released</div></div>'
+      +'<div class="repbox"><div class="rv">'+PEAK.v+'°</div><div class="rl">Peak temperature</div></div></div>';
+    h+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(S.name)+(S.reg?' ('+esc(S.reg)+')':'')+' · '+r.total+' / 100</div>';
+    if(r.unsafeGiven) h+='<div class="fb no" style="margin-bottom:12px"><div class="hd">Compromised vaccine reached the session</div>'
+      +esc(r.harmed.join(' · '))+'<br>Children vaccinated with heat- or freeze-damaged vaccine appear immunised on their record but may not be protected. This is the silent harm the cold chain exists to prevent.</div>';
+    if(r.wasted) h+='<div class="fb no" style="margin-bottom:12px"><div class="hd">'+r.wasted+' usable doses destroyed unnecessarily</div>'
+      +'Discarding is not the safe default. Vaccine wastage is itself reportable, and in a supply-constrained programme it means children go unvaccinated.</div>';
+
+    h+='<h3 style="font-size:13px;margin:16px 0 6px">Stage-by-stage</h3><div class="tw"><table class="rubric">'
+      +'<thead><tr><th>Stage</th><th>Task</th><th>Awarded</th><th style="width:100px"></th></tr></thead><tbody>';
+    S.log.forEach(function(l){
+      if(!l.max){   /* the quarantine stage is a control, not a scored band */
+        h+='<tr><td>'+l.stage+'</td><td>'+esc(l.title)+'</td><td class="muted">'+(l.ok?'correct':'incomplete')
+          +'</td><td class="muted" style="font-size:11px">not scored</td></tr>';
+        return;
+      }
+      var p=Math.round(l.got/l.max*100), cls=p>=80?'good':(p<50?'bad':'');
+      h+='<tr><td>'+l.stage+'</td><td>'+esc(l.title)+'</td><td>'+l.got+' / '+l.max+'</td>'
+        +'<td><div class="bar"><i class="'+cls+'" style="width:'+p+'%"></i></div></td></tr>';
+    });
+    h+='<tr class="tot"><td></td><td>Total</td><td>'+r.total+' / 100</td><td></td></tr></tbody></table></div>';
+
+    h+='<h3 style="font-size:13px;margin:18px 0 6px">Stock disposition</h3><div class="tw"><table>'
+      +'<thead><tr><th>Vaccine</th><th>Batch</th><th>Doses</th><th>Correct call</th><th>Your call</th></tr></thead><tbody>';
+    STOCK.forEach(function(x){
+      var yourCall=S.discarded[x.id]?'discarded':(x.usable?'released':(S.harmed.indexOf(x.n)>=0?'released':'discarded'));
+      var right=(x.usable?yourCall==='released':yourCall==='discarded');
+      h+='<tr><td>'+esc(x.n)+'</td><td>'+x.b+'</td><td>'+x.doses+'</td>'
+        +'<td>'+(x.usable?'usable':'not usable')+'</td>'
+        +'<td style="color:'+(right?'var(--success)':'var(--danger)')+'">'+yourCall+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+
+    h+='<h3 style="font-size:13px;margin:18px 0 6px">Achievement badges</h3><div class="badges">'
+      +r.badges.map(function(x){return '<span class="badge '+(x.got?'got':'miss')+'" title="'+esc(x.d)+'">'+x.n+'</span>';}).join('')+'</div>';
+    h+='<div class="row no-print" style="margin-top:16px"><button class="btn gold" onclick="window.print()">Print report</button>'
+      +'<button class="btn ok" id="againBtn">Run the watch again</button></div>'
+      +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p>';
+    b.innerHTML=h;
+    $('againBtn').addEventListener('click',function(){
+      $('setupCard').style.display=''; $('live').style.display='none'; $('stage').innerHTML='';
+      $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+      S=null; switchTab('room'); window.scrollTo(0,0);
     });
   }
 
-  /* ---------- boot ---------- */
-  paintCharts(); paintQR(); renderDash();
+  var OPTS={module:'Module 4 · Unit 4 — Vaccines & Cold-Chain Analytics',
+            title:'Vaccine Cold-Chain Control Room',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Incident summary &amp; disposition', placeholder:'e.g. 92/100 — 11 h excursion peaking 14.2 °C, all stock quarantined, 3 batches referred, session covered with replacement stock'},
+      minWords:400,
+      attachments:[{label:'1. Cold-Chain Incident Report (PDF)'},
+                   {label:'2. Temperature Log &amp; Stock Disposition (PDF)'},
+                   {label:'3. Additional Supporting File (PDF)'}],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return S&&S.result?S.result.pct:null; },
+      autoResultText:function(){ return S&&S.result?((S.result.pass?'PASS':'FAIL')+' '+S.result.total+'/100'):''; }
+    });
+  }
+
+  function switchTab(p){
+    [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);});
+    [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);});
+  }
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark');
+    try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  $('startBtn').addEventListener('click',start);
 })();
 </script>
 </body>
