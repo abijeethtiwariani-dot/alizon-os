@@ -24,7 +24,7 @@
     'alizonFees','alizonFaculty','alizonSchedule','alizonLinks','alizonActivity',
     'alizonHR','alizonStaffReqs','alizonStaffMsgs','alizonStaffMeta','alizonResults','alizonAnnounce',
     'alizonExamCycles','alizonExamApps','alizonAttendance','alizonMeetings','alizonAlerts','alizonContent','alizonExamDocs','alizonNews',
-    'alizonWorkshops','alizonWorkshopRegs','alizonWsFeedback','alizonPhotos','alizonCurriculum','alizonAllotment','alizonHeroCover','alizonVacancies','alizonCareerEvents','alizonCareerPay','alizonCareerRegs','alizonLabAccess'];
+    'alizonWorkshops','alizonWorkshopRegs','alizonWsFeedback','alizonPhotos','alizonCurriculum','alizonAllotment','alizonHeroCover','alizonVacancies','alizonCareerEvents','alizonCareerPay','alizonCareerRegs','alizonLabAccess','alizonExamAttempts'];
   var KEYSET = {}; KEYS.forEach(function(k){ KEYSET[k] = 1; });
 
   var SDK = 'https://www.gstatic.com/firebasejs/10.12.5/';

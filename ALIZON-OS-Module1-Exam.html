@@ -228,7 +228,7 @@
   var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
   var BANK=window.ALIZON_EXAM_M1;
   var LETTER=['A','B','C','D'];
-  var PASS_PCT=50, STORE='alizonExamM1';
+  var PASS_PCT=50, STORE='alizonExamAttempts';   /* cloud-synced key → institution-wide rank */
 
   if(!BANK){ $('setup').innerHTML='<div class="card"><h2>Question bank unavailable</h2><p class="muted">alizon-exam-bank-m1.js did not load.</p></div>'; return; }
   $('modLine').textContent=BANK.module;
@@ -259,12 +259,21 @@
 
   /* ---------- attempt store (used for the genuine rank) ---------- */
   function readStore(){ try{ return JSON.parse(localStorage.getItem(STORE)||'[]')||[]; }catch(e){ return []; } }
-  function writeStore(a){ try{ localStorage.setItem(STORE,JSON.stringify(a.slice(-400))); }catch(e){} }
-  function showPrev(){
-    var a=readStore();
-    $('prevLine').textContent=a.length? (a.length+' previous attempt'+(a.length===1?'':'s')+' recorded on this device — your rank is calculated against these.')
-      : 'No previous attempts recorded on this device yet.';
+  function writeStore(a){
+    /* alizonExamAttempts is registered in firebase-sync KEYS, so this setItem
+       is mirrored to Firestore and pulled onto every other signed-in device.
+       Capped so the synced document stays well inside Firestore's 1 MB limit. */
+    try{ localStorage.setItem(STORE,JSON.stringify(a.slice(-2000))); }catch(e){}
   }
+  function cloudLive(){ return !!(window.alizonAuth || window.firebase); }
+  function showPrev(){
+    var a=readStore().filter(function(x){return x&&x.code===BANK.code;});
+    $('prevLine').textContent=a.length
+      ? (a.length+' attempt'+(a.length===1?'':'s')+' recorded so far'+(cloudLive()?' across the institution':' on this device')+' — your rank is calculated against these.')
+      : 'No attempts recorded yet. Ranking becomes meaningful once other candidates have sat the same paper.';
+  }
+  /* re-render the standing if the cloud pulls newer attempts in while the page is open */
+  window.addEventListener('storage',function(e){ if(e.key===STORE && $('setup').style.display!=='none') showPrev(); });
 
   /* ---------- state ---------- */
   var S=null, tick=null;
@@ -400,10 +409,10 @@
 
     /* genuine rank among attempts recorded on this device for the same paper */
     var all=readStore();
-    var mine={name:S.name,reg:S.reg,paper:paper.k,pt:paper.t,score:score,total:S.qs.length,pct:pct,
+    var mine={name:S.name,reg:S.reg,code:BANK.code,paper:paper.k,pt:paper.t,score:score,total:S.qs.length,pct:pct,
               secs:timeUsed,at:new Date().toISOString()};
     all.push(mine); writeStore(all);
-    var peers=all.filter(function(a){return a.paper===paper.k;});
+    var peers=all.filter(function(a){return a && a.code===BANK.code && a.paper===paper.k;});
     peers.sort(function(a,b){ return b.pct-a.pct || a.secs-b.secs; });
     var rank=peers.findIndex(function(a){return a.at===mine.at;})+1;
     var pctile=peers.length>1? Math.round((peers.length-rank)/(peers.length-1)*100) : null;
@@ -459,8 +468,8 @@
     /* rank explanation — honest about the cohort */
     h+='<div class="rankline"><b>Rank '+r.rank+' of '+r.peers.length+'</b>'
       +(r.peers.length<2
-        ? ' — this is the first recorded attempt at this paper on this device, so the rank is not yet meaningful. It becomes informative once more candidates have sat the same paper here.'
-        : ' — ranked against '+r.peers.length+' attempt'+(r.peers.length===1?'':'s')+' at <b>'+esc(paper.t)+'</b> recorded on this device'
+        ? ' — this is the first recorded attempt at this paper'+(cloudLive()?' across the institution':' on this device')+', so the rank is not yet meaningful. It becomes informative once other candidates have sat the same paper.'
+        : ' — ranked against all '+r.peers.length+' attempt'+(r.peers.length===1?'':'s')+' at <b>'+esc(paper.t)+'</b> recorded '+(cloudLive()?'across the institution':'on this device')
           +(r.pctile!=null?', placing you in the <b>'+r.pctile+'th percentile</b>':'')
           +'. Ties are broken by time taken.')
       +'</div>';

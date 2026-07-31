@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>ALIZON OS · Question Bank · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f5f4f1;--panel:#fff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.13);
+    --crimson:#c1121f;--crimson-deep:#8a0009;--gold:#A16207;--gold-soft:rgba(161,98,7,.13);--success:#1E8E5A;--danger:#C4262E;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+  .wrap{max-width:1080px;margin:0 auto;padding:24px clamp(14px,3vw,28px) 70px}
+  h1,h2{font-family:'Source Serif Pro',Georgia,serif}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:clamp(15px,2.4vw,22px);
+    box-shadow:0 12px 34px -26px rgba(20,10,12,.4);margin-bottom:15px}
+  .muted{color:var(--muted)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:10px 20px;
+    color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
+  .btn.sm{font-size:12.5px;padding:8px 15px}
+  .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  .tagline{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+  .chip{cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;padding:7px 15px;border-radius:100px;
+    background:var(--pill);border:1.5px solid var(--line);color:var(--ink)}
+  .chip.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-top:10px;max-height:560px;overflow-y:auto}
+  table{border-collapse:collapse;width:100%;min-width:760px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px;position:sticky;top:0;z-index:2}
+  td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:var(--panel2)}
+  td.ans{color:var(--success);font-weight:700;white-space:nowrap}
+  .stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:11px;margin:10px 0 4px}
+  .sb{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:12px;text-align:center}
+  .sb .v{font-size:23px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .sb .l{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+  .warn{background:rgba(196,38,46,.08);border:1px solid rgba(196,38,46,.3);color:var(--danger);
+    border-radius:11px;padding:12px 15px;font-size:13px;line-height:1.6;margin-top:10px}
+  .note{background:var(--gold-soft);border:1px solid rgba(161,98,7,.3);border-radius:11px;padding:12px 15px;font-size:13px;line-height:1.6;margin-top:10px}
+  /* ---- printable paper ---- */
+  #paper{display:none}
+  @media print{
+    body{background:#fff}
+    .wrap>*:not(#paper){display:none!important}
+    #paper{display:block!important}
+    .pq{break-inside:avoid;margin-bottom:11px}
+  }
+  #paper .ph{text-align:center;border-bottom:2.5px solid #8c1515;padding-bottom:9px;margin-bottom:14px}
+  #paper .ph .in{font-family:'Source Serif Pro',serif;font-size:19px;font-weight:700;color:#8c1515}
+  #paper .ph .su{font-size:11.5px;color:#444;margin-top:2px}
+  #paper .meta{display:flex;justify-content:space-between;font-size:11.5px;border:1px solid #bbb;padding:7px 10px;margin-bottom:12px}
+  #paper .pq{font-size:12.5px;line-height:1.55}
+  #paper .pq .qq{font-weight:700}
+  #paper .pq ol{margin:3px 0 0 26px} #paper .pq li{margin:1px 0}
+  #paper .key{font-size:12px;column-count:4;column-gap:16px}
+  #paper .sig{margin-top:22px;font-size:11.5px;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="tagline">Alizon School of Medical &amp; Digital Intelligence · Administration</div>
+    <h1 style="font-size:clamp(1.3rem,3vw,1.8rem);margin:6px 0">Question bank</h1>
+    <p class="muted" style="font-size:13.5px" id="modLine">Loading…</p>
+    <div class="stat" id="stats"></div>
+    <div class="note"><b>Answer keys are included in every download.</b> These files are for faculty use only —
+      do not circulate them to students, and do not place them anywhere reachable from the student portal.</div>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:17px">Select</h2>
+    <div class="chips" id="uSel"></div>
+    <p class="muted" style="font-size:12.5px" id="selLine"></p>
+
+    <h2 style="font-size:17px;margin-top:18px">Download</h2>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" id="dlCsv">⤓ CSV (spreadsheet)</button>
+      <button class="btn ghost" id="dlJson">⤓ JSON</button>
+      <button class="btn ghost" id="dlTxt">⤓ Plain text</button>
+      <button class="btn gold" id="prPaper">🖨 Question paper (no answers)</button>
+      <button class="btn gold" id="prKey">🖨 Paper + answer key</button>
+    </div>
+    <p class="muted" style="font-size:12px;margin-top:9px">
+      CSV opens directly in Excel — columns: unit, question number, question, options A–D, correct letter, correct answer, explanation.
+      The print buttons open the browser print dialogue; choose “Save as PDF” to keep a copy.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:17px">Preview</h2>
+    <p class="muted" style="font-size:12.5px">Correct answers are highlighted.</p>
+    <div class="tw"><table id="tbl"></table></div>
+  </div>
+
+  <!-- print target -->
+  <div id="paper"></div>
+</div>
+
+<script src="alizon-exam-bank-m1.js?v=2"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(i){return document.getElementById(i);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var plain=function(s){return String(s==null?'':s).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();};
+  var BANK=window.ALIZON_EXAM_M1, LETTER=['A','B','C','D'];
+  if(!BANK){ document.querySelector('.wrap').innerHTML='<div class="card"><h2>Question bank unavailable</h2></div>'; return; }
+
+  $('modLine').textContent=BANK.module+' · bank code '+BANK.code;
+  var total=BANK.units.reduce(function(a,u){return a+u.qs.length;},0);
+  $('stats').innerHTML='<div class="sb"><div class="v">'+total+'</div><div class="l">Questions</div></div>'
+    +'<div class="sb"><div class="v">'+BANK.units.length+'</div><div class="l">Units</div></div>'
+    +BANK.units.map(function(u){return '<div class="sb"><div class="v">'+u.qs.length+'</div><div class="l">Unit '+u.n+'</div></div>';}).join('');
+
+  var sel={}; BANK.units.forEach(function(u){ sel[u.n]=true; });
+  function paintSel(){
+    $('uSel').innerHTML='<button class="chip'+(allOn()?' on':'')+'" data-u="all">All units</button>'
+      +BANK.units.map(function(u){
+        return '<button class="chip'+(sel[u.n]?' on':'')+'" data-u="'+u.n+'">Unit '+u.n+' ('+u.qs.length+')</button>';}).join('');
+    [].forEach.call($('uSel').children,function(b){
+      b.addEventListener('click',function(){
+        var v=b.getAttribute('data-u');
+        if(v==='all'){ var on=!allOn(); BANK.units.forEach(function(u){sel[u.n]=on;}); }
+        else sel[+v]=!sel[+v];
+        paintSel(); paintTable();
+      });
+    });
+    $('selLine').textContent=rows().length+' questions selected.';
+  }
+  function allOn(){ return BANK.units.every(function(u){return sel[u.n];}); }
+  function rows(){
+    var out=[];
+    BANK.units.forEach(function(u){
+      if(!sel[u.n]) return;
+      u.qs.forEach(function(q,i){ out.push({u:u.n,ut:u.t,n:i+1,q:q}); });
+    });
+    return out;
+  }
+
+  function paintTable(){
+    var r=rows();
+    $('tbl').innerHTML='<thead><tr><th>Unit</th><th>#</th><th>Question</th><th>Options</th><th>Answer</th></tr></thead><tbody>'
+      +r.map(function(x){
+        return '<tr><td>'+x.u+'</td><td>'+x.n+'</td><td style="min-width:230px">'+esc(plain(x.q.q))+'</td>'
+          +'<td style="min-width:250px">'+x.q.o.map(function(o,k){
+              return '<div'+(k===x.q.c?' style="color:var(--success);font-weight:700"':'')+'>'+LETTER[k]+'. '+esc(plain(o))+'</div>';}).join('')+'</td>'
+          +'<td class="ans">'+LETTER[x.q.c]+'</td></tr>';
+      }).join('')+'</tbody>';
+    $('selLine').textContent=r.length+' questions selected.';
+  }
+
+  /* ---------------- downloads ---------------- */
+  function stamp(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function units(){ return BANK.units.filter(function(u){return sel[u.n];}).map(function(u){return 'U'+u.n;}).join(''); }
+  function save(name,mime,text){
+    var b=new Blob([text],{type:mime+';charset=utf-8;'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },400);
+  }
+  function csvCell(s){ return '"'+String(s==null?'':s).replace(/"/g,'""')+'"'; }
+
+  $('dlCsv').addEventListener('click',function(){
+    var head=['Unit','Unit title','Q no','Question','Option A','Option B','Option C','Option D','Correct letter','Correct answer','Explanation','Marks'];
+    var lines=[head.map(csvCell).join(',')];
+    rows().forEach(function(x){
+      lines.push([x.u,x.ut,x.n,plain(x.q.q),plain(x.q.o[0]),plain(x.q.o[1]),plain(x.q.o[2]),plain(x.q.o[3]),
+        LETTER[x.q.c],plain(x.q.o[x.q.c]),plain(x.q.e),1].map(csvCell).join(','));
+    });
+    /* BOM so Excel opens UTF-8 correctly */
+    save(BANK.code+'-questions-'+units()+'-'+stamp()+'.csv','text/csv','﻿'+lines.join('\r\n'));
+  });
+
+  $('dlJson').addEventListener('click',function(){
+    var out={module:BANK.module,code:BANK.code,exported:new Date().toISOString(),
+      units:BANK.units.filter(function(u){return sel[u.n];}).map(function(u){
+        return {unit:u.n,title:u.t,hours:u.hrs,questions:u.qs.map(function(q,i){
+          return {no:i+1,question:plain(q.q),options:q.o.map(plain),correctIndex:q.c,
+                  correctLetter:LETTER[q.c],correctAnswer:plain(q.o[q.c]),explanation:plain(q.e),marks:1};
+        })};
+      })};
+    save(BANK.code+'-questions-'+units()+'-'+stamp()+'.json','application/json',JSON.stringify(out,null,2));
+  });
+
+  $('dlTxt').addEventListener('click',function(){
+    var L=[BANK.module,BANK.code+' — question bank',
+      'Exported '+new Date().toLocaleString('en-GB'),
+      'FACULTY COPY — CONTAINS ANSWER KEY','',''];
+    var lastU=null;
+    rows().forEach(function(x,i){
+      if(x.u!==lastU){ lastU=x.u; L.push('','='.repeat(66),'UNIT '+x.u+' — '+x.ut,'='.repeat(66),''); }
+      L.push((i+1)+'. '+plain(x.q.q));
+      x.q.o.forEach(function(o,k){ L.push('    ('+LETTER[k]+') '+plain(o)); });
+      L.push('    ANSWER: '+LETTER[x.q.c]+' — '+plain(x.q.o[x.q.c]));
+      L.push('    WHY: '+plain(x.q.e),'');
+    });
+    save(BANK.code+'-questions-'+units()+'-'+stamp()+'.txt','text/plain',L.join('\n'));
+  });
+
+  /* ---------------- printable paper ---------------- */
+  function buildPaper(withKey){
+    var r=rows();
+    var h='<div class="ph"><div class="in">Alizon School of Medical &amp; Digital Intelligence</div>'
+      +'<div class="su">'+esc(BANK.module)+'</div>'
+      +'<div class="su"><b>'+(withKey?'Question paper with answer key — FACULTY COPY':'Question paper')+'</b></div></div>'
+      +'<div class="meta"><span><b>Bank:</b> '+BANK.code+'</span><span><b>Questions:</b> '+r.length+'</span>'
+      +'<span><b>Marks:</b> '+r.length+'</span><span><b>Date:</b> '+new Date().toLocaleDateString('en-GB')+'</span></div>';
+    if(!withKey) h+='<div style="font-size:11.5px;border:1px solid #bbb;padding:7px 10px;margin-bottom:12px">'
+      +'<b>Name:</b> ______________________________ &nbsp;&nbsp; <b>Register no.:</b> ________________ '
+      +'&nbsp;&nbsp; <b>Date:</b> ____________<br><span style="color:#555">All questions carry 1 mark. There is no negative marking. Choose one answer only.</span></div>';
+    var lastU=null;
+    r.forEach(function(x,i){
+      if(x.u!==lastU){ lastU=x.u;
+        h+='<div style="font-weight:700;font-size:13px;margin:13px 0 7px;border-bottom:1px solid #999;padding-bottom:3px">'
+          +'UNIT '+x.u+' — '+esc(x.ut)+'</div>'; }
+      h+='<div class="pq"><div class="qq">'+(i+1)+'. '+esc(plain(x.q.q))+'</div><ol type="A">'
+        +x.q.o.map(function(o,k){
+          return '<li'+(withKey&&k===x.q.c?' style="font-weight:700;color:#137a3a"':'')+'>'+esc(plain(o))+'</li>';}).join('')
+        +'</ol>'+(withKey?'<div style="font-size:11.5px;color:#444;margin-top:3px"><b>Ans: '+LETTER[x.q.c]+'.</b> '+esc(plain(x.q.e))+'</div>':'')+'</div>';
+    });
+    if(withKey){
+      h+='<div style="page-break-before:always"><div style="font-weight:700;font-size:14px;margin:0 0 8px">ANSWER KEY</div>'
+        +'<div class="key">'+r.map(function(x,i){return '<div>'+(i+1)+'. '+LETTER[x.q.c]+'</div>';}).join('')+'</div></div>';
+    }
+    h+='<div class="sig"><span>Prepared by: ____________________</span><span>Verified by: ____________________</span>'
+      +'<span>Principal: ____________________</span></div>';
+    $('paper').innerHTML=h;
+    setTimeout(function(){ window.print(); },80);
+  }
+  $('prPaper').addEventListener('click',function(){ buildPaper(false); });
+  $('prKey').addEventListener('click',function(){ buildPaper(true); });
+
+  paintSel(); paintTable();
+})();
+</script>
+</body>
+</html>
