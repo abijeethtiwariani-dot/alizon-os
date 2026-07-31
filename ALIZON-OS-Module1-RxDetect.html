@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON OS · Module 1 · RxDetect — Digital Drug Information</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --teal:#0E6F76;--card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --teal:#4bc2c9;--card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1040px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)} .scorechip b{color:var(--gold)}
+  .scorechip.warn b{color:var(--danger)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:460px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  select,textarea,input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  select:focus,textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:78px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .opt.right{border-color:var(--success);box-shadow:0 0 0 3px rgba(30,142,90,.16)} .opt.wrong{border-color:var(--danger);box-shadow:0 0 0 3px rgba(196,38,46,.14)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
+  /* ---- virtual hospital / patient chart ---- */
+  .chart{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:14px;padding:14px 16px;margin-bottom:16px}
+  .chart .ch-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .chart .ch-h b{font-family:'Source Serif Pro',Georgia,serif;font-size:16px}
+  .chart .ch-h span{font-size:11.5px;color:var(--muted)}
+  .chart .ch-tag{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:100px;padding:2px 9px}
+  .vitals{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;margin-top:11px}
+  .vital{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  .vital .vl{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .vital .vv{font-size:15px;font-weight:800;font-family:'Source Serif Pro',serif}
+  .vital.hi .vv{color:var(--danger)} .vital.lo .vv{color:var(--warn)} .vital.ok .vv{color:var(--success)}
+  .vital.chg{border-color:var(--danger);box-shadow:0 0 0 3px rgba(196,38,46,.1)}
+  .medlist{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+  .med{font-size:11.5px;font-weight:600;background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:4px 11px}
+  .med.stop{text-decoration:line-through;opacity:.5} .med.new{border-color:var(--success);color:var(--success)}
+  .med.hold{border-color:var(--warn);color:var(--warn)}
+  /* ---- stage rail ---- */
+  .rail{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .rdot{font-size:11px;font-weight:800;min-width:32px;height:32px;padding:0 7px;border-radius:100px;display:grid;place-items:center;background:var(--pill);border:1.5px solid var(--line);color:var(--muted)}
+  .rdot.done{background:rgba(30,142,90,.14);border-color:var(--success);color:var(--success)}
+  .rdot.now{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .rdot.part{background:rgba(180,83,9,.14);border-color:var(--warn);color:var(--warn)}
+  .prog{height:10px;border-radius:100px;background:var(--pill);overflow:hidden;margin:10px 0 4px}
+  .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--crimson-deep),var(--crimson));width:0;transition:width .4s}
+  .scene{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:13px 15px;margin-top:10px;font-size:13.5px;line-height:1.65}
+  .scene .dt{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--crimson);margin-bottom:5px}
+  .scene pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;white-space:pre-wrap;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;line-height:1.6}
+  /* ---- evidence ranking ---- */
+  .ranks{display:grid;gap:8px;margin-top:10px}
+  .rank{cursor:pointer;text-align:left;font:inherit;font-size:13.5px;background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;color:var(--ink);display:flex;gap:10px;align-items:flex-start}
+  .rank:hover{border-color:var(--gold)}
+  .rank.chosen{border-color:var(--crimson);background:var(--gold-soft)}
+  .rank.right{border-color:var(--success)} .rank.wrong{border-color:var(--danger)}
+  .rank .ordn{flex:none;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--pill);color:var(--muted);font-size:11px;font-weight:800;border:1px solid var(--line)}
+  .rank.chosen .ordn{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+  .rank small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px;line-height:1.5}
+  /* ---- papers ---- */
+  .papers{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:10px}
+  .paper{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+  .paper b{font-size:13.5px;color:var(--crimson)} .paper ul{margin:7px 0 0 16px;font-size:12.5px;line-height:1.65}
+  /* ---- guideline cards ---- */
+  .glcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:10px}
+  .glc{background:var(--panel2);border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:12px;padding:13px 15px}
+  .glc b{font-size:13px;display:block;margin-bottom:5px} .glc p{font-size:12.5px;line-height:1.6;color:var(--ink)}
+  /* ---- multi picks ---- */
+  .plist{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
+  .pcard{cursor:pointer;text-align:left;font:inherit;background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink)}
+  .pcard:hover{border-color:var(--gold)} .pcard.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.12)}
+  .pcard.right{border-color:var(--success)} .pcard.wrong{border-color:var(--danger)}
+  .pcard b{font-size:13.5px;display:block} .pcard small{display:block;color:var(--muted);font-size:12px;margin-top:3px;line-height:1.55}
+  /* ---- patient chat ---- */
+  .chat{margin-top:12px}
+  .bub{max-width:82%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.6;margin-bottom:9px}
+  .bub.pt{background:var(--pill);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .bub.me{background:rgba(14,111,118,.12);border:1px solid rgba(14,111,118,.32);margin-left:auto;border-bottom-right-radius:4px}
+  .bub .who{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  /* ---- alerts / mentor ---- */
+  .alert{border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.6;border:1px solid rgba(196,38,46,.35);background:rgba(196,38,46,.09);color:var(--danger)}
+  .alert b{color:inherit}
+  .mentor{border:1px solid rgba(14,111,118,.34);background:rgba(14,111,118,.09);border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .mentor .mh{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);margin-bottom:4px}
+  .btn.mentorbtn{background:linear-gradient(120deg,#08484c,var(--teal))}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
+  .fbk{border-radius:10px;padding:11px 14px;margin-top:12px;font-size:13px;line-height:1.6;border:1px solid}
+  .fbk.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.35);color:var(--success)}
+  .fbk.part{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.35);color:var(--warn)}
+  .fbk.no{background:rgba(196,38,46,.09);border-color:rgba(196,38,46,.32);color:var(--danger)}
+  .fbk b{color:inherit} .fbk ul{margin:6px 0 0 17px;line-height:1.6}
+  /* ---- AI score bars ---- */
+  .aib{margin-top:8px}
+  .aib .r{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:3px}
+  .aib .bar{height:9px;border-radius:100px;background:var(--pill);overflow:hidden;margin-bottom:11px}
+  .aib .bar i{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .aib .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))}
+  .aib .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+<style>
+  /* ================= RxDetect hospital system ================= */
+  .sys{background:linear-gradient(150deg,#0b1220,#131c2e);border-radius:18px;padding:28px clamp(18px,3vw,34px);color:#e8edf7;
+       border:1px solid rgba(255,255,255,.09);margin-bottom:16px;text-align:center}
+  .sys .brand{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.3rem,3vw,1.8rem);font-weight:700;letter-spacing:-.01em}
+  .sys .sub{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:#8fa3c4;margin-top:4px}
+  .sys .newcase{display:inline-block;margin-top:18px;padding:14px 20px;border-radius:12px;background:rgba(255,255,255,.05);
+       border:1px solid rgba(255,255,255,.12);text-align:left;font-size:13px;line-height:1.9}
+  .sys .newcase b{color:#fff} .sys .newcase .k{color:#8fa3c4;display:inline-block;min-width:112px}
+  .sys .pri{font-weight:800;color:#ffb454}
+  .blink{animation:bl 1.4s ease-in-out infinite} @keyframes bl{0%,100%{opacity:1}50%{opacity:.45}}
+  .systabs{display:flex;gap:4px;flex-wrap:wrap;background:var(--panel2);border:1px solid var(--line);
+       border-radius:12px;padding:5px;margin-bottom:14px}
+  .systab{cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);background:transparent;
+       border:none;border-radius:8px;padding:8px 13px}
+  .systab:hover{color:var(--ink);background:var(--pill)}
+  .systab.on{background:var(--crimson);color:#fff}
+  .systab.lock{opacity:.38;cursor:not-allowed} .systab .dot{color:var(--danger);font-size:15px;line-height:0}
+  /* record reveal */
+  .recgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:10px;margin-top:10px}
+  .reccard{cursor:pointer;text-align:left;font:inherit;background:var(--panel2);border:1.5px dashed var(--line);
+       border-radius:12px;padding:13px 15px;color:var(--ink);min-height:82px}
+  .reccard:hover{border-color:var(--gold)}
+  .reccard.open{border-style:solid;border-color:var(--success);background:var(--panel)}
+  .reccard .rl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .reccard .rv{font-size:14px;font-weight:700;margin-top:5px;font-family:'Source Serif Pro',serif}
+  .reccard .rx2{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .reccard .tap{font-size:11.5px;color:var(--gold);font-weight:700;margin-top:6px}
+  /* e-prescription */
+  .erx{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:10px}
+  .erx .eh{background:var(--panel2);padding:10px 14px;border-bottom:1px solid var(--line);font-size:12px;font-weight:700;
+       display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+  .erx table{min-width:400px} .erx th{background:var(--crimson)}
+  /* drug monograph */
+  .mono{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:10px;background:var(--panel)}
+  .mono .mh{background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));color:#fff;padding:11px 15px}
+  .mono .mh b{font-size:15px;font-family:'Source Serif Pro',serif} .mono .mh small{display:block;font-size:11.5px;opacity:.85}
+  .mono .mt{display:flex;gap:3px;flex-wrap:wrap;padding:7px;background:var(--panel2);border-bottom:1px solid var(--line)}
+  .mono .mt button{cursor:pointer;font:inherit;font-size:11.5px;font-weight:600;border:none;background:transparent;
+       color:var(--muted);border-radius:7px;padding:6px 11px}
+  .mono .mt button.on{background:var(--crimson);color:#fff} .mono .mt button:hover{color:var(--ink)}
+  .mono .mb{padding:14px 16px;font-size:13px;line-height:1.7}
+  .mono .mb ul{margin:6px 0 0 17px} .mono .mb h4{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--gold);margin:12px 0 4px}
+  .srcpick{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:10px}
+  .srccard{cursor:pointer;text-align:left;font:inherit;background:var(--panel2);border:1.5px solid var(--line);
+       border-radius:12px;padding:12px 14px;color:var(--ink)}
+  .srccard:hover{border-color:var(--gold)} .srccard.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.12)}
+  .srccard.right{border-color:var(--success)} .srccard.wrong{border-color:var(--danger)}
+  .srccard b{font-size:13px;display:block} .srccard small{display:block;color:var(--muted);font-size:11.5px;margin-top:3px;line-height:1.5}
+  /* interaction analyzer */
+  .medcards{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+  .medcard{cursor:grab;font:inherit;font-size:12.5px;font-weight:700;background:var(--panel);border:1.5px solid var(--line);
+       border-radius:10px;padding:10px 15px;color:var(--ink);user-select:none}
+  .medcard:hover{border-color:var(--gold)} .medcard.inslot{opacity:.35;cursor:default}
+  .analyzer{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-top:12px}
+  .slot{min-height:62px;border:2px dashed var(--line);border-radius:12px;display:grid;place-items:center;
+       background:var(--panel2);font-size:12.5px;color:var(--muted);font-weight:600;padding:10px;text-align:center}
+  .slot.filled{border-style:solid;border-color:var(--crimson);color:var(--ink);font-weight:700;background:var(--panel)}
+  .slot.over{border-color:var(--gold);background:var(--gold-soft)}
+  .plus{font-size:20px;color:var(--muted);font-weight:800}
+  .ialert{border-radius:12px;padding:14px 16px;margin-top:12px;border:1px solid;font-size:13px;line-height:1.65}
+  .ialert.major{background:rgba(196,38,46,.09);border-color:rgba(196,38,46,.35)}
+  .ialert.mod{background:rgba(180,83,9,.09);border-color:rgba(180,83,9,.35)}
+  .ialert.min{background:rgba(30,142,90,.08);border-color:rgba(30,142,90,.3)}
+  .ialert .sev{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:100px;
+       display:inline-block;margin-bottom:8px;color:#fff}
+  .ialert.major .sev{background:var(--danger)} .ialert.mod .sev{background:var(--warn)} .ialert.min .sev{background:var(--success)}
+  .ialert dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin-top:6px}
+  .ialert dt{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+  .ialert dd{font-size:12.5px;line-height:1.6}
+  .pairgrid{display:grid;gap:7px;margin-top:10px}
+  .pairrow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--panel2);
+       border:1px solid var(--line);border-radius:10px;padding:8px 13px;font-size:12.5px}
+  .pairrow.done{border-color:var(--success)} .pairrow.err{border-color:var(--danger)}
+  .pairrow b{font-weight:700} .pairrow .st{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  /* labs */
+  .labcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:10px}
+  .labcard{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--success);border-radius:11px;padding:11px 13px}
+  .labcard.abn{border-left-color:var(--danger)} .labcard.bord{border-left-color:var(--warn)}
+  .labcard .ll{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .labcard .lv{font-size:19px;font-weight:800;font-family:'Source Serif Pro',serif;margin-top:2px}
+  .labcard.abn .lv{color:var(--danger)} .labcard.bord .lv{color:var(--warn)}
+  .labcard .lr{font-size:11px;color:var(--muted);margin-top:2px}
+  /* formulary */
+  .formtbl th{font-size:10.5px} .formtbl td{font-size:12px;vertical-align:top}
+  .pill{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;white-space:nowrap}
+  .pill.ok{background:rgba(30,142,90,.14);color:var(--success);border:1px solid rgba(30,142,90,.34)}
+  .pill.no{background:rgba(196,38,46,.12);color:var(--danger);border:1px solid rgba(196,38,46,.32)}
+  .pill.warnp{background:rgba(180,83,9,.13);color:var(--warn);border:1px solid rgba(180,83,9,.33)}
+  /* review board */
+  .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+  .bucket{background:var(--panel2);border:2px dashed var(--line);border-radius:14px;padding:12px;min-height:150px}
+  .bucket.over{border-color:var(--gold);background:var(--gold-soft)}
+  .bucket h4{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+       text-align:center;margin-bottom:9px}
+  .bucket.b0 h4{color:var(--success)} .bucket.b1 h4{color:var(--warn)} .bucket.b2 h4{color:var(--danger)}
+  .bucket .drop{display:grid;gap:7px}
+  .bucket .medcard{width:100%;text-align:center;font-size:12px;padding:9px 10px}
+  .medcard.ok2{border-color:var(--success)} .medcard.no2{border-color:var(--danger)}
+  /* intervention builder */
+  .ivrow{margin-top:14px} .ivrow .lb{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+  .ivrow .arrow{text-align:center;color:var(--muted);font-size:15px;margin:2px 0}
+  /* outcome */
+  .outcome{border-radius:14px;padding:18px 20px;margin-top:12px;border:1px solid;text-align:center}
+  .outcome.good{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.36)}
+  .outcome.bad{background:rgba(196,38,46,.09);border-color:rgba(196,38,46,.34)}
+  .outcome .oh{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .outcome .ov{font-family:'Source Serif Pro',serif;font-size:24px;font-weight:700;margin:5px 0 8px}
+  .outcome.good .ov{color:var(--success)} .outcome.bad .ov{color:var(--danger)}
+  .outcome ul{display:inline-block;text-align:left;margin:6px 0 0 17px;font-size:13px;line-height:1.7}
+  .clock{font-family:ui-monospace,Menlo,monospace}
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 1 · Unit 3 · Practical 3</div>
+    <h1 class="serif">RxDetect — Digital Drug Information &amp; Formulary Investigation</h1>
+    <p><b>Aim —</b> To investigate and resolve medication-related problems using simulated digital drug databases, clinical drug references and a hospital digital formulary — working as the <b>Clinical Pharmacist</b> at CityCare Digital Hospital.
+      <span class="muted">Live case simulation · 100 marks · case clock runs up · consequences at 24 hours · Pass 50.</span></p>
+    <div class="chips">
+      <div class="scorechip">Step <b id="scStage">—</b></div>
+      <div class="scorechip">Clinical score <b id="scMarks">0 / 100</b></div>
+      <div class="scorechip" id="timeChip">Case time <b id="scTime" class="clock">00:00</b></div>
+      <div class="scorechip">Outcome <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Clinical Pharmacy System</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="rxdetect"></div>
+    <div class="guide">
+      <h2>Your shift</h2>
+      <p>You are the <b>Clinical Pharmacist</b> at CityCare Digital Hospital. An urgent case has been assigned from Internal Medicine: a 68-year-old man on anticoagulation whose new prescription has just arrived for verification. Nothing is handed to you — <b>you must go and look for it</b>.</p>
+      <ol>
+        <li>The patient record, the laboratory results and the medication history are <b>hidden until you request them</b>. What you choose to check is itself marked.</li>
+        <li>Three information sources are available — <b>MediRef</b>, <b>RxInteract</b> and the <b>Hospital Digital Formulary</b>. Using the right source for the right question is a marked skill.</li>
+        <li>Finding an interaction earns nothing. <b>Judging whether it matters for this patient</b> is what earns marks.</li>
+        <li>An <b>AI clinical assistant</b> will offer you a summary. It contains errors. Verify before you accept.</li>
+        <li>At the end the case <b>advances 24 hours</b> and the patient responds to your decisions. If it goes badly you may <b>rewind and correct</b> — the three decision steps are re-scored, and the rewind is recorded on your report.</li>
+      </ol>
+      <p style="margin-top:8px">The case clock runs up rather than down. There is no time limit — but the time you took is recorded on your report.</p>
+    </div>
+    <div class="card"><h2>Assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Skill</th><th>Weight</th></tr></thead><tbody>
+        <tr><td>Information retrieval</td><td>15</td></tr>
+        <tr><td>Database selection</td><td>10</td></tr>
+        <tr><td>Interaction assessment</td><td>20</td></tr>
+        <tr><td>Clinical interpretation</td><td>20</td></tr>
+        <tr><td>Formulary decision</td><td>10</td></tr>
+        <tr><td>AI verification</td><td>10</td></tr>
+        <tr><td>Pharmacist intervention</td><td>10</td></tr>
+        <tr><td>Documentation</td><td>5</td></tr>
+        <tr class="tot"><td>Total</td><td>100</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="card"><h2>The case pathway</h2>
+      <div class="tw"><table><thead><tr><th>#</th><th>Step</th><th>Marks</th></tr></thead><tbody id="stTbl"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div id="sysHost"></div>
+    <div id="stArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>Clinical pharmacy performance &amp; practical report</h2>
+      <p class="muted" id="repEmpty">Complete the case to generate your performance profile and practical report, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=12"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var strip=function(s){return String(s==null?'':s).replace(/<[^>]+>/g,'');};
+  var PASS=50;
+
+  /* ================= CASE DATA ================= */
+  var CASE={id:'CC-2026-0731-14',dept:'Internal Medicine'};
+  var RECORD=[
+   {k:'age',l:'Age / weight',v:'68 years · 71 kg',x:'Elderly — reduced physiological reserve; anticoagulation risk rises with age.'},
+   {k:'dx',l:'Diagnosis',v:'Atrial fibrillation + respiratory infection',x:'Two active problems being treated at once — the reason this prescription is complex.'},
+   {k:'allergy',l:'Known allergy',v:'PENICILLIN',x:'Documented penicillin allergy. Every antibiotic decision in this case must respect it.'},
+   {k:'complaint',l:'Current complaint',v:'New bruising',x:'New bruising in an anticoagulated patient is a bleeding signal until proved otherwise.'},
+   {k:'hx',l:'Relevant history',v:'AF diagnosed 2021 · warfarin since 2021',x:'Stable on warfarin for five years — so a sudden change points to something new, not to the warfarin itself.'}
+  ];
+  var RX=[
+   {d:'Warfarin',s:'5 mg',f:'OD'},{d:'Amiodarone',s:'200 mg',f:'OD'},{d:'Clarithromycin',s:'500 mg',f:'BD'},
+   {d:'Atorvastatin',s:'40 mg',f:'HS'},{d:'Paracetamol',s:'500 mg',f:'PRN'}
+  ];
+
+  /* --- drug monographs (MediRef) --- */
+  var MONO={
+   Warfarin:{cls:'Vitamin K antagonist · oral anticoagulant',
+    Overview:'Inhibits vitamin K epoxide reductase, reducing synthesis of clotting factors II, VII, IX and X. Narrow therapeutic index; effect measured as INR.',
+    Dose:'Individualised to INR. Target INR for atrial fibrillation: <b>2.0 – 3.0</b>. Usual maintenance 3–9 mg daily.',
+    Interactions:'Extensive. Metabolised by <b>CYP2C9</b> (S-warfarin, the more potent enantiomer) and CYP3A4/1A2 (R-warfarin). Inhibitors of these enzymes raise the INR. Antibiotics additionally reduce vitamin K–producing gut flora.',
+    Contraindications:'Active bleeding, pregnancy, severe hepatic impairment, recent haemorrhagic stroke.',
+    'Adverse Effects':'Bleeding (bruising, epistaxis, haematuria, GI and intracranial bleeding), skin necrosis, purple toe syndrome.',
+    Monitoring:'<b>INR</b> — more frequently after any change in interacting therapy. Signs of bleeding. Full blood count where bleeding is suspected.',
+    Pharmacokinetics:'Half-life 20–60 h. Highly protein bound. Full effect of an interaction may take 3–7 days to appear.',
+    References:'MediRef monograph WAR-004, rev. 2026-03 · BNF anticoagulants section.'},
+   Amiodarone:{cls:'Class III antiarrhythmic',
+    Overview:'Used for rhythm control in atrial fibrillation. Very long half-life and extensive tissue distribution.',
+    Dose:'Loading then maintenance 200 mg daily.',
+    Interactions:'Inhibits <b>CYP2C9</b>, CYP3A4 and P-glycoprotein. Potentiates warfarin — the INR rise develops over <b>days to weeks</b> and persists long after amiodarone is stopped. Prolongs the QT interval; additive with other QT-prolonging drugs.',
+    Contraindications:'Iodine sensitivity, severe conduction disorders without pacing, thyroid dysfunction (caution).',
+    'Adverse Effects':'Thyroid dysfunction, pulmonary fibrosis, hepatotoxicity, corneal deposits, photosensitivity, bradycardia.',
+    Monitoring:'Thyroid and liver function 6-monthly, ECG/QTc, chest imaging. INR when co-prescribed with warfarin.',
+    Pharmacokinetics:'Half-life 20–100 <b>days</b>. Interactions persist for weeks after discontinuation.',
+    References:'MediRef monograph AMI-011, rev. 2026-01.'},
+   Clarithromycin:{cls:'Macrolide antibacterial',
+    Overview:'Used for respiratory tract infection, including in penicillin allergy.',
+    Dose:'500 mg twice daily for 5–7 days in respiratory infection.',
+    Interactions:'<b>Potent CYP3A4 inhibitor.</b> Markedly raises exposure to CYP3A4 substrates including atorvastatin (myopathy and rhabdomyolysis risk). Raises INR in warfarin-treated patients by enzyme inhibition <em>and</em> by suppressing vitamin K–producing gut flora. Prolongs the QT interval.',
+    Contraindications:'Concomitant simvastatin or lovastatin; history of QT prolongation; severe hepatic impairment with renal impairment.',
+    'Adverse Effects':'Taste disturbance, nausea, diarrhoea, QT prolongation, hepatotoxicity.',
+    Monitoring:'INR in anticoagulated patients — check within 3–5 days of starting. ECG where other QT-prolonging drugs are used.',
+    Pharmacokinetics:'Half-life 3–4 h. Enzyme inhibition is immediate and reverses within days of stopping.',
+    References:'MediRef monograph CLA-007, rev. 2026-02.'},
+   Atorvastatin:{cls:'HMG-CoA reductase inhibitor',
+    Overview:'Lipid lowering for cardiovascular risk reduction.',
+    Dose:'40 mg at night.',
+    Interactions:'A <b>CYP3A4 substrate</b>. Strong CYP3A4 inhibitors (clarithromycin, erythromycin, itraconazole) raise atorvastatin exposure and the risk of myopathy and rhabdomyolysis. Amiodarone adds a smaller myopathy risk.',
+    Contraindications:'Active liver disease, pregnancy and breastfeeding.',
+    'Adverse Effects':'Myalgia, raised transaminases, rarely rhabdomyolysis.',
+    Monitoring:'Liver function; creatine kinase if muscle pain occurs. Counsel to report unexplained muscle pain, tenderness or weakness.',
+    Pharmacokinetics:'Half-life 14 h; active metabolites extend the effect.',
+    References:'MediRef monograph ATO-002, rev. 2025-11.'},
+   Paracetamol:{cls:'Analgesic / antipyretic',
+    Overview:'First-line simple analgesic; preferred over NSAIDs in anticoagulated patients.',
+    Dose:'500 mg – 1 g up to four times daily; maximum 4 g in 24 hours.',
+    Interactions:'<b>Regular high-dose</b> paracetamol (above about 2 g daily for several consecutive days) can raise the INR in warfarin-treated patients. <b>Occasional PRN use does not.</b> Paracetamol remains the analgesic of choice here — NSAIDs would be far more dangerous.',
+    Contraindications:'Severe hepatic impairment; care with low body weight and chronic alcohol use.',
+    'Adverse Effects':'Hepatotoxicity in overdose. Well tolerated at licensed doses.',
+    Monitoring:'Total daily dose, including any combination products. INR if regular full-dose use begins.',
+    Pharmacokinetics:'Half-life 1–4 h.',
+    References:'MediRef monograph PAR-001, rev. 2025-09.'}
+  };
+  var MONOTABS=['Overview','Dose','Interactions','Contraindications','Adverse Effects','Monitoring','Pharmacokinetics','References'];
+
+  /* --- interaction pairs --- */
+  var PAIRS=[
+   {a:'Warfarin',b:'Clarithromycin',m:4,sev:'major',important:true,
+    mech:'Clarithromycin inhibits CYP3A4 and suppresses vitamin K–producing gut flora — a double mechanism raising warfarin effect.',
+    cons:'Marked rise in INR within 3–5 days, with a substantial risk of major bleeding.',
+    mgmt:'Avoid where an alternative antibiotic exists. If unavoidable, reduce the warfarin dose and check the INR within 3–5 days.',
+    ref:'MediRef CLA-007 · RxInteract ID 40118 · severity Major (both sources agree).',
+    why:'This is the interaction that explains the case. The bruising began the day after the antibiotic was started, and the INR is 3.8 against a target of 2.0–3.0. <b>Clinically important.</b>'},
+   {a:'Warfarin',b:'Amiodarone',m:4,sev:'major',important:true,conflict:true,
+    mech:'Amiodarone inhibits CYP2C9, which clears the more potent S-enantiomer of warfarin.',
+    cons:'Progressive rise in INR over days to weeks; because amiodarone’s half-life is measured in weeks, the effect is long lasting.',
+    mgmt:'Anticipate a warfarin dose reduction of roughly one third to one half; monitor the INR closely for several weeks.',
+    ref:'MediRef AMI-011 severity <b>Major</b> · RxInteract ID 22740 severity <b>Moderate</b> — the sources disagree.',
+    why:'A genuine and well documented interaction — and the one where your two databases disagree. <b>Clinically important</b>, though it is a background contributor here rather than the acute trigger.'},
+   {a:'Clarithromycin',b:'Atorvastatin',m:3,sev:'major',important:true,
+    mech:'Clarithromycin is a potent CYP3A4 inhibitor; atorvastatin is a CYP3A4 substrate.',
+    cons:'Several-fold rise in atorvastatin exposure, with risk of myopathy and rhabdomyolysis.',
+    mgmt:'Withhold the statin for the duration of the antibiotic course, or choose an antibiotic that does not inhibit CYP3A4.',
+    ref:'MediRef ATO-002 · RxInteract ID 31905 · severity Major.',
+    why:'A second major interaction created by the same antibiotic — a good illustration of why one bad choice can generate several problems. <b>Clinically important.</b>'},
+   {a:'Amiodarone',b:'Clarithromycin',m:3,sev:'major',important:true,
+    mech:'Both drugs prolong the QT interval; the effect is additive.',
+    cons:'Risk of QT prolongation and torsades de pointes, particularly in the elderly and with electrolyte disturbance.',
+    mgmt:'Avoid the combination where possible; if unavoidable obtain an ECG and correct potassium and magnesium.',
+    ref:'MediRef AMI-011 · RxInteract ID 22988 · severity Major.',
+    why:'Easy to miss because both drugs are "for something else". Two QT-prolonging drugs in a 68-year-old is <b>clinically important.</b>'},
+   {a:'Amiodarone',b:'Atorvastatin',m:3,sev:'mod',important:true,
+    mech:'Amiodarone inhibits CYP3A4, modestly increasing atorvastatin exposure.',
+    cons:'Increased risk of myopathy, especially at higher statin doses.',
+    mgmt:'Usually manageable — counsel the patient to report muscle pain and avoid unnecessary dose increases.',
+    ref:'MediRef ATO-002 · RxInteract ID 31740 · severity Moderate.',
+    why:'Moderate but real, and it compounds the clarithromycin effect on the same drug. At atorvastatin 40 mg this is <b>clinically important</b> enough to warrant counselling and review.'},
+   {a:'Warfarin',b:'Paracetamol',m:3,sev:'min',important:false,
+    mech:'Regular high-dose paracetamol may interfere with vitamin K–dependent clotting factor synthesis.',
+    cons:'A modest INR rise — but only with sustained intake above about 2 g daily for several consecutive days.',
+    mgmt:'No action for PRN use. Counsel the patient to tell the team if they begin taking it regularly, and to stay within 4 g in 24 hours.',
+    ref:'MediRef PAR-001 · RxInteract ID 11002 · severity Minor (dose-dependent).',
+    why:'<b>Not currently important.</b> The prescription is PRN, not regular. Paracetamol is also the correct analgesic here — flagging it as a problem would risk pushing the patient towards an NSAID, which in an anticoagulated patient would be far more dangerous. Knowing when <em>not</em> to act is a clinical skill.'}
+  ];
+
+  /* --- labs --- */
+  var LABS=[
+   {k:'inr',n:'INR',v:'3.8',r:'Target 2.0 – 3.0 (AF)',s:'abn',key:true},
+   {k:'cr',n:'Serum creatinine',v:'1.1 mg/dL',r:'0.7 – 1.3',s:'ok'},
+   {k:'egfr',n:'eGFR',v:'62 mL/min',r:'> 60',s:'ok'},
+   {k:'lft',n:'AST / ALT',v:'46 / 52 U/L',r:'< 40',s:'bord'},
+   {k:'plt',n:'Platelets',v:'214 ×10⁹/L',r:'150 – 400',s:'ok',key:true},
+   {k:'hb',n:'Haemoglobin',v:'11.8 g/dL',r:'13.0 – 17.0',s:'bord',key:true}
+  ];
+
+  /* --- formulary --- */
+  var FORM=[
+   {d:'Clarithromycin 500 mg',c:'Macrolide',st:'RESTRICTED',stk:'In stock',stcls:'no',
+    note:'Restricted for this case — antimicrobial stewardship. Potent CYP3A4 inhibitor; major interaction with warfarin and atorvastatin; prolongs QT.'},
+   {d:'Amoxicillin 500 mg',c:'Penicillin',st:'Formulary',stk:'In stock',stcls:'no',
+    note:'CONTRAINDICATED — documented penicillin allergy.'},
+   {d:'Co-amoxiclav 625 mg',c:'Penicillin + β-lactamase inhibitor',st:'Formulary',stk:'In stock',stcls:'no',
+    note:'CONTRAINDICATED — documented penicillin allergy.'},
+   {d:'Erythromycin 500 mg',c:'Macrolide',st:'Formulary',stk:'In stock',stcls:'no',
+    note:'Strong CYP3A4 inhibitor — reproduces the same warfarin and atorvastatin interactions as clarithromycin, and also prolongs QT.'},
+   {d:'Levofloxacin 500 mg',c:'Fluoroquinolone',st:'RESTRICTED',stk:'In stock',stcls:'no',
+    note:'Microbiology approval required. Prolongs QT (additive with amiodarone) and raises INR. Reserve for proven resistant infection.'},
+   {d:'Doxycycline 100 mg',c:'Tetracycline',st:'Formulary',stk:'In stock',stcls:'ok',best:true,
+    note:'Covers common respiratory pathogens. Safe in penicillin allergy. Not a CYP3A4 inhibitor and does not prolong QT. A modest INR effect is possible — monitor.'},
+   {d:'Azithromycin 500 mg',c:'Macrolide',st:'Formulary',stk:'In stock',stcls:'warnp',second:true,
+    note:'Much weaker CYP3A4 inhibitor than clarithromycin, so a smaller warfarin interaction — but it still prolongs QT, which is additive with amiodarone.'}
+  ];
+
+  /* --- AI assistant claims --- */
+  var AIC=[
+   {t:'Warfarin and clarithromycin interact through CYP3A4 inhibition and suppression of gut flora — a major interaction that can raise the INR substantially.',ok:true,
+    why:'Correct, and consistent with both databases and with this patient’s INR of 3.8.'},
+   {t:'The patient’s INR of 3.8 is within the therapeutic range for atrial fibrillation, so no dose change is required.',ok:false,
+    why:'<b>False.</b> The target INR for atrial fibrillation is <b>2.0–3.0</b>. An INR of 3.8 is supratherapeutic, and in a patient with new bruising it demands action, not reassurance. Accepting this would have left the patient anticoagulated above range with active bleeding signs.'},
+   {t:'Clarithromycin should be replaced with amoxicillin, which has no significant interaction with warfarin.',ok:false,
+    why:'<b>Unsafe.</b> The interaction statement is broadly true, but the patient has a <b>documented penicillin allergy</b> recorded in the chart. The AI has optimised for the interaction and ignored a contraindication — exactly the failure mode that makes unverified AI advice dangerous.'},
+   {t:'Concomitant clarithromycin raises atorvastatin exposure and the risk of myopathy; withholding the statin during the antibiotic course is reasonable.',ok:true,
+    why:'Correct and clinically sound.'},
+   {t:'The INR should be rechecked within 3–5 days of any change to the antibiotic or the warfarin dose.',ok:true,
+    why:'Correct — this matches the monograph guidance.'}
+  ];
+
+  /* --- medication review board --- */
+  var BUCKETS=['CONTINUE','REVIEW / MONITOR','CONTACT PRESCRIBER'];
+  var BOARD=[
+   {d:'Warfarin 5 mg OD',b:2,why:'INR 3.8 with new bruising requires a prescriber decision on withholding or reducing the dose — that is beyond pharmacist monitoring.'},
+   {d:'Amiodarone 200 mg OD',b:1,why:'Needed for rhythm control and should continue, but it potentiates warfarin for weeks and prolongs QT — <b>review and monitor</b>.'},
+   {d:'Clarithromycin 500 mg BD',b:2,why:'Restricted on the formulary and the acute trigger for this episode — the prescriber must be contacted to change it.'},
+   {d:'Atorvastatin 40 mg HS',b:1,why:'The myopathy risk resolves once the antibiotic is switched. <b>Review and monitor</b>, counselling the patient about muscle pain.'},
+   {d:'Paracetamol 500 mg PRN',b:0,why:'Appropriate and the safest analgesic here. <b>Continue</b>, with counselling to stay within 4 g daily and to report regular use.'}
+  ];
+
+  /* --- intervention builder --- */
+  var IVB=[
+   {lb:'Problem',o:['The patient has been prescribed too many medicines',
+      'Supratherapeutic INR of 3.8 with new bruising, following the introduction of clarithromycin in a patient stabilised on warfarin',
+      'The patient has a respiratory infection','Warfarin is an unsafe drug in the elderly'],c:1,
+    why:'A problem statement must be <b>specific, measurable and attributable</b> — the value, the sign and the trigger.'},
+   {lb:'Evidence',o:['I read about it in a textbook',
+      'MediRef and RxInteract both grade warfarin–clarithromycin as a major interaction; the mechanism is CYP3A4 inhibition plus suppression of vitamin K–producing gut flora',
+      'The nurse mentioned it','It is common knowledge that antibiotics affect warfarin'],c:1,
+    why:'Cite the <b>source and the mechanism</b>. A named reference and a stated mechanism is what turns an opinion into an intervention.'},
+   {lb:'Clinical significance',o:['It is a theoretical interaction with no real consequence',
+      'The INR is above the 2.0–3.0 target with clinical bruising, so there is an active and rising risk of major bleeding in a 68-year-old',
+      'It might cause a mild rash','Significance cannot be determined'],c:1,
+    why:'Translate the finding into <b>risk to this patient</b> — the physician acts on consequence, not on a severity grading.'},
+   {lb:'Recommendation',o:['Stop the warfarin permanently',
+      'Withhold warfarin pending an INR recheck, switch clarithromycin to doxycycline given the penicillin allergy, and withhold atorvastatin until the antibiotic is changed',
+      'Continue everything and observe','Add vitamin K and continue clarithromycin'],c:1,
+    why:'The recommendation must be <b>specific, actionable and complete</b> — naming the drug, the action and the alternative. Stopping warfarin permanently would expose him to stroke; observation ignores an active bleeding signal.'},
+   {lb:'Monitoring',o:['No monitoring needed once the change is made',
+      'Recheck INR in 3–5 days and again after the antibiotic course, watch for bruising or bleeding, and counsel the patient to report muscle pain and any new medicine',
+      'Repeat the INR in three months','Monitor blood pressure daily'],c:1,
+    why:'An intervention without a <b>monitoring plan and a timeframe</b> is incomplete — it is what closes the loop and makes the recommendation auditable.'}
+  ];
+
+  /* ================= STEPS ================= */
+  var STEPS=[
+   {k:'accept',   t:'Accept the case',                 m:0,  sk:null},
+   {k:'record',   t:'Review the patient record',       m:4,  sk:'retrieval'},
+   {k:'rx',       t:'Verify the e-prescription',       m:3,  sk:'interpretation'},
+   {k:'investigate',t:'Choose what to investigate',    m:5,  sk:'retrieval'},
+   {k:'dbselect', t:'Select the right information source', m:10, sk:'database'},
+   {k:'interact', t:'Assess the drug interactions',    m:20, sk:'interaction'},
+   {k:'labs',     t:'Request the investigations',      m:3,  sk:'retrieval'},
+   {k:'labint',   t:'Interpret the results',           m:8,  sk:'interpretation'},
+   {k:'interview',t:'Interview the patient',           m:3,  sk:'retrieval'},
+   {k:'allergy',  t:'Check contraindications',         m:4,  sk:'interpretation'},
+   {k:'formulary',t:'Resolve the formulary alert',     m:10, sk:'formulary'},
+   {k:'conflict', t:'Reconcile the database conflict', m:5,  sk:'interpretation'},
+   {k:'ai',       t:'Verify the AI assistant',         m:10, sk:'ai'},
+   {k:'board',    t:'Medication review board',         m:5,  sk:'intervention'},
+   {k:'doctor',   t:'Communicate with the physician',  m:5,  sk:'intervention'},
+   {k:'docs',     t:'Document the intervention',       m:5,  sk:'documentation'},
+   {k:'advance',  t:'Advance the patient 24 hours',    m:0,  sk:null}
+  ];
+  var SKILLS=[['retrieval','Information retrieval',15],['database','Database selection',10],
+   ['interaction','Interaction assessment',20],['interpretation','Clinical interpretation',20],
+   ['formulary','Formulary decision',10],['ai','AI verification',10],
+   ['intervention','Pharmacist intervention',10],['documentation','Documentation',5]];
+  var TOTAL_MARKS=STEPS.reduce(function(a,s){return a+s.m;},0);
+  $('stTbl').innerHTML=STEPS.filter(function(s){return s.m>0;}).map(function(s,i){
+    return '<tr><td><b>'+(i+1)+'</b></td><td>'+esc(s.t)+'</td><td>'+s.m+'</td></tr>';}).join('')
+    +'<tr class="tot"><td></td><td>Total</td><td>'+TOTAL_MARKS+'</td></tr>';
+
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.nm)0; }catch(e){}
+
+  /* ================= STATE ================= */
+  var S=null, tick=null, sel={};
+  function init(){
+    S={si:0,marks:{},secs:0,ended:false,wrong:[],log:{searches:[],dbs:[],labs:[],asked:[]},
+       opened:{},pairDone:{},pairJudge:{},labsGot:[],rewound:false,result:null,
+       picks:{},outcome:null};
+  }
+  function startCase(){
+    /* capture identity now — the accept screen is replaced on the first render */
+    S.name=(($('cName')||{}).value||'').trim()||'Candidate';
+    S.reg=(($('cReg')||{}).value||'').trim();
+    $('sysHost').innerHTML='';
+    clearInterval(tick);
+    tick=setInterval(function(){ if(!S||S.ended) return; S.secs++; paintTime(); },1000);
+    S.si=1; render();
+  }
+  function paintTime(){
+    var m=Math.floor(S.secs/60), s=S.secs%60;
+    $('scTime').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+  function got(){ var t=0; for(var k in S.marks) t+=S.marks[k]; return Math.round(t*10)/10; }
+  function skillScore(sk){
+    var g=0,mx=0;
+    STEPS.forEach(function(st){ if(st.sk===sk){ mx+=st.m; g+=(S.marks[st.k]||0); } });
+    return mx?Math.round(g/mx*100):0;
+  }
+  function paintChips(){
+    var n=STEPS.filter(function(s){return s.m>0;}).length;
+    var done=STEPS.slice(0,S.si).filter(function(s){return s.m>0;}).length;
+    $('scStage').textContent=S.ended?'—':(Math.min(done+1,n)+'/'+n);
+    $('scMarks').textContent=got()+' / '+TOTAL_MARKS;
+  }
+  function sysTabs(active){
+    var T=[['Patient','record'],['Prescription','rx'],['Labs','labs'],['Drug Database','dbselect'],
+           ['Formulary','formulary'],['Interaction Checker','interact'],['Notes','docs']];
+    var order=STEPS.map(function(s){return s.k;});
+    return '<div class="systabs">'+T.map(function(t){
+      var reached=order.indexOf(t[1])<=S.si;
+      return '<button class="systab'+(t[1]===active?' on':'')+(reached?'':' lock')+'" disabled>'+t[0]
+        +(t[1]===active?' <span class="dot">•</span>':'')+'</button>';
+    }).join('')+'</div>';
+  }
+  function head(st,extra){
+    return sysTabs(st.k)+'<div class="card"><span class="step">'+esc(st.t)+(st.m?' · '+st.m+' marks':'')+'</span>'
+      +(extra||'')+'</div>';
+  }
+  function award(st,g,lines,cls){
+    S.marks[st.k]=Math.round(g*10)/10;
+    var fb=$('fbk'), pct=st.m?g/st.m:1;
+    fb.className='fbk '+(cls||(pct>=0.999?'ok':(pct>=0.5?'part':'no')));
+    fb.innerHTML=(st.m?'<b>'+S.marks[st.k]+' / '+st.m+' marks.</b>':'<b>Recorded.</b>')
+      +(lines&&lines.length?('<ul><li>'+lines.join('</li><li>')+'</li></ul>'):'');
+    paintChips();
+    var btn=$('goBtn'); if(btn) btn.disabled=true;
+    [].forEach.call(document.querySelectorAll('#qCard button:not(#nextBtn)'),function(b){ b.style.pointerEvents='none'; });
+    [].forEach.call(document.querySelectorAll('#qCard textarea'),function(b){ b.readOnly=true; });
+    var nx=document.createElement('button');
+    nx.className='btn gold'; nx.style.marginLeft='8px'; nx.id='nextBtn';
+    nx.textContent=(S.si>=STEPS.length-2)?'Advance the patient 24 hours ▸':'Continue ▸';
+    (btn?btn.parentNode:$('qCard')).appendChild(nx);
+    nx.addEventListener('click',function(){ S.si++; render(); window.scrollTo({top:0,behavior:'smooth'}); });
+  }
+  function need(msg){ var f=$('fbk'); f.className='fbk no'; f.innerHTML=esc(msg); }
+  function wrong(step,q,chose,right){ S.wrong.push({st:step,q:q,chose:chose,right:right}); }
+
+  function optHTML(list,g){
+    return '<div class="optw" data-g="'+g+'">'+list.map(function(o,k){
+      return '<button type="button" class="opt" data-g="'+g+'" data-k="'+k+'">'+o+'</button>';}).join('')+'</div>';
+  }
+  function wireOpts(){
+    [].forEach.call(document.querySelectorAll('#qCard .opt'),function(b){
+      b.addEventListener('click',function(){
+        var g=b.getAttribute('data-g'); sel[g]=+b.getAttribute('data-k');
+        [].forEach.call(document.querySelectorAll('#qCard .opt[data-g="'+g+'"]'),function(x){x.classList.remove('pick');});
+        b.classList.add('pick');
+      });
+    });
+  }
+  function markOpts(g,c){
+    [].forEach.call(document.querySelectorAll('#qCard .opt[data-g="'+g+'"]'),function(b){
+      var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+      if(k===c) b.classList.add('right'); else if(sel[g]===k) b.classList.add('wrong');
+    });
+  }
+  function card(inner,btn){
+    return '<div class="card" id="qCard">'+inner+'<div id="fbk"></div>'
+      +'<div class="row"><button class="btn" id="goBtn">'+(btn||'Submit')+'</button></div></div>';
+  }
+
+  /* ================= RENDER ================= */
+  function render(){
+    paintChips();
+    var st=STEPS[S.si];
+    if(!st){ finish(); return; }
+    sel={};
+    VIEW[st.k](st);
+  }
+
+  var VIEW={};
+
+  /* ---------- 0 accept ---------- */
+  VIEW.accept=function(){
+    $('sysHost').innerHTML='<div class="sys"><div class="brand">CITYCARE DIGITAL HOSPITAL</div>'
+      +'<div class="sub">Clinical Pharmacy Information System</div>'
+      +'<div class="newcase"><div class="pri blink">● NEW CASE ASSIGNED</div>'
+      +'<div><span class="k">Patient ID</span><b>'+CASE.id+'</b></div>'
+      +'<div><span class="k">Department</span><b>'+CASE.dept+'</b></div>'
+      +'<div><span class="k">Priority</span><b class="pri">🟠 URGENT</b></div>'
+      +'<div><span class="k">Your role</span><b>Clinical Pharmacist</b></div></div></div>';
+    $('stArea').innerHTML='<div class="card"><div class="grid2">'
+      +'<div><label class="f">Pharmacist name</label><input type="text" id="cName" placeholder="Your name"></div>'
+      +'<div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div></div>'
+      +'<button class="btn" id="acceptBtn" style="margin-top:12px">ACCEPT CASE</button>'
+      +'<p class="note">The case clock starts when you accept.</p></div>';
+    try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}');
+      if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+    $('acceptBtn').addEventListener('click',startCase);
+  };
+
+  /* ---------- 1 record ---------- */
+  VIEW.record=function(st){
+    $('sysHost').innerHTML='';
+    $('stArea').innerHTML=head(st,'<h2>Patient record · '+CASE.id+'</h2>'
+      +'<p class="muted">Nothing is displayed until you open it. Open the sections you consider relevant, then continue.</p>')
+      +card('<div class="recgrid" id="rgrid">'+RECORD.map(function(r,k){
+        return '<button type="button" class="reccard" data-k="'+k+'"><div class="rl">'+r.l+'</div>'
+          +'<div class="tap">Tap to open ▸</div></button>';}).join('')+'</div>','Continue with the record I have opened');
+    [].forEach.call(document.querySelectorAll('#rgrid .reccard'),function(b){
+      b.addEventListener('click',function(){
+        var k=+b.getAttribute('data-k'), r=RECORD[k];
+        if(S.opened[r.k]) return;
+        S.opened[r.k]=true;
+        b.classList.add('open');
+        b.innerHTML='<div class="rl">'+r.l+'</div><div class="rv">'+r.v+'</div><div class="rx2">'+r.x+'</div>';
+      });
+    });
+    $('goBtn').addEventListener('click',function(){
+      var n=Object.keys(S.opened).length;
+      var g=4*n/RECORD.length, lines=[];
+      if(n<RECORD.length){
+        var miss=RECORD.filter(function(r){return !S.opened[r.k];});
+        lines.push('<b>You did not open '+miss.length+' section(s):</b> '+esc(miss.map(function(r){return strip(r.l);}).join(', '))
+          +'. In a real verification the sections you skip are the ones that harm the patient — the allergy and the presenting complaint both change what is safe here.');
+        wrong('Patient record','Sections reviewed',n+' of '+RECORD.length,'all '+RECORD.length);
+        miss.forEach(function(r){ S.opened[r.k]=true; });
+      } else lines.push('Complete record reviewed before touching the prescription — correct practice.');
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 2 rx ---------- */
+  VIEW.rx=function(st){
+    $('stArea').innerHTML=head(st,'<h2>e-Prescription #RX20381</h2>'
+      +'<div class="erx"><div class="eh"><span>CityCare Digital Hospital · Internal Medicine</span><span>Dr Thomas · today</span></div>'
+      +'<div class="tw"><table><thead><tr><th>Drug</th><th>Dose</th><th>Frequency</th></tr></thead><tbody>'
+      +RX.map(function(r){return '<tr><td><b>'+r.d+'</b></td><td>'+r.s+'</td><td>'+r.f+'</td></tr>';}).join('')
+      +'</tbody></table></div></div>'
+      +'<div class="scene" style="margin-top:12px"><div class="dt">Physician request</div>'
+      +'<pre>"Please verify medications before dispensing."</pre></div>')
+      +card('<b>What is your action?</b>'
+        +optHTML(['APPROVE — dispense as written',
+                  'HOLD FOR REVIEW — park it and move on to other work',
+                  'INVESTIGATE — work the prescription up before deciding'],'rx'),'Confirm action');
+    wireOpts();
+    $('goBtn').addEventListener('click',function(){
+      if(sel.rx==null) return need('Choose an action first.');
+      markOpts('rx',2);
+      var lines=[];
+      if(sel.rx===2){ lines.push('Correct. <b>Investigate</b> is the only action that discharges your responsibility — approving is unsafe before a workup, and holding without investigating simply delays care.'); }
+      else if(sel.rx===0){
+        lines.push('<b>⚠ Medication safety concerns have not been evaluated.</b> Approving this prescription would have released warfarin, clarithromycin and atorvastatin together to a patient with an INR of 3.8 and new bruising. '
+          +'A pharmacist who approves before investigating carries the consequence.');
+        wrong('Prescription verification','Initial action','APPROVE','INVESTIGATE');
+      } else {
+        lines.push('<b>Hold for review</b> is safer than approving but is not a decision — the prescription is urgent and the patient is already bruising. Investigating now is what the case requires.');
+        wrong('Prescription verification','Initial action','HOLD FOR REVIEW','INVESTIGATE');
+      }
+      award(st,sel.rx===2?3:(sel.rx===1?1:0),lines);
+    });
+  };
+
+  /* ---------- 3 investigate ---------- */
+  var INVEST=[
+   {t:'Drug interactions',ok:true},{t:'Dose appropriateness',ok:true},{t:'Contraindications',ok:true},
+   {t:'Renal function',ok:true},{t:'Liver function',ok:true},{t:'Allergy status',ok:true},
+   {t:'Formulary availability',ok:true},{t:'Adverse effects',ok:true},{t:'Monitoring requirements',ok:true},
+   {t:'The patient’s dietary preferences',ok:false,why:'Not relevant to this verification — investigating everything indiscriminately wastes time in an urgent case.'},
+   {t:'The prescriber’s qualifications',ok:false,why:'Not a medication-safety check. Verification examines the prescription, not the prescriber.'}
+  ];
+  VIEW.investigate=function(st){
+    $('stArea').innerHTML=head(st,'<h2>What would you like to review?</h2>'
+      +'<p class="muted">Select every check that belongs in this verification. The system records what you chose to investigate.</p>')
+      +card('<div class="cl" id="ivWrap">'+INVEST.map(function(x,k){
+        return '<label><input type="checkbox" data-k="'+k+'"><span>'+x.t+'</span></label>';}).join('')+'</div>',
+        'Begin investigation');
+    $('goBtn').addEventListener('click',function(){
+      var picked=[].slice.call(document.querySelectorAll('#ivWrap input:checked')).map(function(i){return +i.getAttribute('data-k');});
+      if(!picked.length) return need('Select at least one check.');
+      var right=0,bad=[],missed=[];
+      INVEST.forEach(function(x,k){
+        var p=picked.indexOf(k)>=0;
+        if(p===x.ok) right++;
+        else if(p && !x.ok) bad.push(strip(x.t)+' — '+strip(x.why));
+        else missed.push(strip(x.t));
+      });
+      var g=5*right/INVEST.length, lines=[];
+      if(missed.length){ lines.push('<b>Checks you did not select:</b> '+esc(missed.join(', '))
+        +'. Each of these is a standard element of prescription verification.');
+        wrong('Investigation plan','Checks selected','missed '+missed.length,'all nine clinical checks'); }
+      if(bad.length) lines.push('<b>Not part of a medication-safety check:</b><ul><li>'+bad.map(esc).join('</li><li>')+'</li></ul>');
+      if(!missed.length && !bad.length) lines.push('A complete and appropriately focused investigation plan.');
+      S.log.checks=picked.length;
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 4 database selection ---------- */
+  var SRC=[
+   {n:'MediRef',d:'Detailed clinical drug monographs — dose, pharmacokinetics, adverse effects, monitoring'},
+   {n:'RxInteract',d:'Interaction-focused database — severity grading, mechanism, management'},
+   {n:'Hospital Digital Formulary',d:'What this hospital actually stocks — status, restrictions, availability'}
+  ];
+  var DBQ=[
+   {m:3,q:'You need the <b>monitoring requirements and half-life</b> of amiodarone. Which source?',c:0,
+    why:'A <b>clinical monograph</b> is the source for drug-specific pharmacology, monitoring and adverse effects. An interaction database would not carry half-life; the formulary carries only stock and status.'},
+   {m:3,q:'You want the <b>severity grading and management advice</b> for warfarin with clarithromycin. Which source?',c:1,
+    why:'An <b>interaction-focused database</b> is purpose-built for pairwise severity, mechanism and management. The monograph mentions interactions but does not grade every pair.'},
+   {m:4,q:'You need to know whether clarithromycin <b>can be dispensed at this hospital and what else is available</b>. Which source?',c:2,
+    why:'Only the <b>hospital digital formulary</b> knows what this hospital stocks and what is restricted. No external reference can answer a local availability question — this is the commonest source-selection error students make.'}
+  ];
+  VIEW.dbselect=function(st){
+    $('stArea').innerHTML=head(st,'<h2>Three information sources are available</h2>'
+      +'<div class="srcpick">'+SRC.map(function(s){
+        return '<div class="srccard" style="cursor:default"><b>'+s.n+'</b><small>'+s.d+'</small></div>';}).join('')+'</div>')
+      +card(DBQ.map(function(q,i){
+        return '<div style="margin-top:'+(i?18:4)+'px"><b>'+q.q+'</b> <span class="muted" style="font-size:12px">('+q.m+' marks)</span>'
+          +'<div class="srcpick" data-g="db'+i+'">'+SRC.map(function(s,k){
+            return '<button type="button" class="srccard opt" data-g="db'+i+'" data-k="'+k+'"><b>'+s.n+'</b></button>';}).join('')+'</div></div>';
+      }).join(''),'Confirm sources');
+    wireOpts();
+    $('goBtn').addEventListener('click',function(){
+      if(DBQ.some(function(q,i){return sel['db'+i]==null;})) return need('Choose a source for all three questions.');
+      var g=0,lines=[];
+      DBQ.forEach(function(q,i){
+        var p=sel['db'+i];
+        [].forEach.call(document.querySelectorAll('.srccard[data-g="db'+i+'"]'),function(b){
+          var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+          if(k===q.c) b.classList.add('right'); else if(p===k) b.classList.add('wrong');
+        });
+        if(p===q.c) g+=q.m;
+        else{ lines.push('<b>'+strip(q.q)+'</b><br>You chose <b>'+SRC[p].n+'</b>; the right source is <b>'+SRC[q.c].n+'</b>.<br>'+q.why);
+          wrong('Database selection',strip(q.q),SRC[p].n,SRC[q.c].n); }
+      });
+      S.log.dbs=SRC.map(function(s){return s.n;});
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 5 interaction checker ---------- */
+  VIEW.interact=function(st){
+    var meds=RX.map(function(r){return r.d;});
+    $('stArea').innerHTML=head(st,'<h2>RxInteract · Interaction Analyzer</h2>'
+      +'<p class="muted">Drag two medication cards into the analyzer — or tap two cards. Every pair in this prescription must be checked. '
+      +'For each result you must judge whether it is <b>clinically important for this patient</b>.</p>'
+      +'<div class="medcards" id="medBank">'+meds.map(function(m){
+        return '<button type="button" class="medcard" draggable="true" data-m="'+m+'">'+m.toUpperCase()+'</button>';}).join('')+'</div>'
+      +'<div class="analyzer"><div class="slot" id="slotA">Drug A</div><div class="plus">+</div><div class="slot" id="slotB">Drug B</div></div>'
+      +'<div class="row" style="margin-top:10px"><button class="btn" id="runBtn">▶ Analyze</button>'
+      +'<button class="btn ghost" id="clrBtn">Clear</button></div>'
+      +'<div id="ires"></div>'
+      +'<h3>Pairs checked</h3><div class="pairgrid" id="pgrid"></div>')
+      +card('<p class="muted">All six clinically relevant pairs must be analysed and judged before you can continue.</p>','Complete interaction assessment');
+    var A=null,B=null;
+    function paintSlots(){
+      $('slotA').textContent=A||'Drug A'; $('slotA').classList.toggle('filled',!!A);
+      $('slotB').textContent=B||'Drug B'; $('slotB').classList.toggle('filled',!!B);
+    }
+    function pairOf(a,b){
+      if(!a||!b||a===b) return null;
+      for(var i=0;i<PAIRS.length;i++){
+        var p=PAIRS[i];
+        if((p.a===a&&p.b===b)||(p.a===b&&p.b===a)) return {p:p,i:i};
+      }
+      return null;
+    }
+    function paintGrid(){
+      $('pgrid').innerHTML=PAIRS.map(function(p,i){
+        var j=S.pairJudge[i];
+        var cls=(j==null)?'':(j===p.important?'done':'err');
+        return '<div class="pairrow '+cls+'"><b>'+p.a+' + '+p.b+'</b>'
+          +'<span class="st">'+(j==null?'not assessed':(j?'judged important':'judged not important'))+'</span></div>';
+      }).join('');
+    }
+    paintGrid();
+    function place(m){ if(A===m||B===m) return; if(!A) A=m; else if(!B) B=m; else { A=B; B=m; } paintSlots(); }
+    [].forEach.call(document.querySelectorAll('#medBank .medcard'),function(b){
+      b.addEventListener('click',function(){ place(b.getAttribute('data-m')); });
+      b.addEventListener('dragstart',function(e){ e.dataTransfer.setData('text/plain',b.getAttribute('data-m')); });
+    });
+    ['slotA','slotB'].forEach(function(id){
+      var el=$(id);
+      el.addEventListener('dragover',function(e){ e.preventDefault(); el.classList.add('over'); });
+      el.addEventListener('dragleave',function(){ el.classList.remove('over'); });
+      el.addEventListener('drop',function(e){ e.preventDefault(); el.classList.remove('over');
+        var m=e.dataTransfer.getData('text/plain'); if(!m) return;
+        if(id==='slotA'){ if(B!==m) A=m; } else { if(A!==m) B=m; } paintSlots(); });
+    });
+    $('clrBtn').addEventListener('click',function(){ A=null;B=null;paintSlots();$('ires').innerHTML=''; });
+    $('runBtn').addEventListener('click',function(){
+      var f=pairOf(A,B);
+      if(!f){ $('ires').innerHTML='<div class="fbk no">Place two <b>different</b> medications in the analyzer. '
+        +(A&&B?'No clinically documented interaction is recorded for that pair in this case.':'')+'</div>'; return; }
+      var p=f.p, i=f.i;
+      $('ires').innerHTML='<div class="note" style="margin-top:10px">Checking clinical reference…</div>';
+      setTimeout(function(){
+        $('ires').innerHTML='<div class="ialert '+p.sev+'"><span class="sev">'
+          +(p.sev==='major'?'Major':(p.sev==='mod'?'Moderate':'Minor'))+' interaction</span>'
+          +'<div style="font-weight:700;font-size:14px">'+p.a+' + '+p.b+'</div>'
+          +'<dl><dt>Mechanism</dt><dd>'+p.mech+'</dd>'
+          +'<dt>Consequence</dt><dd>'+p.cons+'</dd>'
+          +'<dt>Management</dt><dd>'+p.mgmt+'</dd>'
+          +'<dt>Evidence</dt><dd>'+p.ref+'</dd></dl>'
+          +(S.pairJudge[i]!=null?'<p class="note">Already judged.</p>':
+            '<div class="row" style="margin-top:10px"><button class="btn" data-j="1" data-i="'+i+'">CLINICALLY IMPORTANT</button>'
+            +'<button class="btn ghost" data-j="0" data-i="'+i+'">NOT CURRENTLY IMPORTANT</button></div>')
+          +'</div>';
+        [].forEach.call(document.querySelectorAll('#ires [data-j]'),function(b){
+          b.addEventListener('click',function(){
+            var ix=+b.getAttribute('data-i'), j=(b.getAttribute('data-j')==='1');
+            S.pairJudge[ix]=j;
+            var pp=PAIRS[ix], ok=(j===pp.important);
+            $('ires').insertAdjacentHTML('beforeend','<div class="fbk '+(ok?'ok':'no')+'">'
+              +(ok?'<b>Correct judgement.</b> ':'<b>Incorrect judgement.</b> ')+pp.why+'</div>');
+            if(!ok) wrong('Interaction assessment',pp.a+' + '+pp.b,(j?'clinically important':'not currently important'),
+                          (pp.important?'clinically important':'not currently important'));
+            A=null;B=null;paintSlots();paintGrid();
+          });
+        });
+      },420);
+    });
+    $('goBtn').addEventListener('click',function(){
+      var n=Object.keys(S.pairJudge).length;
+      if(n<PAIRS.length) return need('Analyse and judge all six pairs first — '+(PAIRS.length-n)+' still outstanding.');
+      var g=0,lines=[];
+      PAIRS.forEach(function(p,i){ if(S.pairJudge[i]===p.important) g+=p.m; });
+      var missed=PAIRS.filter(function(p,i){return S.pairJudge[i]!==p.important;});
+      if(missed.length) lines.push('<b>'+missed.length+' pair(s) misjudged:</b> '
+        +esc(missed.map(function(p){return p.a+' + '+p.b;}).join('; '))+'.');
+      else lines.push('Every pair judged correctly — including recognising that PRN paracetamol is <b>not</b> currently a problem, and that flagging it could push the patient towards an NSAID instead.');
+      S.log.pairs=PAIRS.length;
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 6 labs request ---------- */
+  VIEW.labs=function(st){
+    $('stArea').innerHTML=head(st,'<h2>Available investigations</h2>'
+      +'<p class="muted">Results are not released until you request them. Order the investigations this case requires.</p>')
+      +card('<div class="cl" id="lbWrap">'+LABS.map(function(l,k){
+        return '<label><input type="checkbox" data-k="'+k+'"><span>'+l.n+'</span></label>';}).join('')+'</div>',
+        'Request investigations');
+    $('goBtn').addEventListener('click',function(){
+      var picked=[].slice.call(document.querySelectorAll('#lbWrap input:checked')).map(function(i){return +i.getAttribute('data-k');});
+      if(!picked.length) return need('Select at least one investigation.');
+      var keys=LABS.map(function(l,k){return l.key?k:-1;}).filter(function(k){return k>=0;});
+      var hit=keys.filter(function(k){return picked.indexOf(k)>=0;}).length;
+      var g=3*hit/keys.length, lines=[];
+      var miss=keys.filter(function(k){return picked.indexOf(k)<0;}).map(function(k){return LABS[k].n;});
+      if(miss.length){ lines.push('<b>Essential investigations not requested:</b> '+esc(miss.join(', '))
+        +'. In a bruising, anticoagulated patient the INR, platelet count and haemoglobin are the three that decide the immediate management.');
+        wrong('Investigations','Tests requested','missed '+miss.join(', '),'INR, platelets, haemoglobin'); }
+      else lines.push('The three investigations that decide immediate management were all requested.');
+      S.labsGot=LABS.map(function(l,k){return k;});   /* all released so the case can proceed */
+      S.log.labs=picked.map(function(k){return LABS[k].n;});
+      lines.push('<i>All results have been released to the record so the case can continue.</i>');
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 7 lab interpretation ---------- */
+  var LABQ=[
+   {m:5,q:'<b>INR 3.8.</b> What does this mean in the context of this patient’s medication?',
+    o:['No concern — this is within range for atrial fibrillation',
+       'Possible increased bleeding risk requiring clinical review',
+       'It indicates renal failure','It indicates infection'],c:1,
+    why:'The target INR for atrial fibrillation is <b>2.0–3.0</b>. At 3.8 the patient is supratherapeutic, and combined with <b>new bruising</b> that is an active bleeding risk requiring review — not observation.'},
+   {m:3,q:'<b>Haemoglobin 11.8 g/dL, platelets 214 ×10⁹/L.</b> How do you read these together?',
+    o:['Thrombocytopenia is causing the bruising',
+       'The platelet count is normal, so the bruising is not due to low platelets; the mildly low haemoglobin is consistent with blood loss and needs follow-up',
+       'Both are normal, so no bleeding is occurring','The results indicate a bone marrow disorder'],c:1,
+    why:'A <b>normal platelet count excludes thrombocytopenia</b> as the cause, which points the diagnosis firmly back at the anticoagulation. The mildly low haemoglobin is consistent with blood loss and must be tracked — normal platelets do not mean no bleeding.'}
+  ];
+  VIEW.labint=function(st){
+    $('stArea').innerHTML=head(st,'<h2>Laboratory results · '+CASE.id+'</h2>'
+      +'<div class="labcards">'+LABS.map(function(l){
+        return '<div class="labcard '+l.s+'"><div class="ll">'+l.n+'</div><div class="lv">'+l.v
+          +(l.s==='abn'?' ↑':(l.s==='bord'?' ⚠':''))+'</div><div class="lr">'+l.r+'</div></div>';}).join('')+'</div>')
+      +card(LABQ.map(function(q,i){
+        return '<div style="margin-top:'+(i?18:4)+'px"><b>'+q.q+'</b> <span class="muted" style="font-size:12px">('+q.m+' marks)</span>'
+          +optHTML(q.o,'lq'+i)+'</div>';}).join(''),'Confirm interpretation');
+    wireOpts();
+    $('goBtn').addEventListener('click',function(){
+      if(LABQ.some(function(q,i){return sel['lq'+i]==null;})) return need('Answer both questions first.');
+      var g=0,lines=[];
+      LABQ.forEach(function(q,i){
+        markOpts('lq'+i,q.c);
+        if(sel['lq'+i]===q.c) g+=q.m;
+        else{ lines.push('<b>'+strip(q.q)+'</b><br>'+q.why);
+          wrong('Lab interpretation',strip(q.q).slice(0,50),strip(q.o[sel['lq'+i]]),strip(q.o[q.c])); }
+      });
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 8 patient interview ---------- */
+  var ASK=[
+   {q:'Have you noticed any bleeding?',useful:true,
+    a:'“I’ve noticed several bruises on my arms over the last two days. Nothing else — no blood when I brush my teeth, nothing in my water.”'},
+   {q:'Any new medicines recently?',useful:true,
+    a:'“The antibiotic was started yesterday. Everything else I’ve been on for years.”'},
+   {q:'Are you taking anything you bought yourself — painkillers, supplements?',useful:true,
+    a:'“Only the paracetamol, and only when my knee plays up. Maybe twice last week.”'},
+   {q:'What did you have for breakfast?',useful:false,
+    a:'“Toast and tea… is that important?”'},
+   {q:'Who is your usual doctor?',useful:false,
+    a:'“Dr Thomas, same as always.”'}
+  ];
+  VIEW.interview=function(st){
+    $('stArea').innerHTML=head(st,'<h2>Talk to the patient</h2>'
+      +'<p class="muted">Choose what to ask. Three questions will change your management; two will not. You may ask as many as you like, but the marks reflect what you needed.</p>'
+      +'<div class="chat" id="chatLog"><div class="bub pt"><div class="who">Patient · bed 14</div>“Hello. They said the pharmacist wanted a word?”</div></div>'
+      +'<div class="recs" id="askWrap">'+ASK.map(function(a,k){
+        return '<button type="button" class="opt" data-k="'+k+'">'+a.q+'</button>';}).join('')+'</div>')
+      +card('<p class="muted">Ask what you need, then close the interview.</p>','Close the interview');
+    [].forEach.call(document.querySelectorAll('#askWrap .opt'),function(b){
+      b.addEventListener('click',function(){
+        var k=+b.getAttribute('data-k'); if(S.log.asked.indexOf(k)>=0) return;
+        S.log.asked.push(k); b.classList.add('pick'); b.disabled=true;
+        $('chatLog').insertAdjacentHTML('beforeend',
+          '<div class="bub me"><div class="who">You</div>'+esc(ASK[k].q)+'</div>'
+          +'<div class="bub pt"><div class="who">Patient</div>'+esc(ASK[k].a)+'</div>');
+        $('chatLog').lastChild.scrollIntoView({block:'nearest'});
+      });
+    });
+    $('goBtn').addEventListener('click',function(){
+      var useful=ASK.map(function(a,k){return a.useful?k:-1;}).filter(function(k){return k>=0;});
+      var hit=useful.filter(function(k){return S.log.asked.indexOf(k)>=0;}).length;
+      var g=3*hit/useful.length, lines=[];
+      var miss=useful.filter(function(k){return S.log.asked.indexOf(k)<0;}).map(function(k){return ASK[k].q;});
+      if(miss.length){ lines.push('<b>You did not ask:</b> '+esc(miss.join(' / '))
+        +'. The timing of the antibiotic against the timing of the bruising is what confirms causation here — without it you have an association, not a cause.');
+        wrong('Patient interview','Questions asked','missed '+miss.length,'all three clinically useful questions'); }
+      else lines.push('A focused history: the bruising began two days ago, the antibiotic started yesterday, and paracetamol use is genuinely occasional — which confirms the antibiotic as the trigger and rules paracetamol out.');
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 9 allergy / contraindication ---------- */
+  VIEW.allergy=function(st){
+    $('stArea').innerHTML=head(st,'<h2>Contraindication check</h2>'
+      +'<div class="scene"><div class="dt">Allergy record · '+CASE.id+'</div>'
+      +'<pre>DOCUMENTED ALLERGY .... PENICILLIN\nREACTION .............. rash and facial swelling, 2009\nSEVERITY .............. moderate — avoid all penicillins</pre></div>')
+      +card('<b>Which of these would be contraindicated in this patient?</b> <span class="muted" style="font-size:12px">(4 marks)</span>'
+        +optHTML(['Only amoxicillin',
+                  'Amoxicillin and co-amoxiclav — both are penicillins and both must be avoided',
+                  'All antibiotics','None — a 2009 reaction can be disregarded'],'al'),'Confirm');
+    wireOpts();
+    $('goBtn').addEventListener('click',function(){
+      if(sel.al==null) return need('Choose an answer.');
+      markOpts('al',1);
+      var ok=(sel.al===1), lines=[];
+      if(ok) lines.push('Correct. <b>Co-amoxiclav is amoxicillin plus clavulanic acid</b> — a penicillin under a different name. Missing that is one of the commonest allergy errors in practice, and it is exactly the trap the AI assistant will walk into later in this case.');
+      else{ lines.push('<b>Both amoxicillin and co-amoxiclav are penicillins.</b> Co-amoxiclav is amoxicillin with clavulanic acid — the brand-style name hides the penicillin. A documented reaction with facial swelling is not something to disregard on the basis of its date.');
+        wrong('Contraindication check','Penicillin allergy',strip(['Only amoxicillin','','All antibiotics','None'][sel.al]||'—'),'Amoxicillin and co-amoxiclav'); }
+      award(st,ok?4:0,lines);
+    });
+  };
+
+  /* ---------- 10 formulary ---------- */
+  VIEW.formulary=function(st){
+    $('stArea').innerHTML=head(st,'<div class="alert"><b>🔴 PHARMACY ALERT</b><br>'
+      +'Clarithromycin — <b>restricted / non-formulary</b> for this case. The physician requests a pharmacist recommendation for an alternative.</div>'
+      +'<h2 style="margin-top:14px">Hospital Digital Formulary — antibacterials</h2>'
+      +'<div class="tw"><table class="formtbl"><thead><tr><th>Drug</th><th>Class</th><th>Status</th><th>Stock</th><th>Clinical notes</th></tr></thead><tbody>'
+      +FORM.map(function(f){
+        return '<tr><td><b>'+f.d+'</b></td><td>'+f.c+'</td><td><span class="pill '+(f.st==='Formulary'?'ok':'warnp')+'">'+f.st+'</span></td>'
+          +'<td>'+f.stk+'</td><td>'+f.note+'</td></tr>';}).join('')+'</tbody></table></div>')
+      +card('<b>Which alternative do you recommend?</b> <span class="muted" style="font-size:12px">(7 marks)</span>'
+        +optHTML(FORM.map(function(f){return f.d;}),'fm')
+        +'<div style="margin-top:18px"><b>Why does the formulary matter here?</b> <span class="muted" style="font-size:12px">(3 marks)</span>'
+        +optHTML(['Because the hospital wants to save money',
+                  'Because it tells you what can actually be dispensed here, what is restricted and why — information no external drug reference can provide',
+                  'Because formulary drugs are always safer','Because the physician cannot see it'],'fw')+'</div>','Submit recommendation');
+    wireOpts();
+    $('goBtn').addEventListener('click',function(){
+      if(sel.fm==null||sel.fw==null) return need('Answer both parts.');
+      var best=FORM.map(function(f,k){return f.best?k:-1;}).filter(function(k){return k>=0;})[0];
+      var second=FORM.map(function(f,k){return f.second?k:-1;}).filter(function(k){return k>=0;})[0];
+      markOpts('fm',best); markOpts('fw',1);
+      var g=0,lines=[];
+      if(sel.fm===best){ g+=7; lines.push('<b>Doxycycline</b> is the right recommendation: it covers the likely respiratory pathogens, is safe in penicillin allergy, does <b>not</b> inhibit CYP3A4 and does <b>not</b> prolong QT — so it resolves the warfarin interaction, the atorvastatin interaction and the QT risk in one change.'); }
+      else if(sel.fm===second){ g+=4; lines.push('<b>Azithromycin</b> is defensible — a far weaker CYP3A4 inhibitor than clarithromycin — but it <b>still prolongs QT</b>, which is additive with amiodarone. <b>Doxycycline</b> avoids that too, and is the better answer in this patient.');
+        wrong('Formulary decision','Alternative chosen','Azithromycin','Doxycycline'); }
+      else{ lines.push('<b>'+strip(FORM[sel.fm].d)+'</b> — '+FORM[sel.fm].note+'<br>The correct choice is <b>doxycycline</b>: effective for respiratory infection, safe in penicillin allergy, no CYP3A4 inhibition and no QT prolongation.');
+        wrong('Formulary decision','Alternative chosen',strip(FORM[sel.fm].d),'Doxycycline'); }
+      if(sel.fw===1) g+=3;
+      else{ lines.push('The formulary’s role is not cost and not safety in the abstract — it is <b>the only source that knows what this hospital can actually dispense</b> and what is restricted.');
+        wrong('Formulary decision','Purpose of the formulary','—','Local availability and restriction'); }
+      S.picks.abx=FORM[sel.fm].d; S.picks.abxBest=(sel.fm===best); S.picks.abxOK=(sel.fm===best||sel.fm===second);
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 11 database conflict ---------- */
+  VIEW.conflict=function(st){
+    $('stArea').innerHTML=head(st,'<h2>The databases disagree</h2>'
+      +'<div class="srcpick"><div class="srccard" style="cursor:default;border-color:var(--danger)"><b>MediRef</b>'
+      +'<small>Warfarin + Amiodarone<br><b style="color:var(--danger)">Severity: MAJOR</b></small></div>'
+      +'<div class="srccard" style="cursor:default;border-color:var(--warn)"><b>RxInteract</b>'
+      +'<small>Warfarin + Amiodarone<br><b style="color:var(--warn)">Severity: MODERATE</b></small></div></div>')
+      +card('<b>What should you do?</b> <span class="muted" style="font-size:12px">(5 marks)</span>'
+        +optHTML(['Ignore the interaction — if the sources disagree it cannot be important',
+                  'Automatically trust whichever database says "Major"',
+                  'Evaluate the underlying evidence, this patient’s factors and authoritative guidance before making a recommendation',
+                  'Dispense anyway, because drug databases are unreliable'],'cf'),'Confirm');
+    wireOpts();
+    $('goBtn').addEventListener('click',function(){
+      if(sel.cf==null) return need('Choose an answer.');
+      markOpts('cf',2);
+      var ok=(sel.cf===2),lines=[];
+      lines.push(ok?'Correct.':'<b>Incorrect.</b>');
+      lines.push('Severity gradings are <b>editorial judgements</b>, not measurements — different databases weigh the same evidence differently, and neither is authoritative on its own. '
+        +'Defaulting to the worst grading produces over-alerting and alert fatigue; ignoring the disagreement produces harm. '
+        +'The professional response is to <b>read the underlying evidence and apply it to this patient</b>: here he is 68, already supratherapeutic at INR 3.8, and amiodarone’s effect persists for weeks — which makes it important in <em>this</em> patient whatever grading the software prints.');
+      if(!ok) wrong('Database conflict','Conflicting severity grades',
+        strip(['Ignore it','Trust "Major"','','Dispense anyway'][sel.cf]||'—'),'Evaluate evidence and patient factors');
+      award(st,ok?5:0,lines);
+    });
+  };
+
+  /* ---------- 12 AI assistant ---------- */
+  VIEW.ai=function(st){
+    $('stArea').innerHTML=head(st,'<div class="aihdr">ALIZON Clinical Assistant</div>'
+      +'<p class="muted" style="margin-top:8px">“I can help summarise the drug information you have retrieved.”</p>'
+      +'<div class="scene" style="margin-top:10px"><div class="dt">AI-generated summary · 5 statements</div>'
+      +'<pre>'+AIC.map(function(c,i){return (i+1)+'. '+strip(c.t);}).join('\n\n')+'</pre></div>')
+      +card('<b>Do you accept the AI recommendation?</b> <span class="muted" style="font-size:12px">(4 marks)</span>'
+        +optHTML(['ACCEPT — use the summary as written',
+                  'VERIFY — check each statement against the clinical reference before using it',
+                  'REJECT — discard it entirely and start again'],'ai0')
+        +'<div id="verifyHost"></div>','Confirm');
+    wireOpts();
+    var shown=false;
+    [].forEach.call(document.querySelectorAll('#qCard .opt[data-g="ai0"]'),function(b){
+      b.addEventListener('click',function(){
+        if(+b.getAttribute('data-k')!==1 || shown) return;
+        shown=true;
+        $('verifyHost').innerHTML='<h3>Verify each statement against the reference</h3>'
+          +AIC.map(function(c,i){
+            return '<div class="aiclaim" data-k="'+i+'"><div class="ct">'+(i+1)+'. '+c.t+'</div>'
+              +'<div class="rc" style="display:flex;gap:7px;margin-top:9px">'
+              +'<button type="button" data-g="v'+i+'" data-k="0">Verified — accurate</button>'
+              +'<button type="button" data-g="v'+i+'" data-k="1">Flag — inaccurate or unsafe</button></div></div>';
+          }).join('');
+        [].forEach.call(document.querySelectorAll('#verifyHost .rc button'),function(x){
+          x.addEventListener('click',function(){
+            var g=x.getAttribute('data-g'); sel[g]=+x.getAttribute('data-k');
+            [].forEach.call(document.querySelectorAll('#verifyHost button[data-g="'+g+'"]'),function(y){y.classList.remove('on');});
+            x.classList.add('on');
+          });
+        });
+      });
+    });
+    $('goBtn').addEventListener('click',function(){
+      if(sel.ai0==null) return need('Choose accept, verify or reject.');
+      var g=0,lines=[];
+      markOpts('ai0',1);
+      if(sel.ai0===1){ g+=4; }
+      else if(sel.ai0===2){ g+=1;
+        lines.push('<b>Rejecting outright wastes a useful tool.</b> Three of the five statements were accurate and clinically helpful. The professional position is neither dependence nor refusal — it is <b>verification</b>.');
+        wrong('AI verification','Response to AI summary','REJECT','VERIFY'); }
+      else{
+        lines.push('<b>Accepting the summary unverified is the failure this station exists to prevent.</b> Two of the five statements were wrong — one told you an INR of 3.8 was in range, and one recommended <b>amoxicillin to a patient with a documented penicillin allergy</b>. Acting on either could have harmed this patient.');
+        wrong('AI verification','Response to AI summary','ACCEPT','VERIFY'); }
+      if(sel.ai0===1){
+        if(AIC.some(function(c,i){return sel['v'+i]==null;})) return need('Verify all five statements before submitting.');
+        AIC.forEach(function(c,i){
+          var flagged=(sel['v'+i]===1), correct=(flagged===!c.ok);
+          var el=document.querySelector('#verifyHost .aiclaim[data-k="'+i+'"]');
+          el.classList.add(correct?'right':'wrong');
+          el.insertAdjacentHTML('beforeend','<div class="why" style="font-size:12px;line-height:1.6;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)">'+c.why+'</div>');
+          if(correct) g+=1.2;
+          else{ lines.push('<b>Statement '+(i+1)+':</b> '+c.why);
+            wrong('AI verification','Statement '+(i+1),(flagged?'flagged':'accepted'),(c.ok?'accurate':'inaccurate')); }
+        });
+        if(!lines.length) lines.push('Both AI errors caught — the false reassurance about the INR, and the penicillin recommendation to a penicillin-allergic patient. This is exactly the standard expected when AI output enters a clinical decision.');
+      }
+      S.picks.aiVerified=(sel.ai0===1);
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 13 review board ---------- */
+  VIEW.board=function(st){
+    $('stArea').innerHTML=head(st,'<h2>Medication Review Board</h2>'
+      +'<p class="muted">Drag each medication into the correct column — or tap a medication, then tap a column.</p>'
+      +'<div class="medcards" id="bBank">'+BOARD.map(function(b,k){
+        return '<button type="button" class="medcard" draggable="true" data-k="'+k+'">'+b.d+'</button>';}).join('')+'</div>'
+      +'<div class="board">'+BUCKETS.map(function(t,i){
+        return '<div class="bucket b'+i+'" data-b="'+i+'"><h4>'+t+'</h4><div class="drop" data-drop="'+i+'"></div></div>';}).join('')+'</div>')
+      +card('<p class="muted">All five medications must be placed.</p>','Submit review board');
+    var placed={}, held=null;
+    function move(k,b){
+      placed[k]=b; held=null;
+      var btn=document.querySelector('[data-k="'+k+'"].medcard');
+      btn.classList.remove('pick');
+      document.querySelector('[data-drop="'+b+'"]').appendChild(btn);
+    }
+    [].forEach.call(document.querySelectorAll('#bBank .medcard'),function(b){
+      b.addEventListener('click',function(){
+        [].forEach.call(document.querySelectorAll('.medcard'),function(x){x.classList.remove('pick');});
+        held=+b.getAttribute('data-k'); b.classList.add('pick');
+      });
+      b.addEventListener('dragstart',function(e){ e.dataTransfer.setData('text/plain',b.getAttribute('data-k')); });
+    });
+    [].forEach.call(document.querySelectorAll('.bucket'),function(z){
+      var i=+z.getAttribute('data-b');
+      z.addEventListener('click',function(){ if(held!=null) move(held,i); });
+      z.addEventListener('dragover',function(e){ e.preventDefault(); z.classList.add('over'); });
+      z.addEventListener('dragleave',function(){ z.classList.remove('over'); });
+      z.addEventListener('drop',function(e){ e.preventDefault(); z.classList.remove('over');
+        var k=e.dataTransfer.getData('text/plain'); if(k!=='') move(+k,i); });
+    });
+    $('goBtn').addEventListener('click',function(){
+      if(Object.keys(placed).length<BOARD.length) return need('Place all five medications first.');
+      var g=0,lines=[];
+      BOARD.forEach(function(b,k){
+        var el=document.querySelector('[data-k="'+k+'"].medcard');
+        if(placed[k]===b.b){ g+=1; el.classList.add('ok2'); }
+        else{ el.classList.add('no2');
+          lines.push('<b>'+strip(b.d)+'</b> → you placed it in <b>'+BUCKETS[placed[k]]+'</b>; it belongs in <b>'+BUCKETS[b.b]+'</b>.<br>'+b.why);
+          wrong('Review board',strip(b.d),BUCKETS[placed[k]],BUCKETS[b.b]); }
+      });
+      if(!lines.length) lines.push('Every medication correctly triaged — including recognising that amiodarone and atorvastatin need monitoring rather than a prescriber call, and that paracetamol simply continues.');
+      S.picks.warfarinEscalated=(placed[0]===2);
+      S.picks.abxEscalated=(placed[2]===2);
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 14 physician ---------- */
+  VIEW.doctor=function(st){
+    $('stArea').innerHTML=head(st,'<h2>Simulated physician chat</h2>'
+      +'<div class="chat"><div class="bub pt"><div class="who">Dr Thomas</div>“Can I proceed with this prescription?”</div></div>'
+      +'<p class="muted" style="margin-top:10px">Construct your intervention. Each component is worth 1 mark.</p>')
+      +card(IVB.map(function(v,i){
+        return '<div class="ivrow"><div class="lb">'+v.lb+'</div>'+optHTML(v.o,'iv'+i)
+          +(i<IVB.length-1?'<div class="arrow">↓</div>':'')+'</div>';}).join(''),'Send intervention to Dr Thomas');
+    wireOpts();
+    $('goBtn').addEventListener('click',function(){
+      if(IVB.some(function(v,i){return sel['iv'+i]==null;})) return need('Complete all five components of the intervention.');
+      var g=0,lines=[];
+      IVB.forEach(function(v,i){
+        markOpts('iv'+i,v.c);
+        if(sel['iv'+i]===v.c) g+=1;
+        else{ lines.push('<b>'+v.lb+':</b> '+v.why);
+          wrong('Intervention',v.lb,strip(v.o[sel['iv'+i]]).slice(0,54),strip(v.o[v.c]).slice(0,54)); }
+      });
+      if(!lines.length) lines.push('A complete, structured intervention: problem → evidence → clinical significance → recommendation → monitoring. This is the form a physician can act on immediately.');
+      S.picks.intervention=g;
+      award(st,g,lines);
+    });
+  };
+
+  /* ---------- 15 documentation ---------- */
+  var DOCF=[
+   {k:'find',l:'Findings',w:1.5,min:20,ph:'What did you find, with the values…',
+    kw:['inr','3.8','bruis','clarithromycin','warfarin','interaction'],
+    model:'INR 3.8 (target 2.0–3.0) with new bruising, two days after clarithromycin was added to established warfarin. Major warfarin–clarithromycin interaction; additional major interactions clarithromycin–atorvastatin and amiodarone–clarithromycin (QT). Platelets normal, Hb 11.8. Penicillin allergy documented.'},
+   {k:'act',l:'Action taken / recommended',w:1.5,min:20,ph:'What you recommended and to whom…',
+    kw:['doxycycline','withhold','hold','warfarin','prescriber','statin','atorvastatin','switch'],
+    model:'Contacted Dr Thomas. Recommended: withhold warfarin pending INR recheck; switch clarithromycin to doxycycline 100 mg (penicillin allergy precludes amoxicillin and co-amoxiclav); withhold atorvastatin until the antibiotic is changed. Paracetamol PRN continued.'},
+   {k:'mon',l:'Monitoring plan',w:1,min:15,kw:['inr','day','week','recheck','bruis','muscle','monitor'],
+    ph:'What will be measured and when…',
+    model:'Recheck INR in 3–5 days and again at the end of the antibiotic course. Observe for new bruising or overt bleeding. Repeat FBC if bleeding continues. Counsel to report muscle pain when the statin restarts.'},
+   {k:'src',l:'Sources consulted',w:1,min:8,kw:['mediref','rxinteract','formulary','monograph'],
+    ph:'Which references you used…',
+    model:'MediRef monographs WAR-004, CLA-007, ATO-002, AMI-011; RxInteract IDs 40118, 22740, 31905, 22988; CityCare Hospital Digital Formulary — antibacterials.'}
+  ];
+  VIEW.docs=function(st){
+    $('stArea').innerHTML=head(st,'<h2>Clinical pharmacy intervention note</h2>'
+      +'<p class="muted">Document the intervention. Each field is marked for adequate detail and for the clinically essential content.</p>')
+      +card(DOCF.map(function(d){
+        return '<div style="margin-top:14px"><label class="f">'+d.l+' &nbsp;·&nbsp; '+d.w+' mark'+(d.w===1?'':'s')+' &nbsp;·&nbsp; min '+d.min+' words</label>'
+          +'<textarea data-d="'+d.k+'" placeholder="'+esc(d.ph)+'"></textarea>'
+          +'<div class="note" data-wc="'+d.k+'">0 words</div></div>';}).join(''),'File the note');
+    [].forEach.call(document.querySelectorAll('#qCard textarea[data-d]'),function(t){
+      t.addEventListener('input',function(){
+        var k=t.getAttribute('data-d'), w=words(t.value);
+        var d=DOCF.filter(function(x){return x.k===k;})[0];
+        var n=document.querySelector('[data-wc="'+k+'"]');
+        n.textContent=w+' word'+(w===1?'':'s')+(w<d.min?(' · '+(d.min-w)+' more for full length credit'):' · length met');
+        n.style.color=(w>=d.min?'var(--success)':'var(--muted)');
+      });
+    });
+    $('goBtn').addEventListener('click',function(){
+      var empty=DOCF.filter(function(d){ return words(document.querySelector('textarea[data-d="'+d.k+'"]').value)<4; });
+      if(empty.length) return need('All four fields must be completed — '+empty.length+' still empty.');
+      var g=0,lines=[];
+      DOCF.forEach(function(d){
+        var v=String(document.querySelector('textarea[data-d="'+d.k+'"]').value||''), lv=v.toLowerCase();
+        S.picks['doc_'+d.k]=v;
+        var lenOK=words(v)>=d.min;
+        var hits=d.kw.filter(function(k){return lv.indexOf(k)>=0;}).length;
+        var kwOK=hits>=2?1:(hits===1?0.5:0);
+        var m=Math.round((d.w*0.4*(lenOK?1:0)+d.w*0.6*kwOK)*100)/100;
+        g+=m;
+        if(m<d.w) lines.push('<b>'+d.l+' — '+m+' of '+d.w+'.</b> '+(!lenOK?'Below the '+d.min+'-word minimum. ':'')
+          +(kwOK<1?'Missing the essential clinical content. ':'')+'<br><b>Model:</b> '+esc(d.model));
+      });
+      award(st,Math.round(g*10)/10,lines);
+    });
+  };
+  function words(s){ return String(s||'').trim().split(/\s+/).filter(Boolean).length; }
+
+  /* ---------- 16 advance 24h ---------- */
+  VIEW.advance=function(st){
+    var good=(S.picks.abxOK && S.picks.warfarinEscalated && (S.picks.intervention||0)>=4);
+    S.outcome=good?'stable':'deteriorating';
+    $('stArea').innerHTML=head(st,'<h2>Advance the patient 24 hours</h2>'
+      +'<p class="muted">Your decisions have been implemented. The case now moves forward.</p>')
+      +'<div class="card" id="qCard"><button class="btn" id="advBtn">⏩ ADVANCE 24 HOURS</button><div id="outHost"></div><div id="fbk"></div></div>';
+    $('advBtn').addEventListener('click',function(){
+      $('advBtn').disabled=true;
+      $('outHost').innerHTML='<p class="note">Advancing…</p>';
+      setTimeout(function(){
+        if(good){
+          $('outHost').innerHTML='<div class="outcome good"><div class="oh">24 hours later</div>'
+            +'<div class="ov">Patient status: Stable</div>'
+            +'<ul><li>No new bruising. Existing bruises fading.</li><li>INR fallen to 2.9 and within target.</li>'
+            +'<li>Doxycycline tolerated; respiratory symptoms improving.</li><li>No muscle pain reported.</li></ul>'
+            +'<p class="note" style="margin-top:10px">Medication-related risk identified and escalated appropriately.</p></div>'
+            +'<div class="row"><button class="btn gold" id="finBtn">See final result ▸</button></div>';
+        } else {
+          var reasons=[];
+          if(!S.picks.abxOK) reasons.push('the interacting or contraindicated antibiotic was left in place');
+          if(!S.picks.warfarinEscalated) reasons.push('the supratherapeutic INR was not escalated to the prescriber');
+          if((S.picks.intervention||0)<4) reasons.push('the intervention to the physician was incomplete');
+          $('outHost').innerHTML='<div class="outcome bad"><div class="oh">24 hours later</div>'
+            +'<div class="ov">Patient status: Deteriorating</div>'
+            +'<ul><li>Bruising increased and now involves both forearms.</li><li>INR risen to 5.2.</li>'
+            +'<li>Haemoglobin fallen to 10.6 g/dL.</li><li>Anticoagulation reversal is now being considered.</li></ul>'
+            +'<p class="note" style="margin-top:10px">Contributing to this outcome: '+esc(reasons.join('; '))+'.</p></div>'
+            +'<div class="fbk no">Reassess your medication decisions. You may rewind the case and correct the decisions that led here — '
+            +'the formulary, review-board and intervention steps will be re-scored from your corrected answers, and the rewind is noted on your report.</div>'
+            +'<div class="row"><button class="btn" id="rewBtn">⏪ REWIND CASE</button>'
+            +'<button class="btn ghost" id="finBtn">Accept this outcome and finish ▸</button></div>';
+          var rb=$('rewBtn'); if(rb) rb.addEventListener('click',function(){
+            S.rewound=true;
+            S.si=STEPS.map(function(x){return x.k;}).indexOf('formulary');
+            ['formulary','board','doctor'].forEach(function(k){ delete S.marks[k]; });
+            render(); window.scrollTo({top:0,behavior:'smooth'});
+          });
+        }
+        var fb=$('finBtn'); if(fb) fb.addEventListener('click',finish);
+      },900);
+    });
+  };
+
+  /* ================= FINISH ================= */
+  function finish(){
+    if(S.ended) return;
+    S.ended=true; clearInterval(tick);
+    var name=S.name||'Candidate', reg=S.reg||'';
+    STEPS.forEach(function(st){ if(st.m&&S.marks[st.k]==null) S.marks[st.k]=0; });
+    var total=got();
+    var prof={}; SKILLS.forEach(function(s){ prof[s[0]]=skillScore(s[0]); });
+    var pass=(total>=PASS);
+    S.result={name:name,reg:reg,total:total,pct:Math.round(total/TOTAL_MARKS*100),pass:pass,prof:prof,
+      wrong:S.wrong,outcome:S.outcome,rewound:S.rewound,timeUsed:S.secs,marks:JSON.parse(JSON.stringify(S.marks)),
+      abx:S.picks.abx||'—',asked:S.log.asked.length,labs:S.log.labs||[],pairs:PAIRS.length};
+    $('scRes').textContent=(S.outcome==='stable'?'STABLE':'DETERIORATING');
+    paintChips();
+    $('sysHost').innerHTML=''; $('stArea').innerHTML='';
+    makeQR(); renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+  function mmss(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+  var qrData='';
+  function makeQR(){
+    try{
+      var url='https://www.alizon.in/alizon-verify.html?reg='+encodeURIComponent(S.result.reg||'')+'&p=M1U3-P3';
+      $('qrHolder').innerHTML='';
+      if(window.QRCode){
+        new QRCode($('qrHolder'),{text:url,width:96,height:96,correctLevel:QRCode.CorrectLevel.M});
+        var cv=$('qrHolder').querySelector('canvas');
+        qrData=cv?cv.toDataURL('image/png'):(($('qrHolder').querySelector('img')||{}).src||'');
+      }
+    }catch(e){ qrData=''; }
+  }
+  function buildAuto(){
+    if(!S||!S.result) return null;
+    var r=S.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">RxDetect — Digital Drug Information &amp; Formulary Investigation</h3>';
+    h+='<p style="margin:2px 0"><b>Student:</b> '+esc(r.name)+(r.reg?' &nbsp;·&nbsp; <b>Register no.:</b> '+esc(r.reg):'')+'</p>';
+    h+='<p style="margin:2px 0"><b>Date:</b> '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})
+      +' &nbsp;·&nbsp; <b>Case ID:</b> '+CASE.id+' &nbsp;·&nbsp; <b>Case time:</b> '+mmss(r.timeUsed)+'</p>';
+    h+='<p style="margin:6px 0"><b>Clinical score:</b> '+r.total+' / 100 &nbsp;·&nbsp; <b>24-hour outcome:</b> '
+      +(r.outcome==='stable'?'STABLE':'DETERIORATING')+(r.rewound?'  (case rewound; formulary, review-board and intervention steps re-scored)':'')+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:8px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Skill</th><th>Score</th><th>Weight</th></tr>'
+      +SKILLS.map(function(s){return '<tr><td>'+s[1]+'</td><td align="center">'+r.prof[s[0]]+'%</td><td align="center">'+s[2]+'</td></tr>';}).join('')
+      +'<tr style="font-weight:700"><td>Overall clinical pharmacy performance</td><td align="center">'+r.pct+'%</td><td align="center">100</td></tr></table>';
+    h+='<p style="margin:9px 0 2px"><b>Case activity</b></p><ul style="margin:0 0 0 18px;font-size:12px;line-height:1.6">'
+      +'<li>Databases consulted: MediRef, RxInteract, Hospital Digital Formulary</li>'
+      +'<li>Interaction pairs analysed: '+r.pairs+'</li>'
+      +'<li>Investigations requested: '+esc((r.labs||[]).join(', ')||'none')+'</li>'
+      +'<li>Patient interview questions asked: '+r.asked+'</li>'
+      +'<li>Formulary decision: '+esc(r.abx)+'</li></ul>';
+    if(S.picks.doc_find){
+      h+='<p style="margin:9px 0 2px"><b>Intervention note (student)</b></p>';
+      DOCF.forEach(function(d){ if(S.picks['doc_'+d.k]) h+='<p style="margin:3px 0;font-size:12px"><b>'+d.l+':</b> '+esc(S.picks['doc_'+d.k])+'</p>'; });
+    }
+    h+='<p style="margin:9px 0 2px"><b>Incorrect decisions ('+r.wrong.length+')</b></p>';
+    h+=r.wrong.length?('<ol style="margin:0 0 0 18px;font-size:12px;line-height:1.6">'+r.wrong.map(function(w){
+        return '<li><b>'+esc(w.st)+' — '+esc(w.q)+'</b><br>You: '+esc(w.chose)+' · Correct: '+esc(w.right)+'</li>';}).join('')+'</ol>')
+      :'<p style="margin:0;font-size:12px">None — every decision in the case was correct.</p>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')
+      +' — '+r.total+' / 100 · patient '+(r.outcome==='stable'?'stable at 24 hours':'deteriorating at 24 hours')+'</p>';
+    h+='<p style="margin-top:8px;font-size:11px;color:#555"><b>Faculty remarks:</b> ______________________________________________</p>';
+    if(qrData) h+='<div style="margin-top:10px"><img src="'+qrData+'" width="96" height="96" alt="Verification QR"><div style="font-size:10px;color:#666">Scan to verify · '+esc(r.reg||'—')+' · M1-U3-PRACTICAL-3</div></div>';
+    return h;
+  }
+  function renderReport(){
+    var r=S.result;
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">Clinical score / 100</div></div>'
+      +'<div class="repbox"><div class="rv" style="color:'+(r.outcome==='stable'?'var(--success)':'var(--danger)')+'">'
+        +(r.outcome==='stable'?'Stable':'Deteriorating')+'</div><div class="rl">Patient at 24 h</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.wrong.length+'</div><div class="rl">Incorrect decisions</div></div>'
+      +'<div class="repbox"><div class="rv">'+mmss(r.timeUsed)+'</div><div class="rl">Case time</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+r.total+' / 100</div>';
+    if(r.rewound) html+='<div class="note" style="margin:-4px 0 10px">⏪ Case was rewound after a poor 24-hour outcome. The formulary, review-board and intervention steps were re-scored from the corrected decisions.</div>';
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">Clinical pharmacy performance</h3>';
+    html+='<div class="aib">'+SKILLS.map(function(s){
+      var v=r.prof[s[0]], cls=v>=85?'good':(v<60?'bad':'');
+      return '<div class="r"><span>'+s[1]+' <span class="muted" style="font-weight:400">('+s[2]+'%)</span></span><span>'+v+'%</span></div>'
+        +'<div class="bar"><i class="'+cls+'" style="width:'+v+'%"></i></div>';
+    }).join('')
+      +'<div class="r" style="font-weight:800"><span>Overall</span><span>'+r.pct+'%</span></div>'
+      +'<div class="bar"><i class="'+(r.pct>=85?'good':(r.pct<60?'bad':''))+'" style="width:'+r.pct+'%"></i></div></div>';
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">Step record</h3>';
+    html+='<div class="tw"><table><thead><tr><th>Step</th><th>Marks</th></tr></thead><tbody>'
+      +STEPS.filter(function(s){return s.m>0;}).map(function(s){
+        var v=r.marks[s.k]||0, col=(v>=s.m?'var(--success)':(v>=s.m/2?'var(--warn)':'var(--danger)'));
+        return '<tr><td>'+esc(s.t)+'</td><td style="color:'+col+';font-weight:700">'+v+' / '+s.m+'</td></tr>';}).join('')
+      +'</tbody></table></div>';
+    if(r.wrong.length){
+      html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--danger);margin:16px 0 6px">Incorrect decisions</h3>';
+      html+='<div class="tw"><table><thead><tr><th>Where</th><th>You chose</th><th>Correct</th></tr></thead><tbody>'
+        +r.wrong.map(function(w){return '<tr><td><b>'+esc(w.st)+'</b><div class="note">'+esc(w.q)+'</div></td><td>'+esc(w.chose)+'</td><td>'+esc(w.right)+'</td></tr>';}).join('')
+        +'</tbody></table></div>';
+    }
+    html+='<div class="row no-print" style="margin-top:16px"><button class="btn gold" onclick="window.print()">Generate practical report</button>'
+      +'<button class="btn ghost" id="retryBtn">Take a new case</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){
+      $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+      $('scRes').textContent='—'; $('scMarks').textContent='0 / 100'; $('scStage').textContent='—'; $('scTime').textContent='00:00';
+      init(); switchTab('station'); VIEW.accept(); window.scrollTo(0,0); });
+  }
+  var OPTS={module:'Module 1 · Unit 3 — Drug Databases, Clinical References & Digital Formularies',
+            title:'RxDetect — Digital Drug Information & Formulary Investigation',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Clinical score &amp; pharmacist recommendation', placeholder:'e.g. 91/100 — clarithromycin switched to doxycycline, warfarin withheld pending INR; patient stable at 24 h'},
+      minWords:400,
+      attachments:[{label:'1. Case Report / Simulation Printout (PDF)'},
+                   {label:'2. Drug Information Worksheet (PDF)'},
+                   {label:'3. Additional Supporting File (PDF)'}],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return S&&S.result?S.result.pct:null; },
+      autoResultText:function(){ return S&&S.result?((S.result.pass?'PASS':'FAIL')+' '+S.result.total+'/100'):''; }
+    });
+  }
+  function switchTab(p){ [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);});
+    [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  init(); VIEW.accept();
+})();
+</script>
+</body>
+</html>
