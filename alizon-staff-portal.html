@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Alizon OS">
-<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})})}</script>
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
 <meta charset="UTF-8">
@@ -750,6 +750,6 @@ function renderChat(){
 <script src="alizon-motion.js"></script>
 <script src="alizon-back.js"></script>
 <script>window.ALIZON_OAK={root:'body',mount:'#app',title:'Staff Overview'}</script>
-<script src="alizon-oak.js?v=1"></script>
+<script src="alizon-oak.js?v=3"></script>
 </body>
 </html>

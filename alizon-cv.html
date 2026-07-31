@@ -6,7 +6,7 @@
 <meta name="robots" content="index,follow">
 <title>ATS CV Builder — ALIZON OS | Alizon School of Medical &amp; Digital Intelligence</title>
 <meta name="description" content="Free AI-ready ATS CV builder for Alizon students — career-category modules, unlimited sections, 6 templates, live ATS score, PDF/DOCX export.">
-<link rel="stylesheet" href="alizon-clone.css?v=2">
+<link rel="stylesheet" href="alizon-clone.css?v=7">
 <script src="firebase-sync.js" defer></script>
 <style>
   main{padding:0 0 70px}
@@ -58,8 +58,23 @@
   #paper.t-academic{font-family:Georgia,'Times New Roman',serif} #paper.t-academic h2{border-bottom:1px solid #111}
   #paper.t-healthcare h1{color:#0f6e56} #paper.t-healthcare h2{color:#0f6e56;border-bottom-color:#0f6e56}
   #paper.t-technical{font-family:'Source Sans Pro',Arial} #paper.t-technical h2{border-left:4px solid var(--crimson);border-bottom:none;padding:2px 0 2px 8px}
+  /* ---- more themes ---- */
+  #paper.t-navy h1{color:#12305e} #paper.t-navy h2{color:#12305e;border-bottom-color:#12305e}
+  #paper.t-teal h1{color:#0f6e56} #paper.t-teal h2{color:#0f6e56;border-bottom-color:#0f6e56}
+  #paper.t-slate h1{color:#222} #paper.t-slate h2{color:#333;border-bottom-color:#999;letter-spacing:.06em}
+  #paper.t-accent h2{border-bottom:none;border-left:5px solid var(--crimson);padding:1px 0 1px 10px;background:#faf0f0;color:var(--crimson)}
+  #paper.t-elegant{font-family:Georgia,serif} #paper.t-elegant h1{font-weight:400;letter-spacing:.04em} #paper.t-elegant h2{border-bottom:1px solid #bbb;letter-spacing:.16em;font-weight:400;color:#333}
+  #paper.t-caps h1{text-transform:uppercase;letter-spacing:.04em} #paper.t-caps h2{background:#111;color:#fff;border:none;padding:5px 10px;letter-spacing:.18em}
+  #paper.t-compact{font-size:11.5px;line-height:1.4} #paper.t-compact h1{font-size:21px} #paper.t-compact h2{font-size:11px;margin:11px 0 5px;border-bottom-width:1px}
+  #paper.t-sidebar h1{color:var(--crimson)} #paper.t-sidebar h2{border-bottom:none;border-left:3px solid #ddd;padding-left:9px;color:#444} #paper.t-sidebar{border-left:6px solid var(--crimson)!important;padding-left:34px}
   @media(max-width:980px){.cvb{grid-template-columns:1fr}.rail{position:static}}
-  @media print{ body *{visibility:hidden!important} #paper,#paper *{visibility:visible!important} #paper{position:absolute;left:0;top:0;width:100%;border:none;box-shadow:none;padding:0} }
+  @page{ margin:0; size:A4; }
+  @media print{
+    html,body{margin:0!important;padding:0!important;background:#fff!important}
+    body *{visibility:hidden!important}
+    #paper,#paper *{visibility:visible!important}
+    #paper{position:absolute;left:0;top:0;width:100%;min-height:100vh;border:none;box-shadow:none;border-radius:0;padding:14mm 15mm;box-sizing:border-box}
+  }
 </style>
 </head>
 <body>
@@ -78,11 +93,11 @@
   </nav></div>
 </header>
 
-<section class="hero short" style="padding:0;min-height:34vh">
-  <img class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Facademics%2Fab1d26ed-88dd-4dd4-8a0f-7da0c010359e-large.webp" alt="">
+<section class="hero short nobar" style="padding:0">
+  <img id="heroImgcv" class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Facademics%2Fab1d26ed-88dd-4dd4-8a0f-7da0c010359e-large.webp" alt="">
   <div class="in"><span class="eyebrow" style="color:#ffd7d9">ALIZON OS · Career</span>
-    <h1 style="margin-top:10px;font-size:clamp(2rem,4vw,3.2rem)">ATS CV Builder</h1>
-    <p class="sub" style="font-size:1.1rem">Pick your field, fill the modules, choose a template and export an ATS-ready CV — free for Alizon students.</p>
+    <h1 id="heroH1cv" style="margin-top:10px;font-size:clamp(2rem,4vw,3.2rem)">ATS CV Builder</h1>
+    <p id="heroSubcv" class="sub" style="font-size:1.1rem">Pick your field, fill the modules, choose a template and export an ATS-ready CV — free for Alizon students.</p>
   </div>
 </section>
 
@@ -156,8 +171,11 @@
   <div class="rail">
     <div class="toolbar">
       <select class="f mini" id="tpl" style="width:auto;padding:8px 12px">
-        <option value="t-classic">Classic</option><option value="t-modern">Modern</option><option value="t-executive">Executive</option>
-        <option value="t-academic">Academic</option><option value="t-healthcare">Healthcare</option><option value="t-technical">Technical</option>
+        <option value="t-classic">Classic</option><option value="t-modern">Modern (cardinal)</option><option value="t-executive">Executive</option>
+        <option value="t-academic">Academic</option><option value="t-healthcare">Healthcare (teal)</option><option value="t-technical">Technical</option>
+        <option value="t-navy">Corporate Navy</option><option value="t-teal">Teal</option><option value="t-slate">Slate (minimal)</option>
+        <option value="t-accent">Accent Bar</option><option value="t-elegant">Elegant Serif</option><option value="t-caps">Bold Caps</option>
+        <option value="t-compact">Compact</option><option value="t-sidebar">Sidebar Accent</option>
       </select>
       <button class="mini pri" onclick="exportPDF()">⬇ PDF</button>
       <button class="mini" onclick="exportDOCX()">⬇ DOCX</button>
@@ -345,7 +363,7 @@ function setScore(n){$('scoreN').textContent=n+'%';$('ring').style.setProperty('
 function exportPDF(){render();window.print();}
 function exportDOCX(){
   render();
-  var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt}h1{font-size:20pt}h2{font-size:12pt;border-bottom:1px solid #000;text-transform:uppercase}</style></head><body>'+$('paper').innerHTML.replace(/<img[^>]*class="qr"[^>]*>/,'')+'</body></html>';
+  var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt}h1{font-size:20pt}h2{font-size:12pt;border-bottom:1px solid #000;text-transform:uppercase}</style></head><body>'+$('paper').innerHTML.replace(/<img[^>]*class="qr"[^>]*>/,'')+'</bo'+'dy></ht'+'ml>';
   var blob=new Blob(['﻿'+html],{type:'application/msword'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(($('p_name').value||'cv').replace(/\s+/g,'_'))+'.doc';a.click();
 }
@@ -370,5 +388,6 @@ function loadVersion(i){if(i==='')return;var v=JSON.parse(localStorage.getItem('
 /* ---------------- boot ---------------- */
 (function(){var saved=localStorage.getItem('alizonCVv2');if(saved){try{restore(JSON.parse(saved));}catch(e){render();}}else{render();}fillVersions();})();
 </script>
+<script src="alizon-cms.js?v=7" defer></script>
 </body>
 </html>

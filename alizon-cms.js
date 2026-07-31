@@ -32,65 +32,19 @@
      ---------------------------------------------------------- */
   var fields = [
     /* ---- Hero ---- */
-    { key: 'hero-eyebrow',   label: 'Hero — eyebrow line',        sel: '.hero .eyebrow',          idx: 0, area: 'Hero' },
-    { key: 'hero-title',     label: 'Hero — main title',          sel: '.hero h1',                idx: 0, area: 'Hero' },
-    { key: 'hero-tagline',   label: 'Hero — tagline',             sel: '.hero .tag',              idx: 0, area: 'Hero' },
-    { key: 'hero-lead',      label: 'Hero — lead paragraph',      sel: '.hero .lead',             idx: 0, area: 'Hero', multiline: true },
-    { key: 'hero-cta-label', label: 'Hero — primary button text', sel: '.hero .cta .btn.primary', idx: 0, area: 'Hero' },
-    { key: 'hero-notice',    label: 'Hero — announcement line',   sel: '.hero .price',            idx: 0, area: 'Hero' },
 
     /* ---- Stat strip (4 numbers + 4 labels) ---- */
-    { key: 'stat-1-num',   label: 'Stat 1 — number', sel: '.strip .in .n', idx: 0, area: 'Stats' },
-    { key: 'stat-1-label', label: 'Stat 1 — label',  sel: '.strip .in .k', idx: 0, area: 'Stats' },
-    { key: 'stat-2-num',   label: 'Stat 2 — number', sel: '.strip .in .n', idx: 1, area: 'Stats' },
-    { key: 'stat-2-label', label: 'Stat 2 — label',  sel: '.strip .in .k', idx: 1, area: 'Stats' },
-    { key: 'stat-3-num',   label: 'Stat 3 — number', sel: '.strip .in .n', idx: 2, area: 'Stats' },
-    { key: 'stat-3-label', label: 'Stat 3 — label',  sel: '.strip .in .k', idx: 2, area: 'Stats' },
-    { key: 'stat-4-num',   label: 'Stat 4 — number', sel: '.strip .in .n', idx: 3, area: 'Stats' },
-    { key: 'stat-4-label', label: 'Stat 4 — label',  sel: '.strip .in .k', idx: 3, area: 'Stats' },
 
     /* ---- Programmes section ---- */
-    { key: 'prog-eyebrow',        label: 'Programmes — eyebrow',                sel: '#programmes .ey',         idx: 0, area: 'Programmes' },
-    { key: 'prog-heading',        label: 'Programmes — heading (plain part)',   sel: '#programmes > h2',        idx: 0, area: 'Programmes', part: 'text' },
-    { key: 'prog-heading-accent', label: 'Programmes — heading (accent part)',  sel: '#programmes > h2 .accent',idx: 0, area: 'Programmes' },
-    { key: 'prog-sub',            label: 'Programmes — sub paragraph',          sel: '#programmes .sub',        idx: 0, area: 'Programmes', multiline: true },
 
-    { key: 'prog-card-1-title', label: 'Card 1 (Paramedical) — title',       sel: '#programmes .pc h3',    idx: 0, area: 'Programmes' },
-    { key: 'prog-card-1-desc',  label: 'Card 1 (Paramedical) — description', sel: '#programmes .pc p',     idx: 0, area: 'Programmes', multiline: true },
-    { key: 'prog-card-1-meta',  label: 'Card 1 (Paramedical) — meta tags',   sel: '#programmes .pc .meta', idx: 0, area: 'Programmes' },
-    { key: 'prog-card-2-title', label: 'Card 2 (Pharmacy) — title',          sel: '#programmes .pc h3',    idx: 1, area: 'Programmes' },
-    { key: 'prog-card-2-desc',  label: 'Card 2 (Pharmacy) — description',    sel: '#programmes .pc p',     idx: 1, area: 'Programmes', multiline: true },
-    { key: 'prog-card-2-meta',  label: 'Card 2 (Pharmacy) — meta tags',      sel: '#programmes .pc .meta', idx: 1, area: 'Programmes' },
-    { key: 'prog-card-3-title', label: 'Card 3 (Medical) — title',           sel: '#programmes .pc h3',    idx: 2, area: 'Programmes' },
-    { key: 'prog-card-3-desc',  label: 'Card 3 (Medical) — description',     sel: '#programmes .pc p',     idx: 2, area: 'Programmes', multiline: true },
-    { key: 'prog-card-3-meta',  label: 'Card 3 (Medical) — meta tags',       sel: '#programmes .pc .meta', idx: 2, area: 'Programmes' },
-    { key: 'prog-card-4-title', label: 'Card 4 (Hospital Admin) — title',    sel: '#programmes .pc h3',    idx: 3, area: 'Programmes' },
-    { key: 'prog-card-4-desc',  label: 'Card 4 (Hospital Admin) — description', sel: '#programmes .pc p',  idx: 3, area: 'Programmes', multiline: true },
-    { key: 'prog-card-4-meta',  label: 'Card 4 (Hospital Admin) — meta tags',sel: '#programmes .pc .meta', idx: 3, area: 'Programmes' },
 
     /* ---- Practicals feature ---- */
-    { key: 'practicals-heading',        label: 'Practicals — heading (plain part)',  sel: '#practicals h2',         idx: 0, area: 'Sections', part: 'text' },
-    { key: 'practicals-heading-accent', label: 'Practicals — heading (accent part)', sel: '#practicals h2 .accent', idx: 0, area: 'Sections' },
-    { key: 'practicals-para',           label: 'Practicals — paragraph',             sel: '#practicals .feat p',    idx: 0, area: 'Sections', multiline: true },
-    { key: 'practicals-bullet-1', label: 'Practicals — bullet 1', sel: '#practicals ul li', idx: 0, area: 'Sections', part: 'text' },
-    { key: 'practicals-bullet-2', label: 'Practicals — bullet 2', sel: '#practicals ul li', idx: 1, area: 'Sections', part: 'text' },
-    { key: 'practicals-bullet-3', label: 'Practicals — bullet 3', sel: '#practicals ul li', idx: 2, area: 'Sections', part: 'text' },
-    { key: 'practicals-bullet-4', label: 'Practicals — bullet 4', sel: '#practicals ul li', idx: 3, area: 'Sections', part: 'text' },
 
     /* ---- Aliz feature ---- */
-    { key: 'aliz-heading',        label: 'Aliz — heading (plain part)',  sel: '#aliz h2',         idx: 0, area: 'Sections', part: 'text' },
-    { key: 'aliz-heading-accent', label: 'Aliz — heading (accent part)', sel: '#aliz h2 .accent', idx: 0, area: 'Sections' },
-    { key: 'aliz-para',           label: 'Aliz — paragraph',             sel: '#aliz .feat p',    idx: 0, area: 'Sections', multiline: true },
 
     /* ---- Assessment ---- */
-    { key: 'assessment-heading',        label: 'Assessment — heading (plain part)',  sel: '#assessment h2',         idx: 0, area: 'Sections', part: 'text' },
-    { key: 'assessment-heading-accent', label: 'Assessment — heading (accent part)', sel: '#assessment h2 .accent', idx: 0, area: 'Sections' },
-    { key: 'assessment-sub',            label: 'Assessment — sub paragraph',         sel: '#assessment .sub',       idx: 0, area: 'Sections', multiline: true },
 
     /* ---- CTA block + footer ---- */
-    { key: 'cta-heading',  label: 'CTA block — heading',  sel: '.cta-blk h2', idx: 0, area: 'CTA & Footer' },
-    { key: 'cta-sub',      label: 'CTA block — subtitle', sel: '.cta-blk p',  idx: 0, area: 'CTA & Footer', multiline: true },
-    { key: 'footer-blurb', label: 'Footer — blurb',       sel: 'footer .in p',idx: 0, area: 'CTA & Footer', multiline: true },
 
     /* ================================================================
        ACADEMICS PAGE (alizon-academics.html).
@@ -164,48 +118,107 @@
 
     { key: 'acad-cta-h', label: 'Closing CTA — heading', sel:'#acCtaH', idx:0, area:'Academics — Closing CTA', def:'Start your journey with Alizon' },
 
-    /* ============ CLONE HOME PAGE (alizon-clone-home.html) ============ */
-    { key:'ch-hero-h1',  label:'Hero — headline',            sel:'#ch-hero-h1',  idx:0, area:'Home — Hero' },
-    { key:'ch-hero-sub', label:'Hero — subtitle',            sel:'#ch-hero-sub', idx:0, area:'Home — Hero', multiline:true },
-    { key:'ch-hero-b1',  label:'Hero — button 1 text',       sel:'#ch-hero-b1',  idx:0, area:'Home — Hero' },
-    { key:'ch-hero-b2',  label:'Hero — button 2 text',       sel:'#ch-hero-b2',  idx:0, area:'Home — Hero' },
-    { key:'ch-hero-img', label:'Hero — image URLs (pipe | separated for carousel)', sel:'#ch-hero', idx:0, area:'Home — Hero', type:'image', multiline:true },
 
-    { key:'ch-ab-ey',  label:'About — eyebrow',   sel:'#ch-ab-ey',  idx:0, area:'Home — About' },
-    { key:'ch-ab-h',   label:'About — heading',   sel:'#ch-ab-h',   idx:0, area:'Home — About' },
-    { key:'ch-ab-p1',  label:'About — paragraph 1',sel:'#ch-ab-p1', idx:0, area:'Home — About', multiline:true },
-    { key:'ch-ab-p2',  label:'About — paragraph 2',sel:'#ch-ab-p2', idx:0, area:'Home — About', multiline:true },
-    { key:'ch-ab-img', label:'About — image URL', sel:'#ch-ab-img', idx:0, area:'Home — About', type:'image' },
+    /* ============ EVERY-PAGE HERO (image + title + subtitle) ============ */
+    { key:'home-hero-img',   label:'Hero — background image URL(s) — separate several with | for a carousel', sel:'#heroSecHome', idx:0, area:'Home — Hero', type:'image', multiline:true },
+    { key:'home-hero-title', label:'Hero — title',    sel:'#heroH1Home',  idx:0, area:'Home — Hero' },
+    { key:'home-hero-sub',   label:'Hero — subtitle', sel:'#heroSubHome', idx:0, area:'Home — Hero', multiline:true },
 
-    { key:'ch-pr-h',   label:'Programs — heading',  sel:'#ch-pr-h',   idx:0, area:'Home — Programs' },
-    { key:'ch-pr-sub', label:'Programs — subtitle', sel:'#ch-pr-sub', idx:0, area:'Home — Programs', multiline:true },
-    { key:'ch-pr1-t',  label:'Program 1 — title',   sel:'#ch-pr1-t',  idx:0, area:'Home — Programs' },
-    { key:'ch-pr1-img',label:'Program 1 — image URL',sel:'#ch-pr1-img',idx:0, area:'Home — Programs', type:'image' },
-    { key:'ch-pr2-t',  label:'Program 2 — title',   sel:'#ch-pr2-t',  idx:0, area:'Home — Programs' },
-    { key:'ch-pr2-img',label:'Program 2 — image URL',sel:'#ch-pr2-img',idx:0, area:'Home — Programs', type:'image' },
-    { key:'ch-pr3-t',  label:'Program 3 — title',   sel:'#ch-pr3-t',  idx:0, area:'Home — Programs' },
-    { key:'ch-pr3-img',label:'Program 3 — image URL',sel:'#ch-pr3-img',idx:0, area:'Home — Programs', type:'image' },
-    { key:'ch-pr4-t',  label:'Program 4 — title',   sel:'#ch-pr4-t',  idx:0, area:'Home — Programs' },
-    { key:'ch-pr4-img',label:'Program 4 — image URL',sel:'#ch-pr4-img',idx:0, area:'Home — Programs', type:'image' },
+    { key:'prac-hero-img',   label:'Hero — background image URL', sel:'#heroImgprac',  idx:0, area:'Practicals — Hero', type:'image' },
+    { key:'prac-hero-title', label:'Hero — title',    sel:'#heroH1prac',  idx:0, area:'Practicals — Hero' },
+    { key:'prac-hero-sub',   label:'Hero — subtitle', sel:'#heroSubprac', idx:0, area:'Practicals — Hero', multiline:true },
 
-    { key:'ch-nw-h',  label:'News — heading',   sel:'#ch-nw-h',  idx:0, area:'Home — Campus News' },
-    { key:'ch-nw1-t', label:'News 1 — title',   sel:'#ch-nw1-t', idx:0, area:'Home — Campus News' },
-    { key:'ch-nw2-t', label:'News 2 — title',   sel:'#ch-nw2-t', idx:0, area:'Home — Campus News' },
-    { key:'ch-nw3-t', label:'News 3 — title',   sel:'#ch-nw3-t', idx:0, area:'Home — Campus News' },
+    { key:'career-hero-img',   label:'Hero — background image URL', sel:'#heroImgcareer',  idx:0, area:'Career — Hero', type:'image' },
+    { key:'career-hero-title', label:'Hero — title',    sel:'#heroH1career',  idx:0, area:'Career — Hero' },
+    { key:'career-hero-sub',   label:'Hero — subtitle', sel:'#heroSubcareer', idx:0, area:'Career — Hero', multiline:true },
 
-    { key:'ch-im-h', label:'Impact — heading', sel:'#ch-im-h', idx:0, area:'Home — Impact' },
-    { key:'ch-st1', label:'Stat 1 — number', sel:'#ch-st1', idx:0, area:'Home — Impact' },
-    { key:'ch-sl1', label:'Stat 1 — label',  sel:'#ch-sl1', idx:0, area:'Home — Impact' },
-    { key:'ch-st2', label:'Stat 2 — number', sel:'#ch-st2', idx:0, area:'Home — Impact' },
-    { key:'ch-sl2', label:'Stat 2 — label',  sel:'#ch-sl2', idx:0, area:'Home — Impact' },
-    { key:'ch-st3', label:'Stat 3 — number', sel:'#ch-st3', idx:0, area:'Home — Impact' },
-    { key:'ch-sl3', label:'Stat 3 — label',  sel:'#ch-sl3', idx:0, area:'Home — Impact' },
-    { key:'ch-st4', label:'Stat 4 — number', sel:'#ch-st4', idx:0, area:'Home — Impact' },
-    { key:'ch-sl4', label:'Stat 4 — label',  sel:'#ch-sl4', idx:0, area:'Home — Impact' },
+    { key:'vac-hero-img',   label:'Hero — background image URL', sel:'#heroImgvac',  idx:0, area:'Vacancies — Hero', type:'image' },
+    { key:'vac-hero-title', label:'Hero — title',    sel:'#heroH1vac',  idx:0, area:'Vacancies — Hero' },
+    { key:'vac-hero-sub',   label:'Hero — subtitle', sel:'#heroSubvac', idx:0, area:'Vacancies — Hero', multiline:true },
 
-    { key:'ch-cta-h', label:'CTA — heading',   sel:'#ch-cta-h', idx:0, area:'Home — Call to Action' },
-    { key:'ch-cta-p', label:'CTA — paragraph', sel:'#ch-cta-p', idx:0, area:'Home — Call to Action', multiline:true },
-    { key:'ch-cta-b', label:'CTA — button text',sel:'#ch-cta-b',idx:0, area:'Home — Call to Action' }
+    { key:'sess-hero-img',   label:'Hero — background image URL', sel:'#heroImgsess',  idx:0, area:'Sessions — Hero', type:'image' },
+    { key:'sess-hero-title', label:'Hero — title',    sel:'#heroH1sess',  idx:0, area:'Sessions — Hero' },
+    { key:'sess-hero-sub',   label:'Hero — subtitle', sel:'#heroSubsess', idx:0, area:'Sessions — Hero', multiline:true },
+
+    { key:'cv-hero-img',   label:'Hero — background image URL', sel:'#heroImgcv',  idx:0, area:'CV Builder — Hero', type:'image' },
+    { key:'cv-hero-title', label:'Hero — title',    sel:'#heroH1cv',  idx:0, area:'CV Builder — Hero' },
+    { key:'cv-hero-sub',   label:'Hero — subtitle', sel:'#heroSubcv', idx:0, area:'CV Builder — Hero', multiline:true },
+
+    { key:'exam-hero-img',   label:'Hero — background image URL', sel:'#heroImgexam',  idx:0, area:'Examinations — Hero', type:'image' },
+    { key:'exam-hero-title', label:'Hero — title',    sel:'#heroH1exam',  idx:0, area:'Examinations — Hero' },
+    { key:'exam-hero-sub',   label:'Hero — subtitle', sel:'#heroSubexam', idx:0, area:'Examinations — Hero', multiline:true },
+
+    { key:'results-hero-img',   label:'Hero — background image URL', sel:'#heroImgresults',  idx:0, area:'Results — Hero', type:'image' },
+    { key:'results-hero-title', label:'Hero — title',    sel:'#heroH1results',  idx:0, area:'Results — Hero' },
+    { key:'results-hero-sub',   label:'Hero — subtitle', sel:'#heroSubresults', idx:0, area:'Results — Hero', multiline:true },
+
+    { key:'verify-hero-img',   label:'Hero — background image URL', sel:'#heroImgverify',  idx:0, area:'Verify — Hero', type:'image' },
+    { key:'verify-hero-title', label:'Hero — title',    sel:'#heroH1verify',  idx:0, area:'Verify — Hero' },
+    { key:'verify-hero-sub',   label:'Hero — subtitle', sel:'#heroSubverify', idx:0, area:'Verify — Hero', multiline:true },
+
+    /* Examinations — content folders */
+    { key:'exam-apply-h',    label:'Apply — heading',  sel:'#exApplyH',   idx:0, area:'Examinations — Apply for Exam' },
+    { key:'exam-apply-hint', label:'Apply — description', sel:'#exApplyHint', idx:0, area:'Examinations — Apply for Exam', multiline:true },
+    { key:'exam-sec-h',      label:'Examination Section — heading', sel:'#exSecH', idx:0, area:'Examinations — Examination Section' },
+    { key:'exam-sec-hint',   label:'Examination Section — description', sel:'#exSecHint', idx:0, area:'Examinations — Examination Section', multiline:true },
+
+    /* Verify — content folders */
+    { key:'verify-stud-h',    label:'Student panel — heading', sel:'#vStudH', idx:0, area:'Verify — Student Panel' },
+    { key:'verify-stud-hint', label:'Student panel — description', sel:'#vStudHint', idx:0, area:'Verify — Student Panel', multiline:true },
+    { key:'verify-emp-h',     label:'Employee panel — heading', sel:'#vEmpH', idx:0, area:'Verify — Employee Panel' },
+    { key:'verify-emp-hint',  label:'Employee panel — description', sel:'#vEmpHint', idx:0, area:'Verify — Employee Panel', multiline:true },
+
+    /* Workshops */
+    { key:'ws-hero-ey',    label:'Hero — eyebrow',  sel:'#heroEyworkshops',  idx:0, area:'Workshops — Hero' },
+    { key:'ws-hero-title', label:'Hero — title',    sel:'#heroH1workshops',  idx:0, area:'Workshops — Hero' },
+    { key:'ws-hero-tag',   label:'Hero — tagline',  sel:'#heroTagworkshops', idx:0, area:'Workshops — Hero' },
+    { key:'ws-hero-sub',   label:'Hero — subtitle', sel:'#heroSubworkshops', idx:0, area:'Workshops — Hero', multiline:true },
+    { key:'ws-upcoming-h', label:'Upcoming — heading', sel:'#wsUpcomingH', idx:0, area:'Workshops — Upcoming' },
+    { key:'ws-reg-h',      label:'Register — heading', sel:'#wsRegH', idx:0, area:'Workshops — Registration' },
+
+    /* ============ HOME HUB — other sections ============ */
+    { key:'hb-intro-h',   label:'Intro — heading',      sel:'#hbIntroH',  idx:0, area:'Home — Intro' },
+    { key:'hb-intro-p1',  label:'Intro — paragraph 1',  sel:'#hbIntroP1', idx:0, area:'Home — Intro', multiline:true },
+    { key:'hb-intro-p2',  label:'Intro — paragraph 2',  sel:'#hbIntroP2', idx:0, area:'Home — Intro', multiline:true },
+    { key:'hb-intro-img', label:'Intro — image URL',    sel:'#hbIntroImg',idx:0, area:'Home — Intro', type:'image' },
+
+    { key:'hb-sc-h',   label:'Showcase — heading',  sel:'#hbScH',   idx:0, area:'Home — Showcase' },
+    { key:'hb-sc-sub', label:'Showcase — subtitle', sel:'#hbScSub', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c1-t', label:'Card 1 — title', sel:'#hbC1T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c1-img', label:'Card 1 — image', sel:'#hbC1Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c1-d', label:'Card 1 — description', sel:'#hbC1D', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c2-t', label:'Card 2 — title', sel:'#hbC2T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c2-img', label:'Card 2 — image', sel:'#hbC2Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c2-d', label:'Card 2 — description', sel:'#hbC2D', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c3-t', label:'Card 3 — title', sel:'#hbC3T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c3-img', label:'Card 3 — image', sel:'#hbC3Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c3-d', label:'Card 3 — description', sel:'#hbC3D', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c4-t', label:'Card 4 — title', sel:'#hbC4T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c4-img', label:'Card 4 — image', sel:'#hbC4Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c4-d', label:'Card 4 — description', sel:'#hbC4D', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c5-t', label:'Card 5 — title', sel:'#hbC5T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c5-img', label:'Card 5 — image', sel:'#hbC5Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c5-d', label:'Card 5 — description', sel:'#hbC5D', idx:0, area:'Home — Showcase', multiline:true },
+    { key:'hb-c6-t', label:'Card 6 — title', sel:'#hbC6T', idx:0, area:'Home — Showcase' },
+    { key:'hb-c6-img', label:'Card 6 — image', sel:'#hbC6Img', idx:0, area:'Home — Showcase', type:'image' },
+    { key:'hb-c6-d', label:'Card 6 — description', sel:'#hbC6D', idx:0, area:'Home — Showcase', multiline:true },
+
+    { key:'hb-imp-h',   label:'Impact — heading',  sel:'#hbImpH',   idx:0, area:'Home — Impact' },
+    { key:'hb-imp-sub', label:'Impact — subtitle', sel:'#hbImpSub', idx:0, area:'Home — Impact', multiline:true },
+    { key:'hb-st1', label:'Stat 1 — number', sel:'#hbSt1', idx:0, area:'Home — Impact' },
+    { key:'hb-sl1', label:'Stat 1 — label',  sel:'#hbSl1', idx:0, area:'Home — Impact' },
+    { key:'hb-st2', label:'Stat 2 — number', sel:'#hbSt2', idx:0, area:'Home — Impact' },
+    { key:'hb-sl2', label:'Stat 2 — label',  sel:'#hbSl2', idx:0, area:'Home — Impact' },
+    { key:'hb-st3', label:'Stat 3 — number', sel:'#hbSt3', idx:0, area:'Home — Impact' },
+    { key:'hb-sl3', label:'Stat 3 — label',  sel:'#hbSl3', idx:0, area:'Home — Impact' },
+    { key:'hb-st4', label:'Stat 4 — number', sel:'#hbSt4', idx:0, area:'Home — Impact' },
+    { key:'hb-sl4', label:'Stat 4 — label',  sel:'#hbSl4', idx:0, area:'Home — Impact' },
+    { key:'hb-st5', label:'Stat 5 — number (e.g. scholarships awarded)', sel:'#hbSt5', idx:0, area:'Home — Impact' },
+    { key:'hb-sl5', label:'Stat 5 — label',  sel:'#hbSl5', idx:0, area:'Home — Impact' },
+
+    { key:'hb-cta-h',   label:'CTA — heading',    sel:'#hbCtaH',   idx:0, area:'Home — Call to Action' },
+    { key:'hb-cta-p',   label:'CTA — paragraph',  sel:'#hbCtaP',   idx:0, area:'Home — Call to Action', multiline:true },
+    { key:'hb-cta-btn', label:'CTA — button text',sel:'#hbCtaBtn', idx:0, area:'Home — Call to Action' }
   ];
 
   var fieldByKey = {};
@@ -262,8 +275,14 @@
         if (el.tagName === 'IMG') { el.setAttribute('src', text); }
         else if (el.hasAttribute && el.hasAttribute('data-slides')) {
           el.setAttribute('data-slides', text);
-          var bg0 = el.querySelector ? el.querySelector('.bg') : null;
-          if (bg0) bg0.setAttribute('src', (text || '').split('|')[0]);
+          /* refresh EVERY already-built carousel layer, not just the first —
+             layer i shows slide i; layers beyond the new list are hidden */
+          var slides = (text || '').split('|').filter(function (s) { return s.trim(); });
+          var layers = el.querySelectorAll ? el.querySelectorAll('img.bg') : [];
+          for (var li = 0; li < layers.length; li++) {
+            if (slides[li]) { layers[li].setAttribute('src', slides[li]); layers[li].style.display = ''; }
+            else { layers[li].style.opacity = '0'; layers[li].style.display = 'none'; }
+          }
         } else { el.style.backgroundImage = 'url("' + text + '")'; el.style.backgroundSize = 'cover'; el.style.backgroundPosition = 'center'; }
         return true;
       }

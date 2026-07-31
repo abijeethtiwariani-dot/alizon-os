@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON OS · Module 5 · Clinical Trial Audit Readiness Challenge</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)} .scorechip b{color:var(--gold)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:6px}
+  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:5px 0;cursor:pointer}
+  .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:480px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  select,textarea,input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  select:focus,textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:60px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
+  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
+  details.help>summary::-webkit-details-marker{display:none}
+  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
+  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
+  .expl{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--success);border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.6}
+  .expl .lbl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--success);margin-bottom:3px}
+  /* ---- audit room ---- */
+  .rooms{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:10px}
+  .room{cursor:pointer;font:inherit;text-align:left;background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink)}
+  .room:hover{border-color:var(--gold)} .room.on{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.12)}
+  .room .rn{font-size:13.5px;font-weight:700;display:block}
+  .room .rs{font-size:11.5px;color:var(--muted);display:block;margin-top:2px}
+  .room .rdone{color:var(--success);font-weight:700}
+  .items{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:12px}
+  .item{cursor:pointer;text-align:left;font:inherit;background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;color:var(--ink);position:relative}
+  .item:hover{border-color:var(--gold)}
+  .item.done{border-color:var(--success)} .item.open{border-color:var(--crimson)}
+  .item .it{font-size:13.5px;font-weight:700;display:block;padding-right:22px}
+  .item .id2{font-size:11.5px;color:var(--muted);display:block;margin-top:3px}
+  .item .tick{position:absolute;top:11px;right:12px;font-size:13px;font-weight:800;color:var(--success)}
+  .docview{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:13px 15px;margin-top:10px;font-size:13px;line-height:1.65}
+  .docview .dt{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--crimson);margin-bottom:5px}
+  .docview pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;white-space:pre-wrap;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;line-height:1.6}
+  .seg{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .seg button{cursor:pointer;font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:100px;padding:8px 16px}
+  .seg button.on[data-v="ok"]{background:rgba(30,142,90,.14);border-color:var(--success);color:var(--success)}
+  .seg button.on[data-v="find"]{background:rgba(196,38,46,.12);border-color:var(--danger);color:var(--danger)}
+  .sev button.on[data-s="Critical"]{background:rgba(196,38,46,.14);border-color:var(--danger);color:var(--danger)}
+  .sev button.on[data-s="Major"]{background:rgba(180,83,9,.16);border-color:var(--warn);color:var(--warn)}
+  .sev button.on[data-s="Minor"]{background:var(--gold-soft);border-color:var(--gold);color:var(--gold)}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.45}
+  .sevpill{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px}
+  .sevpill.Critical{background:rgba(196,38,46,.14);color:var(--danger)} .sevpill.Major{background:rgba(180,83,9,.16);color:var(--warn)} .sevpill.Minor{background:var(--gold-soft);color:var(--gold)}
+  .prog{height:8px;border-radius:100px;background:var(--pill);overflow:hidden;margin-top:8px}
+  .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--crimson-deep),var(--crimson));width:0;transition:width .3s}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 5 · Unit 1 · Practical 3 — Data Quality &amp; Audit Readiness</div>
+    <h1 class="serif">Clinical Trial Audit Readiness Challenge</h1>
+    <p><b>Aim —</b> To prepare a site for sponsor and regulatory inspection by <b>identifying documentation errors</b>, classifying their severity and ensuring <b>GCP compliance</b> before the auditors arrive.
+      <span class="muted">Duration 60 minutes · 6 departments · 14 items to inspect · 20-mark rubric · Pass 50%.</span></p>
+    <div class="chips">
+      <div class="scorechip">Inspected <b id="scInsp">0/14</b></div>
+      <div class="scorechip">Findings <b id="scFind">0</b></div>
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Audit Room</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="auditready"></div>
+    <div class="guide">
+      <h2>New to inspections? Start here</h2>
+      <p>You are the <b>Clinical Research Pharmacist</b> preparing the hospital for a <b>CDSCO / FDA / EMA</b> inspection. The trial file contains deliberate mistakes. Inspect every item before the auditors arrive.</p>
+      <ol>
+        <li><b>Open every document</b> — in all six departments. A compliant record is a valid result; flagging a good record as defective is also an error.</li>
+        <li><b>Compare CRF against source</b> — a value with no source record has no evidence behind it.</li>
+        <li><b>Reconcile the drug log</b> — received = dispensed + returned + destroyed + remaining.</li>
+        <li><b>Check signatures and dates</b> — especially on consent forms. Consent must be signed by the <b>participant</b>, <b>before</b> any study procedure.</li>
+        <li><b>Grade by consequence</b> — participant safety or data integrity makes a finding <b>Critical</b>; administrative delay alone is <b>Minor</b>.</li>
+      </ol>
+      <p style="margin-top:8px">Remember the inspector’s rule: <b>if it is not documented, it did not happen.</b></p>
+    </div>
+    <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
+    <div class="card"><h2>Classifying an audit finding</h2>
+      <div class="tw"><table><thead><tr><th>Grade</th><th>Definition</th><th>Example</th></tr></thead><tbody>
+        <tr><td><span class="sevpill Critical">Critical</span></td><td>Affects participant rights, safety or well-being, or the reliability of the trial data</td><td>Expired investigational product in usable stock; unreported serious adverse event; unsigned consent</td></tr>
+        <tr><td><span class="sevpill Major">Major</span></td><td>Could affect safety or data integrity if not corrected</td><td>Transcription error between source and CRF; staff missing from the delegation log</td></tr>
+        <tr><td><span class="sevpill Minor">Minor</span></td><td>Administrative; does not affect safety or data integrity</td><td>Monitoring visit report filed late, content complete</td></tr>
+      </tbody></table></div>
+      <p class="note"><b>Corrections rule:</b> a single line strike-through, the correct value, then initials and date. Never overwrite, never use correction fluid, never obscure the original entry.</p>
+    </div>
+    <div class="card"><h2>Faculty assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
+      <p class="note">The <b>Audit Readiness Report</b> mark combines your written audit summary (2) with correctly stating the <b>GCP principle</b> breached by each finding (2).
+        <b>Audit failure:</b> missing a <b>Critical</b> finding — or downgrading one to Minor — fails the station regardless of total marks.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card"><h2>Inspector &amp; site</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+      </div>
+      <p class="note" style="margin-top:10px">Inspection date <b id="auditDate"></b> · Site: Alizon Teaching Hospital, Clinical Trials Unit · Study: ALZ-CT-2026-01</p>
+      <div class="prog"><i id="progBar"></i></div>
+      <div class="rooms" id="roomList"></div>
+    </div>
+    <div id="roomArea"></div>
+    <div class="card"><span class="step">Close the audit</span> <b>Audit summary</b>
+      <p class="note" style="margin-top:4px">Summarise the site’s audit readiness — the key findings, the risk to participants and data, and the priority corrective actions.</p>
+      <textarea id="noteBox" placeholder="e.g. Four critical findings were identified, principally an expired investigational product in usable stock and an unreported serious adverse event. The site is not audit ready; quarantine of the affected stock and immediate SAE reporting are the priority corrective actions."></textarea>
+      <div class="row"><button class="btn" id="submitBtn">Close audit &amp; generate readiness report</button></div>
+      <p class="note">You may close the audit at any time — items left uninspected count as missed findings.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>Audit Readiness Report &amp; assessment</h2>
+      <p class="muted" id="repEmpty">Inspect the site and close the audit to generate your readiness report, then write and submit your practical report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=10"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+
+  var TASKS=['Enter the virtual research site and inspect all six departments','Open every document and item of equipment',
+    'Judge each one Compliant or a Finding against GCP and the protocol','Describe the error for every finding',
+    'State the GCP principle or regulatory requirement breached','Recommend the specific corrective action required',
+    'Classify each finding as Critical, Major or Minor','Write the audit summary and generate the Audit Readiness Report'];
+
+  var RUBRIC=[
+    {k:'ident', label:'Error Identification',                              max:8},
+    {k:'cls',   label:'Correct Classification (severity)',                 max:4},
+    {k:'act',   label:'Corrective Action',                                 max:4},
+    {k:'rep',   label:'Audit Readiness Report (summary 2 + GCP principle 2)', max:4}];
+  var MAXTOTAL=RUBRIC.reduce(function(a,r){return a+r.max;},0);
+
+  /* shared answer banks — identical wording everywhere so the answer cannot be guessed by elimination */
+  var GCP=[
+    'ALCOA+ data integrity — records must be attributable, legible, contemporaneous, original and accurate',
+    'Participant safety &amp; expedited SAE reporting (serious adverse events reportable to the sponsor within 24 hours)',
+    'Informed consent — freely given, signed and dated by the participant before any study procedure',
+    'Investigational product accountability, storage and handling',
+    'Investigator responsibility, written task delegation and documented staff training',
+    'Protocol compliance and documented reporting of deviations',
+    'Participant confidentiality and correct use of coded identifiers',
+    'No breach identified — the record is compliant'];
+
+  var ACT=[
+    'Quarantine the affected product immediately, notify the sponsor, and check whether any was dispensed to participants',
+    'Report the serious adverse event to the sponsor and Ethics Committee immediately and complete the SAE form',
+    'Stop the participant’s involvement pending re-consent, report the deviation to the Ethics Committee, and retrain staff',
+    'Correct the entry with a single line strike-through, initial and date it, and verify all other entries against source',
+    'Reconcile the log against physical stock, investigate the discrepancy and document the outcome',
+    'Update the delegation log with the Principal Investigator’s signature and verify the person’s training before further tasks',
+    'Have the investigator review, sign and date the record and document the clinical significance of abnormal values',
+    'Relabel using the study identifier only, retrain staff on confidentiality and report the breach',
+    'Complete the outstanding training and file the certificates before the person performs further study tasks',
+    'File the protocol deviation report, notify the Ethics Committee and sponsor, and raise a CAPA',
+    'Note the administrative delay and remind the monitor of the filing timeline',
+    'No action required — the record is compliant'];
+
+  var SEV=['Critical','Major','Minor','None'];
+
+  /* ---- the site: 6 rooms, 14 inspectable items ---- */
+  var ROOMS=[
+   {k:'pharm', n:'Pharmacy',                       s:'Dispensing &amp; accountability'},
+   {k:'ward',  n:'Clinical Ward',                  s:'Participants &amp; source records'},
+   {k:'docs',  n:'Documentation Office',           s:'Trial master file'},
+   {k:'store', n:'Drug Storage Room',              s:'Investigational product'},
+   {k:'lab',   n:'Laboratory',                     s:'Samples &amp; reports'},
+   {k:'pi',    n:"Principal Investigator's Office", s:'Oversight &amp; training'}
+  ];
+
+  var ITEMS=[
+   /* ---------- Pharmacy ---------- */
+   {id:'acc',room:'pharm',n:'Drug Accountability Log',sub:'Investigational product ledger',
+    doc:'ALZ-CT-2026-01 · Drug Accountability Log (page 4 of 4)',
+    body:'Received from sponsor: 120 units (Batch CT-118)\nDispensed to participants: 80 units\nReturned by participants: 6 units\nDestroyed (documented): 0 units\nRemaining physical stock counted today: 19 units\n\nSigned: Pharmacy technician — no pharmacist countersignature\nReturned-medication entries for participants 004, 007 and 011: BLANK',
+    finding:true,sev:'Major',gcp:3,act:4,
+    err:'The log does not reconcile — 120 received but only 105 accounted for (80 + 6 + 0 + 19); 15 units are unaccounted for, returned-medication entries are blank and there is no pharmacist countersignature.'},
+   {id:'ip',room:'pharm',n:'Investigational Product — dispensing stock',sub:'Batch CT-118 on the shelf',
+    doc:'Investigational product · Batch CT-118 · dispensing shelf',
+    body:'Product: ALZ-118 film-coated tablets 50 mg\nBatch: CT-118\nManufactured: 03/2024\nEXPIRY DATE: 03/2026\nToday’s date: 27/07/2026\nLocation: active dispensing shelf, not quarantined\nLabel: “For clinical trial use only — ALZ-CT-2026-01”',
+    finding:true,sev:'Critical',gcp:3,act:0,
+    err:'Investigational product that expired in 03/2026 is still on the active dispensing shelf four months later, unquarantined and available to dispense to participants.'},
+
+   /* ---------- Clinical Ward ---------- */
+   {id:'sae',room:'ward',n:'Adverse Event Reports',sub:'Participant 007 — event file',
+    doc:'Participant 007 · nursing notes and adverse event file',
+    body:'Nursing note, 14/07/2026, 22:10 — “Participant admitted overnight with severe vomiting and dehydration following study medication. IV fluids commenced. Discharged 16/07/2026.”\n\nAdverse Event Log: entry recorded as “mild nausea — no action”.\nSAE report form: NOT PRESENT in the file.\nSponsor notification: no record.\nEthics Committee notification: no record.',
+    finding:true,sev:'Critical',gcp:1,act:1,
+    err:'A serious adverse event (hospitalisation) was down-graded to “mild nausea”, no SAE form was completed, and neither the sponsor nor the Ethics Committee was notified within 24 hours.'},
+   {id:'crf',room:'ward',n:'CRF vs Source Document',sub:'Participant 012 — visit 3',
+    doc:'Participant 012 · Visit 3 · source data verification',
+    body:'SOURCE (ward observation chart, 09/07/2026):\n   Blood pressure 150/95 mmHg\n   Pulse 88 /min\n\nCASE REPORT FORM (entered 09/07/2026):\n   Blood pressure 120/80 mmHg\n   Pulse 88 /min\n\nNo query, no correction, no explanatory note. CRF entry initialled by data entry clerk.',
+    finding:true,sev:'Major',gcp:0,act:3,
+    err:'Transcription error — the CRF records 120/80 mmHg while the source document records 150/95 mmHg, with no query or documented correction. The CRF entry is not accurate or attributable to source.'},
+
+   /* ---------- Documentation Office ---------- */
+   {id:'icf',room:'docs',n:'Informed Consent Forms',sub:'Participant 019 — consent file',
+    doc:'Participant 019 · Informed Consent Form (version 2.0)',
+    body:'Participant signature: BLANK\nParticipant name printed: Yes\nInvestigator signature: present, dated 02/07/2026\nDate of consent recorded on form: 02/07/2026\n\nScreening bloods and ECG performed (per source records): 28/06/2026\nFirst dose of investigational product: 03/07/2026',
+    finding:true,sev:'Critical',gcp:2,act:2,
+    err:'The consent form carries no participant signature, and study procedures (screening bloods and ECG on 28/06/2026) were performed four days before consent was dated. The participant was enrolled without valid documented consent.'},
+   {id:'del',room:'docs',n:'Delegation Log',sub:'Site staff task delegation',
+    doc:'ALZ-CT-2026-01 · Delegation of Authority Log',
+    body:'Dr A. Menon — Principal Investigator — signed, dated\nDr S. Raj — Sub-investigator — signed, dated\nMs P. Kumar — Study Coordinator — signed, dated\n\nSource records show Nurse R. Thomas performed vital-signs assessments and study-drug administration for participants 004, 009 and 015 during June–July 2026.\nNurse R. Thomas: NOT LISTED on the delegation log.',
+    finding:true,sev:'Major',gcp:4,act:5,
+    err:'A nurse performed study assessments and administered investigational product without being delegated those tasks in writing by the Principal Investigator on the delegation log.'},
+   {id:'mon',room:'docs',n:'Monitoring Visit Reports',sub:'Sponsor monitoring file',
+    doc:'Monitoring visit reports · visits 1–4',
+    body:'Visit 1 — 12/02/2026 — report filed 26/02/2026 — signed\nVisit 2 — 15/04/2026 — report filed 29/04/2026 — signed\nVisit 3 — 10/06/2026 — report filed 02/07/2026 (22 days) — signed\nVisit 4 — 08/07/2026 — report filed 21/07/2026 — signed\n\nAll findings from previous visits are documented as closed. Content complete and signed by the monitor.',
+    finding:true,sev:'Minor',gcp:5,act:10,
+    err:'The visit 3 monitoring report was filed 22 days after the visit, outside the expected timeline. The content is complete and signed, and there is no impact on participant safety or data integrity.'},
+
+   /* ---------- Drug Storage ---------- */
+   {id:'temp',room:'store',n:'Temperature Monitoring Records',sub:'Refrigerator TR-02 chart',
+    doc:'Refrigerator TR-02 · continuous temperature log (storage 2–8 °C)',
+    body:'01/07 – 17/07 — within range (2.4 – 7.6 °C)\n\n18/07/2026, 01:00 – 07:00 — 12.4 °C  ⚠ EXCURSION (6 hours above range)\n   Alarm log: alarm triggered 01:14\n   Action recorded: NONE\n   Impact assessment: NOT PERFORMED\n   Sponsor notified: NO\n   Affected stock: remained in use and was dispensed on 18/07 and 19/07\n\n19/07 – 27/07 — within range',
+    finding:true,sev:'Critical',gcp:3,act:0,
+    err:'A six-hour temperature excursion to 12.4 °C was alarmed but not actioned — no impact assessment, no sponsor notification, and the affected product remained in use and was dispensed to participants.'},
+   {id:'cal',room:'store',n:'Thermometer Calibration Certificate',sub:'Data logger DL-14',
+    doc:'Calibration certificate · data logger DL-14',
+    body:'Instrument: DL-14 continuous data logger\nCalibrated by: accredited external laboratory\nCalibration date: 04/01/2026\nCalibration due: 04/01/2027\nCertificate number: CAL-2026-0114 — filed in the trial master file\nTraceability: certificate references national standards',
+    finding:false,sev:'None',gcp:7,act:11,
+    err:'Compliant — the logger is calibrated by an accredited laboratory, is within its calibration period, and the traceable certificate is filed.'},
+
+   /* ---------- Laboratory ---------- */
+   {id:'labrep',room:'lab',n:'Laboratory Reports',sub:'Participant 015 — biochemistry',
+    doc:'Participant 015 · laboratory report, 11/07/2026',
+    body:'ALT 148 U/L    (reference 7 – 56)   ↑ ABNORMAL\nAST 121 U/L    (reference 8 – 48)   ↑ ABNORMAL\nCreatinine 82 µmol/L — normal\n\nInvestigator review signature: ABSENT\nDate of review: not recorded\nClinical significance assessment: not documented\nNo follow-up or repeat test requested in the record.',
+    finding:true,sev:'Major',gcp:4,act:6,
+    err:'Abnormal liver-function results were never reviewed, signed or dated by the investigator, and no assessment of clinical significance or follow-up was documented.'},
+   {id:'pid',room:'lab',n:'Sample Labelling &amp; Patient Identification',sub:'Sample rack, dispatch batch 22',
+    doc:'Laboratory sample rack · dispatch batch 22',
+    body:'Tube 1 — label reads: “Meera Nair, Hosp. No. 44821, DOB 12/05/1982”\nTube 2 — label reads: “ALZ-CT-019 · V3 · 11/07/2026”\nTube 3 — label reads: “ALZ-CT-021 · V3 · 11/07/2026”\n\nDispatch manifest to the central laboratory lists tube 1 under the participant’s full name and hospital number.',
+    finding:true,sev:'Major',gcp:6,act:7,
+    err:'A sample was labelled and dispatched with the participant’s full name, hospital number and date of birth instead of the coded study identifier — a breach of participant confidentiality and of the coded-identifier requirement.'},
+
+   /* ---------- PI Office ---------- */
+   {id:'train',room:'pi',n:'Training Records',sub:'Site staff training file',
+    doc:'Site training file · GCP and protocol training',
+    body:'Dr A. Menon — GCP certificate 2025, protocol training documented\nDr S. Raj — GCP certificate 2025, protocol training documented\nMs P. Kumar — GCP certificate 2024 (expired 2026), no refresher on file\nNurse R. Thomas — NO GCP certificate on file, no protocol training record\n\nBoth staff members performed study procedures during June–July 2026.',
+    finding:true,sev:'Major',gcp:4,act:8,
+    err:'Two staff members performed study procedures without current GCP training on file — one certificate has expired without a refresher and the other has no certificate or protocol training record at all.'},
+   {id:'dev',room:'pi',n:'Protocol Deviation Log',sub:'Deviation reporting',
+    doc:'ALZ-CT-2026-01 · Protocol Deviation Log',
+    body:'Logged deviations: 2 (both minor visit-window deviations, reported and closed)\n\nHowever, source records show:\n   Participant 009 — Visit 4 dose administered on day 43.\n   Protocol-specified window: day 28 ± 3 days.\n   Deviation report: NOT FILED\n   Ethics Committee notified: NO\n   Sponsor notified: NO',
+    finding:true,sev:'Major',gcp:5,act:9,
+    err:'A dose was administered 12 days outside the protocol-specified visit window and no protocol deviation report was filed or notified to the Ethics Committee or sponsor.'},
+   {id:'ec',room:'pi',n:'Ethics Approval &amp; Protocol Version',sub:'Regulatory file',
+    doc:'Regulatory file · Ethics Committee approval and protocol',
+    body:'Protocol version in use at site: 3.1 (dated 10/01/2026)\nEthics Committee approval letter: protocol version 3.1, approved 22/01/2026\nApproval validity: to 21/01/2027 — current\nCDSCO permission letter: on file, study registered (CTRI number recorded)\nAll amendments approved before implementation; superseded versions archived and marked.',
+    finding:false,sev:'None',gcp:7,act:11,
+    err:'Compliant — the protocol version in use matches the current Ethics Committee approval, the approval is valid, regulatory permission is on file and amendments were approved before implementation.'}
+  ];
+
+  var CRITICALS=ITEMS.filter(function(i){return i.sev==='Critical';}).map(function(i){return i.id;});
+
+  $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
+  $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+r.label+'</td><td>'+r.max+'</td></tr>';}).join('')+'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
+  $('auditDate').textContent=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var ans={};            /* id -> {call:'ok'|'find', sev, gcp, act} */
+  var curRoom='pharm', openItem=null, submitted=false, result=null;
+
+  function inspectedCount(){ return Object.keys(ans).filter(function(k){return ans[k]&&ans[k].call;}).length; }
+  function findingCount(){ return Object.keys(ans).filter(function(k){return ans[k]&&ans[k].call==='find';}).length; }
+  function refreshChips(){
+    $('scInsp').textContent=inspectedCount()+'/'+ITEMS.length;
+    $('scFind').textContent=findingCount();
+    $('progBar').style.width=Math.round(inspectedCount()/ITEMS.length*100)+'%';
+  }
+
+  function renderRooms(){
+    $('roomList').innerHTML=ROOMS.map(function(r){
+      var its=ITEMS.filter(function(i){return i.room===r.k;});
+      var done=its.filter(function(i){return ans[i.id]&&ans[i.id].call;}).length;
+      return '<button type="button" class="room'+(r.k===curRoom?' on':'')+'" data-room="'+r.k+'">'
+        +'<span class="rn">'+r.n+'</span><span class="rs">'+r.s+' · <span'+(done===its.length?' class="rdone"':'')+'>'+done+'/'+its.length+' inspected</span></span></button>';
+    }).join('');
+    document.querySelectorAll('#roomList .room').forEach(function(b){
+      b.addEventListener('click',function(){ curRoom=b.getAttribute('data-room'); openItem=null; renderRooms(); renderRoom(); });
+    });
+  }
+
+  function renderRoom(){
+    var r=ROOMS.filter(function(x){return x.k===curRoom;})[0];
+    var its=ITEMS.filter(function(i){return i.room===curRoom;});
+    var h='<div class="card"><span class="step">'+r.n+'</span><h2 style="margin-top:6px">'+r.n+'</h2>'
+      +'<p class="muted">'+r.s+' — click an item to inspect it.</p><div class="items">'
+      + its.map(function(i){
+          var a=ans[i.id]; var cls=(openItem===i.id?' open':(a&&a.call?' done':''));
+          var tick=(a&&a.call)?('<span class="tick">'+(a.call==='find'?'⚑':'✓')+'</span>'):'';
+          return '<button type="button" class="item'+cls+'" data-item="'+i.id+'">'+tick
+            +'<span class="it">'+i.n+'</span><span class="id2">'+i.sub+'</span></button>';
+        }).join('')
+      +'</div></div>';
+    if(openItem){
+      var it=ITEMS.filter(function(x){return x.id===openItem;})[0];
+      var a=ans[it.id]||{};
+      h+='<div class="card"><span class="step">Inspecting</span><h2 style="margin-top:6px">'+it.n+'</h2>'
+        +'<div class="docview"><div class="dt">'+it.doc+'</div><pre>'+esc(it.body)+'</pre></div>'
+        +'<h3>Your assessment</h3>'
+        +'<div class="seg" id="callSeg"><button type="button" data-v="ok"'+(a.call==='ok'?' class="on"':'')+'>✓ Compliant</button>'
+        +'<button type="button" data-v="find"'+(a.call==='find'?' class="on"':'')+'>⚑ Finding</button></div>'
+        +'<div id="findWrap" style="display:'+(a.call==='find'?'block':'none')+'">'
+          +'<label class="f" style="margin-top:14px">1 · Describe the error</label>'
+          +'<select id="selErr"><option value="">— select the description that matches what you found —</option></select>'
+          +'<label class="f" style="margin-top:12px">2 · GCP principle / regulatory requirement affected</label>'
+          +'<select id="selGcp"><option value="">— select —</option>'+GCP.map(function(g,k){return '<option value="'+k+'"'+(a.gcp===k?' selected':'')+'>'+g+'</option>';}).join('')+'</select>'
+          +'<label class="f" style="margin-top:12px">3 · Recommended corrective action</label>'
+          +'<select id="selAct"><option value="">— select —</option>'+ACT.map(function(x,k){return '<option value="'+k+'"'+(a.act===k?' selected':'')+'>'+x+'</option>';}).join('')+'</select>'
+          +'<label class="f" style="margin-top:12px">4 · Severity</label>'
+          +'<div class="seg sev" id="sevSeg">'+['Critical','Major','Minor'].map(function(s){return '<button type="button" data-s="'+s+'"'+(a.sev===s?' class="on"':'')+'>'+s+'</button>';}).join('')+'</div>'
+        +'</div>'
+        +'<div class="row" style="margin-top:14px"><button class="btn ghost" id="closeItem">Done — next item</button></div></div>';
+    }
+    $('roomArea').innerHTML=h;
+
+    document.querySelectorAll('#roomArea .item').forEach(function(b){
+      b.addEventListener('click',function(){ openItem=b.getAttribute('data-item'); renderRoom();
+        var el=$('roomArea').querySelector('.card:nth-child(2)'); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); });
+    });
+    if(openItem){
+      var itm=ITEMS.filter(function(x){return x.id===openItem;})[0];
+      /* error-description choices: the true one plus decoys drawn from other items */
+      var sE=$('selErr');
+      if(sE){
+        var pool=ITEMS.filter(function(x){return x.id!==itm.id;}).map(function(x){return x.err;});
+        var picks=[itm.err]; var seed=itm.id.length;
+        for(var q=0;q<3;q++){ picks.push(pool[(seed*7+q*5)%pool.length]); }
+        picks=picks.sort(function(a,b){return a.length-b.length;});
+        var cur=(ans[itm.id]||{}).errTxt;
+        sE.innerHTML='<option value="">— select the description that matches what you found —</option>'
+          +picks.map(function(p){return '<option value="'+esc(p)+'"'+(cur===p?' selected':'')+'>'+esc(p.length>110?p.slice(0,110)+'…':p)+'</option>';}).join('');
+      }
+      document.querySelectorAll('#callSeg button').forEach(function(b){
+        b.addEventListener('click',function(){
+          if(submitted) return;
+          var v=b.getAttribute('data-v');
+          ans[itm.id]=ans[itm.id]||{}; ans[itm.id].call=v;
+          if(v==='ok'){ ans[itm.id].sev='None'; ans[itm.id].gcp=7; ans[itm.id].act=11; ans[itm.id].errTxt=null; }
+          renderRooms(); renderRoom(); refreshChips();
+        });
+      });
+      var bind=function(id,key,num){ var el=$(id); if(!el) return;
+        el.addEventListener('change',function(){ if(submitted) return; ans[itm.id]=ans[itm.id]||{};
+          ans[itm.id][key]= num ? (this.value===''?null:+this.value) : this.value; }); };
+      bind('selErr','errTxt',false); bind('selGcp','gcp',true); bind('selAct','act',true);
+      document.querySelectorAll('#sevSeg button').forEach(function(b){
+        b.addEventListener('click',function(){ if(submitted) return;
+          ans[itm.id]=ans[itm.id]||{}; ans[itm.id].sev=b.getAttribute('data-s');
+          document.querySelectorAll('#sevSeg button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); });
+      });
+      var ci=$('closeItem'); if(ci) ci.addEventListener('click',function(){ openItem=null; renderRooms(); renderRoom(); window.scrollTo({top:0,behavior:'smooth'}); });
+    }
+  }
+
+  /* ---------- badges ---------- */
+  function computeBadges(r){
+    return [
+      {n:'🛡 Audit Ready',                  got:r.pct>=80,        d:'Overall score 80% or above'},
+      {n:'📋 Documentation Champion',       got:r.docAcc===100,   d:'Every item judged correctly'},
+      {n:'⚖ Ethics Guardian',               got:r.ethicsOK,       d:'Caught the invalid consent as Critical'},
+      {n:'🔍 GCP Inspector',                got:r.gcpAll,         d:'Every GCP principle correctly stated'},
+      {n:'🏅 Clinical Trial Compliance Expert', got:(r.critMissed===0 && r.pct>=90), d:'All critical findings caught, 90%+'}
+    ];
+  }
+
+  function evaluate(){
+    if(submitted) return;
+    var name=($('cName').value||'').trim()||'Candidate', reg=($('cReg').value||'').trim();
+    var correctCall=0, sevRight=0, actRight=0, gcpRight=0, descRight=0, findTotal=0, caught=0;
+    var critMissed=0, critDowngraded=0, ethicsOK=false;
+    var rows=[];
+    ITEMS.forEach(function(i){
+      var a=ans[i.id]||{};
+      var isFind=!!i.finding;
+      var called=(a.call==='find');
+      var callOK=(a.call? (called===isFind) : false);
+      if(callOK) correctCall++;
+      if(isFind){
+        findTotal++;
+        if(called){
+          caught++;
+          if(a.sev===i.sev) sevRight++;
+          if(a.act===i.act) actRight++;
+          if(a.gcp===i.gcp) gcpRight++;
+          if(a.errTxt===i.err) descRight++;
+          if(i.sev==='Critical' && a.sev==='Minor') critDowngraded++;
+          if(i.id==='icf' && a.sev==='Critical') ethicsOK=true;
+        } else if(i.sev==='Critical'){ critMissed++; }
+      }
+      rows.push({n:i.n, truth:(isFind?('Finding · '+i.sev):'Compliant'),
+        mine:(a.call?(called?('Finding'+(a.sev&&a.sev!=='None'?' · '+a.sev:'')):'Compliant'):'not inspected'),
+        ok:callOK, sevOK:(isFind&&called&&a.sev===i.sev), err:i.err});
+    });
+
+    var sc={};
+    /* detection carries most of the mark; describing the error correctly carries the rest */
+    sc.ident=Math.round(6*correctCall/ITEMS.length + 2*descRight/findTotal);
+    sc.cls  =Math.round(4*sevRight/findTotal);
+    sc.act  =Math.round(4*actRight/findTotal);
+    var noteOK=($('noteBox').value||'').trim().length>=40;
+    sc.rep=(noteOK?2:0)+Math.round(2*gcpRight/findTotal);
+
+    var tot=RUBRIC.reduce(function(a,r){return a+(sc[r.k]||0);},0);
+    var pct=Math.round(tot/MAXTOTAL*100);
+    var auditFail=(critMissed>0 || critDowngraded>0);
+    var pass=pct>=50 && !auditFail;
+
+    var docAcc=Math.round(correctCall/ITEMS.length*100);
+    var safetyScore=Math.round(((CRITICALS.length-critMissed-critDowngraded)/CRITICALS.length)*100);
+    var regScore=Math.round(((gcpRight+actRight)/(findTotal*2))*100);
+
+    var fb={
+      ident:correctCall+' of '+ITEMS.length+' items judged correctly ('+caught+' of '+findTotal+' findings detected); '+descRight+' of '+findTotal+' errors described accurately.',
+      cls:sevRight+' of '+findTotal+' findings correctly graded Critical / Major / Minor.',
+      act:actRight+' of '+findTotal+' corrective actions correct.',
+      rep:(noteOK?'Audit summary written. ':'Audit summary missing or too brief. ')+gcpRight+' of '+findTotal+' GCP principles correctly stated.'
+    };
+
+    result={name:name,reg:reg,total:tot,pct:pct,pass:pass,sc:sc,fb:fb,rows:rows,
+      docAcc:docAcc,safetyScore:safetyScore,regScore:regScore,
+      critMissed:critMissed,critDowngraded:critDowngraded,auditFail:auditFail,ethicsOK:ethicsOK,
+      gcpAll:(gcpRight===findTotal),caught:caught,findTotal:findTotal,
+      counts:{Critical:0,Major:0,Minor:0}};
+    ITEMS.forEach(function(i){ var a=ans[i.id]||{}; if(a.call==='find'&&a.sev&&a.sev!=='None') result.counts[a.sev]=(result.counts[a.sev]||0)+1; });
+    result.badges=computeBadges(result);
+    submitted=true;
+    $('scScore').textContent=tot+'/'+MAXTOTAL; $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+pct+'%)';
+    makeQR(); renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+
+  /* ---------- QR verification ---------- */
+  var qrData='';
+  function makeQR(){
+    try{
+      var url='https://www.alizon.in/alizon-verify.html?reg='+encodeURIComponent(result.reg||'')+'&p=M5U1P3';
+      $('qrHolder').innerHTML='';
+      if(window.QRCode){
+        new QRCode($('qrHolder'),{text:url,width:96,height:96,correctLevel:QRCode.CorrectLevel.M});
+        var cv=$('qrHolder').querySelector('canvas');
+        if(cv) qrData=cv.toDataURL('image/png');
+        else { var im=$('qrHolder').querySelector('img'); if(im) qrData=im.src; }
+      }
+    }catch(e){ qrData=''; }
+  }
+
+  function buildAuto(){
+    if(!submitted||!result) return null;
+    var r=result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Audit Readiness Report — Study ALZ-CT-2026-01</h3>';
+    h+='<p style="margin:2px 0"><b>Inspector:</b> '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' &nbsp;·&nbsp; <b>Date:</b> '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})+'</p>';
+    h+='<p style="margin:2px 0"><b>Site:</b> Alizon Teaching Hospital, Clinical Trials Unit</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Compliance dashboard</th><th>Score</th></tr>'
+      +'<tr><td>Documentation accuracy</td><td align="center">'+r.docAcc+'%</td></tr>'
+      +'<tr><td>Audit readiness score</td><td align="center">'+r.pct+'%</td></tr>'
+      +'<tr><td>Patient safety score</td><td align="center">'+r.safetyScore+'%</td></tr>'
+      +'<tr><td>Regulatory compliance score</td><td align="center">'+r.regScore+'%</td></tr>'
+      +'<tr><td>Findings raised — Critical / Major / Minor</td><td align="center">'+r.counts.Critical+' / '+r.counts.Major+' / '+r.counts.Minor+'</td></tr>'
+      +'</table>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:11.5px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Item inspected</th><th align="left">Your assessment</th><th align="left">Correct</th></tr>'
+      +r.rows.map(function(x){return '<tr><td>'+esc(x.n.replace(/&amp;/g,'&'))+'</td><td'+(x.ok?'':' style="color:#b3261e"')+'>'+esc(x.mine)+'</td><td>'+esc(x.truth)+'</td></tr>';}).join('')
+      +'</table>';
+    var missed=r.rows.filter(function(x){return !x.ok;});
+    h+='<p style="margin:10px 0 2px"><b>Errors identified:</b> '+r.caught+' of '+r.findTotal
+      +' &nbsp;·&nbsp; <b>Errors missed / misjudged:</b> '+missed.length+'</p>';
+    var note=($('noteBox').value||'').trim();
+    if(note) h+='<p style="margin:2px 0"><b>Auditor’s summary &amp; corrective actions:</b> '+esc(note)+'</p>';
+    h+='<p style="margin:8px 0 2px"><b>Badges earned:</b> '+ (r.badges.filter(function(b){return b.got;}).map(function(b){return esc(b.n);}).join(' · ')||'none') +'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
+      +RUBRIC.map(function(x){return '<tr><td>'+x.label.replace(/&amp;/g,'&')+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
+      +'<tr style="background:#f3e2e2;font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">'+MAXTOTAL+'</td></tr></table>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL COMPLIANCE RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'
+      +(r.auditFail?' (AUDIT FAILURE — a critical finding was missed or downgraded)':'')+'</p>';
+    h+='<p style="margin-top:8px;font-size:11px;color:#555"><b>Faculty remarks:</b> ______________________________________________</p>';
+    if(qrData) h+='<div style="margin-top:10px"><img src="'+qrData+'" width="96" height="96" alt="Verification QR"><div style="font-size:10px;color:#666">Scan to verify this record · '+esc(r.reg||'—')+' · M5-U1-P3</div></div>';
+    return h;
+  }
+
+  function renderReport(){
+    var r=result;
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.docAcc+'%</div><div class="rl">Documentation accuracy</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Audit readiness</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.safetyScore+'%</div><div class="rl">Patient safety</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.regScore+'%</div><div class="rl">Regulatory compliance</div></div></div>';
+    html+='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv" style="color:var(--danger)">'+r.counts.Critical+'</div><div class="rl">Critical findings</div></div>'
+      +'<div class="repbox"><div class="rv" style="color:var(--warn)">'+r.counts.Major+'</div><div class="rl">Major findings</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.counts.Minor+'</div><div class="rl">Minor findings</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.caught+'/'+r.findTotal+'</div><div class="rl">Errors identified</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+r.total+'/'+MAXTOTAL+' ('+r.pct+'%)</div>';
+    if(r.auditFail) html+='<div class="note" style="color:var(--danger);font-weight:600;margin:-4px 0 10px">Audit failure — '
+      +(r.critMissed?(r.critMissed+' critical finding'+(r.critMissed>1?'s were':' was')+' missed. '):'')
+      +(r.critDowngraded?(r.critDowngraded+' critical finding'+(r.critDowngraded>1?'s were':' was')+' downgraded to Minor. '):'')
+      +'A critical finding left uncorrected can harm a participant before the inspection ever happens.</div>';
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:14px 0 6px">Badges</h3>';
+    html+='<div class="badges">'+r.badges.map(function(b){return '<span class="badge '+(b.got?'got':'miss')+'" title="'+esc(b.d)+'">'+b.n+'</span>';}).join('')+'</div>';
+    html+='<div class="tw" style="margin-top:14px"><table class="rubric"><thead><tr><th>Criteria</th><th>Score</th><th>Max</th></tr></thead><tbody>'
+      +RUBRIC.map(function(x){return '<tr><td>'+x.label+'<div class="note" style="margin-top:2px">'+esc(r.fb[x.k]||'')+'</div></td><td>'+(r.sc[x.k]||0)+'</td><td>'+x.max+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr></tbody></table></div>';
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">Findings register — your assessment vs the audit truth</h3>';
+    html+='<div class="tw"><table><thead><tr><th>Item</th><th>Your assessment</th><th>Correct</th></tr></thead><tbody>'
+      +r.rows.map(function(x){return '<tr><td>'+x.n+'<div class="note" style="margin-top:2px">'+esc(x.err)+'</div></td>'
+        +'<td style="color:'+(x.ok?'var(--success)':'var(--danger)')+'">'+esc(x.mine)+'</td><td>'+esc(x.truth)+'</td></tr>';}).join('')
+      +'</tbody></table></div>';
+    html+='<div class="row no-print" style="margin-top:14px"><button class="btn gold" onclick="window.print()">Download / Print readiness report</button>'
+      +'<button class="btn ghost" id="retryBtn">Run the audit again</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ ans={}; submitted=false; result=null; openItem=null; curRoom='pharm';
+      $('noteBox').value=''; $('scScore').textContent='—'; $('scRes').textContent='—';
+      $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+      refreshChips(); renderRooms(); renderRoom(); switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 5 · Unit 1 — Clinical Trials in Pharmacy',title:'Clinical Trial Audit Readiness Challenge',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Site audited &amp; overall readiness', placeholder:'e.g. ALZ-CT-2026-01 — 4 critical findings, site not audit ready'},
+      minWords:400,
+      attachments:[
+        {label:'1. Completed Audit Findings Register (PDF)'},
+        {label:'2. Corrective &amp; Preventive Action (CAPA) Plan (PDF)'},
+        {label:'3. Additional Supporting File (PDF)'}
+      ],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return result?result.pct:null; },
+      autoResultText:function(){ return result?((result.pass?'PASS':'FAIL')+' '+result.pct+'%'):''; }
+    });
+  }
+
+  function switchTab(p){ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  $('submitBtn').addEventListener('click',evaluate);
+
+  refreshChips(); renderRooms(); renderRoom();
+})();
+</script>
+</body>
+</html>

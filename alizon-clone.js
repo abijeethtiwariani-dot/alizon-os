@@ -13,7 +13,7 @@
   if(!RM){
     revealEls.forEach(function(el){ el.classList.add('reveal'); });
     document.querySelectorAll('.grid').forEach(function(g){
-      [].slice.call(g.children).forEach(function(c,i){ c.style.transitionDelay = ((i % 4) * 0.09) + 's'; });
+      [].slice.call(g.children).forEach(function(c,i){ c.style.transitionDelay = ((i % 4) * 0.12) + 's'; });
     });
   }
 
@@ -44,9 +44,21 @@
     var r = el.getBoundingClientRect();
     return r.top < vh() * (frac || 0.88) && r.bottom > 0;
   }
+
+  /* ---------- home floating-glass header: glass over hero, solid on scroll ---------- */
+  var homeHdr = document.querySelector('#azsitehdr.home');
+  var homeHero = homeHdr ? document.querySelector('.hero') : null;
+  function updHeader(){
+    if(!homeHdr || !homeHero) return;
+    /* go solid once the hero has scrolled up to (roughly) the solid header height */
+    var solid = homeHero.getBoundingClientRect().bottom <= 122;
+    if(solid) homeHdr.classList.add('solid'); else homeHdr.classList.remove('solid');
+  }
+
   var ticking = false;
   function check(){
     ticking = false;
+    updHeader();
     for(var i = 0; i < revealEls.length; i++){
       var el = revealEls[i];
       if(!el.classList.contains('in') && inView(el)) el.classList.add('in');
@@ -97,13 +109,23 @@
       dots.appendChild(b); return b;
     });
     hero.appendChild(dots);
+    /* Stanford-style story cycler: [data-story] rows track + drive the carousel */
+    var stories = [].slice.call(hero.querySelectorAll('.hero-stories [data-story]'));
+    function syncStories(n){
+      stories.forEach(function(s){ s.classList.toggle('on', parseInt(s.getAttribute('data-story'), 10) === n % urls.length); });
+    }
     var cur = 0, timer;
     function go(n){
       if(n === cur) return;
       layers[cur].style.opacity = '0'; btns[cur].className = '';
       cur = n;
       layers[cur].style.opacity = '1'; btns[cur].className = 'on';
+      syncStories(cur);
     }
+    stories.forEach(function(s){
+      s.addEventListener('click', function(){ var i = parseInt(s.getAttribute('data-story'), 10); if(!isNaN(i) && i < urls.length){ go(i); restart(); } });
+    });
+    syncStories(0);
     btns.forEach(function(b, i){ b.addEventListener('click', function(){ go(i); restart(); }); });
     function restart(){ if(RM) return; clearInterval(timer); timer = setInterval(function(){ go((cur + 1) % urls.length); }, 5500); }
     restart();

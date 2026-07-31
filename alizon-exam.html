@@ -9,11 +9,13 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Alizon OS">
-<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})})}</script>
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="alizon-clone.css?v=7">
+<script src="alizon-clone.js?v=2" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Examinations — Alizon School of Medical & Digital Intelligence</title>
 <meta name="description" content="Examination section of Alizon School of Medical & Digital Intelligence — apply for exams, download hall tickets, exam notifications, timetables, question papers and results.">
@@ -132,15 +134,45 @@ button.lk[disabled]{opacity:.5;cursor:wait}
   .tab.on{color:#8c1515 !important}
   .exs-list a,.exs-list .exs-item{background:#fff !important;border-color:rgba(0,0,0,.1) !important;color:#2e2d29 !important}
 </style>
+<style>
+  /* keep the site-standard hero + footer readable over the exam light theme */
+  #azsitehdr h1,#azsitehdr h2,#azsitehdr h3{color:inherit}
+  .hero h1,.hero .sub,.hero .eyebrow{color:#fff !important}
+  .hero .sub{color:#f2dede !important}
+  footer.site h1,footer.site h2,footer.site h3,footer.site h4{color:#fff !important}
+  main{background:#faf8f6}
+  .tab.on{color:#fff !important}
+</style>
 </head>
 <body>
 <div class="bgwrap"></div>
-<div class="top"><div class="in">
-  <img class="logo" src="alizon-logo.png" alt="" onerror="this.style.display='none'">
-  <div class="bt"><b>Examinations</b><small>ALIZON OS</small></div>
-  <div class="sp"><a href="ASMDI-dashboard.html">← Dashboard</a></div>
-</div></div>
 
+<header id="azsitehdr">
+  <div class="azhdr-util"><div class="in">
+    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON&nbsp;OS<small>Practical Learning Platform</small></span></a>
+    <div class="util-r"><span class="lbl">Information for:</span>
+      <a href="ASMDI-dashboard.html">ALIZON OS Portal</a><a href="alizon-faculty-portal.html">Faculty &amp; Staff Login</a><a href="alizon-results.html">Results</a><a href="alizon-verify.html">Verify</a><a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
+    </div>
+    <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div></div>
+  <div class="azhdr-nav"><nav class="in">
+    <div class="navlinks2"><a href="alizon-os.html">Overview</a><a href="os-practicals.html">Practicals</a><a href="alizon-exam.html" class="active">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a><a href="alizon-career.html">Career</a><a href="index.html">Institution</a></div>
+    <a class="btn btn-primary" style="padding:9px 20px;font-size:.95rem" href="ASMDI-dashboard.html">Enter Portal ↗</a>
+  </nav></div>
+  <div class="azhdr-tick"><span class="tag"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5a2 2 0 1 1 4 0 7 7 0 0 1 4 6v3a4 4 0 0 0 2 3H4a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg> Examinations</span><div class="track">Apply online for examinations<span class="sep">•</span>Download your hall ticket once approved<span class="sep">•</span>Notifications, timetables &amp; question papers published here</div></div>
+</header>
+
+<section class="hero short" style="padding:0">
+  <img id="heroImgexam" class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp" alt="Examinations">
+  <div class="in">
+    <span class="eyebrow" style="color:#ffd7d9">ALIZON OS · Examinations</span>
+    <h1 id="heroH1exam" style="margin-top:12px">Examinations &amp; Hall Tickets</h1>
+    <p id="heroSubexam" class="sub">Apply for examinations, download your hall ticket, and access notifications, timetables, question papers and results published by the examination office.</p>
+  </div>
+</section>
+<div class="explore">Examination Section ▾</div>
+
+<main>
 <div class="wrap">
   <div class="tabs">
     <button class="tab on" data-tab="apply">Apply for Exam</button>
@@ -150,8 +182,8 @@ button.lk[disabled]{opacity:.5;cursor:wait}
   <!-- APPLY -->
   <div id="tab-apply">
     <div class="card">
-      <h2>Apply for an examination</h2>
-      <div class="hint">Type your registration number to load your details, choose the exam and the parts you're sitting, then submit. The exam office approves applications and issues hall tickets.</div>
+      <h2 id="exApplyH">Apply for an examination</h2>
+      <div class="hint" id="exApplyHint">Type your registration number to load your details, choose the exam and the parts you're sitting, then submit. The exam office approves applications and issues hall tickets.</div>
       <div class="lookrow">
         <div><label class="f">Registration number</label><input type="text" id="ap-reg" placeholder="e.g. ALZ102" autocomplete="off"></div>
         <button class="abtn" id="ap-look">Look up</button>
@@ -178,12 +210,28 @@ button.lk[disabled]{opacity:.5;cursor:wait}
   <!-- ===== EXAMINATION SECTION (KUHS-style folders) ===== -->
   <div class="exs">
     <div class="card">
-      <h2>Examination Section</h2>
-      <div class="hint">Notifications, timetables, circulars and results — published by the examination office.</div>
+      <h2 id="exSecH">Examination Section</h2>
+      <div class="hint" id="exSecHint">Notifications, timetables, circulars and results — published by the examination office.</div>
       <div class="exs-list" id="exsList"></div>
     </div>
   </div>
 </div>
+</main>
+
+<footer class="site">
+  <div class="in">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:14px"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON OS<small style="color:#bdbdbd">Practical Learning Platform</small></span></a>
+        <p style="color:#bdbdbd;max-width:34ch">The examination section of Alizon School of Medical &amp; Digital Intelligence — apply, download hall tickets and check results online.</p>
+      </div>
+      <div><h4>Examinations</h4><a href="alizon-exam.html">Apply / Hall Ticket</a><a href="alizon-results.html">Results</a><a href="alizon-verify.html">Verify Certificate</a></div>
+      <div><h4>Platform</h4><a href="os-practicals.html">Practicals</a><a href="alizon-career.html">Career</a><a href="ASMDI-dashboard.html">ALIZON OS Portal</a></div>
+      <div><h4>Institution</h4><a href="https://alizongov.com" target="_blank" rel="noopener">Official Website ↗</a><a href="index.html">Home</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Alizon School of Medical &amp; Digital Intelligence</span><span>alizongov.com · alizon.in</span></div>
+  </div>
+</footer>
 
 <div id="htArea"></div>
 
@@ -478,5 +526,6 @@ document.querySelectorAll('.tab').forEach(function(t){
 })();
 </script>
 <script src="alizon-back.js"></script>
+<script src="alizon-cms.js?v=6" defer></script>
 </body>
 </html>

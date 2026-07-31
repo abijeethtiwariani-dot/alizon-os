@@ -208,6 +208,7 @@
 
     var html='<article class="alz-doc" id="alzDoc">';
     html+=letterhead();
+    html+='<div class="d-docbody">';
 
     /* toolbar (screen only) */
     html+='<div class="d-actions no-print">'
@@ -263,12 +264,12 @@
 
     /* detailed syllabus — collapsible module accordion (click a module to reveal its detail) */
     html+='<div class="d-secrow"><h3 class="d-sec">Detailed Syllabus</h3>'
-      +'<button type="button" class="d-expand no-print" onclick="AlizonCurriculum.toggleAll(this)">Expand all</button></div>';
-    html+='<div class="d-hint no-print">Click a module to view its objectives, outcomes and topics.</div>';
+      +'<button type="button" class="d-expand no-print" onclick="AlizonCurriculum.toggleAll(this)">Collapse all</button></div>';
+    html+='<div class="d-hint no-print">Every module is shown in full below — use a module title (or the button above) to collapse.</div>';
     html+='<div class="d-mods">';
     mods.forEach(function(x){
       var h=x.hours||{};
-      html+='<details class="d-mod">'
+      html+='<details class="d-mod" open>'
         +'<summary class="d-mod-h"><span class="d-mod-no">Module '+esc(x.no)+'</span>'
         +'<span class="d-mod-nm">'+esc(x.name)+'</span>'
         +'<span class="d-mod-meta">'+(h.total?h.total+' hrs':'')+(x.ece&&x.ece.total?'&nbsp; ·&nbsp; '+x.ece.total+' marks':'')+'</span>'
@@ -292,6 +293,7 @@
       html+='</div></details>';
     });
     html+='</div>';
+    html+='</div>'; /* /.d-docbody */
 
     /* document footer */
     html+='<footer class="d-foot">'
@@ -317,7 +319,16 @@
   function printDoc(){
     [].forEach.call(document.querySelectorAll('.alz-doc .d-mod'),function(d){ d.open=true; });
     var btn=document.querySelector('.alz-doc .d-expand'); if(btn) btn.textContent='Collapse all';
-    setTimeout(function(){ try{ window.print(); }catch(e){} }, 60);
+    var doc=document.getElementById('alzDoc');
+    setTimeout(function(){
+      /* professional multi-page output: letterhead + affiliation repeat on every
+         A4 page and the footer carries "Page X of Y" (shared LHPrint paginator) */
+      if(window.LHPrint && doc){
+        try{ LHPrint(doc,{ headerEnd:'.d-lh-affil', footer:'.d-foot',
+          flatten:['.d-docbody','.d-mods','.d-mod','.d-mod-b','.d-units'] }); return; }catch(e){}
+      }
+      try{ window.print(); }catch(e){}
+    }, 60);
   }
 
   /* inject styles once */
@@ -360,9 +371,9 @@
       +'.alz-doc .d-sec:before{content:"";width:8px;height:18px;background:var(--cr);border-radius:2px;display:inline-block}'
       /* ---- table ---- */
       +'.alz-doc .cur-tblwrap{overflow-x:auto;border:1px solid rgba(0,0,0,.12);border-radius:10px}'
-      +'.alz-doc .cur-tbl{border-collapse:collapse;width:100%;min-width:780px;font-size:12px}'
-      +'.alz-doc .cur-tbl th{background:var(--cr);color:#fff;font-weight:600;padding:8px 6px;text-align:center;border:1px solid rgba(255,255,255,.18);font-size:10.5px;letter-spacing:.02em}'
-      +'.alz-doc .cur-tbl td{padding:8px 6px;text-align:center;border:1px solid rgba(0,0,0,.08);color:var(--ink)}'
+      +'.alz-doc .cur-tbl{border-collapse:collapse;width:100%;min-width:780px;font-size:13px}'
+      +'.alz-doc .cur-tbl th{background:var(--cr);color:#fff;font-weight:600;padding:9px 7px;text-align:center;border:1px solid rgba(255,255,255,.18);font-size:11px;letter-spacing:.02em}'
+      +'.alz-doc .cur-tbl td{padding:9px 7px;text-align:center;border:1px solid rgba(0,0,0,.08);color:var(--ink)}'
       +'.alz-doc .cur-tbl td.mno{font-weight:700;color:var(--cr)}'
       +'.alz-doc .cur-tbl td.mnm{text-align:left;font-weight:600;min-width:210px}'
       +'.alz-doc .cur-tbl td.tot{font-weight:700;background:#faf3f3}'

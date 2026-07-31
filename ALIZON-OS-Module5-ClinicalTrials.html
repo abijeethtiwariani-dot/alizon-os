@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON OS · Module 5 · Clinical Trial Phase Identification Challenge</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)} .scorechip b{color:var(--gold)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:6px}
+  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:5px 0;cursor:pointer}
+  .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:480px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  select,textarea,input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  select:focus,textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:60px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .aibox{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:12px 14px;margin-top:8px;font-size:13px}
+  .aibox .lbl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .opt.right{border-color:var(--success);box-shadow:0 0 0 3px rgba(30,142,90,.16)} .opt.wrong{border-color:var(--danger);box-shadow:0 0 0 3px rgba(196,38,46,.14)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
+  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
+  details.help>summary::-webkit-details-marker{display:none}
+  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
+  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
+  .expl{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--success);border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.6}
+  .expl .lbl{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--success);margin-bottom:3px}
+  .phasetag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:100px;background:var(--gold-soft);color:var(--gold);border:1px solid rgba(161,98,7,.3)}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 5 · Unit 1 · Practical 1 — Clinical Trials in Pharmacy</div>
+    <h1 class="serif">Clinical Trial Phase Identification Challenge</h1>
+    <p><b>Aim —</b> To differentiate between <b>Phase I, II, III and IV</b> clinical trials using real-life case scenarios, and to justify the identification from the study objective, the participants and the sample size.
+      <span class="muted">Duration 45 minutes · 10 randomised scenarios · 20-mark rubric per scenario · Pass 50%.</span></p>
+    <div class="chips">
+      <div class="scorechip">Scenario <b id="scCase">—</b></div>
+      <div class="scorechip">Score <b id="scScore">—</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip">Time <b id="scTime">00:00</b></div>
+      <div class="scorechip">Best <b id="scBest">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Challenge Station</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="clinicaltrials"></div>
+    <div class="guide">
+      <h2>New to clinical trial phases? Start here</h2>
+      <p>A new medicine climbs a <b>ladder of four phases</b>. Each phase answers one question, and each exposes more people to the drug only after the previous phase showed acceptable risk. To identify a phase, ask in this order:</p>
+      <ol>
+        <li><b>Is the drug already approved and marketed?</b> If yes → <b>Phase IV</b> (post-marketing surveillance), whatever the size.</li>
+        <li><b>Who is being studied?</b> Healthy volunteers → <b>Phase I</b>. Patients with the disease → Phase II or III.</li>
+        <li><b>Is it compared against an existing standard treatment or placebo for registration?</b> → <b>Phase III</b>.</li>
+        <li><b>Is it finding whether it works and at what dose, in a few hundred patients?</b> → <b>Phase II</b>.</li>
+      </ol>
+      <p style="margin-top:8px">Use the sample size only as a <b>cross-check</b> — never as your first clue. Unsure on a scenario? Open <b>“Need a hint?”</b> in the station.</p>
+    </div>
+    <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
+    <div class="card"><h2>Clinical trial phases at a glance</h2>
+      <div class="tw"><table><thead><tr><th>Phase</th><th>Main objective</th><th>Participants</th><th>Typical number</th></tr></thead><tbody>
+        <tr><td><b>Phase I</b></td><td><b>Safety</b>, tolerability &amp; pharmacokinetics; dose escalation to find the maximum tolerated dose</td><td>Healthy volunteers <span class="muted">(patients in oncology / cytotoxic studies)</span></td><td>20–100</td></tr>
+        <tr><td><b>Phase II</b></td><td><b>Efficacy</b> (proof of concept) and the <b>optimal dose</b>; further safety</td><td>Patients with the target disease</td><td>100–300</td></tr>
+        <tr><td><b>Phase III</b></td><td><b>Comparison</b> with the existing standard treatment or placebo; confirms efficacy for <b>regulatory approval</b></td><td>Patients — large, multicentre, randomised</td><td>1,000–5,000</td></tr>
+        <tr><td><b>Phase IV</b></td><td><b>Post-marketing surveillance</b> — rare and long-term adverse effects in real-world use</td><td>General population using the marketed drug</td><td>Tens of thousands</td></tr>
+      </tbody></table></div>
+      <p class="note"><b>Watch the exception:</b> a first-in-human study of a cytotoxic or oncology drug recruits <b>patients</b> rather than healthy volunteers — but it is still <b>Phase I</b>.</p>
+    </div>
+    <div class="card"><h2>Faculty assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
+      <p class="note">Each scenario is auto-scored out of <b>20</b> and converted to a percentage. <b>Justification</b> combines the sample-size estimate (3) with your written clinical justification (2). Pass mark 50%.</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card"><h2>Candidate &amp; scenario assignment</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+        <div><label class="f">Assigned scenario</label><select id="caseSel"></select></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost" id="randBtn">🎲 Randomise scenario</button>
+        <span class="note" style="margin:0">Ten scenarios cover all four phases. Your faculty may assign one, or randomise for practice.</span>
+      </div>
+    </div>
+    <div id="caseArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>Practical record &amp; assessment</h2>
+      <p class="muted" id="repEmpty">Complete the challenge station and submit to generate your assessment, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=10"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+
+  var TASKS=['Read the clinical trial scenario carefully','Identify the phase of the trial (I, II, III or IV)',
+    'Select the main objective of that phase','Identify the participants studied',
+    'Estimate the expected sample-size band','Justify your answer using the clinical evidence in the scenario',
+    'Review the model explanation after submission','Document your justification in the practical report'];
+
+  var RUBRIC=[
+    {k:'phase',  label:'Correct phase identified',              max:5},
+    {k:'obj',    label:'Main objective',                        max:5},
+    {k:'part',   label:'Participants',                          max:5},
+    {k:'just',   label:'Justification (sample size 3 + written 2)', max:5}];
+  var MAXTOTAL=RUBRIC.reduce(function(a,r){return a+r.max;},0);
+
+  /* option banks — identical wording across scenarios so the phase cannot be guessed from the options */
+  var PH=['Phase I','Phase II','Phase III','Phase IV'];
+  var OB=['Safety, tolerability &amp; pharmacokinetics','Efficacy and optimal dose (proof of concept)','Comparison with existing standard treatment','Post-marketing surveillance of rare / long-term effects'];
+  var PA=['Healthy volunteers','Patients with the target disease','General population using the marketed drug','Healthcare workers only'];
+  var SS=['20–100 subjects','100–300 patients','1,000–5,000 patients','Tens of thousands (post-marketing)'];
+
+  var CASES=[
+   {n:1,short:'New antihypertensive — first in human',
+    scenario:'A pharmaceutical company has developed a new antihypertensive medicine. The study enrols 30 healthy volunteers. The objective is to determine safety and tolerability, and dose escalation is performed to establish the maximum tolerated dose.',
+    design:'Open-label, single-centre, dose-escalation study · 30 healthy volunteers',
+    phase:0,obj:0,part:0,ss:0,
+    hint:'Healthy volunteers + dose escalation + “determine safety” is the classic signature of the first phase in humans.',
+    expl:'This is <b>Phase I</b>. Healthy volunteers, a small group (30), an objective of <b>safety and tolerability</b>, and <b>dose escalation</b> to find the maximum tolerated dose are all defining features of Phase I. Efficacy is not being measured yet.'},
+
+   {n:2,short:'New antidiabetic — dose finding',
+    scenario:'A new oral antidiabetic agent has passed safety testing. It is now given to 150 patients with type 2 diabetes to find out whether it lowers HbA1c and to identify which of three doses gives the best response with acceptable side effects.',
+    design:'Randomised, three-dose parallel-group study · 150 patients with type 2 diabetes',
+    phase:1,obj:1,part:1,ss:1,
+    hint:'Patients with the disease, a few hundred subjects, and the question “does it work and at what dose?” point to the second phase.',
+    expl:'This is <b>Phase II</b>. The drug has cleared Phase I safety, and the study now asks the <b>efficacy and optimal dose</b> question in <b>patients with the target disease</b>, in the typical 100–300 range.'},
+
+   {n:3,short:'New anticoagulant vs warfarin',
+    scenario:'A new oral anticoagulant is tested in 3,000 patients with atrial fibrillation across 40 hospitals in eight countries. Patients are randomised double-blind to either the new drug or warfarin, the current standard treatment. The results will support the marketing authorisation application.',
+    design:'Randomised, double-blind, active-controlled, multicentre trial · 3,000 patients',
+    phase:2,obj:2,part:1,ss:2,
+    hint:'A large multicentre randomised trial that compares the new drug against the existing standard treatment, for registration, is the confirmatory phase.',
+    expl:'This is <b>Phase III</b>. The hallmarks are a <b>large multicentre randomised</b> design, <b>comparison against the existing standard treatment</b> (warfarin), a sample size in the thousands, and the purpose of supporting <b>regulatory approval</b>.'},
+
+   {n:4,short:'Marketed antibiotic — rare ADRs',
+    scenario:'An antibiotic has been approved and marketed for two years. The manufacturer analyses spontaneous adverse-drug-reaction reports and a registry of 50,000 patients to detect rare hepatic reactions that did not appear during the pre-approval trials.',
+    design:'Post-marketing pharmacovigilance / registry study · approx. 50,000 patients',
+    phase:3,obj:3,part:2,ss:3,
+    hint:'The drug is already approved and on the market — that single fact fixes the phase, whatever the sample size.',
+    expl:'This is <b>Phase IV</b>. The drug is <b>already marketed</b>, and the study is <b>post-marketing surveillance</b> looking for <b>rare adverse reactions</b> in a very large real-world population — reactions too rare for a few thousand pre-approval patients to reveal.'},
+
+   {n:5,short:'Oncology first-in-human (exception)',
+    scenario:'A new cytotoxic anticancer agent is given to humans for the first time. Because the drug is too toxic to give to healthy people, 20 patients with advanced cancer that has not responded to standard treatment are enrolled. Doses are escalated in small cohorts to determine the maximum tolerated dose.',
+    design:'First-in-human, dose-escalation cohort study · 20 patients with advanced cancer',
+    phase:0,obj:0,part:1,ss:0,
+    hint:'Dose escalation to find the maximum tolerated dose is a first-phase objective — but for cytotoxic drugs the participants are patients, not healthy volunteers.',
+    expl:'This is <b>Phase I</b> — the important <b>oncology exception</b>. The objective (<b>safety and maximum tolerated dose</b> by dose escalation) and the very small size (20) are Phase I features, but because a cytotoxic drug cannot ethically be given to healthy volunteers the participants are <b>patients</b>.'},
+
+   {n:6,short:'Vaccine immunogenicity & dose',
+    scenario:'After a successful safety study, a candidate vaccine is given to 500 healthy adults in the target age group to measure the antibody response and to compare two different dose schedules before a large efficacy trial is planned.',
+    design:'Randomised, two-schedule immunogenicity study · 500 participants',
+    phase:1,obj:1,part:1,ss:1,
+    hint:'The study is choosing between dose schedules and measuring the biological response before the large trial — that is the dose-finding phase.',
+    expl:'This is <b>Phase II</b>. Safety has already been established, and the study now determines the <b>immune response (efficacy signal) and the optimal dose schedule</b> before committing to a large Phase III efficacy trial.'},
+
+   {n:7,short:'New inhaler vs standard therapy',
+    scenario:'A new combination inhaler is compared with the current standard inhaler in 1,200 patients with moderate asthma at 25 centres. Patients are randomised and assessment is double-blind. The primary endpoint is the change in FEV₁ at 12 weeks, and the data will form part of the registration dossier.',
+    design:'Randomised, double-blind, active-controlled multicentre trial · 1,200 patients',
+    phase:2,obj:2,part:1,ss:2,
+    hint:'Comparison against the current standard treatment, in over a thousand patients across many centres, for the registration dossier.',
+    expl:'This is <b>Phase III</b>. A <b>comparative</b>, randomised, double-blind, <b>multicentre</b> trial of 1,200 patients against the <b>existing standard treatment</b>, intended to support the <b>marketing authorisation</b>, is confirmatory Phase III.'},
+
+   {n:8,short:'Approved statin — long-term effects',
+    scenario:'A statin has been in routine clinical use for five years. Investigators conduct an observational cohort study of patients already taking it in the community, to examine whether long-term use is associated with liver enzyme abnormalities.',
+    design:'Observational cohort study in routine clinical use · marketed product',
+    phase:3,obj:3,part:2,ss:3,
+    hint:'“In routine clinical use for five years” means approval has already happened — the study is watching what occurs in the real world.',
+    expl:'This is <b>Phase IV</b>. The medicine is <b>already approved and in routine use</b>, and the study is an <b>observational post-marketing</b> investigation of <b>long-term effects</b> in the general population taking the drug.'},
+
+   {n:9,short:'Bioavailability / pharmacokinetics',
+    scenario:'Twenty-four healthy adult volunteers receive a single dose of a new tablet formulation. Blood samples are collected over 24 hours to measure Cmax, Tmax and AUC, and to establish how the drug is absorbed, distributed, metabolised and excreted.',
+    design:'Single-dose, open-label pharmacokinetic study · 24 healthy volunteers',
+    phase:0,obj:0,part:0,ss:0,
+    hint:'Pharmacokinetics (Cmax, Tmax, AUC) in a small group of healthy volunteers belongs to the earliest human phase.',
+    expl:'This is <b>Phase I</b>. Studies of <b>pharmacokinetics</b> — absorption, distribution, metabolism and excretion — in a small group of <b>healthy volunteers</b> are conducted in Phase I alongside safety and tolerability.'},
+
+   {n:10,short:'New antiepileptic — proof of concept',
+    scenario:'A new antiepileptic drug has completed safety testing in healthy volunteers. It is now given to 400 patients with focal epilepsy to see whether seizure frequency is reduced, and to characterise adverse effects, before deciding whether to proceed to a large comparative trial.',
+    design:'Randomised, placebo-controlled proof-of-concept study · 400 patients',
+    phase:1,obj:1,part:1,ss:1,
+    hint:'The decision being made is whether the drug works well enough to justify a large trial — the proof-of-concept phase.',
+    expl:'This is <b>Phase II</b>. Safety was established in Phase I; this study establishes <b>proof of concept (does it reduce seizures?)</b> and further characterises adverse effects in <b>patients</b>, before committing to Phase III.'}
+  ];
+
+  $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
+  $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+r.label+'</td><td>'+r.max+'</td></tr>';}).join('')+'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
+
+  var sel=$('caseSel');
+  sel.innerHTML=CASES.map(function(c,i){return '<option value="'+i+'">Scenario '+c.n+' — '+esc(c.short)+'</option>';}).join('');
+  sel.addEventListener('change',function(){ loadCase(parseInt(this.value,10)); });
+  $('randBtn').addEventListener('click',function(){ var i=Math.floor(Math.random()*CASES.length); sel.value=i; loadCase(i); window.scrollTo(0,0); });
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+  try{ var b=localStorage.getItem('ctBest'); if(b) $('scBest').textContent=b+'%'; }catch(e){}
+
+  /* ---- timer ---- */
+  var t0=null,tick=null;
+  function startTimer(){ t0=Date.now(); clearInterval(tick); tick=setInterval(function(){
+    var s=Math.floor((Date.now()-t0)/1000);
+    $('scTime').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  },1000); }
+  function stopTimer(){ clearInterval(tick); return t0?Math.floor((Date.now()-t0)/1000):0; }
+
+  var state=null;
+  function loadCase(ci){
+    state={ci:ci,phase:null,obj:null,part:null,ss:null,note:'',submitted:false,result:null,secs:0};
+    var c=CASES[ci];
+    $('scCase').textContent='Scenario '+c.n; $('scScore').textContent='—'; $('scRes').textContent='—'; $('scTime').textContent='00:00';
+    $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+    renderStation(); startTimer();
+  }
+
+  function mcq(label,el,q,opts,attr){
+    return '<div class="card"><span class="step">'+label+'</span> <b>'+q+'</b>'
+      +'<div id="'+el+'">'+opts.map(function(o,k){return '<button type="button" class="opt" data-'+attr+'="'+k+'">'+o+'</button>';}).join('')+'</div></div>';
+  }
+  function renderStation(){
+    var c=CASES[state.ci]; var h='';
+    h+='<div class="card"><span class="step">Scenario '+c.n+'</span>'
+      +'<h2 style="margin-top:6px">'+esc(c.short)+'</h2>'
+      +'<h3>Clinical trial scenario</h3><p>'+esc(c.scenario)+'</p>'
+      +'<div class="aibox"><div class="lbl">Study design summary</div>'+esc(c.design)+'</div>'
+      +(c.hint?'<details class="help"><summary>Need a hint?</summary><div class="hb">'+esc(c.hint)+'</div></details>':'')
+      +'</div>';
+    h+=mcq('Step 1','q-phase','Which <b>phase</b> of clinical trial is this?',PH,'phase');
+    h+=mcq('Step 2','q-obj','What is the <b>main objective</b> of this phase?',OB,'obj');
+    h+=mcq('Step 3','q-part','Who are the <b>participants</b>?',PA,'part');
+    h+=mcq('Step 4','q-ss','What is the expected <b>sample size</b> for this phase?',SS,'ss');
+    h+='<div class="card"><span class="step">Step 5</span> <b>Justification</b>'
+      +'<p class="note" style="margin-top:4px">Justify your phase identification using the clinical evidence in the scenario — the objective, the participants and the design.</p>'
+      +'<textarea id="noteBox" placeholder="e.g. Healthy volunteers with dose escalation to establish the maximum tolerated dose, and no efficacy endpoint, identify this as Phase I."></textarea></div>';
+    h+='<div class="card"><button class="btn" id="submitBtn">Submit &amp; evaluate</button>'
+      +'<span class="muted" style="font-size:12.5px;margin-left:10px">Auto-scored against the 20-mark rubric, with the model explanation shown after submission.</span></div>';
+    $('caseArea').innerHTML=h;
+    [['phase','#q-phase'],['obj','#q-obj'],['part','#q-part'],['ss','#q-ss']].forEach(function(p){
+      document.querySelectorAll(p[1]+' .opt').forEach(function(b){ b.addEventListener('click',function(){
+        if(state.submitted) return;
+        state[p[0]]=+b.getAttribute('data-'+p[0]);
+        document.querySelectorAll(p[1]+' .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick');
+      }); });
+    });
+    $('noteBox').addEventListener('input',function(){ state.note=this.value; });
+    $('submitBtn').addEventListener('click',evaluate);
+  }
+
+  /* mark each option right/wrong and show the model explanation — "explanation after every answer" */
+  function revealAnswers(){
+    var c=CASES[state.ci];
+    [['phase','#q-phase',c.phase],['obj','#q-obj',c.obj],['part','#q-part',c.part],['ss','#q-ss',c.ss]].forEach(function(p){
+      document.querySelectorAll(p[1]+' .opt').forEach(function(b){
+        var k=+b.getAttribute('data-'+p[0]);
+        if(k===p[2]) b.classList.add('right');
+        else if(state[p[0]]===k) b.classList.add('wrong');
+      });
+    });
+    var box=document.createElement('div'); box.className='card';
+    box.innerHTML='<span class="phasetag">Model answer — '+PH[c.phase]+'</span>'
+      +'<div class="expl"><div class="lbl">Explanation</div>'+c.expl+'</div>'
+      +'<div class="tw" style="margin-top:10px"><table><thead><tr><th>Question</th><th>Your answer</th><th>Correct answer</th></tr></thead><tbody>'
+      +[['Phase',PH,state.phase,c.phase],['Objective',OB,state.obj,c.obj],['Participants',PA,state.part,c.part],['Sample size',SS,state.ss,c.ss]]
+        .map(function(r){ var mine=(r[2]==null)?'<span class="muted">not answered</span>':r[1][r[2]];
+          var ok=(r[2]===r[3]);
+          return '<tr><td><b>'+r[0]+'</b></td><td style="color:'+(ok?'var(--success)':'var(--danger)')+'">'+mine+'</td><td>'+r[1][r[3]]+'</td></tr>'; }).join('')
+      +'</tbody></table></div>';
+    $('caseArea').appendChild(box);
+  }
+
+  function evaluate(){
+    if(state.submitted) return;
+    var c=CASES[state.ci], name=($('cName').value||'').trim()||'Candidate', reg=($('cReg').value||'').trim();
+    var sc={}, fb={};
+    var pOK=state.phase===c.phase; sc.phase=pOK?5:0;
+    fb.phase=pOK?('Phase correctly identified as '+PH[c.phase]+'.'):('Incorrect — this is '+PH[c.phase]+', not '+(state.phase==null?'(unanswered)':PH[state.phase])+'.');
+    var oOK=state.obj===c.obj; sc.obj=oOK?5:0;
+    fb.obj=oOK?'Main objective correct.':('The main objective of this phase is: '+OB[c.obj].replace(/&amp;/g,'&')+'.');
+    var aOK=state.part===c.part; sc.part=aOK?5:0;
+    fb.part=aOK?'Participants correctly identified.':('The participants are: '+PA[c.part]+'.');
+    var sOK=state.ss===c.ss;
+    var noteOK=(state.note||'').trim().length>=25;
+    sc.just=(sOK?3:0)+(noteOK?2:0);
+    fb.just=(sOK?'Sample-size band correct. ':('Expected sample size: '+SS[c.ss]+'. '))+(noteOK?'Written justification provided.':'Written justification missing or too brief.');
+    var tot=RUBRIC.reduce(function(a,r){return a+(sc[r.k]||0);},0);
+    var pct=Math.round(tot/MAXTOTAL*100);
+    var pass=pct>=50;
+    state.secs=stopTimer();
+    state.result={name:name,reg:reg,total:tot,pct:pct,pass:pass,sc:sc,fb:fb,secs:state.secs};
+    state.submitted=true;
+    $('scScore').textContent=tot+'/'+MAXTOTAL; $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+pct+'%)';
+    try{ var b=parseInt(localStorage.getItem('ctBest')||'0',10); if(pct>b){ localStorage.setItem('ctBest',String(pct)); $('scBest').textContent=pct+'%'; } }catch(e){}
+    revealAnswers();
+    renderReport(); mountWriter();
+  }
+
+  function mmss(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+
+  function buildAuto(){
+    if(!state||!state.submitted) return null;
+    var c=CASES[state.ci], r=state.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Scenario '+c.n+' — '+esc(c.short)+'</h3>';
+    h+='<p style="margin:2px 0"><b>Scenario:</b> '+esc(c.scenario)+'</p>';
+    h+='<p style="margin:2px 0"><b>Design:</b> '+esc(c.design)+'</p>';
+    h+='<p style="margin:6px 0"><b>Correct phase:</b> '+PH[c.phase]+' &nbsp;·&nbsp; <b>Your answer:</b> '+(state.phase==null?'(not answered)':PH[state.phase])+'</p>';
+    h+='<p style="margin:2px 0"><b>Time taken:</b> '+mmss(r.secs)+'</p>';
+    if((state.note||'').trim()) h+='<p style="margin:2px 0"><b>Justification:</b> '+esc(state.note)+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
+      +RUBRIC.map(function(x){return '<tr><td>'+x.label.replace(/&amp;/g,'&')+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
+      +'<tr style="background:#f3e2e2;font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">'+MAXTOTAL+'</td></tr></table>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%</p>';
+    return h;
+  }
+
+  function renderReport(){
+    var c=CASES[state.ci], r=state.result;
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Score</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">of '+MAXTOTAL+'</div></div>'
+      +'<div class="repbox"><div class="rv">'+c.n+'</div><div class="rl">Scenario</div></div>'
+      +'<div class="repbox"><div class="rv">'+mmss(r.secs)+'</div><div class="rl">Time</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+esc(c.short)+' · '+PH[c.phase]+'</div>';
+    html+='<div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Score</th><th>Max</th></tr></thead><tbody>'
+      +RUBRIC.map(function(x){return '<tr><td>'+x.label+'<div class="note" style="margin-top:2px">'+esc(r.fb[x.k]||'')+'</div></td><td>'+(r.sc[x.k]||0)+'</td><td>'+x.max+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr></tbody></table></div>';
+    html+='<div class="row no-print" style="margin-top:14px"><button class="btn gold" onclick="window.print()">Download / Print record</button>'
+      +'<button class="btn ghost" id="retryBtn">Try another scenario</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ var i=Math.floor(Math.random()*CASES.length); sel.value=i; loadCase(i); switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 5 · Unit 1 — Clinical Trials in Pharmacy',title:'Clinical Trial Phase Identification Challenge',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Scenario &amp; phase identified', placeholder:'e.g. Scenario 1 — new antihypertensive, identified as Phase I'},
+      minWords:400,
+      attachments:[
+        {label:'1. Phase Comparison Table / Worksheet (PDF)'},
+        {label:'2. Scenario Justifications (PDF)'},
+        {label:'3. Additional Supporting File (PDF)'}
+      ],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return state.result?state.result.pct:null; },
+      autoResultText:function(){ return state.result?((state.result.pass?'PASS':'FAIL')+' '+state.result.pct+'%'):''; }
+    });
+  }
+
+  function switchTab(p){ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+
+  loadCase(0);
+})();
+</script>
+</body>
+</html>

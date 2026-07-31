@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Alizon OS">
-<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})})}</script>
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
 <meta charset="UTF-8">
@@ -23,6 +23,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="alizon-clone.css?v=7">
+<script src="alizon-clone.js?v=2" defer></script>
 <style>
   :root{ --crimson:#8c1515; --crimson-deep:#6b0f0f; --gold:#9a7b3f; --ink:#2e2d29; --muted:#6e6a63;
     --line:rgba(0,0,0,.12); --paper:#faf8f6; --ok:#1E8E5A; }
@@ -87,6 +89,12 @@
   footer{background:var(--crimson);color:#f3e2e2;padding:26px 24px;text-align:center;font-size:12.5px}
   footer a{color:#fff;font-weight:600}
 </style>
+<style>
+  /* site-standard hero readability + card background */
+  .hero h1,.hero .sub,.hero .eyebrow{color:#fff !important}
+  .hero .sub{color:#f2dede !important}
+  main{background:#faf8f6}
+</style>
 <link rel="stylesheet" href="alizon-theme.css">
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.alizon.in/"}, {"@type": "ListItem", "position": 2, "name": "Verify", "item": "https://www.alizon.in/alizon-verify"}]}
@@ -94,23 +102,30 @@
 </head>
 <body>
 
-<div class="nav"><div class="in">
-  <img src="alizon-logo.png" alt="Alizon logo">
-  <div class="bt"><b class="serif">Alizon</b><small>Verification Service</small></div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="alizon-results.html">Results</a>
-    <a href="alizon-exam.html">Examinations</a>
-    <a class="pri" href="ASMDI-dashboard.html">Student Portal &#8599;</a>
-  </nav>
-</div></div>
+<header id="azsitehdr">
+  <div class="azhdr-util"><div class="in">
+    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON&nbsp;OS<small>Practical Learning Platform</small></span></a>
+    <div class="util-r"><span class="lbl">Information for:</span>
+      <a href="ASMDI-dashboard.html">ALIZON OS Portal</a><a href="alizon-faculty-portal.html">Faculty &amp; Staff Login</a><a href="alizon-results.html">Results</a><a href="alizon-verify.html">Verify</a><a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
+    </div>
+    <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div></div>
+  <div class="azhdr-nav"><nav class="in">
+    <div class="navlinks2"><a href="alizon-os.html">Overview</a><a href="os-practicals.html">Practicals</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a><a href="alizon-career.html">Career</a><a href="alizon-verify.html" class="active">Verify</a></div>
+    <a class="btn btn-primary" style="padding:9px 20px;font-size:.95rem;border-radius:100px" href="ASMDI-dashboard.html">Enter Portal ↗</a>
+  </nav></div>
+  <div class="azhdr-tick"><span class="tag"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Verify</span><div class="track">Confirm any Alizon student or employee<span class="sep">•</span>Official records only<span class="sep">•</span>Privacy-appropriate fields shown</div></div>
+</header>
 
-<div class="strip"><div class="wrap">
-  <div class="ey">Official Verification</div>
-  <h1 class="serif">Verify a Student or Employee</h1>
-  <p>Confirm that a person is genuinely associated with Alizon School of Medical &amp; Digital Intelligence.
-    Verify a student by registration number, or look up an employee by name and department.</p>
-</div></div>
+<section class="hero short" style="padding:0">
+  <img id="heroImgverify" class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp" alt="Verification">
+  <div class="in">
+    <span class="eyebrow" style="color:#ffd7d9">ALIZON OS · Official Verification</span>
+    <h1 id="heroH1verify" style="margin-top:12px">Verify a Student or Employee</h1>
+    <p id="heroSubverify" class="sub">Confirm that a person is genuinely associated with Alizon School of Medical &amp; Digital Intelligence — verify a student by registration number, or look up an employee by name and department.</p>
+  </div>
+</section>
+<div class="explore">Verification Service ▾</div>
 
 <main><div class="wrap">
   <div class="tabs">
@@ -121,8 +136,8 @@
   <!-- STUDENT -->
   <div class="panel on" id="p-student">
     <div class="box">
-      <h2>Verify a student</h2>
-      <div class="hint">Enter the student's registration number (e.g. ALZ102) to confirm their name, programme, batch and standing. For privacy, contact details are not shown.</div>
+      <h2 id="vStudH">Verify a student</h2>
+      <div class="hint" id="vStudHint">Enter the student's registration number (e.g. ALZ102) to confirm their name, programme, batch and standing. For privacy, contact details are not shown.</div>
       <div class="row">
         <div class="fld"><label>Registration number</label><input type="text" id="s-reg" placeholder="e.g. ALZ102" autocomplete="off"></div>
         <button class="btn" id="s-go" type="button">Verify</button>
@@ -135,8 +150,8 @@
   <!-- EMPLOYEE -->
   <div class="panel" id="p-employee">
     <div class="box">
-      <h2>Employee directory &amp; verification</h2>
-      <div class="hint">Search by name or filter by department to find and verify an Alizon employee. Shows name, designation, department and office. For privacy, personal and salary details are not shown.</div>
+      <h2 id="vEmpH">Employee directory &amp; verification</h2>
+      <div class="hint" id="vEmpHint">Search by name or filter by department to find and verify an Alizon employee. Shows name, designation, department and office. For privacy, personal and salary details are not shown.</div>
       <div class="row">
         <div class="fld"><label>Search by name or designation</label><input type="text" id="e-q" placeholder="e.g. Nithya, or Faculty" autocomplete="off"></div>
         <div class="fld" style="max-width:240px"><label>Department</label><select id="e-dept"><option value="">All departments</option></select></div>
@@ -150,8 +165,20 @@
   <div class="privacy">This verification service reads only the official records maintained by the Alizon office and shows a limited, verification-appropriate set of fields. It does not display contact numbers, addresses, identity numbers, salary or other personal data. For full records, sign in to the relevant portal.</div>
 </div></main>
 
-<footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
-  <a href="https://www.alizongov.com" target="_blank" rel="noopener">alizongov.com</a> &middot; <a href="index.html">alizon.in</a></footer>
+<footer class="site">
+  <div class="in">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:14px"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON OS<small style="color:#bdbdbd">Practical Learning Platform</small></span></a>
+        <p style="color:#bdbdbd;max-width:34ch">Official verification service of Alizon School of Medical &amp; Digital Intelligence, Thiruvananthapuram, Kerala.</p>
+      </div>
+      <div><h4>Verify</h4><a href="alizon-verify.html">Verify a Student</a><a href="alizon-verify.html">Employee Directory</a><a href="alizon-results.html">Results</a></div>
+      <div><h4>Platform</h4><a href="alizon-exam.html">Examinations</a><a href="os-practicals.html">Practicals</a><a href="ASMDI-dashboard.html">ALIZON OS Portal</a></div>
+      <div><h4>Institution</h4><a href="https://alizongov.com" target="_blank" rel="noopener">Official Website ↗</a><a href="index.html">Home</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Alizon School of Medical &amp; Digital Intelligence</span><span>alizongov.com · alizon.in</span></div>
+  </div>
+</footer>
 
 <script>
 (function(){
@@ -250,5 +277,6 @@
 })();
 </script>
 <script src="alizon-back.js"></script>
+<script src="alizon-cms.js?v=6" defer></script>
 </body>
 </html>

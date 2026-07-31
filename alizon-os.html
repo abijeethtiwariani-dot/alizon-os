@@ -6,12 +6,12 @@
 <meta name="robots" content="index,follow">
 <title>ALIZON OS — The Practical Learning Platform | Alizon School of Medical &amp; Digital Intelligence</title>
 <meta name="description" content="ALIZON OS is the practical-learning platform of Alizon School of Medical & Digital Intelligence — browser-based virtual practicals, AI-scored assessments, online examinations, results and certificates.">
-<link rel="stylesheet" href="alizon-clone.css?v=2">
+<link rel="stylesheet" href="alizon-clone.css?v=7">
 </head>
 <body>
 
 <!-- ===== HEADER ===== -->
-<header id="azsitehdr">
+<header id="azsitehdr" class="home">
   <div class="azhdr-util"><div class="in">
     <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON&nbsp;OS<small>Practical Learning Platform</small></span></a>
     <div class="util-r"><span class="lbl">Information for:</span>
@@ -21,7 +21,7 @@
   </div></div>
   <div class="azhdr-nav"><nav class="in">
     <div class="navlinks2">
-      <a href="alizon-os.html" class="active">Overview</a><a href="os-practicals.html">Practicals</a><a href="os-examinations.html">Examinations</a><a href="os-results.html">Results</a><a href="os-workshops.html">Workshops</a><a href="os-certificates.html">Certificates</a><a href="alizon-career.html">Career</a><a href="index.html">Institution</a>
+      <a href="alizon-os.html" class="active">Overview</a><a href="os-practicals.html">Practicals</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a><a href="alizon-verify.html">Certificates</a><a href="alizon-career.html">Career</a><a href="admin-portal.html">Admin Login</a>
     </div>
     <a class="btn btn-primary" style="padding:9px 20px;font-size:.95rem" href="ASMDI-dashboard.html">Enter Portal ↗</a>
   </nav></div>
@@ -29,66 +29,79 @@
 </header>
 
 <!-- ===== HERO ===== -->
-<section class="hero" style="padding:0" data-slides="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F28fb8362-1762-471d-8579-69f69f4f7a70-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F4cc12870-3323-4f30-88d0-0061d929ec37-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F66e56b22-b560-4e50-8ef1-4dcf315d56de-large.webp">
-  <img class="bg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F28fb8362-1762-471d-8579-69f69f4f7a70-large.webp" alt="ALIZON OS platform">
+<section id="heroSecHome" class="hero stanford" style="padding:0" data-slides= "hero-robotics.jpg|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F28fb8362-1762-471d-8579-69f69f4f7a70-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F4cc12870-3323-4f30-88d0-0061d929ec37-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp|https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F66e56b22-b560-4e50-8ef1-4dcf315d56de-large.webp">
+  <img class="bg" src="hero-robotics.jpg" alt="ALIZON OS platform">
   <div class="in">
     <span class="eyebrow" style="color:#ffd7d9">The Platform</span>
-    <h1 style="margin-top:12px">ALIZON OS</h1>
-    <p class="sub">The practical-learning platform of Alizon School of Medical &amp; Digital Intelligence — browser-based virtual practicals, AI-scored assessments, online examinations, results and verifiable certificates, all in one place.</p>
+    <h1 id="heroH1Home" style="margin-top:12px">ALIZON OS</h1>
+    <p id="heroSubHome" class="sub">The practical-learning platform of Alizon School of Medical &amp; Digital Intelligence — browser-based virtual practicals, AI-scored assessments, online examinations, results and verifiable certificates, all in one place.</p>
     <div class="cta">
       <a class="btn btn-primary" href="ASMDI-dashboard.html">Enter the Portal ↗</a>
       <a class="btn btn-ghost" href="#showcase">Explore the Platform</a>
     </div>
   </div>
+  <div class="hero-stories" aria-label="Platform highlights">
+    <button type="button" class="hst on" data-story="0"><span class="c">Practicals</span><span class="h">Virtual labs students can run anywhere, on any device</span></button>
+    <button type="button" class="hst" data-story="1"><span class="c">Examinations</span><span class="h">Apply, sit and check results — a fully digital exam office</span></button>
+    <button type="button" class="hst" data-story="2"><span class="c">Workshops</span><span class="h">Masterclasses and bootcamps with industry mentors</span></button>
+    <button type="button" class="hst" data-story="3"><span class="c">Career</span><span class="h">ATS-ready CVs, vacancies and placement support</span></button>
+  </div>
 </section>
 <div class="explore">Explore ALIZON OS ▾</div>
+
+<!-- ===== PILLAR BAND (Stanford-style intro) ===== -->
+<section class="pillar-band">
+  <h2 id="pbH">Advancing Healthcare Intelligence</h2>
+  <p id="pbP">A spirit of optimism and possibility drives everything we build — AI-powered virtual practicals, digital examinations and verifiable credentials that prepare the next generation of clinicians and health technologists in Kerala and beyond.</p>
+  <a class="btn btn-primary" href="https://alizongov.com" target="_blank" rel="noopener">About Alizon →</a>
+</section>
 
 <!-- ===== INTRO ===== -->
 <section><div class="in two">
   <div>
-    <span class="eyebrow">What is ALIZON OS</span>
-    <h2>Everything a student needs — in the browser.</h2>
-    <p>ALIZON OS brings the full learning journey online: run virtual practicals, sit AI-scored assessments, download hall tickets, check module-wise results and verify certificates — no installs, on any device.</p>
-    <p>Built for the four AI healthcare programmes and mapped to the ASAP Kerala curriculum, every module follows the same rigorous Aim · Principle · Theory · Requirements · Procedure · Guided-Method standard.</p>
+    <span class="eyebrow" id="hbIntroEy">What is ALIZON OS</span>
+    <h2 id="hbIntroH">Everything a student needs — in the browser.</h2>
+    <p id="hbIntroP1">ALIZON OS brings the full learning journey online: run virtual practicals, sit AI-scored assessments, download hall tickets, check module-wise results and verify certificates — no installs, on any device.</p>
+    <p id="hbIntroP2">Built for the four AI healthcare programmes and mapped to the ASAP Kerala curriculum, every module follows the same rigorous Aim · Principle · Theory · Requirements · Procedure · Guided-Method standard.</p>
     <a class="btn btn-dark" href="os-practicals.html" style="margin-top:8px">See the practicals →</a>
   </div>
-  <img src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F4cc12870-3323-4f30-88d0-0061d929ec37-large.webp" alt="Students using ALIZON OS">
+  <img id="hbIntroImg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F4cc12870-3323-4f30-88d0-0061d929ec37-large.webp" alt="Students using ALIZON OS">
 </div></section>
 
 <!-- ===== SHOWCASE GRID ===== -->
 <section id="showcase" style="background:#faf9f7">
   <div class="in">
-    <div class="section-head"><span class="eyebrow">Explore</span><h2>Everything ALIZON OS does</h2><p>A dedicated space for every part of the platform. Click any area to explore.</p></div>
-    <div class="grid">
+    <div class="section-head"><span class="eyebrow">Explore</span><h2 id="hbScH">Everything ALIZON OS does</h2><p id="hbScSub">A dedicated space for every part of the platform. Click any area to explore.</p></div>
+    <div class="grid az-bento">
 
       <a class="card" href="os-practicals.html" style="color:inherit">
-        <img src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Facademics%2Fabd83179-1fb9-4c81-b1d9-086e85f40058-large.webp" alt="">
-        <div class="body"><span class="badge">11 Modules</span><h3>Virtual Practicals &amp; Labs</h3><p>Browser-based practicals with AI scoring — Digital Dispensing OSCE, Clinical Simulation, Drug Discovery and more.</p><span class="more">Explore practicals →</span></div>
+        <img id="hbC1Img" src="https://images.unsplash.com/photo-1579165466741-7f35e4755660?auto=format&fit=crop&w=900&q=70" alt="">
+        <div class="body"><span class="badge">11 Modules</span><h3 id="hbC1T">Virtual Practicals &amp; Labs</h3><p id="hbC1D">Browser-based practicals with AI scoring — Digital Dispensing OSCE, Clinical Simulation, Drug Discovery and more.</p><span class="more">Explore practicals →</span></div>
       </a>
 
-      <a class="card" href="os-examinations.html" style="color:inherit">
-        <img src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Facademics%2Fab1d26ed-88dd-4dd4-8a0f-7da0c010359e-large.webp" alt="">
-        <div class="body"><span class="badge">Online</span><h3>Examinations &amp; Hall Tickets</h3><p>Apply for exams, download hall tickets and view timetables — a full digital examination office.</p><span class="more">Explore examinations →</span></div>
+      <a class="card" href="alizon-exam.html" style="color:inherit">
+        <img id="hbC2Img" src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=900&q=70" alt="">
+        <div class="body"><span class="badge">Online</span><h3 id="hbC2T">Examinations &amp; Hall Tickets</h3><p id="hbC2D">Apply for exams, download hall tickets and view timetables — a full digital examination office.</p><span class="more">Explore examinations →</span></div>
       </a>
 
-      <a class="card" href="os-results.html" style="color:inherit">
-        <img src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fnews%2Fq9IgZyAwrjnjvV4OwKN7%2F653ef58a-7990-4a28-bf03-b6e65e2bb5c5-medium.webp" alt="">
-        <div class="body"><span class="badge">Instant</span><h3>Results</h3><p>Check module-wise statements of results by registration number, published securely online.</p><span class="more">Explore results →</span></div>
+      <a class="card" href="alizon-results.html" style="color:inherit">
+        <img id="hbC3Img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=70" alt="">
+        <div class="body"><span class="badge">Instant</span><h3 id="hbC3T">Results</h3><p id="hbC3D">Check module-wise statements of results by registration number, published securely online.</p><span class="more">Explore results →</span></div>
       </a>
 
-      <a class="card" href="os-workshops.html" style="color:inherit">
-        <img src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fnews%2F9XBgVj8CQfmxdoA6EVcA%2F3183f280-77ee-4e41-b6af-306c905dd8b3-large.webp" alt="">
-        <div class="body"><span class="badge">Live</span><h3>Workshops &amp; Masterclasses</h3><p>Register for hands-on healthcare workshops and masterclasses run through the platform.</p><span class="more">Explore workshops →</span></div>
+      <a class="card" href="alizon-workshops.html" style="color:inherit">
+        <img id="hbC4Img" src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=900&q=70" alt="">
+        <div class="body"><span class="badge">Live</span><h3 id="hbC4T">Workshops &amp; Masterclasses</h3><p id="hbC4D">Register for hands-on healthcare workshops and masterclasses run through the platform.</p><span class="more">Explore workshops →</span></div>
       </a>
 
-      <a class="card" href="os-certificates.html" style="color:inherit">
-        <img src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fnews%2FBj1xbpZuZb3eFJy4qnfi%2Fa5413d7f-5860-4b3c-9f35-ca9da71c9376-large.webp" alt="">
-        <div class="body"><span class="badge">Verifiable</span><h3>Certificates &amp; Verification</h3><p>Issue and verify student and staff certificates with a secure verification lookup.</p><span class="more">Explore certificates →</span></div>
+      <a class="card" href="alizon-verify.html" style="color:inherit">
+        <img id="hbC5Img" src="https://images.unsplash.com/photo-1627556704302-624286467c65?auto=format&fit=crop&w=900&q=70" alt="">
+        <div class="body"><span class="badge">Verifiable</span><h3 id="hbC5T">Certificates &amp; Verification</h3><p id="hbC5D">Issue and verify student and staff certificates with a secure verification lookup.</p><span class="more">Explore certificates →</span></div>
       </a>
 
       <a class="card" href="ASMDI-dashboard.html" style="color:inherit">
-        <img src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F98a601ef-5d11-4695-a997-ba27a8591625-large.webp" alt="">
-        <div class="body"><span class="badge">Portal</span><h3>Student Dashboard</h3><p>One sign-in for courses, labs, attendance, assessments and the Aliz AI assistant.</p><span class="more">Enter the portal →</span></div>
+        <img id="hbC6Img" src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=900&q=70" alt="">
+        <div class="body"><span class="badge">Portal</span><h3 id="hbC6T">Student Dashboard</h3><p id="hbC6D">One sign-in for courses, labs, attendance, assessments and the Aliz AI assistant.</p><span class="more">Enter the portal →</span></div>
       </a>
 
     </div>
@@ -98,23 +111,34 @@
 <!-- ===== IMPACT ===== -->
 <section class="impact">
   <div class="in">
-    <div class="section-head"><span class="eyebrow">Impact</span><h2>Built for scale</h2><p>Empowering the next generation of healthcare professionals through AI-driven practical learning.</p></div>
+    <div class="section-head"><span class="eyebrow">Impact</span><h2 id="hbImpH">Built for scale</h2><p id="hbImpSub">Empowering the next generation of healthcare professionals through AI-driven practical learning.</p></div>
     <div class="stats">
-      <div class="stat"><b>4</b><span>AI Programmes</span></div>
-      <div class="stat"><b>11</b><span>Practical Modules</span></div>
-      <div class="stat"><b>100%</b><span>Browser-based</span></div>
-      <div class="stat"><b>24/7</b><span>Access</span></div>
+      <div class="stat"><b id="hbSt1">4</b><span id="hbSl1">AI Programmes</span></div>
+      <div class="stat"><b id="hbSt2">11</b><span id="hbSl2">Practical Modules</span></div>
+      <div class="stat"><b id="hbSt3">100%</b><span id="hbSl3">Browser-based</span></div>
+      <div class="stat"><b id="hbSt4">24/7</b><span id="hbSl4">Access</span></div>
+      <div class="stat"><b id="hbSt5">150+</b><span id="hbSl5">Scholarships Awarded</span></div>
     </div>
   </div>
 </section>
+
+<!-- ===== UPCOMING EVENTS (auto from Workshops) ===== -->
+<section id="events" class="evband" style="background:#f3f3f3">
+  <div class="in">
+    <div class="section-head"><h2>Upcoming Events</h2></div>
+    <div class="evgrid" id="evgrid"></div>
+    <div style="text-align:center;margin-top:44px"><a class="btn btn-primary" href="alizon-workshops.html">More events</a></div>
+  </div>
+</section>
+<script src="alizon-events.js" defer></script>
 
 <!-- ===== CTA ===== -->
 <section class="cta-band">
   <div class="in">
     <span class="eyebrow" style="color:rgba(255,255,255,.85)">Get Started</span>
-    <h2>Step into the platform</h2>
-    <p>Log in to run your practicals, sit assessments and track your progress — anytime, anywhere.</p>
-    <a class="btn btn-white" href="ASMDI-dashboard.html">Enter the Portal ↗</a>
+    <h2 id="hbCtaH">Step into the platform</h2>
+    <p id="hbCtaP">Log in to run your practicals, sit assessments and track your progress — anytime, anywhere.</p>
+    <a id="hbCtaBtn" class="btn btn-white" href="ASMDI-dashboard.html">Enter the Portal ↗</a>
   </div>
 </section>
 
@@ -126,15 +150,17 @@
         <a class="brand" href="index.html" style="margin-bottom:14px"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON OS<small style="color:#bdbdbd">Practical Learning Platform</small></span></a>
         <p style="color:#bdbdbd;max-width:34ch">The practical-learning platform of Alizon School of Medical &amp; Digital Intelligence, Kerala.</p>
       </div>
-      <div><h4>Platform</h4><a href="os-practicals.html">Practicals</a><a href="os-examinations.html">Examinations</a><a href="os-results.html">Results</a><a href="os-workshops.html">Workshops</a></div>
-      <div><h4>Students</h4><a href="ASMDI-dashboard.html">ALIZON OS Portal</a><a href="os-certificates.html">Certificates</a><a href="alizon-verify.html">Verify</a></div>
+      <div><h4>Platform</h4><a href="os-practicals.html">Practicals</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a></div>
+      <div><h4>Students</h4><a href="ASMDI-dashboard.html">ALIZON OS Portal</a><a href="alizon-verify.html">Certificates</a><a href="alizon-verify.html">Verify</a></div>
       <div><h4>Institution</h4><a href="https://alizongov.com" target="_blank" rel="noopener">Official Website ↗</a><a href="index.html">Home</a><a href="alizon-academics.html">Academics</a></div>
     </div>
     <div class="foot-bottom"><span>© 2026 Alizon School of Medical &amp; Digital Intelligence</span><span>alizongov.com · alizon.in</span></div>
   </div>
 </footer>
 
-<script src="alizon-clone.js?v=2" defer></script>
+<script src="firebase-sync.js" defer></script>
+<script src="alizon-cms.js?v=8" defer></script>
+<script src="alizon-clone.js?v=4" defer></script>
 <script>
 var b=document.getElementById('burger');
 if(b)b.addEventListener('click',function(){alert('Mobile menu — wire to your nav drawer');});

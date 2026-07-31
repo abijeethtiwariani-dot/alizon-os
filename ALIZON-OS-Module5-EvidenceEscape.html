@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON OS · Module 5 · Evidence-Based Therapy Escape Room</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --teal:#0E6F76;--card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --teal:#4bc2c9;--card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1040px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)} .scorechip b{color:var(--gold)}
+  .scorechip.warn b{color:var(--danger)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:460px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  select,textarea,input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  select:focus,textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:78px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .opt.right{border-color:var(--success);box-shadow:0 0 0 3px rgba(30,142,90,.16)} .opt.wrong{border-color:var(--danger);box-shadow:0 0 0 3px rgba(196,38,46,.14)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
+  /* ---- virtual hospital / patient chart ---- */
+  .chart{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:14px;padding:14px 16px;margin-bottom:16px}
+  .chart .ch-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .chart .ch-h b{font-family:'Source Serif Pro',Georgia,serif;font-size:16px}
+  .chart .ch-h span{font-size:11.5px;color:var(--muted)}
+  .chart .ch-tag{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:100px;padding:2px 9px}
+  .vitals{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;margin-top:11px}
+  .vital{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  .vital .vl{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .vital .vv{font-size:15px;font-weight:800;font-family:'Source Serif Pro',serif}
+  .vital.hi .vv{color:var(--danger)} .vital.lo .vv{color:var(--warn)} .vital.ok .vv{color:var(--success)}
+  .vital.chg{border-color:var(--danger);box-shadow:0 0 0 3px rgba(196,38,46,.1)}
+  .medlist{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+  .med{font-size:11.5px;font-weight:600;background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:4px 11px}
+  .med.stop{text-decoration:line-through;opacity:.5} .med.new{border-color:var(--success);color:var(--success)}
+  .med.hold{border-color:var(--warn);color:var(--warn)}
+  /* ---- stage rail ---- */
+  .rail{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .rdot{font-size:11px;font-weight:800;min-width:32px;height:32px;padding:0 7px;border-radius:100px;display:grid;place-items:center;background:var(--pill);border:1.5px solid var(--line);color:var(--muted)}
+  .rdot.done{background:rgba(30,142,90,.14);border-color:var(--success);color:var(--success)}
+  .rdot.now{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .rdot.part{background:rgba(180,83,9,.14);border-color:var(--warn);color:var(--warn)}
+  .prog{height:10px;border-radius:100px;background:var(--pill);overflow:hidden;margin:10px 0 4px}
+  .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--crimson-deep),var(--crimson));width:0;transition:width .4s}
+  .scene{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:13px 15px;margin-top:10px;font-size:13.5px;line-height:1.65}
+  .scene .dt{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--crimson);margin-bottom:5px}
+  .scene pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;white-space:pre-wrap;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;line-height:1.6}
+  /* ---- evidence ranking ---- */
+  .ranks{display:grid;gap:8px;margin-top:10px}
+  .rank{cursor:pointer;text-align:left;font:inherit;font-size:13.5px;background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;color:var(--ink);display:flex;gap:10px;align-items:flex-start}
+  .rank:hover{border-color:var(--gold)}
+  .rank.chosen{border-color:var(--crimson);background:var(--gold-soft)}
+  .rank.right{border-color:var(--success)} .rank.wrong{border-color:var(--danger)}
+  .rank .ordn{flex:none;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--pill);color:var(--muted);font-size:11px;font-weight:800;border:1px solid var(--line)}
+  .rank.chosen .ordn{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+  .rank small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px;line-height:1.5}
+  /* ---- papers ---- */
+  .papers{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:10px}
+  .paper{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+  .paper b{font-size:13.5px;color:var(--crimson)} .paper ul{margin:7px 0 0 16px;font-size:12.5px;line-height:1.65}
+  /* ---- guideline cards ---- */
+  .glcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:10px}
+  .glc{background:var(--panel2);border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:12px;padding:13px 15px}
+  .glc b{font-size:13px;display:block;margin-bottom:5px} .glc p{font-size:12.5px;line-height:1.6;color:var(--ink)}
+  /* ---- multi picks ---- */
+  .plist{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
+  .pcard{cursor:pointer;text-align:left;font:inherit;background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink)}
+  .pcard:hover{border-color:var(--gold)} .pcard.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.12)}
+  .pcard.right{border-color:var(--success)} .pcard.wrong{border-color:var(--danger)}
+  .pcard b{font-size:13.5px;display:block} .pcard small{display:block;color:var(--muted);font-size:12px;margin-top:3px;line-height:1.55}
+  /* ---- patient chat ---- */
+  .chat{margin-top:12px}
+  .bub{max-width:82%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.6;margin-bottom:9px}
+  .bub.pt{background:var(--pill);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .bub.me{background:rgba(14,111,118,.12);border:1px solid rgba(14,111,118,.32);margin-left:auto;border-bottom-right-radius:4px}
+  .bub .who{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  /* ---- alerts / mentor ---- */
+  .alert{border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.6;border:1px solid rgba(196,38,46,.35);background:rgba(196,38,46,.09);color:var(--danger)}
+  .alert b{color:inherit}
+  .mentor{border:1px solid rgba(14,111,118,.34);background:rgba(14,111,118,.09);border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .mentor .mh{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);margin-bottom:4px}
+  .btn.mentorbtn{background:linear-gradient(120deg,#08484c,var(--teal))}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
+  .fbk{border-radius:10px;padding:11px 14px;margin-top:12px;font-size:13px;line-height:1.6;border:1px solid}
+  .fbk.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.35);color:var(--success)}
+  .fbk.part{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.35);color:var(--warn)}
+  .fbk.no{background:rgba(196,38,46,.09);border-color:rgba(196,38,46,.32);color:var(--danger)}
+  .fbk b{color:inherit} .fbk ul{margin:6px 0 0 17px;line-height:1.6}
+  /* ---- AI score bars ---- */
+  .aib{margin-top:8px}
+  .aib .r{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:3px}
+  .aib .bar{height:9px;border-radius:100px;background:var(--pill);overflow:hidden;margin-bottom:11px}
+  .aib .bar i{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .aib .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))}
+  .aib .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 5 · Unit 4 · Practical 4</div>
+    <h1 class="serif">Evidence-Based Therapy Escape Room — “The Right Prescription”</h1>
+    <p><b>Aim —</b> To critically evaluate scientific evidence, interpret clinical guidelines, assess patient-specific factors and recommend the safest evidence-based pharmacotherapy — as the <b>Clinical Pharmacist</b> on a tertiary-care ward round.
+      <span class="muted">8 locked stages · 100 marks · 90-minute countdown · 3 AI mentor hints · Pass 50.</span></p>
+    <div class="chips">
+      <div class="scorechip">Stage <b id="scStage">—</b></div>
+      <div class="scorechip">Score <b id="scMarks">0 / 100</b></div>
+      <div class="scorechip">Patient safety <b id="scSafe">100%</b></div>
+      <div class="scorechip" id="hintChip">AI hints left <b id="scHints">3</b></div>
+      <div class="scorechip" id="timeChip">Time left <b id="scTime">90:00</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Escape Room</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="evidenceescape"></div>
+    <div class="guide">
+      <h2>Your shift</h2>
+      <p>You are the <b>Clinical Pharmacist</b> in a tertiary care hospital. A 68-year-old man has just been admitted with four coexisting problems and a medication list that no longer matches the evidence. The physician asks one question: <em>“Recommend the safest and most evidence-based treatment plan.”</em></p>
+      <ol>
+        <li>Eight stages, each <b>locked until the previous one is submitted</b> — exactly as a real workup proceeds.</li>
+        <li>Marks are <b>earned</b>, not deducted: the 100 marks follow the assessment rubric below.</li>
+        <li>A separate <b>Patient Safety Index</b> starts at 100% and falls whenever you make a choice that could harm this patient. It is scored independently of your marks.</li>
+        <li>A <b>90-minute countdown</b> runs from the moment you start. Unfinished stages score zero.</li>
+        <li>You may consult the <b>AI mentor three times in total</b> — spend the hints where the reasoning is hardest.</li>
+      </ol>
+      <p style="margin-top:8px">Five badges are on offer — <b>Evidence Explorer</b>, <b>Clinical Decision Expert</b>, <b>Guideline Master</b>, <b>Patient Safety Champion</b> and <b>Evidence-Based Pharmacist</b>.</p>
+    </div>
+    <div class="card"><h2>The eight stages</h2>
+      <div class="tw"><table><thead><tr><th>Stage</th><th>Room</th><th>Marks</th></tr></thead><tbody id="stTbl"></tbody></table></div>
+      <p class="note">Stages 5 and 6 together carry the 20 marks the rubric allots to Clinical Decision-Making.</p>
+    </div>
+    <div class="card"><h2>Assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Assessment criteria</th><th>Marks</th></tr></thead><tbody>
+        <tr><td>PICO formulation</td><td>10</td></tr>
+        <tr><td>Evidence identification &amp; ranking</td><td>20</td></tr>
+        <tr><td>Critical appraisal of literature</td><td>20</td></tr>
+        <tr><td>Guideline interpretation</td><td>15</td></tr>
+        <tr><td>Clinical decision-making</td><td>20</td></tr>
+        <tr><td>Patient counselling</td><td>5</td></tr>
+        <tr><td>Documentation &amp; clinical report</td><td>10</td></tr>
+        <tr class="tot"><td>Total</td><td>100</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="card"><h2>Achievement badges</h2>
+      <div class="badges">
+        <span class="badge">🔬 Evidence Explorer</span><span class="badge">🧠 Clinical Decision Expert</span>
+        <span class="badge">📘 Guideline Master</span><span class="badge">🛡 Patient Safety Champion</span>
+        <span class="badge">🏅 Evidence-Based Pharmacist</span>
+      </div>
+      <p class="note" id="badgeCrit"></p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card" id="setupCard"><h2>Ward round · sign in</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+      </div>
+      <p class="note" style="margin-top:10px">Alizon Teaching Hospital · Department of Clinical Pharmacy · Medical Unit II</p>
+      <button class="btn" id="startBtn">▶ Enter the escape room</button>
+    </div>
+    <div id="chartHost"></div>
+    <div id="gameHead" style="display:none">
+      <div class="card">
+        <div class="row" style="justify-content:space-between"><b id="gh">Stage 1</b><span class="muted" style="font-size:12.5px" id="ghp">0 of 8 stages</span></div>
+        <div class="prog"><i id="progBar"></i></div>
+        <div class="rail" id="rail"></div>
+      </div>
+    </div>
+    <div id="stArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>AI clinical feedback &amp; practical report</h2>
+      <p class="muted" id="repEmpty">Complete all eight stages to generate your AI clinical feedback and practical report, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=10"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var strip=function(s){return String(s==null?'':s).replace(/<[^>]+>/g,'');};
+  var TOTAL_SECS=90*60, PASS=50, MAX_HINTS=3;
+
+  /* =========================================================
+     PATIENT — the virtual hospital chart
+     ========================================================= */
+  var PT={
+    name:'Mr R. Menon', age:68, sex:'Male', wt:'76 kg', bed:'Medical Unit II · Bed 14', uhid:'ATH/2026/44817',
+    dx:['Type 2 diabetes mellitus','Hypertension','Chronic kidney disease — stage 3','Atrial fibrillation'],
+    meds:[{n:'Metformin 1 g BD'},{n:'Amlodipine 5 mg OD'},{n:'Aspirin 75 mg OD'},{n:'Atorvastatin 20 mg OD'}],
+    labs:[{l:'HbA1c',v:'9.4 %',s:'hi'},{l:'eGFR',v:'42',s:'lo'},{l:'Serum creatinine',v:'1.9 mg/dL',s:'hi'},
+          {l:'Blood pressure',v:'168/96',s:'hi'},{l:'INR',v:'1.0',s:'lo'},{l:'Serum potassium',v:'4.4 mmol/L',s:'ok'}]
+  };
+  /* Stage 6 deterioration */
+  var PT6={labs:[{l:'HbA1c',v:'9.4 %',s:'hi'},{l:'eGFR',v:'31',s:'hi',chg:1},{l:'Serum creatinine',v:'2.4 mg/dL',s:'hi',chg:1},
+          {l:'Blood pressure',v:'104/62',s:'lo',chg:1},{l:'Serum potassium',v:'6.1 mmol/L',s:'hi',chg:1},{l:'Hydration',v:'Reduced',s:'lo',chg:1}]};
+
+  function renderChart(stageIdx){
+    var six=(stageIdx>=5);
+    var labs=six?PT6.labs:PT.labs;
+    var meds=PT.meds.slice();
+    if(stageIdx>=4){
+      meds=[{n:'Metformin 1 g BD'},{n:'Amlodipine 5 mg OD'},{n:'Aspirin 75 mg OD',c:'stop'},{n:'Atorvastatin 20 mg OD'},
+            {n:'SGLT2 inhibitor (proposed)',c:'new'},{n:'DOAC, renally dosed (proposed)',c:'new'},{n:'ACEi / ARB (proposed)',c:'new'}];
+    }
+    var h='<div class="chart"><div class="ch-h"><b>'+PT.name+'</b><span>'+PT.age+' y · '+PT.sex+' · '+PT.wt+' · '+PT.bed+' · UHID '+PT.uhid+'</span>'
+      +'<span class="ch-tag" style="margin-left:auto">'+(six?'Day 12 · deteriorating':'Day 1 · admission')+'</span></div>'
+      +'<div class="note" style="margin-top:5px"><b>Diagnoses:</b> '+PT.dx.join(' · ')+'</div>'
+      +'<div class="vitals">'+labs.map(function(x){
+          return '<div class="vital '+(x.s||'')+(x.chg?' chg':'')+'"><div class="vl">'+x.l+'</div><div class="vv">'+x.v+'</div></div>';}).join('')+'</div>'
+      +'<div class="medlist">'+meds.map(function(m){return '<span class="med '+(m.c||'')+'">'+m.n+'</span>';}).join('')+'</div>'
+      +(six?'<div class="alert" style="margin-top:11px"><b>⚠ Ward alert —</b> two days of loose motions and poor oral intake. Potassium 6.1 mmol/L, eGFR fallen from 42 to 31, postural drop on standing.</div>':'')
+      +'</div>';
+    $('chartHost').innerHTML=h;
+  }
+
+  /* =========================================================
+     STAGES
+     ========================================================= */
+  var HIER=[
+    {t:'Systematic review',        d:'A protocol-driven search and synthesis of every relevant study on a question',        rank:1},
+    {t:'Meta-analysis',            d:'Statistical pooling of the results of comparable studies into one effect estimate',    rank:2},
+    {t:'Clinical practice guideline',d:'A pre-appraised synthesis translating the evidence base into graded recommendations',rank:3},
+    {t:'Randomised controlled trial',d:'Prospective allocation by chance — the strongest single primary study design',      rank:4},
+    {t:'Cohort study',             d:'Observational follow-up of exposed and unexposed groups over time',                    rank:5},
+    {t:'Case-control study',       d:'Retrospective comparison of people with and without the outcome',                      rank:6},
+    {t:'Case report / case series',d:'Description of one patient or a handful of patients, with no comparison group',        rank:7},
+    {t:'Expert opinion',           d:'The considered view of an authority, unsupported by systematic data',                  rank:8}
+  ];
+  /* fixed scrambled presentation order (indices into HIER) */
+  var HIER_SHOW=[7,3,6,0,4,2,5,1];
+
+  var STAGES=[
+  /* ---------- 1 ---------- */
+  {n:1,key:'pico',title:'Build the clinical question (PICO)',room:'Stage 1 · The question room',marks:10,
+   scene:{t:'Ward round · 09:10',b:'Before you can search for evidence you must know what you are asking. Convert the physician’s request into a structured PICO question for THIS patient.\n\n   “Recommend the safest and most evidence-based treatment plan.”'},
+   hint:'A PICO population must carry the features that change the answer — here the age, the diabetes AND the stage 3 CKD. The comparison is what the patient is on now, not “nothing”.'},
+  /* ---------- 2 ---------- */
+  {n:2,key:'hier',title:'Rank the hierarchy of evidence',room:'Stage 2 · The evidence library',marks:20,
+   scene:{t:'Digital library terminal',b:'Eight kinds of source have been returned by your search. Click them in order of strength of evidence — strongest first, weakest last.\n\nClick an item again to remove it from the order.'},
+   hint:'Work from the top of the pyramid down: syntheses of many studies first, then pre-appraised recommendations, then the strongest single study design, then observational designs from strongest to weakest, then uncontrolled description, then opinion.'},
+  /* ---------- 3 ---------- */
+  {n:3,key:'appraise',title:'Appraise the literature',room:'Stage 3 · The reading room',marks:20,
+   scene:{t:'Three papers on your desk',b:'Read the three papers in the panel below, then answer the appraisal questions. Level of evidence is not the same thing as usefulness to your patient.'},
+   hint:'Separate two questions that students usually merge: which paper sits highest in the hierarchy, and which paper actually studied a patient like yours. Check the eGFR entry criteria of each study.'},
+  /* ---------- 4 ---------- */
+  {n:4,key:'guide',title:'Compare the guidelines',room:'Stage 4 · The guideline room',marks:15,
+   scene:{t:'ADA · KDIGO · ESC',b:'Three international guidelines apply to this patient at the same time. Read the summary cards, then answer the five questions on common recommendations, differences, contraindications, dose adjustment and monitoring.'},
+   hint:'ADA and KDIGO converge on one drug class for diabetes with CKD, chosen for organ protection rather than for glucose lowering. ESC governs the atrial fibrillation, and it is explicit that antiplatelets are not a substitute for anticoagulation.'},
+  /* ---------- 5 ---------- */
+  {n:5,key:'decide',title:'Make the therapeutic decisions',room:'Stage 5 · The clinical decision room',marks:12,
+   scene:{t:'Multidisciplinary review · 11:40',b:'The team wants three decisions from you: what to do about the glycaemic control, what to do about the stroke risk from atrial fibrillation, and what to do about the blood pressure.\n\nThe portal checks each decision against renal function, age, drug interactions, the current medicines and guideline compliance.'},
+   hint:'For every option ask three things in order: is it contraindicated at eGFR 42, does it harm an elderly patient if it goes wrong, and does a guideline positively recommend it for this exact combination of diseases.'},
+  /* ---------- 6 ---------- */
+  {n:6,key:'safety',title:'Handle the drug safety emergency',room:'Stage 6 · The drug safety challenge',marks:8,
+   scene:{t:'Day 12 · nursing station bleep',b:'Your plan was implemented on day 2. The patient now returns after two days of loose motions and poor oral intake.\n\n   Serum potassium ....... 6.1 mmol/L   (was 4.4)\n   eGFR .................. 31           (was 42)\n   Serum creatinine ...... 2.4 mg/dL    (was 1.9)\n   Blood pressure ........ 104/62 mmHg, postural drop\n\nDecide what to hold, what must continue, and how to monitor.'},
+   hint:'Two mechanisms are operating at once: volume depletion causing acute kidney injury, and drugs that raise potassium or become dangerous when the kidney fails. One drug on the list treats a risk that does not pause when the patient is unwell.'},
+  /* ---------- 7 ---------- */
+  {n:7,key:'counsel',title:'Counsel the patient',room:'Stage 7 · The counselling room',marks:5,
+   scene:{t:'Discharge counselling · bedside',b:'The patient has recovered and is going home on the revised regimen. Select the correct counselling points, then answer his three questions in his own terms.\n\nIncorrect advice lowers the Patient Safety Index.'},
+   hint:'Counselling is judged by what it prevents. Every point should stop a specific harm — dehydration, a missed anticoagulant dose, an NSAID in chronic kidney disease, a genital infection going unreported.'},
+  /* ---------- 8 ---------- */
+  {n:8,key:'doc',title:'Write the final clinical report',room:'Stage 8 · Documentation',marks:10,
+   scene:{t:'Clinical pharmacy intervention record',b:'Complete the seven sections of the structured clinical report. Each section is marked for adequate length and for containing the clinically essential content.'},
+   hint:'Write what another pharmacist could act on without speaking to you: the problem, the evidence you relied on, the guideline that supports it, the exact drug decisions, what you will measure and when, what the patient was told, and where it all came from.'}
+  ];
+
+  var TOTAL_MARKS=STAGES.reduce(function(a,s){return a+s.marks;},0);
+  $('stTbl').innerHTML=STAGES.map(function(s){return '<tr><td><b>Stage '+s.n+'</b></td><td>'+esc(s.title)+'</td><td>'+s.marks+'</td></tr>';}).join('')
+    +'<tr class="tot"><td></td><td>Total</td><td>'+TOTAL_MARKS+'</td></tr>';
+  $('badgeCrit').innerHTML='<b>Evidence Explorer</b> — 16 or more of the 20 evidence-ranking marks. &nbsp;·&nbsp; '
+    +'<b>Clinical Decision Expert</b> — 17 or more of the 20 clinical decision marks. &nbsp;·&nbsp; '
+    +'<b>Guideline Master</b> — full marks in the guideline room. &nbsp;·&nbsp; '
+    +'<b>Patient Safety Champion</b> — Patient Safety Index of 90% or above. &nbsp;·&nbsp; '
+    +'<b>Evidence-Based Pharmacist</b> — 85 marks or more with all eight stages completed.';
+
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  /* =========================================================
+     STATE
+     ========================================================= */
+  var S=null, tick=null, sel={};
+
+  function startGame(){
+    S={si:0,marks:{},detail:{},safety:100,hints:MAX_HINTS,secs:TOTAL_SECS,ended:false,endedBy:null,
+       wrong:[],alerts:[],unsafe:[],doc:{},result:null};
+    $('setupCard').style.display='none'; $('gameHead').style.display='';
+    clearInterval(tick);
+    tick=setInterval(function(){
+      if(!S||S.ended) return;
+      S.secs--; paintTime();
+      if(S.secs<=0){ S.secs=0; paintTime(); endGame('time'); }
+    },1000);
+    paintTime(); renderStage();
+  }
+  function paintTime(){
+    var m=Math.floor(S.secs/60), s=S.secs%60;
+    $('scTime').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    $('timeChip').classList.toggle('warn',S.secs<=300);
+  }
+  function got(){ var t=0; for(var k in S.marks) t+=S.marks[k]; return Math.round(t*10)/10; }
+  function paintChips(){
+    $('scStage').textContent=S.ended?'—':(S.si+1)+'/'+STAGES.length;
+    $('scMarks').textContent=got()+' / '+TOTAL_MARKS;
+    $('scSafe').textContent=S.safety+'%';
+    $('scHints').textContent=S.hints;
+    $('hintChip').classList.toggle('warn',S.hints===0);
+  }
+  function paintProgress(){
+    var done=S.ended?STAGES.length:S.si;
+    $('progBar').style.width=Math.round(done/STAGES.length*100)+'%';
+    $('ghp').textContent=done+' of '+STAGES.length+' stages';
+    $('gh').textContent=S.ended?'Escape room closed':('Stage '+(S.si+1)+' · '+STAGES[S.si].title);
+    $('rail').innerHTML=STAGES.map(function(s,i){
+      var cls='';
+      if(i<S.si){ var m=S.marks[s.key]||0; cls=(m>=s.marks-0.001)?'done':(m>0?'part':'part'); if(m<=0) cls='part'; }
+      else if(i===S.si&&!S.ended) cls='now';
+      var lbl=(i<S.si)?(Math.round((S.marks[s.key]||0)*10)/10+'/'+s.marks):s.n;
+      return '<span class="rdot '+cls+'" title="Stage '+s.n+' — '+esc(s.title)+'">'+lbl+'</span>';
+    }).join('');
+  }
+
+  /* =========================================================
+     STAGE BODIES
+     ========================================================= */
+  var PICO={
+    P:{q:'Population',o:['A 68-year-old man with type 2 diabetes, hypertension, stage 3 chronic kidney disease and atrial fibrillation',
+                          'Adults with type 2 diabetes and normal renal function',
+                          'Patients with atrial fibrillation of any age',
+                          'Any patient admitted to a tertiary care hospital'],c:0,
+        why:'The population must carry every feature that could change the answer — the <b>age</b>, the <b>type 2 diabetes</b> and above all the <b>stage 3 CKD</b>, because renal function decides which drugs are usable at all.'},
+    I:{q:'Intervention',o:['Increasing the metformin dose',
+                           'Adding an SGLT2 inhibitor with proven cardiorenal benefit to current therapy',
+                           'Admission to a tertiary care hospital',
+                           'Continuing aspirin for stroke prevention'],c:1,
+        why:'The intervention is the <b>specific therapy you propose to test</b>. Adding an SGLT2 inhibitor is a defined, searchable intervention; “admission” is not a therapy, and continuing aspirin is part of the existing regimen.'},
+    C:{q:'Comparison',o:['No treatment at all',
+                         'Placebo in healthy volunteers',
+                         'Continuing the existing regimen of metformin, amlodipine, aspirin and atorvastatin alone',
+                         'Insulin therapy in a different population'],c:2,
+        why:'The comparison is <b>what the patient is receiving now</b>. Comparing against “no treatment” is neither ethical nor relevant — the clinical question is whether adding something beats current care.'},
+    O:{q:'Outcome',o:['The lowest possible HbA1c whatever the risk',
+                      'Improved glycaemic control with slower progression of CKD and fewer cardiovascular events',
+                      'A shorter length of hospital stay',
+                      'A reduction in the cost of medicines'],c:1,
+        why:'Outcomes should be <b>patient-important</b>, not surrogate or institutional. Slower CKD progression and fewer cardiovascular events matter to this man; an aggressively low HbA1c in a 68-year-old with CKD risks harm.'}
+  };
+
+  var PAPERS=[
+    {id:'A',t:'Paper A',b:['Large multicentre randomised controlled trial','5,200 patients','Follow-up 5 years','Double blind, allocation concealed',
+      'Funding: independent','<b>Included patients with eGFR 30–60</b>','Primary endpoint: composite renal and cardiovascular events']},
+    {id:'B',t:'Paper B',b:['Uncontrolled case series','15 patients','6 months','No control group','Single centre, unblinded',
+      'Funding: the manufacturer','Outcome reported: mean fall in HbA1c']},
+    {id:'C',t:'Paper C',b:['Meta-analysis of 25 randomised controlled trials','12,000 patients','Median follow-up 26 weeks',
+      'Funding: independent','<b>Trials excluded patients with eGFR below 45</b>','Primary endpoint: change in HbA1c (surrogate)']}
+  ];
+  var APPR=[
+    {m:2,q:'What level of evidence does <b>Paper A</b> represent?',
+     o:['Level I — a large, double-blind, multicentre randomised controlled trial','Level II — a prospective cohort study',
+        'Level III — a case-control study','Level IV — an uncontrolled case series'],c:0,
+     why:'A randomised, double-blind, allocation-concealed multicentre trial is <b>Level I primary evidence</b> — randomisation removes confounding by indication and blinding removes measurement bias.'},
+    {m:2,q:'What level of evidence does <b>Paper B</b> represent?',
+     o:['Level I — randomised controlled trial','Level II — cohort study','Level III — case-control study',
+        'Level IV — an uncontrolled case series, the weakest analytic design here'],c:3,
+     why:'Fifteen patients, six months, no control group and manufacturer funding places Paper B at the <b>bottom of the analytic hierarchy</b>. It can generate a hypothesis; it cannot support a treatment decision.'},
+    {m:2,q:'What level of evidence does <b>Paper C</b> represent?',
+     o:['Level I — a meta-analysis of randomised controlled trials','Level II — pooled observational data',
+        'Level III — a narrative review','Level IV — expert consensus'],c:0,
+     why:'A quantitative synthesis of 25 randomised trials is <b>Level I</b> and sits at or above a single RCT in the hierarchy, because it pools randomised comparisons across many populations.'},
+    {m:3,q:'What is the principal threat to the <b>internal validity</b> of Paper B?',
+     o:['The absence of a control group, so any improvement cannot be attributed to the drug rather than to regression to the mean, co-interventions or natural course',
+        'The follow-up of six months is too short to measure HbA1c',
+        'Fifteen patients is too few to calculate a mean',
+        'HbA1c is not a valid measure of glycaemic control'],c:0,
+     why:'Internal validity asks whether the observed change was <b>caused by the intervention</b>. With <b>no comparison group</b> there is nothing to attribute the change against — regression to the mean, diet change, better adherence during a study and natural fluctuation are all unexcluded. Manufacturer funding adds a risk of reporting bias on top.'},
+    {m:3,q:'What limits the <b>external validity</b> of Paper C <em>for this particular patient</em>?',
+     o:['The trials pooled in it excluded patients with eGFR below 45, so its findings cannot be extrapolated to a patient with eGFR 42',
+        'It included too many patients to be meaningful','Twenty-six weeks is too long a follow-up',
+        'Meta-analyses can never be applied to individual patients'],c:0,
+     why:'External validity is <b>applicability to the patient in front of you</b>. Paper C is high-level evidence about a population your patient would have been <b>screened out of</b> — his eGFR of 42 falls below the entry threshold of 45. Its surrogate endpoint over 26 weeks also says nothing about renal progression.'},
+    {m:4,q:'Which paper carries the <b>strongest level of evidence</b>?',
+     o:['Paper A','Paper B','Paper C','All three are equivalent'],c:2,
+     why:'<b>Paper C</b> — a meta-analysis of 25 randomised trials sits at the top of the hierarchy, above any single trial, because it pools randomised comparisons and increases precision.'},
+    {m:4,q:'Which paper is <b>most applicable to this patient</b>, and should therefore drive your recommendation?',
+     o:['Paper A — it randomised patients with eGFR 30–60, followed them for five years, and measured renal and cardiovascular outcomes rather than a surrogate',
+        'Paper B — it is the most recent and reports a large fall in HbA1c',
+        'Paper C — it has the highest level of evidence, so it must be applied',
+        'None of them, because no study exactly matches this patient'],c:0,
+     why:'This is the central lesson of the room: <b>the highest level of evidence is not automatically the most applicable</b>. Paper C is stronger in design but excluded patients like yours and measured a surrogate. <b>Paper A</b> enrolled the very population your patient belongs to, followed them for five years and measured outcomes that matter. Evidence-based practice means weighing <em>quality</em> and <em>applicability</em> together.'}
+  ];
+
+  var GUIDES=[
+    {n:'ADA — Standards of Care in Diabetes',p:'In type 2 diabetes with chronic kidney disease, an <b>SGLT2 inhibitor with proven benefit</b> is recommended for cardiorenal protection <b>independent of HbA1c</b> and independent of metformin use. A GLP-1 receptor agonist is an alternative where an SGLT2 inhibitor cannot be used. Individualise the HbA1c target in older adults with comorbidity.'},
+    {n:'KDIGO — Diabetes management in CKD',p:'First-line therapy is <b>metformin plus an SGLT2 inhibitor</b> in patients with eGFR at or above 20. Metformin should be <b>reduced to a maximum of 1000 mg daily at eGFR 30–44</b> and stopped below 30. Blood pressure should be treated with an <b>ACE inhibitor or ARB titrated to the maximum tolerated dose</b>. Recheck creatinine and potassium 2–4 weeks after starting or up-titrating.'},
+    {n:'ESC — Atrial fibrillation',p:'Stroke prevention is with an <b>oral anticoagulant</b>, a DOAC being preferred over a vitamin K antagonist in eligible patients, whenever CHA₂DS₂-VASc is 2 or more in men. <b>Antiplatelet therapy is not an acceptable alternative to anticoagulation</b> and should not be combined with it in the absence of a separate indication such as recent acute coronary syndrome.'}
+  ];
+  var GQ=[
+    {m:3,q:'What do ADA and KDIGO <b>both</b> recommend for this patient’s diabetes with CKD?',
+     o:['A sulfonylurea added to metformin','An SGLT2 inhibitor with proven benefit, for cardiorenal protection independent of the HbA1c',
+        'Immediate basal insulin','Stopping all oral agents and observing'],c:1,
+     why:'Both guidelines converge on an <b>SGLT2 inhibitor</b> in type 2 diabetes with CKD, and both recommend it for <b>organ protection rather than for glucose lowering</b> — which is why it is indicated even when the HbA1c target has been met.'},
+    {m:3,q:'Applying ESC guidance to his atrial fibrillation, what is required?',
+     o:['Continue aspirin — it is adequate for stroke prevention in atrial fibrillation',
+        'Oral anticoagulation with a DOAC — his CHA₂DS₂-VASc is at least 4, and an antiplatelet is not an acceptable substitute',
+        'No antithrombotic therapy, because the INR is normal at 1.0',
+        'Aspirin plus clopidogrel as an alternative to anticoagulation'],c:1,
+     why:'Age 65–74 (1) + hypertension (1) + diabetes (1) + vascular disease (1) gives a <b>CHA₂DS₂-VASc of at least 4</b>, far above the treatment threshold. ESC is explicit that <b>antiplatelets do not substitute for anticoagulation</b>. An INR of 1.0 simply confirms he is not anticoagulated at all.'},
+    {m:3,q:'KDIGO first-line antihypertensive therapy for diabetes with CKD is:',
+     o:['An ACE inhibitor or ARB, titrated to the maximum tolerated dose','A thiazide diuretic','A beta-blocker','A second dihydropyridine calcium-channel blocker'],c:0,
+     why:'An <b>ACE inhibitor or ARB</b> is first-line because it reduces intraglomerular pressure and albuminuria, slowing CKD progression — an effect the amlodipine he is already taking does not provide. It is titrated to the <b>maximum tolerated dose</b>, not merely started.'},
+    {m:3,q:'What dose adjustment does his eGFR of 42 require?',
+     o:['Stop metformin immediately — it is absolutely contraindicated at this eGFR',
+        'Continue metformin but reduce it to a maximum of 1000 mg daily and monitor renal function; do not initiate metformin de novo below eGFR 45',
+        'Double the metformin because the HbA1c is 9.4 %',
+        'No adjustment is needed until eGFR falls below 15'],c:1,
+     why:'At <b>eGFR 30–44</b> metformin is <b>continued at a reduced dose of up to 1000 mg daily</b> with renal monitoring; it is not started afresh below 45 and is stopped below 30. He is currently on 1 g twice daily — <b>double the permitted dose</b>, which is itself a prescribing error to correct.'},
+    {m:3,q:'What monitoring is required after starting an ACE inhibitor or ARB in this patient?',
+     o:['Recheck serum creatinine and potassium within 2–4 weeks; an initial eGFR fall of up to 30 % is expected and does not by itself require stopping the drug',
+        'No monitoring is needed if the patient feels well','Recheck only at the six-month review',
+        'Stop the drug immediately if creatinine rises at all'],c:0,
+     why:'A haemodynamic <b>fall in eGFR of up to 30 %</b> after starting an ACEi or ARB is expected, reversible and associated with better long-term renal outcomes. The mandatory safety checks are <b>creatinine and potassium at 2–4 weeks</b>. Stopping at the first creatinine rise denies the patient the very drug that protects the kidney.'}
+  ];
+
+  var DEC=[
+    {m:5,q:'<b>Decision 1 — glycaemic control.</b> HbA1c 9.4 %, eGFR 42, age 68. What do you recommend?',
+     o:['A. Increase the metformin dose','B. Add a sulfonylurea','C. Start an SGLT2 inhibitor with proven cardiorenal benefit, and reduce metformin to 1000 mg daily',
+        'D. Start a GLP-1 receptor agonist','E. Start combination therapy with a sulfonylurea and a thiazolidinedione'],c:2,
+     unsafe:{1:{hit:15,why:'A sulfonylurea in a 68-year-old with an eGFR of 42 carries a high risk of prolonged, sometimes fatal hypoglycaemia — renal clearance of the drug and its active metabolites is reduced.'},
+             0:{hit:10,why:'Increasing metformin at an eGFR of 42 exceeds the permitted maximum of 1000 mg daily and raises the risk of lactic acidosis.'},
+             4:{hit:15,why:'A sulfonylurea plus a thiazolidinedione in an elderly patient with CKD combines hypoglycaemia risk with fluid retention — the least safe option available.'}},
+     alert:{1:'Sulfonylurea + eGFR 42 + age 68 — high risk of prolonged hypoglycaemia.',
+            0:'Metformin dose exceeds the 1000 mg/day maximum permitted at eGFR 30–44 — lactic acidosis risk.',
+            4:'Thiazolidinedione — fluid retention; sulfonylurea — hypoglycaemia in renal impairment.'},
+     why:'<b>Option C.</b> An SGLT2 inhibitor lowers HbA1c, slows CKD progression and reduces cardiovascular events — and both ADA and KDIGO recommend it specifically for this combination. At the same time the metformin must come <b>down</b> to 1000 mg daily for the eGFR of 42. Option D (a GLP-1 receptor agonist) is a legitimate second choice if an SGLT2 inhibitor cannot be used, but it does not carry the same renal-protective evidence at this eGFR.'},
+    {m:4,q:'<b>Decision 2 — stroke prevention in atrial fibrillation.</b> INR 1.0, currently on aspirin 75 mg.',
+     o:['Stop the aspirin and start a direct oral anticoagulant at a dose adjusted for renal function',
+        'Continue the aspirin and add a direct oral anticoagulant',
+        'Continue aspirin alone — it is adequate for stroke prevention in atrial fibrillation',
+        'Start warfarin and continue the aspirin'],c:0,
+     unsafe:{1:{hit:15,why:'Adding an anticoagulant on top of aspirin without a separate indication roughly doubles the major bleeding risk for no additional stroke protection.'},
+             2:{hit:15,why:'Leaving a CHA₂DS₂-VASc ≥4 patient on aspirin alone leaves him substantially unprotected against cardioembolic stroke.'},
+             3:{hit:15,why:'Warfarin plus aspirin combines the bleeding risk of both with no added benefit, and warfarin requires INR monitoring that a DOAC avoids.'}},
+     alert:{1:'Aspirin + oral anticoagulant — additive bleeding risk with no added stroke protection.',
+            3:'Warfarin + aspirin — major bleeding risk; also a narrow therapeutic index requiring INR monitoring.'},
+     why:'<b>Stop the aspirin, start a renally dosed DOAC.</b> Aspirin has no indication here — he has no acute coronary syndrome or recent stent — and it does not prevent cardioembolic stroke. Continuing it alongside an anticoagulant only adds bleeding. The DOAC dose must be checked against his creatinine clearance.'},
+    {m:3,q:'<b>Decision 3 — blood pressure.</b> 168/96 mmHg on amlodipine 5 mg.',
+     o:['Add an ACE inhibitor or ARB to the amlodipine and titrate towards a target below 130/80 mmHg',
+        'Double the amlodipine dose','Add a thiazide diuretic as the next agent',
+        'Accept 168/96 mmHg as appropriate for a 68-year-old'],c:0,
+     unsafe:{3:{hit:10,why:'Accepting 168/96 mmHg in a patient with diabetes, CKD and atrial fibrillation leaves a major, modifiable driver of stroke and renal decline untreated.'}},
+     alert:{},
+     why:'<b>Add an ACE inhibitor or ARB.</b> Beyond lowering blood pressure it reduces intraglomerular pressure and albuminuria, which amlodipine does not. Increasing the amlodipine would lower the number without protecting the kidney, and a thiazide loses efficacy as eGFR falls.'}
+  ];
+
+  var SAFE_MEDS=[
+    {n:'Metformin',d:'Cleared renally; accumulates in acute kidney injury',hold:true,
+     why:'Metformin must be <b>held during any acute kidney injury or dehydrating illness</b> — accumulation causes lactic acidosis.'},
+    {n:'ACE inhibitor / ARB',d:'Raises serum potassium; reduces intraglomerular pressure',hold:true,
+     why:'The ACEi/ARB is <b>the main pharmacological contributor to the hyperkalaemia</b> and worsens the haemodynamic injury in a volume-depleted patient. Hold, then reintroduce once potassium and volume are corrected.'},
+    {n:'SGLT2 inhibitor',d:'Osmotic diuretic effect; sick-day rules apply',hold:true,
+     why:'Sick-day rules apply: the SGLT2 inhibitor is <b>held during vomiting, diarrhoea or fever</b> because of volume depletion and the risk of euglycaemic ketoacidosis.'},
+    {n:'Direct oral anticoagulant',d:'Stroke prevention in atrial fibrillation',hold:false,
+     why:'The anticoagulant <b>must not be stopped</b> — his stroke risk does not pause because he is dehydrated. Review the dose against the new creatinine clearance instead.',
+     unsafe:{hit:20,txt:'Stopping the anticoagulant leaves a CHA₂DS₂-VASc ≥4 patient unprotected against cardioembolic stroke.'}},
+    {n:'Atorvastatin',d:'Lipid lowering; no acute renal or potassium effect',hold:false,
+     why:'The statin has <b>no bearing on potassium or acute renal function</b> and is continued.'},
+    {n:'Amlodipine',d:'Calcium-channel blocker; no potassium effect',hold:false,
+     why:'Amlodipine does not raise potassium. With a postural drop the dose may later be reviewed, but it is not the drug driving this episode.',
+     soft:true}
+  ];
+  var SAFEQ=[
+    {m:2,q:'Which medicine must <b>not</b> be stopped, whatever else you hold?',
+     o:['The oral anticoagulant — stopping it leaves a CHA₂DS₂-VASc ≥4 patient unprotected against stroke; review the dose against the new creatinine clearance instead',
+        'The atorvastatin','The amlodipine','The metformin'],c:0,
+     why:'The one therapy addressing an <b>ongoing thromboembolic risk</b> is the anticoagulant. Interrupting it is a common and dangerous reflex during an acute illness. The correct action is to <b>recalculate the dose</b> for the reduced creatinine clearance, not to withhold it.'},
+    {m:3,q:'What is your monitoring and reintroduction plan?',
+     o:['Correct the dehydration, treat the hyperkalaemia, recheck serum potassium and eGFR within 24–48 hours, and reintroduce the held medicines one at a time once potassium and renal function have recovered',
+        'Restart everything together as soon as the patient feels better',
+        'Repeat the bloods at the routine three-month review',
+        'Permanently discontinue the ACE inhibitor, the SGLT2 inhibitor and the metformin'],c:0,
+     why:'The sequence is <b>correct the cause, recheck within 24–48 hours, then reintroduce one drug at a time</b>. Restarting everything at once makes any recurrence uninterpretable, waiting three months is unsafe, and permanent discontinuation deprives him of the two drugs proven to slow his kidney disease — these are <b>temporary holds</b>, not withdrawals.'}
+  ];
+
+  var COUNSEL=[
+    {t:'Take the SGLT2 inhibitor in the morning, with or without food',ok:true},
+    {t:'Keep well hydrated, and hold the SGLT2 inhibitor, metformin and the kidney-protecting blood-pressure tablet on any day with vomiting, diarrhoea or fever — then contact the clinic',ok:true},
+    {t:'Report genital itching or burning on passing urine promptly, and keep the area clean and dry',ok:true},
+    {t:'If a dose of the anticoagulant is missed, take it as soon as you remember on the same day — never double the next dose',ok:true},
+    {t:'Reduce added salt, and follow the dietitian’s advice on potassium-rich foods',ok:true},
+    {t:'Attend for blood tests in 2 weeks and for review in 4 weeks',ok:true},
+    {t:'If you miss a dose of the anticoagulant, take a double dose next time to catch up',ok:false,harm:10,
+     why:'Doubling an anticoagulant dose is a direct bleeding hazard.'},
+    {t:'Stop the anticoagulant yourself if you notice any bruising',ok:false,harm:10,
+     why:'Self-stopping an anticoagulant on minor bruising exposes the patient to cardioembolic stroke; bruising should be reported, not acted on alone.'},
+    {t:'Take ibuprofen freely for your joint pains',ok:false,harm:10,
+     why:'An NSAID in stage 3 CKD, on an ACEi/ARB and an anticoagulant, risks acute kidney injury, hyperkalaemia and gastrointestinal bleeding — the classic “triple whammy”.'},
+    {t:'Fast for long periods to bring the sugar down quickly',ok:false,harm:10,
+     why:'Prolonged fasting on an SGLT2 inhibitor risks euglycaemic ketoacidosis and dehydration in an elderly patient with CKD.'}
+  ];
+  var CHAT=[
+    {m:1,q:'“Doctor, why do I need a blood thinner now? I have been on aspirin for years and I have been perfectly fine.”',
+     o:['“Aspirin does not prevent the kind of stroke that atrial fibrillation causes — those clots form in the heart. An anticoagulant reduces that risk by around two-thirds. Your risk score is high, so the benefit clearly outweighs the bleeding risk, and we will check your kidney function to get the dose right.”',
+        '“Aspirin and blood thinners work in the same way — this one is simply stronger.”',
+        '“The doctor has decided, so you should just take it.”',
+        '“You can stay on the aspirin if you would prefer.”'],c:0,
+     why:'Good counselling gives the <b>mechanism, the magnitude of benefit and an acknowledgement of the risk</b>. Aspirin acts on platelets and does little against the fibrin-rich clot that forms in a fibrillating atrium — that difference is the whole reason for the change.'},
+    {m:1,q:'“This new sugar tablet — will it make my kidneys worse? My creatinine is already high.”',
+     o:['“No, it has no effect on the kidneys at all.”',
+        '“Your creatinine may rise slightly in the first few weeks. That dip is expected and reverses, and over the longer term this medicine slows the damage to your kidneys — which is exactly why it was chosen for you. We will check your bloods in two weeks.”',
+        '“Yes, it will damage your kidneys, but there is no alternative.”',
+        '“Stop it straight away if your creatinine goes up at all.”'],c:1,
+     why:'The honest and correct answer names the <b>expected early dip</b>, explains that it is haemodynamic and reversible, and sets out the <b>long-term renal benefit</b> with a concrete monitoring plan. Denying any renal effect would make the patient stop the drug the moment he saw his next result.'},
+    {m:1,q:'“I had loose motions for two days last week. Should I still have taken everything as usual?”',
+     o:['“Yes — never miss a dose whatever happens.”',
+        '“Stop everything, including your blood thinner, until you feel better.”',
+        '“No. On days with vomiting, diarrhoea or fever, hold the sugar tablet, the metformin and the kidney-protecting blood-pressure tablet, keep drinking fluids and ring us. Keep taking the anticoagulant, and restart the rest once you are eating and drinking normally.”',
+        '“Take an extra dose to make up for the fluid you lost.”'],c:2,
+     unsafe:{1:{hit:10,why:'Advising the patient to stop the anticoagulant during a minor illness exposes him to stroke.'}},
+     why:'These are the <b>sick-day rules</b>, and they are the single most useful thing this patient can be taught. The drugs that must pause are those that dehydrate or accumulate; the anticoagulant continues, because thromboembolic risk does not pause with a diarrhoeal illness.'}
+  ];
+
+  var DOCSEC=[
+    {k:'assess',label:'1. Clinical assessment',w:2,min:25,
+     ph:'Summarise the problems, the relevant results and what is wrong with the current regimen…',
+     kw:['ckd','kidney','egfr','renal','atrial','fibrillation','hba1c','uncontrolled','hypertens'],
+     model:'68-year-old man with uncontrolled type 2 diabetes (HbA1c 9.4 %), uncontrolled hypertension (168/96), stage 3 CKD (eGFR 42, creatinine 1.9) and atrial fibrillation. Two prescribing problems: metformin 1 g BD exceeds the maximum permitted at eGFR 30–44, and he is on aspirin instead of an anticoagulant despite a CHA₂DS₂-VASc of at least 4 (INR 1.0 confirms he is unprotected).'},
+    {k:'evid',label:'2. Evidence used',w:1.5,min:20,
+     ph:'State which papers you relied on and why, including level of evidence and applicability…',
+     kw:['meta-analysis','meta analysis','systematic','rct','randomis','randomiz','level i','paper a','paper c','applicab','surrogate','egfr'],
+     model:'Paper C (meta-analysis of 25 RCTs, 12,000 patients) is the highest level of evidence but excluded eGFR below 45 and used a surrogate endpoint over 26 weeks. Paper A (multicentre RCT, 5,200 patients, eGFR 30–60, 5-year follow-up, renal and cardiovascular endpoints, independent funding) is therefore the most applicable to this patient and drives the recommendation. Paper B (uncontrolled case series, n=15, manufacturer-funded) was rejected.'},
+    {k:'guide',label:'3. Guideline referenced',w:1.5,min:15,
+     ph:'Name the guidelines and the specific recommendations you applied…',
+     kw:['kdigo','ada','esc','guideline'],
+     model:'ADA and KDIGO — SGLT2 inhibitor for cardiorenal protection in T2DM with CKD, independent of HbA1c; metformin capped at 1000 mg daily at eGFR 30–44; ACEi/ARB first-line for blood pressure, titrated to maximum tolerated dose. ESC — oral anticoagulation with a DOAC for AF at CHA₂DS₂-VASc ≥2 in men, with antiplatelets explicitly not an acceptable substitute.'},
+    {k:'rec',label:'4. Drug recommendation',w:2,min:25,
+     ph:'State each drug decision with its dose and rationale…',
+     kw:['sglt2','anticoagul','doac','acei','arb','ace inhibitor','metformin','aspirin'],
+     model:'Start an SGLT2 inhibitor with proven cardiorenal benefit. Reduce metformin to 1000 mg daily for eGFR 42. Stop aspirin and start a DOAC at a dose adjusted for creatinine clearance. Add an ACE inhibitor or ARB to the amlodipine and titrate towards below 130/80 mmHg. Continue atorvastatin.'},
+    {k:'mon',label:'5. Monitoring plan',w:1.5,min:20,
+     ph:'State what you will measure, when, and what action each result triggers…',
+     kw:['potassium','creatinine','egfr','hba1c','week','renal function','blood pressure','sick day','sick-day'],
+     model:'Serum creatinine, eGFR and potassium at 2 weeks and 4 weeks after starting or up-titrating the ACEi/ARB and the SGLT2 inhibitor — an eGFR fall of up to 30 % is expected and does not require stopping. Potassium above 5.5 mmol/L prompts a dose review. HbA1c at 3 months. Blood pressure at every visit. Annual urine albumin:creatinine ratio. Sick-day rules reviewed at each contact.'},
+    {k:'couns',label:'6. Patient counselling',w:1,min:20,
+     ph:'Record the counselling actually given…',
+     kw:['sick day','sick-day','hydrat','missed dose','diet','salt','follow','genital','ibuprofen','nsaid','fluid'],
+     model:'Sick-day rules explained and written down: hold the SGLT2 inhibitor, metformin and ACEi/ARB during vomiting, diarrhoea or fever, maintain fluid intake, and contact the clinic. Never double an anticoagulant dose. Avoid NSAIDs such as ibuprofen. Report genital itching or dysuria. Reduce added salt and follow the dietitian on potassium. Blood tests in 2 weeks, review in 4 weeks.'},
+    {k:'ref',label:'7. References',w:0.5,min:8,
+     ph:'List the sources used…',
+     kw:['kdigo','ada','esc','20','doi','http','journal','guideline','standards'],
+     model:'ADA Standards of Care in Diabetes; KDIGO Clinical Practice Guideline for Diabetes Management in CKD; ESC Guidelines for the Management of Atrial Fibrillation; Paper A (multicentre RCT) and Paper C (meta-analysis) as appraised in Stage 3.'}
+  ];
+
+  /* =========================================================
+     RENDER
+     ========================================================= */
+  function stageHead(st){
+    return '<div class="card"><span class="step">'+esc(st.room)+' · '+st.marks+' marks</span>'
+      +'<h2 style="margin-top:6px">'+esc(st.title)+'</h2>'
+      +'<div class="scene"><div class="dt">'+esc(st.scene.t)+'</div><pre>'+esc(st.scene.b)+'</pre></div>'
+      +'<div id="mentorHost"></div>'
+      +'<button class="btn mentorbtn" id="mentorBtn"'+(S.hints<=0?' disabled':'')+'>🤖 Ask the AI mentor ('+S.hints+' left)</button>'
+      +'</div>';
+  }
+
+  function renderStage(){
+    paintChips(); paintProgress(); renderChart(S.si);
+    if(S.ended){ $('stArea').innerHTML=''; return; }
+    var st=STAGES[S.si];
+    sel={mcq:{},multi:[],order:[],text:{}};
+    var h=stageHead(st)+'<div class="card" id="qCard">'+BODY[st.key]()+'<div id="fbk"></div>'
+      +'<div class="row"><button class="btn" id="confirmBtn">Submit stage '+st.n+'</button>'
+      +'<span class="muted" style="font-size:12.5px">Worth <b>'+st.marks+'</b> marks. Stage '+(st.n<8?(st.n+1):8)+(st.n<8?' unlocks on submission.':' closes the room.')+'</span></div></div>';
+    $('stArea').innerHTML=h;
+    WIRE[st.key]();
+    $('mentorBtn').addEventListener('click',function(){ useHint(st); });
+    $('confirmBtn').addEventListener('click',function(){ submitStage(st); });
+  }
+  function useHint(st){
+    if(S.hints<=0) return;
+    S.hints--; paintChips();
+    $('mentorHost').innerHTML='<div class="mentor"><div class="mh">🤖 AI mentor · '+S.hints+' hint'+(S.hints===1?'':'s')+' remaining</div>'+esc(st.hint)+'</div>';
+    $('mentorBtn').disabled=true;
+    $('mentorBtn').textContent='🤖 Hint used ('+S.hints+' left)';
+  }
+
+  function mcqBlock(list,pfx){
+    return list.map(function(q,i){
+      return '<div style="margin-top:'+(i?18:4)+'px"><b>'+q.q+'</b> <span class="muted" style="font-size:12px">('+q.m+' mark'+(q.m===1?'':'s')+')</span>'
+        +'<div class="optw" data-g="'+pfx+i+'">'+q.o.map(function(o,k){
+            return '<button type="button" class="opt" data-g="'+pfx+i+'" data-k="'+k+'">'+o+'</button>';}).join('')+'</div></div>';
+    }).join('');
+  }
+  function wireMCQ(){
+    [].forEach.call(document.querySelectorAll('#qCard .opt'),function(b){
+      b.addEventListener('click',function(){
+        var g=b.getAttribute('data-g');
+        sel.mcq[g]=+b.getAttribute('data-k');
+        [].forEach.call(document.querySelectorAll('#qCard .opt[data-g="'+g+'"]'),function(x){x.classList.remove('pick');});
+        b.classList.add('pick');
+      });
+    });
+  }
+  function markMCQ(list,pfx){
+    list.forEach(function(q,i){
+      var g=pfx+i, p=sel.mcq[g];
+      [].forEach.call(document.querySelectorAll('#qCard .opt[data-g="'+g+'"]'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        if(k===q.c) b.classList.add('right'); else if(p===k) b.classList.add('wrong');
+      });
+    });
+  }
+  function scoreMCQ(list,pfx,stName){
+    var out={got:0,max:0,lines:[]};
+    list.forEach(function(q,i){
+      out.max+=q.m;
+      var p=sel.mcq[pfx+i];
+      if(p===q.c){ out.got+=q.m; }
+      else{
+        out.lines.push('<b>'+strip(q.q)+'</b><br>You chose: '+(p==null?'<i>nothing</i>':esc(strip(q.o[p])))+'<br><b>Why:</b> '+q.why);
+        S.wrong.push({st:stName,q:strip(q.q),chose:(p==null?'no answer':strip(q.o[p])),right:strip(q.o[q.c])});
+      }
+      if(p!=null && q.unsafe && q.unsafe[p]){ hitSafety(q.unsafe[p].hit,q.unsafe[p].why); }
+      if(p!=null && q.alert && q.alert[p]){ S.alerts.push(q.alert[p]); }
+    });
+    return out;
+  }
+  function hitSafety(n,why){ S.safety=Math.max(0,S.safety-n); S.unsafe.push({n:n,why:why}); paintChips(); }
+
+  var BODY={
+    pico:function(){
+      return '<b>Complete each element of the PICO question.</b><p class="note">2.5 marks per element.</p>'
+        +['P','I','C','O'].map(function(k,i){
+          var q=PICO[k];
+          return '<div style="margin-top:'+(i?16:10)+'px"><b>'+k+' — '+q.q+'</b>'
+            +'<div class="optw" data-g="pico'+i+'">'+q.o.map(function(o,j){
+              return '<button type="button" class="opt" data-g="pico'+i+'" data-k="'+j+'">'+o+'</button>';}).join('')+'</div></div>';
+        }).join('');
+    },
+    hier:function(){
+      return '<b>Click the eight sources in order — strongest evidence first.</b>'
+        +'<div class="ranks" id="rWrap">'+HIER_SHOW.map(function(idx){
+            var it=HIER[idx];
+            return '<button type="button" class="rank" data-k="'+idx+'"><span class="ordn">·</span><span><b>'+it.t+'</b><small>'+it.d+'</small></span></button>';
+          }).join('')+'</div>'
+        +'<p class="note" id="rNote">0 of 8 ranked. Click a ranked item again to remove it.</p>';
+    },
+    appraise:function(){
+      return '<div class="papers">'+PAPERS.map(function(p){
+          return '<div class="paper"><b>'+p.t+'</b><ul>'+p.b.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul></div>';
+        }).join('')+'</div>'+mcqBlock(APPR,'ap');
+    },
+    guide:function(){
+      return '<div class="glcards">'+GUIDES.map(function(g){
+          return '<div class="glc"><b>'+g.n+'</b><p>'+g.p+'</p></div>';}).join('')+'</div>'+mcqBlock(GQ,'gq');
+    },
+    decide:function(){ return mcqBlock(DEC,'dc'); },
+    safety:function(){
+      return '<b>Which medicines do you hold today? Select every medicine to HOLD.</b> <span class="muted" style="font-size:12px">(3 marks)</span>'
+        +'<div class="plist" id="mWrap">'+SAFE_MEDS.map(function(m,k){
+            return '<button type="button" class="pcard" data-k="'+k+'"><b>'+m.n+'</b><small>'+m.d+'</small></button>';}).join('')+'</div>'
+        +mcqBlock(SAFEQ,'sq');
+    },
+    counsel:function(){
+      return '<b>Select every correct counselling point.</b> <span class="muted" style="font-size:12px">(2 marks · incorrect advice lowers the Patient Safety Index)</span>'
+        +'<div class="plist" id="cWrap">'+COUNSEL.map(function(c,k){
+            return '<button type="button" class="pcard" data-k="'+k+'"><b>'+c.t+'</b></button>';}).join('')+'</div>'
+        +'<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:20px 0 4px">The patient asks you three questions</h3>'
+        +'<p class="note">1 mark each. Choose the reply you would actually give at the bedside.</p>'
+        +CHAT.map(function(c,i){
+          return '<div class="chat"><div class="bub pt"><div class="who">'+esc(PT.name)+'</div>'+esc(c.q)+'</div>'
+            +'<div class="optw" data-g="ch'+i+'">'+c.o.map(function(o,k){
+              return '<button type="button" class="opt" data-g="ch'+i+'" data-k="'+k+'">'+o+'</button>';}).join('')+'</div></div>';
+        }).join('');
+    },
+    doc:function(){
+      return '<b>Complete all seven sections of the clinical report.</b><p class="note">Each section is marked for adequate detail and for the clinically essential content. A model answer is revealed after submission.</p>'
+        +DOCSEC.map(function(d){
+          return '<div style="margin-top:14px"><label class="f">'+d.label+' &nbsp;·&nbsp; '+d.w+' mark'+(d.w===1?'':'s')+' &nbsp;·&nbsp; minimum '+d.min+' words</label>'
+            +'<textarea data-d="'+d.k+'" placeholder="'+esc(d.ph)+'"></textarea>'
+            +'<div class="note" data-wc="'+d.k+'">0 words</div></div>';
+        }).join('');
+    }
+  };
+
+  var WIRE={
+    pico:wireMCQ,
+    hier:function(){
+      [].forEach.call(document.querySelectorAll('#rWrap .rank'),function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k'), i=sel.order.indexOf(k);
+          if(i<0) sel.order.push(k); else sel.order.splice(i,1);
+          [].forEach.call(document.querySelectorAll('#rWrap .rank'),function(x){
+            var kk=+x.getAttribute('data-k'), pos=sel.order.indexOf(kk);
+            x.classList.toggle('chosen',pos>=0);
+            x.querySelector('.ordn').textContent=(pos>=0?(pos+1):'·');
+          });
+          $('rNote').textContent=sel.order.length+' of 8 ranked. Click a ranked item again to remove it.';
+        });
+      });
+    },
+    appraise:wireMCQ, guide:wireMCQ, decide:wireMCQ,
+    safety:function(){
+      wireMCQ();
+      [].forEach.call(document.querySelectorAll('#mWrap .pcard'),function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k'), i=sel.multi.indexOf(k);
+          if(i<0){sel.multi.push(k);b.classList.add('pick');} else {sel.multi.splice(i,1);b.classList.remove('pick');}
+        });
+      });
+    },
+    counsel:function(){
+      wireMCQ();
+      [].forEach.call(document.querySelectorAll('#cWrap .pcard'),function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k'), i=sel.multi.indexOf(k);
+          if(i<0){sel.multi.push(k);b.classList.add('pick');} else {sel.multi.splice(i,1);b.classList.remove('pick');}
+        });
+      });
+    },
+    doc:function(){
+      [].forEach.call(document.querySelectorAll('#qCard textarea[data-d]'),function(t){
+        t.addEventListener('input',function(){
+          var k=t.getAttribute('data-d'), w=words(t.value);
+          var n=document.querySelector('[data-wc="'+k+'"]');
+          var need=DOCSEC.filter(function(d){return d.k===k;})[0].min;
+          n.textContent=w+' word'+(w===1?'':'s')+(w<need?(' · '+(need-w)+' more for full length credit'):' · length met');
+          n.style.color=(w>=need?'var(--success)':'var(--muted)');
+        });
+      });
+    }
+  };
+  function words(s){ return String(s||'').trim().split(/\s+/).filter(Boolean).length; }
+
+  /* =========================================================
+     SCORING PER STAGE
+     ========================================================= */
+  var SCORE={
+    pico:function(){
+      var got=0,lines=[];
+      ['P','I','C','O'].forEach(function(k,i){
+        var q=PICO[k], p=sel.mcq['pico'+i];
+        if(p===q.c) got+=2.5;
+        else{ lines.push('<b>'+k+' — '+q.q+'</b><br>You chose: '+(p==null?'<i>nothing</i>':esc(strip(q.o[p])))+'<br><b>Why:</b> '+q.why);
+              S.wrong.push({st:'PICO',q:k+' — '+q.q,chose:(p==null?'no answer':strip(q.o[p])),right:strip(q.o[q.c])}); }
+        [].forEach.call(document.querySelectorAll('#qCard .opt[data-g="pico'+i+'"]'),function(b){
+          var kk=+b.getAttribute('data-k'); b.classList.remove('pick');
+          if(kk===q.c) b.classList.add('right'); else if(p===kk) b.classList.add('wrong');
+        });
+      });
+      return {got:got,lines:lines,
+        need:(Object.keys(sel.mcq).filter(function(x){return x.indexOf('pico')===0;}).length<4)?'Answer all four PICO elements first.':null};
+    },
+    hier:function(){
+      if(sel.order.length!==8) return {need:'Rank all eight sources before submitting.'};
+      var got=0,wrongPos=[];
+      sel.order.forEach(function(idx,pos){
+        var it=HIER[idx];
+        if(it.rank===pos+1) got+=2.5; else wrongPos.push(it.t+' (you placed it '+(pos+1)+', correct position '+it.rank+')');
+      });
+      [].forEach.call(document.querySelectorAll('#rWrap .rank'),function(b){
+        var k=+b.getAttribute('data-k'), pos=sel.order.indexOf(k);
+        b.classList.remove('chosen');
+        b.classList.add(HIER[k].rank===pos+1?'right':'wrong');
+        b.querySelector('.ordn').textContent=HIER[k].rank;
+      });
+      if(wrongPos.length) S.wrong.push({st:'Evidence ranking',q:'Hierarchy of evidence',chose:wrongPos.length+' source(s) misplaced',right:'Systematic review → meta-analysis → clinical practice guideline → RCT → cohort → case-control → case report → expert opinion'});
+      var lines=wrongPos.length?['<b>Misplaced:</b> '+esc(wrongPos.join('; '))
+        +'<br><b>Correct order:</b> '+HIER.slice().sort(function(a,b){return a.rank-b.rank;}).map(function(x){return x.rank+'. '+x.t;}).join(' · ')
+        +'<br><b>Why:</b> strength rises with the degree to which a design excludes bias. Syntheses of many randomised studies come first; a clinical practice guideline is pre-appraised evidence and sits just below them; a single randomised trial outranks any observational design; cohort studies outrank case-control studies because exposure is recorded before the outcome; an uncontrolled case report cannot attribute cause; opinion is not data. <i>Note: pyramids that classify sources by how far they are pre-processed (the 6S model) place guidelines at the very apex — this room ranks by the strength of the underlying study design.</i>']:[];
+      return {got:got,lines:lines};
+    },
+    appraise:function(){
+      if(Object.keys(sel.mcq).filter(function(x){return x.indexOf('ap')===0;}).length<APPR.length) return {need:'Answer all '+APPR.length+' appraisal questions first.'};
+      markMCQ(APPR,'ap'); var r=scoreMCQ(APPR,'ap','Critical appraisal'); return {got:r.got,lines:r.lines};
+    },
+    guide:function(){
+      if(Object.keys(sel.mcq).filter(function(x){return x.indexOf('gq')===0;}).length<GQ.length) return {need:'Answer all '+GQ.length+' guideline questions first.'};
+      markMCQ(GQ,'gq'); var r=scoreMCQ(GQ,'gq','Guideline interpretation'); return {got:r.got,lines:r.lines};
+    },
+    decide:function(){
+      if(Object.keys(sel.mcq).filter(function(x){return x.indexOf('dc')===0;}).length<DEC.length) return {need:'Make all three decisions first.'};
+      markMCQ(DEC,'dc'); var r=scoreMCQ(DEC,'dc','Clinical decision'); return {got:r.got,lines:r.lines};
+    },
+    safety:function(){
+      if(!sel.multi.length) return {need:'Select at least one medicine to hold.'};
+      if(Object.keys(sel.mcq).filter(function(x){return x.indexOf('sq')===0;}).length<SAFEQ.length) return {need:'Answer both safety questions first.'};
+      var got=0,lines=[],bad=[];
+      SAFE_MEDS.forEach(function(m,k){
+        var held=sel.multi.indexOf(k)>=0;
+        if(held===m.hold) got+=0.5;
+        else{ bad.push((m.hold?'Should have held ':'Should NOT have held ')+m.n+' — '+strip(m.why));
+              if(!m.hold && held && m.unsafe) hitSafety(m.unsafe.hit,m.unsafe.txt); }
+      });
+      [].forEach.call(document.querySelectorAll('#mWrap .pcard'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        var held=sel.multi.indexOf(k)>=0;
+        b.classList.add(held===SAFE_MEDS[k].hold?'right':'wrong');
+      });
+      if(bad.length){ lines.push('<b>Medicines to hold:</b><ul><li>'+bad.map(esc).join('</li><li>')+'</li></ul>');
+        S.wrong.push({st:'Drug safety',q:'Which medicines to hold',chose:bad.length+' incorrect decision(s)',right:'Hold metformin, the ACEi/ARB and the SGLT2 inhibitor; continue the anticoagulant, the statin and the amlodipine'}); }
+      markMCQ(SAFEQ,'sq'); var r=scoreMCQ(SAFEQ,'sq','Drug safety');
+      return {got:got+r.got,lines:lines.concat(r.lines)};
+    },
+    counsel:function(){
+      if(!sel.multi.length) return {need:'Select at least one counselling point.'};
+      if(Object.keys(sel.mcq).filter(function(x){return x.indexOf('ch')===0;}).length<CHAT.length) return {need:'Answer all three of the patient’s questions first.'};
+      var right=0,harm=0,lines=[],bad=[];
+      COUNSEL.forEach(function(c,k){
+        var picked=sel.multi.indexOf(k)>=0;
+        if(picked && c.ok) right++;
+        if(picked && !c.ok){ harm++; hitSafety(c.harm,strip(c.why)); bad.push(strip(c.t)+' — '+strip(c.why)); }
+      });
+      var okTotal=COUNSEL.filter(function(c){return c.ok;}).length;
+      var got=Math.max(0,Math.round((2*(right-harm)/okTotal)*10)/10);
+      [].forEach.call(document.querySelectorAll('#cWrap .pcard'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        if(COUNSEL[k].ok) b.classList.add('right'); else if(sel.multi.indexOf(k)>=0) b.classList.add('wrong');
+      });
+      if(bad.length){ lines.push('<b>Unsafe advice given:</b><ul><li>'+bad.map(esc).join('</li><li>')+'</li></ul>');
+        S.wrong.push({st:'Counselling',q:'Counselling points',chose:harm+' unsafe point(s) selected',right:'Only the six safe counselling points'}); }
+      if(right<okTotal) lines.push('<b>Missed '+(okTotal-right)+' of the '+okTotal+' correct counselling points.</b>');
+      markMCQ(CHAT,'ch'); var r=scoreMCQ(CHAT,'ch','Patient interaction');
+      return {got:Math.min(2,got)+r.got,lines:lines.concat(r.lines)};
+    },
+    doc:function(){
+      var missing=DOCSEC.filter(function(d){ var t=document.querySelector('textarea[data-d="'+d.k+'"]'); return words(t.value)<5; });
+      if(missing.length) return {need:'All seven sections must be completed — '+missing.length+' still empty or too short.'};
+      var got=0,lines=[];
+      DOCSEC.forEach(function(d){
+        var t=document.querySelector('textarea[data-d="'+d.k+'"]'), v=String(t.value||''), lv=v.toLowerCase();
+        S.doc[d.k]=v;
+        var lenOK=words(v)>=d.min;
+        var hits=d.kw.filter(function(k){return lv.indexOf(k)>=0;}).length;
+        var kwOK=hits>=2 ? 1 : (hits===1?0.5:0);
+        var m=Math.round((d.w*0.4*(lenOK?1:0) + d.w*0.6*kwOK)*100)/100;
+        got+=m;
+        if(m<d.w) lines.push('<b>'+esc(d.label)+' — '+m+' of '+d.w+'.</b> '
+          +(!lenOK?'Below the '+d.min+'-word minimum. ':'')
+          +(kwOK<1?'Missing the essential clinical content. ':'')
+          +'<br><b>Model answer:</b> '+esc(d.model));
+      });
+      got=Math.round(got*10)/10;
+      if(got<10) S.wrong.push({st:'Documentation',q:'Clinical report',chose:got+' of 10',right:'All seven sections complete, with the essential clinical content in each'});
+      return {got:got,lines:lines};
+    }
+  };
+
+  /* =========================================================
+     SUBMIT A STAGE
+     ========================================================= */
+  function submitStage(st){
+    var r=SCORE[st.key]();
+    if(r.need){ var f=$('fbk'); f.className='fbk no'; f.innerHTML=esc(r.need); return; }
+    var g=Math.round(r.got*10)/10;
+    S.marks[st.key]=g;
+    var pct=g/st.marks;
+    var fb=$('fbk');
+    fb.className='fbk '+(pct>=0.999?'ok':(pct>=0.5?'part':'no'));
+    var head=(pct>=0.999?'<b>Stage '+st.n+' complete — '+g+' / '+st.marks+'. Full marks.</b>'
+             :'<b>Stage '+st.n+' complete — '+g+' / '+st.marks+'.</b>');
+    fb.innerHTML=head+(r.lines&&r.lines.length?('<ul><li>'+r.lines.join('</li><li>')+'</li></ul>'):'');
+    if(S.alerts.length){
+      var uniq=S.alerts.filter(function(v,i,a){return a.indexOf(v)===i;});
+      fb.innerHTML+='<div class="alert" style="margin-top:10px"><b>⚠ Drug interaction alert</b><ul><li>'+uniq.map(esc).join('</li><li>')+'</li></ul></div>';
+      S.alerts=[];
+    }
+    paintChips();
+    var btn=$('confirmBtn'); btn.disabled=true;
+    [].forEach.call(document.querySelectorAll('#qCard .opt,#qCard .pcard,#qCard .rank,#qCard textarea'),function(b){
+      if(b.tagName==='TEXTAREA') b.readOnly=true; else b.style.pointerEvents='none'; });
+    var mb=$('mentorBtn'); if(mb) mb.disabled=true;
+
+    var next=document.createElement('button');
+    next.className='btn gold'; next.style.marginLeft='8px'; next.id='nextBtn';
+    var last=(S.si===STAGES.length-1);
+    next.textContent=last?'Close the room ▸':('Unlock stage '+(st.n+1)+' ▸');
+    btn.parentNode.appendChild(next);
+    next.addEventListener('click',function(){
+      S.si++;
+      if(S.si>=STAGES.length){ endGame('complete'); return; }
+      renderStage(); window.scrollTo({top:0,behavior:'smooth'});
+    });
+  }
+
+  /* =========================================================
+     END + AI FEEDBACK
+     ========================================================= */
+  function endGame(reason){
+    if(S.ended) return;
+    S.ended=true; S.endedBy=reason; clearInterval(tick);
+    var name=($('cName').value||'').trim()||'Candidate', reg=($('cReg').value||'').trim();
+    var notDone=[];
+    STAGES.forEach(function(st){ if(S.marks[st.key]==null){ S.marks[st.key]=0; notDone.push(st); } });
+
+    var total=got();
+    var m=function(k){ return S.marks[k]||0; };
+    var ai={
+      evidence:   pctOf(m('hier')+m('appraise'),40),
+      decision:   pctOf(m('decide')+m('safety'),20),
+      guideline:  pctOf(m('guide'),15),
+      safetyIdx:  S.safety,
+      documentation: pctOf(m('pico')+m('doc'),20),
+      overall:    pctOf(total,TOTAL_MARKS)
+    };
+    var pass=(total>=PASS);
+    var badges=[
+      {n:'🔬 Evidence Explorer',        got:m('hier')>=16,                    d:'16 or more of the 20 evidence-ranking marks'},
+      {n:'🧠 Clinical Decision Expert', got:(m('decide')+m('safety'))>=17,    d:'17 or more of the 20 clinical decision marks'},
+      {n:'📘 Guideline Master',         got:m('guide')>=15,                   d:'Full marks in the guideline room'},
+      {n:'🛡 Patient Safety Champion',  got:S.safety>=90,                     d:'Patient Safety Index of 90% or above'},
+      {n:'🏅 Evidence-Based Pharmacist',got:(total>=85&&notDone.length===0),  d:'85 marks or more with all eight stages completed'}
+    ];
+    S.result={name:name,reg:reg,total:total,pct:pctOf(total,TOTAL_MARKS),pass:pass,ai:ai,badges:badges,
+      wrong:S.wrong,unsafe:S.unsafe,hintsUsed:MAX_HINTS-S.hints,notDone:notDone.map(function(x){return x.n;}),
+      reason:reason,timeUsed:TOTAL_SECS-S.secs,marks:JSON.parse(JSON.stringify(S.marks))};
+    $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+total+'/100)';
+    paintChips(); paintProgress();
+    makeQR(); renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+  function pctOf(a,b){ return Math.round(a/b*100); }
+  function mmss(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+
+  /* AI narrative */
+  function aiNotes(){
+    var r=S.result, out={inc:[],missed:[],alt:[],mon:[],imp:[]};
+    r.wrong.forEach(function(w){ out.inc.push(w.st+' — '+w.q+': you answered “'+w.chose+'”; the correct position is “'+w.right+'”.'); });
+    if((r.marks.hier||0)<20) out.missed.push('The hierarchy of evidence was not fully ranked. Strength of evidence is determined by how completely a design excludes bias, not by how recent or how large a study is.');
+    if((r.marks.appraise||0)<20) out.missed.push('Applicability was not fully separated from level of evidence: Paper C ranks highest but excluded patients with eGFR below 45, while Paper A enrolled precisely this patient’s population and measured hard renal and cardiovascular outcomes.');
+    if((r.marks.guide||0)<15) out.missed.push('Guideline detail was incomplete — the ADA/KDIGO SGLT2 inhibitor recommendation, the KDIGO metformin cap of 1000 mg daily at eGFR 30–44, and the ESC position that antiplatelets do not substitute for anticoagulation.');
+    out.alt.push('If an SGLT2 inhibitor cannot be used, a GLP-1 receptor agonist is the guideline alternative for glycaemic control with cardiovascular benefit, although the renal-protection evidence at eGFR 42 is weaker.');
+    out.alt.push('If a DOAC is unsuitable, a vitamin K antagonist with INR 2.0–3.0 remains acceptable; aspirin is not an alternative to either.');
+    out.alt.push('If the ACE inhibitor causes cough, an ARB gives the same renal protection; if hyperkalaemia recurs, dietary potassium restriction and a potassium binder allow the ACEi/ARB to be continued rather than abandoned.');
+    out.mon.push('Creatinine, eGFR and potassium at 2 and 4 weeks after starting or up-titrating the ACEi/ARB or the SGLT2 inhibitor — an eGFR fall of up to 30 % is expected and reversible.');
+    out.mon.push('HbA1c at 3 months against an individualised target — not the lowest achievable figure in a 68-year-old with CKD.');
+    out.mon.push('Annual urine albumin:creatinine ratio, blood pressure at every visit, and creatinine clearance rechecked whenever the DOAC dose is reviewed.');
+    out.mon.push('Written sick-day rules reissued at every contact — this patient has already had one episode of acute kidney injury from a diarrhoeal illness.');
+    if(r.unsafe.length) out.imp.push('Patient safety: '+r.unsafe.length+' unsafe choice'+(r.unsafe.length===1?'':'s')+' cost '+(100-r.ai.safetyIdx)+' points of the Patient Safety Index. '+r.unsafe.map(function(u){return u.why;}).join(' '));
+    if(r.ai.evidence<70) out.imp.push('Work on evidence appraisal — practise stating, for every paper, its design, its main bias risk and whether your patient would have met its entry criteria.');
+    if(r.ai.decision<70) out.imp.push('Work on therapeutic decision-making — before choosing any drug, check it against renal function, age-related risk, the existing medicine list and a named guideline recommendation.');
+    if(r.ai.guideline<70) out.imp.push('Work on guideline literacy — know which guideline governs which problem in a multimorbid patient, and where two guidelines agree.');
+    if(r.ai.documentation<70) out.imp.push('Work on documentation — a clinical pharmacy note must let another pharmacist act on it without speaking to you.');
+    if(!out.imp.length) out.imp.push('No substantive weaknesses identified. Maintain this standard and progress to complex polypharmacy and anticoagulation-bridging cases.');
+    return out;
+  }
+
+  /* ---------------- QR ---------------- */
+  var qrData='';
+  function makeQR(){
+    try{
+      var url='https://www.alizon.in/alizon-verify.html?reg='+encodeURIComponent(S.result.reg||'')+'&p=M5U4-P4';
+      $('qrHolder').innerHTML='';
+      if(window.QRCode){
+        new QRCode($('qrHolder'),{text:url,width:96,height:96,correctLevel:QRCode.CorrectLevel.M});
+        var cv=$('qrHolder').querySelector('canvas');
+        qrData=cv?cv.toDataURL('image/png'):(($('qrHolder').querySelector('img')||{}).src||'');
+      }
+    }catch(e){ qrData=''; }
+  }
+
+  function buildAuto(){
+    if(!S||!S.result) return null;
+    var r=S.result, ai=r.ai, n=aiNotes();
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Evidence-Based Therapy Escape Room — “The Right Prescription”</h3>';
+    h+='<p style="margin:2px 0"><b>Student:</b> '+esc(r.name)+(r.reg?' &nbsp;·&nbsp; <b>Register no.:</b> '+esc(r.reg):'')+'</p>';
+    h+='<p style="margin:2px 0"><b>Date:</b> '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})
+      +' &nbsp;·&nbsp; <b>Patient:</b> '+esc(PT.name)+', '+PT.age+' y, UHID '+PT.uhid
+      +' &nbsp;·&nbsp; <b>Time used:</b> '+mmss(r.timeUsed)+' of 90:00 &nbsp;·&nbsp; <b>AI hints used:</b> '+r.hintsUsed+' of 3</p>';
+    h+='<p style="margin:6px 0"><b>Final score:</b> '+r.total+' / 100 &nbsp;·&nbsp; <b>Result:</b> '+(r.pass?'PASS':'FAIL')+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:8px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Assessment criterion</th><th>Awarded</th><th>Maximum</th></tr>'
+      +'<tr><td>PICO formulation</td><td align="center">'+(r.marks.pico||0)+'</td><td align="center">10</td></tr>'
+      +'<tr><td>Evidence identification &amp; ranking</td><td align="center">'+(r.marks.hier||0)+'</td><td align="center">20</td></tr>'
+      +'<tr><td>Critical appraisal of literature</td><td align="center">'+(r.marks.appraise||0)+'</td><td align="center">20</td></tr>'
+      +'<tr><td>Guideline interpretation</td><td align="center">'+(r.marks.guide||0)+'</td><td align="center">15</td></tr>'
+      +'<tr><td>Clinical decision-making</td><td align="center">'+Math.round(((r.marks.decide||0)+(r.marks.safety||0))*10)/10+'</td><td align="center">20</td></tr>'
+      +'<tr><td>Patient counselling</td><td align="center">'+(r.marks.counsel||0)+'</td><td align="center">5</td></tr>'
+      +'<tr><td>Documentation &amp; clinical report</td><td align="center">'+(r.marks.doc||0)+'</td><td align="center">10</td></tr>'
+      +'<tr style="font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">100</td></tr></table>';
+    h+='<p style="margin:10px 0 4px"><b>AI clinical feedback — competency profile</b></p>';
+    h+='<table border="1" cellspacing="0" cellpadding="5" style="border-collapse:collapse;width:100%;font-size:12px">'
+      +'<tr><td>Evidence score</td><td align="center">'+ai.evidence+'%</td><td>Clinical decision score</td><td align="center">'+ai.decision+'%</td></tr>'
+      +'<tr><td>Guideline compliance</td><td align="center">'+ai.guideline+'%</td><td>Patient safety index</td><td align="center">'+ai.safetyIdx+'%</td></tr>'
+      +'<tr><td>Documentation quality</td><td align="center">'+ai.documentation+'%</td><td><b>Overall competency</b></td><td align="center"><b>'+ai.overall+'%</b></td></tr></table>';
+    var sec=function(t,arr){ return arr.length?('<p style="margin:9px 0 2px"><b>'+t+'</b></p><ul style="margin:0 0 0 18px;font-size:12px;line-height:1.6"><li>'+arr.map(esc).join('</li><li>')+'</li></ul>'):''; };
+    h+=sec('Incorrect decisions ('+n.inc.length+')',n.inc.length?n.inc:['None — every decision in the room was correct.']);
+    h+=sec('Missed evidence',n.missed.length?n.missed:['None — the evidence was ranked and appraised correctly throughout.']);
+    h+=sec('Alternative therapies',n.alt);
+    h+=sec('Better monitoring strategies',n.mon);
+    h+=sec('Areas for improvement',n.imp);
+    if(r.notDone.length) h+='<p style="margin:8px 0 0;font-size:12px;color:#b3261e"><b>Stages not completed:</b> '+r.notDone.join(', ')+' — scored zero'+(r.reason==='time'?' (the 90-minute countdown expired)':'')+'.</p>';
+    h+='<p style="margin:10px 0 2px"><b>Badges earned:</b> '+(r.badges.filter(function(b){return b.got;}).map(function(b){return esc(b.n);}).join(' · ')||'none')+'</p>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.total+' / 100 ('+ai.overall+'% overall competency)</p>';
+    h+='<p style="margin-top:8px;font-size:11px;color:#555"><b>Faculty remarks:</b> ______________________________________________</p>';
+    if(qrData) h+='<div style="margin-top:10px"><img src="'+qrData+'" width="96" height="96" alt="Verification QR"><div style="font-size:10px;color:#666">Scan to verify this record · '+esc(r.reg||'—')+' · M5-U4-PRACTICAL-4</div></div>';
+    return h;
+  }
+
+  function renderReport(){
+    var r=S.result, ai=r.ai, n=aiNotes();
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">Marks / 100</div></div>'
+      +'<div class="repbox"><div class="rv">'+ai.safetyIdx+'%</div><div class="rl">Patient safety index</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.wrong.length+'</div><div class="rl">Incorrect decisions</div></div>'
+      +'<div class="repbox"><div class="rv">'+mmss(r.timeUsed)+'</div><div class="rl">Time used</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.hintsUsed+'/3</div><div class="rl">AI hints used</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+r.total+' / 100</div>';
+    if(r.reason==='time') html+='<div class="note" style="color:var(--warn);font-weight:600;margin:-4px 0 10px">The 90-minute countdown expired — stages '+r.notDone.join(', ')+' scored zero.</div>';
+
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">AI clinical feedback — competency profile</h3>';
+    html+='<div class="aib">'+[
+      ['Evidence score',ai.evidence],['Clinical decision score',ai.decision],['Guideline compliance',ai.guideline],
+      ['Patient safety index',ai.safetyIdx],['Documentation quality',ai.documentation],['Overall competency',ai.overall]
+    ].map(function(x){
+      var cls=x[1]>=85?'good':(x[1]<60?'bad':'');
+      return '<div class="r"><span>'+x[0]+'</span><span>'+x[1]+'%</span></div><div class="bar"><i class="'+cls+'" style="width:'+x[1]+'%"></i></div>';
+    }).join('')+'</div>';
+
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">Achievement badges</h3>';
+    html+='<div class="badges">'+r.badges.map(function(b){return '<span class="badge '+(b.got?'got':'miss')+'" title="'+esc(b.d)+'">'+b.n+'</span>';}).join('')+'</div>';
+
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">Marks by criterion</h3>';
+    html+='<div class="tw"><table class="rubric"><thead><tr><th>Assessment criterion</th><th>Awarded</th></tr></thead><tbody>'
+      +[['PICO formulation',(r.marks.pico||0),10],['Evidence identification &amp; ranking',(r.marks.hier||0),20],
+        ['Critical appraisal of literature',(r.marks.appraise||0),20],['Guideline interpretation',(r.marks.guide||0),15],
+        ['Clinical decision-making',Math.round(((r.marks.decide||0)+(r.marks.safety||0))*10)/10,20],
+        ['Patient counselling',(r.marks.counsel||0),5],['Documentation &amp; clinical report',(r.marks.doc||0),10]]
+        .map(function(x){ var col=(x[1]>=x[2]?'var(--success)':(x[1]>=x[2]/2?'var(--warn)':'var(--danger)'));
+          return '<tr><td>'+x[0]+'</td><td style="color:'+col+';font-weight:700">'+x[1]+' / '+x[2]+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+' / 100</td></tr></tbody></table></div>';
+
+    var blk=function(t,arr,warn){ return '<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:'+(warn?'var(--danger)':'var(--gold)')+';margin:16px 0 6px">'+t+'</h3>'
+      +'<ul style="margin:0 0 0 18px;font-size:13px;line-height:1.65">'+(arr.length?arr:['None.']).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>'; };
+    html+=blk('Incorrect decisions',n.inc.length?n.inc:['None — every decision in the room was correct.'],n.inc.length>0);
+    html+=blk('Missed evidence',n.missed.length?n.missed:['None — the evidence was ranked and appraised correctly throughout.']);
+    html+=blk('Alternative therapies',n.alt);
+    html+=blk('Better monitoring strategies',n.mon);
+    html+=blk('Areas for improvement',n.imp);
+
+    html+='<div class="row no-print" style="margin-top:16px"><button class="btn gold" onclick="window.print()">Download / Print report</button>'
+      +'<button class="btn ghost" id="retryBtn">Run the escape room again</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){
+      $('setupCard').style.display=''; $('gameHead').style.display='none'; $('stArea').innerHTML=''; $('chartHost').innerHTML='';
+      $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+      $('scRes').textContent='—'; $('scMarks').textContent='0 / 100'; $('scSafe').textContent='100%';
+      $('scStage').textContent='—'; $('scHints').textContent='3'; $('scTime').textContent='90:00';
+      S=null; switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 5 · Unit 4 — Evidence-Based Pharmacy',title:'Evidence-Based Therapy Escape Room — “The Right Prescription”',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Final score &amp; therapeutic recommendation', placeholder:'e.g. 92/100 — SGLT2 inhibitor added, metformin reduced, aspirin switched to a renally dosed DOAC, ACEi added'},
+      minWords:400,
+      attachments:[
+        {label:'1. Clinical Report / Simulation Printout (PDF)'},
+        {label:'2. Evidence Appraisal Worksheet (PDF)'},
+        {label:'3. Additional Supporting File (PDF)'}
+      ],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return S&&S.result?S.result.pct:null; },
+      autoResultText:function(){ return S&&S.result?((S.result.pass?'PASS':'FAIL')+' '+S.result.total+'/100'):''; }
+    });
+  }
+
+  function switchTab(p){ [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  $('startBtn').addEventListener('click',startGame);
+})();
+</script>
+</body>
+</html>

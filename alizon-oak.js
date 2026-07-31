@@ -16,8 +16,8 @@
     '{R}{',
     '--bg:#F3F4F6 !important;--navy:#FFF !important;--navy2:#FFF !important;--navy3:#F5F6F8 !important;',
     '--ink:#1B1D21 !important;--muted:#7E8590 !important;--line:#EAECEF !important;',
-    '--crimson:#1B1D21 !important;--crimson-deep:#111317 !important;--crimson-soft:rgba(27,29,33,.06) !important;',
-    '--gold:#8C9E2B !important;--gold-soft:rgba(174,197,59,.18) !important;',
+    '--crimson:#c1121f !important;--crimson-deep:#8a0009 !important;--crimson-soft:rgba(193,18,31,.08) !important;',
+    '--gold:#A16207 !important;--gold-soft:rgba(217,164,65,.18) !important;',
     '--pill:#F5F6F8 !important;--glass:#FFFFFF !important;',
     '--success:#12A971 !important;--succ:#12A971 !important;--warn:#C0872A !important;',
     'background:#F3F4F6 !important;color:#1B1D21 !important;}',
@@ -29,39 +29,39 @@
     '{R} .card,{R} .prog,{R} .apanel,{R} .newprog,{R} .pickbar,{R} .tile,{R} .panel,{R} .lead,{R} .faccard,{R} .modcard{',
     'background:#fff !important;border:1px solid #EAECEF !important;box-shadow:0 1px 2px rgba(16,24,40,.04),0 10px 26px -16px rgba(16,24,40,.14) !important;color:#1B1D21 !important}',
     /* active nav + primary buttons -> near-black */
-    '{R} .anavv a.on,{R} .anavv a.active,{R} .anav a.on,{R} .nav a.active,{R} .navv a.active,{R} .side .nav a.active{background:#1B1D21 !important;color:#fff !important;box-shadow:0 6px 16px -8px rgba(27,29,33,.5) !important}',
-    '{R} .anavv a.on .aic,{R} .anavv a.on b.cnt{color:#c6e000 !important}',
-    '{R} .btn-primary,{R} .primary,{R} .btn.gold,{R} button.save,{R} .savebtn{background:#1B1D21 !important;color:#fff !important;border-color:#1B1D21 !important}',
-    '{R} a{color:#3a5a12}',
+    '{R} .anavv a.on,{R} .anavv a.active,{R} .anav a.on,{R} .nav a.active,{R} .navv a.active,{R} .side .nav a.active{background:#c1121f !important;color:#fff !important;box-shadow:0 6px 16px -8px rgba(193,18,31,.55) !important}',
+    '{R} .anavv a.on .aic,{R} .anavv a.on b.cnt{color:#fff !important}',
+    '{R} .btn-primary,{R} .primary,{R} .btn.gold,{R} button.save,{R} .savebtn{background:#c1121f !important;color:#fff !important;border-color:#c1121f !important}',
+    '{R} a{color:#c1121f}',
     /* inputs */
     '{R} input,{R} select,{R} textarea{background:#fff !important;border:1px solid #E3E6EA !important;color:#1B1D21 !important}',
-    '{R} input:focus,{R} select:focus,{R} textarea:focus{border-color:#AEC53B !important;box-shadow:0 0 0 3px rgba(174,197,59,.22) !important}',
+    '{R} input:focus,{R} select:focus,{R} textarea:focus{border-color:#c1121f !important;box-shadow:0 0 0 3px rgba(193,18,31,.16) !important}',
     /* ---- hero ---- */
     '{R} .oak-hero{position:relative;border-radius:24px;overflow:hidden;margin:0 0 18px;min-height:250px;display:flex;flex-direction:column;justify-content:flex-end}',
-    '{R} .oak-hero-bg{position:absolute;inset:0;background:radial-gradient(130% 150% at 80% -30%,rgba(174,197,59,.55),transparent 55%),radial-gradient(90% 130% at 105% 120%,rgba(120,150,180,.45),transparent 60%),linear-gradient(120deg,#c9d3b6,#e9edd9 58%,#e4ebf3)}',
-    '{R} .oak-hero-bg:after{content:"ALIZON";position:absolute;right:26px;top:2px;font-weight:800;font-size:64px;letter-spacing:.06em;color:rgba(27,29,33,.06);font-family:"Source Serif Pro",Georgia,serif}',
+    '{R} .oak-hero-bg{position:absolute;inset:0;background:radial-gradient(130% 150% at 80% -30%,rgba(193,18,31,.30),transparent 55%),radial-gradient(90% 130% at 105% 120%,rgba(217,164,65,.22),transparent 60%),linear-gradient(120deg,#f6dedf,#faecec 58%,#fbe9ea)}',
+    '{R} .oak-hero-bg:after{content:"ALIZON";position:absolute;right:26px;top:2px;font-weight:800;font-size:64px;letter-spacing:.06em;color:rgba(193,18,31,.07);font-family:"Source Serif Pro",Georgia,serif}',
     '{R} .oak-hero.has-cover .oak-hero-bg,{R} .oak-hero.has-default .oak-hero-bg{background-size:cover;background-position:center}',
     '{R} .oak-hero.has-cover .oak-hero-bg:after,{R} .oak-hero.has-default .oak-hero-bg:after{display:none}',
     '{R} .oak-hero.has-cover .oak-hero-bg:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,18,8,.34),rgba(14,18,8,.12) 46%,rgba(255,255,255,.06))}',
     '{R} .oak-cover-btn{position:absolute;top:12px;right:14px;z-index:4;display:inline-flex;align-items:center;gap:6px;background:rgba(27,29,33,.82);color:#fff;border:0;border-radius:100px;padding:7px 13px;font-size:11.5px;font-weight:600;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}',
-    '{R} .oak-cover-btn span{color:#c6e000;font-size:10px}',
+    '{R} .oak-cover-btn span{color:#ffbfc3;font-size:10px}',
     '{R} .oak-cover-rm{position:absolute;top:12px;right:14px;z-index:4;display:none;width:30px;height:30px;border:0;border-radius:50%;background:rgba(27,29,33,.82);color:#fff;font-size:13px;cursor:pointer}',
     '{R} .oak-hero.has-cover .oak-cover-btn{right:52px}',
     '{R} .oak-hero.has-cover .oak-cover-rm{display:grid;place-items:center}',
     '{R} .oak-hero-head{position:relative;padding:16px 18px 0;font-family:"Source Serif Pro",Georgia,serif;font-size:20px;font-weight:800;color:#1B1D21}',
     '{R} .oak-hero.has-cover .oak-hero-head{color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.4)}',
-    '{R} .oak-hero-cards{position:relative;display:grid;grid-template-columns:repeat(3,1fr) 1.2fr;gap:13px;padding:14px 16px 16px}',
+    '{R} .oak-hero-cards{position:relative;display:grid;grid-template-columns:repeat(4,1fr) 1.2fr;gap:13px;padding:14px 16px 16px}',
     '{R} .oak-stat{background:rgba(255,255,255,.78);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);border:1px solid rgba(255,255,255,.7);border-radius:18px;padding:14px 15px;min-height:110px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 12px 30px -18px rgba(16,24,40,.35)}',
     '{R} .oak-stat .t{display:flex;align-items:center;justify-content:space-between}',
     '{R} .oak-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#1B1D21;background:#fff;border-radius:100px;padding:5px 11px;box-shadow:0 2px 6px rgba(16,24,40,.08)}',
-    '{R} .oak-chip i{color:#8C9E2B;font-style:normal;font-size:11px}',
+    '{R} .oak-chip i{color:#c1121f;font-style:normal;font-size:11px}',
     '{R} .oak-stat .b{display:flex;align-items:flex-end;justify-content:space-between}',
     '{R} .oak-num{font-size:34px;font-weight:700;letter-spacing:-.03em;color:#1B1D21;line-height:1}',
     '{R} .oak-arrow{width:32px;height:32px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:14px;color:#1B1D21;box-shadow:0 2px 8px rgba(16,24,40,.14)}',
-    '{R} .oak-add{background:linear-gradient(135deg,#e2f277,#c6e000);border-radius:18px;padding:15px;display:flex;flex-direction:column;justify-content:center;gap:10px;box-shadow:0 14px 30px -16px rgba(150,180,0,.55)}',
-    '{R} .oak-add b{font-size:14px;color:#2c3300}',
+    '{R} .oak-add{background:linear-gradient(135deg,#d64450,#c1121f);border-radius:18px;padding:15px;display:flex;flex-direction:column;justify-content:center;gap:10px;box-shadow:0 14px 30px -16px rgba(193,18,31,.5)}',
+    '{R} .oak-add b{font-size:14px;color:#fff}',
     '{R} .oak-add .r{display:flex;gap:8px;flex-wrap:wrap}',
-    '{R} .oak-add a{background:rgba(255,255,255,.9);color:#2c3300;font-weight:600;font-size:11px;border-radius:100px;padding:7px 12px;cursor:pointer;text-decoration:none}',
+    '{R} .oak-add a{background:rgba(255,255,255,.95);color:#c1121f;font-weight:600;font-size:11px;border-radius:100px;padding:7px 12px;cursor:pointer;text-decoration:none}',
     '@media(max-width:1000px){{R} .oak-hero-cards{grid-template-columns:1fr 1fr}}'
   ].join('\n')).replace(/\{R\}/g, R);
 
@@ -73,6 +73,8 @@
   function heroHTML(){
     var s=ls('alizonStudents',[]),f=ls('alizonFaculty',[]),p=ls('alizonPrograms',[]);
     var nS=(Array.isArray(s)&&s.length)||248, nF=(Array.isArray(f)&&f.length)||9, nP=(Array.isArray(p)&&p.length)||4;
+    /* live count of students on a scholarship (scholarship % set and > 0) */
+    var nSch=(Array.isArray(s)?s:[]).filter(function(x){var v=String(x&&x.scholarship!=null?x.scholarship:'').replace('%','').trim();return v!==''&&!isNaN(parseFloat(v))&&parseFloat(v)>0;}).length;
     function stat(icon,label,n){return '<div class="oak-stat"><div class="t"><span class="oak-chip"><i>'+icon+'</i> '+label+'</span><span style="color:#9aa0aa">⋯</span></div><div class="b"><b class="oak-num">'+Number(n).toLocaleString()+'</b><span class="oak-arrow">↗</span></div></div>';}
     var coverUI = EDITABLE ?
       '<button class="oak-cover-btn" id="oakCoverBtn"><span>◈</span> Cover photo</button>'+
@@ -82,7 +84,7 @@
       coverUI+
       '<div class="oak-hero-head">'+TITLE+'</div>'+
       '<div class="oak-hero-cards">'+
-        stat('◗','Students',nS)+stat('❖','Faculty',nF)+stat('▤','Programmes',nP)+
+        stat('◗','Students',nS)+stat('❖','Faculty',nF)+stat('▤','Programmes',nP)+stat('✦','On Scholarship',nSch)+
         '<div class="oak-add"><b>Add New Members</b><div class="r"><a>＋ Add Student</a><a>＋ Add Faculty</a></div></div>'+
       '</div></div>';
   }
@@ -102,7 +104,7 @@
     var hero=document.getElementById('oakHero'),bg=document.getElementById('oakHeroBg');if(!hero||!bg)return;
     var img=getCover();
     if(img){ bg.style.backgroundImage='url('+img+')'; hero.classList.add('has-cover'); hero.classList.remove('has-default'); }
-    else{ bg.style.backgroundImage='url('+DEFAULT_COVER+')'; hero.classList.add('has-default'); hero.classList.remove('has-cover'); }
+    else{ bg.style.backgroundImage=''; hero.classList.remove('has-cover'); hero.classList.remove('has-default'); }
   }
   function wireCover(){
     if(!EDITABLE) return;
