@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON OS · Module 5 · AI-Driven Literature Analysis</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --teal:#0E6F76;--card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --teal:#4bc2c9;--card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1040px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)} .scorechip b{color:var(--gold)}
+  .scorechip.warn b{color:var(--danger)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:460px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  select,textarea,input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  select:focus,textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:78px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .opt.right{border-color:var(--success);box-shadow:0 0 0 3px rgba(30,142,90,.16)} .opt.wrong{border-color:var(--danger);box-shadow:0 0 0 3px rgba(196,38,46,.14)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
+  /* ---- virtual hospital / patient chart ---- */
+  .chart{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:14px;padding:14px 16px;margin-bottom:16px}
+  .chart .ch-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .chart .ch-h b{font-family:'Source Serif Pro',Georgia,serif;font-size:16px}
+  .chart .ch-h span{font-size:11.5px;color:var(--muted)}
+  .chart .ch-tag{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:100px;padding:2px 9px}
+  .vitals{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;margin-top:11px}
+  .vital{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  .vital .vl{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .vital .vv{font-size:15px;font-weight:800;font-family:'Source Serif Pro',serif}
+  .vital.hi .vv{color:var(--danger)} .vital.lo .vv{color:var(--warn)} .vital.ok .vv{color:var(--success)}
+  .vital.chg{border-color:var(--danger);box-shadow:0 0 0 3px rgba(196,38,46,.1)}
+  .medlist{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+  .med{font-size:11.5px;font-weight:600;background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:4px 11px}
+  .med.stop{text-decoration:line-through;opacity:.5} .med.new{border-color:var(--success);color:var(--success)}
+  .med.hold{border-color:var(--warn);color:var(--warn)}
+  /* ---- stage rail ---- */
+  .rail{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .rdot{font-size:11px;font-weight:800;min-width:32px;height:32px;padding:0 7px;border-radius:100px;display:grid;place-items:center;background:var(--pill);border:1.5px solid var(--line);color:var(--muted)}
+  .rdot.done{background:rgba(30,142,90,.14);border-color:var(--success);color:var(--success)}
+  .rdot.now{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .rdot.part{background:rgba(180,83,9,.14);border-color:var(--warn);color:var(--warn)}
+  .prog{height:10px;border-radius:100px;background:var(--pill);overflow:hidden;margin:10px 0 4px}
+  .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--crimson-deep),var(--crimson));width:0;transition:width .4s}
+  .scene{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:13px 15px;margin-top:10px;font-size:13.5px;line-height:1.65}
+  .scene .dt{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--crimson);margin-bottom:5px}
+  .scene pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;white-space:pre-wrap;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;line-height:1.6}
+  /* ---- evidence ranking ---- */
+  .ranks{display:grid;gap:8px;margin-top:10px}
+  .rank{cursor:pointer;text-align:left;font:inherit;font-size:13.5px;background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;color:var(--ink);display:flex;gap:10px;align-items:flex-start}
+  .rank:hover{border-color:var(--gold)}
+  .rank.chosen{border-color:var(--crimson);background:var(--gold-soft)}
+  .rank.right{border-color:var(--success)} .rank.wrong{border-color:var(--danger)}
+  .rank .ordn{flex:none;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--pill);color:var(--muted);font-size:11px;font-weight:800;border:1px solid var(--line)}
+  .rank.chosen .ordn{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+  .rank small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px;line-height:1.5}
+  /* ---- papers ---- */
+  .papers{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:10px}
+  .paper{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+  .paper b{font-size:13.5px;color:var(--crimson)} .paper ul{margin:7px 0 0 16px;font-size:12.5px;line-height:1.65}
+  /* ---- guideline cards ---- */
+  .glcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:10px}
+  .glc{background:var(--panel2);border:1px solid var(--line);border-top:3px solid var(--teal);border-radius:12px;padding:13px 15px}
+  .glc b{font-size:13px;display:block;margin-bottom:5px} .glc p{font-size:12.5px;line-height:1.6;color:var(--ink)}
+  /* ---- multi picks ---- */
+  .plist{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
+  .pcard{cursor:pointer;text-align:left;font:inherit;background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink)}
+  .pcard:hover{border-color:var(--gold)} .pcard.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.12)}
+  .pcard.right{border-color:var(--success)} .pcard.wrong{border-color:var(--danger)}
+  .pcard b{font-size:13.5px;display:block} .pcard small{display:block;color:var(--muted);font-size:12px;margin-top:3px;line-height:1.55}
+  /* ---- patient chat ---- */
+  .chat{margin-top:12px}
+  .bub{max-width:82%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.6;margin-bottom:9px}
+  .bub.pt{background:var(--pill);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .bub.me{background:rgba(14,111,118,.12);border:1px solid rgba(14,111,118,.32);margin-left:auto;border-bottom-right-radius:4px}
+  .bub .who{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  /* ---- alerts / mentor ---- */
+  .alert{border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.6;border:1px solid rgba(196,38,46,.35);background:rgba(196,38,46,.09);color:var(--danger)}
+  .alert b{color:inherit}
+  .mentor{border:1px solid rgba(14,111,118,.34);background:rgba(14,111,118,.09);border-radius:10px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .mentor .mh{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);margin-bottom:4px}
+  .btn.mentorbtn{background:linear-gradient(120deg,#08484c,var(--teal))}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
+  .fbk{border-radius:10px;padding:11px 14px;margin-top:12px;font-size:13px;line-height:1.6;border:1px solid}
+  .fbk.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.35);color:var(--success)}
+  .fbk.part{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.35);color:var(--warn)}
+  .fbk.no{background:rgba(196,38,46,.09);border-color:rgba(196,38,46,.32);color:var(--danger)}
+  .fbk b{color:inherit} .fbk ul{margin:6px 0 0 17px;line-height:1.6}
+  /* ---- AI score bars ---- */
+  .aib{margin-top:8px}
+  .aib .r{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:3px}
+  .aib .bar{height:9px;border-radius:100px;background:var(--pill);overflow:hidden;margin-bottom:11px}
+  .aib .bar i{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .aib .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))}
+  .aib .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+<style>
+  /* ---- literature-analysis specific ---- */
+  .recs{display:grid;gap:10px;margin-top:10px}
+  .rec{background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+  .rec.right{border-color:var(--success)} .rec.wrong{border-color:var(--danger)}
+  .rec .rt{font-size:13.5px;font-weight:700;line-height:1.45}
+  .rec .rm{font-size:11.5px;color:var(--muted);margin-top:3px;font-family:ui-monospace,Menlo,monospace}
+  .rec .rc{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+  .rec .rc button{cursor:pointer;font:inherit;font-size:12px;font-weight:600;padding:6px 13px;border-radius:100px;
+    background:var(--panel);border:1.5px solid var(--line);color:var(--ink)}
+  .rec .rc button:hover{border-color:var(--gold)}
+  .rec .rc button.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .rec .why{font-size:12px;line-height:1.6;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);color:var(--muted)}
+  .rec .flag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    padding:2px 8px;border-radius:100px;background:rgba(196,38,46,.12);color:var(--danger);border:1px solid rgba(196,38,46,.3);margin-left:6px}
+  .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}
+  .nums input{text-align:center;font-weight:700;font-size:15px}
+  .forest{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:10px;overflow-x:auto}
+  .forest table{min-width:520px;font-size:12.5px} .forest th{background:transparent;color:var(--muted);border-bottom:1px solid var(--line)}
+  .forest td{border-top:none;padding:6px 8px} .forest tr:nth-child(even) td{background:transparent}
+  .fplot{position:relative;height:16px;min-width:170px}
+  .fplot .axis{position:absolute;top:50%;left:0;right:0;height:1px;background:var(--line)}
+  .fplot .null{position:absolute;top:0;bottom:0;width:1px;background:var(--muted);opacity:.6}
+  .fplot .ci{position:absolute;top:50%;height:2px;background:var(--ink);transform:translateY(-50%)}
+  .fplot .pt{position:absolute;top:50%;width:9px;height:9px;background:var(--crimson);transform:translate(-50%,-50%) rotate(45deg)}
+  .fplot .dia{position:absolute;top:50%;height:11px;background:var(--gold);transform:translateY(-50%);
+    clip-path:polygon(0 50%,50% 0,100% 50%,50% 100%)}
+  .fscale{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);min-width:170px;margin-top:2px}
+  .aiclaim{background:var(--panel2);border:1.5px solid var(--line);border-left:4px solid var(--teal);border-radius:12px;padding:12px 14px;margin-top:10px}
+  .aiclaim.right{border-color:var(--success);border-left-color:var(--success)}
+  .aiclaim.wrong{border-color:var(--danger);border-left-color:var(--danger)}
+  .aiclaim .ct{font-size:13.5px;line-height:1.6}
+  .aiclaim .cs{font-size:11.5px;color:var(--muted);margin-top:5px;font-family:ui-monospace,Menlo,monospace;word-break:break-all}
+  .aihdr{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:800;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--teal);margin-top:14px}
+  .aihdr:before{content:'';flex:none;width:22px;height:22px;border-radius:6px;background:rgba(14,111,118,.16);
+    border:1px solid rgba(14,111,118,.4)}
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 5 · Unit 4 · Practical 5</div>
+    <h1 class="serif">AI-Driven Literature Analysis — “The Systematic Review Sprint”</h1>
+    <p><b>Aim —</b> To build a reproducible search, screen and appraise the retrieved literature, extract and synthesise the findings, and critically verify the output of an AI literature assistant — working as the <b>Evidence Analyst</b> in a hospital drug information centre.
+      <span class="muted">8 locked stages · 100 marks · 90-minute countdown · 3 AI mentor hints · Pass 50.</span></p>
+    <div class="chips">
+      <div class="scorechip">Stage <b id="scStage">—</b></div>
+      <div class="scorechip">Score <b id="scMarks">0 / 100</b></div>
+      <div class="scorechip">Evidence integrity <b id="scSafe">100%</b></div>
+      <div class="scorechip" id="hintChip">AI hints left <b id="scHints">3</b></div>
+      <div class="scorechip" id="timeChip">Time left <b id="scTime">90:00</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Review Sprint</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="litanalysis"></div>
+    <div class="guide">
+      <h2>Your commission</h2>
+      <p>The Drug and Therapeutics Committee has asked the drug information centre one question: <em>“In adults with type 2 diabetes and chronic kidney disease, do SGLT2 inhibitors slow the progression of kidney disease compared with standard care?”</em> You have one working day to produce a defensible evidence summary.</p>
+      <ol>
+        <li>Eight stages, each <b>locked until the previous one is submitted</b> — a review is reproducible only if done in order.</li>
+        <li>Marks are <b>earned</b>: the 100 marks follow the assessment rubric below.</li>
+        <li>A separate <b>Evidence Integrity Index</b> starts at 100% and falls whenever you let unsound evidence into the synthesis — a retracted paper, a fabricated citation, a misreported effect. It is scored independently of your marks.</li>
+        <li>A <b>90-minute countdown</b> runs from the moment you start. Unfinished stages score zero.</li>
+        <li>You may consult the <b>AI mentor three times in total</b>.</li>
+      </ol>
+      <p style="margin-top:8px">Five badges are on offer — <b>Search Strategist</b>, <b>Screening Expert</b>, <b>Bias Detective</b>, <b>Evidence Synthesiser</b> and <b>AI-Literate Pharmacist</b>.</p>
+    </div>
+    <div class="card"><h2>The eight stages</h2>
+      <div class="tw"><table><thead><tr><th>Stage</th><th>Task</th><th>Marks</th></tr></thead><tbody id="stTbl"></tbody></table></div>
+    </div>
+    <div class="card"><h2>Assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Assessment criteria</th><th>Marks</th></tr></thead><tbody>
+        <tr><td>Search strategy construction</td><td>12</td></tr>
+        <tr><td>Source &amp; database selection</td><td>8</td></tr>
+        <tr><td>Title &amp; abstract screening</td><td>18</td></tr>
+        <tr><td>Full-text eligibility &amp; PRISMA accounting</td><td>14</td></tr>
+        <tr><td>Risk-of-bias assessment</td><td>12</td></tr>
+        <tr><td>Data extraction accuracy</td><td>10</td></tr>
+        <tr><td>Meta-analysis interpretation</td><td>14</td></tr>
+        <tr><td>AI output verification</td><td>12</td></tr>
+        <tr class="tot"><td>Total</td><td>100</td></tr>
+      </tbody></table></div>
+    </div>
+    <div class="card"><h2>Achievement badges</h2>
+      <div class="badges">
+        <span class="badge">🔎 Search Strategist</span><span class="badge">📑 Screening Expert</span>
+        <span class="badge">🕵 Bias Detective</span><span class="badge">📊 Evidence Synthesiser</span>
+        <span class="badge">🤖 AI-Literate Pharmacist</span>
+      </div>
+      <p class="note" id="badgeCrit"></p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card" id="setupCard"><h2>Drug information centre · sign in</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+      </div>
+      <p class="note" style="margin-top:10px">Alizon Teaching Hospital · Drug Information Centre · Review ref. DIC-EBP-2026-11</p>
+      <button class="btn" id="startBtn">▶ Start the review sprint</button>
+    </div>
+    <div id="gameHead" style="display:none">
+      <div class="card">
+        <div class="row" style="justify-content:space-between"><b id="gh">Stage 1</b><span class="muted" style="font-size:12.5px" id="ghp">0 of 8 stages</span></div>
+        <div class="prog"><i id="progBar"></i></div>
+        <div class="rail" id="rail"></div>
+      </div>
+    </div>
+    <div id="stArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>AI competency feedback &amp; practical report</h2>
+      <p class="muted" id="repEmpty">Complete all eight stages to generate your competency profile and practical report, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=11"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var strip=function(s){return String(s==null?'':s).replace(/<[^>]+>/g,'');};
+  var TOTAL_SECS=90*60, PASS=50, MAX_HINTS=3;
+
+  /* ============ STAGE 1 — search strategy ============ */
+  var S1=[
+   {m:3,q:'Which search string best expresses the question?',
+    o:['diabetes AND kidney',
+       '("sodium-glucose transporter 2 inhibitors" OR SGLT2* OR dapagliflozin OR empagliflozin OR canagliflozin) AND ("diabetes mellitus, type 2" OR "type 2 diabet*") AND ("renal insufficiency, chronic" OR "chronic kidney disease" OR CKD)',
+       'SGLT2 inhibitors are good for kidneys in diabetes',
+       'dapagliflozin OR CKD OR type 2 diabetes'],c:1,
+    why:'A reproducible search combines <b>each PICO concept with AND</b>, and <b>every synonym of that concept with OR</b>. The winning string does this for all three concepts and includes both controlled vocabulary and free text. The fourth option is the classic error — joining concepts with OR returns everything about any one of them.'},
+   {m:3,q:'Why add MeSH terms alongside the free-text words?',
+    o:['MeSH indexing retrieves records tagged with the concept even when the authors used different wording, while free text catches recent records not yet indexed — the two are complementary',
+       'MeSH terms make the search run faster',
+       'MeSH replaces the need for synonyms entirely',
+       'MeSH is required only for Cochrane reviews'],c:0,
+    why:'Controlled vocabulary and free text cover each other’s blind spots: <b>MeSH</b> finds records regardless of the author’s phrasing, but is applied by indexers with a lag, so the newest articles are reachable only by <b>free text</b>. Using one alone loses records.'},
+   {m:3,q:'What does the truncation symbol in <code>diabet*</code> do?',
+    o:['Retrieves diabetes, diabetic, diabetics and diabetology from a single term',
+       'Restricts results to exactly the word "diabet"','Excludes the word diabetes','Marks the term as a MeSH heading'],c:0,
+    why:'<b>Truncation</b> retrieves every word beginning with the stem, so one term covers a family of endings. Used carelessly it over-retrieves — <code>car*</code> would also return carbon and carcinoma.'},
+   {m:3,q:'Which limit would introduce bias rather than focus the search?',
+    o:['Restricting to humans','Restricting to adults aged 18 and over',
+       'Restricting to articles with free full text available',
+       'Restricting to randomised controlled trials when the question is about treatment effect'],c:2,
+    why:'A <b>free-full-text filter</b> selects on a property unrelated to study quality or relevance — it silently discards eligible evidence and biases the result toward whatever happens to be open access. Population, species and design limits are legitimate because they follow the question.'}
+  ];
+
+  /* ============ STAGE 2 — sources ============ */
+  var S2SRC=[
+   {n:'MEDLINE / PubMed',d:'Primary biomedical bibliographic database',ok:true},
+   {n:'Embase',d:'Strong European and pharmacological coverage; indexes many journals MEDLINE does not',ok:true},
+   {n:'Cochrane CENTRAL',d:'Register of controlled trials drawn from many sources',ok:true},
+   {n:'ClinicalTrials.gov',d:'Trial registry — registered, ongoing and unpublished studies',ok:true},
+   {n:'A general web search engine',d:'Unstructured, unreproducible, personalised results',ok:false,
+    why:'A general web search cannot be documented or reproduced, and its ranking is personalised — it fails the first requirement of a systematic search.'},
+   {n:'An AI chatbot asked to “list the trials”',d:'Generative model with no retrieval guarantee',ok:false,
+    why:'A generative model may fabricate references and cannot guarantee completeness. It is a tool for drafting, never a substitute for a searched database.'}
+  ];
+  var S2Q=[
+   {m:4,q:'Why also search a trial registry and other grey literature?',
+    o:['To detect trials that were completed but never published — usually those with negative results — and so limit publication bias',
+       'Because registry entries are peer reviewed','To increase the number of records so the review looks thorough',
+       'Registries are required only for Cochrane reviews'],c:0,
+    why:'Trials with unfavourable results are <b>less likely to be published</b>. Searching registries and other grey literature is the main defence against <b>publication bias</b>, which otherwise inflates the apparent benefit of a treatment.'}
+  ];
+
+  /* ============ STAGE 3 — title/abstract screening ============ */
+  var RECS=[
+   {t:'Empagliflozin and progression of kidney disease in adults with type 2 diabetes: a randomised, double-blind, placebo-controlled trial',
+    m:'N Engl J Pharm Med. 2024;390(7):612-24 · RCT · n=6,609 · placebo-controlled',inc:true,
+    why:'Right population, intervention, comparator and outcome, and a randomised design — <b>include</b>.'},
+   {t:'Dapagliflozin in patients with chronic kidney disease, with and without type 2 diabetes',
+    m:'Lancet Nephrol. 2023;11(4):301-13 · RCT · n=4,304 · placebo-controlled',inc:true,
+    why:'A randomised placebo-controlled trial reporting renal progression in a population that includes type 2 diabetes with CKD — <b>include</b>.'},
+   {t:'Continuous subcutaneous insulin infusion in adolescents with type 1 diabetes',
+    m:'Pediatr Diabetes Rev. 2023;19(2):88-97 · RCT · n=210',inc:false,
+    why:'<b>Wrong population</b> — type 1 diabetes in adolescents. Exclude at title/abstract.'},
+   {t:'Sitagliptin versus placebo for glycaemic control in type 2 diabetes: a 24-week trial',
+    m:'J Clin Endocr Ther. 2022;58(9):1104-12 · RCT · n=812',inc:false,
+    why:'<b>Wrong intervention</b> — sitagliptin is a DPP-4 inhibitor, not an SGLT2 inhibitor.'},
+   {t:'SGLT2 inhibition attenuates glomerular hyperfiltration and podocyte injury in diabetic mice',
+    m:'Exp Nephrol Lett. 2023;44(6):512-20 · animal study',inc:false,
+    why:'<b>Animal study</b> — mechanistically interesting, but it cannot answer a question about clinical outcomes in patients.'},
+   {t:'SGLT2 inhibitors and the kidney: what the clinician needs to know',
+    m:'Hosp Pharm Today. 2024;31(2):44-9 · narrative review',inc:false,
+    why:'<b>Narrative review</b> — a secondary source with no systematic method. Useful for background and for chasing references, but not primary evidence for the synthesis.'},
+   {t:'Canagliflozin and renal outcomes in type 2 diabetes with established nephropathy',
+    m:'Diabetes Renal J. 2023;15(3):188-201 · RCT · n=4,401 · placebo-controlled',inc:true,
+    why:'Randomised, right population, renal outcomes — <b>include</b>.'},
+   {t:'Rapid renal recovery with high-dose SGLT2 inhibition: a multicentre trial',
+    m:'Int J Diabetes Adv Care. 2023;7(1):22-31 · RCT · n=96',inc:false,retracted:true,integrity:15,
+    flag:'RETRACTED',
+    why:'This article was <b>retracted in 2024 for data fabrication</b>. A retraction notice attaches to the record in every database — retracted work must never enter a synthesis, whatever its findings appear to show.'},
+   {t:'Dapagliflozin in patients with chronic kidney disease, with and without type 2 diabetes',
+    m:'Embase record 2023-0044117 · duplicate of the Lancet Nephrol. record above',inc:false,duplicate:true,
+    why:'<b>Duplicate record</b> retrieved from a second database. De-duplication happens before screening; counting the same trial twice would double-weight it in the meta-analysis.'},
+   {t:'Dapagliflozin versus empagliflozin on renal endpoints in type 2 diabetes: a head-to-head trial',
+    m:'Eur J Diabetes Pharmacother. 2024;12(5):401-14 · RCT · n=1,180',inc:true,fullTextFail:true,
+    why:'From the abstract alone this looks eligible — randomised, right population, renal endpoints. <b>Include at this stage</b> and resolve the comparator question at full text. When in doubt at title and abstract, retrieve the full text.'}
+  ];
+
+  /* ============ STAGE 4 — full text + PRISMA ============ */
+  var FULL=[
+   {t:'Empagliflozin and progression of kidney disease (NEJPM 2024)',
+    d:'Placebo-controlled. Primary outcome: sustained ≥40% eGFR decline, end-stage kidney disease or renal death.',
+    inc:true,why:'Meets every criterion — <b>include in the synthesis</b>.'},
+   {t:'Dapagliflozin in chronic kidney disease (Lancet Nephrol 2023)',
+    d:'Placebo-controlled. Reports the diabetic subgroup separately (n=2,906). Primary renal composite reported.',
+    inc:true,why:'Eligible, and the <b>diabetic subgroup is reported separately</b>, so the relevant data can be extracted — <b>include</b>.'},
+   {t:'Canagliflozin and renal outcomes in nephropathy (Diabetes Renal J 2023)',
+    d:'Placebo-controlled. Primary outcome: doubling of serum creatinine, ESKD or renal death.',
+    inc:true,why:'Eligible on every criterion — <b>include</b>.'},
+   {t:'Dapagliflozin versus empagliflozin, head-to-head (Eur J Diabetes Pharmacother 2024)',
+    d:'Both arms receive an SGLT2 inhibitor. There is no placebo or standard-care arm.',
+    inc:false,why:'<b>Wrong comparator.</b> The review question asks about SGLT2 inhibitors <em>versus standard care</em>. A head-to-head trial of two SGLT2 inhibitors cannot contribute to that comparison, however well conducted it is — <b>exclude, reason: comparator</b>.'}
+  ];
+  var PRISMA=[
+   {k:'excl',label:'Records excluded at title &amp; abstract',ans:6,
+    why:'Ten records were screened and four were carried forward, so <b>6</b> were excluded — including the duplicate and the retracted article.'},
+   {k:'ft',label:'Full-text articles assessed',ans:4,
+    why:'The <b>4</b> records that passed title and abstract screening were retrieved in full.'},
+   {k:'inc',label:'Studies included in the synthesis',ans:3,
+    why:'One of the four full texts was excluded for the wrong comparator, leaving <b>3</b> trials in the meta-analysis.'}
+  ];
+
+  /* ============ STAGE 5 — risk of bias (RoB 2) ============ */
+  var ROBTRIAL='TRIAL UNDER APPRAISAL — Canagliflozin and renal outcomes (Diabetes Renal J 2023)\n\n'+
+   '  Allocation ......... computer-generated sequence, central web-based concealment\n'+
+   '  Blinding ........... OPEN LABEL — patients and investigators aware of allocation\n'+
+   '  Analysis ........... intention-to-treat, all randomised patients analysed as allocated\n'+
+   '  Missing data ....... 3.1% intervention, 3.4% control; reasons balanced and reported\n'+
+   '  Primary outcome .... composite of doubling of serum creatinine, ESKD or renal death,\n'+
+   '                       WITH a component of investigator-reported "clinically significant\n'+
+   '                       worsening of renal function" — not centrally adjudicated\n'+
+   '  Protocol ........... pre-registered; all pre-specified outcomes reported as planned';
+  var ROB=[
+   {m:2,q:'Domain 1 — Randomisation process',o:['Low risk','Some concerns','High risk'],c:0,
+    why:'A <b>computer-generated sequence with central web-based concealment</b> is the reference standard for allocation. Nothing here suggests the sequence could be foreseen — <b>low risk</b>.'},
+   {m:2,q:'Domain 2 — Deviations from intended interventions',o:['Low risk','Some concerns','High risk'],c:1,
+    why:'The trial is <b>open label</b>, so participants and clinicians knew the allocation and could behave differently — but the analysis was <b>intention-to-treat</b> with everyone analysed as allocated, which mitigates it. Awareness without evidence of resulting deviation is <b>some concerns</b>, not high risk.'},
+   {m:2,q:'Domain 3 — Missing outcome data',o:['Low risk','Some concerns','High risk'],c:0,
+    why:'Attrition is about 3% and <b>balanced between arms with reasons reported</b>. Loss of this size and symmetry is very unlikely to change the result — <b>low risk</b>.'},
+   {m:2,q:'Domain 4 — Measurement of the outcome',o:['Low risk','Some concerns','High risk'],c:2,
+    why:'This is the flaw. The composite contains a <b>subjective, investigator-reported component</b> assessed by <b>unblinded</b> investigators and <b>not centrally adjudicated</b>. Outcome assessment that is both subjective and unblinded is <b>high risk</b> — the knowledge of allocation can influence the judgement itself.'},
+   {m:2,q:'Domain 5 — Selection of the reported result',o:['Low risk','Some concerns','High risk'],c:0,
+    why:'The protocol was <b>pre-registered</b> and all pre-specified outcomes are reported as planned, so there is no sign of selective reporting — <b>low risk</b>.'},
+   {m:2,q:'Overall risk-of-bias judgement for this trial',o:['Low risk','Some concerns','High risk'],c:2,
+    why:'RoB 2 is not an average. A trial is judged <b>high risk overall if any single domain is high risk</b>. Domain 4 is high, so the overall judgement is <b>high risk</b> — and the synthesis must carry that forward, typically in a sensitivity analysis.'}
+  ];
+
+  /* ============ STAGE 6 — data extraction ============ */
+  var EXTRACT_SRC='RESULTS — Canagliflozin and renal outcomes (Diabetes Renal J 2023;15(3):188-201)\n\n'+
+   '  "A total of 4,401 participants underwent randomisation. The primary composite\n'+
+   '   outcome occurred in 245 participants in the canagliflozin group and in 340\n'+
+   '   participants in the placebo group (hazard ratio 0.70; 95% confidence interval\n'+
+   '   0.59 to 0.82; P<0.001). The relative risk reduction for end-stage kidney\n'+
+   '   disease alone was 32%."';
+  var EXTRACT=[
+   {m:2,q:'Total participants randomised',o:['4,401','4,410','4,041','1,440'],c:0,
+    why:'<b>4,401</b> exactly as printed. Transposing digits (4,410 / 4,041) is the commonest extraction error and it propagates silently into the pooled estimate.'},
+   {m:2,q:'Events in the intervention group',o:['340','245','254','425'],c:1,
+    why:'<b>245</b> in the canagliflozin group. Reversing the intervention and control counts would flip the direction of the effect.'},
+   {m:2,q:'Events in the control group',o:['245','430','340','304'],c:2,why:'<b>340</b> in the placebo group.'},
+   {m:2,q:'Hazard ratio',o:['0.70','0.07','7.0','0.30'],c:0,
+    why:'<b>HR 0.70</b>. Note this is not the 32% figure — that is a different, secondary endpoint quoted as a relative risk reduction.'},
+   {m:2,q:'95% confidence interval',o:['0.59 to 0.82','0.59 to 0.28','0.95 to 0.82','0.70 to 0.82'],c:0,
+    why:'<b>0.59 to 0.82</b>. The interval must be recorded exactly — its width is what the meta-analysis uses to weight this trial.'}
+  ];
+
+  /* ============ STAGE 7 — meta-analysis ============ */
+  var FOREST=[
+   {s:'Empagliflozin (NEJPM 2024)',hr:0.68,lo:0.56,hi:0.83,w:'38.2%'},
+   {s:'Dapagliflozin (Lancet Nephrol 2023)',hr:0.74,lo:0.58,hi:0.95,w:'27.4%'},
+   {s:'Canagliflozin (Diabetes Renal J 2023)',hr:0.70,lo:0.59,hi:0.82,w:'34.4%'},
+   {s:'Pooled (random effects)',hr:0.71,lo:0.62,hi:0.82,w:'100%',pooled:true}
+  ];
+  var META=[
+   {m:3,q:'What does the pooled hazard ratio of 0.71 mean?',
+    o:['A 71% reduction in the risk of kidney disease progression',
+       'A 29% relative reduction in the hazard of kidney disease progression',
+       'A 71% increase in risk','That the treatment has no effect'],c:1,
+    why:'A hazard ratio of 0.71 means the hazard in the treated group is <b>71% of</b> the hazard in the control group — that is a <b>29% relative reduction</b> (1 − 0.71). Reading 0.71 as "71% less" is the single commonest misinterpretation in practice, and it overstates the benefit two and a half times over.'},
+   {m:3,q:'The pooled 95% CI is 0.62 to 0.82. What follows?',
+    o:['The result is statistically significant, because the interval lies entirely below 1',
+       'The result is not significant, because the interval is narrow',
+       'The interval crosses the line of no effect','Nothing can be concluded without the p value'],c:0,
+    why:'For a ratio measure the <b>line of no effect is 1</b>. An interval running from 0.62 to 0.82 <b>excludes 1 entirely</b>, so the reduction is statistically significant — and, more usefully, the plausible range of benefit runs from 18% to 38%.'},
+   {m:3,q:'I² is 22%. How should that be described?',
+    o:['Low heterogeneity — the trials are reasonably consistent, and pooling is justified',
+       'Severe heterogeneity — the trials must not be pooled',
+       'It means 22% of patients responded','It shows publication bias'],c:0,
+    why:'<b>I²</b> is the proportion of variability across trials due to real differences rather than chance. Roughly: <b>&lt;40% low</b>, 30–60% moderate, 50–90% substantial, &gt;75% considerable. At <b>22%</b> the trials are consistent, visible also in the way their intervals overlap.'},
+   {m:3,q:'The dapagliflozin trial’s CI (0.58–0.95) is much wider than the others. Why?',
+    o:['It is the least reliable trial and should be removed',
+       'It contributed fewer events, so its estimate is less precise and it is weighted less in the pool — pooling is precisely what recovers the precision',
+       'Its result contradicts the others','Wide intervals indicate fraud'],c:1,
+    why:'Interval width reflects <b>precision</b>, driven by the number of events. The trial agrees in direction with the others; it is simply less precise, which is why it carries <b>27.4% weight</b> rather than an equal third. Pooling exists to combine such estimates, not to discard them.'},
+   {m:2,q:'The committee asks how many patients must be treated to prevent one event. What else do you need?',
+    o:['Nothing — the hazard ratio answers it',
+       'The baseline (control-group) event rate, from which the absolute risk reduction and its reciprocal, the NNT, can be derived',
+       'The p value','The I² statistic'],c:1,
+    why:'A relative measure says nothing about absolute benefit until it is anchored to a <b>baseline risk</b>. The same HR of 0.71 produces a very different NNT in a high-risk and a low-risk population — which is exactly why formularies ask for absolute numbers.'}
+  ];
+
+  /* ============ STAGE 8 — AI verification ============ */
+  var AICLAIMS=[
+   {m:2.4,t:'“Pooled analysis of three randomised trials shows that SGLT2 inhibitors reduce progression of kidney disease in adults with type 2 diabetes (HR 0.71, 95% CI 0.62–0.82, I² = 22%).”',
+    src:'Cites: NEJPM 2024;390(7):612-24 · Lancet Nephrol 2023;11(4):301-13 · Diabetes Renal J 2023;15(3):188-201',
+    ok:true,
+    why:'Accurate. The effect estimate, the interval and the heterogeneity all match the synthesis, and the three citations are the three included trials. <b>Accept.</b>'},
+   {m:2.4,t:'“SGLT2 inhibitors also halve all-cause mortality in chronic kidney disease.”',
+    src:'Cites: Kumar R, Iyer S. J Diabetes Adv Care. 2024;18(2):145-59. doi:10.1016/j.jdiac.2024.03.112',
+    ok:false,integrity:15,
+    why:'<b>Fabricated citation.</b> This reference appears nowhere in the search results, the DOI does not resolve, and no mortality outcome was extracted from any included trial. Hallucinated references are the characteristic failure of generative models — they are plausible in format and entirely invented. Every citation must be resolved against the source before it is accepted. <b>Reject.</b>'},
+   {m:2.4,t:'“High-dose SGLT2 inhibition produces rapid renal recovery.”',
+    src:'Cites: Int J Diabetes Adv Care. 2023;7(1):22-31',
+    ok:false,integrity:15,
+    why:'<b>Retracted source.</b> This is the article withdrawn in 2024 for data fabrication and already excluded at screening. AI tools trained on older corpora reproduce retracted work because the retraction notice is metadata the model never saw. <b>Reject.</b>'},
+   {m:2.4,t:'“Treatment reduced the risk of kidney failure by 71%.”',
+    src:'Cites: pooled estimate, HR 0.71',
+    ok:false,integrity:10,
+    why:'<b>Misreported effect.</b> An HR of 0.71 is a <b>29%</b> relative reduction, not 71%. The model has restated the ratio as if it were the reduction. This is the most dangerous class of AI error because the citation is genuine and only the arithmetic is wrong — nothing looks suspicious unless you check. <b>Reject.</b>'},
+   {m:2.4,t:'“The effect was consistent in direction across all three included trials, with low statistical heterogeneity.”',
+    src:'Cites: pooled analysis, I² = 22%',
+    ok:true,
+    why:'Accurate. All three point estimates lie below 1 and I² of 22% is low heterogeneity. <b>Accept.</b>'}
+  ];
+
+  /* ============ STAGES ============ */
+  var STAGES=[
+   {n:1,key:'search',title:'Build the search strategy',room:'Stage 1 · The search desk',marks:12,
+    scene:{t:'Drug information centre · 09:00',b:'The committee’s question:\n\n   "In adults with type 2 diabetes and chronic kidney disease, do SGLT2 inhibitors\n    slow the progression of kidney disease compared with standard care?"\n\nBefore searching anything, decide how the question becomes a query.'},
+    hint:'Each PICO concept becomes a block of synonyms joined by OR; the blocks are then joined by AND. Ask of every limit you add: does this follow from the question, or does it just make the result set smaller?'},
+   {n:2,key:'sources',title:'Choose the sources',room:'Stage 2 · Source selection',marks:8,
+    scene:{t:'Which databases will you search?',b:'Select every source that belongs in a defensible systematic search, then answer the question below.\n\nA single database is never enough — coverage overlaps but is never complete.'},
+    hint:'A source qualifies if the search in it can be written down, re-run by someone else and produce the same list. Then ask separately what you would miss if you searched only what has been published.'},
+   {n:3,key:'screen',title:'Screen titles and abstracts',room:'Stage 3 · Screening',marks:18,
+    scene:{t:'10 records after de-duplication check',b:'Screen each record against the eligibility criteria.\n\n   POPULATION ... adults with type 2 diabetes and chronic kidney disease\n   INTERVENTION . an SGLT2 inhibitor\n   COMPARATOR ... placebo or standard care\n   OUTCOME ...... progression of kidney disease\n   DESIGN ....... randomised controlled trial\n\nWhen an abstract is genuinely ambiguous, include it and settle the question at full text.'},
+    hint:'Read each record against one criterion at a time — a single clear breach is enough to exclude. Two records here should be excluded for reasons that have nothing to do with the criteria; look carefully at the metadata line, not just the title.'},
+   {n:4,key:'eligible',title:'Assess full texts and complete PRISMA',room:'Stage 4 · Full-text eligibility',marks:14,
+    scene:{t:'Full texts retrieved',b:'Apply the criteria to the full text of each record you carried forward, then complete the PRISMA counts.\n\nAn exclusion at full text must always be recorded with its reason.'},
+    hint:'One of these trials is well conducted and still ineligible. Check what each trial’s control arm actually received against the comparator in the question.'},
+   {n:5,key:'rob',title:'Assess risk of bias',room:'Stage 5 · Critical appraisal',marks:12,
+    scene:{t:'RoB 2 — five domains plus an overall judgement',b:ROBTRIAL},
+    hint:'Take each domain on its own evidence. Then remember that the overall judgement in RoB 2 is not an average of the domains — one specific rule governs it.'},
+   {n:6,key:'extract',title:'Extract the data',room:'Stage 6 · Data extraction',marks:10,
+    scene:{t:'Extract into the data table exactly as reported',b:EXTRACT_SRC},
+    hint:'Read digit by digit against the source and never let a number from a different endpoint drift into the field you are filling.'},
+   {n:7,key:'meta',title:'Interpret the meta-analysis',room:'Stage 7 · Synthesis',marks:14,
+    scene:{t:'Pooled result · 3 trials · 15,314 participants',b:'The three included trials have been pooled with a random-effects model.\n\nRead the forest plot below, then answer.'},
+    hint:'Keep three things apart: the direction of the effect, its size, and how certain it is. Then ask what the committee actually needs in order to act, which is not the same as what the plot shows.'},
+   {n:8,key:'ai',title:'Verify the AI assistant’s summary',room:'Stage 8 · AI output verification',marks:12,
+    scene:{t:'AI literature assistant · draft evidence summary',b:'You asked an AI literature assistant to draft the evidence summary. It produced five claims.\n\nAccept a claim only if you can verify it against the evidence you gathered. Reject anything you cannot.\n\nAccepting an unsound claim damages the Evidence Integrity Index.'},
+    hint:'Check three things on every claim: does the citation exist in your result set, is the source still valid, and does the number say what the claim says it says. Two claims fail on the source, one fails on the arithmetic.'}
+  ];
+
+  var TOTAL_MARKS=STAGES.reduce(function(a,s){return a+s.marks;},0);
+  $('stTbl').innerHTML=STAGES.map(function(s){return '<tr><td><b>Stage '+s.n+'</b></td><td>'+esc(s.title)+'</td><td>'+s.marks+'</td></tr>';}).join('')
+    +'<tr class="tot"><td></td><td>Total</td><td>'+TOTAL_MARKS+'</td></tr>';
+  $('badgeCrit').innerHTML='<b>Search Strategist</b> — full marks for the search strategy. &nbsp;·&nbsp; '
+    +'<b>Screening Expert</b> — 15 or more of the 18 screening marks. &nbsp;·&nbsp; '
+    +'<b>Bias Detective</b> — 10 or more of the 12 risk-of-bias marks. &nbsp;·&nbsp; '
+    +'<b>Evidence Synthesiser</b> — 12 or more of the 14 interpretation marks. &nbsp;·&nbsp; '
+    +'<b>AI-Literate Pharmacist</b> — every AI claim judged correctly, with integrity at 90% or above.';
+
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  /* ============ STATE ============ */
+  var S=null, tick=null, sel={};
+  function startGame(){
+    S={si:0,marks:{},safety:100,hints:MAX_HINTS,secs:TOTAL_SECS,ended:false,endedBy:null,
+       wrong:[],unsafe:[],result:null};
+    $('setupCard').style.display='none'; $('gameHead').style.display='';
+    clearInterval(tick);
+    tick=setInterval(function(){
+      if(!S||S.ended) return;
+      S.secs--; paintTime();
+      if(S.secs<=0){ S.secs=0; paintTime(); endGame('time'); }
+    },1000);
+    paintTime(); renderStage();
+  }
+  function paintTime(){
+    var m=Math.floor(S.secs/60), s=S.secs%60;
+    $('scTime').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    $('timeChip').classList.toggle('warn',S.secs<=300);
+  }
+  function got(){ var t=0; for(var k in S.marks) t+=S.marks[k]; return Math.round(t*10)/10; }
+  function paintChips(){
+    $('scStage').textContent=S.ended?'—':(S.si+1)+'/'+STAGES.length;
+    $('scMarks').textContent=got()+' / '+TOTAL_MARKS;
+    $('scSafe').textContent=S.safety+'%';
+    $('scHints').textContent=S.hints;
+    $('hintChip').classList.toggle('warn',S.hints===0);
+  }
+  function paintProgress(){
+    var done=S.ended?STAGES.length:S.si;
+    $('progBar').style.width=Math.round(done/STAGES.length*100)+'%';
+    $('ghp').textContent=done+' of '+STAGES.length+' stages';
+    $('gh').textContent=S.ended?'Review closed':('Stage '+(S.si+1)+' · '+STAGES[S.si].title);
+    $('rail').innerHTML=STAGES.map(function(s,i){
+      var cls=(i<S.si)?(((S.marks[s.key]||0)>=s.marks-0.001)?'done':'part'):((i===S.si&&!S.ended)?'now':'');
+      var lbl=(i<S.si)?(Math.round((S.marks[s.key]||0)*10)/10+'/'+s.marks):s.n;
+      return '<span class="rdot '+cls+'" title="Stage '+s.n+' — '+esc(s.title)+'">'+lbl+'</span>';
+    }).join('');
+  }
+  function hitIntegrity(n,why){ S.safety=Math.max(0,S.safety-n); S.unsafe.push({n:n,why:why}); paintChips(); }
+
+  /* ============ SHARED RENDERERS ============ */
+  function mcqBlock(list,pfx){
+    return list.map(function(q,i){
+      return '<div style="margin-top:'+(i?18:4)+'px"><b>'+q.q+'</b> <span class="muted" style="font-size:12px">('+q.m+' mark'+(q.m===1?'':'s')+')</span>'
+        +'<div class="optw" data-g="'+pfx+i+'">'+q.o.map(function(o,k){
+            return '<button type="button" class="opt" data-g="'+pfx+i+'" data-k="'+k+'">'+o+'</button>';}).join('')+'</div></div>';
+    }).join('');
+  }
+  function wireMCQ(){
+    [].forEach.call(document.querySelectorAll('#qCard .opt'),function(b){
+      b.addEventListener('click',function(){
+        var g=b.getAttribute('data-g');
+        sel.mcq[g]=+b.getAttribute('data-k');
+        [].forEach.call(document.querySelectorAll('#qCard .opt[data-g="'+g+'"]'),function(x){x.classList.remove('pick');});
+        b.classList.add('pick');
+      });
+    });
+  }
+  function markMCQ(list,pfx){
+    list.forEach(function(q,i){
+      var g=pfx+i, p=sel.mcq[g];
+      [].forEach.call(document.querySelectorAll('#qCard .opt[data-g="'+g+'"]'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        if(k===q.c) b.classList.add('right'); else if(p===k) b.classList.add('wrong');
+      });
+    });
+  }
+  function answeredAll(pfx,n){ return Object.keys(sel.mcq).filter(function(x){return x.indexOf(pfx)===0;}).length>=n; }
+  function scoreMCQ(list,pfx,stName){
+    var out={got:0,lines:[]};
+    list.forEach(function(q,i){
+      var p=sel.mcq[pfx+i];
+      if(p===q.c) out.got+=q.m;
+      else{
+        out.lines.push('<b>'+strip(q.q)+'</b><br>You chose: '+(p==null?'<i>nothing</i>':esc(strip(q.o[p])))+'<br><b>Why:</b> '+q.why);
+        S.wrong.push({st:stName,q:strip(q.q),chose:(p==null?'no answer':strip(q.o[p])),right:strip(q.o[q.c])});
+      }
+    });
+    return out;
+  }
+  /* two-way triage cards (screening / full text / AI claims) */
+  function triage(items,pfx,labels,render){
+    return '<div class="recs" id="'+pfx+'Wrap">'+items.map(function(it,k){
+      return '<div class="rec" data-k="'+k+'">'+render(it,k)
+        +'<div class="rc">'+labels.map(function(L,li){
+            return '<button type="button" data-g="'+pfx+k+'" data-k="'+li+'">'+L+'</button>';}).join('')+'</div></div>';
+    }).join('')+'</div>';
+  }
+  function wireTriage(pfx){
+    [].forEach.call(document.querySelectorAll('#'+pfx+'Wrap .rc button'),function(b){
+      b.addEventListener('click',function(){
+        var g=b.getAttribute('data-g');
+        sel.mcq[g]=+b.getAttribute('data-k');
+        [].forEach.call(document.querySelectorAll('#'+pfx+'Wrap .rc button[data-g="'+g+'"]'),function(x){x.classList.remove('on');});
+        b.classList.add('on');
+      });
+    });
+  }
+
+  /* ============ STAGE BODIES ============ */
+  var BODY={
+    search:function(){ return mcqBlock(S1,'s1'); },
+    sources:function(){
+      return '<b>Select every source that belongs in the search.</b> <span class="muted" style="font-size:12px">(4 marks)</span>'
+        +'<div class="plist" id="srcWrap">'+S2SRC.map(function(x,k){
+            return '<button type="button" class="pcard" data-k="'+k+'"><b>'+x.n+'</b><small>'+x.d+'</small></button>';}).join('')+'</div>'
+        +mcqBlock(S2Q,'s2');
+    },
+    screen:function(){
+      return '<b>Include or exclude each record.</b> <span class="muted" style="font-size:12px">(1.8 marks each)</span>'
+        +triage(RECS,'sc',['Include','Exclude'],function(r){
+          return '<div class="rt">'+r.t+(r.flag?'<span class="flag">'+r.flag+'</span>':'')+'</div><div class="rm">'+r.m+'</div>';
+        });
+    },
+    eligible:function(){
+      return '<b>Include or exclude each full text.</b> <span class="muted" style="font-size:12px">(2 marks each)</span>'
+        +triage(FULL,'ft',['Include','Exclude'],function(r){
+          return '<div class="rt">'+r.t+'</div><div class="rm">'+r.d+'</div>';
+        })
+        +'<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:20px 0 4px">PRISMA flow</h3>'
+        +'<p class="note">Complete the counts for your own screening. 2 marks each.</p>'
+        +'<div class="nums">'+PRISMA.map(function(p){
+          return '<div><label class="f">'+p.label+'</label><input type="text" inputmode="numeric" data-p="'+p.k+'" placeholder="0"></div>';
+        }).join('')+'</div>';
+    },
+    rob:function(){ return mcqBlock(ROB,'rb'); },
+    extract:function(){ return mcqBlock(EXTRACT,'ex'); },
+    meta:function(){
+      var lo=0.4, hi=1.6, span=hi-lo;
+      var pos=function(v){ return ((v-lo)/span*100); };
+      var rows=FOREST.map(function(f){
+        var bar=f.pooled
+          ? '<div class="dia" style="left:'+pos(f.lo)+'%;width:'+(pos(f.hi)-pos(f.lo))+'%"></div>'
+          : '<div class="ci" style="left:'+pos(f.lo)+'%;width:'+(pos(f.hi)-pos(f.lo))+'%"></div><div class="pt" style="left:'+pos(f.hr)+'%"></div>';
+        return '<tr><td'+(f.pooled?' style="font-weight:700"':'')+'>'+f.s+'</td>'
+          +'<td style="white-space:nowrap">'+f.hr.toFixed(2)+' ('+f.lo.toFixed(2)+'–'+f.hi.toFixed(2)+')</td>'
+          +'<td style="width:200px"><div class="fplot"><div class="axis"></div><div class="null" style="left:'+pos(1)+'%"></div>'+bar+'</div></td>'
+          +'<td style="text-align:right">'+f.w+'</td></tr>';
+      }).join('');
+      return '<div class="forest"><table><thead><tr><th>Study</th><th>HR (95% CI)</th><th></th><th style="text-align:right">Weight</th></tr></thead>'
+        +'<tbody>'+rows+'</tbody></table>'
+        +'<div class="fscale" style="margin-left:auto;width:200px"><span>0.4</span><span>favours SGLT2i ← 1 → favours control</span><span>1.6</span></div>'
+        +'<p class="note" style="margin-top:8px">Random-effects model · <b>I² = 22%</b> · τ² = 0.004 · test for overall effect P &lt; 0.001</p></div>'
+        +mcqBlock(META,'mt');
+    },
+    ai:function(){
+      return '<div class="aihdr">AI literature assistant · draft summary</div>'
+        +AICLAIMS.map(function(c,k){
+          return '<div class="aiclaim" data-k="'+k+'"><div class="ct">'+c.t+'</div><div class="cs">'+esc(c.src)+'</div>'
+            +'<div class="rc" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px">'
+            +['Accept','Reject'].map(function(L,li){
+              return '<button type="button" data-g="ai'+k+'" data-k="'+li+'">'+L+'</button>';}).join('')
+            +'</div></div>';
+        }).join('');
+    }
+  };
+
+  var WIRE={
+    search:wireMCQ,
+    sources:function(){
+      wireMCQ();
+      [].forEach.call(document.querySelectorAll('#srcWrap .pcard'),function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k'), i=sel.multi.indexOf(k);
+          if(i<0){sel.multi.push(k);b.classList.add('pick');} else {sel.multi.splice(i,1);b.classList.remove('pick');}
+        });
+      });
+    },
+    screen:function(){ wireTriage('sc'); },
+    eligible:function(){ wireTriage('ft'); },
+    rob:wireMCQ, extract:wireMCQ, meta:wireMCQ,
+    ai:function(){
+      [].forEach.call(document.querySelectorAll('#qCard .aiclaim .rc button'),function(b){
+        b.addEventListener('click',function(){
+          var g=b.getAttribute('data-g');
+          sel.mcq[g]=+b.getAttribute('data-k');
+          [].forEach.call(document.querySelectorAll('#qCard .rc button[data-g="'+g+'"]'),function(x){x.classList.remove('on');});
+          b.classList.add('on');
+        });
+      });
+    }
+  };
+
+  /* ============ SCORING ============ */
+  var SCORE={
+    search:function(){
+      if(!answeredAll('s1',S1.length)) return {need:'Answer all four questions first.'};
+      markMCQ(S1,'s1'); var r=scoreMCQ(S1,'s1','Search strategy'); return {got:r.got,lines:r.lines};
+    },
+    sources:function(){
+      if(!sel.multi.length) return {need:'Select at least one source.'};
+      if(!answeredAll('s2',S2Q.length)) return {need:'Answer the grey-literature question first.'};
+      var right=0,bad=[],lines=[];
+      S2SRC.forEach(function(x,k){
+        var picked=sel.multi.indexOf(k)>=0;
+        if(picked===x.ok) right++;
+        else if(picked && !x.ok) bad.push(strip(x.n)+' — '+strip(x.why));
+        else bad.push('Missed '+strip(x.n)+' — a legitimate source for a systematic search.');
+      });
+      var g=Math.round((4*right/S2SRC.length)*10)/10;
+      [].forEach.call(document.querySelectorAll('#srcWrap .pcard'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        b.classList.add((sel.multi.indexOf(k)>=0)===S2SRC[k].ok?'right':'wrong');
+      });
+      if(bad.length){ lines.push('<b>Source selection:</b><ul><li>'+bad.map(esc).join('</li><li>')+'</li></ul>');
+        S.wrong.push({st:'Source selection',q:'Databases chosen',chose:bad.length+' incorrect',right:'MEDLINE/PubMed, Embase, Cochrane CENTRAL and a trial registry'}); }
+      markMCQ(S2Q,'s2'); var r=scoreMCQ(S2Q,'s2','Source selection');
+      return {got:g+r.got,lines:lines.concat(r.lines)};
+    },
+    screen:function(){
+      if(!answeredAll('sc',RECS.length)) return {need:'Make a decision on all '+RECS.length+' records first.'};
+      var g=0,lines=[];
+      RECS.forEach(function(r,k){
+        var inc=(sel.mcq['sc'+k]===0);
+        var el=document.querySelector('#scWrap .rec[data-k="'+k+'"]');
+        if(inc===r.inc){ g+=1.8; el.classList.add('right'); }
+        else{
+          el.classList.add('wrong');
+          lines.push('<b>'+esc(strip(r.t).slice(0,72))+'…</b><br>'+r.why);
+          S.wrong.push({st:'Screening',q:strip(r.t).slice(0,60),chose:(inc?'included':'excluded'),right:(r.inc?'include':'exclude')});
+          if(inc && r.retracted) hitIntegrity(r.integrity,'A retracted article was carried into the review. Retracted work must never enter a synthesis.');
+        }
+        el.insertAdjacentHTML('beforeend','<div class="why">'+r.why+'</div>');
+      });
+      return {got:Math.round(g*10)/10,lines:lines};
+    },
+    eligible:function(){
+      if(!answeredAll('ft',FULL.length)) return {need:'Make a decision on all four full texts first.'};
+      var missing=PRISMA.filter(function(p){ return !String(document.querySelector('[data-p="'+p.k+'"]').value||'').trim(); });
+      if(missing.length) return {need:'Complete all three PRISMA counts first.'};
+      var g=0,lines=[];
+      FULL.forEach(function(r,k){
+        var inc=(sel.mcq['ft'+k]===0);
+        var el=document.querySelector('#ftWrap .rec[data-k="'+k+'"]');
+        if(inc===r.inc){ g+=2; el.classList.add('right'); }
+        else{ el.classList.add('wrong'); lines.push('<b>'+esc(strip(r.t))+'</b><br>'+r.why);
+          S.wrong.push({st:'Full-text eligibility',q:strip(r.t),chose:(inc?'included':'excluded'),right:(r.inc?'include':'exclude')}); }
+        el.insertAdjacentHTML('beforeend','<div class="why">'+r.why+'</div>');
+      });
+      PRISMA.forEach(function(p){
+        var el=document.querySelector('[data-p="'+p.k+'"]');
+        var v=parseInt(String(el.value).replace(/[^0-9]/g,''),10);
+        if(v===p.ans){ g+=2; el.style.borderColor='var(--success)'; }
+        else{ el.style.borderColor='var(--danger)';
+          lines.push('<b>'+strip(p.label)+' — you entered '+(isNaN(v)?'nothing':v)+', correct answer '+p.ans+'.</b><br>'+p.why);
+          S.wrong.push({st:'PRISMA',q:strip(p.label),chose:(isNaN(v)?'blank':String(v)),right:String(p.ans)}); }
+        el.readOnly=true;
+      });
+      return {got:Math.round(g*10)/10,lines:lines};
+    },
+    rob:function(){
+      if(!answeredAll('rb',ROB.length)) return {need:'Judge all five domains and the overall risk first.'};
+      markMCQ(ROB,'rb'); var r=scoreMCQ(ROB,'rb','Risk of bias'); return {got:r.got,lines:r.lines};
+    },
+    extract:function(){
+      if(!answeredAll('ex',EXTRACT.length)) return {need:'Extract all five values first.'};
+      markMCQ(EXTRACT,'ex'); var r=scoreMCQ(EXTRACT,'ex','Data extraction'); return {got:r.got,lines:r.lines};
+    },
+    meta:function(){
+      if(!answeredAll('mt',META.length)) return {need:'Answer all five interpretation questions first.'};
+      markMCQ(META,'mt'); var r=scoreMCQ(META,'mt','Meta-analysis'); return {got:r.got,lines:r.lines};
+    },
+    ai:function(){
+      if(!answeredAll('ai',AICLAIMS.length)) return {need:'Judge all five claims first.'};
+      var g=0,lines=[];
+      AICLAIMS.forEach(function(c,k){
+        var accepted=(sel.mcq['ai'+k]===0);
+        var el=document.querySelector('#qCard .aiclaim[data-k="'+k+'"]');
+        if(accepted===c.ok){ g+=c.m; el.classList.add('right'); }
+        else{
+          el.classList.add('wrong');
+          lines.push('<b>'+esc(strip(c.t).slice(0,70))+'…</b><br>'+c.why);
+          S.wrong.push({st:'AI verification',q:strip(c.t).slice(0,60),chose:(accepted?'accepted':'rejected'),right:(c.ok?'accept':'reject')});
+          if(accepted && c.integrity) hitIntegrity(c.integrity,strip(c.why).split('.')[0]+'.');
+        }
+        el.insertAdjacentHTML('beforeend','<div class="why">'+c.why+'</div>');
+      });
+      return {got:Math.round(g*10)/10,lines:lines};
+    }
+  };
+
+  /* ============ STAGE FLOW ============ */
+  function renderStage(){
+    paintChips(); paintProgress();
+    if(S.ended){ $('stArea').innerHTML=''; return; }
+    var st=STAGES[S.si];
+    sel={mcq:{},multi:[]};
+    var h='<div class="card"><span class="step">'+esc(st.room)+' · '+st.marks+' marks</span>'
+      +'<h2 style="margin-top:6px">'+esc(st.title)+'</h2>'
+      +'<div class="scene"><div class="dt">'+esc(st.scene.t)+'</div><pre>'+esc(st.scene.b)+'</pre></div>'
+      +'<div id="mentorHost"></div>'
+      +'<button class="btn mentorbtn" id="mentorBtn"'+(S.hints<=0?' disabled':'')+'>🤖 Ask the AI mentor ('+S.hints+' left)</button></div>'
+      +'<div class="card" id="qCard">'+BODY[st.key]()+'<div id="fbk"></div>'
+      +'<div class="row"><button class="btn" id="confirmBtn">Submit stage '+st.n+'</button>'
+      +'<span class="muted" style="font-size:12.5px">Worth <b>'+st.marks+'</b> marks. Stage '+(st.n<8?(st.n+1)+' unlocks on submission.':'8 closes the review.')+'</span></div></div>';
+    $('stArea').innerHTML=h;
+    WIRE[st.key]();
+    $('mentorBtn').addEventListener('click',function(){ useHint(st); });
+    $('confirmBtn').addEventListener('click',function(){ submitStage(st); });
+  }
+  function useHint(st){
+    if(S.hints<=0) return;
+    S.hints--; paintChips();
+    $('mentorHost').innerHTML='<div class="mentor"><div class="mh">🤖 AI mentor · '+S.hints+' hint'+(S.hints===1?'':'s')+' remaining</div>'+esc(st.hint)+'</div>';
+    $('mentorBtn').disabled=true; $('mentorBtn').textContent='🤖 Hint used ('+S.hints+' left)';
+  }
+  function submitStage(st){
+    var r=SCORE[st.key]();
+    if(r.need){ var f=$('fbk'); f.className='fbk no'; f.innerHTML=esc(r.need); return; }
+    var g=Math.round(r.got*10)/10;
+    S.marks[st.key]=g;
+    var pct=g/st.marks, fb=$('fbk');
+    fb.className='fbk '+(pct>=0.999?'ok':(pct>=0.5?'part':'no'));
+    fb.innerHTML='<b>Stage '+st.n+' complete — '+g+' / '+st.marks+(pct>=0.999?'. Full marks.':'.')+'</b>'
+      +(r.lines&&r.lines.length?('<ul><li>'+r.lines.join('</li><li>')+'</li></ul>'):'');
+    paintChips();
+    var btn=$('confirmBtn'); btn.disabled=true;
+    [].forEach.call(document.querySelectorAll('#qCard .opt,#qCard .pcard,#qCard .rc button'),function(b){ b.style.pointerEvents='none'; });
+    var mb=$('mentorBtn'); if(mb) mb.disabled=true;
+    var next=document.createElement('button');
+    next.className='btn gold'; next.style.marginLeft='8px'; next.id='nextBtn';
+    next.textContent=(S.si===STAGES.length-1)?'Close the review ▸':('Unlock stage '+(st.n+1)+' ▸');
+    btn.parentNode.appendChild(next);
+    next.addEventListener('click',function(){
+      S.si++;
+      if(S.si>=STAGES.length){ endGame('complete'); return; }
+      renderStage(); window.scrollTo({top:0,behavior:'smooth'});
+    });
+  }
+
+  /* ============ END + FEEDBACK ============ */
+  function endGame(reason){
+    if(S.ended) return;
+    S.ended=true; S.endedBy=reason; clearInterval(tick);
+    var name=($('cName').value||'').trim()||'Candidate', reg=($('cReg').value||'').trim();
+    var notDone=[];
+    STAGES.forEach(function(st){ if(S.marks[st.key]==null){ S.marks[st.key]=0; notDone.push(st.n); } });
+    var total=got(), m=function(k){ return S.marks[k]||0; };
+    var ai={
+      retrieval:  pctOf(m('search')+m('sources'),20),
+      screening:  pctOf(m('screen')+m('eligible'),32),
+      appraisal:  pctOf(m('rob')+m('extract'),22),
+      synthesis:  pctOf(m('meta'),14),
+      aiverify:   Math.round((m('ai')/12*50)+(S.safety/100*50)),
+      overall:    pctOf(total,TOTAL_MARKS)
+    };
+    var pass=(total>=PASS);
+    var badges=[
+      {n:'🔎 Search Strategist',       got:m('search')>=12,   d:'Full marks for the search strategy'},
+      {n:'📑 Screening Expert',        got:m('screen')>=15,   d:'15 or more of the 18 screening marks'},
+      {n:'🕵 Bias Detective',          got:m('rob')>=10,      d:'10 or more of the 12 risk-of-bias marks'},
+      {n:'📊 Evidence Synthesiser',    got:m('meta')>=12,     d:'12 or more of the 14 interpretation marks'},
+      {n:'🤖 AI-Literate Pharmacist',  got:(m('ai')>=12&&S.safety>=90), d:'Every AI claim judged correctly, integrity 90% or above'}
+    ];
+    S.result={name:name,reg:reg,total:total,pct:pctOf(total,TOTAL_MARKS),pass:pass,ai:ai,badges:badges,
+      wrong:S.wrong,unsafe:S.unsafe,hintsUsed:MAX_HINTS-S.hints,notDone:notDone,
+      reason:reason,timeUsed:TOTAL_SECS-S.secs,marks:JSON.parse(JSON.stringify(S.marks))};
+    $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+total+'/100)';
+    paintChips(); paintProgress();
+    makeQR(); renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+  function pctOf(a,b){ return Math.round(a/b*100); }
+  function mmss(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+
+  function aiNotes(){
+    var r=S.result, o={inc:[],missed:[],alt:[],mon:[],imp:[]};
+    r.wrong.forEach(function(w){ o.inc.push(w.st+' — '+w.q+': you answered “'+w.chose+'”; the correct answer is “'+w.right+'”.'); });
+    if((r.marks.search||0)<12) o.missed.push('Search construction: each PICO concept is a block of synonyms joined by OR, the blocks joined by AND, with controlled vocabulary and free text used together.');
+    if((r.marks.screen||0)<18) o.missed.push('Screening: two records fail on grounds that are invisible in the title — a retraction notice and a duplicate database record. Metadata must be read as carefully as the abstract.');
+    if((r.marks.rob||0)<12) o.missed.push('RoB 2: the overall judgement is not an average — a single high-risk domain makes the trial high risk overall.');
+    if((r.marks.meta||0)<14) o.missed.push('Interpretation: HR 0.71 is a 29% relative reduction, not 71%, and a relative measure needs a baseline risk before it can be turned into an NNT.');
+    if((r.marks.ai||0)<12) o.missed.push('AI verification: the three failure modes are a fabricated citation, a retracted source and a correctly cited but misreported number. Only the third survives a superficial check.');
+    o.alt.push('Where an SGLT2 inhibitor cannot be used, the same search strategy re-run with a GLP-1 receptor agonist block gives the parallel evidence base.');
+    o.alt.push('If the pooled estimate had shown substantial heterogeneity (I² above 50%), the alternatives are subgroup analysis by baseline eGFR, meta-regression, or narrative synthesis instead of pooling.');
+    o.alt.push('Where only a head-to-head trial exists for a comparison, an indirect or network meta-analysis is the recognised route — never a direct pooling of incompatible comparators.');
+    o.mon.push('Re-run the saved search on a fixed schedule; a systematic review is out of date from the day the search closes.');
+    o.mon.push('Set retraction alerts on every included study — a retraction after publication of your review invalidates the synthesis.');
+    o.mon.push('Record the exact search string, database, interface and date for every source, so the review can be reproduced and updated.');
+    o.mon.push('Check registry entries for included trials against the published outcomes to detect selective reporting.');
+    if(r.unsafe.length) o.imp.push('Evidence integrity: '+r.unsafe.length+' unsound item'+(r.unsafe.length===1?'':'s')+' entered your synthesis, costing '+(100-r.ai.aiverify>0?100-S.safety:100-S.safety)+' points of the Evidence Integrity Index. '+r.unsafe.map(function(u){return u.why;}).join(' '));
+    if(r.ai.retrieval<70) o.imp.push('Work on search construction — practise turning a PICO question into a written, reproducible strategy before touching a database.');
+    if(r.ai.screening<70) o.imp.push('Work on screening discipline — apply one criterion at a time and read the metadata, not only the title.');
+    if(r.ai.appraisal<70) o.imp.push('Work on appraisal and extraction — domain-by-domain bias judgements, and numbers transcribed digit by digit.');
+    if(r.ai.synthesis<70) o.imp.push('Work on interpreting pooled results — direction, magnitude, precision and heterogeneity are four separate questions.');
+    if(r.ai.aiverify<70) o.imp.push('Work on AI verification — resolve every citation, check every source is still valid, and recompute every number before accepting it.');
+    if(!o.imp.length) o.imp.push('No substantive weaknesses identified. Maintain this standard and progress to network meta-analysis and GRADE certainty rating.');
+    return o;
+  }
+
+  var qrData='';
+  function makeQR(){
+    try{
+      var url='https://www.alizon.in/alizon-verify.html?reg='+encodeURIComponent(S.result.reg||'')+'&p=M5U4-P5';
+      $('qrHolder').innerHTML='';
+      if(window.QRCode){
+        new QRCode($('qrHolder'),{text:url,width:96,height:96,correctLevel:QRCode.CorrectLevel.M});
+        var cv=$('qrHolder').querySelector('canvas');
+        qrData=cv?cv.toDataURL('image/png'):(($('qrHolder').querySelector('img')||{}).src||'');
+      }
+    }catch(e){ qrData=''; }
+  }
+  var CRIT=[['Search strategy construction','search',12],['Source &amp; database selection','sources',8],
+    ['Title &amp; abstract screening','screen',18],['Full-text eligibility &amp; PRISMA','eligible',14],
+    ['Risk-of-bias assessment','rob',12],['Data extraction accuracy','extract',10],
+    ['Meta-analysis interpretation','meta',14],['AI output verification','ai',12]];
+
+  function buildAuto(){
+    if(!S||!S.result) return null;
+    var r=S.result, ai=r.ai, n=aiNotes();
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">AI-Driven Literature Analysis — “The Systematic Review Sprint”</h3>';
+    h+='<p style="margin:2px 0"><b>Student:</b> '+esc(r.name)+(r.reg?' &nbsp;·&nbsp; <b>Register no.:</b> '+esc(r.reg):'')+'</p>';
+    h+='<p style="margin:2px 0"><b>Date:</b> '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})
+      +' &nbsp;·&nbsp; <b>Review ref.:</b> DIC-EBP-2026-11 &nbsp;·&nbsp; <b>Time used:</b> '+mmss(r.timeUsed)+' of 90:00'
+      +' &nbsp;·&nbsp; <b>AI hints used:</b> '+r.hintsUsed+' of 3</p>';
+    h+='<p style="margin:6px 0"><b>Final score:</b> '+r.total+' / 100 &nbsp;·&nbsp; <b>Evidence Integrity Index:</b> '+S.safety+'% &nbsp;·&nbsp; <b>Result:</b> '+(r.pass?'PASS':'FAIL')+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:8px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Assessment criterion</th><th>Awarded</th><th>Maximum</th></tr>'
+      +CRIT.map(function(c){return '<tr><td>'+c[0]+'</td><td align="center">'+(r.marks[c[1]]||0)+'</td><td align="center">'+c[2]+'</td></tr>';}).join('')
+      +'<tr style="font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">100</td></tr></table>';
+    h+='<p style="margin:10px 0 4px"><b>Competency profile</b></p>';
+    h+='<table border="1" cellspacing="0" cellpadding="5" style="border-collapse:collapse;width:100%;font-size:12px">'
+      +'<tr><td>Search &amp; retrieval</td><td align="center">'+ai.retrieval+'%</td><td>Screening accuracy</td><td align="center">'+ai.screening+'%</td></tr>'
+      +'<tr><td>Appraisal &amp; extraction</td><td align="center">'+ai.appraisal+'%</td><td>Synthesis &amp; interpretation</td><td align="center">'+ai.synthesis+'%</td></tr>'
+      +'<tr><td>AI verification &amp; integrity</td><td align="center">'+ai.aiverify+'%</td><td><b>Overall competency</b></td><td align="center"><b>'+ai.overall+'%</b></td></tr></table>';
+    var sec=function(t,arr){ return arr.length?('<p style="margin:9px 0 2px"><b>'+t+'</b></p><ul style="margin:0 0 0 18px;font-size:12px;line-height:1.6"><li>'+arr.map(esc).join('</li><li>')+'</li></ul>'):''; };
+    h+=sec('Incorrect decisions ('+n.inc.length+')',n.inc.length?n.inc:['None — every decision in the review was correct.']);
+    h+=sec('Missed evidence principles',n.missed.length?n.missed:['None — the method was applied correctly throughout.']);
+    h+=sec('Alternative approaches',n.alt);
+    h+=sec('Maintaining the review',n.mon);
+    h+=sec('Areas for improvement',n.imp);
+    if(r.notDone.length) h+='<p style="margin:8px 0 0;font-size:12px;color:#b3261e"><b>Stages not completed:</b> '+r.notDone.join(', ')+' — scored zero'+(r.reason==='time'?' (the 90-minute countdown expired)':'')+'.</p>';
+    h+='<p style="margin:10px 0 2px"><b>Badges earned:</b> '+(r.badges.filter(function(b){return b.got;}).map(function(b){return esc(b.n);}).join(' · ')||'none')+'</p>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.total+' / 100 ('+ai.overall+'% overall competency)</p>';
+    h+='<p style="margin-top:8px;font-size:11px;color:#555"><b>Faculty remarks:</b> ______________________________________________</p>';
+    if(qrData) h+='<div style="margin-top:10px"><img src="'+qrData+'" width="96" height="96" alt="Verification QR"><div style="font-size:10px;color:#666">Scan to verify this record · '+esc(r.reg||'—')+' · M5-U4-PRACTICAL-5</div></div>';
+    return h;
+  }
+
+  function renderReport(){
+    var r=S.result, ai=r.ai, n=aiNotes();
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">Marks / 100</div></div>'
+      +'<div class="repbox"><div class="rv">'+S.safety+'%</div><div class="rl">Evidence integrity</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.wrong.length+'</div><div class="rl">Incorrect decisions</div></div>'
+      +'<div class="repbox"><div class="rv">'+mmss(r.timeUsed)+'</div><div class="rl">Time used</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.hintsUsed+'/3</div><div class="rl">AI hints used</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+r.total+' / 100</div>';
+    if(r.reason==='time') html+='<div class="note" style="color:var(--warn);font-weight:600;margin:-4px 0 10px">The 90-minute countdown expired — stage(s) '+r.notDone.join(', ')+' scored zero.</div>';
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">Competency profile</h3>';
+    html+='<div class="aib">'+[
+      ['Search &amp; retrieval',ai.retrieval],['Screening accuracy',ai.screening],['Appraisal &amp; extraction',ai.appraisal],
+      ['Synthesis &amp; interpretation',ai.synthesis],['AI verification &amp; integrity',ai.aiverify],['Overall competency',ai.overall]
+    ].map(function(x){
+      var cls=x[1]>=85?'good':(x[1]<60?'bad':'');
+      return '<div class="r"><span>'+x[0]+'</span><span>'+x[1]+'%</span></div><div class="bar"><i class="'+cls+'" style="width:'+x[1]+'%"></i></div>';
+    }).join('')+'</div>';
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">Achievement badges</h3>';
+    html+='<div class="badges">'+r.badges.map(function(b){return '<span class="badge '+(b.got?'got':'miss')+'" title="'+esc(b.d)+'">'+b.n+'</span>';}).join('')+'</div>';
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">Marks by criterion</h3>';
+    html+='<div class="tw"><table class="rubric"><thead><tr><th>Assessment criterion</th><th>Awarded</th></tr></thead><tbody>'
+      +CRIT.map(function(c){ var v=r.marks[c[1]]||0;
+        var col=(v>=c[2]?'var(--success)':(v>=c[2]/2?'var(--warn)':'var(--danger)'));
+        return '<tr><td>'+c[0]+'</td><td style="color:'+col+';font-weight:700">'+v+' / '+c[2]+'</td></tr>';}).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+' / 100</td></tr></tbody></table></div>';
+    var blk=function(t,arr,warn){ return '<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:'+(warn?'var(--danger)':'var(--gold)')+';margin:16px 0 6px">'+t+'</h3>'
+      +'<ul style="margin:0 0 0 18px;font-size:13px;line-height:1.65">'+(arr.length?arr:['None.']).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>'; };
+    html+=blk('Incorrect decisions',n.inc.length?n.inc:['None — every decision in the review was correct.'],n.inc.length>0);
+    html+=blk('Missed evidence principles',n.missed.length?n.missed:['None — the method was applied correctly throughout.']);
+    html+=blk('Alternative approaches',n.alt);
+    html+=blk('Maintaining the review',n.mon);
+    html+=blk('Areas for improvement',n.imp);
+    html+='<div class="row no-print" style="margin-top:16px"><button class="btn gold" onclick="window.print()">Download / Print report</button>'
+      +'<button class="btn ghost" id="retryBtn">Run the review sprint again</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){
+      $('setupCard').style.display=''; $('gameHead').style.display='none'; $('stArea').innerHTML='';
+      $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+      $('scRes').textContent='—'; $('scMarks').textContent='0 / 100'; $('scSafe').textContent='100%';
+      $('scStage').textContent='—'; $('scHints').textContent='3'; $('scTime').textContent='90:00';
+      S=null; switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 5 · Unit 4 — Evidence-Based Pharmacy & AI-Driven Literature Analysis',
+            title:'AI-Driven Literature Analysis — The Systematic Review Sprint',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Final score &amp; evidence conclusion', placeholder:'e.g. 94/100 — 3 trials pooled, HR 0.71 (0.62–0.82), I² 22%; two AI claims rejected'},
+      minWords:400,
+      attachments:[
+        {label:'1. Search Strategy &amp; PRISMA Flow (PDF)'},
+        {label:'2. Evidence Summary for the Committee (PDF)'},
+        {label:'3. Additional Supporting File (PDF)'}
+      ],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return S&&S.result?S.result.pct:null; },
+      autoResultText:function(){ return S&&S.result?((S.result.pass?'PASS':'FAIL')+' '+S.result.total+'/100'):''; }
+    });
+  }
+
+  function switchTab(p){ [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  $('startBtn').addEventListener('click',startGame);
+})();
+</script>
+</body>
+</html>
