@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON OS · Module 1 · Internal Examination</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#fff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A;--danger:#C4262E;--warn:#B45309;--teal:#0E6F76;--purple:#6D28D9;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;--teal:#4bc2c9;--purple:#a78bfa;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(14px,3vw,28px) 80px}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(15px,2.4vw,22px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .muted{color:var(--muted)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:10px 20px;color:#fff;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .btn:hover{filter:brightness(1.07)} .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
+  .btn.ok{background:linear-gradient(120deg,#0f6b45,var(--success))}
+  .btn.sm{font-size:12.5px;padding:8px 15px}
+  .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  input[type=text],select{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);
+    border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+
+  /* ---------- exam chrome ---------- */
+  .exbar{position:sticky;top:0;z-index:40;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));color:#fff;
+    border-radius:14px;padding:11px 16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:14px;
+    box-shadow:0 10px 30px -20px rgba(158,12,19,.9)}
+  .exbar .ttl{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px}
+  .exbar .who{font-size:12px;opacity:.9}
+  .exbar .clock{margin-left:auto;display:flex;gap:8px;align-items:center;background:rgba(0,0,0,.22);
+    border-radius:100px;padding:6px 15px;font-variant-numeric:tabular-nums;font-weight:800;font-size:15px}
+  .exbar .clock.warn{background:rgba(0,0,0,.42);animation:puls 1s infinite}
+  @keyframes puls{50%{opacity:.55}}
+  .exbody{display:grid;grid-template-columns:1fr 296px;gap:16px;align-items:start}
+  @media(max-width:900px){.exbody{grid-template-columns:1fr}.side{order:-1}}
+
+  /* ---------- question ---------- */
+  .qhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+  .qno{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#fff;background:var(--crimson);
+    border-radius:100px;padding:3px 12px}
+  .qunit{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold)}
+  .qmark{font-size:11.5px;color:var(--muted)}
+  .qtext{font-size:15.5px;font-weight:600;line-height:1.6;margin:6px 0 14px}
+  .opts{display:grid;gap:9px}
+  .opt{display:flex;gap:11px;align-items:flex-start;cursor:pointer;font-family:inherit;font-size:14px;text-align:left;
+    color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:11px;padding:12px 14px;transition:.13s;line-height:1.5}
+  .opt:hover{border-color:var(--gold)}
+  .opt .lt{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--pill);
+    border:1px solid var(--line);font-size:11.5px;font-weight:800;color:var(--muted)}
+  .opt.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)}
+  .opt.pick .lt{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .opt.right{border-color:var(--success);background:rgba(30,142,90,.07)} .opt.right .lt{background:var(--success);border-color:var(--success);color:#fff}
+  .opt.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)} .opt.wrong .lt{background:var(--danger);border-color:var(--danger);color:#fff}
+  .navrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+  .navrow .sp{margin-left:auto}
+
+  /* ---------- side column ---------- */
+  .side{position:sticky;top:74px}
+  .sbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--card-shadow);margin-bottom:12px}
+  .sbox h4{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+  .tally{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .tal{display:flex;gap:8px;align-items:center;font-size:11.5px;font-weight:600}
+  .tal i{flex:none;width:15px;height:15px;border-radius:4px;display:inline-block}
+  .tal b{margin-left:auto;font-size:13px}
+  .i-ans{background:var(--success)} .i-not{background:var(--pill);border:1px solid var(--line)}
+  .i-rev{background:var(--purple)} .i-nv{background:transparent;border:1.5px dashed var(--line)}
+  .palette{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:4px;max-height:270px;overflow-y:auto;padding-right:2px}
+  .pq{cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:700;aspect-ratio:1;border-radius:8px;
+    border:1.5px solid var(--line);background:var(--pill);color:var(--muted);display:grid;place-items:center;position:relative}
+  .pq:hover{border-color:var(--gold)}
+  .pq.ans{background:var(--success);border-color:var(--success);color:#fff}
+  .pq.rev{background:var(--purple);border-color:var(--purple);color:#fff}
+  .pq.rev.ans:after{content:'';position:absolute;right:2px;bottom:2px;width:6px;height:6px;border-radius:50%;background:var(--success);border:1px solid #fff}
+  .pq.nv{background:transparent;border-style:dashed}
+  .pq.now{outline:3px solid var(--crimson);outline-offset:1px}
+  .usel{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+  .usel button{cursor:pointer;font:inherit;font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;
+    background:var(--pill);border:1px solid var(--line);color:var(--ink)}
+  .usel button.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+
+  /* ---------- setup / results ---------- */
+  .mode{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px;margin-top:10px}
+  .mcard{cursor:pointer;text-align:left;font:inherit;background:var(--panel2);border:1.5px solid var(--line);
+    border-radius:12px;padding:13px 15px;color:var(--ink)}
+  .mcard:hover{border-color:var(--gold)} .mcard.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.12)}
+  .mcard b{display:block;font-size:14px} .mcard small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:11px;margin:8px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:27px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:15px;font-weight:700;padding:13px 17px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:440px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line)} tr:nth-child(even) td{background:var(--panel2)}
+  .bar{height:8px;border-radius:100px;background:var(--pill);overflow:hidden;min-width:80px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))} .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  .rev{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:11px;padding:13px 15px;margin-bottom:10px;background:var(--panel2)}
+  .rev.ok{border-left-color:var(--success)} .rev.no{border-left-color:var(--danger)} .rev.skip{border-left-color:var(--muted)}
+  .rev .rq{font-size:14px;font-weight:600;line-height:1.55}
+  .rev .ra{font-size:12.5px;margin-top:7px} .rev .ra b{font-weight:700}
+  .rev .re{font-size:12.5px;line-height:1.6;margin-top:7px;padding-top:7px;border-top:1px dashed var(--line);color:var(--ink)}
+  .tag{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-left:7px}
+  .tag.ok{background:rgba(30,142,90,.14);color:var(--success)} .tag.no{background:rgba(196,38,46,.12);color:var(--danger)}
+  .tag.skip{background:var(--pill);color:var(--muted)}
+  .rankline{background:var(--gold-soft);border:1px solid rgba(161,98,7,.3);border-radius:12px;padding:13px 16px;margin:10px 0;font-size:13.5px;line-height:1.6}
+  .lb{display:grid;gap:5px;margin-top:8px}
+  .lbr{display:grid;grid-template-columns:34px 1fr auto;gap:9px;align-items:center;font-size:12.5px;padding:7px 11px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:9px}
+  .lbr.me{border-color:var(--crimson);background:rgba(196,13,22,.06);font-weight:700}
+  .lbr .pos{font-weight:800;color:var(--gold);text-align:center}
+  .filt{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 10px}
+  .filt button{cursor:pointer;font:inherit;font-size:12px;font-weight:600;padding:6px 13px;border-radius:100px;
+    background:var(--pill);border:1px solid var(--line);color:var(--ink)}
+  .filt button.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .warnbox{background:rgba(180,83,9,.1);border:1px solid rgba(180,83,9,.34);color:var(--warn);
+    border-radius:11px;padding:12px 15px;font-size:13px;line-height:1.6;margin-top:12px}
+  @media print{.exbar,.side,.navrow,.filt,.no-print,.btn{display:none!important} body{background:#fff} .card{box-shadow:none;border:1px solid #ccc}}
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div class="wrap">
+
+  <!-- ================= SETUP ================= -->
+  <section id="setup">
+    <div class="card">
+      <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Alizon School of Medical &amp; Digital Intelligence</div>
+      <h1 style="font-size:clamp(1.4rem,3.4vw,2rem);margin:7px 0">Module 1 · Internal Examination</h1>
+      <p class="muted" style="font-size:14px" id="modLine">Certificate Course in Digital Health &amp; Artificial Intelligence for Pharmacy</p>
+
+      <h3 style="font-size:13px;margin:18px 0 4px">Candidate</h3>
+      <div class="grid2">
+        <div><label class="f">Full name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Register number</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+      </div>
+
+      <h3 style="font-size:13px;margin:20px 0 4px">Select the module</h3>
+      <div class="mode" id="modWrap"></div>
+
+      <h3 style="font-size:13px;margin:20px 0 4px">Select the paper</h3>
+      <div class="mode" id="modeWrap"></div>
+
+      <div class="warnbox" style="margin-top:16px">
+        <b>Examination instructions</b>
+        <ul style="margin:7px 0 0 17px;line-height:1.75">
+          <li>Each question carries <b>1 mark</b>. There is <b>no negative marking</b>.</li>
+          <li>Use the question palette on the right to move between questions. <b>Mark for review</b> flags a question to return to; a flagged question is still evaluated if answered.</li>
+          <li>The paper submits itself automatically when the time expires.</li>
+          <li>Answers are revealed only after submission — with an explanation for every question.</li>
+          <li>Option order is shuffled for each candidate, so no two papers present the choices identically.</li>
+        </ul>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn" id="startBtn">▶ Begin examination</button>
+        <button class="btn ghost sm" id="themeBtn">◐ Theme</button>
+      </div>
+      <p class="muted" style="font-size:12px;margin-top:10px" id="prevLine"></p>
+    </div>
+  </section>
+
+  <!-- ================= EXAM ================= -->
+  <section id="exam" style="display:none">
+    <div class="exbar">
+      <div><div class="ttl" id="exTitle">Module 1</div><div class="who" id="exWho">—</div></div>
+      <div class="clock" id="clock">⏱ <span id="tLeft">--:--</span></div>
+    </div>
+    <div class="exbody">
+      <div>
+        <div class="card" id="qCard"></div>
+      </div>
+      <aside class="side">
+        <div class="sbox">
+          <h4>Marks &amp; progress</h4>
+          <div class="tally">
+            <div class="tal"><i class="i-ans"></i>Answered<b id="tAns">0</b></div>
+            <div class="tal"><i class="i-not"></i>Not answered<b id="tNot">0</b></div>
+            <div class="tal"><i class="i-rev"></i>For review<b id="tRev">0</b></div>
+            <div class="tal"><i class="i-nv"></i>Not visited<b id="tNv">0</b></div>
+          </div>
+          <div style="margin-top:11px;padding-top:10px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:12.5px">
+            <span class="muted">Attempted</span><b id="tPct">0 / 0</b>
+          </div>
+          <div class="bar" style="margin-top:6px"><i id="tBar" style="width:0%"></i></div>
+        </div>
+        <div class="sbox">
+          <h4>Question palette</h4>
+          <div class="usel" id="uSel"></div>
+          <div class="palette" id="palette"></div>
+        </div>
+        <button class="btn ok" id="submitBtn" style="width:100%">Submit examination</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= RESULT ================= -->
+  <section id="result" style="display:none"></section>
+</div>
+
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-exam-manifest.js?v=1"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(i){return document.getElementById(i);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var LETTER=['A','B','C','D'];
+  var PASS_PCT=50, STORE='alizonExamAttempts';   /* cloud-synced key → institution-wide rank */
+  var BANK=null, PAPERS=[], paper=null;
+  var MODS=(window.AlizonExamBanks?AlizonExamBanks.list():[]);
+  if(!MODS.length){ $('setup').innerHTML='<div class="card"><h2>Question banks unavailable</h2></div>'; return; }
+
+  function wantModule(){
+    var q=/[?&]m=(\d+)/.exec(location.search);
+    if(q) return +q[1];
+    try{ var l=+localStorage.getItem('alizonExamModule'); if(l) return l; }catch(e){}
+    return MODS[0].n;
+  }
+  $('modWrap').innerHTML=MODS.map(function(m){
+    return '<button type="button" class="mcard" data-m="'+m.n+'"><b>Module '+m.n+'</b>'
+      +'<small>'+esc(m.title)+'</small></button>';}).join('');
+  [].forEach.call(document.querySelectorAll('#modWrap .mcard'),function(b){
+    b.addEventListener('click',function(){ selectModule(+b.getAttribute('data-m')); });
+  });
+
+  function selectModule(n){
+    [].forEach.call(document.querySelectorAll('#modWrap .mcard'),function(x){
+      x.classList.toggle('pick', +x.getAttribute('data-m')===n); });
+    try{ localStorage.setItem('alizonExamModule',n); }catch(e){}
+    $('modLine').textContent='Loading module '+n+'…';
+    $('startBtn').disabled=true; $('modeWrap').innerHTML='';
+    AlizonExamBanks.load(n).then(function(b){
+      BANK=b; $('startBtn').disabled=false;
+      $('modLine').textContent=BANK.module;
+      buildPapers(); showPrev();
+    }).catch(function(e){
+      $('modLine').textContent='Could not load module '+n+' — '+e.message;
+      $('startBtn').disabled=true;
+    });
+  }
+
+  /* ---------- papers ---------- */
+  function buildPapers(){
+  PAPERS=BANK.units.map(function(u){
+    return {k:'u'+u.n, t:'Unit '+u.n, sub:u.t, n:u.qs.length, mins:30, units:[u.n]};
+  });
+  PAPERS.push({k:'full', t:'Full module paper', sub:'All four units combined — the internal examination paper',
+    n:BANK.units.reduce(function(a,u){return a+u.qs.length;},0), mins:120, units:BANK.units.map(function(u){return u.n;})});
+
+  paper=PAPERS[0];
+  $('modeWrap').innerHTML=PAPERS.map(function(p,i){
+    return '<button type="button" class="mcard'+(i===0?' pick':'')+'" data-k="'+i+'"><b>'+esc(p.t)+'</b>'
+      +'<small>'+esc(p.sub)+'</small><small style="margin-top:6px;color:var(--gold);font-weight:700">'
+      +p.n+' questions · '+p.mins+' minutes · '+p.n+' marks</small></button>';
+  }).join('');
+  [].forEach.call(document.querySelectorAll('#modeWrap .mcard'),function(b){
+    b.addEventListener('click',function(){
+      [].forEach.call(document.querySelectorAll('#modeWrap .mcard'),function(x){x.classList.remove('pick');});
+      b.classList.add('pick'); paper=PAPERS[+b.getAttribute('data-k')];
+    });
+  });
+  }
+
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}');
+       if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+  selectModule(wantModule());
+
+  /* ---------- attempt store (used for the genuine rank) ---------- */
+  function readStore(){ try{ return JSON.parse(localStorage.getItem(STORE)||'[]')||[]; }catch(e){ return []; } }
+  function writeStore(a){
+    /* alizonExamAttempts is registered in firebase-sync KEYS, so this setItem
+       is mirrored to Firestore and pulled onto every other signed-in device.
+       Capped so the synced document stays well inside Firestore's 1 MB limit. */
+    try{ localStorage.setItem(STORE,JSON.stringify(a.slice(-2000))); }catch(e){}
+  }
+  function cloudLive(){ return !!(window.alizonAuth || window.firebase); }
+  function showPrev(){
+    if(!BANK) return;
+    var a=readStore().filter(function(x){return x&&x.code===BANK.code;});
+    $('prevLine').textContent=a.length
+      ? (a.length+' attempt'+(a.length===1?'':'s')+' recorded so far'+(cloudLive()?' across the institution':' on this device')+' — your rank is calculated against these.')
+      : 'No attempts recorded yet. Ranking becomes meaningful once other candidates have sat the same paper.';
+  }
+  /* re-render the standing if the cloud pulls newer attempts in while the page is open */
+  window.addEventListener('storage',function(e){ if(e.key===STORE && $('setup').style.display!=='none') showPrev(); });
+
+  /* ---------- state ---------- */
+  var S=null, tick=null;
+
+  function buildPaper(){
+    var qs=[];
+    BANK.units.forEach(function(u){
+      if(paper.units.indexOf(u.n)<0) return;
+      u.qs.forEach(function(q,i){
+        /* shuffle option order per attempt, tracking the correct index */
+        var idx=[0,1,2,3];
+        for(var k=idx.length-1;k>0;k--){ var j=Math.floor(Math.random()*(k+1)); var t=idx[k]; idx[k]=idx[j]; idx[j]=t; }
+        qs.push({u:u.n, ut:u.t, src:i, q:q.q, o:idx.map(function(x){return q.o[x];}),
+                 c:idx.indexOf(q.c), e:q.e, pick:null, rev:false, seen:false});
+      });
+    });
+    return qs;
+  }
+
+  function start(){
+    var nm=($('cName').value||'').trim(), rg=($('cReg').value||'').trim();
+    if(!nm){ $('cName').focus(); $('cName').style.borderColor='var(--danger)'; return; }
+    S={qs:buildPaper(), i:0, name:nm, reg:rg, secs:paper.mins*60, ended:false, started:Date.now(), paper:paper};
+    $('setup').style.display='none'; $('exam').style.display='';
+    $('exTitle').textContent=BANK.code+' · '+paper.t;
+    $('exWho').textContent=nm+(rg?' · '+rg:'')+' · '+S.qs.length+' questions · '+S.qs.length+' marks';
+    clearInterval(tick);
+    tick=setInterval(function(){
+      if(!S||S.ended) return;
+      S.secs--; paintClock();
+      if(S.secs<=0){ S.secs=0; paintClock(); submit(true); }
+    },1000);
+    paintClock(); buildUnitSel(); render();
+  }
+  function paintClock(){
+    var m=Math.floor(S.secs/60), s=S.secs%60;
+    $('tLeft').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    $('clock').classList.toggle('warn',S.secs<=300);
+  }
+
+  function buildUnitSel(){
+    var us=paper.units;
+    if(us.length<2){ $('uSel').style.display='none'; return; }
+    $('uSel').innerHTML='<button data-u="all" class="on">All</button>'
+      +us.map(function(n){return '<button data-u="'+n+'">U'+n+'</button>';}).join('');
+    [].forEach.call($('uSel').children,function(b){
+      b.addEventListener('click',function(){
+        [].forEach.call($('uSel').children,function(x){x.classList.remove('on');});
+        b.classList.add('on'); paintPalette(b.getAttribute('data-u'));
+      });
+    });
+  }
+
+  function counts(){
+    var a=0,r=0,nv=0;
+    S.qs.forEach(function(q){ if(q.pick!=null)a++; if(q.rev)r++; if(!q.seen)nv++; });
+    return {ans:a, rev:r, nv:nv, not:S.qs.length-a-nv};
+  }
+  function paintSide(){
+    var c=counts();
+    $('tAns').textContent=c.ans; $('tNot').textContent=Math.max(0,c.not);
+    $('tRev').textContent=c.rev; $('tNv').textContent=c.nv;
+    $('tPct').textContent=c.ans+' / '+S.qs.length;
+    $('tBar').style.width=Math.round(c.ans/S.qs.length*100)+'%';
+    $('tBar').className=(c.ans===S.qs.length?'good':'');
+    paintPalette(currentFilter());
+  }
+  var _filter='all';
+  function currentFilter(){ return _filter; }
+  function paintPalette(f){
+    _filter=f||'all';
+    $('palette').innerHTML=S.qs.map(function(q,k){
+      if(_filter!=='all' && String(q.u)!==String(_filter)) return '';
+      var cls=q.pick!=null?'ans':(q.seen?'':'nv');
+      if(q.rev) cls+=' rev'+(q.pick!=null?' ans':'');
+      if(k===S.i) cls+=' now';
+      return '<button type="button" class="pq '+cls+'" data-k="'+k+'" title="Question '+(k+1)+' · Unit '+q.u+'">'+(k+1)+'</button>';
+    }).join('');
+    [].forEach.call(document.querySelectorAll('#palette .pq'),function(b){
+      b.addEventListener('click',function(){ S.i=+b.getAttribute('data-k'); render(); });
+    });
+  }
+
+  function render(){
+    var q=S.qs[S.i]; q.seen=true;
+    $('qCard').innerHTML='<div class="qhead"><span class="qno">Question '+(S.i+1)+' of '+S.qs.length+'</span>'
+      +'<span class="qunit">Unit '+q.u+' · '+esc(q.ut)+'</span>'
+      +'<span class="qmark">1 mark · no negative marking</span></div>'
+      +'<div class="qtext">'+q.q+'</div>'
+      +'<div class="opts" id="optW">'+q.o.map(function(o,k){
+        return '<button type="button" class="opt'+(q.pick===k?' pick':'')+'" data-k="'+k+'">'
+          +'<span class="lt">'+LETTER[k]+'</span><span>'+o+'</span></button>';}).join('')+'</div>'
+      +'<div class="navrow">'
+      +'<button class="btn ghost sm" id="prevQ"'+(S.i===0?' disabled':'')+'>◂ Previous</button>'
+      +'<button class="btn ghost sm" id="clrQ">Clear response</button>'
+      +'<button class="btn gold sm" id="revQ">'+(q.rev?'★ Unmark review':'☆ Mark for review')+'</button>'
+      +'<span class="sp"></span>'
+      +'<button class="btn sm" id="nextQ">'+(S.i===S.qs.length-1?'Save':'Save &amp; next ▸')+'</button></div>';
+    [].forEach.call(document.querySelectorAll('#optW .opt'),function(b){
+      b.addEventListener('click',function(){
+        q.pick=+b.getAttribute('data-k');
+        [].forEach.call(document.querySelectorAll('#optW .opt'),function(x){x.classList.remove('pick');});
+        b.classList.add('pick'); paintSide();
+      });
+    });
+    $('prevQ').addEventListener('click',function(){ if(S.i>0){S.i--;render();} });
+    $('nextQ').addEventListener('click',function(){ if(S.i<S.qs.length-1){S.i++;render();} else paintSide(); });
+    $('clrQ').addEventListener('click',function(){ q.pick=null; render(); });
+    $('revQ').addEventListener('click',function(){ q.rev=!q.rev; render(); });
+    paintSide();
+  }
+
+  /* ---------- submit ---------- */
+  function submit(auto){
+    if(S.ended) return;
+    var c=counts();
+    if(!auto){
+      var msg='Submit the examination?\n\nAnswered: '+c.ans+' of '+S.qs.length
+        +'\nNot answered: '+Math.max(0,c.not+c.nv)
+        +'\nMarked for review: '+c.rev
+        +'\n\nThis cannot be undone.';
+      if(!window.confirm(msg)) return;
+    }
+    S.ended=true; clearInterval(tick);
+    var score=0, byUnit={};
+    S.qs.forEach(function(q){
+      if(!byUnit[q.u]) byUnit[q.u]={n:0,got:0,t:q.ut};
+      byUnit[q.u].n++;
+      if(q.pick===q.c){ score++; byUnit[q.u].got++; }
+    });
+    var pct=Math.round(score/S.qs.length*1000)/10;
+    var timeUsed=paper.mins*60-S.secs;
+
+    /* genuine rank among attempts recorded on this device for the same paper */
+    var all=readStore();
+    var mine={name:S.name,reg:S.reg,code:BANK.code,paper:paper.k,pt:paper.t,score:score,total:S.qs.length,pct:pct,
+              secs:timeUsed,at:new Date().toISOString()};
+    all.push(mine); writeStore(all);
+    var peers=all.filter(function(a){return a && a.code===BANK.code && a.paper===paper.k;});
+    peers.sort(function(a,b){ return b.pct-a.pct || a.secs-b.secs; });
+    var rank=peers.findIndex(function(a){return a.at===mine.at;})+1;
+    var pctile=peers.length>1? Math.round((peers.length-rank)/(peers.length-1)*100) : null;
+
+    S.result={score:score,total:S.qs.length,pct:pct,pass:pct>=PASS_PCT,byUnit:byUnit,
+              timeUsed:timeUsed,rank:rank,peers:peers,pctile:pctile,auto:!!auto,mine:mine,
+              answered:c.ans,notAnswered:S.qs.length-c.ans};
+    $('exam').style.display='none'; $('result').style.display='';
+    makeQR(); renderResult(); window.scrollTo(0,0);
+  }
+  $('submitBtn').addEventListener('click',function(){ submit(false); });
+
+  function mmss(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+  function grade(p){
+    if(p>=90)return{g:'O',d:'Outstanding'}; if(p>=80)return{g:'A+',d:'Excellent'};
+    if(p>=70)return{g:'A',d:'Very good'};  if(p>=60)return{g:'B+',d:'Good'};
+    if(p>=50)return{g:'B',d:'Pass'};       return{g:'F',d:'Fail'};
+  }
+
+  var qrData='';
+  function makeQR(){
+    try{
+      var url='https://www.alizon.in/alizon-verify.html?reg='+encodeURIComponent(S.reg||'')+'&p='+BANK.code+'-'+paper.k;
+      $('qrHolder').innerHTML='';
+      if(window.QRCode){
+        new QRCode($('qrHolder'),{text:url,width:92,height:92,correctLevel:QRCode.CorrectLevel.M});
+        var cv=$('qrHolder').querySelector('canvas');
+        qrData=cv?cv.toDataURL('image/png'):(($('qrHolder').querySelector('img')||{}).src||'');
+      }
+    }catch(e){ qrData=''; }
+  }
+
+  function renderResult(){
+    var r=S.result, g=grade(r.pct);
+    var h='<div class="card">'
+      +'<div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Alizon School of Medical &amp; Digital Intelligence</div>'
+      +'<h1 style="font-size:clamp(1.3rem,3vw,1.8rem);margin:6px 0">Internal Examination — Result</h1>'
+      +'<p class="muted" style="font-size:13.5px">'+esc(BANK.module)+' &nbsp;·&nbsp; '+esc(paper.t)
+      +' &nbsp;·&nbsp; '+esc(paper.sub)+'</p>'
+      +'<p style="font-size:13.5px;margin-top:8px"><b>'+esc(r.mine.name)+'</b>'+(r.mine.reg?' &nbsp;·&nbsp; Register no. '+esc(r.mine.reg):'')
+      +' &nbsp;·&nbsp; '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})+'</p>'
+      +(r.auto?'<div class="warnbox" style="margin-top:10px">The paper was submitted automatically because the allotted time expired.</div>':'')
+      +'<div class="repgrid" style="margin-top:14px">'
+      +'<div class="repbox"><div class="rv">'+r.score+'</div><div class="rl">Marks / '+r.total+'</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Percentage</div></div>'
+      +'<div class="repbox"><div class="rv">'+g.g+'</div><div class="rl">Grade · '+g.d+'</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.rank+'</div><div class="rl">Rank of '+r.peers.length+'</div></div>'
+      +'<div class="repbox"><div class="rv">'+mmss(r.timeUsed)+'</div><div class="rl">Time taken</div></div></div>'
+      +'<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+r.score+' of '+r.total
+      +' ('+r.pct+'%) · pass mark '+PASS_PCT+'%</div>'
+      +'<p class="muted" style="font-size:12.5px">Answered '+r.answered+' · left blank '+r.notAnswered+' · 1 mark each, no negative marking.</p>';
+
+    /* rank explanation — honest about the cohort */
+    h+='<div class="rankline"><b>Rank '+r.rank+' of '+r.peers.length+'</b>'
+      +(r.peers.length<2
+        ? ' — this is the first recorded attempt at this paper'+(cloudLive()?' across the institution':' on this device')+', so the rank is not yet meaningful. It becomes informative once other candidates have sat the same paper.'
+        : ' — ranked against all '+r.peers.length+' attempt'+(r.peers.length===1?'':'s')+' at <b>'+esc(paper.t)+'</b> recorded '+(cloudLive()?'across the institution':'on this device')
+          +(r.pctile!=null?', placing you in the <b>'+r.pctile+'th percentile</b>':'')
+          +'. Ties are broken by time taken.')
+      +'</div>';
+
+    if(r.peers.length>1){
+      h+='<h3 style="font-size:13px;margin:16px 0 4px">Leaderboard — '+esc(paper.t)+'</h3><div class="lb">'
+        +r.peers.slice(0,10).map(function(a,i){
+          var me=(a.at===r.mine.at);
+          return '<div class="lbr'+(me?' me':'')+'"><span class="pos">'+(i+1)+'</span>'
+            +'<span>'+esc(a.name||'—')+(a.reg?' <span class="muted">· '+esc(a.reg)+'</span>':'')+(me?' <span class="tag ok">you</span>':'')+'</span>'
+            +'<span>'+a.score+'/'+a.total+' · '+a.pct+'% · '+mmss(a.secs)+'</span></div>';
+        }).join('')+'</div>';
+    }
+
+    /* unit-wise */
+    h+='<h3 style="font-size:13px;margin:18px 0 4px">Unit-wise performance</h3>'
+      +'<div class="tw"><table><thead><tr><th>Unit</th><th>Marks</th><th>%</th><th style="width:130px">Performance</th></tr></thead><tbody>';
+    Object.keys(r.byUnit).sort().forEach(function(k){
+      var u=r.byUnit[k], p=Math.round(u.got/u.n*100);
+      var cls=p>=80?'good':(p<50?'bad':'');
+      h+='<tr><td><b>Unit '+k+'</b><div class="muted" style="font-size:11.5px">'+esc(u.t)+'</div></td>'
+        +'<td>'+u.got+' / '+u.n+'</td><td>'+p+'%</td>'
+        +'<td><div class="bar"><i class="'+cls+'" style="width:'+p+'%"></i></div></td></tr>';
+    });
+    h+='</tbody></table></div>';
+
+    /* weakest area */
+    var weakest=Object.keys(r.byUnit).map(function(k){var u=r.byUnit[k];return {k:k,p:u.got/u.n,t:u.t};})
+      .sort(function(a,b){return a.p-b.p;})[0];
+    if(weakest && weakest.p<1){
+      h+='<p class="muted" style="font-size:13px;margin-top:8px">Weakest area — <b>Unit '+weakest.k+': '
+        +esc(weakest.t)+'</b> at '+Math.round(weakest.p*100)+'%. Review this unit before the next attempt.</p>';
+    }
+
+    h+='<div class="row no-print" style="margin-top:16px">'
+      +'<button class="btn gold" onclick="window.print()">Download / print result</button>'
+      +'<button class="btn ghost" id="againBtn">Take another paper</button></div>';
+    if(qrData) h+='<div style="margin-top:12px"><img src="'+qrData+'" width="92" height="92" alt="Verification QR">'
+      +'<div class="muted" style="font-size:10.5px">Scan to verify · '+esc(r.mine.reg||'—')+' · '+BANK.code+'-'+paper.k+'</div></div>';
+    h+='</div>';
+
+    /* answer review */
+    h+='<div class="card"><h2 style="font-size:18px">Answer review</h2>'
+      +'<p class="muted" style="font-size:13px">Every question with the correct answer and an explanation.</p>'
+      +'<div class="filt" id="filt">'
+      +'<button class="on" data-f="all">All ('+r.total+')</button>'
+      +'<button data-f="wrong">Incorrect ('+(r.answered-r.score)+')</button>'
+      +'<button data-f="skip">Not answered ('+r.notAnswered+')</button>'
+      +'<button data-f="right">Correct ('+r.score+')</button></div>'
+      +'<div id="revList"></div></div>';
+
+    $('result').innerHTML=h;
+    paintReview('all');
+    [].forEach.call(document.querySelectorAll('#filt button'),function(b){
+      b.addEventListener('click',function(){
+        [].forEach.call(document.querySelectorAll('#filt button'),function(x){x.classList.remove('on');});
+        b.classList.add('on'); paintReview(b.getAttribute('data-f'));
+      });
+    });
+    $('againBtn').addEventListener('click',function(){
+      $('result').style.display='none'; $('setup').style.display=''; S=null; showPrev(); window.scrollTo(0,0);
+    });
+  }
+
+  function paintReview(f){
+    var out=S.qs.map(function(q,k){
+      var state=(q.pick==null)?'skip':(q.pick===q.c?'ok':'no');
+      if(f==='wrong'&&state!=='no') return '';
+      if(f==='right'&&state!=='ok') return '';
+      if(f==='skip'&&state!=='skip') return '';
+      var tag=state==='ok'?'<span class="tag ok">correct</span>'
+             :state==='no'?'<span class="tag no">incorrect</span>'
+             :'<span class="tag skip">not answered</span>';
+      return '<div class="rev '+state+'">'
+        +'<div class="rq"><b>Q'+(k+1)+'.</b> '+q.q+tag
+        +'<span class="muted" style="font-size:11.5px;display:block;margin-top:3px">Unit '+q.u+' · '+esc(q.ut)+'</span></div>'
+        +'<div class="ra">'+(q.pick==null?'<b class="muted">You did not answer.</b>'
+            :'<b>Your answer:</b> '+LETTER[q.pick]+'. '+q.o[q.pick])
+        +'<br><b style="color:var(--success)">Correct answer:</b> '+LETTER[q.c]+'. '+q.o[q.c]+'</div>'
+        +'<div class="re"><b>Explanation.</b> '+q.e+'</div></div>';
+    }).join('');
+    $('revList').innerHTML=out||'<p class="muted" style="font-size:13px">No questions in this category.</p>';
+  }
+
+  $('startBtn').addEventListener('click',start);
+  $('themeBtn').addEventListener('click',function(){
+    var d=document.documentElement.classList.toggle('dark');
+    try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){}
+  });
+  window.addEventListener('beforeunload',function(e){
+    if(S&&!S.ended){ e.preventDefault(); e.returnValue=''; }
+  });
+})();
+</script>
+</body>
+</html>

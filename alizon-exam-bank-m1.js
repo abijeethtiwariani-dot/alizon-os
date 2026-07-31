@@ -2,8 +2,9 @@
    Certificate Course in Digital Health & Artificial Intelligence for Pharmacy
    4 units × 25 multiple-choice questions · 1 mark each · no negative marking
    c = index of the correct option · e = explanation shown in the answer review   */
-window.ALIZON_EXAM_M1 = {
-  module: 'Module 1 · Digital Health & Artificial Intelligence for Pharmacy',
+(window.ALIZON_EXAM_BANKS = window.ALIZON_EXAM_BANKS || {})['ALZ-PH-M1'] = window.ALIZON_EXAM_M1 = {
+  module: 'Module 1 · AI Foundations & Digital Systems for Pharmacy Practice',
+  n: 1,
   code: 'ALZ-PH-M1',
   units: [
 

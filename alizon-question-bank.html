@@ -76,6 +76,7 @@
 
   <div class="card">
     <h2 style="font-size:17px">Select</h2>
+    <div class="chips" id="mSel" style="margin-bottom:12px"></div>
     <div class="chips" id="uSel"></div>
     <p class="muted" style="font-size:12.5px" id="selLine"></p>
 
@@ -102,23 +103,46 @@
   <div id="paper"></div>
 </div>
 
-<script src="alizon-exam-bank-m1.js?v=2"></script>
+<script src="alizon-exam-manifest.js?v=1"></script>
 <script>
 (function(){
   'use strict';
   var $=function(i){return document.getElementById(i);};
   var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
   var plain=function(s){return String(s==null?'':s).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();};
-  var BANK=window.ALIZON_EXAM_M1, LETTER=['A','B','C','D'];
-  if(!BANK){ document.querySelector('.wrap').innerHTML='<div class="card"><h2>Question bank unavailable</h2></div>'; return; }
+  var LETTER=['A','B','C','D'], BANK=null, sel={};
+  var MODS=(window.AlizonExamBanks?AlizonExamBanks.list():[]);
+  if(!MODS.length){ document.querySelector('.wrap').innerHTML='<div class="card"><h2>Question banks unavailable</h2></div>'; return; }
 
-  $('modLine').textContent=BANK.module+' · bank code '+BANK.code;
-  var total=BANK.units.reduce(function(a,u){return a+u.qs.length;},0);
-  $('stats').innerHTML='<div class="sb"><div class="v">'+total+'</div><div class="l">Questions</div></div>'
-    +'<div class="sb"><div class="v">'+BANK.units.length+'</div><div class="l">Units</div></div>'
-    +BANK.units.map(function(u){return '<div class="sb"><div class="v">'+u.qs.length+'</div><div class="l">Unit '+u.n+'</div></div>';}).join('');
+  $('mSel').innerHTML='<span class="muted" style="font-size:12px;align-self:center;margin-right:4px">Module:</span>'
+    +MODS.map(function(m){return '<button class="chip" data-m="'+m.n+'" title="'+esc(m.title)+'">M'+m.n+'</button>';}).join('')
+    +'<button class="chip" data-m="all" title="Load every module">All modules</button>';
+  [].forEach.call($('mSel').children,function(b){
+    if(b.tagName!=='BUTTON') return;
+    b.addEventListener('click',function(){ pickModule(b.getAttribute('data-m')); });
+  });
 
-  var sel={}; BANK.units.forEach(function(u){ sel[u.n]=true; });
+  function pickModule(v){
+    [].forEach.call($('mSel').children,function(x){ if(x.tagName==='BUTTON') x.classList.toggle('on',x.getAttribute('data-m')===String(v)); });
+    $('modLine').textContent='Loading…'; $('tbl').innerHTML='';
+    var want = (v==='all') ? MODS.map(function(m){return m.n;}) : [+v];
+    Promise.all(want.map(function(n){return AlizonExamBanks.load(n);})).then(function(bs){
+      if(bs.length===1){ BANK=bs[0]; }
+      else {
+        /* synthetic combined bank; units renumbered as M<n>U<u> for display */
+        BANK={module:'All modules · '+MODS.length+' banks',code:'ALZ-PH-ALL',
+              units:bs.reduce(function(acc,b){ b.units.forEach(function(u){
+                acc.push({n:b.n+'.'+u.n, t:'M'+b.n+' U'+u.n+' — '+u.t, hrs:u.hrs, qs:u.qs}); }); return acc; },[])};
+      }
+      $('modLine').textContent=BANK.module+' · bank code '+BANK.code;
+      var total=BANK.units.reduce(function(a,u){return a+u.qs.length;},0);
+      $('stats').innerHTML='<div class="sb"><div class="v">'+total+'</div><div class="l">Questions</div></div>'
+        +'<div class="sb"><div class="v">'+BANK.units.length+'</div><div class="l">Units</div></div>'
+        +BANK.units.slice(0,8).map(function(u){return '<div class="sb"><div class="v">'+u.qs.length+'</div><div class="l">Unit '+u.n+'</div></div>';}).join('');
+      sel={}; BANK.units.forEach(function(u){ sel[u.n]=true; });
+      paintSel(); paintTable();
+    }).catch(function(e){ $('modLine').textContent='Could not load — '+e.message; });
+  }
   function paintSel(){
     $('uSel').innerHTML='<button class="chip'+(allOn()?' on':'')+'" data-u="all">All units</button>'
       +BANK.units.map(function(u){
@@ -127,7 +151,7 @@
       b.addEventListener('click',function(){
         var v=b.getAttribute('data-u');
         if(v==='all'){ var on=!allOn(); BANK.units.forEach(function(u){sel[u.n]=on;}); }
-        else sel[+v]=!sel[+v];
+        else sel[v]=!sel[v];
         paintSel(); paintTable();
       });
     });
@@ -236,7 +260,7 @@
   $('prPaper').addEventListener('click',function(){ buildPaper(false); });
   $('prKey').addEventListener('click',function(){ buildPaper(true); });
 
-  paintSel(); paintTable();
+  pickModule(MODS[0].n);
 })();
 </script>
 </body>
