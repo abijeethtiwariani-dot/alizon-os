@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON OS · Module 5 · Become the Clinical Trial Manager</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
+  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
+  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
+  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)} .scorechip b{color:var(--gold)}
+  .scorechip.warn b{color:var(--danger)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
+  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .25s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
+  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
+  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:6px}
+  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:5px 0;cursor:pointer}
+  .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:480px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  select,textarea,input[type=text]{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  select:focus,textarea:focus,input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  textarea{min-height:60px;resize:vertical;line-height:1.5}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
+  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
+  .opt.right{border-color:var(--success);box-shadow:0 0 0 3px rgba(30,142,90,.16)} .opt.wrong{border-color:var(--danger);box-shadow:0 0 0 3px rgba(196,38,46,.14)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
+  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .note{font-size:12px;color:var(--muted);margin-top:6px}
+  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
+  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
+  details.help>summary::-webkit-details-marker{display:none}
+  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
+  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
+  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
+  /* ---- game ---- */
+  .prog{height:10px;border-radius:100px;background:var(--pill);overflow:hidden;margin:10px 0 4px;position:relative}
+  .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--crimson-deep),var(--crimson));width:0;transition:width .4s}
+  .lvbar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .lvdot{font-size:11px;font-weight:800;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--pill);border:1.5px solid var(--line);color:var(--muted)}
+  .lvdot.done{background:rgba(30,142,90,.14);border-color:var(--success);color:var(--success)}
+  .lvdot.now{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .lvdot.err{background:rgba(196,38,46,.12);border-color:var(--danger);color:var(--danger)}
+  .scene{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:13px 15px;margin-top:10px;font-size:13.5px;line-height:1.65}
+  .scene .dt{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--crimson);margin-bottom:5px}
+  .scene pre{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;white-space:pre-wrap;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;line-height:1.6}
+  /* participants */
+  .plist{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-top:10px}
+  .pcard{cursor:pointer;text-align:left;font:inherit;background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink)}
+  .pcard:hover{border-color:var(--gold)} .pcard.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.12)}
+  .pcard.right{border-color:var(--success)} .pcard.wrong{border-color:var(--danger)}
+  .pcard b{font-size:13.5px;display:block} .pcard small{display:block;color:var(--muted);font-size:12px;margin-top:3px;line-height:1.55}
+  /* order steps */
+  .osteps{display:grid;gap:8px;margin-top:10px}
+  .ostep{cursor:pointer;text-align:left;font:inherit;font-size:13.5px;background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;color:var(--ink);position:relative}
+  .ostep:hover{border-color:var(--gold)}
+  .ostep.chosen{border-color:var(--crimson);background:var(--gold-soft)}
+  .ostep .ordn{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--crimson);color:#fff;font-size:11px;font-weight:800;margin-right:9px}
+  /* packs / barcode */
+  .packs{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin-top:10px}
+  .pack{cursor:pointer;text-align:left;font:inherit;background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:0;overflow:hidden;color:var(--ink)}
+  .pack:hover{border-color:var(--gold)} .pack.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.12)}
+  .pack .lbl{background:var(--panel2);padding:10px 12px;border-bottom:1px dashed var(--line)}
+  .pack .lbl b{font-size:12.5px;display:block} .pack .lbl small{font-size:11px;color:var(--muted)}
+  .pack .bars{height:34px;display:flex;gap:1.5px;align-items:stretch;padding:6px 12px;background:var(--panel)}
+  .pack .bars i{display:block;background:var(--ink);width:2px} .pack .bars i.w{width:4px} .pack .bars i.s{opacity:.25}
+  .pack .code{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.08em;color:var(--muted);padding:0 12px 9px}
+  .pack .scan{padding:9px 12px;border-top:1px solid var(--line);font-size:11.5px;background:var(--panel2)}
+  .pack .scan b{color:var(--gold)}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
+  .fbk{border-radius:10px;padding:11px 14px;margin-top:12px;font-size:13px;line-height:1.6;border:1px solid}
+  .fbk.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.35);color:var(--success)}
+  .fbk.no{background:rgba(196,38,46,.09);border-color:rgba(196,38,46,.32);color:var(--danger)}
+  .fbk b{color:inherit}
+  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 5 · Unit 1 · Capstone Simulation</div>
+    <h1 class="serif">Become the Clinical Trial Manager</h1>
+    <p><b>Aim —</b> To integrate every element of Unit 1 into one realistic workflow — running a diabetes drug trial from phase selection to the regulatory audit as the responsible <b>Clinical Research Pharmacist</b>.
+      <span class="muted">8 levels · compliance score starts at 100% and falls with every non-compliant decision · 20-minute countdown · Pass 50%.</span></p>
+    <div class="chips">
+      <div class="scorechip">Level <b id="scLv">—</b></div>
+      <div class="scorechip">Compliance <b id="scComp">100%</b></div>
+      <div class="scorechip" id="timeChip">Time left <b id="scTime">20:00</b></div>
+      <div class="scorechip">Result <b id="scRes">—</b></div>
+      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="station">Simulation</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="trialmanager"></div>
+    <div class="guide">
+      <h2>Your mission</h2>
+      <p>You have been appointed <b>Clinical Research Pharmacist</b> for <b>ALZ-DM-2026-04</b>, a trial of a new oral anti-diabetic agent. Take the study from design to inspection through <b>eight levels</b>. Every decision counts.</p>
+      <ol>
+        <li>Your <b>compliance score starts at 100%</b> and falls with each non-compliant decision — compliance is lost, never earned back.</li>
+        <li>Levels are <b>sequential</b> and cannot be revisited — a dose dispensed or a consent taken cannot be undone.</li>
+        <li>A <b>20-minute countdown</b> runs throughout; unanswered levels score as errors when time expires.</li>
+        <li><b>Two decisions end the trial immediately</b> — dispensing an expired or wrong product, and failing to report a serious adverse event within 24 hours.</li>
+      </ol>
+      <p style="margin-top:8px">Earn all four badges — <b>GCP Certified</b>, <b>Documentation Expert</b>, <b>Trial Master</b> and <b>Audit Ready</b> — by completing the trial without compromising a participant.</p>
+    </div>
+    <div class="card"><h2>The eight levels</h2>
+      <div class="tw"><table><thead><tr><th>Level</th><th>Decision</th><th>Weight</th></tr></thead><tbody id="lvTbl"></tbody></table></div>
+      <p class="note">Weight is the maximum compliance lost if the level is handled incorrectly. The eight levels total 100%.</p>
+    </div>
+    <div class="card"><h2>Achievement badges</h2>
+      <div class="badges">
+        <span class="badge">🎓 GCP Certified</span><span class="badge">📋 Documentation Expert</span>
+        <span class="badge">🏆 Trial Master</span><span class="badge">🛡 Audit Ready</span>
+      </div>
+      <p class="note" id="badgeCrit"></p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-station">
+    <div class="card" id="setupCard"><h2>Appointment</h2>
+      <div class="grid2" style="margin-top:8px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+      </div>
+      <p class="note" style="margin-top:10px">Study <b>ALZ-DM-2026-04</b> · Alizon Teaching Hospital, Clinical Trials Unit · Sponsor: Alizon Therapeutics</p>
+      <button class="btn" id="startBtn">▶ Start the trial</button>
+    </div>
+    <div id="gameHead" style="display:none">
+      <div class="card">
+        <div class="row" style="justify-content:space-between"><b id="gh">Level 1</b><span class="muted" style="font-size:12.5px" id="ghp">0% complete</span></div>
+        <div class="prog"><i id="progBar"></i></div>
+        <div class="lvbar" id="lvBar"></div>
+      </div>
+    </div>
+    <div id="lvArea"></div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2>Practical report &amp; final compliance</h2>
+      <p class="muted" id="repEmpty">Complete the simulation to generate your practical report, then write and submit your report.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=8"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var TOTAL_SECS=20*60;
+
+  /* ================= LEVELS =================
+     Each level has questions; each question carries a penalty applied when wrong.
+     Penalties across all levels total 100. critical:true ends the trial. */
+  var LEVELS=[
+  {n:1,title:'Choose the clinical trial phase',weight:8,
+   scene:{t:'Study brief · ALZ-DM-2026-04',
+     b:'The new oral anti-diabetic agent ALZ-118 has completed first-in-human testing: 32 healthy volunteers, safety and tolerability established, pharmacokinetics characterised and a maximum tolerated dose defined.\n\nThe sponsor now wants to know whether the drug actually lowers HbA1c in people with type 2 diabetes, and which of three candidate doses gives the best response with acceptable side effects. Approximately 180 patients will be enrolled.'},
+   qs:[{type:'mcq',pen:8,q:'Which phase of clinical trial must you now run?',
+     o:['Phase I — safety and tolerability in healthy volunteers','Phase II — efficacy and optimal dose in patients with the disease','Phase III — comparison against the standard treatment for registration','Phase IV — post-marketing surveillance'],c:1,
+     why:'Safety has already been established in Phase I. Establishing <b>whether the drug works and at what dose</b>, in a few hundred <b>patients with the target disease</b>, is the defining purpose of <b>Phase II</b>.'}],
+   hint:'Safety in healthy volunteers is already done. Ask what question the sponsor is asking now, and who is being studied.'},
+
+  {n:2,title:'Select eligible participants',weight:8,
+   scene:{t:'Screening clinic · eligibility criteria',
+     b:'INCLUSION\n  · Adults 18–65 years\n  · Type 2 diabetes mellitus, diagnosed ≥ 6 months\n  · HbA1c 7.5 – 10.0 %\n\nEXCLUSION\n  · Type 1 diabetes\n  · Pregnancy or breastfeeding\n  · eGFR < 45 mL/min/1.73 m²\n  · Myocardial infarction within the last 6 months\n\nSix candidates have attended screening. Select every candidate who is ELIGIBLE.'},
+   qs:[{type:'multi',pen:8,
+     people:[
+      {n:'Candidate A · 54 y, male',d:'Type 2 diabetes 8 years · HbA1c 8.4 % · eGFR 78 · no cardiac history',ok:true},
+      {n:'Candidate B · 29 y, female',d:'Type 1 diabetes since childhood · HbA1c 8.1 % · eGFR 96',ok:false,why:'Type 1 diabetes is an exclusion criterion.'},
+      {n:'Candidate C · 47 y, female',d:'Type 2 diabetes 5 years · HbA1c 9.2 % · eGFR 71 · <b>pregnant, 9 weeks</b>',ok:false,why:'Pregnancy is an exclusion criterion.'},
+      {n:'Candidate D · 61 y, male',d:'Type 2 diabetes 12 years · HbA1c 7.9 % · eGFR 52 · well controlled hypertension',ok:true},
+      {n:'Candidate E · 58 y, male',d:'Type 2 diabetes 10 years · HbA1c 8.8 % · eGFR 64 · <b>myocardial infarction 2 months ago</b>',ok:false,why:'Myocardial infarction within 6 months is an exclusion criterion.'},
+      {n:'Candidate F · 44 y, female',d:'Type 2 diabetes 7 years · <b>HbA1c 6.8 %</b> · eGFR 88',ok:false,why:'HbA1c 6.8 % is below the inclusion range of 7.5–10.0 %.'}],
+     why:'Only <b>Candidate A</b> and <b>Candidate D</b> satisfy every criterion. Each of the others breaches a specific exclusion or falls outside the HbA1c inclusion range — and an exclusion criterion is absolute, however suitable the person otherwise appears.'}],
+   hint:'Check each candidate against every criterion in turn — one breach is enough to exclude, and note that eGFR 52 is still above the cut-off of 45.'},
+
+  {n:3,title:'Obtain informed consent',weight:8,
+   scene:{t:'Consent room · Candidate A',
+     b:'Candidate A has been found eligible and has come to the clinic to discuss taking part. Nothing has been done yet — no bloods, no ECG, no study procedure of any kind.\n\nCarry out the informed consent process by clicking the steps in the correct order.'},
+   qs:[{type:'order',pen:8,
+     steps:[
+      {t:'Give the participant the Patient Information Sheet to read',ord:1},
+      {t:'Explain the purpose, procedures, risks and benefits in language they understand',ord:2},
+      {t:'Allow time for questions and for the participant to consider',ord:3},
+      {t:'Confirm participation is voluntary and may be withdrawn at any time without penalty',ord:4},
+      {t:'The participant signs and dates the consent form',ord:5},
+      {t:'The investigator signs and dates, gives the participant a copy, and files the original',ord:6}],
+     why:'Consent is a <b>process, not a signature</b>: information first, then explanation, then time for questions, then confirmation that participation is voluntary — only then may the participant sign. The investigator counter-signs, the participant keeps a copy, and the original is filed. <b>No study procedure may occur before this is complete.</b>'}],
+   hint:'Think about what a participant needs before they can decide: read, understand, ask, know they can refuse — and only then sign.'},
+
+  {n:4,title:'Store the investigational product',weight:12,
+   scene:{t:'Pharmacy · investigational product delivery',
+     b:'A shipment of ALZ-118 arrives. The label and the Investigator Brochure both state:\n\n   STORE AT 2 °C – 8 °C. DO NOT FREEZE. PROTECT FROM LIGHT.\n\nAvailable storage in your department:\n   · Open shelf in the dispensary (ambient, 24–31 °C)\n   · Validated pharmacy refrigerator, continuous temperature logging, restricted access\n   · Domestic refrigerator in the ward kitchen (shared, no monitoring)\n   · Laboratory freezer at −20 °C'},
+   qs:[
+    {type:'mcq',pen:6,q:'Where do you store the investigational product?',
+     o:['Open shelf in the dispensary','Validated pharmacy refrigerator with continuous temperature logging and restricted access','Domestic refrigerator in the ward kitchen','Laboratory freezer at −20 °C'],c:1,
+     why:'Investigational product must be stored in the <b>labelled range (2–8 °C)</b>, in <b>validated equipment with continuous temperature monitoring and restricted access</b>. A shared domestic fridge has no monitoring or access control, and freezing is expressly prohibited.'},
+    {type:'mcq',pen:6,q:'Three weeks later the fridge alarm shows the temperature reached 11 °C for four hours overnight. What do you do first?',
+     o:['Quarantine the affected stock immediately, then notify the sponsor and request an impact assessment','Carry on dispensing — 11 °C is only slightly above range','Discard all the stock straight away without telling anyone','Record it in the log and review it at the next monitoring visit'],c:0,
+     why:'On any excursion the rule is <b>quarantine first, assess second</b>. The product must be isolated so it cannot be dispensed, then the sponsor decides on suitability for use. Continuing to dispense exposes participants to product of unknown quality; destroying it unilaterally destroys the evidence and the sponsor’s property.'}],
+   hint:'Two things matter for storage: the temperature range on the label, and whether you can prove it was maintained. For the excursion, think about what protects the participant first.'},
+
+  {n:5,title:'Dispense according to protocol',weight:12,
+   scene:{t:'Dispensing bench · Visit 2',
+     b:'Participant <b>ALZ-DM-014</b> attends for Visit 2. The randomisation system has allocated them <b>kit number K-014</b> at the <b>50 mg</b> strength.\n\nToday’s date: 27/07/2026.\n\nFour packs are on the bench. <b>Scan each label</b> before you decide, then dispense the correct pack.'},
+   qs:[{type:'scan',pen:12,critical:true,
+     packs:[
+      {kit:'K-011',str:'50 mg',batch:'CT-118',exp:'11/2026',code:'ALZ118-K011-50-CT118-1126',ok:false,why:'Kit K-011 is allocated to a different participant — dispensing another participant’s kit breaks the randomisation and the accountability chain.'},
+      {kit:'K-014',str:'100 mg',batch:'CT-121',exp:'09/2026',code:'ALZ118-K014-100-CT121-0926',ok:false,why:'Wrong strength — the participant is randomised to 50 mg, not 100 mg. Dispensing the wrong strength is a dosing error.'},
+      {kit:'K-014',str:'50 mg',batch:'CT-109',exp:'03/2026',code:'ALZ118-K014-50-CT109-0326',ok:false,why:'This pack expired in 03/2026, four months ago. Dispensing expired investigational product is a critical patient-safety failure.'},
+      {kit:'K-014',str:'50 mg',batch:'CT-118',exp:'11/2026',code:'ALZ118-K014-50-CT118-1126',ok:true,why:'Correct participant kit, correct strength, in date.'}],
+     why:'The only correct pack is <b>K-014 · 50 mg · batch CT-118 · expiry 11/2026</b>. Every dispensing check must pass together — <b>right participant kit, right strength, right batch, in date</b>. A pack failing any one of these must not leave the bench.'}],
+   hint:'Scan all four. Check four things on each label: the kit number against the participant, the strength against the randomisation, the expiry against today’s date, and the batch.'},
+
+  {n:6,title:'Record and report an adverse event',weight:18,
+   scene:{t:'Ward call · participant ALZ-DM-014',
+     b:'Four days after dosing, the ward telephones you:\n\n   “Participant ALZ-DM-014 was admitted overnight with severe vomiting and dehydration.\n    They required intravenous fluids and stayed in hospital for two days.\n    They have now been discharged and have recovered.”\n\nThe event began after the participant started the investigational product.'},
+   qs:[
+    {type:'mcq',pen:8,q:'How do you classify this adverse event?',
+     o:['Non-serious adverse event — the participant recovered fully','Serious adverse event — it required inpatient hospitalisation','Not an adverse event — vomiting is common in diabetes','A protocol deviation rather than an adverse event'],c:1,
+     why:'An adverse event is <b>serious</b> if it results in death, is life-threatening, requires or prolongs <b>inpatient hospitalisation</b>, causes persistent disability, or is a congenital anomaly. This event required hospitalisation, so it is an <b>SAE</b> — recovery afterwards does not change the classification.'},
+    {type:'mcq',pen:10,critical:true,q:'What is your reporting obligation?',
+     o:['Report to the sponsor within 24 hours of becoming aware, and notify the Ethics Committee','Record it in the adverse event log and include it in the next monthly report','Wait until the participant’s next scheduled visit to confirm the details','No report is needed because the participant recovered'],c:0,
+     why:'A serious adverse event must be reported to the <b>sponsor within 24 hours</b> of the investigator becoming aware of it, with notification to the <b>Ethics Committee</b> as required. Delaying an SAE report is a critical failure — it removes the sponsor’s ability to protect every other participant in the study.'}],
+   hint:'Ask what the outcome was, not how the patient looks now. Then remember there is a specific clock attached to that category of event.'},
+
+  {n:7,title:'Complete the Case Report Form',weight:16,
+   scene:{t:'Data entry · participant ALZ-DM-014 · Visit 2',
+     b:'SOURCE DOCUMENT — clinic observation sheet, 27/07/2026, signed by Dr S. Raj\n\n   Weight ............. 84.2 kg\n   Blood pressure ..... 138/86 mmHg\n   Fasting glucose .... 8.9 mmol/L\n   HbA1c .............. 8.4 %\n\nEnter each value into the Case Report Form exactly as recorded in the source.'},
+   qs:[
+    {type:'mcq',pen:4,q:'CRF field — Weight (kg)',o:['84.2 kg','82.4 kg','48.2 kg','84.0 kg'],c:0,
+     why:'The CRF must record exactly what the source says — <b>84.2 kg</b>. Transposing digits (82.4) is one of the commonest transcription errors found at audit.'},
+    {type:'mcq',pen:4,q:'CRF field — Blood pressure (mmHg)',o:['138/86','183/86','138/68','130/80'],c:0,
+     why:'<b>138/86 mmHg</b>, exactly as in the source. Never round or “tidy” a clinical value when transcribing.'},
+    {type:'mcq',pen:4,q:'CRF field — Fasting glucose (mmol/L)',o:['8.9','9.8','8.5','9.0'],c:0,
+     why:'<b>8.9 mmol/L</b>. Any value in the CRF that cannot be traced to the source document is unverifiable data.'},
+    {type:'mcq',pen:4,q:'You notice you have already typed the HbA1c as 4.8 % instead of 8.4 %. How do you correct it?',
+     o:['Draw a single line through the error, write the correct value, then initial and date the correction','Overwrite the figure so the entry is clean','Use correction fluid and write the correct value on top','Erase the entry and re-enter it without comment'],c:0,
+     why:'The universal correction rule is a <b>single line strike-through, the correct value, then initials and date</b>. The original entry must always remain legible — overwriting, correction fluid or erasure destroys the audit trail and breaches ALCOA+.'}],
+   hint:'Read each value character by character against the source. For the correction, remember that an audit trail must never hide what was originally written.'},
+
+  {n:8,title:'Pass the regulatory audit',weight:18,
+   scene:{t:'Inspection day · CDSCO inspector on site',
+     b:'The inspector arrives to review study ALZ-DM-2026-04. They will ask you three questions.\n\nAnswer with the evidence, not with recollection — an inspector accepts records, not memory.'},
+   qs:[
+    {type:'mcq',pen:6,q:'“Show me that the nurse who administered the investigational product was authorised to do so.”',
+     o:['Produce the delegation log signed by the Principal Investigator, together with the nurse’s GCP and protocol training records','Explain that the nurse is experienced and has done this for years','Offer the nurse’s employment contract with the hospital','State that the Principal Investigator was aware and approved verbally'],c:0,
+     why:'Authorisation is proven by the <b>delegation log signed by the Principal Investigator</b>, supported by <b>documented training</b>. Experience, employment or verbal approval prove nothing to an inspector.'},
+    {type:'mcq',pen:6,q:'“Account for every unit of investigational product received at this site.”',
+     o:['Produce the drug accountability log reconciling received = dispensed + returned + destroyed + remaining, with the physical stock count','Provide the sponsor’s delivery note only','Explain that the pharmacy is careful and nothing has gone missing','Show the prescriptions written during the study'],c:0,
+     why:'Accountability is demonstrated by a <b>reconciled log</b> — received equals dispensed plus returned plus destroyed plus remaining — verified against a <b>physical count</b>. A delivery note shows only what arrived, not what happened to it.'},
+    {type:'mcq',pen:6,q:'“One participant was hospitalised during the study. Show me how that was handled.”',
+     o:['Produce the SAE report, the date and time of sponsor notification within 24 hours, the Ethics Committee notification and the follow-up to resolution','Point to the entry in the adverse event log','Explain that the participant recovered so no further action was required','Refer the inspector to the sponsor’s safety department'],c:0,
+     why:'The evidence required is the <b>complete safety trail</b>: the SAE report itself, proof of <b>sponsor notification within 24 hours</b>, Ethics Committee notification, and documented follow-up to resolution. A single log entry does not show that the reporting obligation was met.'}],
+   hint:'For every question ask yourself: which document in the trial master file proves this? Then offer that document.'}
+  ];
+
+  var MAXPEN=LEVELS.reduce(function(a,l){return a+l.qs.reduce(function(b,q){return b+q.pen;},0);},0);
+
+  $('lvTbl').innerHTML=LEVELS.map(function(l){return '<tr><td><b>Level '+l.n+'</b></td><td>'+l.title+'</td><td>'+l.weight+'%</td></tr>';}).join('')
+    +'<tr class="tot"><td></td><td>Total</td><td>'+MAXPEN+'%</td></tr>';
+  $('badgeCrit').innerHTML='<b>GCP Certified</b> — consent and adverse-event levels handled without error. &nbsp;·&nbsp; '
+    +'<b>Documentation Expert</b> — a perfect Case Report Form level. &nbsp;·&nbsp; '
+    +'<b>Trial Master</b> — all eight levels completed with the trial intact. &nbsp;·&nbsp; '
+    +'<b>Audit Ready</b> — a perfect audit level and 85% compliance or above.';
+
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  /* ---------------- state ---------------- */
+  var S=null, tick=null;
+
+  function startGame(){
+    S={li:0,qi:0,pen:0,mistakes:[],lvPen:{},ended:false,endedBy:null,secs:TOTAL_SECS,result:null,answered:{}};
+    $('setupCard').style.display='none'; $('gameHead').style.display='';
+    clearInterval(tick);
+    tick=setInterval(function(){
+      if(!S||S.ended) return;
+      S.secs--; paintTime();
+      if(S.secs<=0){ S.secs=0; paintTime(); endGame('time'); }
+    },1000);
+    paintTime(); renderLevel();
+  }
+  function paintTime(){
+    var m=Math.floor(S.secs/60), s=S.secs%60;
+    $('scTime').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    $('timeChip').classList.toggle('warn',S.secs<=120);
+  }
+  function comp(){ return Math.max(0,100-S.pen); }
+  function paintChips(){
+    $('scLv').textContent=S.ended?'—':(S.li+1)+'/'+LEVELS.length;
+    $('scComp').textContent=comp()+'%';
+  }
+  function paintProgress(){
+    var done=S.ended?LEVELS.length:S.li;
+    var pctDone=Math.round(done/LEVELS.length*100);
+    $('progBar').style.width=pctDone+'%';
+    $('ghp').textContent=pctDone+'% complete';
+    $('gh').textContent=S.ended?'Trial closed':('Level '+(S.li+1)+' · '+LEVELS[S.li].title);
+    $('lvBar').innerHTML=LEVELS.map(function(l,i){
+      var cls=(i<S.li)?((S.lvPen[i]||0)>0?'err':'done'):(i===S.li&&!S.ended?'now':'');
+      return '<span class="lvdot '+cls+'" title="Level '+l.n+' — '+esc(l.title)+'">'+l.n+'</span>';
+    }).join('');
+  }
+
+  /* ---------------- rendering a level ---------------- */
+  function renderLevel(){
+    paintChips(); paintProgress();
+    if(S.ended){ $('lvArea').innerHTML=''; return; }
+    var L=LEVELS[S.li], q=L.qs[S.qi];
+    var h='<div class="card"><span class="step">Level '+L.n+' of '+LEVELS.length+'</span>'
+      +'<h2 style="margin-top:6px">'+esc(L.title)+'</h2>'
+      +'<div class="scene"><div class="dt">'+L.scene.t+'</div><pre>'+L.scene.b+'</pre></div>'
+      +(L.hint?'<details class="help"><summary>Need a hint?</summary><div class="hb">'+esc(L.hint)+'</div></details>':'')
+      +'</div>';
+    h+='<div class="card" id="qCard">'
+      + (L.qs.length>1?'<span class="step">Decision '+(S.qi+1)+' of '+L.qs.length+'</span>':'')
+      + renderQ(q) + '<div id="fbk"></div>'
+      + '<div class="row"><button class="btn" id="confirmBtn">Confirm decision</button>'
+      + '<span class="muted" style="font-size:12.5px">Costs up to <b>'+q.pen+'%</b> compliance if wrong.</span></div></div>';
+    $('lvArea').innerHTML=h;
+    wireQ(q);
+    $('confirmBtn').addEventListener('click',function(){ confirmQ(q); });
+  }
+
+  var pick=null, multiPick=[], orderPick=[], scanned={};
+
+  function renderQ(q){
+    pick=null; multiPick=[]; orderPick=[]; scanned={};
+    if(q.type==='mcq'){
+      return '<b>'+q.q+'</b><div id="optWrap">'+q.o.map(function(o,k){return '<button type="button" class="opt" data-k="'+k+'">'+o+'</button>';}).join('')+'</div>';
+    }
+    if(q.type==='multi'){
+      return '<b>Select every eligible candidate</b><div class="plist" id="pWrap">'
+        +q.people.map(function(p,k){return '<button type="button" class="pcard" data-k="'+k+'"><b>'+p.n+'</b><small>'+p.d+'</small></button>';}).join('')+'</div>';
+    }
+    if(q.type==='order'){
+      return '<b>Click the steps in the correct order</b><div class="osteps" id="oWrap">'
+        +q.steps.map(function(s,k){return '<button type="button" class="ostep" data-k="'+k+'">'+s.t+'</button>';}).join('')
+        +'</div><p class="note" id="ordNote">No steps chosen yet — click them in sequence. Click a chosen step again to undo it.</p>';
+    }
+    if(q.type==='scan'){
+      return '<b>Scan the labels, then dispense the correct pack</b><div class="packs" id="kWrap">'
+        +q.packs.map(function(p,k){
+          return '<button type="button" class="pack" data-k="'+k+'">'
+            +'<span class="lbl"><b>ALZ-118 · '+p.str+'</b><small>Kit '+p.kit+' · Batch '+p.batch+'</small></span>'
+            +'<span class="bars">'+bars(p.code)+'</span>'
+            +'<span class="code">'+p.code+'</span>'
+            +'<span class="scan" data-scan="'+k+'">Tap to scan barcode</span></button>';
+        }).join('')+'</div>';
+    }
+    return '';
+  }
+  function bars(seed){
+    var h='';
+    for(var i=0;i<46;i++){ var c=seed.charCodeAt(i%seed.length);
+      h+='<i class="'+((c%3===0)?'w':'')+(((c+i)%4===0)?' s':'')+'"></i>'; }
+    return h;
+  }
+
+  function wireQ(q){
+    if(q.type==='mcq'){
+      document.querySelectorAll('#optWrap .opt').forEach(function(b){
+        b.addEventListener('click',function(){ pick=+b.getAttribute('data-k');
+          document.querySelectorAll('#optWrap .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); });
+      });
+    }
+    if(q.type==='multi'){
+      document.querySelectorAll('#pWrap .pcard').forEach(function(b){
+        b.addEventListener('click',function(){ var k=+b.getAttribute('data-k');
+          var i=multiPick.indexOf(k); if(i<0){multiPick.push(k);b.classList.add('pick');} else {multiPick.splice(i,1);b.classList.remove('pick');} });
+      });
+    }
+    if(q.type==='order'){
+      document.querySelectorAll('#oWrap .ostep').forEach(function(b){
+        b.addEventListener('click',function(){ var k=+b.getAttribute('data-k');
+          var i=orderPick.indexOf(k);
+          if(i<0) orderPick.push(k); else orderPick.splice(i,1);
+          document.querySelectorAll('#oWrap .ostep').forEach(function(x){
+            var kk=+x.getAttribute('data-k'), pos=orderPick.indexOf(kk);
+            x.classList.toggle('chosen',pos>=0);
+            var t=x.textContent.replace(/^\d+\s/,'');
+            x.innerHTML=(pos>=0?'<span class="ordn">'+(pos+1)+'</span>':'')+esc(LEVELS[S.li].qs[S.qi].steps[kk].t);
+          });
+          $('ordNote').textContent=orderPick.length+' of '+LEVELS[S.li].qs[S.qi].steps.length+' steps ordered.';
+        });
+      });
+    }
+    if(q.type==='scan'){
+      document.querySelectorAll('#kWrap .pack').forEach(function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k'), p=q.packs[k];
+          if(!scanned[k]){
+            scanned[k]=true;
+            var sp=b.querySelector('[data-scan]');
+            sp.innerHTML='<b>✓ Scanned</b> — Kit '+p.kit+' · '+p.str+' · Batch '+p.batch+' · <b>Exp '+p.exp+'</b>';
+            return;             /* first tap scans, second tap selects */
+          }
+          pick=k;
+          document.querySelectorAll('#kWrap .pack').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick');
+        });
+      });
+    }
+  }
+
+  /* ---------------- scoring a decision ---------------- */
+  function confirmQ(q){
+    var L=LEVELS[S.li];
+    var wrong=false, detail='', okMsg='';
+    if(q.type==='mcq'){
+      if(pick==null){ flash('Choose an option first.'); return; }
+      wrong=(pick!==q.c);
+      detail=wrong?('You chose: '+strip(q.o[pick])):'';
+      markMCQ(q);
+    } else if(q.type==='multi'){
+      if(!multiPick.length){ flash('Select at least one candidate.'); return; }
+      var want=q.people.map(function(p,k){return p.ok?k:-1;}).filter(function(k){return k>=0;});
+      var missed=want.filter(function(k){return multiPick.indexOf(k)<0;});
+      var extra=multiPick.filter(function(k){return want.indexOf(k)<0;});
+      wrong=(missed.length>0||extra.length>0);
+      if(wrong){
+        detail=(extra.length?('Enrolled ineligible: '+extra.map(function(k){return q.people[k].n.split(' ·')[0]+' — '+strip(q.people[k].why||'');}).join('; ')+'. '):'')
+             +(missed.length?('Missed eligible: '+missed.map(function(k){return q.people[k].n.split(' ·')[0];}).join(', ')+'.'):'');
+      }
+      document.querySelectorAll('#pWrap .pcard').forEach(function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        if(q.people[k].ok) b.classList.add('right'); else if(multiPick.indexOf(k)>=0) b.classList.add('wrong');
+      });
+    } else if(q.type==='order'){
+      if(orderPick.length!==q.steps.length){ flash('Order all '+q.steps.length+' steps first.'); return; }
+      wrong=orderPick.some(function(k,i){ return q.steps[k].ord!==i+1; });
+      if(wrong) detail='The consent steps were not carried out in the correct sequence.';
+      document.querySelectorAll('#oWrap .ostep').forEach(function(b){
+        var k=+b.getAttribute('data-k'), pos=orderPick.indexOf(k);
+        b.classList.add(q.steps[k].ord===pos+1?'right':'wrong');
+      });
+    } else if(q.type==='scan'){
+      if(pick==null){ flash(Object.keys(scanned).length?'Tap a scanned pack again to select it for dispensing.':'Scan the packs first — tap a label to scan it.'); return; }
+      var p=q.packs[pick];
+      wrong=!p.ok; detail=wrong?strip(p.why):'';
+      document.querySelectorAll('#kWrap .pack').forEach(function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        if(q.packs[k].ok) b.classList.add('right'); else if(pick===k) b.classList.add('wrong');
+      });
+    }
+
+    if(wrong){
+      S.pen+=q.pen;
+      S.lvPen[S.li]=(S.lvPen[S.li]||0)+q.pen;
+      S.mistakes.push({lv:L.n,title:L.title,q:(q.q||q.type==='multi'&&'Participant eligibility'||q.type==='order'&&'Informed consent sequence'||'Dispensing decision'),detail:detail,pen:q.pen,critical:!!q.critical});
+    }
+    S.answered[L.n+'-'+S.qi]=!wrong;
+
+    var fb=$('fbk');
+    fb.className='fbk '+(wrong?'no':'ok');
+    fb.innerHTML=(wrong?'<b>Non-compliant — '+q.pen+'% compliance lost.</b> ':'<b>Correct.</b> ')
+      +(detail?('<br>'+esc(detail)+' '):'')+'<br><b>Why:</b> '+q.why;
+    paintChips();
+
+    var btn=$('confirmBtn'); btn.disabled=true;
+    document.querySelectorAll('#qCard .opt,#qCard .pcard,#qCard .ostep,#qCard .pack').forEach(function(b){ b.style.pointerEvents='none'; });
+
+    if(wrong && q.critical){ setTimeout(function(){ endGame('critical'); },400); return; }
+
+    var next=document.createElement('button');
+    next.className='btn gold'; next.style.marginLeft='8px';
+    var last=(S.li===LEVELS.length-1 && S.qi===L.qs.length-1);
+    next.textContent=last?'Close the trial ▸':'Continue ▸';
+    btn.parentNode.appendChild(next);
+    next.addEventListener('click',function(){
+      if(S.qi<L.qs.length-1){ S.qi++; } else { S.li++; S.qi=0; }
+      if(S.li>=LEVELS.length){ endGame('complete'); return; }
+      renderLevel(); window.scrollTo({top:0,behavior:'smooth'});
+    });
+  }
+  function strip(s){ return String(s).replace(/<[^>]+>/g,''); }
+  function markMCQ(q){
+    document.querySelectorAll('#optWrap .opt').forEach(function(b){
+      var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+      if(k===q.c) b.classList.add('right'); else if(pick===k) b.classList.add('wrong');
+    });
+  }
+  function flash(msg){ var fb=$('fbk'); fb.className='fbk no'; fb.innerHTML=esc(msg); }
+
+  /* ---------------- end of run ---------------- */
+  function endGame(reason){
+    if(S.ended) return;
+    S.ended=true; S.endedBy=reason; clearInterval(tick);
+    var name=($('cName').value||'').trim()||'Candidate', reg=($('cReg').value||'').trim();
+    /* unattempted levels count as errors */
+    var unattempted=0;
+    if(reason!=='complete'){
+      for(var i=S.li;i<LEVELS.length;i++){
+        for(var j=(i===S.li?S.qi:0);j<LEVELS[i].qs.length;j++){
+          var q=LEVELS[i].qs[j];
+          if(S.answered[LEVELS[i].n+'-'+j]===undefined){
+            S.pen+=q.pen; unattempted++;
+            S.mistakes.push({lv:LEVELS[i].n,title:LEVELS[i].title,q:(q.q||'Decision not made'),
+              detail:(reason==='time'?'Not completed before the countdown expired.':'Trial ended before this level was reached.'),pen:q.pen,critical:false});
+          }
+        }
+      }
+    }
+    var pct=comp();
+    var criticalHit=S.mistakes.some(function(m){return m.critical;});
+    var pass=(pct>=50 && !criticalHit && reason!=='critical');
+    var lvOK=function(n){ var L=LEVELS.filter(function(x){return x.n===n;})[0];
+      return L.qs.every(function(_,j){ return S.answered[n+'-'+j]===true; }); };
+    var badges=[
+      {n:'🎓 GCP Certified',        got:(lvOK(3)&&lvOK(6)), d:'Consent and adverse-event levels handled without error'},
+      {n:'📋 Documentation Expert', got:lvOK(7),            d:'A perfect Case Report Form level'},
+      {n:'🏆 Trial Master',         got:(reason==='complete'&&!criticalHit), d:'All eight levels completed with the trial intact'},
+      {n:'🛡 Audit Ready',          got:(lvOK(8)&&pct>=85), d:'A perfect audit level with 85% compliance or above'}
+    ];
+    S.result={name:name,reg:reg,pct:pct,pass:pass,criticalHit:criticalHit,reason:reason,
+      badges:badges,mistakes:S.mistakes,unattempted:unattempted,
+      levelsDone:(reason==='complete'?LEVELS.length:S.li),timeUsed:TOTAL_SECS-S.secs};
+    $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+pct+'%)';
+    paintChips(); paintProgress();
+    makeQR(); renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+
+  /* ---------------- QR ---------------- */
+  var qrData='';
+  function makeQR(){
+    try{
+      var url='https://www.alizon.in/alizon-verify.html?reg='+encodeURIComponent(S.result.reg||'')+'&p=M5U1-CAP';
+      $('qrHolder').innerHTML='';
+      if(window.QRCode){
+        new QRCode($('qrHolder'),{text:url,width:96,height:96,correctLevel:QRCode.CorrectLevel.M});
+        var cv=$('qrHolder').querySelector('canvas');
+        qrData=cv?cv.toDataURL('image/png'):(($('qrHolder').querySelector('img')||{}).src||'');
+      }
+    }catch(e){ qrData=''; }
+  }
+  function mmss(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+
+  function buildAuto(){
+    if(!S||!S.result) return null;
+    var r=S.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Clinical Trial Manager — Capstone Simulation Report</h3>';
+    h+='<p style="margin:2px 0"><b>Student:</b> '+esc(r.name)+(r.reg?' &nbsp;·&nbsp; <b>Register no.:</b> '+esc(r.reg):'')+'</p>';
+    h+='<p style="margin:2px 0"><b>Date:</b> '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})
+      +' &nbsp;·&nbsp; <b>Study:</b> ALZ-DM-2026-04 &nbsp;·&nbsp; <b>Time used:</b> '+mmss(r.timeUsed)+'</p>';
+    h+='<p style="margin:6px 0"><b>Levels completed:</b> '+r.levelsDone+' of '+LEVELS.length
+      +' &nbsp;·&nbsp; <b>Final compliance score:</b> '+r.pct+'%</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:8px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Level</th><th align="left">Decision</th><th>Outcome</th></tr>'
+      +LEVELS.map(function(L){
+        var done=L.qs.every(function(_,j){return S.answered[L.n+'-'+j]!==undefined;});
+        var ok=L.qs.every(function(_,j){return S.answered[L.n+'-'+j]===true;});
+        return '<tr><td>Level '+L.n+'</td><td>'+esc(L.title)+'</td><td align="center">'
+          +(!done?'not reached':(ok?'compliant':'non-compliant'))+'</td></tr>';
+      }).join('')+'</table>';
+    h+='<p style="margin:10px 0 4px"><b>Mistakes made ('+r.mistakes.length+'):</b></p>';
+    h+=r.mistakes.length
+      ? ('<ol style="margin:0 0 0 18px;font-size:12px;line-height:1.6">'+r.mistakes.map(function(m){
+          return '<li><b>Level '+m.lv+' — '+esc(m.title)+'</b> ('+m.pen+'%'+(m.critical?', CRITICAL':'')+')'
+            +(m.detail?('<br>'+esc(m.detail)):'')+'</li>';}).join('')+'</ol>')
+      : '<p style="margin:0;font-size:12px">None — every decision in the trial was compliant.</p>';
+    h+='<p style="margin:10px 0 2px"><b>Badges earned:</b> '+(r.badges.filter(function(b){return b.got;}).map(function(b){return esc(b.n);}).join(' · ')||'none')+'</p>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — compliance '+r.pct+'%'
+      +(r.criticalHit?' (CRITICAL PATIENT-SAFETY FAILURE — the trial was halted)':'')
+      +(r.reason==='time'?' (countdown expired before the trial was completed)':'')+'</p>';
+    h+='<p style="margin-top:8px;font-size:11px;color:#555"><b>Faculty remarks:</b> ______________________________________________</p>';
+    if(qrData) h+='<div style="margin-top:10px"><img src="'+qrData+'" width="96" height="96" alt="Verification QR"><div style="font-size:10px;color:#666">Scan to verify this record · '+esc(r.reg||'—')+' · M5-U1-CAPSTONE</div></div>';
+    return h;
+  }
+
+  function renderReport(){
+    var r=S.result;
+    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
+    var html='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Final compliance</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.levelsDone+'/'+LEVELS.length+'</div><div class="rl">Levels completed</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.mistakes.length+'</div><div class="rl">Mistakes made</div></div>'
+      +'<div class="repbox"><div class="rv">'+mmss(r.timeUsed)+'</div><div class="rl">Time used</div></div></div>';
+    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · compliance '+r.pct+'%</div>';
+    if(r.criticalHit) html+='<div class="note" style="color:var(--danger);font-weight:600;margin:-4px 0 10px">Critical patient-safety failure — the trial was halted. Dispensing an expired or wrong product, or failing to report a serious adverse event within 24 hours, ends the study regardless of the remaining compliance score.</div>';
+    else if(r.reason==='time') html+='<div class="note" style="color:var(--warn);font-weight:600;margin:-4px 0 10px">The countdown expired before the trial was completed — the remaining decisions were scored as errors.</div>';
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:14px 0 6px">Achievement badges</h3>';
+    html+='<div class="badges">'+r.badges.map(function(b){return '<span class="badge '+(b.got?'got':'miss')+'" title="'+esc(b.d)+'">'+b.n+'</span>';}).join('')+'</div>';
+    html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">Level record</h3>';
+    html+='<div class="tw"><table><thead><tr><th>Level</th><th>Decision</th><th>Outcome</th></tr></thead><tbody>'
+      +LEVELS.map(function(L){
+        var done=L.qs.every(function(_,j){return S.answered[L.n+'-'+j]!==undefined;});
+        var ok=L.qs.every(function(_,j){return S.answered[L.n+'-'+j]===true;});
+        var col=!done?'var(--muted)':(ok?'var(--success)':'var(--danger)');
+        return '<tr><td><b>'+L.n+'</b></td><td>'+esc(L.title)+'</td><td style="color:'+col+'">'+(!done?'not reached':(ok?'compliant':'non-compliant'))+'</td></tr>';
+      }).join('')+'</tbody></table></div>';
+    if(r.mistakes.length){
+      html+='<h3 style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px">Mistakes made</h3>';
+      html+='<div class="tw"><table><thead><tr><th>Level</th><th>What went wrong</th><th>Cost</th></tr></thead><tbody>'
+        +r.mistakes.map(function(m){return '<tr><td>'+m.lv+'</td><td><b>'+esc(m.title)+'</b>'
+          +(m.detail?('<div class="note" style="margin-top:2px">'+esc(m.detail)+'</div>'):'')
+          +(m.critical?'<div class="note" style="color:var(--danger);margin-top:2px"><b>Critical patient-safety failure</b></div>':'')
+          +'</td><td>−'+m.pen+'%</td></tr>';}).join('')+'</tbody></table></div>';
+    }
+    html+='<div class="row no-print" style="margin-top:14px"><button class="btn gold" onclick="window.print()">Download / Print report</button>'
+      +'<button class="btn ghost" id="retryBtn">Run the trial again</button></div>'
+      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
+    body.innerHTML=html;
+    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){
+      $('setupCard').style.display=''; $('gameHead').style.display='none'; $('lvArea').innerHTML='';
+      $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+      $('scRes').textContent='—'; $('scComp').textContent='100%'; $('scLv').textContent='—'; $('scTime').textContent='20:00';
+      S=null; switchTab('station'); window.scrollTo(0,0); });
+  }
+
+  var OPTS={module:'Module 5 · Unit 1 — Clinical Trials in Pharmacy',title:'Become the Clinical Trial Manager (Capstone Simulation)',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Final compliance score &amp; outcome', placeholder:'e.g. ALZ-DM-2026-04 — completed all 8 levels, compliance 92%'},
+      minWords:400,
+      attachments:[
+        {label:'1. Simulation Report / Screenshot (PDF)'},
+        {label:'2. Reflection on Mistakes &amp; Corrective Learning (PDF)'},
+        {label:'3. Additional Supporting File (PDF)'}
+      ],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return S&&S.result?S.result.pct:null; },
+      autoResultText:function(){ return S&&S.result?((S.result.pass?'PASS':'FAIL')+' '+S.result.pct+'%'):''; }
+    });
+  }
+
+  function switchTab(p){ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  $('startBtn').addEventListener('click',startGame);
+})();
+</script>
+</body>
+</html>
