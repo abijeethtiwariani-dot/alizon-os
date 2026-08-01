@@ -1,841 +1,589 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- pwa:alizon -->
-<link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#8c1515">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Alizon OS">
-<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
-<!-- /pwa:alizon -->
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALIZON OS · Module 1 · Ethics, Regulation & Data Protection Lab</title>
-<meta name="robots" content="noindex,nofollow">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON OS · Module 1 · Data Breach Response Simulation</title>
 <script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#f2f0ec; --hero-ink:#1c1a1f; --hero-muted:#6b6570;
-    --card-bg:#ffffff; --card-border:rgba(24,18,26,.12);
-    --card-shadow:0 14px 40px rgba(0,0,0,.12);
-    --ink:#1c1a1f; --muted:#6b6570; --line:rgba(24,18,26,.12);
-    --crimson:#C40D16; --crimson-deep:#9E0C13; --gold:#A16207; --gold-soft:rgba(161,98,7,.14);
-    --success:#1E8E5A; --success-soft:rgba(30,142,90,.12);
-    --warn:#C6551F; --warn-soft:rgba(198,85,31,.12);
-    --danger:#B1040E; --danger-soft:rgba(177,4,14,.10);
-    --pill:rgba(24,18,26,.05); --input:#ffffff; --panel2:#f7f5f1;
-  }
-  html.dark{
-    --bg:#070810; --hero-ink:#f5f4f6; --hero-muted:#9a9db2;
-    --card-bg:linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,255,255,.72) 48%,rgba(255,255,255,.84));
-    --card-border:rgba(255,255,255,.62);
-    --card-shadow:0 26px 60px rgba(0,0,0,.52),
-      inset 0 1.5px 0 rgba(255,255,255,.95),
-      inset 0 -1px 0 rgba(255,255,255,.35),
-      inset 0 0 42px rgba(255,255,255,.16);
-    --input:rgba(255,255,255,.8); --panel2:rgba(24,18,26,.045);
-  }
+  :root{--bg:#f2f0ec;--panel:#fff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A;--danger:#C4262E;--warn:#B45309;--teal:#0E6F76;--purple:#6D28D9;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;--teal:#4bc2c9;--purple:#a78bfa;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);
-    color:var(--hero-ink);-webkit-font-smoothing:antialiased;line-height:1.55;padding:26px 20px 80px}
-  .wrap{max-width:1060px;margin:0 auto}
-  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif;font-weight:600;letter-spacing:-.01em}
-  .hero .mod{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
-  html.dark .hero .mod{color:#D9A441}
-  .hero h1{font-size:clamp(21px,3vw,28px)}
-  .hero p.sub{color:var(--hero-muted);font-size:14px;max-width:78ch}
-  .scorebar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 4px}
-  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.14);color:var(--hero-muted)}
-  html:not(.dark) .scorechip{background:var(--pill);border-color:var(--line)}
-  .scorechip b{color:#D9A441}
-  html:not(.dark) .scorechip b{color:var(--gold)}
-
-  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 20px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
-  .tab{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:600;padding:10px 17px;border-radius:100px;
-    border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:var(--hero-muted);transition:.2s}
-  html:not(.dark) .tab{background:#fff;border-color:var(--line)}
-  .tab:hover{border-color:var(--gold)}
-  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent;
-    box-shadow:0 8px 22px rgba(212,24,32,.3)}
-  section.panel{display:none}
-  section.panel.on{display:block}
-
-  .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:22px;margin-bottom:16px;
-    box-shadow:var(--card-shadow);color:var(--ink)}
-  html.dark .card{backdrop-filter:blur(28px) saturate(175%);-webkit-backdrop-filter:blur(28px) saturate(175%)}
-  .card h2{font-size:19px;margin-bottom:4px}
-  .card h3{font-size:15px;margin:14px 0 8px}
-  .hint{font-size:12.5px;color:var(--muted);margin-bottom:14px}
-  .manual{border:1px solid var(--line);border-radius:12px;background:var(--panel2);margin-bottom:14px;overflow:hidden}
-  .manual summary{cursor:pointer;list-style:none;padding:10px 14px;font-size:12.5px;font-weight:700;color:var(--gold);user-select:none}
-  .manual summary::-webkit-details-marker{display:none}
-  .manual .mb{padding:2px 16px 13px;font-size:13px;color:var(--muted);line-height:1.6}
-  .manual .mb b{color:var(--ink)}
-
-  .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
-  .pcard{cursor:pointer;text-align:left;font-family:inherit;background:var(--panel2);border:1px solid var(--line);
-    border-radius:14px;padding:16px;transition:.2s;color:var(--ink)}
-  .pcard:hover{border-color:var(--gold);transform:translateY(-2px)}
-  .pcard .pn{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
-  .pcard .pt{font-weight:700;font-size:14.5px;margin:4px 0 3px}
-  .pcard .pd{font-size:12.5px;color:var(--muted)}
-  .pcard .st{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-    padding:3px 9px;border-radius:100px;margin-top:9px;background:var(--gold-soft);color:var(--gold)}
-  .pcard .st.done{background:var(--success-soft);color:var(--success)}
-
-  .q{margin:14px 0 8px;font-weight:600;font-size:14.5px}
-  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);
-    background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:11px 14px;margin-bottom:8px;transition:.15s}
-  .opt:hover{border-color:var(--gold)}
-  .opt.right{border-color:var(--success);background:var(--success-soft)}
-  .opt.wrong{border-color:var(--danger);background:var(--danger-soft)}
-  .opt:disabled{cursor:default;opacity:.9}
-  .fb{border-radius:12px;padding:11px 14px;font-size:13px;margin:6px 0 4px;display:none}
-  .fb.show{display:block}
-  .fb.good{background:var(--success-soft);border:1px solid var(--success)}
-  .fb.bad{background:var(--danger-soft);border:1px solid var(--danger)}
-  .fb b{display:block;margin-bottom:2px}
-  .btn{cursor:pointer;font-family:inherit;font-weight:600;font-size:13.5px;border:none;border-radius:100px;
-    padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));
-    box-shadow:0 8px 22px rgba(212,24,32,.28);transition:transform .15s;margin-top:8px}
-  .btn:hover{transform:translateY(-1px)}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(13px,2.6vw,26px) 80px}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(15px,2.4vw,22px);box-shadow:var(--card-shadow);margin-bottom:15px}
+  .muted{color:var(--muted)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:10px 20px;color:#fff;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .btn:hover{filter:brightness(1.07)} .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
   .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
-  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+  .btn.ok{background:linear-gradient(120deg,#0f6b45,var(--success))}
+  .btn.sm{font-size:12.5px;padding:8px 15px}
+  .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  textarea{min-height:70px;resize:vertical;line-height:1.55}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:9px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
+  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .22s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:420px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:15px}
+  .guide h2{font-size:18px;margin-bottom:6px} .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.72} .guide p{font-size:13.5px}
 
-  table.obs{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
-  table.obs th,table.obs td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
-  table.obs th{background:var(--panel2);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
-  .okc{color:var(--success);font-weight:700}.badc{color:var(--danger);font-weight:700}
+  .opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#2b1420,#43203a);color:#fff;border-radius:14px;
+    padding:11px 16px;display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:14px;box-shadow:0 12px 32px -22px rgba(0,0,0,.8)}
+  .opbar .ttl{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px}
+  .opbar .m{display:flex;flex-direction:column;gap:2px;min-width:92px}
+  .opbar .m .k{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;opacity:.62}
+  .opbar .m .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+  .opbar .m.bad .v{color:#ff8a8a} .opbar .m.good .v{color:#7de3b0} .opbar .m.warn .v{color:#f3c46b}
+  .meter{height:5px;border-radius:100px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:2px}
+  .meter i{display:block;height:100%;background:#7de3b0;transition:width .4s}
+  .meter i.warn{background:#f3c46b} .meter i.bad{background:#ff8a8a}
+  .opbar .sp{margin-left:auto}
+  .clock{background:rgba(0,0,0,.32);border-radius:100px;padding:6px 15px;font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+  .clock.warn{background:rgba(196,38,46,.5);animation:pul 1.1s infinite}
+  @keyframes pul{50%{opacity:.55}}
 
-  .rx{background:#fff;color:#1a1a1a;border:1px solid #ddd;border-radius:12px;padding:20px 22px;margin:12px 0;
-    font-family:'Source Serif Pro',Georgia,serif;box-shadow:0 10px 26px rgba(0,0,0,.18)}
-  .rx .rh{border-bottom:2px solid #7A0309;padding-bottom:8px;margin-bottom:10px}
-  .rx .rh b{color:#7A0309;font-size:16px}
-  .rx .rh small{display:block;color:#666;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
-  .rx p{font-size:14px;margin:4px 0}
-  .rx .sig{margin-top:12px;font-style:italic;color:#333}
-  .rx .missing{color:#bbb;font-style:italic}
+  .task{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:15px 17px;box-shadow:var(--card-shadow);margin-bottom:14px}
+  .task .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .task h3{font-size:17px;margin:7px 0 4px}
+  .task .q{font-size:14px;font-weight:600;line-height:1.55;margin:8px 0 4px}
+  .opts{display:grid;gap:7px;margin-top:9px}
+  .opt{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font:inherit;font-size:13.5px;text-align:left;color:var(--ink);
+    background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;line-height:1.5}
+  .opt:hover{border-color:var(--gold)}
+  .opt .lt{flex:none;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--pill);border:1px solid var(--line);font-size:10.5px;font-weight:800;color:var(--muted)}
+  .opt.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)} .opt.pick .lt{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .opt.right{border-color:var(--success);background:rgba(30,142,90,.07)} .opt.right .lt{background:var(--success);border-color:var(--success);color:#fff}
+  .opt.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)} .opt.wrong .lt{background:var(--danger);border-color:var(--danger);color:#fff}
+  .fb{border-radius:11px;padding:12px 15px;margin-top:12px;font-size:13.5px;line-height:1.65;border:1px solid}
+  .fb.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.34)}
+  .fb.part{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.34)}
+  .fb.no{background:rgba(196,38,46,.08);border-color:rgba(196,38,46,.32)}
+  .fb .hd{font-weight:800;font-size:12.5px;margin-bottom:5px}
+  .fb.ok .hd{color:var(--success)} .fb.part .hd{color:var(--warn)} .fb.no .hd{color:var(--danger)}
+  .fb ul{margin:6px 0 0 17px}
 
-  .seg2{display:inline-flex;gap:5px;background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:3px}
-  .seg2 button{border:none;background:none;font-family:inherit;font-size:12px;font-weight:600;color:var(--muted);
-    padding:6px 13px;border-radius:100px;cursor:pointer}
-  .seg2 button.a{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
-  .seg2 button.g{color:#fff;background:linear-gradient(120deg,#166A45,var(--success))}
-  .rowline{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
-  .rowline:last-child{border-bottom:none}
-  .rowline .rl-t{flex:1;min-width:220px}
-  .rowline .rl-t small{display:block;color:var(--muted)}
-
-  label.f{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:10px 0 6px}
-  input[type=text],input[type=number],select,textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);
-    background:var(--input);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none}
-  textarea{min-height:70px;resize:vertical}
-  input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
-  select option{background:#fff;color:#1c1a1f}
-  .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-  @media(max-width:640px){.g2,.g3{grid-template-columns:1fr}}
-
-  .verdict{border-radius:12px;padding:13px 16px;font-size:13.5px;margin-top:12px;display:none;border:1px solid var(--line)}
-  .verdict.show{display:block}
-  .verdict.ok{background:var(--success-soft);border-color:var(--success)}
-  .verdict.warn{background:var(--warn-soft);border-color:var(--warn)}
-  .verdict.bad{background:var(--danger-soft);border-color:var(--danger)}
-  .verdict b{display:block;margin-bottom:3px}
-
-  .steps{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
-  .stp{font-size:11px;font-weight:700;padding:5px 11px;border-radius:100px;background:var(--pill);border:1px solid var(--line);color:var(--muted)}
-  .stp.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
-  .stp.done{color:var(--success);background:var(--success-soft);border-color:var(--success)}
-
-  details.viva{border:1px solid var(--line);border-radius:11px;background:var(--panel2);margin-bottom:8px;overflow:hidden}
-  details.viva summary{cursor:pointer;list-style:none;padding:11px 14px;font-size:13.5px;font-weight:600;user-select:none}
-  details.viva summary::-webkit-details-marker{display:none}
-  details.viva .va{padding:0 16px 12px;font-size:13px;color:var(--muted);line-height:1.6}
-
-  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:11px;margin:8px 0 14px}
   .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
-  .repbox .rv{font-size:24px;font-weight:700;font-family:'Source Serif Pro',serif;color:var(--gold)}
-  .repbox .rl{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:3px}
-  .comp{display:flex;align-items:center;gap:9px;font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--line)}
-  .comp:last-child{border:none}
-  .comp .box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line);display:grid;place-items:center;font-size:13px;flex:none;color:var(--success)}
-  .comp.done .box{border-color:var(--success);background:var(--success-soft)}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:15px;font-weight:700;padding:13px 17px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .outcome{border:1px solid var(--line);border-left:4px solid var(--success);border-radius:11px;padding:12px 15px;margin-bottom:9px;background:var(--panel2);font-size:13.5px;line-height:1.6}
+  .outcome.harm{border-left-color:var(--danger)}
+  .outcome b{display:block;margin-bottom:3px}
+  .bar{height:8px;border-radius:100px;background:var(--pill);overflow:hidden;min-width:70px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))} .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
 
-  @media print{
-    body{background:#fff;color:#111;padding:0}
-    .tabs,.btn,.opt{display:none !important}
-    section.panel{display:block !important}
-    .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid;background:#fff;color:#111}
-  }
+  .inbox{background:var(--panel);border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-bottom:14px;box-shadow:var(--card-shadow)}
+  .inbox h4{font-family:'Inter',sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);padding:12px 15px 8px}
+  .msg{border-top:1px solid var(--line);padding:12px 15px}
+  .msg .mh{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px}
+  .msg .mh b{font-size:13px} .msg .mh span{font-size:11px;color:var(--muted);font-family:ui-monospace,Menlo,monospace}
+  .msg .mh .tagx{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:100px;padding:2px 9px;margin-left:auto}
+  .tagx.urgent{background:rgba(196,38,46,.14);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .tagx.info{background:var(--pill);color:var(--muted);border:1px solid var(--line)}
+  .msg .mb{font-size:13.5px;line-height:1.65}
+  .msg .mb .flag{color:var(--danger);font-weight:700}
+  .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin:10px 0 4px}
+  .fact{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+  .fact .k{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .fact .v{font-size:14px;font-weight:700;margin-top:2px}
+  .fact.bad .v{color:var(--danger)}
+  .order{display:grid;gap:7px;margin-top:9px}
+  .ostep{cursor:pointer;text-align:left;font:inherit;font-size:13.5px;background:var(--panel2);border:1.5px solid var(--line);
+    border-radius:10px;padding:10px 13px;color:var(--ink);display:flex;gap:10px;align-items:flex-start}
+  .ostep:hover{border-color:var(--gold)}
+  .ostep.chosen{border-color:var(--crimson);background:rgba(196,13,22,.05)}
+  .ostep.right{border-color:var(--success);background:rgba(30,142,90,.07)}
+  .ostep.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)}
+  .ostep .ordn{flex:none;display:inline-grid;place-items:center;width:23px;height:23px;border-radius:50%;
+    background:var(--pill);color:var(--muted);font-size:11px;font-weight:800;border:1px solid var(--line)}
+  .ostep.chosen .ordn{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+
+  @media print{.tabs,.btn,.no-print,.opbar{display:none!important} body{background:#fff} .panel{display:block!important}}
 </style>
-<link rel="stylesheet" href="alizon-theme.css">
 <link rel="stylesheet" href="alizon-practical-glass.css?v=1">
 </head>
 <body>
 <script src="alizon-lab-gate.js"></script>
-<a href="ASMDI-dashboard.html" target="_top" style="position:fixed;top:12px;right:12px;z-index:2147483647;display:inline-flex;align-items:center;gap:6px;font-family:-apple-system,'Inter',sans-serif;font-weight:600;font-size:13px;text-decoration:none;color:#fff;background:linear-gradient(120deg,#B1040E,#C40D16);border:1px solid rgba(255,255,255,.25);padding:9px 15px;border-radius:100px;box-shadow:0 6px 18px rgba(0,0,0,.4)">← Dashboard</a>
 <div class="wrap">
   <div class="hero">
-    <div class="mod">Module 1 · Unit 3 · Practical 2 · Pharmacy AI</div>
-    <h1>Ethics, Regulation &amp; Data Protection Lab</h1>
-    <p class="sub">A 10-practical simulation manual for digital pharmacy: ethical decisions, e-prescription verification,
-    confidentiality, EHR documentation, digital consent, error reporting, cybersecurity, audit trails, compliance audit
-    and a full capstone workflow. <b>12–15 hours · 10 sessions.</b></p>
-  </div>
-
-  <div class="scorebar">
-    <div class="scorechip">Practicals done <b id="scDone">0/10</b></div>
-    <div class="scorechip">Total score <b id="scTotal">0</b></div>
-    <div class="scorechip">Competencies <b id="scComp">0/10</b></div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Pharmacy AI · Module 1 · Unit 3 · Practical 2</div>
+    <h1 style="font-size:clamp(1.4rem,3.4vw,2.05rem);margin:7px 0">Data Breach Response Simulation</h1>
+    <p class="muted" style="font-size:14px;max-width:80ch"><b>Aim —</b> To respond to a live personal data breach in a hospital pharmacy — containing it, assessing its scope,
+      deciding notifiability under the Digital Personal Data Protection Act, and handling the requests and pressures that arrive while you do so.</p>
   </div>
 
   <div class="tabs">
-    <button class="tab on" data-p="over">Overview</button>
-    <button class="tab" data-p="prac">Practicals 1–10</button>
-    <button class="tab" data-p="viva">Viva Bank</button>
-    <button class="tab" data-p="rep">My Report</button>
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="inc">Incident Room</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
   </div>
 
-  <!-- ================= OVERVIEW ================= -->
-  <section class="panel on" id="p-over">
+  <section class="panel on" id="p-brief">
     <div id="expBrief" data-exp="ethics"></div>
-    <div class="card">
-      <h2>Unit 3 Practical Manual — Overview</h2>
-      <div class="hint">Ethics, Regulation &amp; Data Protection in Digital Pharmacy · suitable for B.Pharm, PharmD, M.Pharm, Diploma &amp; certificate programmes.</div>
-      <table class="obs"><tr><th>Assessment component</th><th>Weight</th></tr>
-        <tr><td>Practical performance (activities in this lab)</td><td>40%</td></tr>
-        <tr><td>Observation record</td><td>20%</td></tr>
-        <tr><td>Viva</td><td>20%</td></tr>
-        <tr><td>Practical report (submit via Assessments — AI provisional mark)</td><td>20%</td></tr>
-      </table>
-      <h3>Practical record format (for every experiment)</h3>
-      <div class="hint">1 Title · 2 Aim · 3 Objectives · 4 Principle · 5 Materials · 6 Procedure · 7 Observation · 8 Results · 9 Discussion · 10 Conclusion · 11 Viva questions · 12 Precautions</div>
+    <div class="guide">
+      <h2>The incident</h2>
+      <p>You are the pharmacy lead and the department’s data protection point of contact. It is Monday morning.
+        Something has gone wrong over the weekend, and by the end of the exercise you will have had to make six decisions under time pressure.</p>
+      <ol>
+        <li><b>Containment comes before investigation.</b> Every hour the exposure continues, the breach grows.</li>
+        <li>Not every incident is notifiable — but <b>you do not get to decide that on convenience</b>. The test is risk to the individuals.</li>
+        <li>Two of the six decisions are things people will <b>ask you to do that you must refuse</b>. Pressure is part of the exercise.</li>
+        <li>A <b>Containment Index</b> tracks how much exposure remains, and a <b>Compliance Index</b> tracks whether your response would survive scrutiny.</li>
+      </ol>
     </div>
-    <div class="card">
-      <h2>Competency Checklist</h2>
-      <div class="hint">Ticks itself as you complete the matching practical.</div>
-      <div id="compList"></div>
+    <div class="card"><h2 style="font-size:18px">Assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Assessment criteria</th><th>Marks</th></tr></thead><tbody>
+        <tr><td>Immediate containment — correct actions in the correct order</td><td>25</td></tr>
+        <tr><td>Scope and risk assessment</td><td>15</td></tr>
+        <tr><td>Notifiability decision</td><td>20</td></tr>
+        <tr><td>Handling the subject access request</td><td>15</td></tr>
+        <tr><td>Refusing improper disclosure</td><td>15</td></tr>
+        <tr><td>Preventive action</td><td>10</td></tr>
+        <tr class="tot"><td>Total</td><td>100</td></tr>
+      </tbody></table></div>
+      <p class="muted" style="font-size:12.5px">Pass 50. The Containment and Compliance indices are reported separately.</p>
     </div>
-  </section>
-
-  <!-- ================= PRACTICALS ================= -->
-  <section class="panel" id="p-prac">
-    <div class="card" id="pracPicker">
-      <h2>Choose a practical</h2>
-      <div class="hint">Each session simulates the real-world activity from the manual — complete all 10.</div>
-      <div class="pgrid" id="pracGrid"></div>
-    </div>
-    <div class="card" id="pracRun" style="display:none">
-      <button class="btn ghost" id="pracBack">← All practicals</button>
-      <div id="pracBody"></div>
-    </div>
-  </section>
-
-  <!-- ================= VIVA ================= -->
-  <section class="panel" id="p-viva">
-    <div class="card">
-      <h2>Viva Question Bank — 20 Questions</h2>
-      <div class="hint">Attempt each aloud, then open to compare with a model answer.</div>
-      <div id="vivaList"></div>
+    <div class="card"><h2 style="font-size:18px">Achievement badges</h2>
+      <div class="badges">
+        <span class="badge">🚨 Fast Containment</span><span class="badge">📏 Correct Assessment</span>
+        <span class="badge">📨 Notified Properly</span><span class="badge">🛑 Held the Line</span><span class="badge">🏅 Incident Lead</span>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:8px" id="badgeCrit"></p>
     </div>
   </section>
 
-  <!-- ================= REPORT ================= -->
-  <section class="panel" id="p-rep">
-    <div class="card">
-      <h2>Practical Report — Unit 3</h2>
-      <div class="hint">Your performance across all 10 practicals. Print this, and submit your written Practical Record
-        via <b>Assessments</b> on the dashboard — it will receive an AI provisional mark that faculty confirm.</div>
-      <div class="repgrid" id="repGrid"></div>
-      <div class="verdict show" id="repVerdict" style="margin-top:4px">Complete the practicals to unlock your summary.</div>
-      <button class="btn gold" onclick="window.print()">Print / Save PDF</button>
-      <div id="reportWriter" style="margin-top:16px"></div>
+  <section class="panel" id="p-inc">
+    <div class="card" id="setupCard">
+      <h2 style="font-size:18px">Open the incident</h2>
+      <div class="grid2" style="margin-top:9px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:10px">Alizon Teaching Hospital · Pharmacy Department · data protection point of contact</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="startBtn">▶ Open the incident</button>
+        <button class="btn ghost sm" id="themeBtn">◐ Theme</button>
+      </div>
     </div>
+    <div id="live" style="display:none">
+      <div class="opbar">
+        <div class="ttl">Incident INC-2026-0803</div>
+        <div class="m"><span class="k">Stage</span><span class="v" id="mStage">1 / 6</span></div>
+        <div class="m"><span class="k">Score</span><span class="v" id="mScore">0</span></div>
+        <div class="m" id="mConWrap"><span class="k">Containment</span><span class="v" id="mCon">0%</span>
+          <span class="meter"><i id="barCon" style="width:0%"></i></span></div>
+        <div class="m" id="mCompWrap"><span class="k">Compliance</span><span class="v" id="mComp">100%</span>
+          <span class="meter"><i id="barComp" style="width:100%"></i></span></div>
+        <div class="sp"></div>
+        <div class="clock" id="clock">72:00</div>
+      </div>
+      <div id="inbox"></div>
+      <div id="stage"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-report">
+    <div class="card"><h2 style="font-size:18px">Incident report &amp; regulatory outcome</h2>
+      <p class="muted" id="repEmpty">Complete the incident to generate your report, then write and submit it below.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
   </section>
 </div>
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
 
-<script>
-/* ================= state ================= */
-const S={done:{},pts:{}}; /* done[pid]=true, pts[pid]={got,of} */
-function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-window.update=function(){};
-
-const COMPS=[
- ['Verify e-prescriptions','p2'],['Maintain patient confidentiality','p3'],['Obtain electronic informed consent','p5'],
- ['Document patient records accurately','p4'],['Report medication errors','p6'],['Perform compliance audits','p9'],
- ['Identify cybersecurity risks','p7'],['Interpret audit trails','p8'],['Apply ethical principles','p1'],
- ['Demonstrate the full legal workflow','p10']];
-
-function paint(){
-  const done=Object.keys(S.done).length;
-  const total=Object.values(S.pts).reduce((a,b)=>a+b.got,0);
-  document.getElementById('scDone').textContent=done+'/10';
-  document.getElementById('scTotal').textContent=Math.round(total);
-  document.getElementById('scComp').textContent=COMPS.filter(c=>S.done[c[1]]).length+'/10';
-  document.getElementById('compList').innerHTML=COMPS.map(c=>
-    `<div class="comp${S.done[c[1]]?' done':''}"><span class="box">${S.done[c[1]]?'✔':''}</span>${esc(c[0])}</div>`).join('');
-  const rg=document.getElementById('repGrid');
-  rg.innerHTML=PRACS.map(p=>{const s=S.pts[p.id];
-    return `<div class="repbox"><div class="rv">${s?Math.round(s.got/s.of*100)+'%':'—'}</div><div class="rl">${esc(p.short)}</div></div>`;}).join('')+
-    `<div class="repbox"><div class="rv">${Math.round(total)}</div><div class="rl">Total points</div></div>`;
-  const v=document.getElementById('repVerdict');
-  if(Object.keys(S.done).length===10){
-    const pct=Math.round(Object.values(S.pts).reduce((a,b)=>a+b.got/b.of,0)/10*100);
-    v.className='verdict show '+(pct>=75?'ok':pct>=50?'warn':'bad');
-    v.innerHTML='<b>Overall practical performance: '+pct+'%</b>'+(pct>=75?'Strong command of digital-pharmacy ethics, regulation and data protection.':pct>=50?'Competent — revisit the practicals where you scored lowest.':'Repeat the low-scoring practicals before the viva.');
-  }
-}
-
-/* ================= tabs ================= */
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
-  document.querySelectorAll('section.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.p));
-  window.scrollTo({top:0,behavior:'smooth'});
-}));
-
-/* ================= practical definitions ================= */
-const PRACS=[
- {id:'p1',n:'Practical 1',t:'Professional Ethics in Digital Pharmacy',short:'Ethics cases',d:'10 ethical decision scenarios',
-  aim:'To understand ethical principles involved in digital pharmacy services.',
-  mats:'Internet · computer · digital pharmacy code of conduct · case scenarios',
-  out:'Student demonstrates ethical decision-making (confidentiality, consent, professional responsibility).'},
- {id:'p2',n:'Practical 2',t:'Verification of Electronic Prescription',short:'e-Rx verification',d:'Audit a sample e-prescription',
-  aim:'To verify authenticity of digital prescriptions.',mats:'Genuine & fake e-prescriptions · verification checklist',
-  out:'Student can identify fake prescriptions, verify registration and detect missing information.'},
- {id:'p3',n:'Practical 3',t:'Patient Confidentiality Simulation',short:'Confidentiality',d:'Who may receive patient records?',
-  aim:'To understand confidentiality in electronic records.',mats:'Sample EHR · role play',
-  out:'HIPAA/GDPR principles (conceptual) and Indian privacy practice.'},
- {id:'p4',n:'Practical 4',t:'Electronic Health Record Documentation',short:'EHR entry',d:'Enter a record; pass validation',
-  aim:'To practice secure, accurate documentation.',mats:'Dummy patient database',
-  out:'Accuracy, completeness and professional documentation.'},
- {id:'p5',n:'Practical 5',t:'Digital Consent Management',short:'e-Consent',d:'Run an informed-consent flow',
-  aim:'To obtain informed consent electronically.',mats:'Digital consent form · tablet/computer',
-  out:'Consent that is informed, understandable, signed, OTP-verified and time-stamped.'},
- {id:'p6',n:'Practical 6',t:'Medication Error Reporting System',short:'Error report',d:'File a digital incident report',
-  aim:'To report medication errors digitally.',mats:'Mock reporting software',
-  out:'Understanding of patient-safety reporting (incident, root cause, CAPA).'},
- {id:'p7',n:'Practical 7',t:'Cybersecurity Risk Assessment',short:'Cyber risks',d:'Rate 8 threats & pick prevention',
-  aim:'To identify cybersecurity risks in pharmacy software.',mats:'Sample pharmacy software findings',
-  out:'Correct identification of threats and appropriate mitigation.'},
- {id:'p8',n:'Practical 8',t:'Data Integrity & Audit Trail Verification',short:'Audit trail',d:'Flag suspicious log entries',
-  aim:'To understand audit trails and accountability.',mats:'Mock software logs',
-  out:'Who changed what, when, and was it authorized.'},
- {id:'p9',n:'Practical 9',t:'Digital Pharmacy Legal Compliance Audit',short:'Compliance audit',d:'Inspect & score compliance',
-  aim:'To evaluate compliance with pharmacy regulations.',mats:'Compliance checklist',
-  out:'Compliance % score with justification.'},
- {id:'p10',n:'Practical 10 · Capstone',t:'Complete Digital Pharmacy Simulation',short:'Capstone',d:'Full 8-step ethical workflow',
-  aim:'To perform the complete ethical and regulatory workflow from teleconsultation to audit log.',
-  mats:'All previous materials',out:'End-to-end competency incl. error & cybersecurity incident handling.'}
-];
-
-/* ---------- P1 data ---------- */
-const P1=[
- {s:'A patient sends a photo of a prescription over WhatsApp and asks for home delivery.',issue:'Professional responsibility',
-  o:[['Dispense immediately — the photo is clear',0,'A photo alone is not a verified prescription; authenticity and legality must be checked first.'],
-     ['Verify authenticity (prescriber, registration, date) before dispensing',1,'Correct — verify first: prescriber identity, registration, date and completeness.'],
-     ['Ignore the message',0,'Ignoring a patient is unprofessional — respond, explain the verification requirement.']]},
- {s:'You recognise a celebrity\'s name in the pharmacy EHR. You are not involved in their care.',issue:'Confidentiality',
-  o:[['Open the record quickly out of curiosity',0,'Accessing records without a care role is a confidentiality breach — access is logged and punishable.'],
-     ['Do not access; records are need-to-know only',1,'Correct — role-based access: no care relationship, no access.'],
-     ['Look, but tell no one',0,'The breach is the access itself, not just the telling.']]},
- {s:'A close friend asks you to send antibiotics through the pharmacy app without a prescription.',issue:'Legal & ethical practice',
-  o:[['Send them — you know their history',0,'Dispensing prescription-only medicine without a prescription is illegal, friendship notwithstanding.'],
-     ['Refuse politely and direct them to a teleconsultation',1,'Correct — refuse, and offer the lawful route (doctor consult → valid e-Rx).'],
-     ['Send a half course to be safe',0,'A partial illegal supply is still illegal — and clinically worse.']]},
- {s:'A pharma company offers money for your customers\' phone numbers for "health marketing".',issue:'Data protection',
-  o:[['Share — it is only phone numbers',0,'Patient contact data is personal data; selling it without consent violates privacy law and trust.'],
-     ['Refuse; data cannot be shared without explicit patient consent',1,'Correct — purpose limitation & consent are core data-protection principles.'],
-     ['Share only "inactive" customers',0,'Inactive customers are still data subjects with the same rights.']]},
- {s:'A colleague wants to post a funny, badly-written prescription on Instagram with the name blurred.',issue:'Confidentiality & professionalism',
-  o:[['Fine if the name is blurred',0,'Handwriting, drugs and dates can re-identify a patient; posting is unprofessional and risky.'],
-     ['Do not post patient documents on social media at all',1,'Correct — patient materials never belong on personal social media.'],
-     ['Post it on a private account',0,'"Private" accounts leak; the duty of confidentiality does not switch off.']]},
- {s:'During telepharmacy counselling, the patient clearly does not understand the language you are using.',issue:'Informed consent',
-  o:[['Continue — the leaflet explains everything',0,'Counselling that is not understood is not counselling; comprehension is your responsibility.'],
-     ['Switch to simple local language or arrange translation',1,'Correct — adjust language, use a translator or family support, confirm understanding.'],
-     ['Skip counselling to save time',0,'Skipping counselling breaches professional duty.']]},
- {s:'Your platform auto-substitutes a cheaper generic without telling the patient.',issue:'Patient autonomy',
-  o:[['Allow it — generics are equivalent',0,'Even with equivalence, substitution without informing removes the patient\'s choice.'],
-     ['Inform the patient and record their consent to substitution',1,'Correct — transparency + documented consent for substitution.'],
-     ['Substitute only on expensive drugs',0,'Price does not change the consent requirement.']]},
- {s:'You discover you dispensed the wrong strength yesterday. The patient has not complained.',issue:'Accountability',
-  o:[['Wait — maybe nothing happens',0,'Waiting risks patient harm and is an ethical failure.'],
-     ['Contact the patient immediately, correct, document and report the error',1,'Correct — patient safety first: recall, correct, document, report.'],
-     ['Silently correct the record',0,'Falsifying the record compounds a mistake into misconduct.']]},
- {s:'A senior colleague shares one login for the pharmacy software with all staff "for speed".',issue:'Data integrity & security',
-  o:[['Use it — everyone does',0,'Shared logins destroy the audit trail and accountability.'],
-     ['Use your own account and raise the issue per policy',1,'Correct — individual role-based accounts; escalate the unsafe practice.'],
-     ['Use the shared login but note your actions on paper',0,'Paper notes do not repair a broken electronic audit trail.']]},
- {s:'An anxious patient requests confidential advice about a sensitive medicine through the app\'s public review section.',issue:'Privacy & duty of care',
-  o:[['Reply with full advice in the public review thread',0,'Publicly answering exposes the patient\'s health information.'],
-     ['Move the conversation to a private, secure channel and counsel there',1,'Correct — protect privacy first, then give proper counselling.'],
-     ['Delete the review',0,'Deleting ignores a genuine care need.']]}
-];
-
-/* ---------- P2 data ---------- */
-const P2KEY={doc:['Doctor name','ok','Dr. S. Raghavan, MD (Gen Med) is printed.'],
-  reg:['Registration number','bad','No medical council registration number anywhere — a legal requirement.'],
-  date:['Date','bad','Dated 14 Sep 2026 — a FUTURE date; invalid.'],
-  pat:['Patient details','ok','Name, age and sex are present.'],
-  drug:['Drug, dose & duration','ok','Azithromycin 500 mg OD × 3 days — complete.'],
-  sig:['Digital signature','ok','A digital signature block is present.'],
-  qr:['QR / verification code','bad','No QR or verification code to authenticate the document.']};
-
-/* ---------- P3 data ---------- */
-const P3=[
- {who:'A relative on the phone asks for the patient\'s full medication list.',dec:0,
-  reasons:[['Refuse — needs the patient\'s explicit consent first',1],['Approve — family always has a right to know',0],['Approve if they sound genuine',0]],
-  why:'Relatives get information only with the patient\'s consent (or lawful exception). Verify identity + documented consent.'},
- {who:'An insurance company emails requesting the complete health record for a claim.',dec:0,
-  reasons:[['Share only with written patient authorization, minimum-necessary data',1],['Send the full record — insurers process claims',0],['Refuse forever in all cases',0]],
-  why:'Disclosure requires the patient\'s written authorization and is limited to the minimum necessary for the claim.'},
- {who:'The treating physician requests the dispensing history to adjust therapy.',dec:1,
-  reasons:[['Approve — need-to-know for continuity of care',1],['Refuse — doctors must ask patients',0],['Approve but only verbally',0]],
-  why:'Sharing with the treating clinician for care is permitted need-to-know use; share securely and log it.'}
-];
-
-/* ---------- P7 data ---------- */
-const P7=[
- ['Password "pharmacy123" written on a sticky note','High',['Strong unique passwords + password manager',1],['Hide the sticky note better',0],['Change password yearly',0]],
- ['One shared login used by all staff','High',['Individual role-based accounts (RBAC)',1],['Share only among pharmacists',0],['Keep but change monthly',0]],
- ['Dispensing computer left unlocked at the counter','High',['Auto-lock timeout + lock on leaving',1],['Turn the screen slightly away',0],['Only lock at closing time',0]],
- ['Billing done over café public Wi-Fi','High',['Use secured network / VPN only',1],['Use incognito mode',0],['Bill faster to reduce exposure',0]],
- ['Personal USB drives used on the pharmacy PC','High',['Block/scan removable media by policy',1],['Only use new USB drives',0],['Rename files before copying',0]],
- ['Antivirus not updated for 8 months','High',['Managed antivirus + regular patching',1],['Run a scan once now',0],['Avoid opening emails',0]],
- ['Patient list emailed to a personal Gmail to "work from home"','High',['Use official encrypted channels only',1],['Delete after use',0],['Password-protect the spreadsheet',0]],
- ['Monitor faces the waiting area; queue can read patient data','Medium',['Privacy filter / reposition the screen',1],['Smaller font size',0],['Ask patients not to look',0]]
-];
-
-/* ---------- P8 data ---------- */
-const P8=[
- ['09:02','Priya (Pharmacist)','Login from pharmacy terminal',0,'Normal working-hours login from a known device.'],
- ['02:14','admin2 (unknown)','Stock quantity of Alprazolam modified',1,'Unknown account, 2 AM, controlled drug — classic red flags.'],
- ['10:12','Priya (Pharmacist)','Dispensed Metformin 500 mg — logged with Rx ID',0,'Proper dispensing entry tied to a prescription.'],
- ['11:20','Ravi (Intern)','Patient allergy record edited',1,'Interns are not authorized to alter clinical allergy data.'],
- ['18:55','Kiran (Pharmacist)','Drug price changed AFTER daily audit lock',1,'Edits after audit lock bypass financial controls.'],
- ['23:00','System','Automated encrypted backup completed',0,'Scheduled system job — expected.']
-];
-
-/* ---------- P9 data ---------- */
-const P9=[
- ['Pharmacy licence displayed, valid till 2027',1,'Displayed and in date — compliant.'],
- ['Pharmacist\'s registration expired 4 months ago',0,'Practising with lapsed registration is non-compliant — renew immediately.'],
- ['Patient data stored unencrypted on a shared PC',0,'Fails data-security requirements — encrypt + access control.'],
- ['e-Prescriptions retained 5 years per policy',1,'Meets the retention policy — compliant.'],
- ['Controlled-drug register missing 12 entries',0,'Incomplete controlled-drug documentation is a serious violation.'],
- ['All staff completed data-protection training last quarter',1,'Training documented — compliant.']
-];
-
-/* ---------- P10 data ---------- */
-const P10=[
- {t:'Verify prescription',q:'Teleconsult e-Rx received: prescriber name + reg no valid, digital signature verifies, QR resolves to the issuing platform. Action?',
-  o:[['All checks pass — accept and proceed',1,'Every element verified — proceed.'],
-     ['Reject — WhatsApp prescriptions are never valid',0,'This is a signed platform e-Rx, not a chat photo; the checks passed.'],
-     ['Proceed but skip QR — it rarely matters',0,'QR/verification is part of authenticity — never skip.']]},
- {t:'Patient verification',q:'Before dispensing you should…',
-  o:[['Confirm two identifiers (name + DOB/phone) privately and record consent',1,'Two identifiers, checked discreetly — correct.'],
-     ['Skip — he is a regular customer',0,'Familiarity is not verification.'],
-     ['Call his name and DOB aloud across the counter',0,'Broadcasting identifiers breaches privacy.']]},
- {t:'Clinical screening',q:'Record shows he takes atorvastatin; the new e-Rx adds clarithromycin. CDSS flags MAJOR interaction. Action?',
-  o:[['Contact the prescriber; suggest azithromycin or pausing the statin',1,'Exactly — resolve the interaction with the prescriber before dispensing.'],
-     ['Dispense — the doctor must know best',0,'The pharmacist is the final safety check.'],
-     ['Dispense half the statin dose yourself',0,'Never silently change therapy without the prescriber.']]},
- {t:'Ethical decision',q:'Prescriber approves the switch. The safe path now is…',
-  o:[['Dispense the corrected medicine WITH counselling and document the change',1,'Dispense + counsel + document — all three.'],
-     ['Dispense silently — counselling queues are long',0,'Counselling is part of dispensing, not an optional extra.'],
-     ['Refuse to dispense anything today',0,'The issue is resolved; refusal now fails the patient.']]},
- {t:'Digital documentation',q:'Which record is complete?',
-  o:[['Drug, batch, expiry, quantity, counselling note, pharmacist ID',1,'Complete, attributable record.'],
-     ['Drug name and price',0,'Missing batch/expiry/counselling/attribution.'],
-     ['"Dispensed as usual" free-text note',0,'Not attributable, not auditable.']]},
- {t:'Audit trail',q:'The system audit log must show…',
-  o:[['Who did each action, what, and exactly when — login to logout',1,'User + action + timestamp = accountability.'],
-     ['Only the final sale amount',0,'That is billing, not an audit trail.'],
-     ['Nothing — logs slow the system',0,'Logs are a regulatory requirement.']]},
- {t:'Medication error simulation',q:'Planted error: the label printed 500 mg but the e-Rx says 250 mg — caught at final check. Correct response?',
-  o:[['Correct the label, verify against Rx, document the near-miss and file an incident report',1,'Identify → correct → document → report. Near-misses get reported too.'],
-     ['Fix the label quietly; no report needed since patient was not harmed',0,'Near-miss reporting is how systems learn — report it.'],
-     ['Dispense — 500 mg is "close enough"',0,'Never. Wrong strength is a medication error.']]},
- {t:'Cybersecurity incident',q:'The antivirus flags malware on a USB just inserted into the dispensing PC. First response?',
-  o:[['Disconnect/isolate the machine, report to IT & the data-protection officer, preserve evidence, document',1,'Isolate → report → preserve → document. Textbook incident response.'],
-     ['Delete all USB files and continue billing',0,'Destroys evidence and may spread the infection.'],
-     ['Restart the computer twice',0,'Restarting does not remove malware or fulfil reporting duty.']]}
-];
-
-/* ================= engines ================= */
-const grid=document.getElementById('pracGrid'),run=document.getElementById('pracRun'),
-      picker=document.getElementById('pracPicker'),body=document.getElementById('pracBody');
-function drawGrid(){
-  grid.innerHTML=PRACS.map(p=>`<button class="pcard" data-id="${p.id}">
-    <div class="pn">${esc(p.n)}</div><div class="pt">${esc(p.t)}</div><div class="pd">${esc(p.d)}</div>
-    <span class="st${S.done[p.id]?' done':''}">${S.done[p.id]?'✔ completed · '+Math.round(S.pts[p.id].got/S.pts[p.id].of*100)+'%':'▶ start'}</span></button>`).join('');
-  grid.querySelectorAll('.pcard').forEach(b=>b.addEventListener('click',()=>openPrac(b.dataset.id)));
-}
-document.getElementById('pracBack').addEventListener('click',()=>{run.style.display='none';picker.style.display='block';drawGrid();});
-function head(p){return `<h2 style="margin-top:12px">${esc(p.n)} — ${esc(p.t)}</h2>
-  <details class="manual"><summary>Aim · Materials · Expected outcome</summary>
-  <div class="mb"><b>Aim:</b> ${esc(p.aim)}<br><b>Materials:</b> ${esc(p.mats)}<br><b>Expected outcome:</b> ${esc(p.out)}</div></details>`;}
-function finish(pid,got,of,extra){
-  S.done[pid]=true;S.pts[pid]={got,of};paint();
-  return `<div class="verdict show ${got/of>=0.75?'ok':got/of>=0.5?'warn':'bad'}">
-    <b>${PRACS.find(p=>p.id===pid).n} complete — ${got}/${of} (${Math.round(got/of*100)}%)</b>${extra||''}</div>
-    <button class="btn" onclick="document.getElementById('pracBack').click()">Back to practicals</button>`;
-}
-function openPrac(pid){
-  picker.style.display='none';run.style.display='block';
-  const p=PRACS.find(x=>x.id===pid);
-  if(pid==='p1')runMCQset(p,P1.map(c=>({q:c.s,tag:c.issue,opts:c.o})),'Case');
-  else if(pid==='p2')runP2(p);
-  else if(pid==='p3')runP3(p);
-  else if(pid==='p4')runP4(p);
-  else if(pid==='p5')runP5(p);
-  else if(pid==='p6')runP6(p);
-  else if(pid==='p7')runP7(p);
-  else if(pid==='p8')runP8(p);
-  else if(pid==='p9')runP9(p);
-  else if(pid==='p10')runMCQset(p,P10.map(s=>({q:s.q,tag:s.t,opts:s.o})),'Step',true);
-}
-
-/* generic staged MCQ engine (P1 & P10) */
-function runMCQset(p,items,label,capstone){
-  let i=0,got=0;const rows=[];
-  function step(){
-    if(i>=items.length){
-      let extra='<h3>Observation record</h3><table class="obs"><tr><th>'+label+'</th><th>'+(capstone?'Stage':'Ethical issue')+'</th><th>Your decision</th><th>Correct action</th></tr>'+
-        rows.map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td><td class="${r[4]?'okc':'badc'}">${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join('')+'</table>';
-      if(capstone) extra+=`<h3>Final submission checklist</h3><div class="hint">Patient record · dispensing record · ethical analysis · consent form · audit trail · error report · cyber-incident report — plus a <b>200-word reflection</b> in your written Practical Record (submit via Assessments for the AI provisional mark).</div>`;
-      body.innerHTML=head(p)+extra+finish(p.id,got,items.length*10);
-      return;
-    }
-    const it=items[i];
-    body.innerHTML=head(p)+`<div class="steps">${items.map((x,k)=>`<span class="stp${k<i?' done':k===i?' on':''}">${k+1}</span>`).join('')}</div>
-      <div class="q">${label} ${i+1}${it.tag?' · <span style="color:var(--gold)">'+esc(it.tag)+'</span>':''}</div>
-      <div class="hint" style="font-size:13.5px;color:var(--ink)">${esc(it.q)}</div>
-      ${it.opts.map((o,k)=>`<button class="opt" data-k="${k}">${esc(o[0])}</button>`).join('')}<div class="fb" id="fbx"></div>`;
-    body.querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
-      const o=it.opts[+btn.dataset.k], ok=!!o[1];
-      body.querySelectorAll('.opt').forEach((b2,k2)=>{b2.disabled=true;if(it.opts[k2][1])b2.classList.add('right');});
-      if(!ok)btn.classList.add('wrong'); else got+=10;
-      rows.push([i+1,it.tag||'',o[0],it.opts.find(x=>x[1])[0],ok]);
-      const fb=document.getElementById('fbx');fb.className='fb show '+(ok?'good':'bad');
-      fb.innerHTML='<b>'+(ok?'✔ Correct':'Not quite')+'</b>'+esc(o[2]);
-      const nx=document.createElement('button');nx.className='btn';nx.textContent=(i+1<items.length)?'Next →':'Finish ✓';
-      nx.onclick=()=>{i++;step();};body.appendChild(nx);
-    });
-  }
-  step();
-}
-
-/* P2 — e-Rx verification */
-function runP2(p){
-  const keys=Object.keys(P2KEY);const marks={};
-  body.innerHTML=head(p)+`
-   <div class="rx"><div class="rh"><b>MediSwift Teleconsult</b><small>Electronic prescription</small></div>
-     <p><b>Doctor:</b> Dr. S. Raghavan, MD (General Medicine)</p>
-     <p><b>Registration No:</b> <span class="missing">— not printed —</span></p>
-     <p><b>Date:</b> 14 September 2026</p>
-     <p><b>Patient:</b> Anil Kumar · 45 y · M</p>
-     <p><b>℞:</b> Tab Azithromycin 500 mg — once daily × 3 days</p>
-     <p class="sig">Digitally signed by S. Raghavan ✔</p>
-     <p><b>QR code:</b> <span class="missing">— none —</span></p></div>
-   <div class="hint">Mark each checklist parameter as <b>Present/valid</b> or <b>Missing/invalid</b>, then run verification. (Today is 11 July 2026.)</div>
-   ${keys.map(k=>`<div class="rowline"><div class="rl-t">${esc(P2KEY[k][0])}</div>
-     <span class="seg2" data-k="${k}"><button data-v="ok">Present / valid</button><button data-v="bad">Missing / invalid</button></span></div>`).join('')}
-   <button class="btn" id="p2go">Run verification ✓</button><div class="verdict" id="p2out"></div>`;
-  body.querySelectorAll('.seg2 button').forEach(b=>b.onclick=()=>{
-    const w=b.closest('.seg2');marks[w.dataset.k]=b.dataset.v;
-    w.querySelectorAll('button').forEach(x=>x.classList.remove('a','g'));
-    b.classList.add(b.dataset.v==='ok'?'g':'a');});
-  document.getElementById('p2go').onclick=()=>{
-    if(Object.keys(marks).length<keys.length){alert('Mark every parameter first.');return;}
-    let got=0;
-    const rows=keys.map(k=>{const ok=marks[k]===P2KEY[k][1];if(ok)got++;
-      return `<tr><td>${esc(P2KEY[k][0])}</td><td class="${P2KEY[k][1]==='ok'?'okc':'badc'}">${P2KEY[k][1]==='ok'?'Present':'Missing/invalid'}</td><td class="${ok?'okc':'badc'}">${ok?'✔ you agreed':'you marked '+(marks[k]==='ok'?'present':'missing')}</td><td>${esc(P2KEY[k][2])}</td></tr>`;});
-    body.querySelector('#p2out').outerHTML=`<h3>Observation sheet</h3><table class="obs"><tr><th>Parameter</th><th>Truth</th><th>Your audit</th><th>Note</th></tr>${rows.join('')}</table>
-      <div class="hint"><b>Viva:</b> an e-prescription is legally valid when it identifies a registered prescriber (name + registration no.), is dated and not expired, identifies the patient, states drug/dose/duration, and carries a verifiable digital signature (with QR/code where required).</div>`+
-      finish('p2',got,keys.length);
-    document.getElementById('p2go').remove();
-  };
-}
-
-/* P3 — confidentiality */
-function runP3(p){
-  let i=0,got=0;const rows=[];
-  function step(){
-    if(i>=P3.length){
-      body.innerHTML=head(p)+'<h3>Record</h3><table class="obs"><tr><th>Request</th><th>Approve</th><th>Reject</th><th>Reason</th></tr>'+
-        rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${r[1]==='approve'?'✔':''}</td><td>${r[1]==='reject'?'✔':''}</td><td>${esc(r[2])}</td></tr>`).join('')+'</table>'+
-        '<div class="hint"><b>Principles:</b> HIPAA/GDPR-style rules and India\'s DPDP Act share the same skeleton — consent, purpose limitation, minimum-necessary disclosure, and need-to-know access for care.</div>'+
-        finish('p3',got,P3.length*20);
-      return;
-    }
-    const c=P3[i];
-    body.innerHTML=head(p)+`<div class="steps">${P3.map((x,k)=>`<span class="stp${k<i?' done':k===i?' on':''}">${k+1}</span>`).join('')}</div>
-      <div class="q">Request ${i+1}: ${esc(c.who)}</div>
-      <div class="seg2" id="p3dec"><button data-v="1">Approve</button><button data-v="0">Reject / conditional</button></div>
-      <label class="f" style="margin-top:14px">Reason</label>
-      ${c.reasons.map((r,k)=>`<button class="opt" data-k="${k}">${esc(r[0])}</button>`).join('')}
-      <div class="fb" id="fbx"></div>`;
-    let dec=null;
-    body.querySelectorAll('#p3dec button').forEach(b=>b.onclick=()=>{dec=+b.dataset.v;
-      body.querySelectorAll('#p3dec button').forEach(x=>x.classList.remove('a','g'));b.classList.add(b.dataset.v==='1'?'g':'a');});
-    body.querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
-      if(dec===null){alert('Choose Approve or Reject first.');return;}
-      const r=c.reasons[+btn.dataset.k];
-      const decOk=dec===c.dec, rOk=!!r[1];let pts=0;if(decOk)pts+=10;if(rOk)pts+=10;got+=pts;
-      body.querySelectorAll('.opt').forEach((b2,k2)=>{b2.disabled=true;if(c.reasons[k2][1])b2.classList.add('right');});
-      if(!rOk)btn.classList.add('wrong');
-      rows.push([c.who,c.dec===1?'approve':'reject',c.reasons.find(x=>x[1])[0]]);
-      const fb=document.getElementById('fbx');fb.className='fb show '+((decOk&&rOk)?'good':'bad');
-      fb.innerHTML='<b>'+(decOk&&rOk?'✔ Correct ('+pts+'/20)':''+pts+'/20')+'</b>'+esc(c.why);
-      const nx=document.createElement('button');nx.className='btn';nx.textContent=i+1<P3.length?'Next request →':'Finish ✓';
-      nx.onclick=()=>{i++;step();};body.appendChild(nx);
-    });
-  }
-  step();
-}
-
-/* P4 — EHR documentation */
-function runP4(p){
-  body.innerHTML=head(p)+`
-    <div class="hint">An existing record is already in the database: <b>Anil Kumar · Metformin 500 mg OD</b> (watch for duplication).
-      Enter today's record, then run validation.</div>
-    <div class="g2">
-      <div><label class="f">Patient name</label><input type="text" id="e-name" placeholder="e.g. Anil Kumar"></div>
-      <div><label class="f">Age</label><input type="number" id="e-age" placeholder="45"></div>
-      <div><label class="f">Drug</label><input type="text" id="e-drug" placeholder="e.g. Telmisartan"></div>
-      <div><label class="f">Dose (with unit & frequency)</label><input type="text" id="e-dose" placeholder="e.g. 40 mg OD"></div>
-      <div><label class="f">Known allergy</label><input type="text" id="e-all" placeholder="e.g. Penicillin / NKDA"></div>
-      <div><label class="f">ADR noted (if any)</label><input type="text" id="e-adr" placeholder="e.g. none / mild nausea"></div>
-    </div>
-    <label class="f">Counselling note (≥ 10 words)</label>
-    <textarea id="e-coun" placeholder="What did you counsel the patient about?"></textarea>
-    <button class="btn" id="p4go">Run EHR validation ✓</button><div class="verdict" id="p4out"></div>`;
-  document.getElementById('p4go').onclick=()=>{
-    const v=id=>document.getElementById(id).value.trim();
-    const checks=[
-      ['All required fields filled',['e-name','e-age','e-drug','e-dose','e-all','e-coun'].every(id=>v(id)!=='')],
-      ['Age is plausible (1–119)',+v('e-age')>=1&&+v('e-age')<=119],
-      ['Dose has number + unit (mg/mcg/g/ml/IU)',/\d+\s*(mg|mcg|g|ml|iu)/i.test(v('e-dose'))],
-      ['Name properly capitalised',/^[A-Z][a-z]+(\s+[A-Z][a-z.]*)*$/.test(v('e-name'))],
-      ['No duplication of existing record',!(/anil\s*kumar/i.test(v('e-name'))&&/metformin/i.test(v('e-drug')))],
-      ['Counselling note is substantive (≥10 words)',(v('e-coun').match(/\S+/g)||[]).length>=10]
-    ];
-    const got=checks.filter(c=>c[1]).length;
-    document.getElementById('p4out').outerHTML='<h3>Validation result</h3><table class="obs"><tr><th>Check</th><th>Result</th></tr>'+
-      checks.map(c=>`<tr><td>${esc(c[0])}</td><td class="${c[1]?'okc':'badc'}">${c[1]?'✔ pass':'fail'}</td></tr>`).join('')+'</table>'+
-      finish('p4',got,checks.length);
-    document.getElementById('p4go').remove();
-  };
-}
-
-/* P5 — digital consent */
-function runP5(p){
-  let otp=null;
-  body.innerHTML=head(p)+`
-    <div class="hint">Walk the patient through consent, then capture signature + OTP + timestamp.</div>
-    <h3>1 · Explain (tick what you covered)</h3>
-    ${['Treatment & why it is needed','The medicine — dose, duration, side-effects','How their data will be used & stored','Their rights — refuse, withdraw, ask questions'].map((t,k)=>
-      `<div class="rowline"><div class="rl-t">${esc(t)}</div><span class="seg2"><button data-c="${k}">Explained ✓</button></span></div>`).join('')}
-    <h3>2 · Language</h3>
-    <select id="c-lang"><option value="">— choose —</option><option value="ok">Simple language the patient confirms understanding</option><option value="bad">Technical English read out quickly</option></select>
-    <h3>3 · Capture consent</h3>
-    <div class="g3">
-      <div><label class="f">Patient types full name (e-signature)</label><input type="text" id="c-sig" placeholder="Anil Kumar"></div>
-      <div><label class="f">OTP sent to patient</label><button class="btn ghost" id="c-send" style="margin-top:0;width:100%">Send OTP</button><div class="hint" id="c-otpshow" style="margin-top:6px"></div></div>
-      <div><label class="f">Enter OTP</label><input type="text" id="c-otp" placeholder="----"></div>
-    </div>
-    <button class="btn" id="p5go">Record consent ✓</button><div class="verdict" id="p5out"></div>
-    <div class="q" style="margin-top:18px">Viva — consent vs implied consent?</div>
-    ${[['Informed consent is explicit, specific and documented; implied consent is inferred from conduct (e.g. holding out an arm for BP) and never suffices for data sharing or risky therapy',1],
-       ['They are the same thing legally',0],['Implied consent is stronger because it is natural',0]].map((o,k)=>`<button class="opt" data-vk="${k}" data-ok="${o[1]}">${esc(o[0])}</button>`).join('')}
-    <div class="fb" id="fbv"></div>`;
-  const cov=new Set();
-  body.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{cov.add(b.dataset.c);b.classList.add('g');b.textContent='Explained ✔';});
-  document.getElementById('c-send').onclick=()=>{otp=String(Math.floor(1000+Math.random()*9000));document.getElementById('c-otpshow').textContent='Patient\'s phone shows OTP: '+otp;};
-  let vivaOk=null;
-  body.querySelectorAll('[data-vk]').forEach(b=>b.onclick=()=>{
-    vivaOk=b.dataset.ok==='1';
-    body.querySelectorAll('[data-vk]').forEach(x=>{x.disabled=true;if(x.dataset.ok==='1')x.classList.add('right');});
-    if(!vivaOk)b.classList.add('wrong');
-    const fb=document.getElementById('fbv');fb.className='fb show '+(vivaOk?'good':'bad');
-    fb.textContent=vivaOk?'✔ Correct.':'Informed consent must be explicit, understood and documented.';});
-  document.getElementById('p5go').onclick=()=>{
-    const sig=document.getElementById('c-sig').value.trim();
-    const okOtp=otp&&document.getElementById('c-otp').value.trim()===otp;
-    const lang=document.getElementById('c-lang').value;
-    const checks=[['All four elements explained',cov.size===4],['Understandable language used',lang==='ok'],
-      ['e-Signature captured',sig.length>=3],['OTP verified',!!okOtp],['Viva answered correctly',vivaOk===true]];
-    const got=checks.filter(c=>c[1]).length;
-    const ts=new Date().toLocaleString('en-GB');
-    document.getElementById('p5out').outerHTML='<h3>Consent record</h3><table class="obs"><tr><th>Check</th><th>Result</th></tr>'+
-      checks.map(c=>`<tr><td>${esc(c[0])}</td><td class="${c[1]?'okc':'badc'}">${c[1]?'✔':''}</td></tr>`).join('')+
-      `<tr><td><b>Timestamp</b></td><td>${ts}</td></tr></table>`+
-      finish('p5',got,checks.length,(got===checks.length?'Consent was informed, understood and verifiably captured.':'Consent was NOT fully informed — review the failed checks.'));
-    document.getElementById('p5go').remove();
-  };
-}
-
-/* P6 — error reporting */
-function runP6(p){
-  body.innerHTML=head(p)+`
-    <div class="hint"><b>Scenario:</b> Cetirizine 10 mg was dispensed instead of the prescribed Sertraline 50 mg (look-alike packs). The patient returned it unopened.</div>
-    <div class="g2">
-      <div><label class="f">Error type</label><select id="r-type"><option value="">—</option><option>Wrong drug</option><option>Wrong dose</option><option>Wrong patient</option><option>Wrong time</option></select></div>
-      <div><label class="f">Severity</label><select id="r-sev"><option value="">—</option><option>Near miss — no harm</option><option>Minor harm</option><option>Moderate harm</option><option>Severe harm</option></select></div>
-      <div><label class="f">Root cause</label><select id="r-root"><option value="">—</option><option>Look-alike / sound-alike storage</option><option>Workload & interruption</option><option>No double-check step</option><option>Software mis-pick</option></select></div>
-      <div><label class="f">Reported by</label><input type="text" id="r-by" placeholder="Your name & role"></div>
-    </div>
-    <label class="f">Incident description</label><textarea id="r-desc" placeholder="What happened, when, and how it was found?"></textarea>
-    <label class="f">Corrective action (fix it now)</label><textarea id="r-ca" placeholder="e.g. correct medicine dispensed, patient counselled…"></textarea>
-    <label class="f">Preventive action (stop recurrence)</label><textarea id="r-pa" placeholder="e.g. separate LASA drugs, barcode check…"></textarea>
-    <button class="btn" id="p6go">Submit incident report ✓</button><div class="verdict" id="p6out"></div>`;
-  document.getElementById('p6go').onclick=()=>{
-    const v=id=>document.getElementById(id).value.trim();
-    const wc=id=>(v(id).match(/\S+/g)||[]).length;
-    const checks=[['Error type selected',v('r-type')!==''],['Severity graded',v('r-sev')!==''],
-      ['Root cause identified',v('r-root')!==''],['Reporter identified',v('r-by').length>=3],
-      ['Description is substantive (≥12 words)',wc('r-desc')>=12],
-      ['Corrective AND preventive actions written (≥6 words each)',wc('r-ca')>=6&&wc('r-pa')>=6]];
-    const got=checks.filter(c=>c[1]).length;
-    const inc='INC-'+String(Date.now()).slice(-6);
-    document.getElementById('p6out').outerHTML='<h3>Incident report generated</h3><table class="obs">'+
-      `<tr><th>Incident no.</th><td>${inc}</td></tr><tr><th>Date</th><td>${new Date().toLocaleString('en-GB')}</td></tr>`+
-      `<tr><th>Drug</th><td>Cetirizine 10 mg dispensed vs Sertraline 50 mg prescribed</td></tr>`+
-      checks.map(c=>`<tr><th>${esc(c[0])}</th><td class="${c[1]?'okc':'badc'}">${c[1]?'✔':''}</td></tr>`).join('')+'</table>'+
-      finish('p6',got,checks.length,'Near-misses deserve full reports — that is how patient-safety systems learn.');
-    document.getElementById('p6go').remove();
-  };
-}
-
-/* P7 — cybersecurity */
-function runP7(p){
-  const marks={};
-  body.innerHTML=head(p)+`
-    <div class="hint">For each finding: rate the <b>risk level</b> and choose the right <b>prevention</b>. 2 points each.</div>
-    ${P7.map((t,i)=>`<div class="rowline"><div class="rl-t">${esc(t[0])}</div>
-      <span class="seg2" data-r="${i}"><button data-v="Low">Low</button><button data-v="Medium">Med</button><button data-v="High">High</button></span>
-      <select data-s="${i}" style="max-width:290px"><option value="">— prevention —</option>${[t[2],t[3],t[4]].map((o,k)=>`<option value="${k}">${esc(o[0])}</option>`).join('')}</select>
-      </div>`).join('')}
-    <button class="btn" id="p7go">Score my risk matrix ✓</button><div class="verdict" id="p7out"></div>`;
-  body.querySelectorAll('.seg2[data-r] button').forEach(b=>b.onclick=()=>{
-    const w=b.closest('.seg2');marks[w.dataset.r]=b.dataset.v;
-    w.querySelectorAll('button').forEach(x=>x.classList.remove('a'));b.classList.add('a');});
-  document.getElementById('p7go').onclick=()=>{
-    let got=0;const rows=P7.map((t,i)=>{
-      const sel=body.querySelector(`[data-s="${i}"]`).value;
-      const riskOk=marks[i]===t[1]||(t[1]==='High'&&marks[i]==='Medium'&&false);
-      const prevOk=sel!==''&&[t[2],t[3],t[4]][+sel][1]===1;
-      if(riskOk)got++;if(prevOk)got++;
-      return `<tr><td>${esc(t[0])}</td><td class="${riskOk?'okc':'badc'}">${esc(t[1])}${riskOk?' ✔':' (you: '+esc(marks[i]||'—')+')'}</td><td class="${prevOk?'okc':'badc'}">${esc(t[2][0])}${prevOk?' ✔':''}</td></tr>`;});
-    document.getElementById('p7out').outerHTML='<h3>Risk matrix</h3><table class="obs"><tr><th>Threat</th><th>Risk level</th><th>Prevention</th></tr>'+rows.join('')+'</table>'+
-      finish('p7',got,P7.length*2);
-    document.getElementById('p7go').remove();
-  };
-}
-
-/* P8 — audit trail */
-function runP8(p){
-  const marks={};
-  body.innerHTML=head(p)+`
-    <div class="hint">Review the day's software log. Mark each entry <b>Authorized</b> or <b>Suspicious</b>.</div>
-    <table class="obs"><tr><th>Time</th><th>User</th><th>Activity</th><th>Your verdict</th></tr>
-    ${P8.map((r,i)=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td>
-      <td><span class="seg2" data-k="${i}"><button data-v="0">Authorized</button><button data-v="1">Suspicious</button></span></td></tr>`).join('')}
-    </table>
-    <button class="btn" id="p8go">Verify audit trail ✓</button><div class="verdict" id="p8out"></div>`;
-  body.querySelectorAll('.seg2 button').forEach(b=>b.onclick=()=>{
-    const w=b.closest('.seg2');marks[w.dataset.k]=+b.dataset.v;
-    w.querySelectorAll('button').forEach(x=>x.classList.remove('a','g'));b.classList.add(b.dataset.v==='1'?'a':'g');});
-  document.getElementById('p8go').onclick=()=>{
-    if(Object.keys(marks).length<P8.length){alert('Mark every log entry first.');return;}
-    let got=0;
-    const rows=P8.map((r,i)=>{const ok=marks[i]===r[3];if(ok)got++;
-      return `<tr><td>${r[0]} · ${esc(r[1])}</td><td class="${r[3]?'badc':'okc'}">${r[3]?'Suspicious':'Authorized'}</td><td class="${ok?'okc':'badc'}">${ok?'✔':''}</td><td>${esc(r[4])}</td></tr>`;});
-    document.getElementById('p8out').outerHTML='<h3>Verification</h3><table class="obs"><tr><th>Entry</th><th>Truth</th><th>You</th><th>Why</th></tr>'+rows.join('')+'</table>'+
-      '<div class="hint"><b>Outcome:</b> audit trails answer who / what / when / authorized — accountability is impossible without them.</div>'+
-      finish('p8',got,P8.length);
-    document.getElementById('p8go').remove();
-  };
-}
-
-/* P9 — compliance audit */
-function runP9(p){
-  const marks={};
-  body.innerHTML=head(p)+`
-    <div class="hint">You inspect <b>MedPlus Digital Pharmacy</b>. Mark each requirement Compliant or Non-compliant.</div>
-    ${P9.map((r,i)=>`<div class="rowline"><div class="rl-t">${esc(r[0])}</div>
-      <span class="seg2" data-k="${i}"><button data-v="1">Compliant</button><button data-v="0">Non-compliant</button></span></div>`).join('')}
-    <button class="btn" id="p9go">Complete audit ✓</button><div class="verdict" id="p9out"></div>`;
-  body.querySelectorAll('.seg2 button').forEach(b=>b.onclick=()=>{
-    const w=b.closest('.seg2');marks[w.dataset.k]=+b.dataset.v;
-    w.querySelectorAll('button').forEach(x=>x.classList.remove('a','g'));b.classList.add(b.dataset.v==='1'?'g':'a');});
-  document.getElementById('p9go').onclick=()=>{
-    if(Object.keys(marks).length<P9.length){alert('Mark every requirement first.');return;}
-    let got=0;
-    const rows=P9.map((r,i)=>{const ok=marks[i]===r[1];if(ok)got++;
-      return `<tr><td>${esc(r[0])}</td><td class="${r[1]?'okc':'badc'}">${r[1]?'Compliant':'Non-compliant'}</td><td class="${ok?'okc':'badc'}">${ok?'✔':''}</td><td>${esc(r[2])}</td></tr>`;});
-    const compl=Math.round(P9.filter(r=>r[1]).length/P9.length*100);
-    document.getElementById('p9out').outerHTML='<h3>Audit checklist</h3><table class="obs"><tr><th>Requirement</th><th>Truth</th><th>Your audit</th><th>Note</th></tr>'+rows.join('')+'</table>'+
-      `<div class="hint"><b>Pharmacy compliance score: ${compl}%</b> — your audit accuracy: ${Math.round(got/P9.length*100)}%.</div>`+
-      finish('p9',got,P9.length);
-    document.getElementById('p9go').remove();
-  };
-}
-
-/* ================= viva ================= */
-const VIVA=[
- ['What is digital pharmacy ethics?','Applying pharmacy\'s ethical principles — beneficence, autonomy, confidentiality, justice, accountability — to digital services like telepharmacy, e-prescriptions and health data.'],
- ['What is informed consent?','Permission given voluntarily by a patient who understands the purpose, benefits, risks and alternatives — specific, documented and revocable.'],
- ['What is patient confidentiality?','The duty to protect all patient information from unauthorized access or disclosure; only need-to-know, consented or legally-required sharing.'],
- ['Define electronic prescription.','A prescription generated, digitally signed and transmitted electronically by a registered prescriber, verifiable by registration number and signature/QR.'],
- ['What is an audit trail?','A tamper-evident chronological log of who did what and when in a system — logins, edits, dispensing — enabling accountability.'],
- ['Why is data integrity important?','Clinical decisions depend on the data; incomplete or altered records cause patient harm and destroy legal reliability (ALCOA: attributable, legible, contemporaneous, original, accurate).'],
- ['What is role-based access control?','Permissions granted according to job role — an intern, pharmacist and admin see and edit different things; least privilege by default.'],
- ['What is two-factor authentication?','Login requiring two proofs — something you know (password) plus something you have (OTP/device) or are (biometric).'],
- ['Define medication error.','Any preventable event that may cause or lead to inappropriate medication use or patient harm — wrong drug, dose, patient, route or time; includes near-misses.'],
- ['What is pharmacovigilance?','The science of detecting, assessing and preventing adverse drug reactions and other medicine-related problems.'],
- ['What is cybersecurity?','Protecting systems, networks and data from unauthorized access, attack or damage — confidentiality, integrity, availability.'],
- ['What is ransomware?','Malware that encrypts systems/data and demands payment for release — a leading cause of healthcare downtime.'],
- ['What is phishing?','Fraudulent messages that impersonate trusted parties to steal credentials or deliver malware; verify sender and never click unverified links.'],
- ['Why should passwords be strong?','Weak/reused passwords are the easiest attack path; strong unique passwords + 2FA protect patient data behind your login.'],
- ['What is an electronic health record (EHR)?','A digital, longitudinal record of a patient\'s health information — demographics, medicines, allergies, results — shareable across authorized care providers.'],
- ['Professional responsibilities of a pharmacist in digital practice?','Verify prescriptions, protect data, counsel effectively, document accurately, report errors, maintain competence and follow law and ethics — the same duties, digitally executed.'],
- ['How long should pharmacy records be retained?','As per the applicable regulation/institutional policy (commonly ≥2–5 years; controlled substances often longer) — know and follow YOUR jurisdiction\'s rule.'],
- ['What should you do if patient data is accidentally disclosed?','Contain it, inform the data-protection officer/authority per policy, notify affected patients where required, document, and fix the root cause.'],
- ['Why are digital signatures important?','They authenticate the signer and prove the document was not altered — the legal backbone of e-prescriptions.'],
- ['What is the purpose of an audit log?','To make every action attributable and reviewable — deterring misuse, detecting incidents and supporting legal/regulatory investigation.']
-];
-document.getElementById('vivaList').innerHTML=VIVA.map((q,i)=>
-  `<details class="viva"><summary>${i+1}. ${esc(q[0])}</summary><div class="va">${esc(q[1])}</div></details>`).join('');
-
-drawGrid();paint();
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="firebase-sync.js"></script>
 <script src="alizon-practical-submit.js?v=3"></script>
-<script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=12"></script>
 <script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=13"></script>
+<script src="alizon-pdf-open.js"></script>
 <script>
-window.AlizonPracticalReport&&AlizonPracticalReport.mount({
-  container:'#reportWriter',
-  module:'Module 1 · Unit 3 — Ethics, Regulation & Data Protection Lab',
-  title:'Ethics, Regulation & Data Protection Lab',
-  programme:'Pharmacy AI',
-  minWords:400,
-  autoResult:function(){
-    var g=document.getElementById('repGrid'); var v=document.getElementById('repVerdict');
-    if(!g||!g.children.length) return '';
-    var vt=v?v.textContent:''; if(/Complete the practicals to unlock/i.test(vt)) return '';
-    return g.outerHTML+(v?('<p style="margin-top:10px;font-weight:700">'+v.textContent+'</p>'):'');
+(function(){
+  'use strict';
+  var $=function(i){return document.getElementById(i);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var CLOCK=72*60, PASS=50;   /* one simulated hour per second */
+
+  var MSGS=[
+   {stage:0, from:'Ward 7 Sister', tag:'urgent', at:'Mon 08:12',
+    b:'“The pharmacy discharge list for the whole of last week was left on the printer in the public corridor over the weekend. It has patient names, hospital numbers, diagnoses and full medication lists. <span class="flag">Someone has photographed it and posted it in a WhatsApp group.</span> I have taken the paper copies but the photo is circulating.”'},
+   {stage:1, from:'IT Security', tag:'info', at:'Mon 08:40',
+    b:'“We have checked the print queue. The list was generated Friday 16:50 from the pharmacy system by a valid login. It contains <span class="flag">318 patients</span>, including 14 on the HIV clinic list and 9 attending the addiction service. The document was not encrypted and had no protective marking.”'},
+   {stage:3, from:'Mr Sharma, patient', tag:'info', at:'Mon 11:05',
+    b:'“I have heard my details were in the leaked list. I want to know exactly what was disclosed about me, who saw it, and I want a copy of everything you hold about me.”'},
+   {stage:4, from:'A local journalist', tag:'urgent', at:'Mon 14:20',
+    b:'“I am writing about the pharmacy data leak. Can you confirm whether any HIV patients were on the list, and give me the number affected by category? I only need aggregate figures, no names — that is not personal data, so there is no problem sharing it.”'}
+  ];
+
+  var CONTAIN=[
+   {t:'Secure the remaining paper copies and remove the document from the print queue', ord:1},
+   {t:'Ask the WhatsApp group members to delete the photograph and confirm deletion', ord:2},
+   {t:'Record the incident on the incident register with the time it was discovered', ord:3},
+   {t:'Notify the organisation’s Data Protection Officer', ord:4},
+   {t:'Begin establishing the scope — how many individuals and what categories of data', ord:5}
+  ];
+
+  var STAGES=[
+  {n:1, key:'contain', marks:25, title:'Immediate containment', order:true,
+   q:'Put the first five actions in the order you would carry them out.',
+   e:'Containment runs <b>outward from the exposure</b>. Secure what you still control (the paper and the print queue) before chasing what you do not. Then limit further spread, then record the discovery time — which starts every subsequent clock — then bring in the DPO, whose job this becomes. Scope assessment comes last of these five, because it takes hours and the exposure cannot wait for it. The commonest real-world error is to start counting patients before stopping the leak.',
+   crit:true},
+
+  {n:2, key:'scope', marks:15, title:'Assess the risk',
+   q:'318 patients, including 14 from the HIV clinic and 9 from the addiction service. How do you characterise this breach?',
+   o:['Low risk — it was only a printed list, and no financial data was involved',
+      'High risk — it exposes health data, and for some individuals data whose disclosure carries a serious risk of stigma, discrimination and harm',
+      'Medium risk — the numbers are large but the data is routine clinical information',
+      'Risk cannot be assessed until the photograph is recovered'],c:1,
+   e:'Risk is assessed by <b>consequence to the individual</b>, not by the format of the record or the presence of financial data. Health data is sensitive by nature, and disclosure of HIV status or addiction treatment can cost someone their employment, their housing and their relationships. The absence of bank details is irrelevant. Nor can assessment wait — the obligation to assess begins on discovery.',
+   crit:true},
+
+  {n:3, key:'notify', marks:20, title:'Notification',
+   q:'Under the Digital Personal Data Protection Act, 2023, what are your notification obligations?',
+   o:['No notification is required — the data was recovered and no financial loss occurred',
+      'Notify the Data Protection Board only if a patient complains',
+      'Notify the Data Protection Board of India and every affected Data Principal, without waiting for the investigation to conclude',
+      'Notify only the 23 patients whose data was especially sensitive'],c:2,
+   e:'The DPDP Act requires the Data Fiduciary to notify <b>both the Data Protection Board and each affected Data Principal</b> of a personal data breach. There is no threshold exemption for recovered data, no requirement for a complaint first, and no basis for notifying only the most sensitive subset — all 318 individuals are affected. Notification is not delayed until the investigation finishes; an initial notification is made and updated as facts emerge.',
+   crit:true},
+
+  {n:4, key:'sar', marks:15, title:'The patient request',
+   q:'Mr Sharma wants to know what was disclosed about him, who saw it, and a copy of everything you hold. How do you respond?',
+   o:['Refuse — an investigation is ongoing and records cannot be released during it',
+      'Provide everything immediately over the telephone so he is not kept waiting',
+      'Verify his identity, then tell him what happened to his data, and process his access request within the statutory period — providing his own data but not the personal data of others',
+      'Tell him to submit a formal legal request through a solicitor'],c:2,
+   e:'He is exercising two distinct rights and both are valid: to be <b>informed about the breach affecting him</b>, and to <b>access his own data</b>. An ongoing investigation does not suspend either. But identity must be verified first, disclosure by telephone risks giving data to the wrong person, and requiring a solicitor is an unlawful obstruction. Note the limit — his own data, not the records of the other 317 people on the same list.'},
+
+  {n:5, key:'press', marks:15, title:'The journalist',
+   q:'The journalist wants aggregate figures by clinic category, arguing that numbers are not personal data. What do you do?',
+   o:['Provide the aggregate figures — the journalist is right that counts are not personal data',
+      'Provide the total of 318 but not the clinic breakdown',
+      'Decline to disclose anything, refer the enquiry to the communications team and the DPO, and document the approach',
+      'Provide the figures on condition the journalist does not publish them'],c:2,
+   e:'The journalist’s premise is wrong. In a defined cohort, <b>“9 patients from the addiction service at this hospital last week” is close to identifying</b> — small numbers in a known group are a recognised disclosure risk, which is why statistical disclosure control suppresses small cells. Beyond that, an operational pharmacist is not the organisation’s spokesperson. The correct response is to decline, refer to the proper channel, and record that the approach was made.',
+   crit:true},
+
+  {n:6, key:'prevent', marks:10, title:'Preventive action', multi:true,
+   q:'Select every preventive action that addresses the actual cause.',
+   items:[
+    {t:'Move the printer out of the public corridor into a controlled area', ok:true},
+    {t:'Enable secure print release so documents print only when the user is at the device', ok:true},
+    {t:'Apply protective marking and encryption to reports containing patient data', ok:true},
+    {t:'Review who can generate full patient list extracts, and restrict it', ok:true},
+    {t:'Remind staff at the team meeting to collect their printing promptly', ok:false,
+     w:'A reminder is the weakest control on the hierarchy and does nothing structural. The printer would still be in a public corridor.'},
+    {t:'Stop producing discharge lists altogether', ok:false,
+     w:'Removing a clinically necessary process is not proportionate. The fix is to control the process, not abolish it.'},
+    {t:'Delete the print logs so the incident does not appear at the next audit', ok:false,
+     w:'Destroying evidence of an incident is a separate and more serious offence than the breach itself.'}],
+   e:'Effective prevention attacks the <b>conditions that made the breach possible</b>: an unattended printer in a public space, unrestricted extract generation, and unprotected documents. Secure print release alone would have prevented this entire incident. A reminder at a team meeting would not.'}
+  ];
+
+  $('badgeCrit').innerHTML='<b>Fast Containment</b> — the correct containment sequence. &nbsp;·&nbsp; '
+    +'<b>Correct Assessment</b> — risk characterised properly. &nbsp;·&nbsp; '
+    +'<b>Notified Properly</b> — Board and all Data Principals. &nbsp;·&nbsp; '
+    +'<b>Held the Line</b> — refused the improper disclosure and handled the access request lawfully. &nbsp;·&nbsp; '
+    +'<b>Incident Lead</b> — 85 or more with containment complete.';
+
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}');
+       if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var S=null, tick=null, sel=null, order=[], multi=[];
+
+  function start(){
+    S={i:0,marks:0,contain:0,comp:100,secs:CLOCK,t0:Date.now(),ended:false,log:[],
+       name:($('cName').value||'').trim()||'Candidate',reg:($('cReg').value||'').trim()};
+    $('setupCard').style.display='none'; $('live').style.display='';
+    clearInterval(tick);
+    tick=setInterval(function(){
+      if(!S||S.ended) return;
+      S.secs=Math.max(0,CLOCK-Math.floor((Date.now()-S.t0)/1000));
+      var h=Math.floor(S.secs/60), m=S.secs%60;
+      $('clock').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+      $('clock').classList.toggle('warn',S.secs<=600);
+      if(S.secs<=0) finish('time');
+    },1000);
+    render();
   }
-});
+  function paintBar(){
+    $('mStage').textContent=Math.min(S.i+1,STAGES.length)+' / '+STAGES.length;
+    $('mScore').textContent=Math.round(S.marks*10)/10;
+    $('mCon').textContent=S.contain+'%'; $('mComp').textContent=S.comp+'%';
+    var a=$('barCon'); a.style.width=S.contain+'%'; a.className=S.contain>=80?'':(S.contain>=40?'warn':'bad');
+    var b=$('barComp'); b.style.width=S.comp+'%'; b.className=S.comp>=80?'':(S.comp>=50?'warn':'bad');
+    $('mConWrap').className='m'+(S.contain>=80?' good':(S.contain>=40?' warn':' bad'));
+    $('mCompWrap').className='m'+(S.comp>=80?' good':(S.comp>=50?' warn':' bad'));
+  }
+  function paintInbox(){
+    var vis=MSGS.filter(function(m){return m.stage<=S.i;});
+    $('inbox').innerHTML='<div class="inbox"><h4>Incident inbox</h4>'
+      +vis.map(function(m){
+        return '<div class="msg"><div class="mh"><b>'+esc(m.from)+'</b><span>'+esc(m.at)+'</span>'
+          +'<span class="tagx '+m.tag+'">'+(m.tag==='urgent'?'urgent':'for information')+'</span></div>'
+          +'<div class="mb">'+m.b+'</div></div>';
+      }).join('')+'</div>';
+  }
+
+  function render(){
+    if(S.i>=STAGES.length){ finish('complete'); return; }
+    var st=STAGES[S.i]; sel=null; order=[]; multi=[];
+    paintBar(); paintInbox();
+    var h='<div class="task"><span class="step">Stage '+st.n+' of '+STAGES.length+' · '+st.marks+' marks</span>'
+      +'<h3>'+esc(st.title)+'</h3><div class="q">'+esc(st.q)+'</div>';
+    if(st.order){
+      h+='<div class="order" id="oW">'+CONTAIN.map(function(c,k){
+        return '<button type="button" class="ostep" data-k="'+k+'"><span class="ordn">·</span><span>'+esc(c.t)+'</span></button>';}).join('')+'</div>'
+        +'<p class="muted" style="font-size:12px;margin-top:6px" id="oNote">Click the actions in order. Click a chosen action again to remove it.</p>';
+    } else if(st.multi){
+      h+='<div class="opts" id="mW">'+st.items.map(function(it,k){
+        return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+(k+1)+'</span><span>'+esc(it.t)+'</span></button>';}).join('')+'</div>';
+    } else {
+      h+='<div class="opts" id="sW">'+st.o.map(function(o,k){
+        return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+'ABCD'[k]+'</span><span>'+esc(o)+'</span></button>';}).join('')+'</div>';
+    }
+    h+='<div id="fbk"></div><div class="row" style="margin-top:12px"><button class="btn" id="goBtn">Confirm</button></div></div>';
+    $('stage').innerHTML=h;
+    if(st.order){
+      [].forEach.call(document.querySelectorAll('#oW .ostep'),function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k'), i=order.indexOf(k);
+          if(i<0) order.push(k); else order.splice(i,1);
+          [].forEach.call(document.querySelectorAll('#oW .ostep'),function(x){
+            var kk=+x.getAttribute('data-k'), pos=order.indexOf(kk);
+            x.classList.toggle('chosen',pos>=0);
+            x.querySelector('.ordn').textContent=(pos>=0?(pos+1):'·');
+          });
+          $('oNote').textContent=order.length+' of '+CONTAIN.length+' ordered.';
+        });
+      });
+    } else if(st.multi){
+      [].forEach.call(document.querySelectorAll('#mW .opt'),function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k'), i=multi.indexOf(k);
+          if(i<0){multi.push(k);b.classList.add('pick');} else {multi.splice(i,1);b.classList.remove('pick');}
+        });
+      });
+    } else {
+      [].forEach.call(document.querySelectorAll('#sW .opt'),function(b){
+        b.addEventListener('click',function(){
+          sel=+b.getAttribute('data-k');
+          [].forEach.call(document.querySelectorAll('#sW .opt'),function(x){x.classList.remove('pick');});
+          b.classList.add('pick');
+        });
+      });
+    }
+    $('goBtn').addEventListener('click',function(){ submit(st); });
+  }
+
+  function submit(st){
+    var got=0, ok=true, extra='';
+    if(st.order){
+      if(order.length!==CONTAIN.length){
+        $('fbk').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Order all five actions.</div>'; return; }
+      var right=0;
+      order.forEach(function(k,pos){ if(CONTAIN[k].ord===pos+1) right++; });
+      got=Math.round((25*right/CONTAIN.length)*10)/10;
+      ok=(right===CONTAIN.length);
+      S.contain=Math.round(100*right/CONTAIN.length);
+      if(!ok) S.comp=Math.max(0,S.comp-10);
+      [].forEach.call(document.querySelectorAll('#oW .ostep'),function(b){
+        var k=+b.getAttribute('data-k'), pos=order.indexOf(k);
+        b.classList.remove('chosen');
+        b.classList.add(CONTAIN[k].ord===pos+1?'right':'wrong');
+        b.querySelector('.ordn').textContent=CONTAIN[k].ord;
+      });
+      extra='<br><b>Correct sequence:</b> '+CONTAIN.slice().sort(function(a,b){return a.ord-b.ord;})
+        .map(function(c,i){return (i+1)+'. '+esc(c.t);}).join(' · ');
+    } else if(st.multi){
+      if(!multi.length){ $('fbk').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Select at least one action.</div>'; return; }
+      var r=0, bad=[];
+      st.items.forEach(function(it,k){
+        var p=multi.indexOf(k)>=0;
+        if(p===it.ok) r++; else if(p&&!it.ok) bad.push(esc(it.t)+' — '+it.w);
+      });
+      got=Math.round((st.marks*r/st.items.length)*10)/10;
+      ok=(r===st.items.length);
+      if(bad.length) S.comp=Math.max(0,S.comp-8*bad.length);
+      [].forEach.call(document.querySelectorAll('#mW .opt'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        var c=st.items[k].ok?'right':(multi.indexOf(k)>=0?'wrong':'');
+        if(c) b.classList.add(c);
+      });
+      if(bad.length) extra='<br><b>Unacceptable actions selected:</b><ul><li>'+bad.join('</li><li>')+'</li></ul>';
+    } else {
+      if(sel==null){ $('fbk').innerHTML='<div class="fb no"><div class="hd">Choose an option</div>Select one before confirming.</div>'; return; }
+      ok=(sel===st.c); got=ok?st.marks:0;
+      if(!ok && st.crit) S.comp=Math.max(0,S.comp-22);
+      else if(!ok) S.comp=Math.max(0,S.comp-10);
+      [].forEach.call(document.querySelectorAll('#sW .opt'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        if(k===st.c) b.classList.add('right'); else if(sel===k) b.classList.add('wrong');
+      });
+    }
+    S.marks+=got;
+    S.log.push({n:st.n,title:st.title,got:got,max:st.marks,ok:ok});
+    $('fbk').innerHTML='<div class="fb '+(ok?'ok':(got>0?'part':'no'))+'"><div class="hd">'+got+' / '+st.marks+' marks'+(ok?' — correct':'')+'</div>'
+      +st.e+extra+'</div>';
+    paintBar();
+    $('goBtn').disabled=true;
+    [].forEach.call(document.querySelectorAll('#stage .opt,#stage .ostep'),function(b){b.style.pointerEvents='none';});
+    var nx=document.createElement('button');
+    nx.className='btn gold sm'; nx.style.marginLeft='8px';
+    nx.textContent=(S.i>=STAGES.length-1)?'Close the incident ▸':'Next ▸';
+    $('goBtn').parentNode.appendChild(nx);
+    nx.addEventListener('click',function(){ S.i++; render(); window.scrollTo({top:0,behavior:'smooth'}); });
+  }
+
+  function finish(reason){
+    if(S.ended) return;
+    S.ended=true; clearInterval(tick);
+    STAGES.forEach(function(st,i){ if(!S.log[i]) S.log.push({n:st.n,title:st.title,got:0,max:st.marks,ok:false,skipped:true}); });
+    var total=Math.round(S.marks*10)/10;
+    var pass=(total>=PASS);
+    var g=function(i){ return S.log[i]&&S.log[i].ok; };
+    S.result={total:total,pct:Math.round(total),pass:pass,contain:S.contain,comp:S.comp,reason:reason,
+      secs:CLOCK-S.secs,
+      badges:[
+        {n:'🚨 Fast Containment',  got:g(0), d:'The correct containment sequence'},
+        {n:'📏 Correct Assessment',got:g(1), d:'Risk characterised properly'},
+        {n:'📨 Notified Properly', got:g(2), d:'Board and all Data Principals notified'},
+        {n:'🛑 Held the Line',     got:(g(3)&&g(4)), d:'Access request handled lawfully and improper disclosure refused'},
+        {n:'🏅 Incident Lead',     got:(total>=85&&S.contain===100), d:'85 or more with containment complete'}
+      ]};
+    makeQR(); renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+
+  var qrData='';
+  function makeQR(){
+    try{
+      var url='https://www.alizon.in/alizon-verify.html?reg='+encodeURIComponent(S.reg||'')+'&p=M1U3-BREACH';
+      $('qrHolder').innerHTML='';
+      if(window.QRCode){
+        new QRCode($('qrHolder'),{text:url,width:96,height:96,correctLevel:QRCode.CorrectLevel.M});
+        var cv=$('qrHolder').querySelector('canvas');
+        qrData=cv?cv.toDataURL('image/png'):(($('qrHolder').querySelector('img')||{}).src||'');
+      }
+    }catch(e){ qrData=''; }
+  }
+  function hhmm(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+
+  function buildAuto(){
+    if(!S||!S.result) return null;
+    var r=S.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Data Breach Response — incident INC-2026-0803</h3>';
+    h+='<p style="margin:2px 0"><b>Student:</b> '+esc(S.name)+(S.reg?' &nbsp;·&nbsp; <b>Register no.:</b> '+esc(S.reg):'')+'</p>';
+    h+='<p style="margin:2px 0"><b>Date:</b> '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})
+      +' &nbsp;·&nbsp; <b>Incident:</b> unsecured discharge list, 318 Data Principals, health data including HIV and addiction services</p>';
+    h+='<p style="margin:6px 0"><b>Final score:</b> '+r.total+' / 100 &nbsp;·&nbsp; <b>Result:</b> '+(r.pass?'PASS':'FAIL')
+      +' &nbsp;·&nbsp; <b>Containment:</b> '+r.contain+'% &nbsp;·&nbsp; <b>Compliance:</b> '+r.comp+'%</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:8px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Stage</th><th align="left">Decision</th><th>Awarded</th><th>Maximum</th></tr>'
+      +S.log.map(function(l){return '<tr><td>'+l.n+'</td><td>'+esc(l.title)+'</td><td align="center">'+l.got+'</td><td align="center">'+l.max+'</td></tr>';}).join('')
+      +'<tr style="font-weight:700"><td></td><td>Total</td><td align="center">'+r.total+'</td><td align="center">100</td></tr></table>';
+    h+='<p style="margin:9px 0 2px"><b>Badges earned:</b> '+(r.badges.filter(function(b){return b.got;}).map(function(b){return esc(b.n);}).join(' · ')||'none')+'</p>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.total+' / 100</p>';
+    h+='<p style="margin-top:8px;font-size:11px;color:#555"><b>Faculty remarks:</b> ______________________________________________</p>';
+    if(qrData) h+='<div style="margin-top:10px"><img src="'+qrData+'" width="96" height="96" alt="Verification QR">'
+      +'<div style="font-size:10px;color:#666">Scan to verify · '+esc(S.reg||'—')+' · M1-U3-BREACH</div></div>';
+    return h;
+  }
+
+  function renderReport(){
+    var r=S.result;
+    $('repEmpty').style.display='none'; var b=$('repBody'); b.style.display='';
+    var h='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">Marks / 100</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.contain+'%</div><div class="rl">Containment</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.comp+'%</div><div class="rl">Compliance</div></div>'
+      +'<div class="repbox"><div class="rv">318</div><div class="rl">Data Principals</div></div>'
+      +'<div class="repbox"><div class="rv">'+hhmm(r.secs)+'</div><div class="rl">Elapsed</div></div></div>';
+    h+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(S.name)+(S.reg?' ('+esc(S.reg)+')':'')+' · '+r.total+' / 100</div>';
+    if(!S.log[2].ok) h+='<div class="fb no" style="margin-bottom:12px"><div class="hd">Notification obligation not met</div>'
+      +'Failing to notify the Data Protection Board and the affected Data Principals is itself a contravention of the DPDP Act, separate from the breach that caused it.</div>';
+    if(!S.log[4].ok) h+='<div class="fb no" style="margin-bottom:12px"><div class="hd">Improper disclosure</div>'
+      +'Small counts within a defined clinic cohort are close to identifying. Confirming them to a journalist compounds the original breach.</div>';
+    h+='<h3 style="font-size:13px;margin:16px 0 6px">Stage-by-stage</h3><div class="tw"><table class="rubric">'
+      +'<thead><tr><th>Stage</th><th>Decision</th><th>Marks</th><th style="width:100px"></th></tr></thead><tbody>';
+    S.log.forEach(function(l){
+      var p=Math.round(l.got/l.max*100), c=p>=80?'good':(p<50?'bad':'');
+      h+='<tr><td>'+l.n+'</td><td>'+esc(l.title)+(l.skipped?' <i class="muted">(not reached)</i>':'')+'</td>'
+        +'<td>'+l.got+' / '+l.max+'</td><td><div class="bar"><i class="'+c+'" style="width:'+p+'%"></i></div></td></tr>';
+    });
+    h+='<tr class="tot"><td></td><td>Total</td><td>'+r.total+' / 100</td><td></td></tr></tbody></table></div>';
+    h+='<h3 style="font-size:13px;margin:18px 0 6px">Achievement badges</h3><div class="badges">'
+      +r.badges.map(function(x){return '<span class="badge '+(x.got?'got':'miss')+'" title="'+esc(x.d)+'">'+x.n+'</span>';}).join('')+'</div>';
+    h+='<div class="row no-print" style="margin-top:16px"><button class="btn gold" onclick="window.print()">Print report</button>'
+      +'<button class="btn ok" id="againBtn">Run the incident again</button></div>'
+      +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p>';
+    b.innerHTML=h;
+    $('againBtn').addEventListener('click',function(){
+      $('setupCard').style.display=''; $('live').style.display='none'; $('stage').innerHTML=''; $('inbox').innerHTML='';
+      $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+      S=null; switchTab('inc'); window.scrollTo(0,0);
+    });
+  }
+
+  var OPTS={module:'Module 1 · Unit 3 — Ethics, Regulation & Data Protection in Digital Pharmacy',
+            title:'Data Breach Response Simulation',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Incident summary &amp; regulatory position', placeholder:'e.g. 95/100 — contained in sequence, high risk, Board and all 318 principals notified, press enquiry refused'},
+      minWords:400,
+      attachments:[{label:'1. Breach Incident Report (PDF)'},
+                   {label:'2. Notification and CAPA Record (PDF)'},
+                   {label:'3. Additional Supporting File (PDF)'}],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return S&&S.result?S.result.pct:null; },
+      autoResultText:function(){ return S&&S.result?((S.result.pass?'PASS':'FAIL')+' '+S.result.total+'/100'):''; }
+    });
+  }
+  function switchTab(p){
+    [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);});
+    [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);});
+  }
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark');
+    try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  $('startBtn').addEventListener('click',start);
+})();
 </script>
 </body>
 </html>

@@ -6,555 +6,655 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, follow">
-<title>ALIZON OS · Module 4 · Digital Quality &amp; Safety Documentation in Pharmaceutical Manufacturing</title>
+<title>ALIZON OS · Module 4 · Batch Record Review & Data Integrity Audit</title>
 <script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#f2f0ec;--panel:#ffffff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
-    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);--success:#1E8E5A;--danger:#C4262E;--warn:#B45309;
-    --acc:#3A5BB0;--acc-soft:rgba(58,91,176,.12);
+  :root{--bg:#f2f0ec;--panel:#fff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A;--danger:#C4262E;--warn:#B45309;--teal:#0E6F76;--purple:#6D28D9;
     --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
   html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
-    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--gold-soft:rgba(217,164,65,.16);--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;
-    --acc:#7aa0ef;--acc-soft:rgba(122,160,239,.14);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;--teal:#4bc2c9;--purple:#a78bfa;
     --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
-  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
-  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
-  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
-  .hero p{color:var(--muted);font-size:14px;max-width:80ch}
-  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
-  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)}
-  .scorechip b{color:var(--gold)}
-  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
-  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
-  .tab.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
-  .panel{display:none}.panel.on{display:block}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--card-shadow);padding:18px 20px;margin-bottom:16px}
-  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;margin-bottom:4px}
-  .card h3{font-size:14.5px;margin-bottom:8px}
-  .step-tag{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--acc);border-radius:100px;padding:3px 11px;display:inline-block;margin-bottom:8px}
-  .marks{float:right;font-size:11.5px;font-weight:700;color:var(--gold);background:var(--gold-soft);border-radius:100px;padding:3px 10px}
-  .muted{color:var(--muted);font-size:13px}
-  table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
-  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
-  th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-  .q{margin:12px 0;padding:12px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}
-  .q>b{display:block;font-size:13.5px;margin-bottom:8px}
-  .opts{display:flex;gap:8px;flex-wrap:wrap}
-  .opt{cursor:pointer;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:100px;background:var(--panel);border:1px solid var(--line);color:var(--ink)}
-  .opt.sel{background:var(--acc);border-color:var(--acc);color:#fff}
-  input[type=text],input[type=number],textarea,select{width:100%;font:inherit;font-size:13px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);margin-top:4px}
-  textarea{min-height:70px;resize:vertical}
-  label.ck{display:flex;gap:9px;align-items:flex-start;font-size:13px;margin:7px 0;cursor:pointer}
-  label.ck input{margin-top:3px;flex:none}
-  .btn{cursor:pointer;font:inherit;font-size:13.5px;font-weight:700;color:#fff;background:var(--crimson);border:0;border-radius:100px;padding:11px 22px}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(13px,2.6vw,26px) 80px}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(15px,2.4vw,22px);box-shadow:var(--card-shadow);margin-bottom:15px}
+  .muted{color:var(--muted)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:10px 20px;color:#fff;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .btn:hover{filter:brightness(1.07)} .btn[disabled]{opacity:.45;cursor:not-allowed}
   .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
-  .fb{margin-top:10px;font-size:13px;padding:10px 13px;border-radius:10px;display:none}
-  .fb.show{display:block}
-  .fb.good{background:rgba(30,142,90,.12);border:1px solid rgba(30,142,90,.35);color:var(--success)}
-  .fb.bad{background:rgba(196,38,46,.1);border:1px solid rgba(196,38,46,.32);color:var(--danger)}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
-  .pill{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:100px;padding:3px 10px}
-  .p-ok{background:rgba(30,142,90,.14);color:var(--success)}
-  .p-bad{background:rgba(196,38,46,.12);color:var(--danger)}
-  .p-warn{background:var(--gold-soft);color:var(--gold)}
-  .dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
-  .dtile{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
-  .dtile small{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-  .dtile b{font-size:21px;font-weight:800}
-  .alert{border-left:4px solid var(--warn);background:rgba(180,83,9,.08);border-radius:0 12px 12px 0;padding:12px 15px;margin:10px 0}
-  .alert b{color:var(--warn)}
-  .flow{display:flex;flex-direction:column;gap:6px;font-size:12.5px}
-  .fnode{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;text-align:center}
-  .fnode.dec{border-color:var(--gold);color:var(--gold);font-weight:700}
-  .farr{text-align:center;color:var(--muted)}
-  .qrbox{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
-  .qr{width:132px;height:132px;flex:none;background:#fff;padding:8px;border-radius:10px;border:1px solid var(--line)}
-  .guide{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:16px 18px;margin-bottom:16px}
-  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:16px;margin-bottom:6px}
-  .guide ol{padding-left:20px;font-size:13.4px;line-height:1.7}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
+  .btn.ok{background:linear-gradient(120deg,#0f6b45,var(--success))}
+  .btn.sm{font-size:12.5px;padding:8px 15px}
+  .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  textarea{min-height:70px;resize:vertical;line-height:1.55}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:9px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
+  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .22s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:420px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:15px}
+  .guide h2{font-size:18px;margin-bottom:6px} .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.72} .guide p{font-size:13.5px}
+
+  .opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#2b2418,#413723);color:#fff;border-radius:14px;
+    padding:11px 16px;display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:14px;box-shadow:0 12px 32px -22px rgba(0,0,0,.8)}
+  .opbar .ttl{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px}
+  .opbar .m{display:flex;flex-direction:column;gap:2px;min-width:92px}
+  .opbar .m .k{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;opacity:.62}
+  .opbar .m .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+  .opbar .m.bad .v{color:#ff8a8a} .opbar .m.good .v{color:#7de3b0} .opbar .m.warn .v{color:#f3c46b}
+  .meter{height:5px;border-radius:100px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:2px}
+  .meter i{display:block;height:100%;background:#7de3b0;transition:width .4s}
+  .meter i.warn{background:#f3c46b} .meter i.bad{background:#ff8a8a}
+  .opbar .sp{margin-left:auto}
+  .clock{background:rgba(0,0,0,.32);border-radius:100px;padding:6px 15px;font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+  .clock.warn{background:rgba(196,38,46,.5);animation:pul 1.1s infinite}
+  @keyframes pul{50%{opacity:.55}}
+
+  .task{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:15px 17px;box-shadow:var(--card-shadow);margin-bottom:14px}
+  .task .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .task h3{font-size:17px;margin:7px 0 4px}
+  .task .q{font-size:14px;font-weight:600;line-height:1.55;margin:8px 0 4px}
+  .opts{display:grid;gap:7px;margin-top:9px}
+  .opt{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font:inherit;font-size:13.5px;text-align:left;color:var(--ink);
+    background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;line-height:1.5}
+  .opt:hover{border-color:var(--gold)}
+  .opt .lt{flex:none;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--pill);border:1px solid var(--line);font-size:10.5px;font-weight:800;color:var(--muted)}
+  .opt.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)} .opt.pick .lt{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .opt.right{border-color:var(--success);background:rgba(30,142,90,.07)} .opt.right .lt{background:var(--success);border-color:var(--success);color:#fff}
+  .opt.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)} .opt.wrong .lt{background:var(--danger);border-color:var(--danger);color:#fff}
+  .fb{border-radius:11px;padding:12px 15px;margin-top:12px;font-size:13.5px;line-height:1.65;border:1px solid}
+  .fb.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.34)}
+  .fb.part{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.34)}
+  .fb.no{background:rgba(196,38,46,.08);border-color:rgba(196,38,46,.32)}
+  .fb .hd{font-weight:800;font-size:12.5px;margin-bottom:5px}
+  .fb.ok .hd{color:var(--success)} .fb.part .hd{color:var(--warn)} .fb.no .hd{color:var(--danger)}
+  .fb ul{margin:6px 0 0 17px}
+
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:11px;margin:8px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:15px;font-weight:700;padding:13px 17px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .outcome{border:1px solid var(--line);border-left:4px solid var(--success);border-radius:11px;padding:12px 15px;margin-bottom:9px;background:var(--panel2);font-size:13.5px;line-height:1.6}
+  .outcome.harm{border-left-color:var(--danger)}
+  .outcome b{display:block;margin-bottom:3px}
+  .bar{height:8px;border-radius:100px;background:var(--pill);overflow:hidden;min-width:70px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))} .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
+
+  .bmr{background:#fdfcf8;border:1px solid #d8d2c4;border-radius:10px;padding:0;margin-bottom:14px;
+    box-shadow:0 10px 30px -24px rgba(20,10,12,.5);overflow:hidden}
+  html.dark .bmr{background:#14151d;border-color:#2b2d3a}
+  .bmr .bh{background:#efeadd;border-bottom:2px solid #c9c0ac;padding:11px 15px;display:flex;gap:12px;
+    flex-wrap:wrap;align-items:baseline;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#4a4436}
+  html.dark .bmr .bh{background:#1c1e28;border-color:#33364a;color:#a9adc4}
+  .bmr .bh b{font-family:'Source Serif Pro',serif;font-size:14px;color:var(--ink)}
+  .bpage{padding:0}
+  .brow{display:grid;grid-template-columns:34px 1fr;gap:0;border-bottom:1px dashed #ddd6c6;cursor:pointer;transition:.12s}
+  html.dark .brow{border-color:#2b2d3a}
+  .brow:last-child{border-bottom:none}
+  .brow:hover{background:rgba(161,98,7,.07)}
+  .brow.flagged{background:rgba(196,38,46,.08);box-shadow:inset 3px 0 0 var(--danger)}
+  .brow.ok{background:rgba(30,142,90,.07);box-shadow:inset 3px 0 0 var(--success)}
+  .brow .ln{font-family:ui-monospace,Menlo,monospace;font-size:10px;color:var(--muted);padding:10px 0 0;text-align:center;
+    border-right:1px dashed #ddd6c6}
+  html.dark .brow .ln{border-color:#2b2d3a}
+  .brow .bc{padding:9px 13px;font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.7;white-space:pre-wrap}
+  .brow .bc .hand{font-family:'Source Serif Pro',serif;font-style:italic;font-size:13.5px}
+  .brow .mk{float:right;font-family:'Inter',sans-serif;font-size:9.5px;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;padding:1px 8px;border-radius:100px;margin-left:8px}
+  .brow.flagged .mk{background:var(--danger);color:#fff}
+  .brow.ok .mk{background:var(--success);color:#fff}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin:6px 0 10px}
+  .legend span b{color:var(--ink)}
+  .findings{display:grid;gap:7px;margin-top:9px}
+  .fitem{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:13px}
+  .fitem .fh{font-weight:700;font-size:13px;margin-bottom:3px}
+  .fitem .fw{color:var(--muted);font-size:12.5px;line-height:1.6}
+  .fitem.hit{border-color:var(--success);background:rgba(30,142,90,.07)}
+  .fitem.miss{border-color:var(--danger);background:rgba(196,38,46,.06)}
+
+  @media print{.tabs,.btn,.no-print,.opbar{display:none!important} body{background:#fff} .panel{display:block!important}}
 </style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
 </head>
 <body>
 <script src="alizon-lab-gate.js"></script>
 <div class="wrap">
-
   <div class="hero">
-    <div class="mod">Module 4 · Practical 3 · Quality &amp; Safety Documentation</div>
-    <h1>Digital Quality &amp; Safety Documentation in Pharmaceutical Manufacturing</h1>
-    <p>Act as the Quality Assurance officer for a batch of <b>Paracetamol 500&nbsp;mg tablets</b>: review the Batch Manufacturing Record, verify raw materials and QC results, record a deviation and its CAPA, assess recall risk, and make an evidence-based GMP <b>batch-release decision</b>. <b>Duration 3 hours.</b></p>
-    <div class="chips">
-      <div class="scorechip">Score <b id="scScore">—</b></div>
-      <div class="scorechip">Result <b id="scRes">—</b></div>
-      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
-    </div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Pharmacy AI · Module 4 · Unit 3 · Practical 3</div>
+    <h1 style="font-size:clamp(1.4rem,3.4vw,2.05rem);margin:7px 0">Batch Record Review &amp; Data Integrity Audit</h1>
+    <p class="muted" style="font-size:14px;max-width:80ch"><b>Aim —</b> To review a completed batch manufacturing record line by line, identify every good documentation
+      practice and data integrity breach, classify each against ALCOA+, and reach the correct release decision as the Qualified Person’s delegate.</p>
   </div>
 
   <div class="tabs">
     <button class="tab on" data-p="brief">Briefing</button>
-    <button class="tab" data-p="station">QA Documentation</button>
-    <button class="tab" data-p="deliver">Digital Documents</button>
+    <button class="tab" data-p="review">Record Review</button>
     <button class="tab" data-p="report">Result &amp; Record</button>
   </div>
 
-  <!-- BRIEFING -->
   <section class="panel on" id="p-brief">
     <div id="expBrief" data-exp="qadocs"></div>
-
     <div class="guide">
-      <h2>New to GMP documentation? Start here</h2>
-      <p class="muted" style="margin-bottom:8px">In manufacturing, <b>"not documented = not done."</b> A batch is released on the strength of its <b>records</b>, not on how the tablets look. Your job is to prove — with complete, in-specification, signed documentation — that this batch is safe to release.</p>
+      <h2>Your review</h2>
+      <p>Batch <b>ALZ-TAB-2410</b> — paracetamol 500 mg tablets, 240,000 units — has been manufactured and the record has come to you for review before release.
+        You are reviewing on behalf of the Qualified Person.</p>
       <ol>
-        <li><b>Review the BMR</b> — every entry present, correct, calculated and signed.</li>
-        <li><b>Verify materials</b> against their Certificate of Analysis.</li>
-        <li><b>Judge each result</b> against its <b>specification</b>, not by eye.</li>
-        <li><b>Record the deviation</b>, its root cause and risk; raise <b>CAPA</b>.</li>
-        <li><b>Assess recall risk</b> from complaints, then <b>Release / Hold / Reject</b> with justification.</li>
+        <li><b>Click any line you believe is a finding.</b> Clicking a sound line costs you — over-flagging a record is as unhelpful as missing a breach.</li>
+        <li>There are <b>eight genuine findings</b> in the record. Some are obvious, some are only visible if you check one number against another.</li>
+        <li>Each finding must then be <b>classified against ALCOA+</b> and given a criticality.</li>
+        <li>Finally you make the <b>release decision</b>. Releasing a batch with a critical finding is a regulatory failure; rejecting a good batch is a commercial one.</li>
       </ol>
+      <p style="margin-top:8px">A <b>Record Integrity Index</b> tracks the state of the batch record itself as findings are confirmed — it describes the batch, not your performance.</p>
     </div>
-
-    <div class="card">
-      <h2>Your batch</h2>
-      <table>
-        <tr><th>Product</th><td>Paracetamol 500 mg Tablets</td></tr>
-        <tr><th>Batch number</th><td><b>PCM-500-2607</b></td></tr>
-        <tr><th>Manufactured</th><td>18 July 2026</td></tr>
-        <tr><th>Expiry</th><td>July 2028</td></tr>
-        <tr><th>Batch size</th><td>100,000 tablets</td></tr>
-        <tr><th>Your role</th><td>Quality Assurance (QA) Officer</td></tr>
-      </table>
+    <div class="card"><h2 style="font-size:18px">Assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Assessment criteria</th><th>Marks</th></tr></thead><tbody>
+        <tr><td>Findings identified (8 × 5)</td><td>40</td></tr>
+        <tr><td>False positives avoided</td><td>10</td></tr>
+        <tr><td>ALCOA+ classification</td><td>20</td></tr>
+        <tr><td>Criticality assignment</td><td>10</td></tr>
+        <tr><td>Release decision</td><td>15</td></tr>
+        <tr><td>Corrective and preventive action</td><td>5</td></tr>
+        <tr class="tot"><td>Total</td><td>100</td></tr>
+      </tbody></table></div>
+      <p class="muted" style="font-size:12.5px">Pass 50. The Record Integrity Index describes the batch record, not the student, and is reported separately.</p>
     </div>
-
-    <div class="card">
-      <h2>Assessment rubric (100 marks)</h2>
-      <table>
-        <tr><th>Component</th><th style="text-align:right">Marks</th></tr>
-        <tr><td>Batch Manufacturing Record review</td><td style="text-align:right">15</td></tr>
-        <tr><td>Raw-material verification</td><td style="text-align:right">10</td></tr>
-        <tr><td>In-process &amp; QC documentation</td><td style="text-align:right">20</td></tr>
-        <tr><td>Deviation &amp; CAPA documentation</td><td style="text-align:right">20</td></tr>
-        <tr><td>Batch-release decision</td><td style="text-align:right">15</td></tr>
-        <tr><td>Digital dashboard &amp; graphs</td><td style="text-align:right">10</td></tr>
-        <tr><td>Workflow diagram &amp; QR code</td><td style="text-align:right">5</td></tr>
-        <tr><td>Report quality &amp; documentation</td><td style="text-align:right">5</td></tr>
-        <tr><td><b>Total</b></td><td style="text-align:right"><b>100</b></td></tr>
-      </table>
-      <div class="alert"><b>Critical failure:</b> releasing the batch while a deviation is open, a QC result fails, or documentation is incomplete fails the practical regardless of marks — exactly as it would trigger a regulatory action in a real facility.</div>
+    <div class="card"><h2 style="font-size:18px">Achievement badges</h2>
+      <div class="badges">
+        <span class="badge">🔎 Every Finding</span><span class="badge">🎯 No False Positives</span>
+        <span class="badge">📐 ALCOA+ Fluent</span><span class="badge">⚖ Correct Disposition</span><span class="badge">🏅 QP Ready</span>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:8px" id="badgeCrit"></p>
     </div>
   </section>
 
-  <!-- STATION -->
-  <section class="panel" id="p-station">
-
-    <!-- STEP 1 -->
-    <div class="card">
-      <span class="marks">15 marks</span><span class="step-tag">Step 1 · Batch Manufacturing Record</span>
-      <h3>Review the BMR for completeness and accuracy</h3>
-      <table>
-        <tr><th>Field</th><th>BMR entry</th></tr>
-        <tr><td>Product name</td><td>Paracetamol 500 mg Tablets</td></tr>
-        <tr><td>Batch number</td><td>PCM-500-2607</td></tr>
-        <tr><td>Manufacturing date</td><td>18 July 2026</td></tr>
-        <tr><td>Expiry date</td><td>July 2028</td></tr>
-        <tr><td>Batch size</td><td>100,000 tablets</td></tr>
-        <tr><td>Equipment used</td><td>Compression machine CM-04 (calibrated)</td></tr>
-        <tr><td>Operator signature</td><td>S. Kumar ✓</td></tr>
-        <tr><td>QA signature</td><td style="color:var(--danger)"><b>— missing —</b></td></tr>
-      </table>
-      <div class="q"><b>1.1 Which record issues can you identify? (tick all that apply)</b>
-        <label class="ck"><input type="checkbox" class="s1" data-k="qa"> QA signature is missing</label>
-        <label class="ck"><input type="checkbox" class="s1" data-k="op"> Operator signature is missing</label>
-        <label class="ck"><input type="checkbox" class="s1" data-k="expiry"> Expiry date is missing</label>
-        <label class="ck"><input type="checkbox" class="s1" data-k="none"> No issues — the BMR is complete</label>
+  <section class="panel" id="p-review">
+    <div class="card" id="setupCard">
+      <h2 style="font-size:18px">Open the batch record</h2>
+      <div class="grid2" style="margin-top:9px">
+        <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
       </div>
-      <div class="q"><b>1.2 Can the batch be released while a required signature is missing from the BMR?</b>
-        <div class="opts" data-q="s1rel">
-          <button class="opt" data-v="no">No — an incomplete BMR must be corrected before release</button>
-          <button class="opt" data-v="yes">Yes — the product is fine, the signature can be added later</button>
-        </div></div>
-      <div class="fb" id="fb1"></div>
-    </div>
-
-    <!-- STEP 2 -->
-    <div class="card">
-      <span class="marks">10 marks</span><span class="step-tag">Step 2 · Raw-material verification</span>
-      <h3>Verify each material against its Certificate of Analysis</h3>
-      <table>
-        <tr><th>Material</th><th>Supplier</th><th>Batch</th><th>CoA</th><th>Expiry</th></tr>
-        <tr><td>Paracetamol API</td><td>PharmaChem Ltd</td><td>PA-2231</td><td><span class="pill p-ok">Present</span></td><td>2027</td></tr>
-        <tr><td>Starch (binder)</td><td>ExciCorp</td><td>ST-8842</td><td><span class="pill p-ok">Present</span></td><td>2027</td></tr>
-        <tr><td>Magnesium stearate</td><td>LubriPharm</td><td>MG-1190</td><td><span class="pill p-bad">Missing</span></td><td>2026</td></tr>
-      </table>
-      <div class="q"><b>2.1 Magnesium stearate arrived without a Certificate of Analysis. What is the correct action?</b>
-        <div class="opts" data-q="s2coa">
-          <button class="opt" data-v="reject">Reject / quarantine the material — do not use it until a valid CoA is provided</button>
-          <button class="opt" data-v="use">Use it anyway — magnesium stearate is only a lubricant</button>
-        </div></div>
-      <div class="q"><b>2.2 Why must every raw material be verified before use?</b>
-        <div class="opts" data-q="s2why">
-          <button class="opt" data-v="quality">Material quality directly determines product quality and patient safety, and must be traceable</button>
-          <button class="opt" data-v="cost">To keep purchasing costs down</button>
-        </div></div>
-      <div class="fb" id="fb2"></div>
-    </div>
-
-    <!-- STEP 3 + 4 -->
-    <div class="card">
-      <span class="marks">20 marks</span><span class="step-tag">Steps 3 &amp; 4 · In-process &amp; QC results</span>
-      <h3>Judge every result against its specification</h3>
-      <table>
-        <tr><th>Parameter</th><th>Specification</th><th>Result</th><th>Verdict</th></tr>
-        <tr><td>Tablet weight</td><td>650 ± 5% mg</td><td>648 mg</td><td><span class="pill p-ok">Pass</span></td></tr>
-        <tr><td>Hardness</td><td>5–8 kg/cm²</td><td>6.2</td><td><span class="pill p-ok">Pass</span></td></tr>
-        <tr><td>Friability</td><td>&lt; 1%</td><td>0.45%</td><td><span class="pill p-ok">Pass</span></td></tr>
-        <tr><td>Disintegration</td><td>&lt; 15 min</td><td>9 min</td><td><span class="pill p-ok">Pass</span></td></tr>
-        <tr><td>Assay</td><td>95–105%</td><td>99.2%</td><td><span class="pill p-ok">Pass</span></td></tr>
-        <tr><td>Dissolution</td><td>&ge; 80% in 30 min</td><td>94%</td><td><span class="pill p-ok">Pass</span></td></tr>
-        <tr><td>Content uniformity</td><td>Within limits</td><td>Complies</td><td><span class="pill p-ok">Pass</span></td></tr>
-        <tr><td>Microbial limit</td><td>Within limits</td><td>Complies</td><td><span class="pill p-ok">Pass</span></td></tr>
-      </table>
-      <div class="q"><b>3.1 Do the in-process and QC results meet all specifications?</b>
-        <div class="opts" data-q="s3meet">
-          <button class="opt" data-v="yes">Yes — every parameter is within specification</button>
-          <button class="opt" data-v="no">No — one or more parameters fail</button>
-        </div></div>
-      <div class="q"><b>3.2 Tablet weight is 648 mg against 650 ± 5% mg. Is that within specification?</b>
-        <div class="opts" data-q="s3weight">
-          <button class="opt" data-v="in">In specification (617.5–682.5 mg)</button>
-          <button class="opt" data-v="out">Out of specification</button>
-        </div></div>
-      <div class="fb" id="fb3"></div>
-    </div>
-
-    <!-- STEP 5 -->
-    <div class="card">
-      <span class="marks">part of Deviation &amp; CAPA</span><span class="step-tag">Step 5 · Deviation report</span>
-      <h3>Record the production deviation</h3>
-      <div class="alert"><b>Deviation:</b> during compression, the machine speed exceeded the approved limit for <b>12 minutes</b>.</div>
-      <div class="grid2">
-        <div class="q"><b>Root-cause analysis</b><textarea id="d1root" placeholder="e.g. speed-control setpoint drifted; no automatic high-speed alarm; operator did not detect the excursion."></textarea></div>
-        <div class="q"><b>Product risk assessment</b><textarea id="d1risk" placeholder="e.g. higher speed can affect weight/hardness uniformity — assess against the in-process results for that period."></textarea></div>
+      <p class="muted" style="font-size:12.5px;margin-top:10px">Alizon Pharmaceuticals · Quality Assurance · batch record review before release</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="startBtn">▶ Open BMR ALZ-TAB-2410</button>
+        <button class="btn ghost sm" id="themeBtn">◐ Theme</button>
       </div>
-      <div class="q"><b>Immediate action taken</b><textarea id="d1act" placeholder="e.g. machine stopped and reset to approved speed; tablets from the affected period segregated and tested."></textarea></div>
-      <div class="fb" id="fb5"></div>
     </div>
-
-    <!-- STEP 6 -->
-    <div class="card">
-      <span class="marks">20 marks (with Step 5)</span><span class="step-tag">Step 6 · CAPA</span>
-      <h3>Corrective and Preventive Action</h3>
-      <div class="grid2">
-        <div class="q"><b>Corrective action (fix this occurrence)</b><textarea id="d2corr" placeholder="e.g. recalibrate compression machine CM-04; retrain the operator on speed limits."></textarea></div>
-        <div class="q"><b>Preventive action (stop it recurring)</b><textarea id="d2prev" placeholder="e.g. install automatic high-speed monitoring alarms; add a daily calibration checklist."></textarea></div>
+    <div id="live" style="display:none">
+      <div class="opbar">
+        <div class="ttl">BMR ALZ-TAB-2410</div>
+        <div class="m"><span class="k">Stage</span><span class="v" id="mStage">1 / 4</span></div>
+        <div class="m"><span class="k">Score</span><span class="v" id="mScore">0</span></div>
+        <div class="m"><span class="k">Flagged</span><span class="v" id="mFlag">0</span></div>
+        <div class="m" id="mDIWrap"><span class="k">Record integrity</span><span class="v" id="mDI">100%</span>
+          <span class="meter"><i id="barDI" style="width:100%"></i></span></div>
       </div>
-      <div class="q"><b>6.1 What is the essential difference between corrective and preventive action?</b>
-        <div class="opts" data-q="s6capa">
-          <button class="opt" data-v="right">Corrective fixes the current problem; preventive changes the system so it cannot recur</button>
-          <button class="opt" data-v="wrong">They are the same thing with different names</button>
-        </div></div>
-      <div class="fb" id="fb6"></div>
-    </div>
-
-    <!-- STEP 7 -->
-    <div class="card">
-      <span class="marks">recall risk</span><span class="step-tag">Step 7 · Recall risk assessment</span>
-      <h3>Three complaints of tablet breakage received</h3>
-      <div class="q"><b>7.1 Given complaints of breakage on a batch with an open deviation, what should you do? (tick all that apply)</b>
-        <label class="ck"><input type="checkbox" class="s7" data-k="invest"> Open a complaint investigation</label>
-        <label class="ck"><input type="checkbox" class="s7" data-k="quarantine"> Quarantine the batch pending the outcome</label>
-        <label class="ck"><input type="checkbox" class="s7" data-k="test"> Carry out additional testing (e.g. friability/hardness on retained samples)</label>
-        <label class="ck"><input type="checkbox" class="s7" data-k="ignore"> Ignore — three complaints is normal</label>
-      </div>
-      <div class="q"><b>Document your recall decision &amp; justification</b><textarea id="d3recall" placeholder="e.g. quarantine + investigate before any release decision; recall only if distributed stock is implicated."></textarea></div>
-      <div class="fb" id="fb7"></div>
-    </div>
-
-    <!-- STEP 8 -->
-    <div class="card">
-      <span class="marks">15 marks</span><span class="step-tag">Step 8 · Batch-release decision</span>
-      <h3>Make the QA decision on the full record set</h3>
-      <p class="muted">Consider: QA signature missing on the BMR · magnesium stearate CoA missing · an open compression-speed deviation · complaints of breakage under investigation. QC results themselves are in specification.</p>
-      <div class="q"><b>8.1 What is the correct batch-release decision now?</b>
-        <div class="opts" data-q="s8dec">
-          <button class="opt" data-v="hold">⚠ Hold — resolve the open items (signature, CoA, deviation, complaints) before deciding</button>
-          <button class="opt" data-v="release">✅ Release — the QC results all pass</button>
-          <button class="opt" data-v="reject">❌ Reject the batch outright</button>
-        </div></div>
-      <div class="q"><b>Scientific justification for your decision</b><textarea id="d4just" placeholder="Justify against GMP: an open deviation, missing CoA and incomplete BMR mean the batch cannot be released until closed and documented, even though QC passes."></textarea></div>
-      <div class="fb" id="fb8"></div>
-    </div>
-
-    <div class="card" style="text-align:center">
-      <button class="btn" id="evalBtn">Evaluate my QA documentation</button>
-      <div class="muted" style="margin-top:8px">You can revise your answers and re-evaluate.</div>
-      <div class="fb" id="fbAll"></div>
+      <div id="stage"></div>
     </div>
   </section>
 
-  <!-- DELIVERABLES -->
-  <section class="panel" id="p-deliver">
-    <div class="card">
-      <h2>Digital documents &amp; visualisation <span class="marks">15 marks</span></h2>
-      <p class="muted">Alongside your report, prepare and attach the following. Tick each once done.</p>
-    </div>
-
-    <div class="card">
-      <h3>Documents to generate</h3>
-      <label class="ck"><input type="checkbox" class="dv"> Batch Manufacturing Record (BMR)</label>
-      <label class="ck"><input type="checkbox" class="dv"> Batch Packaging Record (BPR)</label>
-      <label class="ck"><input type="checkbox" class="dv"> Quality Control Report</label>
-      <label class="ck"><input type="checkbox" class="dv"> Certificate of Analysis (CoA)</label>
-      <label class="ck"><input type="checkbox" class="dv"> Deviation Report</label>
-      <label class="ck"><input type="checkbox" class="dv"> CAPA Report</label>
-      <label class="ck"><input type="checkbox" class="dv"> Product Release Authorisation</label>
-      <label class="ck"><input type="checkbox" class="dv"> Batch Traceability Report</label>
-    </div>
-
-    <div class="card">
-      <h3>1 · Production quality dashboard <span class="marks">part of 10</span></h3>
-      <p class="muted">Your live figures — rebuild this as your own dashboard.</p>
-      <div class="dash" id="dashHost"></div>
-      <label class="ck"><input type="checkbox" class="dv"> Dashboard built and screenshot attached</label>
-    </div>
-
-    <div class="card">
-      <h3>2 · QC trend graph <span class="marks">part of 10</span></h3>
-      <p class="muted">Assay (%) across recent batches — reproduce and mark the 95–105% specification band.</p>
-      <div id="chartHost"></div>
-      <label class="ck"><input type="checkbox" class="dv"> QC trend graph attached with specification band</label>
-    </div>
-
-    <div class="card">
-      <h3>3 · Batch workflow diagram <span class="marks">part of 5</span></h3>
-      <div class="flow">
-        <div class="fnode">Raw material receipt</div><div class="farr">▼</div>
-        <div class="fnode">Quality inspection</div><div class="farr">▼</div>
-        <div class="fnode">Manufacturing</div><div class="farr">▼</div>
-        <div class="fnode">In-process quality check</div><div class="farr">▼</div>
-        <div class="fnode">Quality control testing</div><div class="farr">▼</div>
-        <div class="fnode dec">Deviation review → CAPA</div><div class="farr">▼</div>
-        <div class="fnode">QA approval</div><div class="farr">▼</div>
-        <div class="fnode">Batch release → Market distribution</div>
-      </div>
-      <label class="ck"><input type="checkbox" class="dv"> Workflow diagram attached</label>
-    </div>
-
-    <div class="card">
-      <h3>4 · Traceability QR code <span class="marks">part of 5</span></h3>
-      <div class="qrbox">
-        <svg class="qr" id="qrSim" viewBox="0 0 29 29" shape-rendering="crispEdges" aria-label="Simulated batch QR code"></svg>
-        <div style="flex:1;min-width:220px">
-          <p class="muted" style="margin-bottom:6px">Generate a real QR linking to the batch record: product name · batch number · manufacturing &amp; expiry dates · QC status · release status · CoA · traceability information.</p>
-          <p class="muted" style="font-size:11.5px">The block is a layout simulation — generate a genuine scannable QR with any generator.</p>
-        </div>
-      </div>
-      <label class="ck"><input type="checkbox" class="dv"> Scannable QR generated and record linked</label>
-    </div>
-
-    <div class="card">
-      <h3>5 · Optional 1-minute animation</h3>
-      <p class="muted">Raw-material inspection → manufacturing → quality testing → documentation → batch approval → product release.</p>
-      <label class="ck"><input type="checkbox" class="dv"> Animation attached (optional — link or file)</label>
-    </div>
-
-    <div class="card">
-      <h3>Reflection on quality &amp; patient safety</h3>
-      <div class="q"><textarea id="dvReflect" placeholder="Why does complete documentation protect patients? How did the open deviation and missing records affect your release decision?"></textarea></div>
-      <label class="ck"><input type="checkbox" class="dv"> Reflection written</label>
-      <div class="fb" id="fbDv"></div>
-    </div>
-  </section>
-
-  <!-- REPORT -->
   <section class="panel" id="p-report">
-    <div class="card">
-      <h2>Your result</h2>
-      <div id="resultBox" class="muted">Complete the QA Documentation station and press <b>Evaluate</b> to see your score breakdown here.</div>
+    <div class="card"><h2 style="font-size:18px">Review report &amp; disposition</h2>
+      <p class="muted" id="repEmpty">Complete the review to generate your report, then write and submit it below.</p>
+      <div id="repBody" style="display:none"></div>
     </div>
-    <div class="card">
-      <h2>Reflection questions</h2>
-      <ol class="muted" style="padding-left:20px;line-height:1.9;font-size:13.4px">
-        <li>Why is "not documented = not done" a core GMP principle?</li>
-        <li>What is the difference between QA and QC?</li>
-        <li>What must a deviation report contain?</li>
-        <li>How do corrective and preventive actions differ?</li>
-        <li>Why can a batch with passing QC still be held?</li>
-        <li>When is a product recall required?</li>
-        <li>Why must every raw material carry a Certificate of Analysis?</li>
-        <li>How does batch traceability enable a rapid recall?</li>
-        <li>Who is authorised to release a batch, and on what basis?</li>
-        <li>How does digital documentation improve GMP compliance?</li>
-      </ol>
-    </div>
-    <div id="reportWriter" style="display:none"></div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
   </section>
-
 </div>
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="firebase-sync.js"></script>
 <script src="alizon-practical-submit.js?v=3"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=12"></script>
+<script src="alizon-experiment-data.js?v=13"></script>
+<script src="alizon-pdf-open.js"></script>
 <script>
 (function(){
   'use strict';
-  function $(id){ return document.getElementById(id); }
-  window.update=function(){};
+  var $=function(i){return document.getElementById(i);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var PASS=50;
 
-  var tb=$('themeBtn');
-  if(tb) tb.addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  /* ---- the batch record. bad:true lines are the eight genuine findings ---- */
+  var LINES=[
+   {t:'BATCH MANUFACTURING RECORD — ALZ-TAB-2410\nProduct: Paracetamol 500 mg tablets   Batch size: 240,000 tablets\nManufacture commenced: 14/07/2026 06:00'},
+   {t:'STEP 1 · DISPENSING\n  Paracetamol BP ......... 120.00 kg   Lot API-8871   Exp 03/2028\n  Starch ................. 14.40 kg   Lot EXC-2210\n  Magnesium stearate ..... 1.20 kg    Lot EXC-4419\n  Dispensed by: <span class="hand">R. Nair</span>  14/07 06:20    Checked by: <span class="hand">S. Kumar</span>  14/07 06:22'},
+   {t:'  API lot API-8871 — certificate of analysis reviewed and attached. Retest date 03/2028. Within date.'},
+   {t:'STEP 2 · GRANULATION\n  Binder solution prepared per SOP-MFG-014 rev 6\n  Granulation end point: <span class="hand">confirmed visually</span>\n  Performed by: <span class="hand">R. Nair</span>  14/07 08:05    Verified by: <span class="hand">R. Nair</span>  14/07 08:05',
+    bad:true, id:'F1', alcoa:'attrib', crit:'major',
+    ttl:'Same operator performed and verified the step',
+    w:'The granulation was performed and verified by the same person at the same minute. An <b>independent verification is not independent</b> if it is the same individual — the second signature exists precisely so a different pair of eyes checks the work. This breaches attributability and defeats the purpose of the check.'},
+   {t:'STEP 3 · DRYING\n  Inlet temperature: 60 °C    Loss on drying: 2.1% (spec ≤ 3.0%)\n  Performed by: <span class="hand">M. Joseph</span>  14/07 10:40   Verified by: <span class="hand">S. Kumar</span>  14/07 10:45'},
+   {t:'STEP 4 · BLENDING\n  Blend time: 12 minutes at 18 rpm per SOP-MFG-021\n  Blend uniformity: 98.4%, 99.1%, 97.8% (spec 95.0–105.0%)\n  Performed by: <span class="hand">M. Joseph</span>  14/07 11:30   Verified by: <span class="hand">S. Kumar</span>  14/07 11:36'},
+   {t:'STEP 5 · COMPRESSION\n  Machine: TP-04    Speed: 42 rpm\n  In-process weight check, 10:00 h: mean 601 mg (spec 585–615 mg)\n  In-process weight check, 12:00 h: mean <span class="hand">6̶2̶4̶</span> 608 mg\n  Performed by: <span class="hand">A. Thomas</span>  14/07 12:10',
+    bad:true, id:'F2', alcoa:'orig', crit:'critical',
+    ttl:'Out-of-specification result overwritten',
+    w:'A weight of <b>624 mg is outside the 585–615 mg specification</b>, and it has been struck through and replaced with an in-specification value. Even accepting that a correction may have been legitimate, there is <b>no initial, no date and no reason recorded</b> — and an out-of-specification result may never simply be replaced. It must be investigated under the OOS procedure. This is the single most serious finding in the record.'},
+   {t:'  In-process hardness: 78 N (spec 60–100 N)   Friability: 0.31% (spec ≤ 1.0%)\n  Thickness: 4.2 mm (spec 4.0–4.4 mm)   Disintegration: 3 min 20 s (spec ≤ 15 min)'},
+   {t:'STEP 6 · IN-PROCESS SAMPLING\n  Samples drawn at 10:00, 12:00, 14:00 and 16:00 as required by SOP-QC-008\n  Sampled by: <span class="hand">A. Thomas</span>    Entries made: <span class="hand">15/07 09:15</span>',
+    bad:true, id:'F3', alcoa:'contemp', crit:'major',
+    ttl:'Entries not contemporaneous',
+    w:'Sampling took place across 14 July but the entries were written on <b>15 July at 09:15</b> — the following morning. A record made from memory after the event cannot be verified and is not <b>contemporaneous</b>. This is one of the commonest inspection findings, and it undermines every value on the line.'},
+   {t:'STEP 7 · YIELD RECONCILIATION\n  Theoretical yield ...... 240,000 tablets\n  Actual yield ........... 226,800 tablets\n  Yield ..................  94.5%   (spec 98.0–102.0%)\n  Deviation raised: <span class="hand">No</span>   Comment: <span class="hand">within normal range</span>',
+    bad:true, id:'F4', alcoa:'accurate', crit:'critical',
+    ttl:'Yield below specification with no deviation raised',
+    w:'The yield is <b>94.5% against a specification of 98.0–102.0%</b> — clearly out of specification — yet no deviation has been raised and the comment claims it is within normal range. More than 13,000 tablets are unaccounted for. An unexplained yield shortfall of this size raises the possibility of mix-up or diversion and <b>must</b> be investigated before any release decision.'},
+   {t:'STEP 8 · EQUIPMENT\n  Compression machine TP-04 — cleaning verified before use, cleaning record CR-3391 attached\n  Line clearance performed and signed by: <span class="hand">S. Kumar</span>  14/07 05:50'},
+   {t:'  Balance BAL-07 used for dispensing — calibration due <span class="hand">30/06/2026</span>\n  Calibration sticker checked at use: <span class="hand">yes</span>',
+    bad:true, id:'F5', alcoa:'accurate', crit:'critical',
+    ttl:'Measuring equipment out of calibration',
+    w:'The balance calibration was due <b>30 June 2026</b> and the batch was dispensed on <b>14 July 2026</b> — two weeks out of calibration. Every weight recorded in Step 1 is therefore unverifiable, which puts the composition of the entire batch in question. The line even records that the sticker was checked, which makes it worse rather than better.'},
+   {t:'STEP 9 · ENVIRONMENTAL\n  Temperature 22.4 °C (spec 18–25 °C)   Relative humidity 44% (spec 35–60%)\n  Monitored continuously, no excursions recorded'},
+   {t:'STEP 10 · PACKAGING\n  Blister packs: 10 tablets per strip, 10 strips per carton\n  Coding: batch number and expiry applied and verified by: <span class="hand">P. Menon</span>  15/07 14:20\n  Reconciliation of printed cartons: issued 24,000, used 22,680, destroyed 1,320, returned 0'},
+   {t:'STEP 11 · ANALYTICAL RELEASE\n  Assay: 99.2% of label claim (spec 95.0–105.0%)\n  Dissolution: Q=80% at 30 min, all units pass\n  Uniformity of dosage units: AV 4.1 (spec ≤ 15.0)\n  Approved by QC: <span class="hand">Dr V. Pillai</span>  16/07 11:00'},
+   {t:'STEP 12 · TRAINING RECORD\n  Operator A. Thomas — SOP-MFG-021 (blending) training: <span class="hand">completed 20/07/2026</span>\n  Operator A. Thomas performed compression and sampling on 14/07/2026',
+    bad:true, id:'F6', alcoa:'attrib', crit:'major',
+    ttl:'Operator performed a task before being trained',
+    w:'The operator carried out compression and sampling on <b>14 July</b> but was not trained until <b>20 July</b> — six days afterwards. Work performed by an untrained operator is not attributable to a qualified person, and an inspector will treat every step they signed as unsupported.'},
+   {t:'STEP 13 · DEVIATIONS AND INVESTIGATIONS\n  Deviations raised during manufacture: <span class="hand">None</span>\n  Investigations open at time of review: <span class="hand">None</span>'},
+   {t:'STEP 14 · AUDIT TRAIL — ELECTRONIC BATCH SYSTEM\n  Audit trail review performed: <span class="hand">Not performed — system was in maintenance mode 14/07–16/07</span>',
+    bad:true, id:'F7', alcoa:'avail', crit:'critical',
+    ttl:'Audit trail unavailable for the manufacturing period',
+    w:'The electronic audit trail covering the entire manufacturing window <b>cannot be reviewed</b>. Without it there is no way to demonstrate that electronic records were not altered, and no way to corroborate the paper record. An unreviewable audit trail over the manufacturing period is on its own sufficient grounds to withhold release.'},
+   {t:'STEP 15 · REVIEW AND RELEASE\n  Batch record reviewed by: <span class="hand">S. Kumar</span>  16/07 15:30\n  S. Kumar also performed line clearance (Step 8) and verified Steps 3, 4 and 5',
+    bad:true, id:'F8', alcoa:'attrib', crit:'major',
+    ttl:'Reviewer reviewed their own work',
+    w:'The person reviewing the batch record for release <b>performed and verified several of the steps within it</b>. Batch record review must be independent of manufacture; a reviewer checking their own signatures cannot provide the assurance the review exists to give.'},
+   {t:'  Signed for release: ____________________   Date: ____________\n  (awaiting Qualified Person decision — your review)'}
+  ];
 
-  var tabs=document.querySelectorAll('.tab');
-  tabs.forEach(function(t){ t.addEventListener('click',function(){
-    tabs.forEach(function(x){x.classList.remove('on');});
-    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
-    t.classList.add('on'); var p=$('p-'+t.dataset.p); if(p)p.classList.add('on');
-    if(t.dataset.p==='report') mountWriter();
-    if(t.dataset.p==='deliver'){ renderDash(); paintChart(); paintQR(); }
-    window.scrollTo(0,0);
-  }); });
+  var ALCOA=[
+   {k:'attrib',  t:'Attributable — who did it is unclear or wrongly assigned'},
+   {k:'legible', t:'Legible — the record cannot be read'},
+   {k:'contemp', t:'Contemporaneous — not recorded at the time'},
+   {k:'orig',    t:'Original — the original entry has been destroyed or obscured'},
+   {k:'accurate',t:'Accurate — the value recorded is wrong or unsupported'},
+   {k:'avail',   t:'Available — the record cannot be retrieved for review'}
+  ];
+  var CRITS=[{k:'critical',t:'Critical'},{k:'major',t:'Major'},{k:'minor',t:'Minor'}];
 
-  var state={};
-  document.querySelectorAll('.opts').forEach(function(g){
-    g.querySelectorAll('.opt').forEach(function(b){ b.addEventListener('click',function(){
-      g.querySelectorAll('.opt').forEach(function(x){x.classList.remove('sel');});
-      b.classList.add('sel'); state[g.dataset.q]=b.dataset.v;
-    }); });
-  });
+  var BAD=LINES.map(function(l,i){return l.bad?i:-1;}).filter(function(i){return i>=0;});
+  var NBAD=BAD.length;
 
-  /* QC assay trend across batches */
-  var ASSAY=[{b:'2601',v:98.4},{b:'2603',v:101.2},{b:'2604',v:99.8},{b:'2606',v:97.6},{b:'2607',v:99.2}];
-  function chartSVG(){
-    var W=700,H=240,L=44,R=14,T=14,B=32, pw=W-L-R, ph=H-T-B, lo=92,hi=107;
-    function x(i){return L+(i*(pw/(ASSAY.length-1)));}
-    function y(v){return T+ph-((v-lo)/(hi-lo))*ph;}
-    var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="Assay trend across batches">';
-    s+='<rect x="'+L+'" y="'+y(105)+'" width="'+pw+'" height="'+(y(95)-y(105))+'" fill="rgba(30,142,90,.13)"/>';
-    s+='<text x="'+(L+6)+'" y="'+(y(105)-5)+'" font-size="10" fill="var(--success)">specification 95–105%</text>';
-    [95,100,105].forEach(function(v){ s+='<line x1="'+L+'" y1="'+y(v)+'" x2="'+(W-R)+'" y2="'+y(v)+'" stroke="var(--line)"/>'; s+='<text x="'+(L-8)+'" y="'+(y(v)+3)+'" font-size="10" fill="var(--muted)" text-anchor="end">'+v+'</text>'; });
-    var pts=ASSAY.map(function(d,i){return x(i)+','+y(d.v);}).join(' ');
-    s+='<polyline points="'+pts+'" fill="none" stroke="var(--acc)" stroke-width="2.6" stroke-linejoin="round"/>';
-    ASSAY.forEach(function(d,i){ s+='<circle cx="'+x(i)+'" cy="'+y(d.v)+'" r="4" fill="var(--acc)"/>'; s+='<text x="'+x(i)+'" y="'+(y(d.v)-10)+'" font-size="10" font-weight="700" fill="var(--ink)" text-anchor="middle">'+d.v+'</text>'; s+='<text x="'+x(i)+'" y="'+(H-11)+'" font-size="10" fill="var(--muted)" text-anchor="middle">B'+d.b+'</text>'; });
-    return s+'</svg>';
+  $('badgeCrit').innerHTML='<b>Every Finding</b> — all eight findings identified. &nbsp;·&nbsp; '
+    +'<b>No False Positives</b> — no sound line flagged. &nbsp;·&nbsp; '
+    +'<b>ALCOA+ Fluent</b> — every finding classified correctly. &nbsp;·&nbsp; '
+    +'<b>Correct Disposition</b> — the right release decision. &nbsp;·&nbsp; '
+    +'<b>QP Ready</b> — 85 or more with the correct disposition.';
+
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}');
+       if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var S=null, flagged={}, cls={}, sel=null;
+
+  function start(){
+    S={i:0,marks:0,di:100,ended:false,log:[],
+       name:($('cName').value||'').trim()||'Candidate',reg:($('cReg').value||'').trim()};
+    flagged={}; cls={}; sel=null;
+    $('setupCard').style.display='none'; $('live').style.display='';
+    render();
   }
-  function paintChart(){ var c=$('chartHost'); if(c) c.innerHTML=chartSVG(); }
-
-  function paintQR(){
-    var el=$('qrSim'); if(!el) return; var N=29, seed=5002607, out='';
-    function rnd(){ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; }
-    function finder(ox,oy){ var s=''; for(var i=0;i<7;i++)for(var j=0;j<7;j++){ var edge=(i===0||i===6||j===0||j===6),core=(i>=2&&i<=4&&j>=2&&j<=4); if(edge||core) s+='<rect x="'+(ox+j)+'" y="'+(oy+i)+'" width="1" height="1" fill="#111"/>'; } return s; }
-    for(var r=0;r<N;r++)for(var c=0;c<N;c++){ var inF=(r<8&&c<8)||(r<8&&c>N-9)||(r>N-9&&c<8); if(inF)continue; if(rnd()>0.5) out+='<rect x="'+c+'" y="'+r+'" width="1" height="1" fill="#111"/>'; }
-    el.innerHTML=out+finder(0,0)+finder(N-7,0)+finder(0,N-7);
-  }
-
-  function renderDash(){
-    var host=$('dashHost'); if(!host) return;
-    var decided=state.s8dec, released=(decided==='release')?1:0, rejected=(decided==='reject')?1:0;
-    var capaClosed=($('d2corr')&&$('d2corr').value.trim()&&$('d2prev')&&$('d2prev').value.trim())?1:0;
-    var tiles=[['Batches produced',1],['Batches released',released],['Batches rejected',rejected],['Deviations reported',1],['CAPA closed',capaClosed],['Product complaints',3]];
-    host.innerHTML=tiles.map(function(t){return '<div class="dtile"><small>'+t[0]+'</small><b>'+t[1]+'</b></div>';}).join('');
-  }
-  ['change','input'].forEach(function(ev){ document.addEventListener(ev,function(){ renderDash(); }); });
-
-  function fb(id,ok,msg){ var e=$(id); if(!e)return; e.className='fb show '+(ok?'good':'bad'); e.innerHTML=msg; }
-  function val(id){ var e=$(id); return e?String(e.value||'').trim():''; }
-  function checks(cls){ var o={}; document.querySelectorAll('.'+cls).forEach(function(c){ o[c.dataset.k]=c.checked; }); return o; }
-  var result=null;
-
-  function evaluate(){
-    var m={}, critical=false, notes=[];
-
-    /* 1 · BMR /15 */
-    var c1=checks('s1'), s1=0;
-    if(c1.qa) s1+=6;
-    if(!c1.op) s1+=2;            /* operator sig present — not flagging it wrongly */
-    if(!c1.expiry) s1+=2;        /* expiry present */
-    if(!c1.none) s1+=2;
-    if(state.s1rel==='no') s1+=3;
-    m.bmr=Math.min(15,s1);
-    fb('fb1', m.bmr>=10, m.bmr>=10 ? 'Correct — the only issue is the <b>missing QA signature</b>; operator signature and expiry are present. An incomplete BMR must be corrected before release.' : 'Look again: only the <b>QA signature</b> is missing (operator signature and expiry are present). A BMR with a missing required signature cannot support a release.');
-
-    /* 2 · materials /10 */
-    var s2=0; if(state.s2coa==='reject') s2+=6; if(state.s2why==='quality') s2+=4; m.materials=s2;
-    fb('fb2', m.materials>=6, m.materials>=6 ? 'Correct — a material without a valid CoA must be quarantined/rejected; material quality drives product quality and traceability.' : 'Magnesium stearate has <b>no CoA</b> — quarantine/reject it until one is provided. Every material must be verified because its quality determines the product’s.');
-
-    /* 3 · in-process & QC /20 */
-    var s3=0; if(state.s3meet==='yes') s3+=12; if(state.s3weight==='in') s3+=8; m.qc=s3;
-    fb('fb3', m.qc>=14, m.qc>=14 ? 'Correct — every parameter is in specification, and 648 mg sits inside 650 ± 5% (617.5–682.5 mg).' : 'All eight parameters pass, and 648 mg is <b>within</b> 650 ± 5% (617.5–682.5 mg). The QC package itself is compliant.');
-
-    /* 5+6 · deviation & CAPA /20 */
-    var s5=0;
-    if(val('d1root').length>=25) s5+=4;
-    if(val('d1risk').length>=20) s5+=3;
-    if(val('d1act').length>=15) s5+=3;
-    if(val('d2corr').length>=15) s5+=4;
-    if(val('d2prev').length>=15) s5+=4;
-    if(state.s6capa==='right') s5+=2;
-    m.capa=Math.min(20,s5);
-    fb('fb5', val('d1root').length>=25, val('d1root').length>=25 ? 'Deviation documented — root cause, risk and immediate action recorded.' : 'A deviation report needs a <b>root-cause analysis</b>, a <b>product-risk assessment</b> and the <b>immediate action</b> taken — not just a note that it happened.');
-    fb('fb6', state.s6capa==='right', state.s6capa==='right' ? 'Correct — corrective action fixes the current occurrence; preventive action changes the system so it cannot recur.' : 'Corrective action fixes <b>this</b> occurrence (recalibrate, retrain); preventive action stops it <b>recurring</b> (alarms, checklists).');
-
-    /* 7 · recall risk (feeds decision) */
-    var c7=checks('s7');
-    var recallOk=(c7.invest&&c7.quarantine&&c7.test&&!c7.ignore);
-    fb('fb7', recallOk, recallOk ? 'Correct — investigate, quarantine and test; do not dismiss complaints on a batch with an open deviation.' : 'With breakage complaints on a batch that also has an open deviation, you <b>investigate, quarantine and test</b> — you never ignore them.');
-
-    /* 8 · release decision /15 */
-    var s8=0;
-    if(state.s8dec==='hold') s8+=9;
-    if(val('d4just').length>=40) s8+=6;
-    if(state.s8dec==='release'){ critical=true; notes.push('Released the batch with an open deviation, a missing CoA and an incomplete BMR.'); }
-    if(state.s8dec==='reject'){ s8=Math.min(s8,6); notes.push('Outright rejection is premature — the correct step is to HOLD and resolve the open items first.'); }
-    m.release=s8;
-    fb('fb8', s8>=9 && state.s8dec==='hold', state.s8dec==='hold' ? 'Correct — <b>hold</b> the batch: resolve the missing QA signature, the missing CoA, close the deviation and the complaint investigation before any release, even though QC passes.' : (state.s8dec==='release' ? 'A batch with an <b>open deviation, missing CoA and incomplete BMR</b> must never be released — passing QC is not enough.' : 'Rejecting outright is premature: the correct action is to <b>hold</b> and resolve the open items, then decide.'));
-
-    /* documentation & dashboard credit */
-    var dv=document.querySelectorAll('.dv:checked').length;
-    m.docs=Math.min(10,Math.round(dv/17*10));      /* dashboard & graphs (10) */
-    m.diagram=Math.min(5,Math.round(dv/17*5));      /* workflow & QR (5) */
-    m.report=val('dvReflect').length>=40?5:(val('dvReflect').length>=15?3:0);  /* report quality (5) */
-
-    var total=m.bmr+m.materials+m.qc+m.capa+m.release+m.docs+m.diagram+m.report;
-    var pct=Math.round(total);
-    var pass=(pct>=60)&&!critical;
-    result={pct:pct,pass:pass,marks:m,critical:critical,notes:notes};
-
-    $('scScore').textContent=total+' / 100';
-    $('scRes').textContent=critical?'CRITICAL FAIL':(pass?'PASS':'FAIL');
-    fb('fbAll', pass, critical ? '<b>Critical failure.</b> '+notes.join(' ')+' In a real facility this is a reportable GMP breach.' : (pass ? '<b>Pass — '+pct+'%.</b> Documentation reviewed and the batch correctly held pending closure.' : '<b>Fail — '+pct+'%.</b> Review the feedback above and re-evaluate.'));
-    renderResult(); renderDash();
-  }
-  var eb=$('evalBtn'); if(eb) eb.addEventListener('click',evaluate);
-
-  function renderResult(){
-    var host=$('resultBox'); if(!host||!result) return; var m=result.marks;
-    var rows=[['BMR review',m.bmr,15],['Raw-material verification',m.materials,10],['In-process & QC documentation',m.qc,20],['Deviation & CAPA',m.capa,20],['Batch-release decision',m.release,15],['Dashboard & graphs',m.docs,10],['Workflow diagram & QR',m.diagram,5],['Report quality',m.report,5]];
-    host.innerHTML='<table><tr><th>Component</th><th style="text-align:right">Marks</th></tr>'+rows.map(function(r){return '<tr><td>'+r[0]+'</td><td style="text-align:right"><b>'+r[1]+'</b> / '+r[2]+'</td></tr>';}).join('')+'<tr><td><b>Total</b></td><td style="text-align:right"><b>'+result.pct+' / 100</b></td></tr></table>'+(result.critical?'<div class="alert"><b>Critical failure:</b> '+result.notes.join(' ')+'</div>':'<div class="muted" style="margin-top:8px">Result: <b>'+(result.pass?'PASS':'FAIL')+'</b> ('+result.pct+'%). Pass mark 60%.</div>');
+  function paintBar(){
+    $('mStage').textContent=Math.min(S.i+1,4)+' / 4';
+    $('mScore').textContent=Math.round(S.marks*10)/10;
+    $('mFlag').textContent=Object.keys(flagged).length;
+    $('mDI').textContent=S.di+'%';
+    var b=$('barDI'); b.style.width=S.di+'%';
+    b.className=S.di>=70?'':(S.di>=40?'warn':'bad');
+    $('mDIWrap').className='m'+(S.di>=70?' good':(S.di>=40?' warn':' bad'));
   }
 
-  var OPTS={module:'Module 4 · Quality & Safety Documentation',title:'Digital Quality & Safety Documentation in Pharmaceutical Manufacturing',programme:'Pharmacy AI'};
-  var mounted=false;
-  function mountWriter(){
-    var host=$('reportWriter'); if(!host) return; host.style.display='';
-    if(mounted||!window.AlizonPracticalReport) return; mounted=true;
-    AlizonPracticalReport.mount({
-      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
-      titleField:{label:'Batch & release decision', placeholder:'e.g. Batch PCM-500-2607 — held pending QA signature, CoA and deviation closure'},
-      minWords:400,
-      autoResult:function(){ if(!result) return ''; var m=result.marks;
-        return 'GMP documentation review — Paracetamol 500 mg, batch PCM-500-2607. QC results in specification; open items: missing QA signature, missing magnesium-stearate CoA, open compression-speed deviation, breakage complaints under investigation. Decision: '+(state.s8dec==='hold'?'HOLD pending closure':(state.s8dec==='release'?'released':(state.s8dec==='reject'?'rejected':'not recorded')))+'. Marks — BMR '+m.bmr+'/15, materials '+m.materials+'/10, QC '+m.qc+'/20, deviation & CAPA '+m.capa+'/20, release '+m.release+'/15, dashboard '+m.docs+'/10, diagram & QR '+m.diagram+'/5, report '+m.report+'/5. Total '+result.pct+'/100 — '+(result.critical?'CRITICAL FAIL':(result.pass?'PASS':'FAIL'))+'.'; },
-      autoPct:function(){ return result?result.pct:null; },
-      autoResultText:function(){ return result?((result.critical?'CRITICAL FAIL':(result.pass?'PASS':'FAIL'))+' '+result.pct+'%'):''; }
+  function recordHTML(marked){
+    return '<div class="bmr"><div class="bh"><b>Batch Manufacturing Record</b>'
+      +'<span>ALZ-TAB-2410 · Paracetamol 500 mg tablets · 240,000 units · manufactured 14/07/2026</span></div>'
+      +'<div class="bpage">'+LINES.map(function(l,i){
+        var c='brow';
+        if(marked){ if(l.bad) c+=' flagged'; else if(flagged[i]) c+=' ok'; }
+        else if(flagged[i]) c+=' flagged';
+        var mk='';
+        if(marked){
+          if(l.bad) mk='<span class="mk">'+(flagged[i]?'found':'MISSED')+'</span>';
+          else if(flagged[i]) mk='<span class="mk" style="background:var(--warn)">false positive</span>';
+        } else if(flagged[i]) mk='<span class="mk">flagged</span>';
+        return '<div class="'+c+'" data-i="'+i+'"><div class="ln">'+(i+1)+'</div>'
+          +'<div class="bc">'+mk+l.t+'</div></div>';
+      }).join('')+'</div></div>';
+  }
+
+  function render(){
+    paintBar();
+    if(S.i===0){
+      $('stage').innerHTML='<div class="task"><span class="step">Stage 1 of 4 · 50 marks</span>'
+        +'<h3>Review the record</h3>'
+        +'<div class="q">Click every line you believe is a finding. There are eight. Flagging a sound line will cost you.</div>'
+        +'<div class="legend"><span><b>Handwritten entries</b> appear in script.</span>'
+        +'<span>Cross-check numbers against their specifications.</span>'
+        +'<span>Check names and dates against each other.</span></div>'
+        +recordHTML(false)
+        +'<div id="fbk"></div><div class="row"><button class="btn" id="goBtn">Complete the review</button>'
+        +'<span class="muted" style="font-size:12.5px" id="cnt">0 flagged</span></div></div>';
+      [].forEach.call(document.querySelectorAll('.brow'),function(r){
+        r.addEventListener('click',function(){
+          var i=+r.getAttribute('data-i');
+          if(flagged[i]){ delete flagged[i]; r.classList.remove('flagged'); }
+          else { flagged[i]=true; r.classList.add('flagged'); }
+          $('cnt').textContent=Object.keys(flagged).length+' flagged';
+          paintBar();
+        });
+      });
+      $('goBtn').addEventListener('click',stage1);
+      return;
+    }
+    if(S.i===1){ stage2(); return; }
+    if(S.i===2){ stage3(); return; }
+    finish();
+  }
+
+  function stage1(){
+    var found=BAD.filter(function(i){return flagged[i];}).length;
+    var fp=Object.keys(flagged).map(Number).filter(function(i){return !LINES[i].bad;}).length;
+    var findMarks=Math.round((40*found/NBAD)*10)/10;
+    var fpMarks=Math.max(0,Math.round((10-fp*2.5)*10)/10);
+    S.marks+=findMarks+fpMarks;
+    S.di=Math.max(0,100-found*0);              /* integrity reflects the record, set at stage 3 */
+    S.found=found; S.fp=fp;
+    S.log.push({n:1,title:'Findings identified',got:findMarks,max:40});
+    S.log.push({n:1,title:'False positives avoided',got:fpMarks,max:10});
+    var missed=BAD.filter(function(i){return !flagged[i];});
+    var h='<div class="fb '+(found===NBAD&&!fp?'ok':(found>=NBAD/2?'part':'no'))+'">'
+      +'<div class="hd">'+(findMarks+fpMarks)+' / 50 marks — '+found+' of '+NBAD+' findings, '+fp+' false positive'+(fp===1?'':'s')+'</div>'
+      +'<ul>'+LINES.map(function(l,i){ if(!l.bad) return '';
+          return '<li>'+(flagged[i]?'<b style="color:var(--success)">Found</b>':'<b style="color:var(--danger)">Missed</b>')
+            +' — line '+(i+1)+': <b>'+esc(l.ttl)+'</b><br>'+l.w+'</li>';}).join('')+'</ul>';
+    if(fp) h+='<div style="margin-top:8px"><b>'+fp+' sound line(s) flagged.</b> Over-flagging a record wastes investigation capacity and erodes confidence in the review.</div>';
+    h+='</div>';
+    $('stage').querySelector('#fbk').innerHTML=h;
+    $('goBtn').disabled=true;
+    [].forEach.call(document.querySelectorAll('.brow'),function(r){ r.style.pointerEvents='none'; });
+    // re-mark the record to show found/missed
+    var host=$('stage').querySelector('.bmr'); if(host) host.outerHTML=recordHTML(true);
+    paintBar();
+    var nx=document.createElement('button');
+    nx.className='btn gold sm'; nx.style.marginLeft='8px'; nx.textContent='Classify the findings ▸';
+    $('goBtn').parentNode.appendChild(nx);
+    nx.addEventListener('click',function(){ S.i=1; render(); window.scrollTo({top:0,behavior:'smooth'}); });
+  }
+
+  function stage2(){
+    var h='<div class="task"><span class="step">Stage 2 of 4 · 30 marks</span><h3>Classify each finding</h3>'
+      +'<div class="q">For every finding, choose the ALCOA+ principle breached and the criticality.</div>';
+    BAD.forEach(function(i,k){
+      var l=LINES[i];
+      h+='<div class="fitem" data-id="'+l.id+'"><div class="fh">'+(k+1)+'. '+esc(l.ttl)+' <span class="muted" style="font-weight:400">(line '+(i+1)+')</span></div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:7px">'
+        +'<div><label class="f">ALCOA+ principle</label><div class="opts" style="gap:4px">'
+        +ALCOA.map(function(a){return '<button type="button" class="opt" style="padding:6px 10px;font-size:12px" data-g="a'+l.id+'" data-k="'+a.k+'">'+esc(a.t.split('—')[0].trim())+'</button>';}).join('')+'</div></div>'
+        +'<div><label class="f">Criticality</label><div class="opts" style="gap:4px">'
+        +CRITS.map(function(c){return '<button type="button" class="opt" style="padding:6px 10px;font-size:12px" data-g="c'+l.id+'" data-k="'+c.k+'">'+c.t+'</button>';}).join('')+'</div></div>'
+        +'</div></div>';
+    });
+    h+='<div id="fbk"></div><div class="row" style="margin-top:12px"><button class="btn" id="goBtn">Submit classification</button></div></div>';
+    $('stage').innerHTML=h;
+    [].forEach.call(document.querySelectorAll('#stage .opt'),function(b){
+      b.addEventListener('click',function(){
+        var g=b.getAttribute('data-g'); cls[g]=b.getAttribute('data-k');
+        [].forEach.call(document.querySelectorAll('#stage .opt[data-g="'+g+'"]'),function(x){x.classList.remove('pick');});
+        b.classList.add('pick');
+      });
+    });
+    $('goBtn').addEventListener('click',function(){
+      var need=BAD.length*2, have=Object.keys(cls).length;
+      if(have<need){ $('fbk').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Classify every finding — '+(need-have)+' selection(s) outstanding.</div>'; return; }
+      var aOK=0,cOK=0;
+      BAD.forEach(function(i){ var l=LINES[i];
+        if(cls['a'+l.id]===l.alcoa) aOK++;
+        if(cls['c'+l.id]===l.crit) cOK++;
+      });
+      var am=Math.round((20*aOK/NBAD)*10)/10, cm=Math.round((10*cOK/NBAD)*10)/10;
+      S.marks+=am+cm;
+      S.log.push({n:2,title:'ALCOA+ classification',got:am,max:20});
+      S.log.push({n:2,title:'Criticality assignment',got:cm,max:10});
+      var crits=BAD.filter(function(i){return LINES[i].crit==='critical';}).length;
+      S.di=Math.max(0,100-crits*18-(NBAD-crits)*5);   /* 4 critical + 4 major → 8% : a record this bad is unreleasable */
+      var rows=BAD.map(function(i){ var l=LINES[i];
+        var a=cls['a'+l.id]===l.alcoa, c=cls['c'+l.id]===l.crit;
+        return '<li><b>'+esc(l.ttl)+'</b> — ALCOA+: '+(a?'correct':'<b style="color:var(--danger)">'+esc(lab(ALCOA,l.alcoa).split('—')[0].trim())+'</b>')
+          +' · criticality: '+(c?'correct':'<b style="color:var(--danger)">'+esc(lab(CRITS,l.crit))+'</b>')+'</li>';}).join('');
+      $('fbk').innerHTML='<div class="fb '+(aOK===NBAD&&cOK===NBAD?'ok':'part')+'"><div class="hd">'+(am+cm)+' / 30 marks</div>'
+        +'<ul>'+rows+'</ul><div style="margin-top:8px">Four of the eight are <b>critical</b>: the overwritten out-of-specification weight, the unexplained yield shortfall, the out-of-calibration balance and the unavailable audit trail. Each one alone prevents release.</div></div>';
+      $('goBtn').disabled=true;
+      [].forEach.call(document.querySelectorAll('#stage .opt'),function(b){b.style.pointerEvents='none';});
+      paintBar();
+      var nx=document.createElement('button');
+      nx.className='btn gold sm'; nx.style.marginLeft='8px'; nx.textContent='Make the disposition ▸';
+      $('goBtn').parentNode.appendChild(nx);
+      nx.addEventListener('click',function(){ S.i=2; render(); window.scrollTo({top:0,behavior:'smooth'}); });
+    });
+  }
+  function lab(list,k){ for(var i=0;i<list.length;i++) if(list[i].k===k) return list[i].t; return '—'; }
+
+  var DISPO=[
+   {t:'Release the batch — the analytical results all pass specification',ok:false,
+    w:'The product testing is irrelevant while the record is unreliable. A batch is released on the strength of <b>the record and the testing together</b>; passing assay does not compensate for an out-of-calibration balance, an unexplained yield loss and an unreviewable audit trail.'},
+   {t:'Release with a note of the documentation findings for correction next time',ok:false,
+    w:'“Release and fix it later” is the most dangerous option on the list, because it looks reasonable. Critical findings must be resolved <b>before</b> disposition, not noted afterwards.'},
+   {t:'Reject and destroy the batch immediately',ok:false,
+    w:'Premature. Some of these findings may be resolvable on investigation — the yield discrepancy may have an innocent explanation. Destroying the batch before investigating also destroys the evidence and may itself be a reportable loss.'},
+   {t:'Withhold release, raise deviations for each critical finding, open a full investigation including the yield discrepancy and the audit trail, and refer to the Qualified Person',ok:true,
+    w:'<b>Withhold and investigate.</b> The batch is not released, but nor is it condemned before the facts are established. Deviations are raised, the investigation covers the yield shortfall and the audit trail, and the disposition decision itself belongs to the Qualified Person once the investigation reports.'}
+  ];
+  var CAPAS=[
+   {t:'Configure the electronic system to prevent a single user both performing and verifying a step',ok:true},
+   {t:'Require calibration status to be verified electronically at the point of use, blocking out-of-calibration equipment',ok:true},
+   {t:'Make audit trail review a mandatory, evidenced step before any batch record is submitted for release',ok:true},
+   {t:'Assign batch record review to QA personnel with no involvement in manufacture',ok:true},
+   {t:'Retrain the operators involved and close the finding',ok:false,
+    w:'Retraining alone is the weakest possible corrective action. None of these findings arose from ignorance — they arose from a system that permitted them.'},
+   {t:'Amend the yield specification so that 94.5% falls within range',ok:false,
+    w:'Changing the specification to fit the result is a serious regulatory offence, not a corrective action.'},
+   {t:'Issue a memo reminding staff to complete records contemporaneously',ok:false,
+    w:'A memo changes nothing structural. Contemporaneous recording is enforced by system design and supervision, not by reminders.'}
+  ];
+
+  function stage3(){
+    var h='<div class="task"><span class="step">Stage 3 of 4 · 15 marks</span><h3>Disposition</h3>'
+      +'<div class="q">Four critical findings are open. What is your recommendation?</div>'
+      +'<div class="opts" id="dW">'+DISPO.map(function(d,k){
+        return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+'ABCD'[k]+'</span><span>'+esc(d.t)+'</span></button>';}).join('')+'</div>'
+      +'<div class="q" style="margin-top:16px">Select every appropriate corrective and preventive action. <span class="muted" style="font-weight:400">(5 marks)</span></div>'
+      +'<div class="opts" id="capaW">'+CAPAS.map(function(c,k){
+        return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+(k+1)+'</span><span>'+esc(c.t)+'</span></button>';}).join('')+'</div>'
+      +'<div id="fbk"></div><div class="row" style="margin-top:12px"><button class="btn" id="goBtn">Submit disposition</button></div></div>';
+    $('stage').innerHTML=h;
+    var capa=[];
+    [].forEach.call(document.querySelectorAll('#dW .opt'),function(b){
+      b.addEventListener('click',function(){ sel=+b.getAttribute('data-k');
+        [].forEach.call(document.querySelectorAll('#dW .opt'),function(x){x.classList.remove('pick');});
+        b.classList.add('pick'); });
+    });
+    [].forEach.call(document.querySelectorAll('#capaW .opt'),function(b){
+      b.addEventListener('click',function(){ var k=+b.getAttribute('data-k'), i=capa.indexOf(k);
+        if(i<0){capa.push(k);b.classList.add('pick');} else {capa.splice(i,1);b.classList.remove('pick');} });
+    });
+    $('goBtn').addEventListener('click',function(){
+      if(sel==null||!capa.length){ $('fbk').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Choose a disposition and at least one corrective action.</div>'; return; }
+      var dOK=DISPO[sel].ok, dm=dOK?15:0;
+      var right=0,bad=[];
+      CAPAS.forEach(function(c,k){ var p=capa.indexOf(k)>=0;
+        if(p===c.ok) right++; else if(p&&!c.ok) bad.push(esc(c.t)+' — '+c.w); });
+      var cm=Math.round((5*right/CAPAS.length)*10)/10;
+      S.marks+=dm+cm; S.dispoOK=dOK;
+      S.log.push({n:3,title:'Release decision',got:dm,max:15});
+      S.log.push({n:3,title:'Corrective and preventive action',got:cm,max:5});
+      if(!dOK) S.di=Math.max(0,S.di-20);
+      [].forEach.call(document.querySelectorAll('#dW .opt'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        if(DISPO[k].ok) b.classList.add('right'); else if(sel===k) b.classList.add('wrong');
+      });
+      [].forEach.call(document.querySelectorAll('#capaW .opt'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        var c=CAPAS[k].ok?'right':(capa.indexOf(k)>=0?'wrong':'');
+        if(c) b.classList.add(c);
+      });
+      var h2='<div class="fb '+(dOK?'ok':'no')+'"><div class="hd">'+(dm+cm)+' / 20 marks</div>'
+        +'<b>Disposition:</b> '+DISPO[sel].w;
+      if(bad.length) h2+='<div style="margin-top:8px"><b>Unacceptable actions selected:</b><ul><li>'+bad.join('</li><li>')+'</li></ul></div>';
+      $('fbk').innerHTML=h2+'</div>';
+      $('goBtn').disabled=true;
+      [].forEach.call(document.querySelectorAll('#stage .opt'),function(b){b.style.pointerEvents='none';});
+      paintBar();
+      var nx=document.createElement('button');
+      nx.className='btn gold sm'; nx.style.marginLeft='8px'; nx.textContent='See the outcome ▸';
+      $('goBtn').parentNode.appendChild(nx);
+      nx.addEventListener('click',function(){ S.i=3; finish(); });
     });
   }
 
-  paintChart(); paintQR(); renderDash();
+  function finish(){
+    if(S.ended) return;
+    S.ended=true;
+    var total=Math.round(S.marks*10)/10;
+    var pass=(total>=PASS);
+    var aOK=BAD.filter(function(i){return cls['a'+LINES[i].id]===LINES[i].alcoa;}).length;
+    S.result={total:total,pct:Math.round(total),pass:pass,di:S.di,found:S.found,fp:S.fp,dispoOK:!!S.dispoOK,
+      badges:[
+        {n:'🔎 Every Finding',      got:S.found===NBAD, d:'All eight findings identified'},
+        {n:'🎯 No False Positives', got:S.fp===0,       d:'No sound line flagged'},
+        {n:'📐 ALCOA+ Fluent',      got:aOK===NBAD,     d:'Every finding classified correctly'},
+        {n:'⚖ Correct Disposition', got:!!S.dispoOK,    d:'The right release decision'},
+        {n:'🏅 QP Ready',           got:(total>=85&&S.dispoOK), d:'85 or more with the correct disposition'}
+      ]};
+    makeQR(); renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  }
+
+  var qrData='';
+  function makeQR(){
+    try{
+      var url='https://www.alizon.in/alizon-verify.html?reg='+encodeURIComponent(S.reg||'')+'&p=M4U3-BMR';
+      $('qrHolder').innerHTML='';
+      if(window.QRCode){
+        new QRCode($('qrHolder'),{text:url,width:96,height:96,correctLevel:QRCode.CorrectLevel.M});
+        var cv=$('qrHolder').querySelector('canvas');
+        qrData=cv?cv.toDataURL('image/png'):(($('qrHolder').querySelector('img')||{}).src||'');
+      }
+    }catch(e){ qrData=''; }
+  }
+
+  function buildAuto(){
+    if(!S||!S.result) return null;
+    var r=S.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Batch Record Review — ALZ-TAB-2410</h3>';
+    h+='<p style="margin:2px 0"><b>Student:</b> '+esc(S.name)+(S.reg?' &nbsp;·&nbsp; <b>Register no.:</b> '+esc(S.reg):'')+'</p>';
+    h+='<p style="margin:2px 0"><b>Date:</b> '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})
+      +' &nbsp;·&nbsp; <b>Batch:</b> ALZ-TAB-2410 · paracetamol 500 mg · 240,000 units</p>';
+    h+='<p style="margin:6px 0"><b>Final score:</b> '+r.total+' / 100 &nbsp;·&nbsp; <b>Result:</b> '+(r.pass?'PASS':'FAIL')
+      +' &nbsp;·&nbsp; <b>Findings:</b> '+r.found+' of '+NBAD+' &nbsp;·&nbsp; <b>False positives:</b> '+r.fp
+      +' &nbsp;·&nbsp; <b>Record Integrity Index:</b> '+r.di+'%</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:8px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criterion</th><th>Awarded</th><th>Maximum</th></tr>'
+      +S.log.map(function(l){return '<tr><td>'+esc(l.title)+'</td><td align="center">'+l.got+'</td><td align="center">'+l.max+'</td></tr>';}).join('')
+      +'<tr style="font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">100</td></tr></table>';
+    h+='<p style="margin:10px 0 3px"><b>Findings in the record</b></p><ul style="margin:0 0 0 18px;font-size:12px;line-height:1.6">'
+      +BAD.map(function(i){var l=LINES[i];
+        return '<li>Line '+(i+1)+' — <b>'+esc(l.ttl)+'</b> ('+esc(lab(CRITS,l.crit))+', '+esc(lab(ALCOA,l.alcoa).split('—')[0].trim())+')</li>';}).join('')
+      +'</ul>';
+    h+='<p style="margin:8px 0 0;font-size:12px"><b>Disposition:</b> '+(r.dispoOK?'Withhold release, raise deviations, investigate and refer to the QP — correct.':'Incorrect disposition recorded.')+'</p>';
+    h+='<p style="margin:9px 0 2px"><b>Badges earned:</b> '+(r.badges.filter(function(b){return b.got;}).map(function(b){return esc(b.n);}).join(' · ')||'none')+'</p>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.total+' / 100</p>';
+    h+='<p style="margin-top:8px;font-size:11px;color:#555"><b>Faculty remarks:</b> ______________________________________________</p>';
+    if(qrData) h+='<div style="margin-top:10px"><img src="'+qrData+'" width="96" height="96" alt="Verification QR">'
+      +'<div style="font-size:10px;color:#666">Scan to verify · '+esc(S.reg||'—')+' · M4-U3-BMR</div></div>';
+    return h;
+  }
+
+  function renderReport(){
+    var r=S.result;
+    $('repEmpty').style.display='none'; var b=$('repBody'); b.style.display='';
+    var h='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">Marks / 100</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.found+'/'+NBAD+'</div><div class="rl">Findings identified</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.fp+'</div><div class="rl">False positives</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.di+'%</div><div class="rl">Record integrity</div></div>'
+      +'<div class="repbox"><div class="rv" style="font-size:15px">'+(r.dispoOK?'Withheld':'Wrong')+'</div><div class="rl">Disposition</div></div></div>';
+    h+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(S.name)+(S.reg?' ('+esc(S.reg)+')':'')+' · '+r.total+' / 100</div>';
+    if(!r.dispoOK) h+='<div class="fb no" style="margin-bottom:12px"><div class="hd">Incorrect disposition</div>'
+      +'Three critical findings were open. A batch cannot be released, nor condemned, until they are investigated — and the decision belongs to the Qualified Person.</div>';
+    h+='<h3 style="font-size:13px;margin:16px 0 6px">Findings</h3>';
+    BAD.forEach(function(i){ var l=LINES[i];
+      h+='<div class="outcome'+(l.crit==='critical'?' harm':'')+'"><b>Line '+(i+1)+' · '+esc(l.ttl)+'</b>'
+        +'<span class="muted" style="font-size:12px">'+esc(lab(CRITS,l.crit))+' · '+esc(lab(ALCOA,l.alcoa))+'</span>'
+        +'<div style="margin-top:5px">'+l.w+'</div></div>';
+    });
+    h+='<h3 style="font-size:13px;margin:18px 0 6px">Marks by criterion</h3><div class="tw"><table class="rubric">'
+      +'<thead><tr><th>Criterion</th><th>Awarded</th><th style="width:100px"></th></tr></thead><tbody>';
+    S.log.forEach(function(l){
+      var p=Math.round(l.got/l.max*100), cls2=p>=80?'good':(p<50?'bad':'');
+      h+='<tr><td>'+esc(l.title)+'</td><td>'+l.got+' / '+l.max+'</td><td><div class="bar"><i class="'+cls2+'" style="width:'+p+'%"></i></div></td></tr>';
+    });
+    h+='<tr class="tot"><td>Total</td><td>'+r.total+' / 100</td><td></td></tr></tbody></table></div>';
+    h+='<h3 style="font-size:13px;margin:18px 0 6px">Achievement badges</h3><div class="badges">'
+      +r.badges.map(function(x){return '<span class="badge '+(x.got?'got':'miss')+'" title="'+esc(x.d)+'">'+x.n+'</span>';}).join('')+'</div>';
+    h+='<div class="row no-print" style="margin-top:16px"><button class="btn gold" onclick="window.print()">Print report</button>'
+      +'<button class="btn ok" id="againBtn">Review the record again</button></div>'
+      +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p>';
+    b.innerHTML=h;
+    $('againBtn').addEventListener('click',function(){
+      $('setupCard').style.display=''; $('live').style.display='none'; $('stage').innerHTML='';
+      $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+      S=null; switchTab('review'); window.scrollTo(0,0);
+    });
+  }
+
+  var OPTS={module:'Module 4 · Unit 3 — Injectable Medicines & Sterile Products',
+            title:'Batch Record Review & Data Integrity Audit',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Review outcome &amp; disposition', placeholder:'e.g. 96/100 — 8 findings including 3 critical; release withheld pending investigation'},
+      minWords:400,
+      attachments:[{label:'1. Batch Record Review Report (PDF)'},
+                   {label:'2. Deviation / CAPA Worksheet (PDF)'},
+                   {label:'3. Additional Supporting File (PDF)'}],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return S&&S.result?S.result.pct:null; },
+      autoResultText:function(){ return S&&S.result?((S.result.pass?'PASS':'FAIL')+' '+S.result.total+'/100'):''; }
+    });
+  }
+  function switchTab(p){
+    [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);});
+    [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);});
+  }
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark');
+    try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  $('startBtn').addEventListener('click',start);
 })();
 </script>
 </body>
