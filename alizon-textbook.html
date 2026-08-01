@@ -216,6 +216,7 @@ table.bk td{border:.5pt solid #e6e2de;padding:2mm 2.6mm;vertical-align:top;line-
   <button class="btn" id="btnImport">Import</button>
   <button class="btn" id="btnGuide">Format guide</button>
   <button class="btn" id="btnStarter">Load module book</button>
+  <button class="btn" id="btnWhole">Load whole programme</button>
   <button class="btn" id="btnSmart">Smart import</button>
   <button class="btn" id="btnSave">Save</button>
   <button class="btn" id="btnOpen">Open</button>
@@ -1190,6 +1191,48 @@ function loadStarter(n){
     return true;
   });
 }
+/* ---------- whole programme in one stretch ----------
+   All 32 units concatenated into a single volume. Unit titles are prefixed with
+   the module so the contents page stays readable once the chapters run 1-32,
+   and the scope selector can then isolate any single unit out of the whole set. */
+function loadWholeProgramme(){
+  return AlizonBooks.loadAll().then(function(all){
+    var nums=Object.keys(all).map(Number).sort(function(a,b){return a-b;});
+    if(!nums.length) return Promise.reject(new Error('no books could be loaded'));
+    var parts=[], missing=[];
+    for(var n=1;n<=8;n++){ if(!all[n]) missing.push(n); }
+    nums.forEach(function(n){
+      var b=all[n];
+      /* retitle each unit so it carries its module once the numbering is continuous */
+      var src=String(b.src||'').replace(/^@chapter\s+(.*)$/gm, function(_,t){
+        return '@chapter Module '+n+' · '+t;
+      });
+      parts.push(src.replace(/\s+$/,''));
+    });
+    $('mModule').value='';
+    $('mTitle').value='Diploma in Pharmacy AI — Complete Programme';
+    $('mSub').value='All eight modules, thirty-two units';
+    $('mProg').value='Diploma in Pharmacy AI';
+    $('mEd').value='First Edition · 2026';
+    $('mAuth').value='Alizon School of Medical & Digital Intelligence';
+    $('src').value=parts.join('\n\n');
+    $('mScope').setAttribute('data-sig','');
+    render();
+    return {loaded:nums.length, missing:missing};
+  });
+}
+$('btnWhole').addEventListener('click', function(){
+  if($('src').value.trim() && !confirm('Replace what is in the editor with the complete programme?')) return;
+  $('stSaved').textContent='Loading all 8 modules…';
+  loadWholeProgramme().then(function(r){
+    $('stSaved').textContent='Whole programme loaded';
+    if(r.missing.length) alert('Loaded '+r.loaded+' of 8 modules.\n\nCould not load: '+r.missing.join(', '));
+  }).catch(function(e){
+    $('stSaved').textContent='';
+    alert('Could not load the programme: '+e.message);
+  });
+});
+
 $('btnStarter').addEventListener('click', function(){
   if($('src').value.trim() && !confirm('Replace what is in the editor?')) return;
   var n=prompt('Load the starter textbook for which module? (1-8)', $('mModule').value||'1');

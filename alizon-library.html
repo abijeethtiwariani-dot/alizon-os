@@ -201,6 +201,7 @@ body.night .bookinner figure.dia svg .dg-w{fill:#fff}
     <h1>Your textbooks</h1>
     <p id="shelfSub">Loading the library…</p>
   </div>
+  <div id="wholeBar" style="display:none;background:linear-gradient(120deg,#6b0f0f,#8c1515);color:#fff;border-radius:13px;padding:15px 18px;margin-bottom:20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:230px"><div style="font-family:var(--serif);font-size:17px;font-weight:700" id="wholeTitle">The complete programme</div><div style="font-size:12.5px;opacity:.9" id="wholeSub"></div></div><button class="tb" id="btnWholeRead" style="border-color:#fff">Read all</button><button class="tb" id="btnWholePrint" style="background:#fff;color:var(--crimson);border-color:#fff">Download all (PDF)</button></div>
   <div id="shelfBody"></div>
 </div>
 
@@ -334,6 +335,85 @@ function paintShelf(fromCache, state){
   [].forEach.call(body.querySelectorAll('.bk'), function(el){
     el.addEventListener('click', function(){ openBook(el.getAttribute('data-id')); });
   });
+
+  /* the whole-programme banner only makes sense with more than one book */
+  var wb=$('wholeBar');
+  if(wb){
+    if(index.length>1){
+      wb.style.display='flex';
+      $('wholeSub').textContent=index.length+' books · '+totalUnits+' units · read straight through or download as one document';
+    } else { wb.style.display='none'; }
+  }
+}
+
+/* ---------- the whole programme, in one stretch ----------
+   Every published book fetched and concatenated. Unit titles carry their module
+   because the numbering runs continuously once the books are joined. */
+function loadEverything(){
+  var jobs=index.map(function(b){
+    var cached=cacheGet(LS_BOOK+b.id);
+    if(cached){ try{ return Promise.resolve({b:b, data:JSON.parse(cached)}); }catch(e){} }
+    return waitForFb(10000).then(function(db){
+      if(!db) return null;
+      return db.collection('sync').doc('alizonBook_'+b.id).get().then(function(s){
+        if(!s.exists) return null;
+        var data=JSON.parse(s.data().value||'{}');
+        cacheSet(LS_BOOK+b.id, JSON.stringify(data));
+        return {b:b, data:data};
+      }).catch(function(){ return null; });
+    });
+  });
+  return Promise.all(jobs).then(function(rs){ return rs.filter(Boolean); });
+}
+
+function openEverything(thenPrint){
+  var btn = thenPrint ? $('btnWholePrint') : $('btnWholeRead');
+  var was = btn.textContent; btn.textContent='Loading…'; btn.disabled=true;
+  loadEverything().then(function(list){
+    btn.textContent=was; btn.disabled=false;
+    if(!list.length){ alert('Could not load the books. Check your connection and try again.'); return; }
+    var chapters=[];
+    list.forEach(function(x){
+      var mod=x.b.module||'';
+      AlizonBook.parse(x.data.src||'').forEach(function(ch){
+        chapters.push({title:(mod?'Module '+mod+' · ':'')+ch.title, blocks:ch.blocks});
+      });
+    });
+    if(!chapters.length){ alert('The books contain no units yet.'); return; }
+    current={id:'__all__', meta:{title:'Diploma in Pharmacy AI — Complete Programme',
+             prog:'Diploma in Pharmacy AI', module:''}, src:''};
+    window.__allChapters=chapters;
+    bootChapters(chapters, current.meta);
+    if(thenPrint) printWholeBook();
+  }).catch(function(){
+    btn.textContent=was; btn.disabled=false;
+    alert('Could not load the complete programme.');
+  });
+}
+
+/* render an arbitrary chapter set into the reader */
+function bootChapters(chs, meta){
+  chapters=chs;
+  $('shelf').style.display='none';
+  $('reader').classList.add('on');
+  $('btnBack').style.display=''; $('btnPrintR').style.display=''; $('btnPrintU').style.display='';
+  $('tbTitle').textContent=meta.title||'Textbook';
+  $('tbSub').textContent=meta.prog||'ALIZON OS';
+  buildToc();
+  showChapter(0, true);
+}
+
+/* build every chapter into the page, print, then restore the single-chapter view */
+function printWholeBook(){
+  var inner=$('bookInner'), keep=chapIdx;
+  inner.innerHTML='';
+  chapters.forEach(function(ch,i){
+    AlizonBook.renderChapter(ch, i+1).forEach(function(it){ if(it.node) inner.appendChild(it.node); });
+  });
+  setTimeout(function(){
+    window.print();
+    setTimeout(function(){ showChapter(keep, true); }, 400);
+  }, 250);
 }
 
 /* ---------- open + render ---------- */
@@ -433,19 +513,10 @@ function backToShelf(){
   paintShelf(false);
   window.scrollTo(0,0);
 }
+$('btnWholeRead').addEventListener('click', function(){ openEverything(false); });
+$('btnWholePrint').addEventListener('click', function(){ openEverything(true); });
 $('btnBack').addEventListener('click', backToShelf);
-$('btnPrintR').addEventListener('click', function(){
-  /* print the whole book, not just the chapter on screen */
-  var inner=$('bookInner'), keep=chapIdx;
-  inner.innerHTML='';
-  chapters.forEach(function(ch,i){
-    AlizonBook.renderChapter(ch, i+1).forEach(function(it){ if(it.node) inner.appendChild(it.node); });
-  });
-  setTimeout(function(){
-    window.print();
-    setTimeout(function(){ showChapter(keep, true); }, 400);
-  }, 150);
-});
+$('btnPrintR').addEventListener('click', printWholeBook);
 
 /* One chapter = one syllabus unit, so "print this unit" is simply the chapter
    already on screen — no rebuild needed, unlike the whole-book print. */
