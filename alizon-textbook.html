@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Textbook Studio — ALIZON OS</title>
+<meta name="description" content="Compose and typeset module textbooks for the Alizon School of Medical &amp; Digital Intelligence.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+/* ============================================================
+   ALIZON Textbook Studio
+   Left: source in the Alizon textbook markup.  Right: the typeset
+   book, flowed into real A4 pages so the contents page can carry
+   true page numbers and printing is exact.
+   ============================================================ */
+:root{
+  --crimson:#b1040e; --crimson-dark:#8a0009; --ink:#111; --muted:#2e2d29;
+  --line:#e6e6e6; --paper:#fff; --app-bg:#f4f2ef; --gold:#9a7b3f;
+  --serif:"Source Serif Pro",Georgia,"Times New Roman",serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--app-bg);color:var(--ink);font-family:var(--sans);font-size:14px}
+
+/* ---------- app chrome ---------- */
+.appbar{position:sticky;top:0;z-index:50;background:linear-gradient(120deg,#6b0f0f,#8c1515);color:#fff;
+  padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:0 2px 14px rgba(0,0,0,.16)}
+.appbar img{height:30px;width:auto;filter:brightness(0) invert(1)}
+.appbar h1{font-family:var(--serif);font-size:17px;margin:0;font-weight:700;letter-spacing:.01em}
+.appbar .sub{font-size:11px;opacity:.85;letter-spacing:.09em;text-transform:uppercase}
+.spacer{flex:1}
+.btn{font:inherit;font-size:12.5px;font-weight:700;padding:8px 15px;border-radius:100px;border:1px solid rgba(255,255,255,.5);
+  background:transparent;color:#fff;cursor:pointer;white-space:nowrap}
+.btn:hover{background:rgba(255,255,255,.14)}
+.btn.solid{background:#fff;color:var(--crimson);border-color:#fff}
+.btn.solid:hover{background:#ffeaea}
+
+.layout{display:grid;grid-template-columns:minmax(320px,1fr) minmax(360px,1.25fr);gap:0;height:calc(100vh - 51px)}
+@media(max-width:980px){ .layout{grid-template-columns:1fr;height:auto} .editorPane{height:60vh} }
+
+/* ---------- editor ---------- */
+.editorPane{display:flex;flex-direction:column;border-right:1px solid var(--line);background:#fbfaf9;min-height:0}
+.metaGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px 10px;padding:11px 14px;border-bottom:1px solid var(--line);background:#fff}
+.metaGrid label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#6b6560;margin-bottom:3px}
+.metaGrid input,.metaGrid select{width:100%;font:inherit;font-size:12.5px;padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:#fff}
+.tools{display:flex;flex-wrap:wrap;gap:5px;padding:9px 14px;border-bottom:1px solid var(--line);background:#f7f5f3}
+.tools button{font:inherit;font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--line);
+  background:#fff;color:var(--muted);cursor:pointer}
+.tools button:hover{border-color:var(--crimson);color:var(--crimson)}
+#src{flex:1;min-height:200px;width:100%;border:0;outline:0;resize:none;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:12.6px;line-height:1.72;background:#fbfaf9;color:#24211f;tab-size:2}
+.statusbar{padding:7px 14px;border-top:1px solid var(--line);background:#fff;font-size:11.5px;color:#6b6560;display:flex;gap:14px;flex-wrap:wrap}
+
+/* ---------- preview shell ---------- */
+.previewPane{overflow:auto;background:#e9e6e2;padding:22px 0 60px;min-height:0}
+.pagewrap{display:flex;flex-direction:column;align-items:center;gap:20px}
+
+/* ============================================================
+   THE BOOK — A4 pages
+   ============================================================ */
+.page{
+  width:210mm;height:297mm;background:var(--paper);position:relative;overflow:hidden;
+  box-shadow:0 6px 26px rgba(0,0,0,.16);flex:none;
+  font-family:var(--serif);color:var(--ink);
+}
+.page .content{position:absolute;left:22mm;right:18mm;top:20mm;bottom:18mm;overflow:hidden}
+.page.left .content{left:18mm;right:22mm}          /* mirrored inner margin */
+.runhead{position:absolute;top:11mm;left:22mm;right:18mm;display:flex;justify-content:space-between;gap:8mm;
+  font-family:var(--sans);font-size:8pt;letter-spacing:.06em;text-transform:uppercase;color:#8d8781;
+  border-bottom:.4pt solid #ddd8d3;padding-bottom:2.5mm}
+.runhead span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:48%}
+.runhead .rr{text-align:right}
+/* a chapter opening page carries no running head — standard book practice */
+.page.chapstart .runhead{display:none}
+.page.left .runhead{left:18mm;right:22mm}
+.folio{position:absolute;bottom:11mm;left:22mm;right:18mm;font-family:var(--sans);font-size:8.5pt;color:#6b6560;text-align:right}
+.page.left .folio{left:18mm;right:22mm;text-align:left}
+.page.plain .runhead,.page.plain .folio{display:none}
+
+/* body typography */
+.page p{margin:0 0 2.6mm;font-size:10.9pt;line-height:1.62;text-align:justify;hyphens:auto}
+.page p.first{text-indent:0}
+.page p.cont{text-indent:5mm;margin-top:0}
+.page h2.chapnum{font-family:var(--sans);font-size:9.5pt;letter-spacing:.22em;text-transform:uppercase;color:var(--crimson);margin:0 0 2mm;font-weight:800}
+.page h1.chaptitle{font-size:23pt;line-height:1.16;margin:0 0 5mm;font-weight:700;letter-spacing:-.01em}
+.page h3.sec{font-family:var(--sans);font-size:12.5pt;font-weight:800;margin:6.5mm 0 2.4mm;color:#1a1512;letter-spacing:-.005em}
+.page h4.sub{font-family:var(--sans);font-size:10.8pt;font-weight:700;margin:4.6mm 0 1.8mm;color:#3a332e}
+.page ul,.page ol{margin:0 0 2.8mm;padding-left:6mm}
+.page li{font-size:10.9pt;line-height:1.6;margin-bottom:1.1mm}
+.page b,.page strong{font-weight:700}
+
+/* callout boxes */
+.box{border-radius:2.4mm;padding:3.6mm 4.4mm;margin:0 0 3.4mm;font-size:10.2pt;line-height:1.56;break-inside:avoid}
+.box .bt{font-family:var(--sans);font-size:8.6pt;font-weight:800;letter-spacing:.11em;text-transform:uppercase;margin-bottom:1.6mm;display:block}
+.box p{font-size:10.2pt;margin-bottom:1.6mm;text-align:left}
+.box p:last-child{margin-bottom:0}
+.box ul{margin-bottom:0}
+.box li{font-size:10.2pt}
+.box.obj{background:#fdf3f3;border:.5pt solid rgba(177,4,14,.28);border-left:1.4mm solid var(--crimson)}
+.box.obj .bt{color:var(--crimson)}
+.box.know{background:#f3f7fb;border:.5pt solid #c3d5e6;border-left:1.4mm solid #2c6ea5}
+.box.know .bt{color:#1f5480}
+.box.activity{background:#f2f9f3;border:.5pt solid #c2ddc7;border-left:1.4mm solid #2e7d43}
+.box.activity .bt{color:#226334}
+.box.note{background:#fbf7ec;border:.5pt solid #e3d4ac;border-left:1.4mm solid var(--gold)}
+.box.note .bt{color:#7d6229}
+.box.caution{background:#fdf1ee;border:.5pt solid #f0c4b6;border-left:1.4mm solid #c2410c}
+.box.caution .bt{color:#9a3412}
+.box.summary{background:#faf9f7;border:.5pt solid #ddd8d3;border-top:1.4mm solid var(--crimson)}
+.box.summary .bt{color:var(--crimson)}
+.box.keyterms{background:#fff;border:.5pt solid #ddd8d3}
+.box.keyterms .bt{color:var(--gold)}
+.box.keyterms dl{margin:0}
+.box.keyterms dt{font-weight:700;font-size:10.2pt;margin-top:1.4mm}
+.box.keyterms dd{margin:0 0 0 0;font-size:10.1pt;line-height:1.5;color:#3a332e}
+.box.quote{background:#fff;border:0;border-left:1.4mm solid #ddd8d3;font-style:italic;color:#3a332e;padding-left:4mm}
+
+/* figures & tables */
+figure{margin:0 0 3.6mm;break-inside:avoid}
+figure .ph{border:.5pt dashed #c8c2bc;background:#faf9f7;border-radius:2mm;height:42mm;display:flex;align-items:center;
+  justify-content:center;color:#a29b95;font-family:var(--sans);font-size:9pt}
+figure img{width:100%;height:auto;border-radius:2mm;display:block}
+figcaption{font-family:var(--sans);font-size:8.8pt;color:#5f5a54;margin-top:1.8mm;line-height:1.45}
+figcaption b{color:var(--crimson)}
+table.bk{width:100%;border-collapse:collapse;margin:0 0 1.8mm;font-size:9.9pt;break-inside:avoid}
+table.bk th{background:#f7f3f0;border:.5pt solid #ddd8d3;padding:2mm 2.6mm;text-align:left;font-family:var(--sans);font-size:9pt;font-weight:800}
+table.bk td{border:.5pt solid #e6e2de;padding:2mm 2.6mm;vertical-align:top;line-height:1.45}
+.tcap{font-family:var(--sans);font-size:8.8pt;color:#5f5a54;margin:0 0 3.6mm}
+.tcap b{color:var(--crimson)}
+
+/* exercises */
+.exwrap{break-inside:avoid}
+.exwrap .bt{font-family:var(--sans);font-size:8.6pt;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--crimson);display:block;margin:0 0 2.4mm;border-top:1.4mm solid var(--crimson);padding-top:2.4mm}
+.exwrap ol{padding-left:6mm}
+.exwrap li{margin-bottom:1.9mm;font-size:10.5pt}
+
+/* ---------- cover ---------- */
+.cover{position:absolute;inset:0;display:flex;flex-direction:column;color:#fff;
+  background:linear-gradient(155deg,#6b0f0f 0%,#8c1515 42%,#b1040e 100%)}
+.cover .cvtop{padding:20mm 20mm 0;display:flex;align-items:center;gap:5mm}
+.cover .cvtop img{height:15mm;filter:brightness(0) invert(1)}
+.cover .cvtop .inst{font-family:var(--sans);font-size:10pt;font-weight:700;line-height:1.32;letter-spacing:.02em}
+.cover .cvtop .inst small{display:block;font-weight:500;font-size:8.2pt;opacity:.85;letter-spacing:.1em;text-transform:uppercase;margin-top:1mm}
+.cover .cvmid{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 20mm}
+.cover .eyebrow{font-family:var(--sans);font-size:9.5pt;letter-spacing:.28em;text-transform:uppercase;opacity:.9;margin-bottom:6mm}
+.cover h1{font-size:34pt;line-height:1.1;margin:0 0 6mm;font-weight:700;letter-spacing:-.015em}
+.cover .csub{font-size:14pt;line-height:1.4;opacity:.93;font-style:italic;margin-bottom:9mm}
+.cover .rule{width:38mm;height:1.6mm;background:#fff;opacity:.9;margin-bottom:9mm}
+.cover .cprog{font-family:var(--sans);font-size:10.5pt;line-height:1.6;opacity:.94}
+.cover .cvbot{padding:0 20mm 18mm;font-family:var(--sans);font-size:9pt;opacity:.85;display:flex;justify-content:space-between;align-items:flex-end}
+.cover .wm{position:absolute;right:-30mm;bottom:-30mm;width:150mm;height:150mm;border-radius:50%;
+  background:rgba(255,255,255,.055)}
+.cover .wm2{position:absolute;right:10mm;top:-40mm;width:100mm;height:100mm;border-radius:50%;background:rgba(255,255,255,.04)}
+
+/* ---------- imprint / contents ---------- */
+.imprint{font-size:9.6pt;line-height:1.62;color:#3a332e}
+.imprint h5{font-family:var(--sans);font-size:9pt;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--crimson);margin:0 0 3mm}
+.imprint p{font-size:9.6pt;text-align:left;margin-bottom:2.6mm}
+.imprint .rule{height:.5pt;background:#ddd8d3;margin:5mm 0}
+.tocH{font-size:20pt;font-weight:700;margin:0 0 6mm;letter-spacing:-.01em}
+.tocrow{display:flex;align-items:baseline;gap:2mm;margin-bottom:2.6mm;font-size:10.6pt}
+.tocrow .tno{font-family:var(--sans);font-weight:800;color:var(--crimson);min-width:11mm;font-size:9.6pt}
+.tocrow .tt{flex:0 1 auto}
+.tocrow .dots{flex:1;border-bottom:.5pt dotted #c8c2bc;transform:translateY(-1mm)}
+.tocrow .tp{font-family:var(--sans);font-size:9.6pt;color:#3a332e;font-variant-numeric:tabular-nums}
+.tocrow.sub{margin-left:11mm;font-size:9.9pt;color:#3a332e}
+.tocrow.sub .tno{min-width:12mm;font-weight:600;color:#8d8781}
+
+/* chapter opener */
+.chopen{border-bottom:1.6mm solid var(--crimson);padding-bottom:5mm;margin-bottom:6mm}
+
+.emptyState{padding:60px 30px;text-align:center;color:#8d8781;font-family:var(--sans)}
+
+/* ---------- format guide ---------- */
+.ov{position:fixed;inset:0;z-index:200;background:rgba(12,6,8,.55);display:flex;align-items:center;justify-content:center;padding:24px}
+.ovbox{background:#fff;max-width:780px;width:100%;max-height:86vh;overflow:auto;border-radius:16px;padding:26px 30px;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+.ovbox h2{font-family:var(--serif);font-size:21px;margin:0 0 4px}
+.ovbox .lead{font-size:13px;color:#6b6560;margin:0 0 18px;line-height:1.6}
+.ovbox h3{font-family:var(--sans);font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--crimson);margin:20px 0 8px}
+.gt{width:100%;border-collapse:collapse;font-size:12.6px}
+.gt td{border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top;line-height:1.55}
+.gt td:first-child{width:34%;white-space:nowrap}
+.gt code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#f6f3f1;padding:2px 6px;border-radius:4px;color:#8a0009}
+
+/* ============================================================
+   PRINT — pages are already exact, so just strip the app
+   ============================================================ */
+@media print{
+  @page{ size:A4; margin:0 }
+  body{background:#fff}
+  .appbar,.editorPane,.statusbar,.tools,.metaGrid{display:none!important}
+  .layout{display:block;height:auto}
+  .previewPane{overflow:visible;padding:0;background:#fff}
+  .pagewrap{gap:0}
+  .page{box-shadow:none;break-after:page;page-break-after:always}
+  .page:last-child{break-after:auto;page-break-after:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="appbar">
+  <img src="alizon-logo.png" alt="Alizon">
+  <div>
+    <h1>Textbook Studio</h1>
+    <div class="sub">Alizon School of Medical &amp; Digital Intelligence</div>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn" id="btnGuide">Format guide</button>
+  <button class="btn" id="btnSample">Load example</button>
+  <button class="btn" id="btnSmart">Smart import</button>
+  <button class="btn" id="btnSave">Save</button>
+  <button class="btn" id="btnOpen">Open</button>
+  <button class="btn" id="btnExport">Export</button>
+  <button class="btn" id="btnCombine">Combine volume</button>
+  <button class="btn solid" id="btnPrint">Print / PDF</button>
+</div>
+
+<div class="layout">
+  <!-- ================= EDITOR ================= -->
+  <div class="editorPane">
+    <div class="metaGrid">
+      <div><label>Module</label>
+        <select id="mModule"><option value="">—</option></select></div>
+      <div><label>Book title</label><input id="mTitle" placeholder="Artificial Intelligence in Pharmacy Practice"></div>
+      <div><label>Subtitle</label><input id="mSub" placeholder="A Practice-Based Introduction"></div>
+      <div><label>Programme</label><input id="mProg" placeholder="Diploma in Pharmacy AI"></div>
+      <div><label>Edition</label><input id="mEd" placeholder="First Edition · 2026"></div>
+      <div><label>Authors</label><input id="mAuth" placeholder="Department of Pharmacy AI"></div>
+    </div>
+
+    <div class="tools" id="tools"></div>
+    <textarea id="src" spellcheck="false" placeholder="Write or paste your chapter text here.
+
+Use @chapter, @section, @objectives … or paste plain text and press “Smart import”."></textarea>
+    <div class="statusbar">
+      <span id="stChap">0 chapters</span>
+      <span id="stWords">0 words</span>
+      <span id="stPages">0 pages</span>
+      <span id="stSaved" style="margin-left:auto"></span>
+    </div>
+  </div>
+
+  <!-- ================= PREVIEW ================= -->
+  <div class="previewPane">
+    <div class="pagewrap" id="pages">
+      <div class="emptyState">The typeset book appears here as you write.</div>
+    </div>
+  </div>
+</div>
+
+<script src="alizon-exam-manifest.js?v=3"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){ return document.getElementById(id); };
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+/* light inline markup: **bold**, *italic*, `code` — applied AFTER escaping */
+function inl(s){
+  return esc(s)
+    .replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')
+    .replace(/(^|[\s(])\*([^*\n]+)\*/g,'$1<i>$2</i>')
+    .replace(/`([^`]+)`/g,'<code style="font-family:ui-monospace,Menlo,monospace;font-size:.92em;background:#f4f2ef;padding:0 .3em;border-radius:2px">$1</code>');
+}
+
+/* ============================================================
+   1. PARSER — the Alizon textbook markup
+   Directive lines begin with @. Everything else is body text;
+   a blank line separates paragraphs, "- " starts a list.
+   ============================================================ */
+var BOX_KINDS={objectives:'obj', know:'know', activity:'activity', note:'note', caution:'caution',
+               summary:'summary', keyterms:'keyterms', quote:'quote'};
+var BOX_LABEL={obj:'Learning outcomes', know:'Did you know?', activity:'Activity',
+               note:'Note', caution:'Caution', summary:'What we have learnt',
+               keyterms:'Key terms', quote:''};
+
+function parse(text){
+  var lines=String(text||'').replace(/\r/g,'').split('\n');
+  var chapters=[], cur=null, buf=[], box=null, tbl=null;
+
+  function flushPara(){
+    if(!buf.length) return;
+    var joined=buf.join('\n');
+    buf=[];
+    var target = box ? box.body : (cur ? cur.blocks : null);
+    if(!target) return;
+    /* split into paragraphs / lists */
+    joined.split(/\n{2,}/).forEach(function(chunk){
+      var ls=chunk.split('\n').filter(function(l){ return l.trim()!==''; });
+      if(!ls.length) return;
+      if(ls.every(function(l){ return /^\s*[-*]\s+/.test(l); })){
+        target.push({t:'ul', items:ls.map(function(l){ return l.replace(/^\s*[-*]\s+/,''); })});
+      } else if(ls.every(function(l){ return /^\s*\d+[.)]\s+/.test(l); })){
+        target.push({t:'ol', items:ls.map(function(l){ return l.replace(/^\s*\d+[.)]\s+/,''); })});
+      } else if(ls.every(function(l){ return /^[^:]{1,60}:\s*.+/.test(l); }) && box && box.kind==='keyterms'){
+        target.push({t:'dl', items:ls.map(function(l){ var i=l.indexOf(':'); return [l.slice(0,i), l.slice(i+1).trim()]; })});
+      } else {
+        target.push({t:'p', text:ls.join(' ')});
+      }
+    });
+  }
+  function closeBox(){ flushPara(); if(box && cur){ cur.blocks.push(box); } box=null; }
+  function closeTable(){
+    if(!tbl) return;
+    if(cur && tbl.rows.length) cur.blocks.push(tbl);
+    tbl=null;
+  }
+  function ensureChapter(){
+    if(!cur){ cur={title:'Untitled chapter', blocks:[]}; chapters.push(cur); }
+  }
+
+  for(var i=0;i<lines.length;i++){
+    var raw=lines[i], line=raw.trim();
+
+    /* table rows continue until a blank line or a new directive */
+    if(tbl){
+      if(line==='' || line.charAt(0)==='@'){ closeTable(); }
+      else { tbl.rows.push(line.split('|').map(function(c){ return c.trim(); })); continue; }
+    }
+
+    if(line.charAt(0)==='@'){
+      var m=/^@([a-zA-Z]+)\s*(.*)$/.exec(line);
+      if(!m){ buf.push(raw); continue; }
+      var tag=m[1].toLowerCase(), rest=m[2].trim();
+
+      if(tag==='chapter'){ closeBox(); cur={title:rest||'Untitled chapter', blocks:[]}; chapters.push(cur); continue; }
+      if(tag==='section'){ closeBox(); ensureChapter(); cur.blocks.push({t:'sec', text:rest}); continue; }
+      if(tag==='subsection'){ closeBox(); ensureChapter(); cur.blocks.push({t:'sub', text:rest}); continue; }
+      if(tag==='figure'){
+        closeBox(); ensureChapter();
+        var parts=rest.split('|');
+        var srcv=(parts[0]||'').trim(), cap=(parts.slice(1).join('|')||'').trim();
+        if(srcv && !cap && !/\.(png|jpe?g|gif|svg|webp)$/i.test(srcv) && srcv.indexOf('data:')!==0){ cap=srcv; srcv=''; }
+        cur.blocks.push({t:'fig', src:srcv, cap:cap});
+        continue;
+      }
+      if(tag==='table'){ closeBox(); ensureChapter(); tbl={t:'table', cap:rest, rows:[]}; continue; }
+      if(tag==='exercise'){ closeBox(); ensureChapter(); cur.blocks.push({t:'exstart', text:rest||'Exercises'}); continue; }
+      if(tag==='pagebreak'){ closeBox(); ensureChapter(); cur.blocks.push({t:'pb'}); continue; }
+      if(BOX_KINDS[tag]){
+        closeBox(); ensureChapter();
+        box={t:'box', kind:BOX_KINDS[tag], title:rest, body:[]};
+        continue;
+      }
+      /* unknown directive → treat as text so nothing is silently lost */
+      buf.push(raw); continue;
+    }
+
+    if(line===''){ flushPara(); continue; }
+    /* Q: lines inside an exercise become numbered items */
+    ensureChapter();
+    buf.push(raw);
+  }
+  closeTable(); closeBox(); flushPara();
+  return chapters;
+}
+
+/* ============================================================
+   2. RENDER — chapters to a flat list of flowable elements
+   ============================================================ */
+function el(html){ var d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild; }
+
+function renderChapter(ch, cn){
+  var out=[], secN=0, subN=0, figN=0, tabN=0, inEx=false, exItems=null;
+
+  out.push({node:el('<div class="chopen"><h2 class="chapnum">Chapter '+cn+'</h2><h1 class="chaptitle">'+inl(ch.title)+'</h1></div>'),
+            newPage:true, toc:{lvl:1, no:String(cn), text:ch.title}});
+
+  function flushEx(){
+    if(!exItems) return;
+    var lis=exItems.map(function(q){ return '<li>'+inl(q)+'</li>'; }).join('');
+    out.push({node:el('<div class="exwrap"><span class="bt">'+esc(inEx)+'</span><ol>'+lis+'</ol></div>')});
+    exItems=null; inEx=false;
+  }
+
+  function bodyHtml(blocks){
+    return blocks.map(function(b){
+      if(b.t==='p')  return '<p>'+inl(b.text)+'</p>';
+      if(b.t==='ul') return '<ul>'+b.items.map(function(x){return '<li>'+inl(x)+'</li>';}).join('')+'</ul>';
+      if(b.t==='ol') return '<ol>'+b.items.map(function(x){return '<li>'+inl(x)+'</li>';}).join('')+'</ol>';
+      if(b.t==='dl') return '<dl>'+b.items.map(function(x){return '<dt>'+inl(x[0])+'</dt><dd>'+inl(x[1])+'</dd>';}).join('')+'</dl>';
+      return '';
+    }).join('');
+  }
+
+  ch.blocks.forEach(function(b){
+    if(b.t==='exstart'){ flushEx(); inEx=b.text; exItems=[]; return; }
+
+    if(inEx && b.t==='p'){ exItems.push(b.text.replace(/^Q\s*[:.)]\s*/i,'')); return; }
+    if(inEx && (b.t==='ul'||b.t==='ol')){ b.items.forEach(function(x){ exItems.push(x); }); return; }
+    if(inEx) flushEx();
+
+    if(b.t==='sec'){
+      secN++; subN=0;
+      out.push({node:el('<h3 class="sec">'+cn+'.'+secN+'&nbsp;&nbsp;'+inl(b.text)+'</h3>'),
+                keepNext:true, toc:{lvl:2, no:cn+'.'+secN, text:b.text}});
+      return;
+    }
+    if(b.t==='sub'){
+      subN++;
+      out.push({node:el('<h4 class="sub">'+cn+'.'+secN+'.'+subN+'&nbsp;&nbsp;'+inl(b.text)+'</h4>'), keepNext:true});
+      return;
+    }
+    if(b.t==='p'){ out.push({node:el('<p>'+inl(b.text)+'</p>')}); return; }
+    if(b.t==='ul'){ out.push({node:el('<ul>'+b.items.map(function(x){return '<li>'+inl(x)+'</li>';}).join('')+'</ul>')}); return; }
+    if(b.t==='ol'){ out.push({node:el('<ol>'+b.items.map(function(x){return '<li>'+inl(x)+'</li>';}).join('')+'</ol>')}); return; }
+    if(b.t==='pb'){ out.push({node:el('<div></div>'), forceBreak:true}); return; }
+
+    if(b.t==='fig'){
+      figN++;
+      var inner = b.src ? '<img src="'+esc(b.src)+'" alt="">' : '<div class="ph">Figure placeholder — add an image path with @figure</div>';
+      out.push({node:el('<figure>'+inner+'<figcaption><b>Fig. '+cn+'.'+figN+'</b>&nbsp; '+inl(b.cap||'')+'</figcaption></figure>')});
+      return;
+    }
+    if(b.t==='table'){
+      tabN++;
+      var rows=b.rows.slice(), head=rows.shift()||[];
+      var th='<tr>'+head.map(function(c){return '<th>'+inl(c)+'</th>';}).join('')+'</tr>';
+      var td=rows.map(function(r){ return '<tr>'+r.map(function(c){return '<td>'+inl(c)+'</td>';}).join('')+'</tr>'; }).join('');
+      out.push({node:el('<table class="bk">'+th+td+'</table>'), keepNext:true});
+      out.push({node:el('<div class="tcap"><b>Table '+cn+'.'+tabN+'</b>&nbsp; '+inl(b.cap||'')+'</div>')});
+      return;
+    }
+    if(b.t==='box'){
+      var label = b.title || BOX_LABEL[b.kind] || '';
+      var bt = label ? '<span class="bt">'+esc(label)+'</span>' : '';
+      out.push({node:el('<div class="box '+b.kind+'">'+bt+bodyHtml(b.body)+'</div>')});
+      return;
+    }
+  });
+  flushEx();
+  return out;
+}
+
+/* ============================================================
+   3. PAGINATE — flow elements into real A4 pages
+   ============================================================ */
+var meta={};
+function metaRead(){
+  return {
+    module:$('mModule').value, title:$('mTitle').value.trim(), sub:$('mSub').value.trim(),
+    prog:$('mProg').value.trim(), ed:$('mEd').value.trim(), auth:$('mAuth').value.trim()
+  };
+}
+
+function makePage(cls){
+  var p=document.createElement('div');
+  p.className='page'+(cls?' '+cls:'');
+  p.innerHTML='<div class="runhead"><span class="rl"></span><span class="rr"></span></div>'
+             +'<div class="content"></div><div class="folio"></div>';
+  return p;
+}
+
+function coverPage(m){
+  var p=makePage('plain');
+  var title=m.title||'Module Textbook';
+  var modline=m.module?('Module '+m.module):'';
+  p.innerHTML='<div class="cover"><div class="wm"></div><div class="wm2"></div>'
+    +'<div class="cvtop"><img src="alizon-logo.png" alt="">'
+      +'<div class="inst">Alizon School of Medical &amp; Digital Intelligence<small>ALIZON OS · Kerala, India</small></div></div>'
+    +'<div class="cvmid">'
+      +(modline?'<div class="eyebrow">'+esc(modline)+'</div>':'')
+      +'<h1>'+esc(title)+'</h1>'
+      +(m.sub?'<div class="csub">'+esc(m.sub)+'</div>':'')
+      +'<div class="rule"></div>'
+      +'<div class="cprog">'+(m.prog?esc(m.prog)+'<br>':'')+(m.auth?esc(m.auth):'')+'</div>'
+    +'</div>'
+    +'<div class="cvbot"><span>'+esc(m.ed||'')+'</span><span>alizon.in</span></div>'
+  +'</div>';
+  return p;
+}
+
+function imprintPage(m){
+  var p=makePage('plain');
+  var y=new Date().getFullYear();
+  p.querySelector('.content').innerHTML=
+    '<div class="imprint" style="position:absolute;bottom:0;left:0;right:0">'
+    +'<h5>About this book</h5>'
+    +'<p><b>'+esc(m.title||'Module Textbook')+'</b>'+(m.sub?' — '+esc(m.sub):'')+'</p>'
+    +(m.prog?'<p>Prepared for the '+esc(m.prog)+'.</p>':'')
+    +'<div class="rule"></div>'
+    +'<p>'+esc(m.ed||('First Edition · '+y))+'</p>'
+    +'<p>© '+y+' Alizon School of Medical &amp; Digital Intelligence. '
+    +'Prepared for the instruction of enrolled students. No part of this book may be reproduced or '
+    +'distributed outside the institution without written permission.</p>'
+    +(m.auth?'<p><b>Prepared by:</b> '+esc(m.auth)+'</p>':'')
+    +'<p><b>Published by:</b> Alizon School of Medical &amp; Digital Intelligence, Kerala, India · alizon.in</p>'
+    +'</div>';
+  return p;
+}
+
+function paginate(chapters, m){
+  var wrap=$('pages');
+  wrap.innerHTML='';
+  if(!chapters.length){ wrap.innerHTML='<div class="emptyState">The typeset book appears here as you write.</div>'; return {pages:0}; }
+
+  /* front matter */
+  wrap.appendChild(coverPage(m));
+  wrap.appendChild(imprintPage(m));
+  var tocPage=makePage('plain');
+  tocPage.querySelector('.content').innerHTML='<div class="tocH">Contents</div><div id="tocBody"></div>';
+  wrap.appendChild(tocPage);
+
+  /* body pages */
+  /* verso carries the book, recto the chapter — so the two never read as a duplicate */
+  var runL=m.title||(m.module?'Module '+m.module:'ALIZON OS');
+  var folio=0, page=null, content=null, curChapTitle='', chapStart=false;
+  var toc=[];
+
+  function newPage(){
+    /* a chapter that happens to end exactly at a page boundary must not leave a blank */
+    if(content && content.children.length===0){
+      if(chapStart) page.classList.add('chapstart');
+      return;
+    }
+    folio++;
+    page=makePage((folio%2===0?'left':'')+(chapStart?' chapstart':''));
+    page.querySelector('.rl').textContent=runL;
+    page.querySelector('.rr').textContent=curChapTitle;
+    page.querySelector('.folio').textContent=folio;
+    wrap.appendChild(page);
+    content=page.querySelector('.content');
+  }
+  function fits(){ return content.scrollHeight <= content.clientHeight; }
+
+  chapters.forEach(function(ch, idx){
+    var items=renderChapter(ch, idx+1);
+    curChapTitle=ch.title;
+    items.forEach(function(it, k){
+      if(it.newPage || !page){
+        chapStart=!!it.newPage; newPage(); chapStart=false;
+        if(it.newPage) page.querySelector('.rr').textContent=ch.title;
+      }
+      if(it.forceBreak){ newPage(); return; }
+      content.appendChild(it.node);
+      if(!fits()){
+        /* does not fit — move to a fresh page */
+        content.removeChild(it.node);
+        newPage();
+        content.appendChild(it.node);
+        /* a single element taller than the page simply stays and is clipped-safe:
+           it is the only thing on its page, so nothing is lost visually */
+      }
+      if(it.toc) toc.push({lvl:it.toc.lvl, no:it.toc.no, text:it.toc.text, page:folio});
+    });
+    /* a heading must never sit alone at the foot of a page */
+    var last=content.lastElementChild;
+    if(last && /^(H3|H4)$/.test(last.tagName)){ content.removeChild(last); newPage(); content.appendChild(last); }
+  });
+
+  /* contents with real page numbers */
+  var tb=tocPage.querySelector('#tocBody');
+  tb.innerHTML=toc.map(function(t){
+    return '<div class="tocrow'+(t.lvl===2?' sub':'')+'">'
+      +'<span class="tno">'+esc(t.lvl===1?('Ch '+t.no):t.no)+'</span>'
+      +'<span class="tt">'+esc(t.text)+'</span><span class="dots"></span>'
+      +'<span class="tp">'+t.page+'</span></div>';
+  }).join('') || '<p style="font-size:10pt;color:#8d8781">No chapters yet.</p>';
+
+  return {pages:wrap.querySelectorAll('.page').length};
+}
+
+/* ============================================================
+   4. WIRING
+   ============================================================ */
+var tRender=null;
+function render(){
+  var m=metaRead();
+  var chapters=parse($('src').value);
+  var res=paginate(chapters, m);
+  var words=($('src').value.match(/\S+/g)||[]).length;
+  $('stChap').textContent=chapters.length+' chapter'+(chapters.length===1?'':'s');
+  $('stWords').textContent=words.toLocaleString()+' words';
+  $('stPages').textContent=res.pages+' page'+(res.pages===1?'':'s');
+}
+function schedule(){ clearTimeout(tRender); tRender=setTimeout(render, 260); }
+
+/* module picker fed by the exam manifest so it always matches the syllabus */
+(function fillModules(){
+  var sel=$('mModule');
+  var mods=[];
+  try{ mods=(window.ALIZON_EXAM_MANIFEST&&window.ALIZON_EXAM_MANIFEST.modules)||[]; }catch(e){}
+  if(!mods.length){ for(var i=1;i<=8;i++) mods.push({n:i,title:''}); }
+  mods.forEach(function(md){
+    var o=document.createElement('option');
+    o.value=md.n; o.textContent='Module '+md.n+(md.title?' — '+md.title.slice(0,42):'');
+    sel.appendChild(o);
+  });
+})();
+
+/* insert-block toolbar */
+var SNIPPETS=[
+  ['Chapter','@chapter Chapter title here\n\n'],
+  ['Outcomes','@objectives\n- First learning outcome\n- Second learning outcome\n\n'],
+  ['Section','@section Section title\n\n'],
+  ['Sub-section','@subsection Sub-section title\n\n'],
+  ['Did you know','@know Did you know?\nA short, memorable fact.\n\n'],
+  ['Activity','@activity Activity\nWhat the student should go and do.\n\n'],
+  ['Note','@note\nAn important clarification.\n\n'],
+  ['Caution','@caution\nA safety warning.\n\n'],
+  ['Figure','@figure | Caption for the figure\n\n'],
+  ['Table','@table Caption for the table\nHeading A | Heading B\nCell | Cell\n\n'],
+  ['Key terms','@keyterms\nTerm: its definition.\nAnother term: its definition.\n\n'],
+  ['Summary','@summary\n- What we have learnt\n\n'],
+  ['Exercises','@exercise Exercises\nQ: First question?\nQ: Second question?\n\n'],
+  ['Page break','@pagebreak\n\n']
+];
+(function buildTools(){
+  var t=$('tools');
+  SNIPPETS.forEach(function(s){
+    var b=document.createElement('button');
+    b.type='button'; b.textContent=s[0];
+    b.addEventListener('click',function(){ insert(s[1]); });
+    t.appendChild(b);
+  });
+})();
+function insert(txt){
+  var ta=$('src'), a=ta.selectionStart, b=ta.selectionEnd, v=ta.value;
+  ta.value=v.slice(0,a)+txt+v.slice(b);
+  ta.focus(); ta.selectionStart=ta.selectionEnd=a+txt.length;
+  schedule();
+}
+
+/* ---------- smart import: plain prose → markup ---------- */
+function smartImport(){
+  var v=$('src').value;
+  if(!v.trim()){ alert('Paste your plain text into the editor first, then press Smart import.'); return; }
+  if(/^@chapter/m.test(v) && !confirm('This text already uses @chapter markers. Run smart import anyway?')) return;
+  var lines=v.replace(/\r/g,'').split('\n'), out=[], firstHeading=true;
+  for(var i=0;i<lines.length;i++){
+    var L=lines[i], t=L.trim();
+    if(t===''){ out.push(''); continue; }
+    if(/^@/.test(t)){ out.push(L); continue; }
+    var next=(lines[i+1]||'').trim();
+    var numbered=/^(\d+)\.(\d+)(\.(\d+))?\s+\S/.exec(t);      // 1.2  or 1.2.3
+    var chapNum=/^(chapter|unit)\s+\d+\b[:.\s-]*(.*)$/i.exec(t);
+    var shortLine = t.length<=72 && !/[.;:,]$/.test(t) && next==='';
+    var titleCase = /^[A-Z0-9]/.test(t) && t.split(/\s+/).length<=12;
+
+    if(chapNum){ out.push('@chapter '+(chapNum[2]||t)); firstHeading=false; continue; }
+    if(numbered && numbered[4]){ out.push('@subsection '+t.replace(/^\d+(\.\d+)+\s+/,'')); continue; }
+    if(numbered){ out.push('@section '+t.replace(/^\d+(\.\d+)+\s+/,'')); continue; }
+    if(/^(learning outcomes?|objectives?)\s*:?$/i.test(t)){ out.push('@objectives'); continue; }
+    if(/^(summary|what we have learnt)\s*:?$/i.test(t)){ out.push('@summary'); continue; }
+    if(/^(key ?terms?|glossary)\s*:?$/i.test(t)){ out.push('@keyterms'); continue; }
+    if(/^(exercises?|questions?|review questions?)\s*:?$/i.test(t)){ out.push('@exercise Exercises'); continue; }
+    if(/^(activity|try this)\b/i.test(t)){ out.push('@activity '+t); continue; }
+    if(/^(did you know|do you know)\b/i.test(t)){ out.push('@know '+t); continue; }
+    if(/^(note|remember)\s*:?$/i.test(t)){ out.push('@note'); continue; }
+    if(/^(caution|warning)\s*:?$/i.test(t)){ out.push('@caution'); continue; }
+    if(shortLine && titleCase){
+      out.push(firstHeading ? '@chapter '+t : '@section '+t);
+      firstHeading=false; continue;
+    }
+    out.push(L);
+  }
+  var res=out.join('\n');
+  if(!/^@chapter/m.test(res)) res='@chapter '+($('mTitle').value.trim()||'Chapter 1')+'\n\n'+res;
+  $('src').value=res;
+  render();
+}
+
+/* ---------- storage (local only — see note below) ---------- */
+/* Textbooks are large. alizonSubmissions already showed what happens when big
+   documents ride the cloud sync: every synced key is ONE Firestore document with
+   a 1 MB cap. Books are kept on this device and moved between machines with
+   Export / Open, so they can never fill that document. */
+var STORE='alizonTextbooks';
+function books(){ try{ var a=JSON.parse(localStorage.getItem(STORE)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function bookKey(m){ return (m.module||'x')+'|'+(m.title||'untitled'); }
+function save(){
+  var m=metaRead();
+  if(!m.title){ alert('Give the book a title before saving.'); $('mTitle').focus(); return; }
+  var a=books(), k=bookKey(m), rec={key:k, meta:m, src:$('src').value, at:Date.now()};
+  var i=-1; a.forEach(function(x,j){ if(x.key===k) i=j; });
+  if(i>=0) a[i]=rec; else a.push(rec);
+  try{ localStorage.setItem(STORE, JSON.stringify(a)); }
+  catch(e){ alert('Could not save — this device is out of storage space. Use Export to keep a copy.'); return; }
+  $('stSaved').textContent='Saved '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+function open_(){
+  var a=books();
+  if(!a.length){ alert('No saved books on this device yet.'); return; }
+  var pick=prompt('Open which book?\n\n'+a.map(function(x,i){ return (i+1)+'. '+(x.meta.module?'M'+x.meta.module+' · ':'')+x.meta.title; }).join('\n'),'1');
+  var n=parseInt(pick,10); if(!n||n<1||n>a.length) return;
+  var r=a[n-1];
+  $('mModule').value=r.meta.module||''; $('mTitle').value=r.meta.title||'';
+  $('mSub').value=r.meta.sub||''; $('mProg').value=r.meta.prog||'';
+  $('mEd').value=r.meta.ed||''; $('mAuth').value=r.meta.auth||'';
+  $('src').value=r.src||'';
+  render();
+}
+function exportJson(){
+  var m=metaRead();
+  var payload={type:'alizon-textbook', version:1, exportedAt:new Date().toISOString(), meta:m, src:$('src').value};
+  var b=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  var u=URL.createObjectURL(b), a=document.createElement('a');
+  a.href=u; a.download='alizon-textbook-'+(m.module?'M'+m.module+'-':'')+(m.title||'book').replace(/[^\w]+/g,'-').toLowerCase()+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(u); },2000);
+}
+/* combine several saved module books into one bound volume */
+function combine(){
+  var a=books();
+  if(a.length<2){ alert('Save at least two module books first — then they can be bound into one volume.'); return; }
+  var pick=prompt('Combine which books into one volume?\nEnter numbers separated by commas, in the order you want them.\n\n'
+    +a.map(function(x,i){ return (i+1)+'. '+(x.meta.module?'M'+x.meta.module+' · ':'')+x.meta.title; }).join('\n'),
+    a.map(function(_,i){ return i+1; }).join(','));
+  if(!pick) return;
+  var idx=pick.split(',').map(function(s){ return parseInt(s.trim(),10)-1; }).filter(function(i){ return i>=0 && i<a.length; });
+  if(idx.length<2){ alert('Pick at least two.'); return; }
+  var srcs=idx.map(function(i){
+    var r=a[i];
+    var head='@chapter '+(r.meta.module?'Module '+r.meta.module+' — ':'')+r.meta.title+'\n\n';
+    /* keep each book whole: its own @chapter lines become sections of the volume */
+    var body=(r.src||'').replace(/^@chapter\s+/gm,'@section ');
+    return head+body;
+  });
+  $('mTitle').value='Pharmacy AI — Combined Volume';
+  $('mSub').value='Modules '+idx.map(function(i){ return a[i].meta.module||'?'; }).join(', ');
+  $('mModule').value='';
+  $('src').value=srcs.join('\n\n');
+  render();
+  alert('Combined '+idx.length+' books into one volume. Review it, then Save or Print.');
+}
+
+/* ---------- example ---------- */
+var SAMPLE=
+'@chapter Artificial Intelligence in Pharmacy Practice\n\n'+
+'@objectives\n'+
+'- Define artificial intelligence and distinguish it from ordinary automation\n'+
+'- Describe three places AI already sits inside a hospital pharmacy\n'+
+'- Explain why a pharmacist must remain accountable for an AI-assisted decision\n\n'+
+'@section What artificial intelligence means\n\n'+
+'Artificial intelligence is the branch of computing concerned with machines that perform tasks '+
+'which would ordinarily require human judgement. In pharmacy the term covers a wide range, from a '+
+'simple rule that flags a duplicate prescription to a model that predicts which patients are most '+
+'likely to be readmitted.\n\n'+
+'It is useful to separate **automation** from **intelligence**. A dispensing robot that counts '+
+'tablets is automation: it repeats a fixed action. A system that learns which prescriptions are most '+
+'often queried, and puts those at the top of your worklist, is doing something different.\n\n'+
+'@know Did you know?\n'+
+'MYCIN, built at Stanford in the early 1970s, could recommend antibiotics for blood infections and '+
+'often matched specialist physicians. It was never used on patients — the ethical and legal questions '+
+'of the day had no answers yet. Those same questions are still with us.\n\n'+
+'@subsection Machine learning in one paragraph\n\n'+
+'Machine learning is the part of AI where the rules are not written by a person but inferred from '+
+'data. You supply examples, the model finds patterns, and it applies those patterns to cases it has '+
+'not seen. This is powerful and it is fragile: a model trained on one hospital\'s patients may behave '+
+'quite differently at another.\n\n'+
+'@table Rule-based systems compared with learning systems\n'+
+'Property | Rule-based | Learning\n'+
+'Where rules come from | Written by experts | Inferred from data\n'+
+'Explains itself | Easily | Often with difficulty\n'+
+'Handles the unexpected | Poorly | Sometimes well\n'+
+'Fails | Predictably | Silently\n\n'+
+'@caution\n'+
+'A model that fails silently is more dangerous than one that fails loudly. Always ask how you would '+
+'know if the system were wrong.\n\n'+
+'@figure | Where AI sits in the medicines pathway, from prescribing through to counselling\n\n'+
+'@activity Activity 1.1\n'+
+'Ask two working pharmacists which parts of their day are already assisted by software. Write down '+
+'which of those are automation and which involve any judgement. Bring your list to the next session.\n\n'+
+'@keyterms\n'+
+'Artificial intelligence: computing concerned with tasks that would ordinarily need human judgement.\n'+
+'Machine learning: an approach in which rules are inferred from data rather than written by hand.\n'+
+'Clinical decision support: software that presents advice to a clinician at the point of a decision.\n\n'+
+'@summary\n'+
+'- AI covers a range from simple rules to learned models; the word alone tells you little\n'+
+'- Automation repeats an action, intelligence adapts to the case in front of it\n'+
+'- A learned model reflects the data it was trained on, and may not transfer between hospitals\n'+
+'- Accountability for the decision stays with the pharmacist\n\n'+
+'@exercise Exercises\n'+
+'Q: Define artificial intelligence in one sentence, in your own words.\n'+
+'Q: Give one example of automation and one of intelligence from a community pharmacy.\n'+
+'Q: A model trained in one hospital performs poorly in another. Give two reasons why.\n'+
+'Q: Why is a silent failure more dangerous than an obvious one? Answer with reference to patient safety.\n';
+
+/* ---------- events ---------- */
+$('src').addEventListener('input', schedule);
+['mModule','mTitle','mSub','mProg','mEd','mAuth'].forEach(function(id){
+  $(id).addEventListener('input', schedule); $(id).addEventListener('change', schedule);
+});
+$('btnSample').addEventListener('click', function(){
+  if($('src').value.trim() && !confirm('Replace what is in the editor with the example chapter?')) return;
+  $('mTitle').value=$('mTitle').value||'Artificial Intelligence in Pharmacy Practice';
+  $('mSub').value=$('mSub').value||'A Practice-Based Introduction';
+  $('mProg').value=$('mProg').value||'Diploma in Pharmacy AI';
+  $('mEd').value=$('mEd').value||'First Edition · 2026';
+  $('mAuth').value=$('mAuth').value||'Department of Pharmacy AI';
+  if(!$('mModule').value) $('mModule').value='1';
+  $('src').value=SAMPLE; render();
+});
+/* ---------- format guide ---------- */
+var GUIDE=[
+  ['Structure',[
+    ['@chapter Title','Starts a new chapter. Always begins on a fresh page and is numbered automatically.'],
+    ['@section Title','A numbered section — 1.1, 1.2 … Appears in the contents.'],
+    ['@subsection Title','A numbered sub-section — 1.1.1, 1.1.2 …'],
+    ['@pagebreak','Force the next content onto a new page.']
+  ]],
+  ['Teaching boxes',[
+    ['@objectives','Learning outcomes, printed in a crimson box at the top of the chapter.'],
+    ['@know Heading','A “Did you know?” box — a memorable aside.'],
+    ['@activity Heading','Something the student must go and do.'],
+    ['@note','A clarification.'],
+    ['@caution','A safety warning.'],
+    ['@summary','“What we have learnt”, normally at the chapter end.'],
+    ['@keyterms','Definitions. Write one per line as <code>Term: meaning</code>.'],
+    ['@quote','A pull quote, set in italic.']
+  ]],
+  ['Figures, tables, questions',[
+    ['@figure path | Caption','Numbered Fig. 1.1. Leave the path empty for a placeholder box you can fill later.'],
+    ['@table Caption','Follow it with rows using <code>|</code> between cells. The first row becomes the heading.'],
+    ['@exercise Exercises','Every line after it becomes a numbered question. A leading <code>Q:</code> is removed.']
+  ]],
+  ['Writing text',[
+    ['Plain lines','Ordinary paragraphs. A blank line starts a new one.'],
+    ['- item','A bulleted list. Use <code>1.</code> for a numbered one.'],
+    ['**bold** *italic*','Inline emphasis. <code>`code`</code> sets monospace.']
+  ]]
+];
+function showGuide(){
+  var html='<div class="ovbox"><h2>The Alizon textbook format</h2>'
+    +'<p class="lead">Type a line beginning with <code>@</code> to mark a block; everything else is ordinary text. '
+    +'You never number anything yourself — chapters, sections, figures and tables are numbered as the book is built, '
+    +'and the contents page takes its page numbers from the finished pages. '
+    +'If you already have plain notes, paste them in and press <b>Smart import</b> to convert them.</p>';
+  GUIDE.forEach(function(g){
+    html+='<h3>'+esc(g[0])+'</h3><table class="gt">';
+    g[1].forEach(function(r){ html+='<tr><td><code>'+esc(r[0])+'</code></td><td>'+r[1]+'</td></tr>'; });
+    html+='</table>';
+  });
+  html+='<div style="margin-top:22px;text-align:right"><button class="btn" id="gClose" style="border-color:var(--crimson);color:var(--crimson)">Close</button></div></div>';
+  var ov=document.createElement('div'); ov.className='ov'; ov.innerHTML=html;
+  document.body.appendChild(ov);
+  function close(){ try{ document.body.removeChild(ov); }catch(e){} }
+  ov.querySelector('#gClose').addEventListener('click', close);
+  ov.addEventListener('click', function(e){ if(e.target===ov) close(); });
+  document.addEventListener('keydown', function k(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown',k); } });
+}
+$('btnGuide').addEventListener('click', showGuide);
+$('btnSmart').addEventListener('click', smartImport);
+$('btnSave').addEventListener('click', save);
+$('btnOpen').addEventListener('click', open_);
+$('btnExport').addEventListener('click', exportJson);
+$('btnCombine').addEventListener('click', combine);
+$('btnPrint').addEventListener('click', function(){ render(); setTimeout(function(){ window.print(); }, 120); });
+
+render();
+})();
+</script>
+</body>
+</html>
