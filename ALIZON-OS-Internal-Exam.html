@@ -50,7 +50,12 @@
   .exbar .clock.warn{background:rgba(0,0,0,.42);animation:puls 1s infinite}
   @keyframes puls{50%{opacity:.55}}
   .exbody{display:grid;grid-template-columns:1fr 296px;gap:16px;align-items:start}
-  @media(max-width:900px){.exbody{grid-template-columns:1fr}.side{order:-1}}
+  /* On a narrow screen the question must come first. Ordering the palette above it
+     buried Q1 below 25 cells and put Submit under the reader's thumb. */
+  @media(max-width:900px){
+    .exbody{grid-template-columns:1fr}
+    .side{order:1;position:static}
+  }
 
   /* ---------- question ---------- */
   .qhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:9px}
