@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 6 · Pharmacy Data Quality Audit</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div id="labRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-pdf-open.js"></script>
+<script src="alizon-lab-kit.js?v=1"></script>
+<script>
+/* ============================================================
+   The dataset has two defects. The visible one is a 300% spike in
+   metformin issues in week 34 — dramatic, and entirely a duplicated
+   import batch. The dangerous one is silent: after the system upgrade in
+   week 30 the "quantity" column switched from packs to units for one
+   supplier, so every total that crosses week 30 is wrong and nothing
+   about it looks unusual. A student who fixes the spike and analyses the
+   data has produced a confident, precise, wrong answer.
+   ============================================================ */
+AlizonLabKit.stages({
+  module:'Module 6 · Unit 1 — Introduction to Pharmacy Data & Analytics',
+  title:'Pharmacy Data Quality Audit',
+  unitLabel:'Pharmacy AI · Module 6 · Unit 1 · Practical 1',
+  expKey:'dataquality',
+  workTab:'Audit',
+  opbar:'linear-gradient(120deg,#131a26,#1d2a3a)',
+  startLabel:'Open the dataset',
+  finishHead:'Audit complete',
+  meterA:'Analytical rigour', meterB:'Data trust',
+  counterLabel:'Stage',
+  blurb:'The stewardship committee wants a report on twelve months of dispensing data. '+
+        'Before you analyse anything, audit it. One problem in this extract will announce itself. '+
+        'The other will not.',
+  before:'<p class="muted">Five checks are available. Each one you run is recorded. You will then be '+
+         'asked to explain what you found and decide whether the data can be used.</p>'+
+         '<p class="muted">Two indices sit alongside your mark: <b>Analytical rigour</b>, which falls '+
+         'when you conclude without running the check that would have shown it, and <b>Data trust</b>, '+
+         'which falls if you certify data that is not fit to analyse.</p>',
+  gatherLabel:'Run the checks',
+  gatherNote:'Run whichever checks you judge necessary. You may proceed at any point — but a '+
+             'conclusion drawn without the check is recorded as such.',
+
+  evidence:{
+    profile:{t:'Volume profile by week', s:'Issues per week across the year',
+      body:'METFORMIN 500 mg — ISSUES PER WEEK\n'+
+           '------------------------------------------------------------\n'+
+           'w28  412   ████████\n'+
+           'w29  398   ████████\n'+
+           'w30  405   ████████\n'+
+           'w31  421   ████████\n'+
+           'w32  409   ████████\n'+
+           'w33  417   ████████\n'+
+           'w34 1263   ████████████████████████  <-- 3x every other week\n'+
+           'w35  402   ████████\n'+
+           'w36  415   ████████\n'},
+    dupes:{t:'Duplicate row check', s:'Rows identical on every field',
+      body:'DUPLICATE SCAN\n'+
+           '------------------------------------------------------------\n'+
+           'Exact duplicate rows found : 842\n'+
+           'All within date range      : w34 only\n'+
+           'Import batch id            : IMP-2026-W34-A  (842 rows)\n'+
+           '                             IMP-2026-W34-B  (842 rows, identical)\n'+
+           'Import log note            : "batch A appeared to fail, re-run"\n'},
+    dict:{t:'Column dictionary', s:'What each field is supposed to mean',
+      body:'FIELD DEFINITIONS (as documented)\n'+
+           '------------------------------------------------------------\n'+
+           'issue_date   date      date of issue\n'+
+           'product_code text      local catalogue code\n'+
+           'quantity     integer   NUMBER OF PACKS issued\n'+
+           'supplier     text      supplying wholesaler\n'+
+           'ward         text      requesting location\n'+
+           '\nNote appended by IT, undated: "post-upgrade some feeds send units"\n'},
+    units:{t:'Unit-of-measure check', s:'Does quantity mean the same thing throughout?',
+      body:'QUANTITY DISTRIBUTION BY SUPPLIER AND PERIOD\n'+
+           '------------------------------------------------------------\n'+
+           'Supplier A, before w30 : median 2    range 1-6      (looks like packs)\n'+
+           'Supplier A, after  w30 : median 112  range 28-336   (looks like units)\n'+
+           'Supplier B, before w30 : median 3    range 1-8\n'+
+           'Supplier B, after  w30 : median 3    range 1-9\n'+
+           '\n! Supplier A changed scale at w30. Nothing in the data flags it.\n'+
+           '  A pack of metformin 500 mg contains 56 tablets.\n'},
+    ward:{t:'Ward feedback', s:'What the people using the medicine say',
+      body:'WARD PHARMACIST NOTES\n'+
+           '------------------------------------------------------------\n'+
+           '"Metformin use has been completely stable all year as far as we are\n'+
+           ' concerned. Nothing changed in w34. We did not order extra."\n'+
+           '"We changed wholesaler for some lines over the summer."\n'}
+  },
+
+  steps:[
+    {k:'spike', t:'Explain the spike', q:'What explains the week 34 spike?',
+     need:['dupes'], right:'dupe',
+     options:[['demand','A genuine surge in demand that week'],
+              ['dupe','A duplicated import — the same 842 rows loaded twice'],
+              ['season','Seasonal variation'],
+              ['error','Prescribing error on one ward']],
+     explain:{
+       dupe:'Correct. The import log shows batch A was believed to have failed and was re-run as batch B. Both loaded. 842 exact duplicate rows, all in week 34, account for the whole spike — and the ward pharmacists confirm nothing changed.',
+       demand:'Not supported. The ward pharmacists report entirely stable use, and the duplicate scan finds 842 identical rows confined to that one week.',
+       season:'Seasonality does not produce a single three-fold week flanked by ordinary ones.',
+       error:'A prescribing error would show in one ward and one prescriber. This is 842 exact duplicate rows across the whole extract.'
+     }},
+
+    {k:'worse', t:'Find the dangerous defect', q:'Which problem in this dataset is the more dangerous?',
+     need:['units','dict'], right:'units',
+     penaltyB:{spike:30, none:45},
+     options:[['spike','The week 34 duplication — it is by far the largest distortion'],
+              ['units','The quantity column changing from packs to units for one supplier at week 30'],
+              ['missing','Some wards are missing from the extract'],
+              ['none','Neither — both are minor and the data can be used']],
+     explain:{
+       units:'Correct. The duplication is obvious and therefore safe: anyone looking at the chart will ask about it. The unit change is invisible. Supplier A switched from packs to units at week 30, and a pack holds 56 tablets, so every total spanning week 30 is wrong by a factor of about fifty for that supplier — with nothing in the data to suggest anything is amiss.',
+       spike:'The spike is the larger number but the smaller danger. It announces itself; anyone reading the chart will query it. The defect that will actually mislead you is the one that looks normal.',
+       missing:'Nothing in the checks indicates missing wards.',
+       none:'Both are real, and one of them silently corrupts every total that crosses week 30.'
+     }},
+
+    {k:'act', t:'Decide', q:'What do you do before the committee report?',
+     need:['units'], right:'fix',
+     penaltyB:{use:40, drop:15},
+     options:[['use','Remove the duplicates and analyse — the rest of the data is sound'],
+              ['fix','Remove the duplicates, convert Supplier A post-week-30 quantities to packs, document both corrections, and re-run the profile'],
+              ['drop','Discard the whole year and start collecting again'],
+              ['flag','Report the numbers as they are with a caveat that the data may be imperfect']],
+     explain:{
+       fix:'Correct, and the documentation matters as much as the correction. A cleaning decision that is not written down cannot be checked, and the next analyst will not know the conversion was applied.',
+       use:'This is the trap. Removing the visible problem and leaving the invisible one produces a report that is confident, precise and wrong.',
+       drop:'Disproportionate. Both defects are identifiable and correctable, and a year of data has real value.',
+       flag:'A caveat is not a substitute for a correction. "The data may be imperfect" tells the committee nothing they can act on, and they will read the numbers anyway.'
+     }}
+  ],
+
+  outcome:function(S,M){
+    var right = S.ans.worse && S.ans.worse.pick==='units' && S.ans.act && S.ans.act.pick==='fix';
+    return '<h3 style="margin-top:16px">What the data actually was</h3>'
+      +'<p>Two defects. The week 34 spike was 842 duplicate rows from an import re-run — dramatic, '
+      +'obvious, and harmless once seen. The real problem was Supplier A switching the quantity column '
+      +'from packs to units at week 30. A pack holds 56 tablets, so every total spanning that boundary '
+      +'was overstated roughly fifty-fold for that supplier, and nothing in the data looked unusual.</p>'
+      +(right
+        ? '<div class="fb yes"><div class="hd">You found the quiet one</div>The defect that misleads is '
+          +'never the one that announces itself. You corrected both and documented the conversion, which '
+          +'is what makes the analysis defensible when someone asks in six months.</div>'
+        : '<div class="fb no"><div class="hd">The quiet defect survived</div>Had this gone to committee, '
+          +'the metformin figures would have been wrong by a factor of about fifty for one supplier — and '
+          +'because the visible spike had been dealt with, the report would have looked carefully prepared.</div>')
+      +'<div class="fb yes" style="margin-top:8px"><div class="hd">Carry this forward</div>Run the '
+      +'completeness, range, consistency, duplication and timeliness checks before any analysis, and '
+      +'record every cleaning decision. A field named "quantity" that means packs in one row and units '
+      +'in the next produces a total that is confident, precise and meaningless.</div>';
+  },
+
+  reportLabel:'Audit outcome',
+  reportPlaceholder:'e.g. 40/40 — duplicate import identified, unit-of-measure change corrected and documented',
+  attachments:[{label:'1. Data Quality Report / Printout (PDF)'},
+               {label:'2. Reflection on cleaning decisions and their documentation (PDF)'}]
+});
+</script>
+</body>
+</html>

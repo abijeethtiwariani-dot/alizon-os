@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 6 · Model Evaluation Clinic</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div id="labRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-pdf-open.js"></script>
+<script src="alizon-lab-kit.js?v=1"></script>
+<script>
+/* ============================================================
+   Three candidate readmission models. Model B has the best headline
+   accuracy (94%) and finds almost nobody, because readmission is rare.
+   Model C has the best AUC and is the tempting choice — but it is badly
+   calibrated and its sensitivity collapses in the over-80 group, the
+   patients the service exists for. Model A is unglamorous and correct.
+   ============================================================ */
+AlizonLabKit.stages({
+  module:'Module 6 · Unit 2 — Machine Learning in Pharmacy Practice',
+  title:'Model Evaluation Clinic',
+  unitLabel:'Pharmacy AI · Module 6 · Unit 2 · Practical 1',
+  expKey:'modelclinic',
+  workTab:'Evaluation',
+  opbar:'linear-gradient(120deg,#101c22,#18303a)',
+  startLabel:'Open the evaluation pack',
+  finishHead:'Evaluation complete',
+  meterA:'Analytical rigour', meterB:'Equity',
+  counterLabel:'Stage',
+  blurb:'Three models have been offered to predict 30-day readmission so the pharmacy team can '+
+        'prioritise discharge counselling. You must choose one, or none. Only 6% of patients are '+
+        'readmitted.',
+  before:'<p class="muted">Five parts of the evaluation pack are available. Each one you open is '+
+         'recorded. A model with a very impressive headline number is available from the first screen.</p>'+
+         '<p class="muted">Two indices sit alongside your mark: <b>Analytical rigour</b>, which falls '+
+         'when you conclude without the evidence, and <b>Equity</b>, which falls if you deploy a model '+
+         'that performs materially worse for one group of patients.</p>',
+  gatherLabel:'Read the evaluation pack',
+
+  evidence:{
+    head:{t:'Headline metrics', s:'What the vendor put on the first slide',
+      body:'CANDIDATE MODELS — 30-DAY READMISSION (prevalence 6%)\n'+
+           '------------------------------------------------------------\n'+
+           'Model A   accuracy 0.87   AUC 0.79\n'+
+           'Model B   accuracy 0.94   AUC 0.61\n'+
+           'Model C   accuracy 0.89   AUC 0.86\n'},
+    conf:{t:'Confusion matrices', s:'What each model actually finds',
+      body:'PER 1,000 PATIENTS — 60 READMITTED, 940 NOT\n'+
+           '------------------------------------------------------------\n'+
+           'Model A   found 43 of 60   false alarms 87    sens 0.72  spec 0.91\n'+
+           'Model B   found  5 of 60   false alarms  4    sens 0.08  spec 0.996\n'+
+           'Model C   found 47 of 60   false alarms 97    sens 0.78  spec 0.90\n'+
+           '\nModel B achieves 94% accuracy by answering "no" to almost everyone.\n'},
+    split:{t:'Train / test performance', s:'Does it generalise?',
+      body:'AUC ON TRAINING VS HELD-OUT TEST DATA\n'+
+           '------------------------------------------------------------\n'+
+           'Model A   train 0.81   test 0.79    gap 0.02\n'+
+           'Model B   train 0.63   test 0.61    gap 0.02\n'+
+           'Model C   train 0.97   test 0.86    gap 0.11   <-- large\n'},
+    calib:{t:'Calibration', s:'Do the predicted probabilities mean anything?',
+      body:'PREDICTED RISK VS OBSERVED READMISSION\n'+
+           '------------------------------------------------------------\n'+
+           'Model A   predicted 10% -> observed 11%    predicted 40% -> observed 38%\n'+
+           'Model C   predicted 10% -> observed 26%    predicted 40% -> observed 71%\n'+
+           '\nModel C ranks patients well but its probabilities are badly wrong.\n'+
+           'A "10% risk" patient is in fact a one-in-four risk.\n'},
+    sub:{t:'Subgroup performance', s:'Does it work for everybody?',
+      body:'SENSITIVITY BY AGE GROUP\n'+
+           '------------------------------------------------------------\n'+
+           '              under 65    65-79    80 and over\n'+
+           'Model A         0.71       0.73       0.70\n'+
+           'Model C         0.88       0.82       0.41   <-- collapses\n'+
+           '\nOver-80s are 38% of discharges and the highest-risk group.\n'+
+           'Model C was trained on data in which they were under-represented.\n'}
+  },
+
+  steps:[
+    {k:'acc', t:'Judge the headline', q:'Model B reports 94% accuracy. What does that tell you?',
+     need:['head','conf'], right:'useless',
+     options:[['best','It is the strongest model — accuracy is the bottom line'],
+              ['useless','Very little — with 6% prevalence, answering "no" to everyone scores 94%'],
+              ['second','It is second best, behind Model C on AUC'],
+              ['more','Nothing can be said without the training data']],
+     explain:{
+       useless:'Correct. Prevalence is 6%, so a model that predicts "no readmission" for every patient is 94% accurate and finds nobody. The confusion matrix confirms it: Model B finds 5 readmissions out of 60.',
+       best:'This is the trap the metric is designed to catch. Accuracy collapses as a measure whenever the outcome is rare.',
+       second:'Ranking them by accuracy at all is the error. AUC and the confusion matrix tell you what accuracy hides.',
+       more:'You have enough: prevalence and a confusion matrix are sufficient to see the problem.'
+     }},
+
+    {k:'over', t:'Spot the overfitting', q:'Model C has the best AUC. What does the train/test gap tell you?',
+     need:['split'], right:'over',
+     options:[['fine','Nothing concerning — it is still the best on test data'],
+              ['over','A gap of 0.11 suggests overfitting; the test figure is the honest one and the model may degrade further elsewhere'],
+              ['under','The model is underfitting and needs more features'],
+              ['ignore','Train performance is irrelevant and should not be reported']],
+     explain:{
+       over:'Correct. Train 0.97 against test 0.86 is a large gap: the model has learned some of the noise in its training data. The test figure is the honest one, and performance at another hospital would likely be worse again.',
+       fine:'It is still the best on test data, but the gap is a warning that the model has partly memorised. It matters when you ask how it will behave on next year\'s patients.',
+       under:'Underfitting shows as poor performance on both train and test. Here training performance is excellent.',
+       ignore:'Training performance is exactly what reveals overfitting when compared with test performance.'
+     }},
+
+    {k:'pick', t:'Choose a model', q:'Which model do you recommend for deployment?',
+     need:['calib','sub'], right:'A',
+     penaltyB:{C:45, B:10},
+     options:[['A','Model A — modest headline figures, well calibrated, consistent across age groups'],
+              ['B','Model B — the highest accuracy'],
+              ['C','Model C — the highest AUC and best overall discrimination'],
+              ['none','None of them — reject all three']],
+     explain:{
+       A:'Correct. Model A is unspectacular and sound: sensitivity 0.72, a small train/test gap, calibrated probabilities, and near-identical performance in every age group. For a service that must act on a predicted risk, calibration and consistency matter more than a decimal place of AUC.',
+       C:'This is the real trap. Model C ranks patients best, but its probabilities are badly wrong — a patient it calls 10% risk is actually 26% — and its sensitivity collapses to 0.41 in the over-80s, who are 38% of discharges and the highest-risk group. Deploying it would systematically under-serve the patients the service exists for.',
+       B:'Model B finds 5 readmissions in 60. It is accurate and useless.',
+       none:'Model A is genuinely fit for purpose. Rejecting everything is as much a failure of judgement as choosing badly.'
+     }},
+
+    {k:'mon', t:'Plan the monitoring', q:'What must be monitored after deployment?',
+     need:[], right:'both',
+     options:[['acc2','Accuracy, monthly'],
+              ['both','Calibration and subgroup performance, with a defined trigger to withdraw the model'],
+              ['none2','Nothing — the model was validated before deployment'],
+              ['use2','Only how often staff follow the recommendation']],
+     explain:{
+       both:'Correct. Populations drift, and a model that was calibrated at launch may not be in a year. Monitoring must include subgroups, because an overall figure can stay flat while one group\'s performance falls away — and there must be a pre-agreed trigger to withdraw it, decided before anyone is invested in the model.',
+       acc2:'Accuracy is the least informative measure here, for the same reason it was misleading at selection.',
+       none2:'Validation before deployment says nothing about next year\'s patients.',
+       use2:'Worth knowing, but it measures the staff rather than the model.'
+     }}
+  ],
+
+  outcome:function(S,M){
+    var chose=S.ans.pick&&S.ans.pick.pick;
+    return '<h3 style="margin-top:16px">What the pack showed</h3>'
+      +'<p>Model B\'s 94% accuracy came from answering "no" to almost every patient — it found 5 '
+      +'readmissions in 60. Model C had the best discrimination and two disqualifying faults: '
+      +'probabilities that were badly wrong, and sensitivity collapsing to 0.41 in the over-80s, who '
+      +'are 38% of discharges. Model A was the least impressive and the only one fit to deploy.</p>'
+      +(chose==='A'
+        ? '<div class="fb yes"><div class="hd">You chose on the right grounds</div>Calibration and '
+          +'consistency across groups beat a higher AUC whenever a predicted risk will be acted on.</div>'
+        : chose==='C'
+          ? '<div class="fb no"><div class="hd">You deployed the inequitable model</div>Model C would have '
+            +'missed nearly six in ten readmissions among the over-80s while appearing, in aggregate, to be '
+            +'the strongest model on offer. Aggregate performance hides subgroup failure.</div>'
+          : '<div class="fb no"><div class="hd">Model A was fit for purpose</div>It was the unglamorous '
+            +'option, and the evaluation pack supported it on every measure that mattered.</div>')
+      +'<div class="fb yes" style="margin-top:8px"><div class="hd">Carry this forward</div>Ask what the base '
+      +'rate is before reading any accuracy figure; compare train against test to see overfitting; check '
+      +'calibration if a probability will be acted on; and always look at subgroups, because a model can '
+      +'be excellent on average and unusable for the group you most need it for.</div>';
+  },
+
+  reportLabel:'Evaluation outcome',
+  reportPlaceholder:'e.g. 50/50 — Model A recommended; C rejected on calibration and subgroup failure',
+  attachments:[{label:'1. Model Evaluation Report / Printout (PDF)'},
+               {label:'2. Reflection on metric choice and equity (PDF)'}]
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 6 · Demand Forecasting &amp; Stock Decisions</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div id="labRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-pdf-open.js"></script>
+<script src="alizon-lab-kit.js?v=1"></script>
+<script>
+/* ============================================================
+   Two traps. The apparent demand trend for the anticoagulant is a
+   one-off institutional tender, not growth — forecasting from it
+   overstocks a short-dated product. And adrenaline is pennies a vial, so
+   ABC alone leaves it under-controlled; VED is what stops it running out.
+   ============================================================ */
+AlizonLabKit.stages({
+  module:'Module 6 · Unit 4 — Demand Forecasting & Inventory Analytics',
+  title:'Demand Forecasting & Stock Decisions',
+  unitLabel:'Pharmacy AI · Module 6 · Unit 4 · Practical 1',
+  expKey:'forecasting',
+  workTab:'Forecast',
+  opbar:'linear-gradient(120deg,#141d18,#1e3129)',
+  startLabel:'Open the stock review',
+  finishHead:'Stock review complete',
+  meterA:'Forecast quality', meterB:'Service safety',
+  counterLabel:'Stage',
+  blurb:'You are setting stock parameters for the coming quarter. Two items need decisions: an '+
+        'anticoagulant whose usage appears to be climbing steeply, and a cheap emergency drug that '+
+        'barely registers on the value report.',
+  before:'<p class="muted">Five sources are available. Each one you open is recorded. The usage chart '+
+         'alone will suggest an answer for both items, and it is wrong for both.</p>'+
+         '<p class="muted">Two indices sit alongside your mark: <b>Forecast quality</b>, which falls '+
+         'when you project from data you have not interrogated, and <b>Service safety</b>, which falls '+
+         'if a decision risks running out of something a patient cannot wait for.</p>',
+  gatherLabel:'Review the data',
+
+  evidence:{
+    usage:{t:'Usage trend — anticoagulant', s:'Packs issued per month',
+      body:'APIXABAN 5 mg — PACKS PER MONTH\n'+
+           '------------------------------------------------------------\n'+
+           'Jan  180   ██████\n'+
+           'Feb  176   ██████\n'+
+           'Mar  184   ██████\n'+
+           'Apr  191   ██████\n'+
+           'May  402   █████████████\n'+
+           'Jun  438   ██████████████\n'+
+           'Jul  447   ██████████████\n'+
+           '\nA naive projection from May onward gives ~520 packs next month.\n'},
+    why:{t:'Why did usage change?', s:'Procurement and clinical notes',
+      body:'PROCUREMENT NOTE — 28 April\n'+
+           '------------------------------------------------------------\n'+
+           '"Trust awarded a 6-month tender to supply apixaban to three partner\n'+
+           ' clinics from our stock. Tender ENDS 31 October and will not be\n'+
+           ' renewed — the clinics move to direct supply."\n'+
+           '\nCLINICAL NOTE: no change in local prescribing. Our own patient\n'+
+           'numbers are unchanged at approximately 185 packs per month.\n'},
+    lead:{t:'Lead time and reliability', s:'How the supplier actually performs',
+      body:'SUPPLIER PERFORMANCE — LAST 12 MONTHS\n'+
+           '------------------------------------------------------------\n'+
+           'Apixaban    lead time  7 days   (range 6-8)    fill rate 99%\n'+
+           'Adrenaline  lead time 12 days   (range 5-31)   fill rate 82%\n'+
+           '\nAdrenaline supply has been disrupted twice this year.\n'},
+    value:{t:'ABC analysis — annual value', s:'Where the money is',
+      body:'ANNUAL CONSUMPTION VALUE\n'+
+           '------------------------------------------------------------\n'+
+           'Class A (top 70% of value)   Apixaban, biologics, oncology agents\n'+
+           'Class B (next 20%)           Most maintenance medicines\n'+
+           'Class C (last 10%)           ADRENALINE 1 mg/mL, saline, simple analgesics\n'+
+           '\nAdrenaline: 0.3% of annual spend. Comfortably class C.\n'},
+    ved:{t:'VED classification — criticality', s:'What happens if it is not there',
+      body:'CRITICALITY REVIEW\n'+
+           '------------------------------------------------------------\n'+
+           'ADRENALINE 1 mg/mL   VITAL\n'+
+           '  Sole treatment for anaphylaxis. No therapeutic alternative.\n'+
+           '  A stock-out is a patient-safety incident in itself.\n'+
+           '  Held in every clinical area and in all emergency trolleys.\n'+
+           '\nAPIXABAN 5 mg       ESSENTIAL\n'+
+           '  Alternatives exist; a short delay is manageable.\n'}
+  },
+
+  steps:[
+    {k:'trend', t:'Read the trend', q:'What should the apixaban forecast be based on?',
+     need:['usage','why'], right:'exclude',
+     options:[['naive','Project the recent trend forward — about 520 packs next month'],
+              ['avg','Average the whole year and use that'],
+              ['exclude','Exclude the tender volume; our own demand is unchanged at about 185 packs, and the tender ends on 31 October'],
+              ['flat','Hold at the current 447 and review monthly']],
+     explain:{
+       exclude:'Correct. The step change in May is a six-month tender supplying three partner clinics, not growth in our own prescribing — which the clinical note confirms is unchanged. Worse, the tender ends on 31 October, so a forecast built on it would overstock a product just as demand halves.',
+       naive:'This is the trap. A model fitted to the last three months will project a trend that has no clinical basis and is contractually due to end.',
+       avg:'Averaging a step change gives a number that describes neither period. It would understock now and overstock later.',
+       flat:'Closer, but it still carries the tender volume past 31 October, when the clinics move to direct supply.'
+     }},
+
+    {k:'reorder', t:'Set the reorder level', q:'Apixaban: our own use is 185 packs per month, lead time 7 days, and you hold 40 packs of safety stock. What is the reorder level?',
+     need:['lead'], right:'r83',
+     options:[['r83','About 83 packs — roughly 6 packs a day over 7 days, plus 40 safety stock'],
+              ['r40','40 packs — the safety stock is the reorder level'],
+              ['r185','185 packs — one month of use'],
+              ['r447','447 packs — current monthly usage']],
+     explain:{
+       r83:'Correct. Reorder level is average daily usage multiplied by lead time, plus safety stock: 185/30 is about 6.2 packs a day, times 7 days is 43, plus 40 gives 83.',
+       r40:'Safety stock is the buffer against variability, not the trigger. Ordering only when you reach it guarantees running out during the lead time.',
+       r185:'A month of stock as a trigger ties up capital unnecessarily when the lead time is a reliable seven days.',
+       r447:'That figure is inflated by the tender and is not our demand at all.'
+     }},
+
+    {k:'class', t:'Classify adrenaline', q:'Adrenaline is 0.3% of annual spend. How should it be controlled?',
+     need:['value','ved'], right:'vital',
+     penaltyB:{c:45, abc:30},
+     options:[['c','As a class C item — minimal control, order in bulk infrequently'],
+              ['vital','As a vital item regardless of value — high service level, buffer for the unreliable supply, never allowed to stock out'],
+              ['abc','By ABC alone; VED adds nothing that value does not already capture'],
+              ['drop','Stop holding it centrally and let each clinical area order its own']],
+     explain:{
+       vital:'Correct, and this is why VED exists alongside ABC. Adrenaline is trivial in value and the sole treatment for anaphylaxis with no alternative. Its supplier is also the unreliable one — 82% fill rate and lead times from 5 to 31 days — so it needs a substantially larger buffer than its cost would ever justify.',
+       c:'This is the trap. ABC ranks by money, and by money adrenaline is negligible. A stock-out of it is a patient-safety incident.',
+       abc:'ABC and VED answer different questions. Value tells you where the money is; criticality tells you what must never run out. A cheap vital item is precisely the case ABC alone gets wrong.',
+       drop:'Devolving it removes central oversight of the item with the least reliable supply and the highest consequence of absence.'
+     }},
+
+    {k:'buffer', t:'Set the buffer', q:'Adrenaline lead time ranges from 5 to 31 days with an 82% fill rate. What follows?',
+     need:['lead'], right:'wide',
+     penaltyB:{avg2:25},
+     options:[['avg2','Use the average lead time of 12 days — averages are the standard basis'],
+              ['wide','Size the buffer against the worst observed lead time, not the average, and work on the supply reliability itself'],
+              ['same','Treat it the same as apixaban; lead time variability is a supplier problem, not ours'],
+              ['none3','No buffer is needed for a class C item']],
+     explain:{
+       wide:'Correct. Safety stock is the price of uncertainty, so it must be sized against the variability, not the mean — a 31-day lead time will happen again. And the durable fix is upstream: a more reliable supplier or a second source lets you hold less stock for the same service level.',
+       avg2:'An average lead time leaves you out of stock roughly half the time the supply is late, which for a vital item is not an acceptable service level.',
+       same:'Apixaban has a 7-day lead time varying by one day and a 99% fill rate. Treating two such different supply profiles identically guarantees getting one of them wrong.',
+       none3:'Its ABC class says nothing about the consequence of absence.'
+     }}
+  ],
+
+  outcome:function(S,M){
+    var t=S.ans.trend&&S.ans.trend.pick==='exclude';
+    var v=S.ans.class&&S.ans.class.pick==='vital';
+    return '<h3 style="margin-top:16px">What was actually going on</h3>'
+      +'<p>The apixaban "trend" was a six-month tender supplying three partner clinics, ending on '
+      +'31 October. Local prescribing never changed — about 185 packs a month throughout. A forecast '
+      +'built on the visible trend would have ordered toward 520 packs a month of a product whose '
+      +'demand was about to halve by contract.</p>'
+      +'<p>Adrenaline is 0.3% of annual spend and the sole treatment for anaphylaxis, supplied by the '
+      +'least reliable supplier on the account.</p>'
+      +(t&&v
+        ? '<div class="fb yes"><div class="hd">You interrogated both numbers</div>You asked why the trend '
+          +'existed before projecting it, and you let criticality rather than value decide how the cheap '
+          +'item was controlled. Both are the whole skill.</div>'
+        : '<div class="fb no"><div class="hd">'+(!t?'The trend was contractual, not clinical':'A vital item was controlled by its price')+'</div>'
+          +(!t?'Projecting a trend without establishing its cause is how a pharmacy ends up holding '
+              +'short-dated stock it cannot use. ':'')
+          +(!v?'ABC ranks by money. Adrenaline is negligible by money and its absence is an emergency — '
+              +'which is exactly the case VED exists to catch.':'')+'</div>')
+      +'<div class="fb yes" style="margin-top:8px"><div class="hd">Carry this forward</div>Reorder level is '
+      +'usage times lead time plus safety stock. Safety stock is the price of uncertainty and shrinks as '
+      +'reliability improves. ABC and VED answer different questions and are used together — a cheap item '
+      +'can be vital, and no value-based method will ever tell you so.</div>';
+  },
+
+  reportLabel:'Stock review outcome',
+  reportPlaceholder:'e.g. 50/50 — tender volume excluded from forecast; adrenaline controlled as vital',
+  attachments:[{label:'1. Stock Review / Printout (PDF)'},
+               {label:'2. Reflection on ABC vs VED and buffer sizing (PDF)'}]
+});
+</script>
+</body>
+</html>
