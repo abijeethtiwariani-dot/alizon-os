@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Library — ALIZON OS</title>
+<meta name="description" content="Read your module textbooks — Alizon School of Medical &amp; Digital Intelligence.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+/* ============================================================
+   Student library + reader.
+   Students read REFLOWED — a fixed A4 page is unreadable on a phone.
+   Printing switches to the same A4 pagination the studio produces.
+   ============================================================ */
+:root{
+  --crimson:#b1040e; --crimson-dark:#8a0009; --ink:#141210; --muted:#5f5a54;
+  --line:#e6e2de; --paper:#fff; --app-bg:#f4f2ef; --gold:#9a7b3f;
+  --serif:"Source Serif Pro",Georgia,"Times New Roman",serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --fs:17px;              /* reader font size, user adjustable */
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--app-bg);color:var(--ink);font-family:var(--sans);-webkit-text-size-adjust:100%}
+
+/* sepia / night */
+body.sepia{--paper:#faf3e6;--ink:#3b3226;--app-bg:#f1e7d5;--line:#e0d4bd}
+body.night{--paper:#16181c;--ink:#dfe1e4;--app-bg:#0e1013;--line:#2b3038;--muted:#9aa1ab}
+
+.topbar{position:sticky;top:0;z-index:60;background:linear-gradient(120deg,#6b0f0f,#8c1515);color:#fff;
+  padding:9px 14px;display:flex;align-items:center;gap:11px;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+.topbar img{height:26px;filter:brightness(0) invert(1)}
+.topbar .t{font-family:var(--serif);font-size:15.5px;font-weight:700;line-height:1.15}
+.topbar .s{font-size:10px;opacity:.85;letter-spacing:.09em;text-transform:uppercase}
+.topbar .sp{flex:1}
+.tb{font:inherit;font-size:12px;font-weight:700;padding:6px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.5);
+  background:transparent;color:#fff;cursor:pointer;white-space:nowrap}
+.tb:hover{background:rgba(255,255,255,.14)}
+.tb.on{background:#fff;color:var(--crimson);border-color:#fff}
+
+/* ---------- shelf ---------- */
+.shelf{max-width:1080px;margin:0 auto;padding:26px 18px 60px}
+.shelfhead{margin-bottom:20px}
+.shelfhead h1{font-family:var(--serif);font-size:26px;margin:0 0 5px}
+.shelfhead p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:18px}
+.bk{background:var(--paper);border:1px solid var(--line);border-radius:13px;overflow:hidden;cursor:pointer;
+  text-align:left;padding:0;font:inherit;color:inherit;display:flex;flex-direction:column;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);transition:transform .13s,box-shadow .13s}
+.bk:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(0,0,0,.13)}
+.bk .cv{aspect-ratio:3/4;background:linear-gradient(155deg,#6b0f0f,#8c1515 45%,#b1040e);color:#fff;
+  padding:16px 15px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.bk .cv .ring{position:absolute;right:-34px;bottom:-34px;width:112px;height:112px;border-radius:50%;background:rgba(255,255,255,.07)}
+.bk .cv .m{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;opacity:.9;font-weight:700}
+.bk .cv .ti{font-family:var(--serif);font-size:17px;line-height:1.22;margin-top:auto;font-weight:700}
+.bk .cv .su{font-size:10.5px;opacity:.88;margin-top:5px;line-height:1.35;font-style:italic}
+.bk .mt{padding:11px 13px;font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.pbar{height:3px;background:var(--line)}
+.pbar i{display:block;height:100%;background:var(--crimson)}
+.note{background:#fff8e6;border:1px solid #e6d5a8;border-radius:11px;padding:13px 16px;font-size:13px;color:#6b5320;line-height:1.6}
+body.night .note{background:#2a2415;border-color:#4a4128;color:#d8c894}
+
+/* ---------- reader ---------- */
+.reader{display:none;max-width:1180px;margin:0 auto;padding:0 0 80px}
+.reader.on{display:block}
+.rwrap{display:grid;grid-template-columns:250px 1fr;gap:0;align-items:start}
+@media(max-width:900px){ .rwrap{grid-template-columns:1fr} .toc{display:none!important} }
+.toc{position:sticky;top:46px;max-height:calc(100vh - 60px);overflow:auto;padding:22px 14px 40px;border-right:1px solid var(--line)}
+.toc h4{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.toc a{display:block;padding:5px 8px;border-radius:7px;font-size:12.6px;line-height:1.4;color:var(--ink);
+  text-decoration:none;cursor:pointer;border-left:2px solid transparent}
+.toc a:hover{background:rgba(177,4,14,.07)}
+.toc a.l1{font-weight:700;margin-top:9px}
+.toc a.l2{padding-left:16px;color:var(--muted);font-size:12px}
+.toc a.here{border-left-color:var(--crimson);color:var(--crimson);background:rgba(177,4,14,.06)}
+
+.book{background:var(--paper);min-height:70vh;padding:34px 30px 70px;border-radius:0}
+@media(min-width:901px){ .book{padding:40px 54px 90px} }
+.bookinner{max-width:38em;margin:0 auto;font-family:var(--serif);font-size:var(--fs);line-height:1.68;color:var(--ink)}
+.bookinner p{margin:0 0 1em;text-align:left}
+.bookinner h1.chaptitle{font-size:1.75em;line-height:1.18;margin:.1em 0 .7em;font-weight:700}
+.bookinner h2.chapnum{font-family:var(--sans);font-size:.62em;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--crimson);margin:0 0 .3em;font-weight:800}
+.bookinner .chopen{border-bottom:3px solid var(--crimson);padding-bottom:1em;margin:0 0 1.5em}
+.bookinner h3.sec{font-family:var(--sans);font-size:1.06em;font-weight:800;margin:1.9em 0 .6em;scroll-margin-top:60px}
+.bookinner h4.sub{font-family:var(--sans);font-size:.95em;font-weight:700;margin:1.4em 0 .5em;color:var(--muted)}
+.bookinner ul,.bookinner ol{margin:0 0 1em;padding-left:1.35em}
+.bookinner li{margin-bottom:.35em}
+.bookinner code{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:rgba(0,0,0,.05);padding:0 .3em;border-radius:3px}
+body.night .bookinner code{background:rgba(255,255,255,.1)}
+
+.bookinner .box{border-radius:10px;padding:14px 17px;margin:0 0 1.3em;font-size:.94em;line-height:1.6}
+.bookinner .box .bt{font-family:var(--sans);font-size:.7em;font-weight:800;letter-spacing:.11em;text-transform:uppercase;display:block;margin-bottom:.55em}
+.bookinner .box p:last-child{margin-bottom:0}
+.bookinner .box.obj{background:rgba(177,4,14,.06);border:1px solid rgba(177,4,14,.22);border-left:5px solid var(--crimson)}
+.bookinner .box.obj .bt{color:var(--crimson)}
+.bookinner .box.know{background:rgba(44,110,165,.08);border:1px solid rgba(44,110,165,.25);border-left:5px solid #2c6ea5}
+.bookinner .box.know .bt{color:#2c6ea5}
+.bookinner .box.activity{background:rgba(46,125,67,.08);border:1px solid rgba(46,125,67,.25);border-left:5px solid #2e7d43}
+.bookinner .box.activity .bt{color:#2e7d43}
+.bookinner .box.note{background:rgba(154,123,63,.1);border:1px solid rgba(154,123,63,.28);border-left:5px solid var(--gold)}
+.bookinner .box.note .bt{color:var(--gold)}
+.bookinner .box.caution{background:rgba(194,65,12,.08);border:1px solid rgba(194,65,12,.26);border-left:5px solid #c2410c}
+.bookinner .box.caution .bt{color:#c2410c}
+.bookinner .box.summary{background:rgba(0,0,0,.03);border:1px solid var(--line);border-top:5px solid var(--crimson)}
+.bookinner .box.summary .bt{color:var(--crimson)}
+.bookinner .box.keyterms{border:1px solid var(--line)}
+.bookinner .box.keyterms .bt{color:var(--gold)}
+.bookinner .box.keyterms dt{font-weight:700;margin-top:.5em}
+.bookinner .box.keyterms dd{margin:0;color:var(--muted)}
+.bookinner .box.quote{border:0;border-left:4px solid var(--line);font-style:italic;color:var(--muted);padding-left:16px;border-radius:0}
+body.night .bookinner .box.summary{background:rgba(255,255,255,.04)}
+
+.bookinner figure{margin:0 0 1.4em}
+.bookinner figure img{width:100%;height:auto;border-radius:8px;display:block}
+.bookinner figure .ph{border:1px dashed var(--line);background:rgba(0,0,0,.02);border-radius:8px;height:150px;
+  display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:var(--sans);font-size:.8em}
+.bookinner figcaption{font-family:var(--sans);font-size:.78em;color:var(--muted);margin-top:.55em;line-height:1.45}
+.bookinner figcaption b{color:var(--crimson)}
+.bookinner .tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 .4em}
+.bookinner table.bk{width:100%;border-collapse:collapse;font-size:.86em;font-family:var(--sans)}
+.bookinner table.bk th{background:rgba(0,0,0,.04);border:1px solid var(--line);padding:8px 10px;text-align:left;font-weight:800}
+.bookinner table.bk td{border:1px solid var(--line);padding:8px 10px;vertical-align:top}
+.bookinner .tcap{font-family:var(--sans);font-size:.78em;color:var(--muted);margin:0 0 1.4em}
+.bookinner .tcap b{color:var(--crimson)}
+.bookinner .exwrap{margin-top:2em}
+.bookinner .exwrap .bt{font-family:var(--sans);font-size:.7em;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--crimson);display:block;border-top:3px solid var(--crimson);padding-top:.7em;margin-bottom:.7em}
+.bookinner .exwrap li{margin-bottom:.6em}
+
+.chapnav{display:flex;justify-content:space-between;gap:12px;max-width:38em;margin:38px auto 0;padding-top:20px;border-top:1px solid var(--line)}
+.chapnav button{font:inherit;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:100px;border:1px solid var(--line);
+  background:var(--paper);color:var(--ink);cursor:pointer;max-width:46%;text-align:left;line-height:1.3}
+.chapnav button:disabled{opacity:.35;cursor:default}
+.chapnav button:hover:not(:disabled){border-color:var(--crimson);color:var(--crimson)}
+
+/* Pinned to the bottom rather than under the toolbar: the toolbar wraps to two
+   rows on a narrow phone, so any assumed header height would be wrong. */
+.progress{position:fixed;left:0;bottom:0;height:3px;background:var(--crimson);width:0;z-index:70;transition:width .12s}
+
+/* phones: let the toolbar wrap and tighten the controls so nothing overflows */
+@media(max-width:560px){
+  .topbar{flex-wrap:wrap;padding:8px 11px;gap:7px}
+  .topbar .t{font-size:14px}
+  .topbar .s{display:none}
+  .tb{padding:5px 10px;font-size:11.5px}
+  .shelf{padding:20px 14px 60px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:13px}
+  .bk .cv{padding:13px 12px}
+  .bk .cv .ti{font-size:14.5px}
+  .book{padding:24px 18px 60px}
+  .chapnav button{max-width:47%;font-size:11.5px;padding:8px 12px}
+}
+
+/* print: the reader prints the reflowed book cleanly */
+@media print{
+  .topbar,.toc,.chapnav,.progress,.shelf{display:none!important}
+  .reader{display:block!important}
+  .rwrap{display:block}
+  .book{padding:0}
+  .bookinner{max-width:none;font-size:11pt}
+  .bookinner .chopen{break-before:page}
+  .bookinner .chopen:first-child{break-before:auto}
+  .bookinner .box,.bookinner figure,.bookinner table{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<div class="topbar">
+  <img src="alizon-logo.png" alt="Alizon">
+  <div>
+    <div class="t" id="tbTitle">Library</div>
+    <div class="s" id="tbSub">ALIZON OS · Textbooks</div>
+  </div>
+  <div class="sp"></div>
+  <button class="tb" id="btnBack" style="display:none">← Library</button>
+  <button class="tb" id="btnA">A−</button>
+  <button class="tb" id="btnAA">A+</button>
+  <button class="tb" id="btnTheme">◐</button>
+  <button class="tb" id="btnPrintR" style="display:none">Print</button>
+</div>
+
+<!-- ============ SHELF ============ -->
+<div class="shelf" id="shelf">
+  <div class="shelfhead">
+    <h1>Your textbooks</h1>
+    <p id="shelfSub">Loading the library…</p>
+  </div>
+  <div id="shelfBody"></div>
+</div>
+
+<!-- ============ READER ============ -->
+<div class="reader" id="reader">
+  <div class="rwrap">
+    <nav class="toc" id="toc"></nav>
+    <div class="book"><div class="bookinner" id="bookInner"></div>
+      <div class="chapnav" id="chapnav"></div>
+    </div>
+  </div>
+</div>
+
+<script src="firebase-sync.js"></script>
+<script src="alizon-textbook-render.js?v=1"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){ return document.getElementById(i); };
+function esc(s){ return AlizonBook.esc(s); }
+
+var IDX_DOC='alizonBookIndex';
+var LS_IDX='alizonBookIndexCache', LS_BOOK='alizonBookCache_', LS_POS='alizonBookPos';
+var index=[], current=null, chapters=[], chapIdx=0;
+
+/* ---------- cloud ---------- */
+function fb(){
+  try{
+    if(typeof firebase==='undefined' || !firebase.apps || !firebase.apps.length) return null;
+    if(!firebase.auth().currentUser) return null;
+    return firebase.firestore();
+  }catch(e){ return null; }
+}
+function waitForFb(ms){
+  return new Promise(function(res){
+    var t0=Date.now();
+    (function tick(){
+      var d=fb(); if(d) return res(d);
+      if(Date.now()-t0>ms) return res(null);
+      setTimeout(tick,300);
+    })();
+  });
+}
+function cacheGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function cacheSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+/* Books are cached so a student on a bad connection can still read what they
+   opened before. The cloud copy always wins once it arrives. */
+function loadIndex(){
+  var cached=cacheGet(LS_IDX);
+  if(cached){ try{ index=JSON.parse(cached)||[]; paintShelf(true); }catch(e){} }
+  waitForFb(10000).then(function(db){
+    if(!db){ if(!index.length) paintShelf(false,'offline'); return; }
+    return db.collection('sync').doc(IDX_DOC).get().then(function(s){
+      var list=[];
+      try{ list=JSON.parse((s.exists&&s.data().value)||'[]')||[]; }catch(e){}
+      index=Array.isArray(list)?list:[];
+      cacheSet(LS_IDX, JSON.stringify(index));
+      paintShelf(false);
+    });
+  }).catch(function(){ paintShelf(false,'error'); });
+}
+
+function progressOf(id){
+  try{
+    var p=JSON.parse(localStorage.getItem(LS_POS)||'{}');
+    return (p&&p[id])||null;
+  }catch(e){ return null; }
+}
+function setProgress(id,ch,total){
+  try{
+    var p=JSON.parse(localStorage.getItem(LS_POS)||'{}')||{};
+    p[id]={ch:ch, total:total, at:Date.now()};
+    localStorage.setItem(LS_POS, JSON.stringify(p));
+  }catch(e){}
+}
+
+function paintShelf(fromCache, state){
+  var body=$('shelfBody'), sub=$('shelfSub');
+  if(!index.length){
+    sub.textContent='';
+    body.innerHTML='<div class="note">'+(
+      state==='offline'
+        ? 'You are offline and nothing has been downloaded to this device yet. Connect to the internet and reopen the Library.'
+        : 'No textbooks have been published yet. Your faculty publishes them from the Textbook Studio, and they will appear here straight away.'
+    )+'</div>';
+    return;
+  }
+  sub.textContent=index.length+' book'+(index.length===1?'':'s')+' available'+(fromCache?' · showing your downloaded copy':'');
+  body.innerHTML='<div class="grid">'+index.map(function(b){
+    var pr=progressOf(b.id), pct=pr&&pr.total?Math.round((pr.ch+1)/pr.total*100):0;
+    return '<button class="bk" data-id="'+esc(b.id)+'">'
+      +'<div class="cv"><div class="ring"></div>'
+        +'<div class="m">'+esc(b.module?('Module '+b.module):'Volume')+'</div>'
+        +'<div class="ti">'+esc(b.title)+'</div>'
+        +(b.sub?'<div class="su">'+esc(b.sub)+'</div>':'')
+      +'</div>'
+      +'<div class="pbar"><i style="width:'+pct+'%"></i></div>'
+      +'<div class="mt"><span>'+(b.chapters||0)+' chapter'+((b.chapters===1)?'':'s')+'</span>'
+      +'<span>'+(pr?('resume ch '+(pr.ch+1)):((b.words||0).toLocaleString()+' words'))+'</span></div>'
+    +'</button>';
+  }).join('')+'</div>';
+  [].forEach.call(body.querySelectorAll('.bk'), function(el){
+    el.addEventListener('click', function(){ openBook(el.getAttribute('data-id')); });
+  });
+}
+
+/* ---------- open + render ---------- */
+function openBook(id){
+  var entry=null; index.forEach(function(b){ if(b.id===id) entry=b; });
+  var cached=cacheGet(LS_BOOK+id);
+  if(cached){ try{ boot(JSON.parse(cached), entry); }catch(e){} }
+  $('shelfSub').textContent='Opening…';
+  waitForFb(10000).then(function(db){
+    if(!db){ if(!cached) alert('Cannot reach the library right now, and this book is not downloaded to this device yet.'); return; }
+    return db.collection('sync').doc('alizonBook_'+id).get().then(function(s){
+      if(!s.exists){ if(!cached) alert('That book is no longer published.'); return; }
+      var data=JSON.parse(s.data().value||'{}');
+      cacheSet(LS_BOOK+id, JSON.stringify(data));
+      boot(data, entry);
+    });
+  }).catch(function(){ if(!cached) alert('Could not open the book.'); });
+}
+
+function boot(data, entry){
+  current={id:(entry&&entry.id)||'book', meta:data.meta||{}, src:data.src||''};
+  chapters=AlizonBook.parse(current.src);
+  if(!chapters.length){ alert('This book has no chapters yet.'); return; }
+  $('shelf').style.display='none';
+  $('reader').classList.add('on');
+  $('btnBack').style.display=''; $('btnPrintR').style.display='';
+  $('tbTitle').textContent=current.meta.title||'Textbook';
+  $('tbSub').textContent=(current.meta.module?'Module '+current.meta.module+' · ':'')+(current.meta.prog||'ALIZON OS');
+  buildToc();
+  var pr=progressOf(current.id);
+  showChapter(pr && pr.ch<chapters.length ? pr.ch : 0, true);
+}
+
+function buildToc(){
+  var t=$('toc');
+  t.innerHTML='<h4>Contents</h4>'+chapters.map(function(ch,i){
+    return '<a class="l1" data-ch="'+i+'">'+(i+1)+'. '+esc(ch.title)+'</a>';
+  }).join('');
+  [].forEach.call(t.querySelectorAll('a[data-ch]'), function(a){
+    a.addEventListener('click', function(){ showChapter(+a.getAttribute('data-ch')); });
+  });
+}
+
+function showChapter(i, keepScroll){
+  chapIdx=Math.max(0, Math.min(i, chapters.length-1));
+  var inner=$('bookInner');
+  inner.innerHTML='';
+  AlizonBook.renderChapter(chapters[chapIdx], chapIdx+1).forEach(function(it){
+    if(it.node) inner.appendChild(it.node);
+  });
+  /* section links for the chapter now on screen */
+  var t=$('toc');
+  [].forEach.call(t.querySelectorAll('a.l1'), function(a,k){ a.classList.toggle('here', k===chapIdx); });
+  [].forEach.call(t.querySelectorAll('a.l2'), function(a){ a.parentNode.removeChild(a); });
+  var anchor=t.querySelectorAll('a.l1')[chapIdx];
+  if(anchor){
+    var secs=[].slice.call(inner.querySelectorAll('h3.sec'));
+    secs.slice().reverse().forEach(function(h){
+      var a=document.createElement('a');
+      a.className='l2'; a.textContent=h.textContent.replace(/\s+/g,' ').trim();
+      a.addEventListener('click', function(){ h.scrollIntoView({behavior:'smooth', block:'start'}); });
+      anchor.parentNode.insertBefore(a, anchor.nextSibling);
+    });
+  }
+  /* prev / next */
+  var nav=$('chapnav');
+  nav.innerHTML='';
+  var prev=document.createElement('button'), next=document.createElement('button');
+  prev.textContent = chapIdx>0 ? '← '+chapters[chapIdx-1].title : '← Previous';
+  next.textContent = chapIdx<chapters.length-1 ? chapters[chapIdx+1].title+' →' : 'Next →';
+  prev.disabled = chapIdx===0; next.disabled = chapIdx===chapters.length-1;
+  prev.addEventListener('click', function(){ showChapter(chapIdx-1); });
+  next.addEventListener('click', function(){ showChapter(chapIdx+1); });
+  nav.appendChild(prev); nav.appendChild(next);
+
+  setProgress(current.id, chapIdx, chapters.length);
+  if(!keepScroll) window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+  updateProgressBar();
+}
+
+function updateProgressBar(){
+  var h=document.documentElement;
+  var within = h.scrollHeight>h.clientHeight ? (h.scrollTop/(h.scrollHeight-h.clientHeight)) : 0;
+  var overall = chapters.length ? ((chapIdx + Math.min(1,Math.max(0,within))) / chapters.length) : 0;
+  $('prog').style.width=(overall*100).toFixed(1)+'%';
+}
+window.addEventListener('scroll', function(){ if(current) updateProgressBar(); }, {passive:true});
+
+/* ---------- controls ---------- */
+function backToShelf(){
+  $('reader').classList.remove('on');
+  $('shelf').style.display='';
+  $('btnBack').style.display='none'; $('btnPrintR').style.display='none';
+  $('tbTitle').textContent='Library'; $('tbSub').textContent='ALIZON OS · Textbooks';
+  $('prog').style.width='0';
+  current=null;
+  paintShelf(false);
+  window.scrollTo(0,0);
+}
+$('btnBack').addEventListener('click', backToShelf);
+$('btnPrintR').addEventListener('click', function(){
+  /* print the whole book, not just the chapter on screen */
+  var inner=$('bookInner'), keep=chapIdx;
+  inner.innerHTML='';
+  chapters.forEach(function(ch,i){
+    AlizonBook.renderChapter(ch, i+1).forEach(function(it){ if(it.node) inner.appendChild(it.node); });
+  });
+  setTimeout(function(){
+    window.print();
+    setTimeout(function(){ showChapter(keep, true); }, 400);
+  }, 150);
+});
+
+var FS=[15,16,17,19,21,23];
+function fsIdx(){ var v=parseInt(localStorage.getItem('alizonReaderFS')||'2',10); return isNaN(v)?2:Math.max(0,Math.min(FS.length-1,v)); }
+function applyFS(){ var i=fsIdx(); document.documentElement.style.setProperty('--fs', FS[i]+'px'); }
+$('btnA').addEventListener('click', function(){ localStorage.setItem('alizonReaderFS', Math.max(0,fsIdx()-1)); applyFS(); });
+$('btnAA').addEventListener('click', function(){ localStorage.setItem('alizonReaderFS', Math.min(FS.length-1,fsIdx()+1)); applyFS(); });
+
+var THEMES=['','sepia','night'];
+function applyTheme(){
+  var t=localStorage.getItem('alizonReaderTheme')||'';
+  document.body.classList.remove('sepia','night');
+  if(t) document.body.classList.add(t);
+}
+$('btnTheme').addEventListener('click', function(){
+  var t=localStorage.getItem('alizonReaderTheme')||'';
+  var n=THEMES[(THEMES.indexOf(t)+1)%THEMES.length];
+  localStorage.setItem('alizonReaderTheme', n); applyTheme();
+});
+
+/* keyboard: left/right move between chapters */
+document.addEventListener('keydown', function(e){
+  if(!current) return;
+  if(e.key==='ArrowRight' && chapIdx<chapters.length-1) showChapter(chapIdx+1);
+  if(e.key==='ArrowLeft'  && chapIdx>0) showChapter(chapIdx-1);
+  if(e.key==='Escape') backToShelf();
+});
+
+applyFS(); applyTheme(); loadIndex();
+
+/* deep link: ?b=m1 opens a book directly */
+(function(){
+  var m=/[?&]b=([A-Za-z0-9_-]+)/.exec(location.search);
+  if(m) setTimeout(function(){ openBook(m[1]); }, 1200);
+})();
+})();
+</script>
+</body>
+</html>
