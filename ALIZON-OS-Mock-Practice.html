@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, follow">
-<title>ALIZON OS · Module 1 · Mock Practice</title>
+<title>ALIZON OS · Mock Practice</title>
 <script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -120,7 +120,7 @@
   <section id="setup">
     <div class="card hero">
       <div class="tagline">Alizon School of Medical &amp; Digital Intelligence</div>
-      <h1 style="font-size:clamp(1.4rem,3.4vw,2rem);margin:7px 0">Module 1 · Mock Practice</h1>
+      <h1 id="pgTitle" style="font-size:clamp(1.4rem,3.4vw,2rem);margin:7px 0">Mock Practice</h1>
       <p class="muted" style="font-size:14px" id="modLine"></p>
       <div class="banner">
         <b>This is practice, not an examination.</b> Nothing here is recorded against you, there is no rank and you may
@@ -222,6 +222,9 @@
     AlizonExamBanks.load(n).then(function(b){
       BANK=b; $('startBtn').disabled=false;
       $('modLine').textContent=BANK.module+' · '+BANK.units.reduce(function(a,u){return a+u.qs.length;},0)+' questions in the bank';
+      /* keep the tab title and heading on the module actually loaded — see Internal-Exam */
+      document.title='ALIZON OS · Module '+n+' · Mock Practice';
+      $('pgTitle').textContent='Module '+n+' · Mock Practice';
       picked={}; BANK.units.forEach(function(u){ picked[u.n]=true; });
       buildUnits(); paintPool();
     }).catch(function(e){

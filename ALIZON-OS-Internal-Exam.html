@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, follow">
-<title>ALIZON OS · Module 1 · Internal Examination</title>
+<title>ALIZON OS · Internal Examination</title>
 <script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -153,7 +153,7 @@
   <section id="setup">
     <div class="card">
       <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Alizon School of Medical &amp; Digital Intelligence</div>
-      <h1 style="font-size:clamp(1.4rem,3.4vw,2rem);margin:7px 0">Module 1 · Internal Examination</h1>
+      <h1 id="pgTitle" style="font-size:clamp(1.4rem,3.4vw,2rem);margin:7px 0">Internal Examination</h1>
       <p class="muted" style="font-size:14px" id="modLine">Certificate Course in Digital Health &amp; Artificial Intelligence for Pharmacy</p>
 
       <h3 style="font-size:13px;margin:18px 0 4px">Candidate</h3>
@@ -262,6 +262,11 @@
     AlizonExamBanks.load(n).then(function(b){
       BANK=b; $('startBtn').disabled=false;
       $('modLine').textContent=BANK.module;
+      /* the page is module-agnostic, so the tab title and heading must follow the
+         bank actually loaded — otherwise a Module 5 candidate sits an exam whose
+         browser tab and printed header both claim Module 1. */
+      document.title='ALIZON OS · Module '+n+' · Internal Examination';
+      $('pgTitle').textContent='Module '+n+' · Internal Examination';
       buildPapers(); showPrev();
     }).catch(function(e){
       $('modLine').textContent='Could not load module '+n+' — '+e.message;
@@ -446,7 +451,8 @@
     var pct=Math.round(score/S.qs.length*1000)/10;
     var timeUsed=paper.mins*60-S.secs;
 
-    /* genuine rank among attempts recorded on this device for the same paper */
+    /* genuine rank among every attempt at the SAME paper — institution-wide when the
+       cloud sync is live, this device only when it is not (the report says which). */
     var all=readStore();
     var mine={name:S.name,reg:S.reg,code:BANK.code,paper:paper.k,pt:paper.t,score:score,total:S.qs.length,pct:pct,
               secs:timeUsed,at:new Date().toISOString()};
