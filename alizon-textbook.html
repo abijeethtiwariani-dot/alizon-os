@@ -376,9 +376,14 @@ function paginate(chapters, m){
       if(it.forceBreak){ newPage(); return; }
       content.appendChild(it.node);
       if(!fits()){
-        /* does not fit — move to a fresh page */
+        /* does not fit — move to a fresh page, and take any heading that would
+           otherwise be left stranded at the foot of the page we are leaving */
         content.removeChild(it.node);
+        var leaving=content, trailing=leaving.lastElementChild;
+        var dragHeading = trailing && /^(H3|H4)$/.test(trailing.tagName) ? trailing : null;
+        if(dragHeading) leaving.removeChild(dragHeading);
         newPage();
+        if(dragHeading) content.appendChild(dragHeading);
         content.appendChild(it.node);
         /* a single element taller than the page simply stays and is clipped-safe:
            it is the only thing on its page, so nothing is lost visually */
