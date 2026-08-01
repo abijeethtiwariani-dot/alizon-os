@@ -6,85 +6,130 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, follow">
-<title>ALIZON OS · Module 2 · Electronic ADR Reporting & Pharmacovigilance</title>
+<title>ALIZON OS · Module 2 · Pharmacovigilance Reporting Desk</title>
 <script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#f2f0ec; --panel:#ffffff; --panel2:#f7f5f1; --pill:#efece7;
-    --ink:#1c1a1f; --muted:#6b6570; --line:rgba(24,18,26,.12);
-    --crimson:#C40D16; --crimson-deep:#9E0C13; --gold:#A16207; --gold-soft:rgba(161,98,7,.14);
-    --success:#1E8E5A; --danger:#C4262E; --warn:#B45309;
-    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);
-  }
-  html.dark{
-    --bg:#070810; --panel:#12131c; --panel2:#0e0f18; --pill:#1a1c28;
-    --ink:#f5f4f6; --muted:#9a9db2; --line:rgba(255,255,255,.1);
-    --crimson:#e2434b; --crimson-deep:#C40D16; --gold:#D9A441; --gold-soft:rgba(217,164,65,.16);
-    --success:#38d08a; --danger:#f0666d; --warn:#e0a44a;
-    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);
-  }
+  :root{--bg:#f2f0ec;--panel:#fff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A;--danger:#C4262E;--warn:#B45309;--teal:#0E6F76;--purple:#6D28D9;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;--teal:#4bc2c9;--purple:#a78bfa;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
-  .wrap{max-width:1000px;margin:0 auto;padding:26px clamp(16px,3vw,30px) 90px}
-  .hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
-  .hero h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:700;margin:8px 0}
-  .hero p{color:var(--muted);font-size:14px;max-width:78ch}
-  .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
-  .scorechip{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:100px;background:var(--pill);border:1px solid var(--line)}
-  .scorechip b{color:var(--gold)}
-  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 18px;position:sticky;top:0;z-index:5;padding:10px 0;background:var(--bg)}
-  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px;transition:.15s}
-  .tab:hover{border-color:var(--gold)} .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
-  .panel{display:none;animation:fade .25s} .panel.on{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2.6vw,24px);box-shadow:var(--card-shadow);margin-bottom:16px}
-  .card h2{font-family:'Source Serif Pro',Georgia,serif;font-size:19px;font-weight:700;margin-bottom:4px}
-  .card h3{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
-  .card p{font-size:13.5px;color:var(--ink)} .muted{color:var(--muted)!important}
-  .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
-  .cl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:6px}
-  .cl label{display:flex;gap:9px;align-items:flex-start;font-size:13px;cursor:pointer;padding:5px 0}
-  .cl input{margin-top:3px;flex:none;width:16px;height:16px;accent-color:var(--crimson)}
-  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
-  table{border-collapse:collapse;width:100%;min-width:480px;font-size:12.5px}
-  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
-  td{padding:8px 10px;border-top:1px solid var(--line);color:var(--ink)}
-  tr:nth-child(even) td{background:var(--panel2)}
-  .rubric td:last-child,.rubric th:last-child{text-align:right}
-  .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff;border:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(13px,2.6vw,26px) 80px}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(15px,2.4vw,22px);box-shadow:var(--card-shadow);margin-bottom:15px}
+  .muted{color:var(--muted)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:10px 20px;color:#fff;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .btn:hover{filter:brightness(1.07)} .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
+  .btn.ok{background:linear-gradient(120deg,#0f6b45,var(--success))}
+  .btn.sm{font-size:12.5px;padding:8px 15px}
+  .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
   label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
-  input[type=text],input[type=number],input[type=date],select,textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
-  textarea{min-height:72px;resize:vertical;line-height:1.5}
-  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-  .ro{background:var(--pill);opacity:.9}
-  .seg{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-  .seg button{cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:100px;padding:8px 15px}
-  .seg button:hover{border-color:var(--gold)} .seg button.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
-  .opt{display:block;width:100%;text-align:left;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;transition:.15s}
-  .opt:hover{border-color:var(--gold)} .opt.pick{border-color:var(--crimson);box-shadow:0 0 0 3px rgba(196,13,22,.14)}
-  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:11px 22px;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));margin-top:6px}
-  .btn:hover{filter:brightness(1.07)} .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))} .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
-  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 14px}
+  input[type=text],textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  textarea{min-height:70px;resize:vertical;line-height:1.55}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:9px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
+  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .22s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:420px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:15px}
+  .guide h2{font-size:18px;margin-bottom:6px} .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.72} .guide p{font-size:13.5px}
+
+  .opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#1a2340,#243156);color:#fff;border-radius:14px;
+    padding:11px 16px;display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:14px;box-shadow:0 12px 32px -22px rgba(0,0,0,.8)}
+  .opbar .ttl{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px}
+  .opbar .m{display:flex;flex-direction:column;gap:2px;min-width:92px}
+  .opbar .m .k{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;opacity:.62}
+  .opbar .m .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+  .opbar .m.bad .v{color:#ff8a8a} .opbar .m.good .v{color:#7de3b0} .opbar .m.warn .v{color:#f3c46b}
+  .meter{height:5px;border-radius:100px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:2px}
+  .meter i{display:block;height:100%;background:#7de3b0;transition:width .4s}
+  .meter i.warn{background:#f3c46b} .meter i.bad{background:#ff8a8a}
+  .opbar .sp{margin-left:auto}
+  .clock{background:rgba(0,0,0,.32);border-radius:100px;padding:6px 15px;font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+  .clock.warn{background:rgba(196,38,46,.5);animation:pul 1.1s infinite}
+  @keyframes pul{50%{opacity:.55}}
+
+  .task{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:15px 17px;box-shadow:var(--card-shadow);margin-bottom:14px}
+  .task .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .task h3{font-size:17px;margin:7px 0 4px}
+  .task .q{font-size:14px;font-weight:600;line-height:1.55;margin:8px 0 4px}
+  .opts{display:grid;gap:7px;margin-top:9px}
+  .opt{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font:inherit;font-size:13.5px;text-align:left;color:var(--ink);
+    background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;line-height:1.5}
+  .opt:hover{border-color:var(--gold)}
+  .opt .lt{flex:none;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--pill);border:1px solid var(--line);font-size:10.5px;font-weight:800;color:var(--muted)}
+  .opt.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)} .opt.pick .lt{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .opt.right{border-color:var(--success);background:rgba(30,142,90,.07)} .opt.right .lt{background:var(--success);border-color:var(--success);color:#fff}
+  .opt.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)} .opt.wrong .lt{background:var(--danger);border-color:var(--danger);color:#fff}
+  .fb{border-radius:11px;padding:12px 15px;margin-top:12px;font-size:13.5px;line-height:1.65;border:1px solid}
+  .fb.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.34)}
+  .fb.part{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.34)}
+  .fb.no{background:rgba(196,38,46,.08);border-color:rgba(196,38,46,.32)}
+  .fb .hd{font-weight:800;font-size:12.5px;margin-bottom:5px}
+  .fb.ok .hd{color:var(--success)} .fb.part .hd{color:var(--warn)} .fb.no .hd{color:var(--danger)}
+  .fb ul{margin:6px 0 0 17px}
+
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:11px;margin:8px 0 14px}
   .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
-  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)} .repbox .rl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
-  .verdict{font-size:14px;font-weight:700;padding:12px 16px;border-radius:12px;margin:10px 0}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:15px;font-weight:700;padding:13px 17px;border-radius:12px;margin:10px 0}
   .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
   .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
-  .note{font-size:12px;color:var(--muted);margin-top:6px}
-  details.help{margin-top:14px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:var(--gold-soft)}
-  details.help>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:8px}
-  details.help>summary::-webkit-details-marker{display:none}
-  details.help>summary:after{content:'▸';margin-left:auto;transition:transform .2s} details.help[open]>summary:after{transform:rotate(90deg)}
-  details.help .hb{padding:0 15px 13px;font-size:13px;line-height:1.6;color:var(--ink)}
-  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:16px}
-  .guide h2{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;margin-bottom:6px}
-  .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.7} .guide p{font-size:13.5px}
-  @media print{ .tabs,.btn,.no-print{display:none!important} body{background:#fff} .panel{display:block!important} .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid} }
+  .outcome{border:1px solid var(--line);border-left:4px solid var(--success);border-radius:11px;padding:12px 15px;margin-bottom:9px;background:var(--panel2);font-size:13.5px;line-height:1.6}
+  .outcome.harm{border-left-color:var(--danger)}
+  .outcome b{display:block;margin-bottom:3px}
+  .bar{height:8px;border-radius:100px;background:var(--pill);overflow:hidden;min-width:70px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))} .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
+
+  .chat{max-height:330px;overflow-y:auto;padding:4px 2px;margin-bottom:11px}
+  .bub{max-width:84%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.6;margin-bottom:9px}
+  .bub.pt{background:var(--pill);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .bub.me{background:rgba(14,111,118,.12);border:1px solid rgba(14,111,118,.32);margin-left:auto;border-bottom-right-radius:4px}
+  .bub .who{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  .asks{display:grid;gap:7px}
+  .ask{cursor:pointer;font:inherit;font-size:13px;text-align:left;color:var(--ink);background:var(--panel2);
+    border:1.5px solid var(--line);border-radius:10px;padding:9px 13px;line-height:1.5}
+  .ask:hover{border-color:var(--gold)} .ask.used{opacity:.4;pointer-events:none}
+  .naranjo{display:grid;gap:6px;margin-top:9px}
+  .nq{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--panel2);
+    border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px}
+  .nq .yn{display:flex;gap:5px}
+  .nq .yn button{cursor:pointer;font:inherit;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:100px;
+    background:var(--panel);border:1.5px solid var(--line);color:var(--ink);min-width:46px}
+  .nq .yn button.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .nscore{display:flex;gap:12px;align-items:center;margin-top:10px;padding:10px 13px;background:var(--gold-soft);
+    border:1px solid rgba(161,98,7,.3);border-radius:10px;font-size:13.5px}
+  .nscore b{font-size:20px;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .form{display:grid;gap:11px;margin-top:9px}
+  .frow{display:grid;grid-template-columns:170px 1fr;gap:11px;align-items:start}
+  @media(max-width:620px){.frow{grid-template-columns:1fr}}
+  .frow .fl{font-size:11.5px;font-weight:700;color:var(--muted);padding-top:9px}
+  .frow.miss input,.frow.miss textarea{border-color:var(--danger)}
+
+  @media print{.tabs,.btn,.no-print,.opbar{display:none!important} body{background:#fff} .panel{display:block!important}}
 </style>
 <link rel="stylesheet" href="alizon-practical-glass.css?v=1">
 </head>
@@ -92,418 +137,486 @@
 <script src="alizon-lab-gate.js"></script>
 <div class="wrap">
   <div class="hero">
-    <div class="mod">Pharmacy AI · Module 2 · Unit 4 · Practical 2 — Digital Inventory, ADR &amp; Compliance Systems</div>
-    <h1 class="serif">Electronic ADR Reporting &amp; Pharmacovigilance Using a Digital Reporting System</h1>
-    <p><b>Aim —</b> To identify, document, assess and electronically report a suspected Adverse Drug Reaction (ADR) using a digital pharmacovigilance reporting system.
-      <span class="muted">Duration 60 minutes · One case per student · 100-mark competency rubric · Pass 50%.</span></p>
-    <div class="chips">
-      <div class="scorechip">Case <b id="scCase">—</b></div>
-      <div class="scorechip">Score <b id="scScore">—</b></div>
-      <div class="scorechip">Result <b id="scRes">—</b></div>
-      <div class="scorechip" style="cursor:pointer" id="themeBtn">◐ Theme</div>
-    </div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Pharmacy AI · Module 2 · Unit 4 · Practical 2</div>
+    <h1 style="font-size:clamp(1.4rem,3.4vw,2.05rem);margin:7px 0">Pharmacovigilance Reporting Desk</h1>
+    <p class="muted" style="font-size:14px;max-width:80ch"><b>Aim —</b> To work a suspected adverse drug reaction from first report to submitted case —
+      taking the history from the patient, classifying seriousness and expectedness, scoring causality, and filing a valid report inside the regulatory clock.</p>
   </div>
 
   <div class="tabs">
     <button class="tab on" data-p="brief">Briefing</button>
-    <button class="tab" data-p="station">ADR Reporting Station</button>
+    <button class="tab" data-p="desk">Reporting Desk</button>
     <button class="tab" data-p="report">Result &amp; Record</button>
   </div>
 
   <section class="panel on" id="p-brief">
     <div id="expBrief" data-exp="adr"></div>
     <div class="guide">
-      <h2>New to ADR reporting? Start here</h2>
-      <p>An <b>Adverse Drug Reaction (ADR)</b> is any harmful, unintended response to a medicine taken at a normal dose. Reporting ADRs (pharmacovigilance) keeps medicines safe. In this station you will work through one patient:</p>
+      <h2>The call</h2>
+      <p>The ward has telephoned the drug information centre about a patient who has developed a rash and is unwell.
+        You are the pharmacovigilance pharmacist. Nothing has been established yet — the history is yours to take.</p>
       <ol>
-        <li><b>Read the patient's condition</b> and the medicine they are taking.</li>
-        <li><b>Identify the suspected reaction</b> (the ADR) and <b>which medicine</b> likely caused it.</li>
-        <li><b>Judge how serious it is</b> — could it cause death, hospitalisation or lasting harm? Then it is <i>serious</i>.</li>
-        <li><b>Assess causality</b> — how confident are we the drug caused it? Use the <b>WHO-UMC</b> scale (time link, other causes, response to stopping/restarting).</li>
-        <li><b>Complete the electronic ADR form</b>, then <b>counsel the patient</b> on safety and future precautions.</li>
+        <li><b>You must interview the patient.</b> Each question you choose to ask costs time; the answers determine everything that follows.</li>
+        <li>Seriousness is a <b>defined regulatory category based on outcome</b>, not on how unpleasant the symptom is.</li>
+        <li>Causality is scored with the <b>Naranjo algorithm</b>, which you complete question by question — the score is computed from your answers, not asserted.</li>
+        <li>A serious, unexpected, suspected reaction starts a <b>24-hour reporting clock</b>. The clock in this exercise is compressed.</li>
+        <li>A report missing any of the four minimum elements is <b>invalid</b> and does not count as reported.</li>
       </ol>
-      <p style="margin-top:8px">Not sure on a case? Open <b>“Need a hint?”</b> in the station. Work through Steps 1–5 in order.</p>
     </div>
-    <div class="card"><h2>Student tasks</h2><div class="cl" id="taskRef"></div></div>
-    <div class="card"><h2>Patient counselling</h2><p class="muted">Explain to the patient:</p><div class="cl" id="counRef"></div></div>
-    <div class="card"><h2>Learning outcomes</h2><div class="cl" id="loRef"></div></div>
-    <div class="card"><h2>WHO-UMC causality categories</h2>
-      <div class="tw"><table><thead><tr><th>Category</th><th>Key criteria</th></tr></thead><tbody>
-        <tr><td><b>Certain</b></td><td>Plausible time link · other causes excluded · positive dechallenge · pharmacologically definitive · rechallenge satisfactory (if performed)</td></tr>
-        <tr><td><b>Probable / Likely</b></td><td>Reasonable time link · other causes unlikely · reasonable dechallenge · rechallenge not required</td></tr>
-        <tr><td><b>Possible</b></td><td>Reasonable time link · could also be explained by disease or other drugs · dechallenge unclear or absent</td></tr>
-        <tr><td><b>Unlikely</b></td><td>Time link improbable · disease or other drugs give a plausible explanation</td></tr>
-      </tbody></table></div></div>
-    <div class="card"><h2>Faculty assessment rubric</h2>
-      <div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Marks</th></tr></thead><tbody id="rubTbl"></tbody></table></div>
-      <p class="note">Objective criteria are auto-scored; the written report is graded by faculty. Mis-classifying a serious ADR as non-serious triggers a patient-safety flag.</p>
+    <div class="card"><h2 style="font-size:18px">Assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Assessment criteria</th><th>Marks</th></tr></thead><tbody>
+        <tr><td>History taking — asking the questions that matter</td><td>20</td></tr>
+        <tr><td>Seriousness classification</td><td>15</td></tr>
+        <tr><td>Expectedness against the product information</td><td>10</td></tr>
+        <tr><td>Naranjo causality assessment</td><td>25</td></tr>
+        <tr><td>Valid report — all four minimum elements</td><td>20</td></tr>
+        <tr><td>Immediate clinical action and follow-up</td><td>10</td></tr>
+        <tr class="tot"><td>Total</td><td>100</td></tr>
+      </tbody></table></div>
+      <p class="muted" style="font-size:12.5px">Pass 50. Report validity and timeliness are reported separately.</p>
+    </div>
+    <div class="card"><h2 style="font-size:18px">Achievement badges</h2>
+      <div class="badges">
+        <span class="badge">🗣 Good Historian</span><span class="badge">⚖ Correct Classification</span>
+        <span class="badge">🧮 Causality Expert</span><span class="badge">⏱ Within 24 Hours</span><span class="badge">🏅 Valid Report</span>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:8px" id="badgeCrit"></p>
     </div>
   </section>
 
-  <section class="panel" id="p-station">
-    <div class="card"><h2>Candidate &amp; case assignment</h2>
-      <div class="grid2" style="margin-top:8px">
+  <section class="panel" id="p-desk">
+    <div class="card" id="setupCard">
+      <h2 style="font-size:18px">Take the call</h2>
+      <div class="grid2" style="margin-top:9px">
         <div><label class="f">Candidate name</label><input type="text" id="cName" placeholder="Your name"></div>
         <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
-        <div><label class="f">Assigned case</label><select id="caseSel"></select></div>
       </div>
-      <p class="note">Each student is assigned one unique ADR case.</p>
+      <p class="muted" style="font-size:12.5px;margin-top:10px">Alizon Teaching Hospital · Drug Information Centre · ADR Monitoring Centre link</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="startBtn">▶ Answer the call</button>
+        <button class="btn ghost sm" id="themeBtn">◐ Theme</button>
+      </div>
     </div>
-    <div id="caseArea"></div>
+    <div id="live" style="display:none">
+      <div class="opbar">
+        <div class="ttl">ADR Desk</div>
+        <div class="m"><span class="k">Stage</span><span class="v" id="mStage">1 / 6</span></div>
+        <div class="m"><span class="k">Score</span><span class="v" id="mScore">0</span></div>
+        <div class="m" id="mValWrap"><span class="k">Report validity</span><span class="v" id="mVal">—</span></div>
+        <div class="sp"></div>
+        <div class="clock" id="clock">24:00</div>
+      </div>
+      <div id="stage"></div>
+    </div>
   </section>
 
   <section class="panel" id="p-report">
-    <div class="card"><h2>Practical record &amp; assessment</h2>
-      <p class="muted" id="repEmpty">Complete the ADR reporting station and submit to generate your assessment, then write and submit your report.</p>
+    <div class="card"><h2 style="font-size:18px">Case report &amp; regulatory outcome</h2>
+      <p class="muted" id="repEmpty">Complete the case to generate your report, then write and submit it below.</p>
       <div id="repBody" style="display:none"></div>
     </div>
     <div class="card no-print" id="reportWriter" style="display:none"></div>
   </section>
 </div>
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="firebase-sync.js"></script>
 <script src="alizon-practical-submit.js?v=3"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=12"></script>
+<script src="alizon-experiment-data.js?v=13"></script>
+<script src="alizon-pdf-open.js"></script>
 <script>
 (function(){
   'use strict';
-  var $=function(id){return document.getElementById(id);};
+  var $=function(i){return document.getElementById(i);};
   var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var CLOCK=24*60, PASS=50;   /* one simulated hour per second */
 
-  var TASKS=['Review the patient’s clinical history','Review the prescribed medicines','Identify the suspected ADR',
-    'Identify the suspected medicine','Assess the severity of the reaction','Determine the probable causality',
-    'Complete the electronic ADR reporting form','Attach supporting clinical information',
-    'Submit the report to the Pharmacovigilance Centre','Document patient counselling'];
-  var COUNSEL=['What happened','Why the medicine may have caused the reaction','Medicines to avoid in future',
-    'When to seek immediate medical care','Importance of reporting future ADRs','Follow-up instructions'];
-  var OUTCOMES=['Learn','Detect suspected ADRs from patient information','Differentiate common adverse effects from serious reactions',
-    'Complete an electronic ADR report accurately','Apply basic causality assessment principles',
-    'Counsel patients on medicine safety & future precautions','Understand the role of pharmacovigilance in medication safety'];
-  var RUBRIC=[
-    {k:'adr',   label:'Identification of suspected ADR', max:20},
-    {k:'drug',  label:'Identification of suspected drug', max:15},
-    {k:'form',  label:'Completion of electronic ADR form', max:20},
-    {k:'caus',  label:'Causality assessment', max:15},
-    {k:'doc',   label:'Documentation accuracy', max:10},
-    {k:'coun',  label:'Patient counselling', max:20}];
-  var MAXTOTAL=RUBRIC.reduce(function(a,r){return a+r.max;},0);
-  var CAUSAL=['Certain','Probable','Possible','Unlikely'];
+  var PT={name:'Mrs D. Sequeira', age:62, sex:'F', uhid:'AT-77310', ward:'Medical 1'};
 
-  /* 10 cases */
-  var CASES=[
-   {n:1,pt:{id:'PV-2601',age:29,sex:'Female',wt:'58 kg'},drug:'Amoxicillin',strength:'500 mg',freq:'TID',brand:'Mox',mfg:'Cipla Ltd',
-    presentation:'Generalized skin rash appearing 2 days after starting the antibiotic.',
-    adr:['Drug-induced skin rash (suspected penicillin allergy)','Fungal skin infection','Contact dermatitis from soap','Heat rash'],adrC:0,
-    severity:'Moderate',serious:false,caus:'Probable',
-    coun:['Avoid penicillin antibiotics in future and carry an allergy alert card.','Continue the antibiotic and ignore the rash.','Apply more soap to clear the rash.','Double the dose to overcome the reaction.'],counC:0},
-   {n:2,pt:{id:'PV-2602',age:52,sex:'Male',wt:'74 kg'},drug:'Metformin',strength:'500 mg',freq:'BD',brand:'Glyciphage',mfg:'Franco-Indian',
-    presentation:'Persistent diarrhoea and abdominal discomfort since starting the medicine.',
-    adr:['Gastrointestinal intolerance to metformin','Food poisoning','Viral gastroenteritis','Lactose intolerance'],adrC:0,
-    severity:'Mild',serious:false,caus:'Probable',
-    coun:['Take with food; symptoms usually settle — report if they persist.','Stop the diabetes medicine permanently.','Skip meals to reduce diarrhoea.','Take a double dose to build tolerance.'],counC:0},
-   {n:3,pt:{id:'PV-2603',age:61,sex:'Male',wt:'70 kg'},drug:'Diclofenac',strength:'50 mg',freq:'TID',brand:'Voveran',mfg:'Novartis',
-    presentation:'Severe gastric pain with black, tarry stools.',
-    adr:['NSAID-induced gastrointestinal bleeding','Simple indigestion','Iron-rich diet effect','Constipation'],adrC:0,
-    severity:'Severe',serious:true,caus:'Probable',
-    coun:['Stop the tablet and seek urgent medical care — black stools suggest GI bleeding.','Take an antacid and continue the NSAID.','Wait a week and review at the next visit.','Increase the dose for better pain relief.'],counC:0},
-   {n:4,pt:{id:'PV-2604',age:58,sex:'Female',wt:'66 kg'},drug:'Amlodipine',strength:'5 mg',freq:'OD',brand:'Amlong',mfg:'Micro Labs',
-    presentation:'Bilateral ankle swelling developing after one week of therapy.',
-    adr:['Amlodipine-induced peripheral oedema','Deep vein thrombosis','Kidney failure','Heart attack'],adrC:0,
-    severity:'Mild',serious:false,caus:'Probable',
-    coun:['Do not stop the medicine on your own — consult your physician about the swelling.','Stop the BP medicine immediately.','Apply a tight bandage and continue.','Take a diuretic without advice.'],counC:0},
-   {n:5,pt:{id:'PV-2605',age:64,sex:'Male',wt:'80 kg'},drug:'Enalapril',strength:'5 mg',freq:'OD',brand:'Envas',mfg:'Cadila',
-    presentation:'Persistent dry cough since starting the blood-pressure medicine.',
-    adr:['ACE-inhibitor-induced dry cough','Common cold','Asthma','Tuberculosis'],adrC:0,
-    severity:'Mild',serious:false,caus:'Probable',
-    coun:['The dry cough can be caused by this BP medicine; your doctor may switch you to an alternative.','Take a cough syrup and continue indefinitely.','Stop drinking water to reduce the cough.','Ignore it — it is unrelated to the medicine.'],counC:0},
-   {n:6,pt:{id:'PV-2606',age:45,sex:'Male',wt:'72 kg'},drug:'Ciprofloxacin',strength:'500 mg',freq:'BD',brand:'Ciplox',mfg:'Cipla Ltd',
-    presentation:'Pain and swelling of the Achilles tendon during the antibiotic course.',
-    adr:['Fluoroquinolone-associated tendinopathy','Ankle sprain','Gout','Muscle cramp'],adrC:0,
-    severity:'Moderate',serious:true,caus:'Probable',
-    coun:['Stop the antibiotic and avoid strenuous activity; get the tendon reviewed.','Massage the tendon and keep exercising.','Continue and add a painkiller only.','Double the antibiotic to finish sooner.'],counC:0},
-   {n:7,pt:{id:'PV-2607',age:66,sex:'Male',wt:'68 kg'},drug:'Human Insulin',strength:'100 IU/ml',freq:'S/C',brand:'Huminsulin',mfg:'Eli Lilly',
-    presentation:'Sweating, tremors and dizziness; capillary blood glucose 48 mg/dL.',
-    adr:['Insulin-induced hypoglycaemia','Anxiety attack','Dehydration','Common cold'],adrC:0,
-    severity:'Severe',serious:true,caus:'Certain',
-    coun:['Take fast-acting sugar now; always carry glucose and recognise hypoglycaemia signs.','Take extra insulin to feel better.','Lie down and wait without eating.','Skip the next three meals.'],counC:0},
-   {n:8,pt:{id:'PV-2608',age:57,sex:'Female',wt:'64 kg'},drug:'Atorvastatin',strength:'20 mg',freq:'HS',brand:'Atorva',mfg:'Zydus',
-    presentation:'Muscle pain and weakness with elevated creatine kinase (CK).',
-    adr:['Statin-associated myopathy','Normal exercise soreness','Vitamin deficiency','Arthritis'],adrC:0,
-    severity:'Moderate',serious:true,caus:'Probable',
-    coun:['Report muscle pain; the statin may need to be stopped and blood tests done.','Exercise harder to relieve the pain.','Take the statin twice daily instead.','Ignore muscle pain — it is harmless.'],counC:0},
-   {n:9,pt:{id:'PV-2609',age:34,sex:'Female',wt:'60 kg'},drug:'Carbamazepine',strength:'200 mg',freq:'BD',brand:'Tegretol',mfg:'Novartis',
-    presentation:'Fever, widespread rash and oral ulcers.',
-    adr:['Stevens–Johnson Syndrome (serious skin reaction)','Chickenpox','Mouth ulcer from spicy food','Measles'],adrC:0,
-    severity:'Severe',serious:true,caus:'Probable',
-    coun:['This is an emergency — stop the drug and go to hospital immediately.','Apply cream to the rash and continue the drug.','Take paracetamol and review next week.','Increase fluids only and carry on.'],counC:0},
-   {n:10,pt:{id:'PV-2610',age:27,sex:'Female',wt:'55 kg'},drug:'Ferrous Sulphate',strength:'200 mg',freq:'OD',brand:'Fefol',mfg:'GSK',
-    presentation:'Nausea, constipation and dark-coloured stools.',
-    adr:['Expected iron-related gastrointestinal effects','Gastrointestinal bleeding','Food poisoning','Liver failure'],adrC:0,
-    severity:'Mild',serious:false,caus:'Probable',
-    coun:['Dark stools are an expected, harmless effect; take with vitamin C and continue.','Stop iron and seek emergency care for the dark stools.','Take iron with tea to reduce nausea.','Double the dose to relieve constipation.'],counC:0}
+  /* ---------- interview: 9 questions, 6 useful ---------- */
+  var ASKS=[
+   {q:'When exactly did the rash start, and what has it done since?',
+    a:'“It came up about ten days after I started the new tablet for my fits. It started on my chest and it has spread everywhere — my face, my arms, my back. In the last day it has started to blister and the skin is peeling.”',
+    key:true, tag:'onset'},
+   {q:'Which medicines have you started in the last month?',
+    a:'“Only one new one — the carbamazepine, for the seizures. I have been on the thyroxine and the omeprazole for years.”',
+    key:true, tag:'drug'},
+   {q:'Do you have any pain or ulceration in your mouth, eyes or genitals?',
+    a:'“Yes — my mouth is full of ulcers, I can barely swallow, and my eyes are red and sore and sticky.”',
+    key:true, tag:'mucosal'},
+   {q:'Have you had a fever, or felt generally unwell before the rash appeared?',
+    a:'“I had a temperature and aches for two days before the rash came out. I thought it was flu.”',
+    key:true, tag:'prodrome'},
+   {q:'Has anything like this ever happened to you before, with any medicine?',
+    a:'“Never. I have never had a reaction to a tablet in my life.”',
+    key:true, tag:'past'},
+   {q:'Has the carbamazepine been stopped, and has anything changed since?',
+    a:'“The doctor stopped it yesterday morning. It has not got any better yet but it has not got much worse either.”',
+    key:true, tag:'dechal'},
+   {q:'What did you have for breakfast this morning?', a:'“Just some tea. I cannot really eat with my mouth like this.”', key:false},
+   {q:'Who is your usual family doctor?', a:'“Dr Pereira at the clinic near the market.”', key:false},
+   {q:'Do you have transport home arranged?', a:'“My son will collect me whenever they say I can go.”', key:false}
   ];
 
-  /* patient condition (clinical vignette) + WHO-UMC expected criteria per case */
-  var CONDS={
-   1:{cond:'A 29-year-old woman was started on amoxicillin 500 mg TID for a throat infection. On day 2 she developed an itchy, generalized maculopapular rash over the trunk and arms. She takes no other new medicines and has no history of skin disease; the rash began settling within a day of stopping the antibiotic.',
-      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Positive',rechallenge:'Not done'}},
-   2:{cond:'A 52-year-old man with newly diagnosed type-2 diabetes began metformin 500 mg BD. From the second day he has had loose stools 3–4 times a day with cramping abdominal discomfort. There is no fever or blood in the stool and no one else at home is unwell; symptoms ease when the dose is taken with food.',
-      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Positive',rechallenge:'Not done'}},
-   3:{cond:'A 61-year-old man taking diclofenac 50 mg TID for chronic back pain, with no acid-suppressing cover, presents with severe burning epigastric pain and two days of black, tarry stools. He looks pale; there is no history of liver disease or alcohol excess.',
-      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}},
-   4:{cond:'A 58-year-old woman on amlodipine 5 mg OD for hypertension noticed both ankles becoming swollen over the past week. The swelling is soft and pits on pressure; there is no breathlessness, and her heart and kidney checks are normal.',
-      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Positive',rechallenge:'Not done'}},
-   5:{cond:'A 64-year-old man started enalapril 5 mg OD for high blood pressure three weeks ago and since then has a persistent, tickly dry cough, worse at night. He has no fever, wheeze or sputum, and the cough began only after the new tablet.',
-      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Positive',rechallenge:'Not done'}},
-   6:{cond:'A 45-year-old man on ciprofloxacin 500 mg BD for a urinary infection develops pain and swelling at the back of the right ankle (Achilles region) on day 4. There was no injury or unusual exercise, and he has no history of gout.',
-      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}},
-   7:{cond:'A 66-year-old man with diabetes on human insulin took his usual dose but skipped breakfast. An hour later he became sweaty, shaky and dizzy; a finger-prick glucose reads 48 mg/dL. Symptoms resolve quickly after oral glucose.',
-      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Positive',rechallenge:'Not done'}},
-   8:{cond:'A 57-year-old woman on atorvastatin 20 mg at night for high cholesterol reports aching, weak thigh and calf muscles for the past week. She has not been exercising unusually; blood tests show a raised creatine kinase (CK).',
-      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}},
-   9:{cond:'A 34-year-old woman started carbamazepine 200 mg BD for epilepsy about two weeks ago. She now has fever, a rapidly spreading rash with skin peeling and painful mouth ulcers. She looks unwell and cannot eat.',
-      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}},
-   10:{cond:'A 27-year-old woman on ferrous sulphate 200 mg OD for iron-deficiency anaemia reports mild nausea, constipation and dark-coloured stools since starting treatment. She is otherwise well, with no abdominal pain or dizziness.',
-      who:{temporal:'Plausible',other:'Excluded',dechallenge:'Not done',rechallenge:'Not done'}}
-  };
-  var HINTS={
-   1:'Think “penicillin allergy”. A rash starting soon after amoxicillin is a suspected drug allergy — record it, judge how serious it is, submit the ADR and counsel the patient to avoid penicillins.',
-   2:'Ask: did the diarrhoea begin after starting metformin? GI upset is a common, usually mild metformin ADR — report it as suspected and advise taking it with food.',
-   3:'Black, tarry stools + gastric pain on an NSAID = suspect gastrointestinal bleeding. This is SERIOUS — recommend urgent medical review.',
-   4:'Bilateral ankle swelling on amlodipine is peripheral oedema (a known effect). Advise the patient not to stop the medicine without consulting their doctor.',
-   5:'A persistent dry cough that started after enalapril is a classic ACE-inhibitor cough — recognise it and complete the ADR documentation.',
-   6:'Achilles tendon pain during a fluoroquinolone (ciprofloxacin) suggests tendinopathy — advise stopping pending physician review. Treat as serious.',
-   7:'Sweating, tremor and glucose 48 mg/dL = hypoglycaemia from insulin. Recognise it, document immediate management (give sugar) — this is serious.',
-   8:'Muscle pain with a raised CK on a statin points to statin-associated myopathy — report it promptly and it is serious.',
-   9:'Fever + spreading rash + mouth ulcers on carbamazepine = suspect Stevens–Johnson Syndrome. Classify as SERIOUS and needing emergency referral.',
-   10:'Nausea, constipation and dark stools with iron are usually EXPECTED, non-serious effects — differentiate from a serious reaction, reassure and counsel the patient, and still document the event.'
-  };
-  CASES.forEach(function(c){ var x=CONDS[c.n]; if(x){ c.cond=x.cond; c.who=x.who; } c.hint=HINTS[c.n]; });
+  /* ---------- Naranjo, scored from the student's answers ---------- */
+  var NARANJO=[
+   {q:'Are there previous conclusive reports on this reaction?', y:1, n:0, u:0, ans:'y',
+    e:'Carbamazepine is one of the best-documented causes of Stevens–Johnson syndrome and toxic epidermal necrolysis, particularly in South-East Asian populations carrying HLA-B*15:02.'},
+   {q:'Did the adverse event appear after the suspected drug was administered?', y:2, n:-1, u:0, ans:'y',
+    e:'The rash began ten days after starting carbamazepine — squarely within the 1–8 week window in which severe cutaneous reactions to anticonvulsants occur.'},
+   {q:'Did the reaction improve when the drug was discontinued?', y:1, n:0, u:0, ans:'u',
+    e:'The drug was stopped only yesterday and the reaction has not yet improved. In SJS/TEN the eruption characteristically continues to evolve for several days after withdrawal, so this is genuinely <b>unknown</b> at this point — scoring it “no” would be wrong.'},
+   {q:'Did the reaction reappear when the drug was re-administered?', y:2, n:-1, u:0, ans:'u',
+    e:'No rechallenge has occurred, and deliberate rechallenge in suspected SJS/TEN would be grossly unethical. This is <b>unknown</b>, scoring zero — not “no”.'},
+   {q:'Are there alternative causes that could have caused the reaction?', y:-1, n:2, u:0, ans:'n',
+    e:'No new medicines other than carbamazepine, no infection identified, no previous drug reactions. The febrile prodrome is part of the syndrome itself, not an alternative cause.'},
+   {q:'Did the reaction reappear when a placebo was given?', y:-1, n:1, u:0, ans:'u',
+    e:'No placebo was given. Unknown, scoring zero.'},
+   {q:'Was the drug detected in blood or other fluids in toxic concentrations?', y:1, n:0, u:0, ans:'u',
+    e:'No level was taken, and severe cutaneous reactions are immunologically mediated rather than concentration-dependent — a level would not help.'},
+   {q:'Was the reaction more severe when the dose was increased, or less severe when decreased?', y:1, n:0, u:0, ans:'u',
+    e:'The dose was not altered before the reaction. Unknown.'},
+   {q:'Did the patient have a similar reaction to the same or similar drugs in any previous exposure?', y:1, n:0, u:0, ans:'n',
+    e:'She has never had a drug reaction before — she told you so when you asked.'},
+   {q:'Was the adverse event confirmed by any objective evidence?', y:1, n:0, u:0, ans:'y',
+    e:'Mucosal involvement at three sites, blistering with skin detachment, and a documented febrile prodrome are objective clinical findings recorded in the notes.'}
+  ];
 
-  /* ---- briefing ---- */
-  $('taskRef').innerHTML=TASKS.map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
-  $('counRef').innerHTML=COUNSEL.map(function(t){return '<label><input type="checkbox" disabled><span>'+esc(t)+'</span></label>';}).join('');
-  $('loRef').innerHTML=OUTCOMES.slice(1).map(function(t){return '<label><input type="checkbox" disabled checked><span>'+esc(t)+'</span></label>';}).join('');
-  $('rubTbl').innerHTML=RUBRIC.map(function(r){return '<tr><td>'+esc(r.label)+'</td><td>'+r.max+'</td></tr>';}).join('')+'<tr class="tot"><td>Total</td><td>'+MAXTOTAL+'</td></tr>';
+  var STAGES=[
+  {n:1, key:'history', marks:20, title:'Take the history', interview:true,
+   e:'Six of the nine questions carry clinical weight. <b>Onset timing</b> establishes the temporal relationship, <b>new medicines</b> identifies the suspect, <b>mucosal involvement</b> is what converts a rash into a life-threatening syndrome, the <b>febrile prodrome</b> supports it, <b>previous reactions</b> feeds the Naranjo score, and <b>dechallenge</b> tells you what has happened since withdrawal. Breakfast, the family doctor and transport arrangements answer nothing you need.'},
 
-  var sel=$('caseSel');
-  sel.innerHTML=CASES.map(function(c){return '<option value="'+(c.n-1)+'">Case '+c.n+' — '+esc(c.drug)+'</option>';}).join('');
-  sel.addEventListener('change',function(){ loadCase(parseInt(this.value,10)); });
-  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}'); if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+  {n:2, key:'serious', marks:15, title:'Classify seriousness',
+   q:'Is this a serious adverse event, and on what basis?',
+   o:['Not serious — a rash is a common, self-limiting reaction',
+      'Serious — it is life-threatening and requires inpatient care; blistering with mucosal involvement indicates a severe cutaneous adverse reaction',
+      'Serious only because the patient is distressed by it',
+      'Cannot be classified until the causality assessment is complete'],c:1,
+   e:'Seriousness is a <b>regulatory category defined by outcome</b>: death, life-threatening, hospitalisation or its prolongation, persistent disability, or congenital anomaly. Blistering with detachment and involvement of three mucosal surfaces is <b>Stevens–Johnson syndrome</b>, which is life-threatening and carries appreciable mortality. Seriousness is assessed independently of, and before, causality — the two are separate questions.',
+   crit:true},
 
-  var state=null;
-  function loadCase(ci){
-    state={ci:ci,adr:null,drug:null,caus:null,severity:'',serious:'',coun:{},counPick:null,mgmt:{},submitted:false,result:null};
-    var c=CASES[ci];
-    $('scCase').textContent='Case '+c.n; $('scScore').textContent='—'; $('scRes').textContent='—';
-    $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
-    renderStation();
+  {n:3, key:'expected', marks:10, title:'Expectedness',
+   q:'The Summary of Product Characteristics for carbamazepine lists Stevens–Johnson syndrome as a rare adverse reaction. Is this reaction expected or unexpected?',
+   o:['Unexpected — severe reactions are always unexpected',
+      'Expected — it is described in the approved product information, even though it is rare',
+      'Unexpected — the patient did not expect it',
+      'Expectedness cannot be determined for cutaneous reactions'],c:1,
+   e:'“Expected” means <b>consistent with the reference safety information</b>, however rare or severe. Rarity is not the test; the question is only whether the reaction is already described. This matters because <b>serious + unexpected + suspected</b> is what triggers expedited reporting to the regulator — an expected serious reaction is still reported, but through the routine route rather than the 15-day expedited one.'},
+
+  {n:4, key:'naranjo', marks:25, title:'Causality assessment', naranjo:true,
+   e:'The Naranjo score is computed from the answers, not asserted. The traps are questions 3, 4 and 6 — <b>“unknown” is not the same as “no”</b>. Scoring a dechallenge as “no” when the drug was stopped yesterday, or a rechallenge as “no” when none was performed, both understate causality by penalising you for evidence that could not ethically or practically exist.'},
+
+  {n:5, key:'form', marks:20, title:'File the report', form:true,
+   e:'A report is <b>valid</b> only if it contains all four minimum elements: an <b>identifiable patient</b>, an <b>identifiable reporter</b>, a <b>suspect medicine</b> and a <b>suspected reaction</b>. Anything less is not a report. Batch number and dates matter for follow-up and signal work but are not part of validity.'},
+
+  {n:6, key:'action', marks:10, title:'Immediate action and follow-up',
+   q:'Beyond filing the report, what must happen for this patient?',
+   o:['Nothing further — the drug has been stopped and the report is filed',
+      'Record carbamazepine as an allergy, alert the patient to avoid aromatic anticonvulsants which cross-react, arrange urgent dermatology and ophthalmology review, and issue an alert card',
+      'Restart carbamazepine at a lower dose once the rash settles',
+      'Substitute phenytoin, which is a different drug'],c:1,
+   e:'Reporting is not the intervention. This patient needs the reaction <b>recorded as an allergy</b> so it can never be re-prescribed, and she must be warned that the <b>aromatic anticonvulsants — carbamazepine, phenytoin, phenobarbital, lamotrigine — cross-react</b>, which is precisely why substituting phenytoin would be dangerous. Ocular involvement in SJS causes permanent scarring if not managed early, so ophthalmology review is urgent, not routine.',
+   crit:true}
+  ];
+
+  $('badgeCrit').innerHTML='<b>Good Historian</b> — all six useful questions asked, no time wasted. &nbsp;·&nbsp; '
+    +'<b>Correct Classification</b> — seriousness and expectedness both right. &nbsp;·&nbsp; '
+    +'<b>Causality Expert</b> — full Naranjo marks. &nbsp;·&nbsp; '
+    +'<b>Within 24 Hours</b> — report filed before the clock expired. &nbsp;·&nbsp; '
+    +'<b>Valid Report</b> — all four minimum elements present.';
+
+  try{ var pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}');
+       if(pf&&pf.name)$('cName').value=pf.name; if(pf&&pf.reg)$('cReg').value=pf.reg; }catch(e){}
+
+  var S=null, tick=null, sel=null, asked={}, nans={}, valid=null;
+
+  function start(){
+    S={i:0,marks:0,secs:CLOCK,t0:Date.now(),ended:false,log:[],asked:[],naranjoScore:0,filedAt:null,
+       name:($('cName').value||'').trim()||'Candidate',reg:($('cReg').value||'').trim()};
+    asked={}; nans={}; valid=null;
+    $('setupCard').style.display='none'; $('live').style.display='';
+    clearInterval(tick);
+    tick=setInterval(function(){
+      if(!S||S.ended) return;
+      S.secs=Math.max(0,CLOCK-Math.floor((Date.now()-S.t0)/1000));
+      var h=Math.floor(S.secs/60), m=S.secs%60;
+      $('clock').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+      $('clock').classList.toggle('warn',S.secs<=300);
+      if(S.secs<=0){ finish('time'); }
+    },1000);
+    render();
+  }
+  function paintBar(){
+    $('mStage').textContent=Math.min(S.i+1,STAGES.length)+' / '+STAGES.length;
+    $('mScore').textContent=Math.round(S.marks*10)/10;
+    $('mVal').textContent=valid==null?'—':(valid?'valid':'INVALID');
+    $('mValWrap').className='m'+(valid==null?'':(valid?' good':' bad'));
   }
 
-  function renderStation(){
-    var c=CASES[state.ci]; var h='';
-    h+='<div class="card"><span class="step">Case '+c.n+'</span>'
-      +'<h2 style="margin-top:6px">'+esc(c.drug)+' '+esc(c.strength)+'</h2>'
-      +'<h3>Patient condition</h3><p>'+esc(c.cond||c.presentation)+'</p>'
-      +'<h3>Suspected reaction</h3><p>'+esc(c.presentation)+'</p>'
-      +(c.hint?'<details class="help"><summary>Need a hint?</summary><div class="hb">'+esc(c.hint)+'</div></details>':'')
-      +'<h3 style="margin-top:16px">Patient history &amp; prescription (from the EHR)</h3>'
-      +'<div class="tw"><table><tbody>'
-      +'<tr><td><b>Patient ID</b></td><td>'+esc(c.pt.id)+'</td><td><b>Age / Sex</b></td><td>'+c.pt.age+' · '+esc(c.pt.sex)+'</td><td><b>Weight</b></td><td>'+esc(c.pt.wt)+'</td></tr>'
-      +'<tr><td><b>Prescribed</b></td><td colspan="5">'+esc(c.drug+' '+c.strength+' '+c.freq)+' · '+esc(c.brand)+' ('+esc(c.mfg)+')</td></tr>'
-      +'</tbody></table></div></div>';
+  function render(){
+    if(S.i>=STAGES.length){ finish('complete'); return; }
+    var st=STAGES[S.i]; sel=null; paintBar();
+    var h='<div class="task"><span class="step">Stage '+st.n+' of '+STAGES.length+' · '+st.marks+' marks</span><h3>'+esc(st.title)+'</h3>';
 
-    /* Step 1 identify ADR */
-    h+='<div class="card"><span class="step">Step 1</span> <b>Identify the suspected ADR</b>'
-      +'<div id="adrMcq">'+c.adr.map(function(o,k){return '<button type="button" class="opt" data-adr="'+k+'">'+esc(o)+'</button>';}).join('')+'</div></div>';
+    if(st.interview){
+      h+='<div class="q">Interview the patient. Ask what you need — every question is recorded.</div>'
+        +'<div class="chat" id="chat"><div class="bub pt"><div class="who">'+esc(PT.name)+' · '+PT.age+' '+PT.sex+' · '+PT.ward+'</div>'
+        +'“They said you wanted to ask me about this rash, doctor.”</div></div>'
+        +'<div class="asks" id="asks">'+ASKS.map(function(a,k){
+          return '<button type="button" class="ask" data-k="'+k+'">'+esc(a.q)+'</button>';}).join('')+'</div>';
+    } else if(st.naranjo){
+      h+='<div class="q">Complete the Naranjo assessment. Answer each item from what you have established.</div>'
+        +'<div class="naranjo" id="nar">'+NARANJO.map(function(q,k){
+          return '<div class="nq"><span>'+(k+1)+'. '+esc(q.q)+'</span><span class="yn">'
+            +['y','n','u'].map(function(v){return '<button data-k="'+k+'" data-v="'+v+'">'+{y:'Yes',n:'No',u:'Unknown'}[v]+'</button>';}).join('')
+            +'</span></div>';}).join('')+'</div>'
+        +'<div class="nscore">Naranjo score: <b id="nsc">0</b><span class="muted" id="nint">— complete the items</span></div>';
+    } else if(st.form){
+      h+='<div class="q">Complete the ADR report. A report missing any of the four minimum elements is not a valid report.</div>'
+        +'<div class="form" id="form">'
+        +[['pt','Patient identifier','e.g. initials, age, sex or UHID'],
+          ['rep','Reporter','your name and designation'],
+          ['drug','Suspect medicine','name, dose, route, start date'],
+          ['rxn','Suspected reaction','what happened, with dates'],
+          ['batch','Batch number','if available — not required for validity'],
+          ['out','Outcome and action taken','']].map(function(f){
+          return '<div class="frow" data-row="'+f[0]+'"><span class="fl">'+f[1]+'</span>'
+            +(f[0]==='rxn'||f[0]==='out'
+              ? '<textarea data-f="'+f[0]+'" placeholder="'+esc(f[2])+'"></textarea>'
+              : '<input type="text" data-f="'+f[0]+'" placeholder="'+esc(f[2])+'">')+'</div>';}).join('')
+        +'</div>';
+    } else {
+      h+='<div class="q">'+st.q+'</div><div class="opts" id="oW">'
+        +st.o.map(function(o,k){return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+'ABCD'[k]+'</span><span>'+esc(o)+'</span></button>';}).join('')+'</div>';
+    }
+    h+='<div id="fbk"></div><div class="row" style="margin-top:12px"><button class="btn" id="goBtn">'
+      +(st.interview?'Close the interview':(st.form?'Submit the report':'Confirm'))+'</button></div></div>';
+    $('stage').innerHTML=h;
 
-    /* Step 2 identify suspected drug */
-    h+='<div class="card"><span class="step">Step 2</span> <b>Identify the suspected medicine</b>'
-      +'<div style="margin-top:8px;max-width:340px"><select id="drugSel"><option value="">Select the suspected drug…</option>'
-      +'<option value="'+esc(c.drug)+'">'+esc(c.drug)+' '+esc(c.strength)+'</option>'
-      +'<option value="none">No drug is responsible</option>'
-      +'<option value="other">Another (unlisted) drug</option></select></div></div>';
-
-    /* Step 3 electronic ADR form */
-    h+='<div class="card"><span class="step">Step 3</span> <b>Electronic ADR reporting form</b>'
-      +'<h3>Suspected drug details</h3><div class="grid2">'
-      +'<div><label class="f">Generic name</label><input type="text" id="f-generic" placeholder="Generic name of suspected drug"></div>'
-      +'<div><label class="f">Brand name</label><input type="text" id="f-brand" value="'+esc(c.brand)+'"></div>'
-      +'<div><label class="f">Strength</label><input type="text" id="f-strength" placeholder="e.g. '+esc(c.strength)+'"></div>'
-      +'<div><label class="f">Batch number</label><input type="text" id="f-batch" placeholder="Batch no."></div>'
-      +'<div><label class="f">Manufacturer</label><input type="text" id="f-mfg" value="'+esc(c.mfg)+'"></div>'
-      +'<div><label class="f">Start date</label><input type="date" id="f-start"></div>'
-      +'<div><label class="f">Stop date</label><input type="date" id="f-stop"></div></div>'
-      +'<h3>Adverse drug reaction</h3><div class="grid2">'
-      +'<div><label class="f">Date of onset</label><input type="date" id="f-onset"></div>'
-      +'<div><label class="f">Severity</label><select id="f-severity"><option value="">Select…</option><option>Mild</option><option>Moderate</option><option>Severe</option></select></div>'
-      +'<div><label class="f">Outcome</label><select id="f-outcome"><option value="">Select…</option><option>Recovered</option><option>Recovering</option><option>Not yet recovered</option><option>Fatal</option><option>Unknown</option></select></div>'
-      +'<div><label class="f">Serious?</label><select id="f-serious"><option value="">Select…</option><option value="serious">Serious</option><option value="non">Non-serious</option></select></div></div>'
-      +'<div style="margin-top:12px"><label class="f">Description of reaction</label><textarea id="f-desc" placeholder="Describe the reaction, timeline and relevant findings…"></textarea></div>'
-      +'<h3>Management</h3><div class="cl" id="mgmtList">'
-      +['Suspected drug discontinued','Dose reduced','Alternative medicine started','Hospitalization required'].map(function(t,i){return '<label><input type="checkbox" data-m="'+i+'"><span>'+esc(t)+'</span></label>';}).join('')
-      +'</div>'
-      +'<h3>Reporter information</h3><div class="grid2">'
-      +'<div><label class="f">Reporter (student) name</label><input type="text" id="f-rep" placeholder="Your name"></div>'
-      +'<div><label class="f">Date</label><input type="date" id="f-repdate"></div>'
-      +'<div><label class="f">Digital signature (type your name)</label><input type="text" id="f-sign" placeholder="Sign by typing your name"></div></div></div>';
-
-    /* Step 4 causality — WHO-UMC structured assessment */
-    h+='<div class="card"><span class="step">Step 4</span> <b>Causality assessment (WHO-UMC)</b>'
-      +'<p class="note">Assess each WHO-UMC criterion from the patient condition, then choose the causality category.</p>'
-      +'<div class="grid2" style="margin-top:6px">'
-      +'<div><label class="f">Time relationship (drug → reaction)</label><select id="w-temporal"><option value="">Select…</option><option>Plausible</option><option>Not plausible</option><option>Unclear</option></select></div>'
-      +'<div><label class="f">Other causes (disease / other drugs)</label><select id="w-other"><option value="">Select…</option><option>Excluded</option><option>Possible</option><option>Unknown</option></select></div>'
-      +'<div><label class="f">Dechallenge (response to stopping the drug)</label><select id="w-dechallenge"><option value="">Select…</option><option>Positive</option><option>Negative</option><option>Not done</option></select></div>'
-      +'<div><label class="f">Rechallenge (response to restarting)</label><select id="w-rechallenge"><option value="">Select…</option><option>Positive</option><option>Negative</option><option>Not done</option></select></div>'
-      +'</div>'
-      +'<label class="f" style="margin-top:14px">Causality category</label>'
-      +'<div class="seg" id="causSeg">'+CAUSAL.map(function(x){return '<button type="button" data-c="'+esc(x)+'">'+esc(x)+'</button>';}).join('')+'</div></div>';
-
-    /* Step 5 counselling */
-    h+='<div class="card"><span class="step">Step 5</span> <b>Patient counselling</b>'
-      +'<p class="note">Tick each point you counselled the patient on:</p>'
-      +'<div class="cl" id="counList">'+COUNSEL.map(function(t,i){return '<label><input type="checkbox" data-co="'+i+'"><span>'+esc(t)+'</span></label>';}).join('')+'</div>'
-      +'<h3>Most important advice for this patient</h3>'
-      +'<div id="counMcq">'+c.coun.map(function(o,k){return '<button type="button" class="opt" data-cp="'+k+'">'+esc(o)+'</button>';}).join('')+'</div></div>';
-
-    h+='<div class="card"><button class="btn" id="submitBtn">Submit ADR report &amp; evaluate</button>'
-      +'<span class="muted" style="font-size:12.5px;margin-left:10px">Auto-scored against the 100-mark rubric.</span></div>';
-
-    $('caseArea').innerHTML=h;
-    wire();
+    if(st.interview){
+      [].forEach.call(document.querySelectorAll('#asks .ask'),function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k'); if(asked[k]) return;
+          asked[k]=true; b.classList.add('used');
+          var a=ASKS[k];
+          $('chat').insertAdjacentHTML('beforeend',
+            '<div class="bub me"><div class="who">You</div>'+esc(a.q)+'</div>'
+            +'<div class="bub pt"><div class="who">'+esc(PT.name)+'</div>'+esc(a.a)+'</div>');
+          $('chat').scrollTop=$('chat').scrollHeight;
+        });
+      });
+    } else if(st.naranjo){
+      [].forEach.call(document.querySelectorAll('#nar button'),function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k'), v=b.getAttribute('data-v');
+          nans[k]=v;
+          [].forEach.call(document.querySelectorAll('#nar button[data-k="'+k+'"]'),function(x){x.classList.remove('on');});
+          b.classList.add('on');
+          var sc=0, n=0;
+          NARANJO.forEach(function(q,i){ if(nans[i]!=null){ n++; sc+=q[nans[i]]; } });
+          $('nsc').textContent=sc;
+          $('nint').textContent=n<NARANJO.length?('— '+(NARANJO.length-n)+' item(s) outstanding')
+            :('— '+(sc>=9?'definite':(sc>=5?'probable':(sc>=1?'possible':'doubtful'))));
+        });
+      });
+    } else if(!st.form){
+      [].forEach.call(document.querySelectorAll('#oW .opt'),function(b){
+        b.addEventListener('click',function(){
+          sel=+b.getAttribute('data-k');
+          [].forEach.call(document.querySelectorAll('#oW .opt'),function(x){x.classList.remove('pick');});
+          b.classList.add('pick');
+        });
+      });
+    }
+    $('goBtn').addEventListener('click',function(){ submit(st); });
   }
 
-  function wire(){
-    document.querySelectorAll('#adrMcq .opt').forEach(function(b){ b.addEventListener('click',function(){ state.adr=+b.getAttribute('data-adr'); document.querySelectorAll('#adrMcq .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); }); });
-    $('drugSel').addEventListener('change',function(){ state.drug=this.value; });
-    document.querySelectorAll('#counMcq .opt').forEach(function(b){ b.addEventListener('click',function(){ state.counPick=+b.getAttribute('data-cp'); document.querySelectorAll('#counMcq .opt').forEach(function(x){x.classList.remove('pick');}); b.classList.add('pick'); }); });
-    document.querySelectorAll('#causSeg button').forEach(function(b){ b.addEventListener('click',function(){ state.caus=b.getAttribute('data-c'); document.querySelectorAll('#causSeg button').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); }); });
-    document.querySelectorAll('#counList input').forEach(function(cb){ cb.addEventListener('change',function(){ state.coun[cb.getAttribute('data-co')]=cb.checked; }); });
-    document.querySelectorAll('#mgmtList input').forEach(function(cb){ cb.addEventListener('change',function(){ state.mgmt[cb.getAttribute('data-m')]=cb.checked; }); });
-    $('submitBtn').addEventListener('click',evaluate);
+  function submit(st){
+    var got=0, ok=true, extra='';
+    if(st.interview){
+      var useful=ASKS.map(function(a,k){return a.key?k:-1;}).filter(function(k){return k>=0;});
+      var hit=useful.filter(function(k){return asked[k];}).length;
+      var waste=ASKS.map(function(a,k){return (!a.key&&asked[k])?k:-1;}).filter(function(k){return k>=0;}).length;
+      got=Math.max(0,Math.round((20*hit/useful.length - waste*1.5)*10)/10);
+      ok=(hit===useful.length && waste===0);
+      S.asked=Object.keys(asked).map(function(k){return ASKS[k].q;});
+      var missed=useful.filter(function(k){return !asked[k];});
+      if(missed.length) extra='<br><b>Not asked:</b> '+missed.map(function(k){return esc(ASKS[k].q);}).join(' · ');
+      if(waste) extra+='<br><b>'+waste+' question(s) asked that answered nothing clinically relevant.</b>';
+    } else if(st.naranjo){
+      if(Object.keys(nans).length<NARANJO.length){
+        $('fbk').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Answer all ten Naranjo items.</div>'; return;
+      }
+      var right=0;
+      NARANJO.forEach(function(q,k){ if(nans[k]===q.ans) right++; });
+      got=Math.round((25*right/NARANJO.length)*10)/10;
+      ok=(right===NARANJO.length);
+      var sc=0; NARANJO.forEach(function(q,k){ sc+=q[nans[k]]; });
+      S.naranjoScore=sc;
+      var wrong=NARANJO.map(function(q,k){return nans[k]!==q.ans?('<li>Q'+(k+1)+': '+q.e+'</li>'):'';}).join('');
+      if(wrong) extra='<ul>'+wrong+'</ul>';
+      extra+='<br><b>Your Naranjo score: '+sc+'</b> — '+(sc>=9?'definite':(sc>=5?'probable':(sc>=1?'possible':'doubtful')))
+        +'. The correct answers give a score of 6, which is <b>probable</b> — the ceiling here, because rechallenge is unethical and dechallenge is not yet assessable.';
+    } else if(st.form){
+      var v={}; [].forEach.call(document.querySelectorAll('#form input[data-f],#form textarea[data-f]'),function(el){
+        v[el.getAttribute('data-f')]=(el.value||'').trim(); });
+      var need=['pt','rep','drug','rxn'];
+      var missing=need.filter(function(k){return !v[k]||v[k].length<3;});
+      valid=(missing.length===0);
+      got=valid?20:Math.max(0,Math.round((20*(need.length-missing.length)/need.length)*10)/10);
+      ok=valid;
+      S.filedAt=CLOCK-S.secs;
+      [].forEach.call(document.querySelectorAll('#form .frow'),function(r){
+        var k=r.getAttribute('data-row');
+        r.classList.toggle('miss', need.indexOf(k)>=0 && missing.indexOf(k)>=0);
+      });
+      if(missing.length) extra='<br><b>Missing minimum elements:</b> '
+        +missing.map(function(k){return {pt:'identifiable patient',rep:'identifiable reporter',drug:'suspect medicine',rxn:'suspected reaction'}[k];}).join(', ')
+        +'. Without all four this is <b>not a valid report</b> and would be rejected by the ADR Monitoring Centre.';
+      else extra='<br>All four minimum elements present — the report is valid and would be accepted.';
+    } else {
+      if(sel==null){ $('fbk').innerHTML='<div class="fb no"><div class="hd">Choose an option</div>Select one before confirming.</div>'; return; }
+      ok=(sel===st.c); got=ok?st.marks:0;
+      [].forEach.call(document.querySelectorAll('#oW .opt'),function(b){
+        var k=+b.getAttribute('data-k'); b.classList.remove('pick');
+        if(k===st.c) b.classList.add('right'); else if(sel===k) b.classList.add('wrong');
+        b.style.pointerEvents='none';
+      });
+    }
+    S.marks+=got;
+    S.log.push({n:st.n,title:st.title,got:got,max:st.marks,ok:ok});
+    var f=$('fbk');
+    f.innerHTML='<div class="fb '+(ok?'ok':(got>0?'part':'no'))+'"><div class="hd">'+got+' / '+st.marks+' marks'+(ok?' — correct':'')+'</div>'
+      +st.e+extra+'</div>';
+    paintBar();
+    $('goBtn').disabled=true;
+    [].forEach.call(document.querySelectorAll('#stage .ask,#stage .nq button,#stage input,#stage textarea'),function(b){
+      if(b.tagName==='INPUT'||b.tagName==='TEXTAREA') b.readOnly=true; else b.style.pointerEvents='none'; });
+    var nx=document.createElement('button');
+    nx.className='btn gold sm'; nx.style.marginLeft='8px';
+    nx.textContent=(S.i>=STAGES.length-1)?'Submit to the centre ▸':'Next ▸';
+    $('goBtn').parentNode.appendChild(nx);
+    nx.addEventListener('click',function(){ S.i++; render(); window.scrollTo({top:0,behavior:'smooth'}); });
   }
 
-  function val(id){ var e=$(id); return e?(e.value||'').trim():''; }
-
-  function evaluate(){
-    var c=CASES[state.ci]; var sc={}, fb={};
-    var name=val('cName')||'Candidate', reg=val('cReg');
-
-    /* 1 identify ADR (20) */
-    var adrOK=state.adr===c.adrC;
-    sc.adr=adrOK?20:0; fb.adr=adrOK?'Correct ADR identified.':'The suspected ADR was not correctly identified.';
-
-    /* 2 identify suspected drug (15) */
-    var drugOK=state.drug===c.drug;
-    sc.drug=drugOK?15:0; fb.drug=drugOK?'Correct suspected medicine identified.':'The suspected medicine was not correctly identified.';
-
-    /* 3 form completion (20) */
-    var fields=['f-generic','f-strength','f-onset','f-severity','f-outcome','f-serious','f-desc','f-rep','f-sign'];
-    var filled=fields.filter(function(f){return val(f);}).length;
-    var mgmtAny=Object.keys(state.mgmt).some(function(k){return state.mgmt[k];});
-    var total=fields.length+1; var got=filled+(mgmtAny?1:0);
-    sc.form=Math.round(got/total*20);
-    fb.form=(got===total)?'Electronic ADR form fully completed.':('Form '+got+'/'+total+' key fields completed.');
-
-    /* 4 causality (15) — WHO-UMC criteria (up to 7) + correct category (up to 8) */
-    var w=c.who||{};
-    var critPairs=[['w-temporal',w.temporal],['w-other',w.other],['w-dechallenge',w.dechallenge],['w-rechallenge',w.rechallenge]];
-    var critTot=0,critHits=0;
-    critPairs.forEach(function(p){ if(p[1]){ critTot++; if(val(p[0])===p[1]) critHits++; } });
-    var critScore=critTot?Math.round(critHits/critTot*7):0;
-    var causOK=state.caus===c.caus;
-    var adjacent=state.caus&&(CAUSAL.indexOf(state.caus)>=0)&&Math.abs(CAUSAL.indexOf(state.caus)-CAUSAL.indexOf(c.caus))===1;
-    var catScore=causOK?8:(adjacent?4:0);
-    sc.caus=catScore+critScore;
-    fb.caus=(causOK?('Causality correctly assessed as '+c.caus+'. '):(state.caus?('Assessed '+state.caus+'; expected '+c.caus+'. '):'Category not chosen. '))+'WHO criteria '+critHits+'/'+critTot+' correct.';
-
-    /* 5 documentation accuracy (10) — generic matches drug, severity & seriousness correct */
-    var genMatch=val('f-generic') && c.drug.toLowerCase().indexOf(val('f-generic').toLowerCase().split(' ')[0])>=0;
-    var sevMatch=val('f-severity')===c.severity;
-    var serVal=val('f-serious'); var serMatch=(serVal==='serious')===c.serious && serVal!=='';
-    var misSerious = c.serious && serVal==='non'; /* serious reaction marked non-serious = safety error */
-    sc.doc=(genMatch?4:0)+(sevMatch?3:0)+(serMatch?3:0);
-    if(misSerious) sc.doc=0;
-    fb.doc=misSerious?'PATIENT-SAFETY ERROR: a serious reaction was recorded as non-serious.'
-      :((genMatch&&sevMatch&&serMatch)?'Documentation accurate and consistent.':'Some documented details do not match the case (drug/severity/seriousness).');
-
-    /* 6 counselling (20) */
-    var cCount=COUNSEL.filter(function(_,i){return state.coun[i];}).length;
-    var counOK=state.counPick===c.counC;
-    sc.coun=Math.round(cCount/COUNSEL.length*12)+(counOK?8:0);
-    fb.coun=(cCount===COUNSEL.length?'Full counselling checklist. ':cCount+'/'+COUNSEL.length+' points covered. ')+(counOK?'Key safety advice correct.':'Key safety advice was not identified.');
-
-    var tot=RUBRIC.reduce(function(a,r){return a+(sc[r.k]||0);},0);
-    var pct=Math.round(tot/MAXTOTAL*100);
-    var critical=misSerious; /* mis-classifying a serious ADR fails the station */
-    var pass=pct>=50 && !critical;
-    state.result={name:name,reg:reg,total:tot,pct:pct,pass:pass,critical:critical,sc:sc,fb:fb};
-    state.submitted=true;
-
-    $('scScore').textContent=tot+'/'+MAXTOTAL; $('scRes').textContent=(pass?'PASS':'FAIL')+' ('+pct+'%)';
-    renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
+  function finish(reason){
+    if(S.ended) return;
+    S.ended=true; clearInterval(tick);
+    STAGES.forEach(function(st,i){ if(!S.log[i]) S.log.push({n:st.n,title:st.title,got:0,max:st.marks,ok:false,skipped:true}); });
+    var total=Math.round(S.marks*10)/10;
+    var inTime=(S.filedAt!=null && reason!=='time');
+    var pass=(total>=PASS);
+    var hist=S.log[0], ser=S.log[1], exp=S.log[2], nar=S.log[3], frm=S.log[4];
+    S.result={total:total,pct:Math.round(total),pass:pass,valid:!!valid,inTime:inTime,reason:reason,
+      naranjo:S.naranjoScore,secs:CLOCK-S.secs,
+      badges:[
+        {n:'🗣 Good Historian',        got:!!(hist&&hist.ok),  d:'All six useful questions asked, no time wasted'},
+        {n:'⚖ Correct Classification', got:!!(ser&&ser.ok&&exp&&exp.ok), d:'Seriousness and expectedness both right'},
+        {n:'🧮 Causality Expert',      got:!!(nar&&nar.ok),    d:'Full Naranjo marks'},
+        {n:'⏱ Within 24 Hours',        got:inTime,             d:'Report filed before the clock expired'},
+        {n:'🏅 Valid Report',          got:!!valid,            d:'All four minimum elements present'}
+      ]};
+    makeQR(); renderReport(); mountWriter(); switchTab('report'); window.scrollTo(0,0);
   }
+
+  var qrData='';
+  function makeQR(){
+    try{
+      var url='https://www.alizon.in/alizon-verify.html?reg='+encodeURIComponent(S.reg||'')+'&p=M2U4-ADR';
+      $('qrHolder').innerHTML='';
+      if(window.QRCode){
+        new QRCode($('qrHolder'),{text:url,width:96,height:96,correctLevel:QRCode.CorrectLevel.M});
+        var cv=$('qrHolder').querySelector('canvas');
+        qrData=cv?cv.toDataURL('image/png'):(($('qrHolder').querySelector('img')||{}).src||'');
+      }
+    }catch(e){ qrData=''; }
+  }
+  function hhmm(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
 
   function buildAuto(){
-    if(!state||!state.submitted) return null;
-    var c=CASES[state.ci], r=state.result;
-    var h='<h3 style="color:#8c1515;margin:0 0 6px">Case '+c.n+' — '+esc(c.drug)+' '+esc(c.strength)+'</h3>';
-    h+='<p style="margin:2px 0"><b>Patient:</b> '+esc(c.pt.id)+' · '+c.pt.age+'/'+esc(c.pt.sex)+' · '+esc(c.pt.wt)+'</p>';
-    h+='<p style="margin:2px 0"><b>Suspected reaction:</b> '+esc(c.presentation)+'</p>';
-    h+='<p style="margin:2px 0"><b>Your assessment:</b> severity '+esc(val('f-severity')||'—')+' · '+(val('f-serious')==='serious'?'Serious':(val('f-serious')==='non'?'Non-serious':'—'))+'</p>';
-    h+='<p style="margin:6px 0"><b>WHO-UMC causality assessment</b><br>'
-      +'Time relationship: '+esc(val('w-temporal')||'—')+' &nbsp;·&nbsp; Other causes: '+esc(val('w-other')||'—')
-      +' &nbsp;·&nbsp; Dechallenge: '+esc(val('w-dechallenge')||'—')+' &nbsp;·&nbsp; Rechallenge: '+esc(val('w-rechallenge')||'—')
-      +' &nbsp;→&nbsp; <b>Category: '+esc(state.caus||'—')+'</b></p>';
-    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:10px">'
-      +'<tr style="background:#8c1515;color:#fff"><th align="left">Criteria</th><th>Score</th><th>Max</th></tr>'
-      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'</td><td align="center">'+(r.sc[x.k]||0)+'</td><td align="center">'+x.max+'</td></tr>';}).join('')
-      +'<tr style="background:#f3e2e2;font-weight:700"><td>Total</td><td align="center">'+r.total+'</td><td align="center">'+MAXTOTAL+'</td></tr></table>';
-    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.pct+'%'+(r.critical?' (PATIENT-SAFETY ERROR: serious ADR marked non-serious)':'')+'</p>';
+    if(!S||!S.result) return null;
+    var r=S.result;
+    var h='<h3 style="color:#8c1515;margin:0 0 6px">Pharmacovigilance Reporting Desk — case report</h3>';
+    h+='<p style="margin:2px 0"><b>Student:</b> '+esc(S.name)+(S.reg?' &nbsp;·&nbsp; <b>Register no.:</b> '+esc(S.reg):'')+'</p>';
+    h+='<p style="margin:2px 0"><b>Date:</b> '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})
+      +' &nbsp;·&nbsp; <b>Case:</b> '+esc(PT.name)+', '+PT.age+' '+PT.sex+', suspected carbamazepine-induced Stevens–Johnson syndrome</p>';
+    h+='<p style="margin:6px 0"><b>Final score:</b> '+r.total+' / 100 &nbsp;·&nbsp; <b>Result:</b> '+(r.pass?'PASS':'FAIL')
+      +' &nbsp;·&nbsp; <b>Naranjo:</b> '+r.naranjo+' &nbsp;·&nbsp; <b>Report:</b> '+(r.valid?'valid':'INVALID')
+      +' &nbsp;·&nbsp; <b>Filed:</b> '+(r.inTime?'within 24 hours':'NOT within 24 hours')+'</p>';
+    h+='<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;margin-top:8px">'
+      +'<tr style="background:#8c1515;color:#fff"><th align="left">Stage</th><th align="left">Task</th><th>Awarded</th><th>Maximum</th></tr>'
+      +S.log.map(function(l){return '<tr><td>'+l.n+'</td><td>'+esc(l.title)+'</td><td align="center">'+l.got+'</td><td align="center">'+l.max+'</td></tr>';}).join('')
+      +'<tr style="font-weight:700"><td></td><td>Total</td><td align="center">'+r.total+'</td><td align="center">100</td></tr></table>';
+    h+='<p style="margin:9px 0 3px"><b>Questions asked at interview:</b></p><ul style="margin:0 0 0 18px;font-size:12px;line-height:1.6">'
+      +(S.asked.length?S.asked.map(function(q){return '<li>'+esc(q)+'</li>';}).join(''):'<li>None</li>')+'</ul>';
+    h+='<p style="margin:9px 0 2px"><b>Badges earned:</b> '+(r.badges.filter(function(b){return b.got;}).map(function(b){return esc(b.n);}).join(' · ')||'none')+'</p>';
+    h+='<p style="margin-top:10px;font-weight:700;color:'+(r.pass?'#137a3a':'#b3261e')+'">FINAL RESULT: '+(r.pass?'PASS':'FAIL')+' — '+r.total+' / 100</p>';
+    h+='<p style="margin-top:8px;font-size:11px;color:#555"><b>Faculty remarks:</b> ______________________________________________</p>';
+    if(qrData) h+='<div style="margin-top:10px"><img src="'+qrData+'" width="96" height="96" alt="Verification QR">'
+      +'<div style="font-size:10px;color:#666">Scan to verify · '+esc(S.reg||'—')+' · M2-U4-ADR</div></div>';
     return h;
   }
 
   function renderReport(){
-    var c=CASES[state.ci], r=state.result;
-    $('repEmpty').style.display='none'; var body=$('repBody'); body.style.display='';
-    var html='<div class="repgrid">'
-      +'<div class="repbox"><div class="rv">'+r.pct+'%</div><div class="rl">Score</div></div>'
-      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">of '+MAXTOTAL+'</div></div>'
-      +'<div class="repbox"><div class="rv">'+c.n+'</div><div class="rl">Case</div></div>'
-      +'<div class="repbox"><div class="rv">'+esc(c.drug.split(' ')[0])+'</div><div class="rl">Suspected drug</div></div></div>';
-    html+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(r.name)+(r.reg?' ('+esc(r.reg)+')':'')+' · '+esc(c.drug)+' ADR report</div>';
-    if(r.critical) html+='<div class="note" style="color:var(--danger);font-weight:600;margin:-4px 0 10px">A serious ADR classified as non-serious is a patient-safety error and fails the station regardless of total marks.</div>';
-    html+='<div class="tw"><table class="rubric"><thead><tr><th>Criteria</th><th>Score</th><th>Max</th></tr></thead><tbody>'
-      +RUBRIC.map(function(x){return '<tr><td>'+esc(x.label)+'<div class="note" style="margin-top:2px">'+esc(r.fb[x.k]||'')+'</div></td><td>'+(r.sc[x.k]||0)+'</td><td>'+x.max+'</td></tr>';}).join('')
-      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>'+MAXTOTAL+'</td></tr></tbody></table></div>';
-    html+='<div class="row no-print" style="margin-top:14px"><button class="btn gold" onclick="window.print()">Download / Print record</button>'
-      +'<button class="btn ghost" id="retryBtn">Try another case</button></div>'
-      +'<p class="note no-print">Now write and submit your report below — faculty will evaluate it.</p>';
-    body.innerHTML=html;
-    var rb=$('retryBtn'); if(rb) rb.addEventListener('click',function(){ switchTab('station'); window.scrollTo(0,0); });
+    var r=S.result;
+    $('repEmpty').style.display='none'; var b=$('repBody'); b.style.display='';
+    var h='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">Marks / 100</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.naranjo+'</div><div class="rl">Naranjo score</div></div>'
+      +'<div class="repbox"><div class="rv" style="font-size:15px">'+(r.valid?'Valid':'INVALID')+'</div><div class="rl">Report status</div></div>'
+      +'<div class="repbox"><div class="rv" style="font-size:15px">'+(r.inTime?'In time':'Late')+'</div><div class="rl">24-hour clock</div></div>'
+      +'<div class="repbox"><div class="rv">'+hhmm(r.secs)+'</div><div class="rl">Time used</div></div></div>';
+    h+='<div class="verdict '+(r.pass?'pass':'fail')+'">'+(r.pass?'PASS':'FAIL')+' — '+esc(S.name)+(S.reg?' ('+esc(S.reg)+')':'')+' · '+r.total+' / 100</div>';
+    if(!r.valid) h+='<div class="fb no" style="margin-bottom:12px"><div class="hd">The report was not valid</div>'
+      +'A report missing any of the four minimum elements — identifiable patient, identifiable reporter, suspect medicine, suspected reaction — is rejected. In practice the signal is lost entirely.</div>';
+    h+='<h3 style="font-size:13px;margin:16px 0 6px">Stage-by-stage</h3><div class="tw"><table class="rubric">'
+      +'<thead><tr><th>Stage</th><th>Task</th><th>Marks</th><th style="width:100px"></th></tr></thead><tbody>';
+    S.log.forEach(function(l){
+      var p=Math.round(l.got/l.max*100), cls=p>=80?'good':(p<50?'bad':'');
+      h+='<tr><td>'+l.n+'</td><td>'+esc(l.title)+(l.skipped?' <i class="muted">(not reached)</i>':'')+'</td>'
+        +'<td>'+l.got+' / '+l.max+'</td><td><div class="bar"><i class="'+cls+'" style="width:'+p+'%"></i></div></td></tr>';
+    });
+    h+='<tr class="tot"><td></td><td>Total</td><td>'+r.total+' / 100</td><td></td></tr></tbody></table></div>';
+    h+='<h3 style="font-size:13px;margin:18px 0 6px">Achievement badges</h3><div class="badges">'
+      +r.badges.map(function(x){return '<span class="badge '+(x.got?'got':'miss')+'" title="'+esc(x.d)+'">'+x.n+'</span>';}).join('')+'</div>';
+    h+='<div class="row no-print" style="margin-top:16px"><button class="btn gold" onclick="window.print()">Print report</button>'
+      +'<button class="btn ok" id="againBtn">Take the call again</button></div>'
+      +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p>';
+    b.innerHTML=h;
+    $('againBtn').addEventListener('click',function(){
+      $('setupCard').style.display=''; $('live').style.display='none'; $('stage').innerHTML='';
+      $('repBody').style.display='none'; $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+      S=null; switchTab('desk'); window.scrollTo(0,0);
+    });
   }
 
-  var OPTS={module:'Module 2 · Unit 4 — Electronic ADR Reporting & Pharmacovigilance',title:'Electronic ADR Reporting & Pharmacovigilance',programme:'Pharmacy AI'};
+  var OPTS={module:'Module 2 · Unit 4 — Digital Inventory, ADR & Compliance Systems',
+            title:'Pharmacovigilance Reporting Desk',programme:'Pharmacy AI'};
   function mountWriter(){
     var host=$('reportWriter'); host.style.display='';
     if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
       container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
-      titleField:{label:'Suspected drug & reaction', placeholder:'e.g. Case 1 — Amoxicillin, skin rash'},
+      titleField:{label:'Case summary &amp; causality', placeholder:'e.g. 96/100 — carbamazepine-induced SJS, serious, expected, Naranjo 6 (probable), valid report filed within 24 h'},
       minWords:400,
+      attachments:[{label:'1. Completed ADR Report Form (PDF)'},
+                   {label:'2. Naranjo Assessment Worksheet (PDF)'},
+                   {label:'3. Additional Supporting File (PDF)'}],
       autoResult:function(){ return buildAuto()||''; },
-      autoPct:function(){ return state.result?state.result.pct:null; },
-      autoResultText:function(){ return state.result?((state.result.pass?'PASS':'FAIL')+' '+state.result.pct+'%'):''; }
+      autoPct:function(){ return S&&S.result?S.result.pct:null; },
+      autoResultText:function(){ return S&&S.result?((S.result.pass?'PASS':'FAIL')+' '+S.result.total+'/100'):''; }
     });
   }
-
-  function switchTab(p){ document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);}); document.querySelectorAll('.panel').forEach(function(s){s.classList.toggle('on',s.id==='p-'+p);}); }
-  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
-  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark'); try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
-
-  loadCase(0);
+  function switchTab(p){
+    [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);});
+    [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);});
+  }
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark');
+    try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  $('startBtn').addEventListener('click',start);
 })();
 </script>
 </body>
