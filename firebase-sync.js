@@ -46,14 +46,50 @@
     origRemove(key);
     if (authed && KEYSET[key]) schedulePush(key, '[]');
   };
+  /* Firestore caps a document at 1 MB, and every synced key is ONE document
+     (sync/<key>, whole value in a single string field). alizonSubmissions grows
+     without bound — each practical submission carries its full HTML report — so
+     it is the key that will reach the ceiling first. A push that fails used to
+     leave nothing but a console.warn, which means student work would quietly
+     stop reaching faculty with no one aware. Record the condition where an admin
+     can see it instead. Nothing is deleted here: shedding records is a
+     data-retention decision for the institution, not for this sync layer. */
+  var DOC_LIMIT = 1048576, WARN_AT = 0.85 * DOC_LIMIT;
+  function noteSyncProblem(key, detail){
+    try{
+      var w = JSON.parse(localStorage.getItem('alizonSyncWarnings') || '{}') || {};
+      w[key] = { detail: detail, at: new Date().toISOString() };
+      origSet('alizonSyncWarnings', JSON.stringify(w));   /* origSet: never re-enters the sync path */
+    }catch(e){}
+  }
+  function clearSyncProblem(key){
+    try{
+      var w = JSON.parse(localStorage.getItem('alizonSyncWarnings') || '{}') || {};
+      if (w[key]) { delete w[key]; origSet('alizonSyncWarnings', JSON.stringify(w)); }
+    }catch(e){}
+  }
   function schedulePush(key, val){
     clearTimeout(pushTimers[key]);
     pushTimers[key] = setTimeout(function(){
       if (!authed) return;
       lastSeen[key] = val;
+      var bytes = val ? val.length : 0;
+      if (bytes >= WARN_AT){
+        var pctFull = Math.round(bytes / DOC_LIMIT * 100);
+        console.warn('[alizon-fb] ' + key + ' is ' + pctFull + '% of the 1 MB document limit');
+        noteSyncProblem(key, key + ' is ' + pctFull + '% of the 1 MB cloud document limit ('
+          + Math.round(bytes/1024) + ' KB). Once it is full, new records stop reaching other devices.');
+      }
       db.collection('sync').doc(key).set({
         value: val, updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).catch(function(e){ console.warn('[alizon-fb] push', key, e && e.code); });
+      }).then(function(){
+        if (bytes < WARN_AT) clearSyncProblem(key);
+      }).catch(function(e){
+        var c = e && e.code;
+        console.warn('[alizon-fb] push', key, c);
+        noteSyncProblem(key, 'Cloud sync of ' + key + ' FAILED (' + (c || 'unknown')
+          + ') at ' + Math.round(bytes/1024) + ' KB. Records saved on this device are not reaching other devices.');
+      });
     }, 700);
   }
 

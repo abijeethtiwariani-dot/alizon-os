@@ -420,6 +420,15 @@ h1,h2,h3{color:#111!important}
 </aside>
 
 <div class="wrap">
+  <!-- Cloud-sync health. Hidden unless firebase-sync has recorded a problem — a
+       synced key nearing or exceeding Firestore's 1 MB per-document limit, or a
+       push that outright failed. Without this the failure is console-only and
+       student submissions stop reaching faculty with nobody aware. -->
+  <div id="syncWarn" style="display:none;background:#fff6e5;border:1px solid #e0a800;border-left:5px solid #e0a800;
+       border-radius:12px;padding:14px 18px;margin-bottom:18px">
+    <div style="font-weight:800;font-size:13.5px;color:#7a4b00;margin-bottom:5px">⚠ Cloud sync needs attention</div>
+    <div id="syncWarnBody" style="font-size:12.8px;line-height:1.65;color:#5c3a00"></div>
+  </div>
   <div class="pickbar">
     <div><label class="pklbl">Programme</label><select id="pickProg"></select></div>
     <div id="pickModWrap"><label class="pklbl">Module / course</label><select id="pickMod"></select></div>
@@ -3473,6 +3482,32 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   window.renderResetMarks=boot;
   var nav=document.querySelector('[data-sec="adm-resetmarks"]'); if(nav) nav.addEventListener('click',function(){ setTimeout(boot,40); });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+})();
+</script>
+
+<script>
+/* Cloud-sync health banner — reads the warnings firebase-sync records. */
+(function(){
+  function paint(){
+    var box=document.getElementById('syncWarn'), body=document.getElementById('syncWarnBody');
+    if(!box||!body) return;
+    var w={}; try{ w=JSON.parse(localStorage.getItem('alizonSyncWarnings')||'{}')||{}; }catch(e){}
+    var keys=Object.keys(w);
+    if(!keys.length){ box.style.display='none'; return; }
+    body.innerHTML=keys.map(function(k){
+      var d=w[k]||{};
+      return '<div style="margin:3px 0">• '+String(d.detail||k).replace(/[<>]/g,'')
+        +' <span style="opacity:.7">('+String(d.at||'').slice(0,16).replace('T',' ')+')</span></div>';
+    }).join('')
+      +'<div style="margin-top:8px;font-size:12.2px">The cloud stores each synced key as a single document with a '
+      +'<b>1 MB limit</b>. Practical submissions carry a full HTML report each, so that key grows fastest. '
+      +'Nothing has been deleted — decide how far back records should be kept, then archive or trim the older ones.</div>';
+    box.style.display='';
+  }
+  window.renderSyncWarn=paint;
+  window.addEventListener('storage',function(e){ if(!e.key||e.key==='alizonSyncWarnings') paint(); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',paint); else paint();
+  setInterval(paint, 30000);
 })();
 </script>
 </body>
