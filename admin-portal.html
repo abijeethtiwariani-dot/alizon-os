@@ -603,6 +603,21 @@ h1,h2,h3{color:#111!important}
       <div id="rmBatchInfo" class="ahint" style="margin-top:10px"></div>
     </div>
 
+    <!-- A2 · retention — keep the synced submissions document under Firestore's 1 MB cap -->
+    <div style="margin:18px 0;border:1px solid var(--line);border-radius:12px;padding:14px 16px">
+      <h3 style="font-size:15px;margin-bottom:6px">Submission retention — 6 months</h3>
+      <p class="ahint" style="margin:0 0 10px">Every practical submission carries its full report, and the cloud stores them all in
+        <b>one document with a 1 MB limit</b>. Trimming submissions older than <b>6 months</b> keeps that document healthy.
+        <b>Download the archive first</b> — trimming cannot be undone.</p>
+      <div id="retStat" class="ahint" style="margin-bottom:10px"></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button id="retArchive" style="background:#fff;color:var(--crimson);border:1px solid var(--crimson);border-radius:100px;padding:10px 18px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">⭳ Download archive (JSON)</button>
+        <input id="retConfirm" placeholder="Type TRIM" style="width:150px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line)">
+        <button id="retGo" disabled style="background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:10px 20px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;opacity:.45">Trim older than 6 months</button>
+      </div>
+      <div id="retInfo" class="ahint" style="margin-top:10px"></div>
+    </div>
+
     <!-- B · find one student -->
     <div style="margin:16px 0 6px">
       <label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Or find one student</label>
@@ -3486,6 +3501,97 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 </script>
 
 <script>
+/* Submission retention — trim practical submissions older than 6 months so the
+   synced document stays under Firestore's 1 MB cap. Deliberately admin-only and
+   manual: a student device can hold a stale or partly-synced copy, and this
+   writes the WHOLE array back, so an automatic trim running there could push a
+   truncated document over the good one and destroy records. */
+(function(){
+  var MONTHS=6;
+  function all(){ try{ var a=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+  function cutoff(){ var d=new Date(); d.setMonth(d.getMonth()-MONTHS); return d.getTime(); }
+  /* A record is only ever trimmed when we can positively date it as older than the
+     cutoff. Anything undated is kept — never delete what you cannot date. */
+  function ageOf(s){
+    var t=(s&&typeof s.ts==='number'&&isFinite(s.ts))?s.ts:NaN;
+    if(isNaN(t) && s && s.at){ var p=Date.parse(s.at); if(!isNaN(p)) t=p; }
+    return t;
+  }
+  function split(){
+    var c=cutoff(), old=[], keep=[], undated=0;
+    all().forEach(function(s){
+      var t=ageOf(s);
+      if(isNaN(t)){ undated++; keep.push(s); return; }
+      (t < c ? old : keep).push(s);
+    });
+    return {old:old, keep:keep, undated:undated, cutoff:c};
+  }
+  function kb(o){ try{ return Math.round(JSON.stringify(o).length/1024); }catch(e){ return 0; } }
+  function dstr(t){ try{ return new Date(t).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return '—'; } }
+
+  function paint(){
+    var st=document.getElementById('retStat'); if(!st) return;
+    var s=split(), total=s.old.length+s.keep.length;
+    var ungraded=s.old.filter(function(x){ return !x || x.status!=='evaluated'; }).length;
+    st.innerHTML='<b>'+total+'</b> submission'+(total===1?'':'s')+' stored, '+kb(all())+' KB of the 1024 KB cloud limit.'
+      +'<br>Older than 6 months (before <b>'+dstr(s.cutoff)+'</b>): <b>'+s.old.length+'</b>'
+      +(s.old.length?' — '+kb(s.old)+' KB would be freed'+(ungraded?', including <b>'+ungraded+'</b> never evaluated':''):' — nothing to trim')
+      +(s.undated?'<br><span style="opacity:.8">'+s.undated+' record'+(s.undated===1?'':'s')+' carry no date and will always be kept.</span>':'');
+    var go=document.getElementById('retGo');
+    var ok=(document.getElementById('retConfirm').value||'').trim().toUpperCase()==='TRIM' && s.old.length>0;
+    go.disabled=!ok; go.style.opacity=ok?'1':'.45'; go.style.cursor=ok?'pointer':'default';
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var conf=document.getElementById('retConfirm'), go=document.getElementById('retGo'),
+        arch=document.getElementById('retArchive'), info=document.getElementById('retInfo');
+    if(!conf||!go||!arch) return;
+    conf.addEventListener('input', paint);
+
+    arch.addEventListener('click', function(){
+      var s=split();
+      var payload={exportedAt:new Date().toISOString(), policy:MONTHS+' months',
+                   cutoff:new Date(s.cutoff).toISOString(),
+                   olderThanCutoff:s.old.length, retained:s.keep.length, submissions:all()};
+      var b=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+      var u=URL.createObjectURL(b), a=document.createElement('a');
+      a.href=u; a.download='alizon-submissions-archive-'+new Date().toISOString().slice(0,10)+'.json';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(u); },2000);
+      info.innerHTML='✔ Archive downloaded — <b>'+(s.old.length+s.keep.length)+'</b> submissions, every one of them, not just the old ones.';
+    });
+
+    go.addEventListener('click', function(){
+      if((conf.value||'').trim().toUpperCase()!=='TRIM') return;
+      var s=split();
+      if(!s.old.length) return;
+      if(!confirm('Permanently remove '+s.old.length+' submission'+(s.old.length===1?'':'s')+' older than 6 months?\n\nThis cannot be undone. Download the archive first if you have not.')) return;
+      setDB('alizonSubmissions', s.keep);
+      if(typeof logAct==='function') logAct('Trimmed '+s.old.length+' practical submissions older than 6 months ('+kb(s.old)+' KB freed)','update');
+      /* the document may now be back under the warning threshold */
+      try{
+        var w=JSON.parse(localStorage.getItem('alizonSyncWarnings')||'{}')||{};
+        if(w.alizonSubmissions && JSON.stringify(s.keep).length < 0.85*1048576){
+          delete w.alizonSubmissions; localStorage.setItem('alizonSyncWarnings', JSON.stringify(w));
+        }
+      }catch(e){}
+      conf.value='';
+      info.innerHTML='✔ Trimmed <b>'+s.old.length+'</b> submission'+(s.old.length===1?'':'s')+' — '+kb(s.old)+' KB freed. <b>'+s.keep.length+'</b> retained.';
+      paint();
+      if(typeof renderSyncWarn==='function') renderSyncWarn();
+      if(typeof renderEval==='function') renderEval();
+      if(typeof toast==='function') toast('Trimmed '+s.old.length+' submissions older than 6 months');
+    });
+
+    paint();
+    var nav=document.querySelector('[data-sec="adm-resetmarks"]');
+    if(nav) nav.addEventListener('click', function(){ setTimeout(paint,50); });
+  });
+  window.renderRetention=paint;
+})();
+</script>
+
+<script>
 /* Cloud-sync health banner — reads the warnings firebase-sync records. */
 (function(){
   function paint(){
@@ -3501,7 +3607,8 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     }).join('')
       +'<div style="margin-top:8px;font-size:12.2px">The cloud stores each synced key as a single document with a '
       +'<b>1 MB limit</b>. Practical submissions carry a full HTML report each, so that key grows fastest. '
-      +'Nothing has been deleted — decide how far back records should be kept, then archive or trim the older ones.</div>';
+      +'Nothing has been deleted. Open <b>Reset &amp; Fresh Start → Submission retention</b> to download the archive '
+      +'and trim submissions older than 6 months.</div>';
     box.style.display='';
   }
   window.renderSyncWarn=paint;
