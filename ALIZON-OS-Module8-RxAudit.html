@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 8 · AI Prescription Review &amp; Safety Audit</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+<style>
+:root{--crimson:#b1040e;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;--panel:#fff;--bg:#f4f2ef;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --card-shadow:0 2px 10px rgba(0,0,0,.06)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1140px;margin:0 auto;padding:0 18px 80px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:70ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);
+  background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#12131c,#1d1f2b);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:150px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+.grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:start}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--card-shadow);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.queue{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--card-shadow);overflow:hidden}
+.queue h4{font-family:var(--sans);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  margin:0;padding:11px 14px;background:#faf8f6;border-bottom:1px solid var(--line);color:var(--muted)}
+.rx{display:flex;gap:11px;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.rx:hover{background:#faf8f6}
+.rx.on{background:#fdf3f3;box-shadow:inset 3px 0 0 var(--crimson)}
+.rx.done{opacity:.5}
+.score{flex:none;width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;color:#fff}
+.s-hi{background:#c2410c}.s-md{background:#d9a406}.s-lo{background:#6b7280}
+.rx .t{font-size:13px;font-weight:700;line-height:1.3}
+.rx .s{font-size:11.5px;color:var(--muted)}
+.pill{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 8px;border-radius:100px;background:#eee;color:#555;margin-left:6px}
+.pill.ok{background:#e7f5ec;color:#137a3a}.pill.no{background:#fdecea;color:#a31515}
+.chart{border:1px solid var(--line);border-radius:11px;overflow:hidden;margin:10px 0}
+.chart .ch{background:#f7f4f1;padding:8px 12px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+  display:flex;gap:8px;flex-wrap:wrap}
+.chart .ch button{font:inherit;font-size:11px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--muted);
+  border-radius:100px;padding:3px 11px;cursor:pointer}
+.chart .ch button.seen{border-color:#137a3a;color:#137a3a}
+.chart .body{padding:12px 14px;font-size:13px;min-height:74px}
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:12px 0 3px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn:disabled{opacity:.45;cursor:default}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.muted{color:var(--muted);font-size:12.5px}
+table.rep{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.rep th,table.rep td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.rep th{background:#f7f4f1;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}}
+</style>
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 8 · Unit 1 · Practical 1</div>
+    <h1>AI Prescription Review &amp; Safety Audit</h1>
+    <p>An AI tool has screened this morning's ward round and ranked eight orders by predicted risk.
+       Work them. The ranking tells you where to start — it does not tell you what is safe.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="round">Ward Round</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="rxaudit"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Eight prescriptions, each carrying an AI risk score out of 100. For every one you
+        must decide an action and give the reason. The patient record is closed until you open it —
+        deciding without opening it is recorded and it costs you.</p>
+      <p class="muted">Two things are tracked separately from your mark: <b>Patient Safety</b>, which falls
+        when a dangerous order is allowed through, and <b>Audit Discipline</b>, which falls when you
+        skip a prescription or decide without looking at the record.</p>
+      <button class="btn" id="startBtn">▶ Begin the ward round</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-round">
+    <div class="opbar">
+      <div><div class="k">Reviewed</div><div class="v" id="mDone">0 / 8</div></div>
+      <div class="meter" id="mSafeW"><div class="k">Patient safety</div><div class="v" id="mSafe">100%</div><div class="bar"><i id="bSafe" style="width:100%"></i></div></div>
+      <div class="meter" id="mDiscW"><div class="k">Audit discipline</div><div class="v" id="mDisc">100%</div><div class="bar"><i id="bDisc" style="width:100%"></i></div></div>
+      <div style="margin-left:auto"><button class="btn ghost" id="endBtn" style="display:none">Finish the round</button></div>
+    </div>
+    <div class="grid2">
+      <div>
+        <div class="queue">
+          <h4>AI-ranked worklist — highest predicted risk first</h4>
+          <div id="qList"></div>
+        </div>
+        <p class="muted" style="margin-top:10px">The score is the tool's prediction. It has not met your patients.</p>
+      </div>
+      <div id="workArea"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Finish the round to generate your report, then write and submit it below.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=15"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+/* ============================================================
+   The eight orders. The AI score is deliberately imperfect:
+   RX7 (methotrexate written daily) scores 12 because the amount is a
+   normal single dose — the tool has no concept of "this drug is weekly".
+   It is the most dangerous order on the round. RX1 scores 94 and is real
+   but minor. A student who works only the top of the list will fail a
+   patient, which is the whole point of the exercise.
+   ============================================================ */
+var RX=[
+ {id:'RX1',score:94,drug:'Paracetamol 1 g QDS regular + paracetamol 1 g PRN',pt:'Mr A Kurian, 61',
+  chart:{notes:'Admitted with cellulitis. Comfortable.',labs:'LFTs normal. Weight 58 kg.',meds:'Also on flucloxacillin IV.',allergy:'None recorded'},
+  need:['notes'], action:'query', sev:'moderate',
+  why:'duplicate', truth:'A genuine duplication — regular plus as-required paracetamol can exceed the daily maximum. Real, but it will not kill him today. Combine into one order with a stated maximum.'},
+
+ {id:'RX2',score:88,drug:'Enoxaparin 40 mg SC ON',pt:'Mrs S Pillai, 74',
+  chart:{notes:'Day 2 post hip replacement. Mobilising.',labs:'eGFR 58. Hb 11.2. Platelets normal.',meds:'Paracetamol, lansoprazole.',allergy:'None recorded'},
+  need:['labs'], action:'accept', sev:'none',
+  why:'appropriate', truth:'Appropriate prophylaxis at an appropriate dose for this renal function. The score is high because the tool flags all anticoagulants. Accepting it is correct.'},
+
+ {id:'RX3',score:79,drug:'Clarithromycin 500 mg BD for 5 days',pt:'Mr T George, 72',
+  chart:{notes:'Chest infection. Also attends the anticoagulation clinic.',labs:'INR 2.5 last week, stable for months.',meds:'WARFARIN 4 mg daily, bisoprolol, atorvastatin.',allergy:'None recorded'},
+  need:['meds','labs'], action:'query', sev:'major',
+  why:'interaction', truth:'Warfarin plus clarithromycin. CYP inhibition raises the INR and the bleeding risk. Either choose a different antibiotic or reduce the warfarin with close INR monitoring — and you could only see this by opening the medication list.'},
+
+ {id:'RX4',score:66,drug:'Ibuprofen 400 mg TDS PRN',pt:'Mrs L Menon, 69',
+  chart:{notes:'Osteoarthritis flare.',labs:'eGFR 71.',meds:'ASPIRIN 75 mg daily, ramipril, LITHIUM 800 mg ON.',allergy:'None recorded'},
+  need:['meds'], action:'stop', sev:'major',
+  why:'interaction', truth:'An NSAID on top of low-dose aspirin AND lithium. Two serious problems at once: greatly raised gastrointestinal bleeding risk, and reduced lithium clearance leading to toxicity. This one should be stopped and clarified, not merely queried.'},
+
+ {id:'RX5',score:54,drug:'Insulin glargine 10 U ON',pt:'Mr D Varghese, 58',
+  chart:{notes:'Type 2 diabetes, newly requiring insulin.',labs:'HbA1c 9.8%. eGFR 80.',meds:'Metformin 1 g BD.',allergy:'None recorded'},
+  need:['notes'], action:'query', sev:'moderate',
+  why:'abbrev', truth:'The dose is reasonable; the way it is written is not. "U" for units is misread as a zero — 10 U becomes 100. Query it and get it written as "units", and raise the abbreviation with the prescriber.'},
+
+ {id:'RX6',score:41,drug:'Piperacillin-tazobactam 4.5 g TDS IV',pt:'Miss R Thomas, 34',
+  chart:{notes:'Neutropenic sepsis. Urgent.',labs:'CRP 210. WCC 0.8.',meds:'Nil relevant.',allergy:'PENICILLIN — anaphylaxis, 2019, intubated'},
+  need:['allergy'], action:'stop', sev:'critical',
+  why:'allergy', truth:'Documented penicillin anaphylaxis. Piperacillin-tazobactam is a penicillin. This must be stopped before it is given, and a non-beta-lactam regimen agreed urgently — the sepsis is real and the clock is running, so escalate rather than simply cancel.'},
+
+ {id:'RX7',score:12,drug:'Methotrexate 2.5 mg ORALLY DAILY',pt:'Mrs P Nair, 66',
+  chart:{notes:'Rheumatoid arthritis, stable on weekly methotrexate at home.',labs:'FBC normal on admission. eGFR 64.',meds:'Folic acid 5 mg weekly, prednisolone.',allergy:'None recorded'},
+  need:['notes','meds'], action:'stop', sev:'critical',
+  why:'frequency', truth:'Methotrexate is a WEEKLY drug. Written daily it accumulates and causes fatal marrow suppression — this error has killed patients. The AI scored it 12 because 2.5 mg is a perfectly normal single dose; the tool has no concept of a drug whose danger is its frequency. This is the most dangerous order on the round and it is at the bottom of the list.'},
+
+ {id:'RX8',score:8,drug:'Senna 15 mg ON',pt:'Mr B Joseph, 80',
+  chart:{notes:'Constipation. Otherwise well.',labs:'Unremarkable.',meds:'Codeine PRN, amlodipine.',allergy:'None recorded'},
+  need:['notes'], action:'accept', sev:'none',
+  why:'appropriate', truth:'Entirely appropriate — and sensible, given the codeine. Accepting it is correct.'}
+];
+
+var ACTIONS=[['accept','Accept — no change needed'],['query','Query with the prescriber'],['stop','Stop and clarify before any supply']];
+var REASONS=[['appropriate','Clinically appropriate as written'],['interaction','Serious drug interaction'],
+             ['allergy','Contraindicated by documented allergy'],['frequency','Wrong frequency or schedule'],
+             ['duplicate','Therapeutic duplication'],['abbrev','Unsafe abbreviation or expression']];
+var SEVW={none:0,moderate:1,major:2,critical:3};
+
+var S={started:false,cur:null,done:{},opened:{},safety:100,disc:100,log:[]};
+
+/* ---------- tabs ---------- */
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){
+    [].forEach.call(document.querySelectorAll('.tabs button'),function(x){x.classList.remove('on');});
+    [].forEach.call(document.querySelectorAll('.panel'),function(x){x.classList.remove('on');});
+    b.classList.add('on'); $('p-'+b.getAttribute('data-p')).classList.add('on');
+  });
+});
+function goTab(n){ [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ if(b.getAttribute('data-p')===n) b.click(); }); }
+
+$('startBtn').addEventListener('click',function(){
+  S.started=true; goTab('round'); paintQueue(); open(RX[0].id);
+});
+
+function scoreClass(n){ return n>=70?'s-hi':(n>=35?'s-md':'s-lo'); }
+
+function paintQueue(){
+  $('qList').innerHTML=RX.map(function(r){
+    var d=S.done[r.id];
+    return '<div class="rx'+(S.cur===r.id?' on':'')+(d?' done':'')+'" data-id="'+r.id+'">'
+      +'<div class="score '+scoreClass(r.score)+'">'+r.score+'</div>'
+      +'<div><div class="t">'+esc(r.drug)+(d?'<span class="pill '+(d.ok?'ok':'no')+'">'+(d.ok?'reviewed':'reviewed')+'</span>':'')+'</div>'
+      +'<div class="s">'+esc(r.pt)+'</div></div></div>';
+  }).join('');
+  [].forEach.call($('qList').querySelectorAll('.rx'),function(el){
+    el.addEventListener('click',function(){ open(el.getAttribute('data-id')); });
+  });
+  $('mDone').textContent=Object.keys(S.done).length+' / '+RX.length;
+  $('endBtn').style.display = Object.keys(S.done).length===RX.length ? '' : 'none';
+}
+
+function meters(){
+  S.safety=Math.max(0,S.safety); S.disc=Math.max(0,S.disc);
+  $('mSafe').textContent=S.safety+'%'; $('bSafe').style.width=S.safety+'%';
+  $('mDisc').textContent=S.disc+'%';  $('bDisc').style.width=S.disc+'%';
+  $('mSafeW').className='meter'+(S.safety<50?' bad':(S.safety<80?' warn':''));
+  $('mDiscW').className='meter'+(S.disc<50?' bad':(S.disc<80?' warn':''));
+}
+
+function open(id){
+  S.cur=id; paintQueue();
+  var r=null; RX.forEach(function(x){ if(x.id===id) r=x; });
+  if(!r) return;
+  var d=S.done[id];
+  S.opened[id]=S.opened[id]||{};
+  var tabs=[['notes','Clinical notes'],['labs','Bloods'],['meds','Medication list'],['allergy','Allergies']];
+  var h='<div class="card"><h3>'+esc(r.drug)+'</h3>'
+    +'<p class="muted" style="margin:0 0 4px">'+esc(r.pt)+' &nbsp;·&nbsp; AI risk score <b>'+r.score+'</b></p>'
+    +'<div class="chart"><div class="ch">'
+      +tabs.map(function(t){ return '<button data-c="'+t[0]+'" class="'+(S.opened[id][t[0]]?'seen':'')+'">'+t[1]+'</button>'; }).join('')
+    +'</div><div class="body" id="chartBody"><span class="muted">Nothing open. The record is closed until you look.</span></div></div>';
+  if(d){
+    h+='<div class="fb '+(d.ok?'yes':'no')+'"><div class="hd">'+(d.ok?'Correct':'Not correct')+'</div>'+esc(r.truth)+'</div>';
+  } else {
+    h+='<div class="lbl">Your action</div><div class="opts" id="actOpts">'
+      +ACTIONS.map(function(a){ return '<button class="opt" data-a="'+a[0]+'">'+a[1]+'</button>'; }).join('')+'</div>'
+      +'<div class="lbl">Principal reason</div><div class="opts" id="whyOpts">'
+      +REASONS.map(function(a){ return '<button class="opt" data-w="'+a[0]+'">'+a[1]+'</button>'; }).join('')+'</div>'
+      +'<button class="btn" id="goBtn" style="margin-top:10px">Record decision</button>'
+      +'<div id="fbk"></div>';
+  }
+  h+='</div>';
+  $('workArea').innerHTML=h;
+
+  [].forEach.call($('workArea').querySelectorAll('.ch button'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-c');
+      S.opened[id][k]=true; b.classList.add('seen');
+      $('chartBody').innerHTML='<b>'+esc(tabs.filter(function(t){return t[0]===k;})[0][1])+'</b><br>'+esc(r.chart[k]);
+    });
+  });
+  if(d) return;
+
+  var pick={a:null,w:null};
+  [].forEach.call($('actOpts').querySelectorAll('.opt'),function(b){
+    b.addEventListener('click',function(){
+      [].forEach.call($('actOpts').querySelectorAll('.opt'),function(x){x.classList.remove('sel');});
+      b.classList.add('sel'); pick.a=b.getAttribute('data-a');
+    });
+  });
+  [].forEach.call($('whyOpts').querySelectorAll('.opt'),function(b){
+    b.addEventListener('click',function(){
+      [].forEach.call($('whyOpts').querySelectorAll('.opt'),function(x){x.classList.remove('sel');});
+      b.classList.add('sel'); pick.w=b.getAttribute('data-w');
+    });
+  });
+  $('goBtn').addEventListener('click',function(){ decide(r,pick); });
+}
+
+function decide(r,pick){
+  if(!pick.a||!pick.w){
+    $('fbk').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Choose an action and a reason before recording.</div>';
+    return;
+  }
+  var looked = r.need.every(function(k){ return S.opened[r.id] && S.opened[r.id][k]; });
+  var actOk = pick.a===r.action, whyOk = pick.w===r.why;
+
+  /* 6 action + 3 reason + 1 investigation = 10 per prescription */
+  var mark=(actOk?6:0)+(whyOk?3:0)+(looked?1:0);
+
+  /* Patient safety falls when a dangerous order is let through. Weighted by
+     how dangerous it actually was, not by what the tool predicted. */
+  if(!actOk && SEVW[r.sev]>0) S.safety-=SEVW[r.sev]*11;
+  /* Over-caution costs a little too: stopping a correct order delays care. */
+  if(!actOk && r.sev==='none') S.safety-=3;
+  if(!looked) S.disc-=9;
+
+  S.done[r.id]={ok:actOk&&whyOk, actOk:actOk, whyOk:whyOk, looked:looked, mark:mark, gave:pick};
+  S.log.push({id:r.id,drug:r.drug,mark:mark,actOk:actOk,whyOk:whyOk,looked:looked,sev:r.sev});
+  meters(); paintQueue(); open(r.id);
+}
+
+$('endBtn').addEventListener('click',finish);
+
+function finish(){
+  /* Discipline also reflects whether the low-ranked orders were worked at all. */
+  var total=S.log.reduce(function(a,x){return a+x.mark;},0);
+  var pct=Math.round(total/(RX.length*10)*100);
+
+  var missedCritical=S.log.filter(function(x){return x.sev==='critical'&&!x.actOk;});
+  var rows=S.log.map(function(x){
+    return '<tr><td>'+esc(x.drug.slice(0,46))+'</td><td>'+(x.actOk?'✓':'✗')+'</td><td>'+(x.whyOk?'✓':'✗')
+      +'</td><td>'+(x.looked?'✓':'✗')+'</td><td>'+x.mark+' / 10</td></tr>';
+  }).join('');
+
+  var mtx=S.done['RX7'];
+  var consequence = mtx && mtx.actOk
+    ? '<b>Mrs Nair.</b> You stopped the daily methotrexate. The prescription was rewritten as weekly and she came to no harm. The AI had ranked this order last, with a score of 12.'
+    : '<b>Mrs Nair.</b> The daily methotrexate was dispensed and given for four days before the error was noticed. She developed severe mucositis and neutropenia and was transferred to a single room for reverse barrier nursing. The AI had ranked this order last, with a score of 12 — and the order was on your list.';
+  var pip=S.done['RX6'];
+  var consequence2 = pip && pip.actOk
+    ? '<b>Miss Thomas.</b> You intercepted the piperacillin-tazobactam and escalated for an urgent alternative. Her sepsis was treated within the hour.'
+    : '<b>Miss Thomas.</b> The piperacillin-tazobactam was given. She had a documented penicillin anaphylaxis and required adrenaline and intensive care.';
+
+  $('resEmpty').style.display='none';
+  $('resBox').innerHTML='<div class="card"><h3>Ward round complete</h3>'
+    +'<p><b>'+total+' / '+(RX.length*10)+'</b> ('+pct+'%) &nbsp;·&nbsp; Patient safety <b>'+S.safety+'%</b> &nbsp;·&nbsp; Audit discipline <b>'+S.disc+'%</b></p>'
+    +(missedCritical.length?'<div class="fb no"><div class="hd">Critical order missed</div>'
+        +missedCritical.length+' order'+(missedCritical.length===1?'':'s')+' capable of serious harm '
+        +(missedCritical.length===1?'was':'were')+' not stopped.</div>':'')
+    +'<table class="rep"><tr><th>Order</th><th>Action</th><th>Reason</th><th>Record opened</th><th>Mark</th></tr>'+rows+'</table>'
+    +'<h3 style="margin-top:16px">Twenty-four hours later</h3>'
+    +'<p>'+consequence+'</p><p>'+consequence2+'</p>'
+    +'<div class="fb yes"><div class="hd">The lesson</div>The AI ranking was a reading order, not a verdict. '
+    +'Two of the three most dangerous orders on this round scored below 45, because the tool cannot see '
+    +'what is in the record — an allergy documented in 2019, and a drug whose danger is its frequency rather than its amount.</div>'
+    +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
+  goTab('res');
+
+  var OPTS={module:'Module 8 · Unit 1 — AI-Based Prescription Review & Safety Audits',
+            title:'AI Prescription Review & Safety Audit',
+            programme:'Pharmacy AI', pct:pct,
+            resultText:total+'/'+(RX.length*10)+' ('+pct+'%) · safety '+S.safety+'% · discipline '+S.disc+'%'};
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+    titleField:{label:'Round outcome &amp; interventions',
+                placeholder:'e.g. 74/80 — intercepted daily methotrexate and piperacillin-tazobactam in penicillin anaphylaxis'},
+    minWords:400,
+    attachments:[{label:'1. Round Report / Printout (PDF)'},
+                 {label:'2. Reflection on AI risk ranking and its limits (PDF)'}],
+    reportHtml:$('resBox').innerHTML
+  });
+}
+
+meters();
+})();
+</script>
+</body>
+</html>

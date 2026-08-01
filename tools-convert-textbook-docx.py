@@ -13,6 +13,10 @@ Component/Details table, so both must be dropped together.
 """
 import zipfile, re, html, json, sys, os
 
+# Module 8 is hand-authored (the manuscript held only an outline for it), so a
+# regeneration from the Word file must not overwrite alizon-book-m8.js.
+SKIP_MODULES = {8}
+
 DOCX = "/Users/kukku/Downloads/Text book (1) (1).docx"
 OUT  = "/Users/kukku/Desktop/junk/alizon-os-deploy"
 
@@ -232,6 +236,8 @@ if __name__ == '__main__':
     mods = convert()
     report = []
     for n in range(1, 9):
+        if n in SKIP_MODULES:
+            report.append((n, 0, 0, 'skipped — hand-authored')); continue
         body = tidy(mods[n])
         if body.strip() and not body.lstrip().startswith('@chapter'):
             i = body.find('@chapter ')
