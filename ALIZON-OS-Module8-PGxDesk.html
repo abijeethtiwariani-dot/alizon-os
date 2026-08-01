@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 8 · Pharmacogenomic Case Desk</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div id="labRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-pdf-open.js"></script>
+<script src="alizon-lab-kit.js?v=1"></script>
+<script>
+/* ============================================================
+   Six pharmacogenomic referrals. The reversal is G1: the child is an
+   ULTRA-RAPID CYP2D6 metaboliser and the intuitive reading — "clears it
+   fast, so give more" — is exactly backwards, because codeine is a
+   prodrug. G6 is the second trap: a genomic result that contradicts the
+   clinical picture, where the patient in front of you is the more
+   recent evidence.
+   ============================================================ */
+AlizonLabKit.queue({
+  module:'Module 8 · Unit 3 — Clinical & Pharmacogenomic Case Simulations',
+  title:'Pharmacogenomic Case Desk',
+  unitLabel:'Pharmacy AI · Module 8 · Unit 3 · Practical 1',
+  expKey:'pgxdesk',
+  workTab:'Case desk',
+  opbar:'linear-gradient(120deg,#1a1622,#2a2138)',
+  startLabel:'Open the referrals',
+  finishHead:'Case desk complete',
+  queueHead:'Pharmacogenomic referrals',
+  queueFoot:'A genotype is one input. It is never the only one.',
+  counterLabel:'Reviewed',
+  meterA:'Patient safety', meterB:'Genomic reasoning',
+  finishLabel:'Close the desk',
+  perItem:10,
+  sevWeight:{none:0, moderate:1, major:2, critical:3},
+  blurb:'Six patients with genotype results have been referred for a prescribing decision. Read each '+
+        'result alongside the clinical picture — and remember which drugs are prodrugs.',
+  before:'<p class="muted">Each referral carries the genotype report, the medication list, the clinical '+
+         'notes and the relevant guideline. The record stays closed until you open it.</p>'+
+         '<p class="muted">Two indices sit alongside your mark: <b>Patient safety</b>, which falls when '+
+         'an actionable result is not acted on, and <b>Genomic reasoning</b>, which falls when you decide '+
+         'without reading the result you are supposedly acting on.</p>',
+
+  recordTabs:[['gene','Genotype report'],['meds','Medication & indication'],['notes','Clinical notes'],['guide','Guideline extract']],
+  actionLabel:'Your action',
+  actions:[['proceed','Proceed as prescribed'],
+           ['dose','Proceed with an adjusted dose'],
+           ['switch','Switch to an alternative agent'],
+           ['test','Do not start until the test result is available']],
+  reasonLabel:'Principal reason',
+  reasons:[['prodrug','Prodrug — metaboliser status inverts the expected effect'],
+           ['toxicity','Risk of severe toxicity at standard dose'],
+           ['failure','Risk of treatment failure'],
+           ['hypersens','Risk of serious hypersensitivity reaction'],
+           ['clinical','Clinical picture outweighs the genotype'],
+           ['appropriate','Appropriate as prescribed']],
+
+  items:[
+   {id:'G1', head:'Codeine after tonsillectomy — child', sub:'Aarav, 6 years',
+    record:{gene:'CYP2D6: *1/*2xN — ULTRA-RAPID METABOLISER.',
+            meds:'Codeine phosphate 3 mg/kg/day in divided doses, prescribed post-operatively.',
+            notes:'Day-case tonsillectomy for obstructive sleep apnoea. Discharged home today.',
+            guide:'Codeine is CONTRAINDICATED after tonsillectomy or adenoidectomy in children.\nCPIC: avoid codeine in ultra-rapid metabolisers; deaths reported.'},
+    need:['gene','guide'], action:'switch', why:'prodrug', sev:'critical',
+    truth:'Codeine is a prodrug: CYP2D6 converts it to morphine. An ultra-rapid metaboliser produces morphine faster than expected, so the risk is respiratory depression, not treatment failure — the intuition runs backwards. Combined with obstructive sleep apnoea after tonsillectomy, this is the exact situation in which children have died. Switch to a non-codeine analgesic.'},
+
+   {id:'G2', head:'Abacavir for newly diagnosed HIV', sub:'Mr J Peter, 31',
+    record:{gene:'HLA-B*57:01 — POSITIVE.',
+            meds:'Abacavir/lamivudine, first prescription, due to start tomorrow.',
+            notes:'Newly diagnosed. Otherwise well. No previous antiretroviral exposure.',
+            guide:'HLA-B*57:01 testing is mandatory before abacavir.\nA positive result is an absolute contraindication — risk of fatal hypersensitivity.'},
+    need:['gene','guide'], action:'switch', why:'hypersens', sev:'critical',
+    truth:'A positive HLA-B*57:01 is an absolute contraindication to abacavir. The hypersensitivity reaction is potentially fatal and there is no dose at which it is safe. An alternative regimen must be used.'},
+
+   {id:'G3', head:'Azathioprine for Crohn\'s disease', sub:'Mrs P Nair, 44',
+    record:{gene:'TPMT: intermediate activity. NUDT15: normal.',
+            meds:'Azathioprine 2.5 mg/kg/day proposed.',
+            notes:'Crohn\'s disease, steroid-dependent. Needs a steroid-sparing agent.',
+            guide:'TPMT intermediate activity: start at 30-70% of the standard dose\nwith close monitoring of the full blood count.'},
+    need:['gene','guide'], action:'dose', why:'toxicity', sev:'major',
+    truth:'Intermediate TPMT activity means reduced ability to inactivate the drug and a real risk of myelosuppression at a standard dose. The drug is not contraindicated — it is started at a reduced dose with close blood-count monitoring.'},
+
+   {id:'G4', head:'Clopidogrel after coronary stent', sub:'Mr R Sunil, 59',
+    record:{gene:'CYP2C19: *2/*2 — POOR METABOLISER.',
+            meds:'Clopidogrel 75 mg daily, started after drug-eluting stent 3 days ago.',
+            notes:'Recent percutaneous coronary intervention. No bleeding.',
+            guide:'CYP2C19 poor metabolisers derive reduced antiplatelet effect from\nclopidogrel. Use an alternative agent where possible.'},
+    need:['gene','notes'], action:'switch', why:'failure', sev:'major',
+    truth:'Clopidogrel is a prodrug requiring CYP2C19 activation. A poor metaboliser generates little active drug, so the risk here is treatment failure — stent thrombosis — rather than toxicity. An alternative antiplatelet should be used.'},
+
+   {id:'G5', head:'Capecitabine for colorectal cancer', sub:'Mrs K Antony, 63',
+    record:{gene:'DPYD: heterozygous for a no-function variant.',
+            meds:'Capecitabine, first cycle due Monday.',
+            notes:'Adjuvant treatment after resection. Performance status 0.',
+            guide:'DPYD variant carriers have reduced fluoropyrimidine clearance.\nHeterozygous: start at 50% of the standard dose and titrate on tolerance.'},
+    need:['gene','guide'], action:'dose', why:'toxicity', sev:'critical',
+    truth:'Reduced dihydropyrimidine dehydrogenase activity means the fluoropyrimidine is cleared slowly, with a risk of severe and sometimes fatal toxicity. Treatment proceeds at a substantially reduced starting dose with titration, not at the standard dose.'},
+
+   {id:'G6', head:'Warfarin — genotype suggests low dose', sub:'Mr M Jacob, 70',
+    record:{gene:'VKORC1 AA and CYP2C9 *1/*3 — predicted low warfarin requirement.',
+            meds:'Warfarin, currently stable on 6 mg daily for 14 months.',
+            notes:'Atrial fibrillation. INR has been in range at every check for 14 months.\nGenotyping done as part of a research study, result returned now.',
+            guide:'VKORC1/CYP2C9 genotype informs the STARTING dose. It does not\noverride an established, stable maintenance dose.'},
+    need:['notes','guide'], action:'proceed', why:'clinical', sev:'none',
+    truth:'This is the second trap. The genotype predicts a lower requirement, but the patient has been stable at 6 mg with in-range INRs for fourteen months. Genotype informs the starting dose; fourteen months of measured response is far stronger evidence than a prediction. Changing a stable dose on a retrospective genotype would destabilise him for no benefit.'}
+  ],
+
+  outcome:function(S,M){
+    var g1=S.done.G1, g6=S.done.G6;
+    return '<h3 style="margin-top:16px">What the results meant</h3>'
+      +'<p><b>Aarav (G1)</b> was an ultra-rapid CYP2D6 metaboliser prescribed codeine after tonsillectomy '
+      +'for sleep apnoea. Because codeine is a prodrug, ultra-rapid metabolism means <i>more</i> morphine, '
+      +'faster — the opposite of the intuitive reading, and the precise circumstance in which children '
+      +'have died. '+((g1&&g1.actOk)?'You switched the analgesic.':'The codeine was allowed to proceed.')+'</p>'
+      +'<p><b>Mr Jacob (G6)</b> had a genotype predicting a low warfarin requirement and fourteen months of '
+      +'in-range INRs at 6 mg. '+((g6&&g6.actOk)
+        ? 'You left the stable dose alone — the measured response outweighs the prediction.'
+        : 'His dose was changed on the strength of a prediction, against fourteen months of measured '
+          +'evidence that it was already right.')+'</p>'
+      +'<div class="fb yes" style="margin-top:8px"><div class="hd">The two rules</div>First, ask whether the '
+      +'drug is a prodrug before predicting the consequence of metaboliser status — codeine, clopidogrel and '
+      +'tamoxifen all invert the intuition. Second, a genotype is a probability and a stable clinical course '
+      +'is a measurement; when they disagree, the patient in front of you is the more recent evidence.</div>'
+      +'<div class="fb yes" style="margin-top:8px"><div class="hd">And record it</div>Every one of these '
+      +'results is durable — it will not change for the rest of the patient\'s life. A result that is lost '
+      +'when the patient moves hospital has been wasted.</div>';
+  },
+
+  reportLabel:'Case desk outcome',
+  reportPlaceholder:'e.g. 60/60 — codeine switched in an ultra-rapid metaboliser; stable warfarin dose left unchanged',
+  attachments:[{label:'1. Case Desk Report / Printout (PDF)'},
+               {label:'2. Reflection on prodrugs and genotype vs clinical evidence (PDF)'}]
+});
+</script>
+</body>
+</html>

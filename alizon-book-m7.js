@@ -222,8 +222,17 @@
 '\n'+
 'The practicals for this module run in ALIZON OS and are scored in the browser. Each one withholds information until you go and look for it, so the mark reflects what you investigated as well as what you concluded. Open them from the Practicals area of the portal.\n'+
 '\n'+
-'@activity Practical 1 · Automated Dispensing Cabinet Investigation (Unit 2)\n'+
-'A controlled-drug discrepancy with a named nurse on both counts. Follow the evidence instead: a technician overrode a barcode mismatch and loaded 10 mg ampoules into a 5 mg pocket, and the nurse who could not balance the count is the one who reported it.\n'+
+'@activity Practical 1 · Automation Business Case (Unit 1)\n'+
+'The board wants a picking robot. Picking is not the constraint, and a robot loaded from a shelf layout that groups look-alikes reproduces the error faster.\n'+
+'\n'+
+'@activity Practical 2 · Automated Dispensing Cabinet Investigation (Unit 2)\n'+
+'A controlled-drug discrepancy with a named nurse on both counts. A technician overrode a barcode mismatch and loaded 10 mg ampoules into a 5 mg pocket.\n'+
+'\n'+
+'@activity Practical 3 · Serialisation & Falsified Medicine Trace (Unit 3)\n'+
+'Six packs at goods-in. The falsified one scans as verified, because its serial is real — decommissioned 900 km away three weeks ago.\n'+
+'\n'+
+'@activity Practical 4 · Workflow Optimisation & Root Cause (Unit 4)\n'+
+'Mean turnaround fell 22% and the slowest 5% doubled — and a fifth of that tail is medicines where lateness is the harm.\n'+
 '\n'+
 '\n'
 };

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 7 · Workflow Optimisation &amp; Root Cause</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div id="labRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-pdf-open.js"></script>
+<script src="alizon-lab-kit.js?v=1"></script>
+<script>
+/* ============================================================
+   A service redesign cut average turnaround and everyone celebrated.
+   The average fell because easy items got faster; the tail got worse,
+   and time-critical Parkinson's doses are in the tail. Then a near-miss
+   investigation offers "the technician was careless — retrain" as the
+   comfortable stopping point, three "why"s short of the real cause.
+   ============================================================ */
+AlizonLabKit.stages({
+  module:'Module 7 · Unit 4 — Workflow Optimisation & Quality Assurance',
+  title:'Workflow Optimisation & Root Cause',
+  unitLabel:'Pharmacy AI · Module 7 · Unit 4 · Practical 1',
+  expKey:'workflowqa',
+  workTab:'Review',
+  opbar:'linear-gradient(120deg,#1a1622,#2a2138)',
+  startLabel:'Open the service review',
+  finishHead:'Review complete',
+  meterA:'Analytical rigour', meterB:'Just culture',
+  counterLabel:'Stage',
+  blurb:'Three months after a workflow redesign, average turnaround is down 22% and the department is '+
+        'pleased. A near-miss last week involved a delayed Parkinson\'s dose. You have been asked to '+
+        'review both.',
+  before:'<p class="muted">Five sources are available. Each one you open is recorded. The headline '+
+         'figure says the redesign worked, and an obvious culprit is available for the near miss.</p>'+
+         '<p class="muted">Two indices sit alongside your mark: <b>Analytical rigour</b>, which falls '+
+         'when you conclude without the evidence, and <b>Just culture</b>, which falls when you stop an '+
+         'investigation at a person.</p>',
+  gatherLabel:'Read the review pack',
+
+  evidence:{
+    avg:{t:'Headline performance', s:'What the report to the board said',
+      body:'TURNAROUND TIME — BEFORE AND AFTER REDESIGN\n'+
+           '------------------------------------------------------------\n'+
+           'Mean turnaround   before 47 min    after 37 min    -22%\n'+
+           'Items dispensed   before 612/day   after 658/day   +8%\n'+
+           '\nReported to the board as an unqualified success.\n'},
+    dist:{t:'The distribution', s:'The same data, not averaged',
+      body:'TURNAROUND TIME — PERCENTILES\n'+
+           '------------------------------------------------------------\n'+
+           '                 before    after\n'+
+           'median            41 min    28 min   improved\n'+
+           '75th percentile   58 min    44 min   improved\n'+
+           '95th percentile   96 min   184 min   MUCH WORSE\n'+
+           '99th percentile  121 min   256 min   MUCH WORSE\n'+
+           '\nThe mean fell because routine items got much faster.\n'+
+           'The slowest 5% roughly doubled.\n'},
+    which:{t:'What is in the tail?', s:'The prescriptions that take longest',
+      body:'ITEMS IN THE SLOWEST 5%\n'+
+           '------------------------------------------------------------\n'+
+           'Requiring clinical clarification        44%\n'+
+           'Non-stock / to-order items              27%\n'+
+           'TIME-CRITICAL MEDICINES                 21%   <-- includes\n'+
+           '  Parkinson\'s disease medicines, insulin,      the near miss\n'+
+           '  anti-epileptics, first-dose antibiotics\n'+
+           'Other                                    8%\n'+
+           '\nThe redesign created a fast lane for routine items. Anything\n'+
+           'needing a decision was pushed to a single queue at the end.\n'},
+    miss:{t:'The near miss', s:'What happened last Tuesday',
+      body:'NEAR MISS — WARD 6, TUESDAY\n'+
+           '------------------------------------------------------------\n'+
+           'Co-careldopa due 08:00. Dispensed and delivered 11:40.\n'+
+           'Patient missed two doses; rigidity and difficulty swallowing.\n'+
+           'Nurse escalated; dose given 11:55. No lasting harm.\n'+
+           '\nIncident form as submitted:\n'+
+           '  "Technician did not prioritise the item. Recommend retraining."\n'},
+    why:{t:'Five whys — the full trail', s:'What the investigation found when it continued',
+      body:'WHY DID THE DOSE ARRIVE AT 11:40?\n'+
+           '------------------------------------------------------------\n'+
+           '1 Why late?      It sat in the clarification queue for 3 hours.\n'+
+           '2 Why there?     It needed a strength confirmed with the prescriber.\n'+
+           '3 Why not first? The queue is worked strictly first-in-first-out.\n'+
+           '4 Why FIFO?      The redesign removed the old priority flag —\n'+
+           '                 the new system has no field for time-criticality.\n'+
+           '5 Why removed?   Nobody at the design workshop worked on the\n'+
+           '                 clarification queue. The ward pharmacists were\n'+
+           '                 not invited.\n'}
+  },
+
+  steps:[
+    {k:'read', t:'Read the result', q:'Did the redesign improve the service?',
+     need:['avg','dist'], right:'mixed',
+     penaltyB:{yes:0},
+     options:[['yes','Yes — mean turnaround fell 22% and output rose 8%'],
+              ['mixed','Partly. The median and 75th percentile improved, and the 95th and 99th roughly doubled — it improved routine work and made the slowest cases much worse'],
+              ['no','No — the whole thing was a failure'],
+              ['unknown','It is impossible to say from this data']],
+     explain:{
+       mixed:'Correct. The mean fell because routine items got much faster, and that is a genuine gain. But the 95th percentile went from 96 to 184 minutes. An average hides exactly the cases that harm patients, which is why turnaround is monitored as a distribution.',
+       yes:'This is what was reported to the board, and it is what an average is good at concealing. Look at the percentiles.',
+       no:'Too far. The median and 75th percentile genuinely improved and output rose; the redesign helped most patients.',
+       unknown:'The percentile table answers the question directly.'
+     }},
+
+    {k:'tail', t:'Judge the tail', q:'Why does the deterioration in the slowest 5% matter so much?',
+     need:['which'], right:'crit',
+     penaltyB:{small:20},
+     options:[['small','It does not matter greatly — it is only 5% of items'],
+              ['crit','Because 21% of the tail is time-critical medicines, where a delayed dose is itself the harm'],
+              ['cost','Because slow items cost more to process'],
+              ['staff2','Because it makes the staff look inefficient']],
+     explain:{
+       crit:'Correct. A fifth of the tail is Parkinson\'s medicines, insulin, anti-epileptics and first-dose antibiotics — medicines where lateness is not an inconvenience but the harm itself. The redesign built a fast lane for the items that could most afford to wait.',
+       small:'Five per cent of 658 items a day is about 33 prescriptions, every day, and it contains the ones that cannot wait.',
+       cost:'Cost is not the issue here; clinical consequence is.',
+       staff2:'The measure exists for patients, not for appearances.'
+     }},
+
+    {k:'root', t:'Find the root cause', q:'The incident form says "technician did not prioritise the item — recommend retraining". Is that the root cause?',
+     need:['miss','why'], right:'nofield',
+     penaltyB:{person:45, fifo:15},
+     options:[['person','Yes — the technician failed to prioritise and should be retrained'],
+              ['fifo','The queue is worked first-in-first-out and that is the cause'],
+              ['nofield','No. The redesign removed the priority flag, so the new system has no way to express time-criticality at all — and the people who work that queue were never at the design workshop'],
+              ['nurse','The ward should have chased it sooner']],
+     explain:{
+       nofield:'Correct, and this is where the five whys actually lead. The technician could not prioritise the item because the system provides no field in which time-criticality can be recorded. That gap exists because nobody who works the clarification queue was invited to the design workshop — which is the most reliable predictor of whether a new workflow succeeds.',
+       person:'This is the comfortable stopping point, and it is three whys short. Retraining an individual does not give the system a priority field, and the next technician meets exactly the same trap.',
+       fifo:'Closer — FIFO is the mechanism. But asking why the queue is FIFO leads to the removed priority flag, and asking why that was removed leads to who was in the room.',
+       nurse:'The ward did escalate, and the dose was given fifteen minutes later. Moving the blame sideways is not root cause analysis.'
+     }},
+
+    {k:'fix', t:'Decide the action', q:'What do you take back to the board?',
+     need:['dist','why'], right:'both2',
+     penaltyB:{retrain2:35, revert:10},
+     options:[['retrain2','Retrain the technicians and reiterate the importance of time-critical medicines'],
+              ['both2','Report the distribution rather than the mean, restore a time-criticality flag that routes those items ahead of the FIFO queue, involve the queue staff in the design, and re-measure the 95th percentile as the success criterion'],
+              ['revert','Revert the redesign entirely'],
+              ['target2','Set a maximum turnaround target of 60 minutes for all items']],
+     explain:{
+       both2:'Correct, and the choice of success measure is the important part. If the board keeps watching the mean, the same failure recurs invisibly. Measuring the 95th percentile makes the harm visible, and restoring the priority field fixes the mechanism.',
+       retrain2:'Retraining addresses a cause that was not the cause. Nothing about the system changes and the next delay is already scheduled.',
+       revert:'Reverting discards a real improvement for most patients. The redesign needs a priority route, not abandonment.',
+       target2:'A single target applied to everything will be met by everything — including by recoding what counts as received. It also treats a Parkinson\'s dose and a repeat inhaler as the same problem.'
+     }}
+  ],
+
+  outcome:function(S,M){
+    var ok=S.ans.root&&S.ans.root.pick==='nofield';
+    return '<h3 style="margin-top:16px">What the review found</h3>'
+      +'<p>The redesign genuinely helped most patients — median turnaround fell from 41 to 28 minutes. '
+      +'It also doubled the 95th percentile from 96 to 184 minutes, and a fifth of that tail is medicines '
+      +'where lateness is the harm. The board was shown the mean and told it was a success.</p>'
+      +'<p>The near miss followed the same fault. The technician could not prioritise the Parkinson\'s '
+      +'dose because the redesigned system has no field for time-criticality — removed because nobody '
+      +'who works the clarification queue was at the design workshop.</p>'
+      +(ok
+        ? '<div class="fb yes"><div class="hd">You kept asking why</div>You went past the technician to the '
+          +'missing field and past the missing field to who was in the room. That is where a fix exists.</div>'
+        : '<div class="fb no"><div class="hd">The investigation stopped at a person</div>"Retrain the '
+          +'technician" leaves the system without a priority field, so the next person meets the same trap — '
+          +'and the team learns that reporting a near miss produces blame rather than a fix.</div>')
+      +'<div class="fb yes" style="margin-top:8px"><div class="hd">Carry this forward</div>Monitor turnaround '
+      +'as a distribution, because the tail is where harm sits. Judge a change on the whole pathway, not the '
+      +'measure you set out to improve. And if a root cause analysis concludes "the person was careless", it '
+      +'has stopped too early — keep asking why until you reach something the organisation controls.</div>';
+  },
+
+  reportLabel:'Review outcome',
+  reportPlaceholder:'e.g. 50/50 — tail deterioration identified; priority flag restored; 95th percentile adopted as the measure',
+  attachments:[{label:'1. Service Review / Printout (PDF)'},
+               {label:'2. Reflection on just culture and root cause analysis (PDF)'}]
+});
+</script>
+</body>
+</html>

@@ -12,8 +12,8 @@
 window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {};
 
 var FILES = {
-  1:'alizon-book-m1.js?v=3', 2:'alizon-book-m2.js?v=3', 3:'alizon-book-m3.js?v=3', 4:'alizon-book-m4.js?v=3',
-  5:'alizon-book-m5.js?v=3', 6:'alizon-book-m6.js?v=3', 7:'alizon-book-m7.js?v=3', 8:'alizon-book-m8.js?v=3'
+  1:'alizon-book-m1.js?v=4', 2:'alizon-book-m2.js?v=4', 3:'alizon-book-m3.js?v=4', 4:'alizon-book-m4.js?v=4',
+  5:'alizon-book-m5.js?v=4', 6:'alizon-book-m6.js?v=4', 7:'alizon-book-m7.js?v=4', 8:'alizon-book-m8.js?v=4'
 };
 var pending = {};
 

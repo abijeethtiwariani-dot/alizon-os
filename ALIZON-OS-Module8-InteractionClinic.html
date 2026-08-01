@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 8 · Interaction &amp; Dose Optimisation Clinic</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div id="labRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-pdf-open.js"></script>
+<script src="alizon-lab-kit.js?v=1"></script>
+<script>
+/* ============================================================
+   Seven referrals. The reversal is C4: a vancomycin trough that reads
+   high and looks like a dose problem. It was drawn two hours after the
+   dose, so it is not a trough at all — reducing the dose on it would
+   under-treat an infected patient. C7 is the opposite trap: an alert
+   that looks minor (amiodarone started, INR normal today) and is the
+   most dangerous item here, because amiodarone's half-life means the
+   INR has not finished moving.
+   ============================================================ */
+AlizonLabKit.queue({
+  module:'Module 8 · Unit 2 — Drug Interaction & Dose Optimisation Simulations',
+  title:'Interaction & Dose Optimisation Clinic',
+  unitLabel:'Pharmacy AI · Module 8 · Unit 2 · Practical 1',
+  expKey:'interactionclinic',
+  workTab:'Clinic',
+  opbar:'linear-gradient(120deg,#12131c,#1d1f2b)',
+  startLabel:'Open the referral list',
+  finishHead:'Clinic complete',
+  queueHead:'Referrals from the screening system',
+  queueFoot:'The severity badge was assigned without seeing the patient.',
+  counterLabel:'Reviewed',
+  scoreName:'Flagged',
+  meterA:'Patient safety', meterB:'Clinical reasoning',
+  finishLabel:'Close the clinic',
+  perItem:10,
+  sevWeight:{none:0, moderate:1, major:2, critical:3},
+  blurb:'Seven patients referred by the interaction screening system. For each, decide what to do and '+
+        'why. The severity badge is a generalisation; the record is not.',
+  before:'<p class="muted">Each referral carries the alert as raised, the medication list, the relevant '+
+         'bloods and the clinical notes. The record stays closed until you open it.</p>'+
+         '<p class="muted">Two indices sit alongside your mark: <b>Patient safety</b>, which falls when '+
+         'a dangerous combination is allowed to continue, and <b>Clinical reasoning</b>, which falls when '+
+         'you decide without reading the record.</p>',
+
+  recordTabs:[['alert','Alert as raised'],['meds','Medication list'],['labs','Bloods & levels'],['notes','Clinical notes']],
+  actionLabel:'Your action',
+  actions:[['continue','Continue unchanged — monitoring already adequate'],
+           ['adjust','Adjust the dose or add monitoring'],
+           ['stop','Stop or substitute one of the drugs'],
+           ['repeat','Repeat the measurement before acting on it']],
+  reasonLabel:'Principal reason',
+  reasons:[['kinetic','Pharmacokinetic interaction — altered handling'],
+           ['dynamic','Pharmacodynamic interaction — additive effect'],
+           ['renal','Dose inappropriate for renal function'],
+           ['sampling','Measurement taken at the wrong time'],
+           ['electrolyte','Electrolyte disturbance driving toxicity'],
+           ['appropriate','Appropriate as prescribed']],
+
+  items:[
+   {id:'C1', score:'HIGH', head:'Warfarin + clarithromycin', sub:'Mr T George, 72',
+    record:{alert:'MAJOR: clarithromycin may increase the effect of warfarin.',
+            meds:'Warfarin 4 mg daily · bisoprolol · atorvastatin\nClarithromycin 500 mg BD started today for chest infection.',
+            labs:'INR 2.5 one week ago, stable for 8 months. Hb 13.1.',
+            notes:'Community-acquired pneumonia. Otherwise well.'},
+    need:['meds'], action:'stop', why:'kinetic', sev:'major',
+    truth:'Clarithromycin inhibits warfarin metabolism and the INR will climb. The cleanest action is to substitute an antibiotic that does not interact; if clarithromycin is genuinely required, the warfarin dose must be reduced with close INR monitoring. Continuing unchanged risks a bleed.'},
+
+   {id:'C2', score:'HIGH', head:'Simvastatin 40 mg + clarithromycin', sub:'Mrs A Pillai, 66',
+    record:{alert:'MAJOR: risk of myopathy with this combination.',
+            meds:'Simvastatin 40 mg ON · ramipril · metformin\nClarithromycin 500 mg BD, day 1 of 5.',
+            labs:'CK normal at baseline. eGFR 74.',
+            notes:'No muscle symptoms currently.'},
+    need:['meds'], action:'stop', why:'kinetic', sev:'major',
+    truth:'CYP3A4 inhibition raises simvastatin exposure sharply, with a real risk of myopathy and rhabdomyolysis. Standard practice is to withhold the statin for the duration of the short antibiotic course — five days without a statin carries no meaningful cardiovascular cost.'},
+
+   {id:'C3', score:'MOD', head:'Metformin 1 g BD, eGFR 42', sub:'Mr S Kurian, 71',
+    record:{alert:'MODERATE: review metformin dose in renal impairment.',
+            meds:'Metformin 1 g BD · gliclazide · amlodipine.',
+            labs:'eGFR 42, stable across three readings over 6 months.\nHbA1c 9.4%. Lactate normal.',
+            notes:'Type 2 diabetes, poorly controlled. Keen to avoid insulin.'},
+    need:['labs'], action:'adjust', why:'renal', sev:'moderate',
+    truth:'Metformin is continued at a reduced maximum between eGFR 30 and 45, and stopped below 30. The renal function sets the ceiling; poor glycaemic control does not raise it. Reduce the dose and address the control by another route.'},
+
+   {id:'C4', score:'HIGH', head:'Vancomycin trough 24 mg/L — "toxic"', sub:'Miss R Thomas, 34',
+    record:{alert:'HIGH: vancomycin level above target range. Reduce dose.',
+            meds:'Vancomycin 1 g BD IV, day 3 · paracetamol.',
+            labs:'Level 24 mg/L. Sample time 10:00.\nDose given 08:00. Next dose due 20:00.\nCreatinine stable, eGFR 88.',
+            notes:'Neutropenic sepsis, improving clinically. Afebrile since yesterday.'},
+    need:['labs'], action:'repeat', why:'sampling', sev:'major',
+    truth:'This is not a trough. The sample was drawn two hours after the dose, near the peak, so of course it reads high. Reducing the dose on a mistimed level would under-treat a patient with neutropenic sepsis who is finally improving. Repeat the level immediately before the next dose.'},
+
+   {id:'C5', score:'MOD', head:'SSRI + tramadol, agitated patient', sub:'Mr D Varghese, 58',
+    record:{alert:'MODERATE: increased serotonergic effect.',
+            meds:'Sertraline 100 mg daily · tramadol 50 mg QDS started 36 hours ago.',
+            labs:'Temperature 38.4. CK 620. Otherwise unremarkable.',
+            notes:'Agitated since this morning. Tremor. Brisk reflexes with ankle clonus.'},
+    need:['notes','labs'], action:'stop', why:'dynamic', sev:'critical',
+    truth:'Agitation, tremor, hyperreflexia, clonus and fever within 36 hours of adding tramadol to an SSRI is serotonin syndrome until proved otherwise. This is a clinical emergency: stop the serotonergic drugs now and escalate. The badge said moderate because the system saw only the drug pair, not the patient.'},
+
+   {id:'C6', score:'MOD', head:'Digoxin, nausea and visual disturbance', sub:'Mrs L Menon, 79',
+    record:{alert:'MODERATE: digoxin level within reference range (1.4 nmol/L).',
+            meds:'Digoxin 125 mcg daily · furosemide 40 mg BD · ramipril.',
+            labs:'Digoxin 1.4 nmol/L (range 1.0-2.0).\nPOTASSIUM 2.9 mmol/L. Magnesium 0.62.',
+            notes:'Nausea for two days, "yellow-green haze" on vision. Pulse 46 and regular.'},
+    need:['labs','notes'], action:'stop', why:'electrolyte', sev:'critical',
+    truth:'Classical digoxin toxicity — nausea, visual disturbance, bradycardia — at a level the laboratory reports as therapeutic, because hypokalaemia increases myocardial sensitivity to digoxin. Withhold the digoxin, correct the potassium and magnesium, and monitor. A level inside the range does not exclude toxicity.'},
+
+   {id:'C7', score:'LOW', head:'Amiodarone started, INR normal today', sub:'Mr B Joseph, 68',
+    record:{alert:'LOW: amiodarone and warfarin — monitor.',
+            meds:'Warfarin 5 mg daily · amiodarone 200 mg TDS, started 4 days ago (loading).',
+            labs:'INR 2.7 today. Was 2.6 last week.\nNo bleeding. Hb stable.',
+            notes:'Atrial fibrillation. Cardiology commenced amiodarone loading.'},
+    need:['meds','labs'], action:'adjust', why:'kinetic', sev:'major',
+    truth:'The reassuring INR is the trap. Amiodarone inhibits warfarin metabolism and has a half-life measured in weeks, so the effect builds over the following weeks — today\'s INR of 2.7 tells you almost nothing about where it is heading. Pre-emptively reduce the warfarin dose and arrange substantially more frequent INR monitoring. Rated LOW because the system saw a normal INR.'}
+  ],
+
+  outcome:function(S,M){
+    var c4=S.done.C4, c7=S.done.C7, c5=S.done.C5;
+    return '<h3 style="margin-top:16px">Twenty-four hours later</h3>'
+      +'<p><b>Miss Thomas (C4).</b> '+((c4&&c4.actOk)
+        ? 'You repeated the level before the next dose: 11 mg/L, squarely in range. The dose was unchanged '
+          +'and her sepsis continued to settle.'
+        : 'The vancomycin dose was reduced on a level drawn two hours after the dose. She became febrile '
+          +'again overnight and the course had to be restarted at a higher dose.')+'</p>'
+      +'<p><b>Mr Joseph (C7).</b> '+((c7&&c7.actOk)
+        ? 'You reduced the warfarin pre-emptively and booked twice-weekly INRs. It peaked at 3.4 and came '
+          +'back down without incident.'
+        : 'No change was made because today\'s INR was normal. Eleven days later it was 6.8 and he presented '
+          +'with a large rectus sheath haematoma.')+'</p>'
+      +'<p><b>Mr Varghese (C5).</b> '+((c5&&c5.actOk)
+        ? 'The serotonergic drugs were stopped and he was escalated. Symptoms settled within twelve hours.'
+        : 'The combination continued. He deteriorated overnight with hyperthermia and rigidity and required '
+          +'critical care.')+'</p>'
+      +'<div class="fb yes" style="margin-top:8px"><div class="hd">The lesson</div>Two of the three most '
+      +'dangerous referrals here were badged below HIGH. A screening system grades the drug pair; it has not '
+      +'seen the potassium, the sampling time, the clonus, or the half-life of the drug that was started '
+      +'four days ago.</div>';
+  },
+
+  reportLabel:'Clinic outcome',
+  reportPlaceholder:'e.g. 70/70 — mistimed vancomycin level repeated; amiodarone-warfarin reduced pre-emptively; serotonin syndrome escalated',
+  attachments:[{label:'1. Clinic Report / Printout (PDF)'},
+               {label:'2. Reflection on severity badges and clinical judgement (PDF)'}]
+});
+</script>
+</body>
+</html>

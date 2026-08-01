@@ -496,8 +496,17 @@
 '\n'+
 'The practicals for this module run in ALIZON OS and are scored in the browser. Each one withholds information until you go and look for it, so the mark reflects what you investigated as well as what you concluded. Open them from the Practicals area of the portal.\n'+
 '\n'+
-'@activity Practical 1 · Prescribing Analytics Investigation (Unit 3)\n'+
-'Six prescribers and one obvious outlier. Drill into case mix and the outlier turns out to be the best prescriber on the list, while the real unwarranted variation sat mid-table and invisible. Analytical rigour and fairness are scored alongside the mark.\n'+
+'@activity Practical 1 · Pharmacy Data Quality Audit (Unit 1)\n'+
+'A 300% spike that turns out to be a duplicated import, and the defect that actually matters: a quantity column that switched from packs to units mid-year, so every total spanning the change is wrong and nothing looks unusual.\n'+
+'\n'+
+'@activity Practical 2 · Model Evaluation Clinic (Unit 2)\n'+
+'Three readmission models at 6% prevalence. The 94%-accurate one finds 5 of 60; the best-discriminating one is badly calibrated and collapses for the over-80s.\n'+
+'\n'+
+'@activity Practical 3 · Prescribing Analytics Investigation (Unit 3)\n'+
+'Six prescribers and one obvious outlier. Adjust for case mix and the outlier is the best of them, while the real unwarranted variation sat mid-table.\n'+
+'\n'+
+'@activity Practical 4 · Demand Forecasting & Stock Decisions (Unit 4)\n'+
+'A steep demand trend that is really a contract ending in October, and a medicine worth pennies that must never run out.\n'+
 '\n'+
 '\n'
 };

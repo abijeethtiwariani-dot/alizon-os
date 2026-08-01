@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 7 · Serialisation &amp; Falsified Medicine Trace</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div id="labRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-pdf-open.js"></script>
+<script src="alizon-lab-kit.js?v=1"></script>
+<script>
+/* ============================================================
+   Six packs to verify at goods-in. The reversal: PACK-4 scans perfectly
+   — a real, valid, manufacturer-issued serial — and is falsified. The
+   number was already decommissioned in another state three weeks ago, so
+   this is a duplicate of a genuine pack. Meanwhile PACK-2 fails its scan
+   for a mundane reason (damaged barcode) and is fine once verified
+   manually. Trusting the scan result alone gets both wrong.
+   ============================================================ */
+AlizonLabKit.queue({
+  module:'Module 7 · Unit 3 — Smart Packaging & Medication Tracking',
+  title:'Serialisation & Falsified Medicine Trace',
+  unitLabel:'Pharmacy AI · Module 7 · Unit 3 · Practical 1',
+  expKey:'serialisation',
+  workTab:'Goods-in',
+  opbar:'linear-gradient(120deg,#12131c,#1d1f2b)',
+  startLabel:'Begin goods-in verification',
+  finishHead:'Delivery processed',
+  queueHead:'Delivery — six packs to verify',
+  queueFoot:'The scanner reports what the national register says. It does not tell you what the pack is.',
+  counterLabel:'Verified',
+  scoreName:'Scan',
+  meterA:'Supply integrity', meterB:'Verification discipline',
+  finishLabel:'Close the delivery',
+  perItem:10,
+  sevWeight:{none:0, minor:1, major:2, critical:3},
+  blurb:'A delivery of six packs has arrived. Each carries a 2D data matrix. Verify each one against '+
+        'the register and decide what to do with it — accept into stock, quarantine, or escalate.',
+  before:'<p class="muted">Each pack has a scan result, a physical inspection and a register history. '+
+         'The register history stays closed until you open it, and what you opened is recorded.</p>'+
+         '<p class="muted">Two indices sit alongside your mark: <b>Supply integrity</b>, which falls '+
+         'when a falsified or unusable pack reaches stock, and <b>Verification discipline</b>, which '+
+         'falls when you decide without checking the register.</p>',
+
+  recordTabs:[['scan','Scan result'],['phys','Physical inspection'],['reg','Register history']],
+  actionLabel:'Your decision',
+  actions:[['accept','Accept into stock'],['quarantine','Quarantine and investigate'],
+           ['escalate','Quarantine and escalate immediately as suspected falsification']],
+  reasonLabel:'Principal reason',
+  reasons:[['ok','Verified genuine and in date'],['dup','Serial already decommissioned elsewhere'],
+           ['unread','Barcode unreadable — verification incomplete'],
+           ['expired','Expired or too short-dated to use'],
+           ['recall','Batch subject to a recall'],
+           ['unknown','Serial not present in the register']],
+
+  items:[
+   {id:'P1', score:'OK', head:'PACK-1 · Atorvastatin 20 mg, 28 tabs', sub:'Scan verified',
+    record:{scan:'Serial ...4471 — ACTIVE in register.\nGTIN, batch and expiry match the pack face.',
+            phys:'Carton intact. Tamper seal unbroken. Print quality normal.\nExpiry 04/2028.',
+            reg:'Issued by manufacturer 11/2025.\nNo prior decommission event. Never dispensed.'},
+    need:['scan'], action:'accept', why:'ok', sev:'none',
+    truth:'Genuine and in date. Accepting it is correct — and note that accepting is a decision you are marked on, not a default.'},
+
+   {id:'P2', score:'FAIL', head:'PACK-2 · Metformin 500 mg, 56 tabs', sub:'Scan failed to read',
+    record:{scan:'Data matrix unreadable — 3 attempts.\nScanner error: insufficient contrast.',
+            phys:'Carton scuffed along the barcode panel, consistent with transit damage.\nSeal intact, print otherwise normal. Expiry 09/2027.',
+            reg:'Manual key-entry of the human-readable serial ...9920:\nACTIVE, issued 02/2026, no prior decommission. Batch matches delivery note.'},
+    need:['reg'], action:'accept', why:'ok', sev:'minor',
+    truth:'A failed scan is not a failed verification. The barcode panel is physically damaged; keying the human-readable serial verifies the pack as genuine and active. Quarantining it wastes stock — but you could only know that by opening the register.'},
+
+   {id:'P3', score:'OK', head:'PACK-3 · Amoxicillin 500 mg caps', sub:'Scan verified',
+    record:{scan:'Serial ...1180 — ACTIVE in register.\nGTIN and batch match.',
+            phys:'Carton intact, seal intact.\nEXPIRY 09/2026 — three weeks from today.',
+            reg:'Issued 01/2026. No decommission event.'},
+    need:['phys'], action:'quarantine', why:'expired', sev:'minor',
+    truth:'Genuine, and too short-dated to accept into stock for a course of treatment. The register is perfectly happy; the expiry date is what disqualifies it. Quarantine and return to the supplier.'},
+
+   {id:'P4', score:'OK', head:'PACK-4 · Sildenafil 100 mg, 8 tabs', sub:'Scan verified',
+    record:{scan:'Serial ...7732 — ACTIVE in register.\nGTIN, batch and expiry all match the pack face.',
+            phys:'Carton intact. Seal intact. Print quality very slightly soft on the\nreverse panel, otherwise unremarkable.',
+            reg:'Issued by manufacturer 08/2025.\n!! DECOMMISSIONED 12/07/2026 at a pharmacy 900 km away —\n   supplied to a patient and the serial retired at that point.\n!! This pack carries a serial that has already been used.'},
+    need:['reg'], action:'escalate', why:'dup', sev:'critical',
+    truth:'This is the pack that matters. The scan says ACTIVE because the falsifier copied a real, valid serial — but the register shows that number was decommissioned three weeks ago at a pharmacy 900 km away when the genuine pack was supplied to a patient. A serial can only be retired once. This is a duplicate and must be quarantined and escalated immediately, not merely investigated.'},
+
+   {id:'P5', score:'??', head:'PACK-5 · Clopidogrel 75 mg, 30 tabs', sub:'Serial not found',
+    record:{scan:'Serial ...5504 — NOT PRESENT in the national register.',
+            phys:'Carton intact. Seal intact. Font on the batch line differs subtly\nfrom the manufacturer standard.',
+            reg:'No record of this serial ever being issued.\nSupplier is a broker, not the usual wholesaler.'},
+    need:['scan','reg'], action:'escalate', why:'unknown', sev:'critical',
+    truth:'A serial that was never issued cannot be genuine. Combined with an unfamiliar broker in the supply chain and a subtle typographic difference, this requires immediate escalation, not routine investigation.'},
+
+   {id:'P6', score:'OK', head:'PACK-6 · Ranitidine 150 mg, 60 tabs', sub:'Scan verified',
+    record:{scan:'Serial ...2245 — ACTIVE in register.\nAll fields match.',
+            phys:'Carton intact, seal intact, expiry 11/2027.',
+            reg:'Issued 03/2026, no decommission.\n!! BATCH RECALL NOTICE issued 5 days ago — this batch withdrawn\n   by the manufacturer for an impurity finding.'},
+    need:['reg'], action:'quarantine', why:'recall', sev:'major',
+    truth:'Genuine, in date, correctly serialised — and recalled five days ago. The register carried the recall notice. A pack can be perfectly authentic and still must not reach a patient.'}
+  ],
+
+  outcome:function(S,M){
+    var p4=S.done.P4, p5=S.done.P5, p2=S.done.P2;
+    return '<h3 style="margin-top:16px">What was in the delivery</h3>'
+      +'<p>Two falsified packs and two that were genuine but unusable. <b>PACK-4</b> is the one that '
+      +'matters: it scanned <i>verified</i>, because the serial on it is real. It had already been '
+      +'decommissioned three weeks earlier at a pharmacy 900 km away when the genuine pack was supplied '
+      +'to a patient — a serial can only be retired once, and that is what makes decommissioning the '
+      +'control that defeats duplicated numbers. <b>PACK-5</b> carried a serial never issued at all.</p>'
+      +'<p><b>PACK-2</b> failed its scan for the dullest possible reason — a scuffed barcode panel — and '
+      +'was genuine. <b>PACK-3</b> was three weeks from expiry and <b>PACK-6</b> was under recall; both '
+      +'scanned perfectly.</p>'
+      +((p4&&p4.actOk)
+        ? '<div class="fb yes"><div class="hd">You caught the duplicate</div>A verified scan told you the '
+          +'number was real. Only the register history told you it had already been used.</div>'
+        : '<div class="fb no"><div class="hd">A falsified pack reached stock</div>PACK-4 scanned as verified '
+          +'and was a duplicate of a genuine pack supplied to a patient in another state. The scan result '
+          +'alone could never have shown it.</div>')
+      +((p2&&p2.actOk)?'' :
+        '<div class="fb no" style="margin-top:8px"><div class="hd">A good pack was wasted</div>PACK-2 '
+        +'failed to scan because the carton was scuffed in transit. Keying the human-readable serial '
+        +'verified it in seconds. A failed scan is not a failed verification.</div>')
+      +'<div class="fb yes" style="margin-top:8px"><div class="hd">Carry this forward</div>Serialisation '
+      +'identifies the individual pack, not merely the product, and decommissioning at the point of supply '
+      +'is what stops one valid number authenticating an unlimited number of fakes. "Scan verified" answers '
+      +'one question only: does this number exist and is it active. It says nothing about expiry, recall, '
+      +'or whether the number is on more than one carton.</div>';
+  },
+
+  reportLabel:'Goods-in outcome',
+  reportPlaceholder:'e.g. 60/60 — duplicate serial escalated, recalled batch quarantined, damaged barcode verified manually',
+  attachments:[{label:'1. Goods-in Report / Printout (PDF)'},
+               {label:'2. Reflection on serialisation and decommissioning (PDF)'}]
+});
+</script>
+</body>
+</html>

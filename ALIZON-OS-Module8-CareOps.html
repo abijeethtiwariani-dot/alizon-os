@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 8 · Digital Patient Care &amp; Operations Desk</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div id="labRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-pdf-open.js"></script>
+<script src="alizon-lab-kit.js?v=1"></script>
+<script>
+/* ============================================================
+   A shift's worth of digital contacts and operational signals. The
+   reversal is D3: a portal message that reads as a routine medicines
+   question and contains chest pain in the second sentence. D6 is the
+   quieter trap — an adherence dashboard showing perfect collection for
+   a patient whose inhaler technique makes the drug useless.
+   ============================================================ */
+AlizonLabKit.queue({
+  module:'Module 8 · Unit 4 — Digital Patient Care & Pharmacy Operations',
+  title:'Digital Patient Care & Operations Desk',
+  unitLabel:'Pharmacy AI · Module 8 · Unit 4 · Practical 1',
+  expKey:'careops',
+  workTab:'Desk',
+  opbar:'linear-gradient(120deg,#101c22,#18303a)',
+  startLabel:'Start the shift',
+  finishHead:'Shift complete',
+  queueHead:'This morning — messages, dashboards and discharges',
+  queueFoot:'Some of these are operational. One of them is not, and it does not look urgent.',
+  counterLabel:'Handled',
+  meterA:'Patient safety', meterB:'Service judgement',
+  finishLabel:'End the shift',
+  perItem:10,
+  sevWeight:{none:0, moderate:1, major:2, critical:3},
+  blurb:'Six items on the digital desk: portal messages, adherence data, a discharge summary and two '+
+        'operational signals. Decide what each one actually is before deciding what to do with it.',
+  before:'<p class="muted">Each item carries the message or dashboard as received, the patient record, '+
+         'and the operational context. The record stays closed until you open it.</p>'+
+         '<p class="muted">Two indices sit alongside your mark: <b>Patient safety</b>, which falls when '+
+         'something clinical is handled as though it were administrative, and <b>Service judgement</b>, '+
+         'which falls when an operational signal is misread.</p>',
+
+  recordTabs:[['item','As received'],['record','Patient record'],['context','Operational context']],
+  actionLabel:'Your action',
+  actions:[['reply','Answer in the portal / routine reply'],
+           ['call','Telephone the patient today'],
+           ['escalate','Escalate immediately through an urgent clinical route'],
+           ['fix','Treat as a system or supply problem and act on the cause']],
+  reasonLabel:'Principal reason',
+  reasons:[['routine','Routine medicines query'],
+           ['redflag','Red flag — unsuitable for an asynchronous channel'],
+           ['technique','Adherence data does not show what is actually happening'],
+           ['handover','Information transfer at a transition of care'],
+           ['supply','A supply-chain signal wearing a clinical costume'],
+           ['critical','Time-critical medicine delay']],
+
+  items:[
+   {id:'D1', head:'Portal message — "Can I take my statin in the morning?"', sub:'Mrs S Pillai, 62',
+    record:{item:'"I keep forgetting my atorvastatin at night. Can I take it in the morning instead?"',
+            record:'Atorvastatin 20 mg ON. No other medicines. Last lipids 6 months ago, at target.',
+            context:'Sent 07:20. No other contact.'},
+    need:['item'], action:'reply', why:'routine', sev:'none',
+    truth:'A genuinely routine query with a clear answer — atorvastatin has a long half-life and may be taken at any consistent time. Answering in the portal is correct and efficient. Not everything needs escalating.'},
+
+   {id:'D2', head:'Discharge summary to check before it is sent', sub:'Mr T George, 74',
+    record:{item:'Discharge summary medication section reads:\n"Current medicines: amlodipine, ramipril, atorvastatin,\n apixaban, bisoprolol, furosemide, lansoprazole, metformin."',
+            record:'Admitted with AF. During admission: apixaban STARTED,\nbisoprolol STARTED, furosemide dose DOUBLED, aspirin STOPPED.',
+            context:'Goes to the GP and community pharmacy. Patient discharged this afternoon.'},
+    need:['record'], action:'fix', why:'handover', sev:'major',
+    truth:'The summary lists what he is on and not one word about what changed. Three medicines were started or altered and one stopped, and nobody downstream can tell. The single most valuable element of a discharge summary is what changed and why — this must be corrected before it is sent.'},
+
+   {id:'D3', head:'Portal message — "About my new tablets"', sub:'Mr B Joseph, 58',
+    record:{item:'"Thanks for sorting the new tablets. Quick question about when to\n take them. Also I have had a heaviness in my chest since last night\n and my left arm aches, probably the new tablets? Not urgent."',
+            record:'Started amlodipine 5 mg four days ago for hypertension.\nSmoker. Father had MI at 61.',
+            context:'Message sent 06:55. Portal is checked twice a day. No other contact.'},
+    need:['item','record'], action:'escalate', why:'redflag', sev:'critical',
+    truth:'Chest heaviness with left arm ache overnight in a 58-year-old smoker with a family history is a possible acute coronary syndrome, buried in the second sentence of a message the patient labelled "not urgent". A portal is checked twice a day. This is escalated immediately through an urgent route — the patient has no way of knowing which channel is safe for which symptom.'},
+
+   {id:'D4', head:'eMAR: 14 missed doses flagged on Ward 3', sub:'Operational signal',
+    record:{item:'eMAR missed-dose report: 14 doses recorded as not given, Ward 3,\nlast 48 hours.',
+            record:'Reasons recorded: "medicine unavailable" x 12, "patient refused" x 2.\nAll 12 unavailable doses are the same product.',
+            context:'That product has been on wholesaler back-order for 6 days.\nNo alternative has been sourced and the ward has not been told.'},
+    need:['record','context'], action:'fix', why:'supply', sev:'major',
+    truth:'This reads as a nursing administration problem and is a supply failure. Twelve of the fourteen are one product on back-order for six days with no alternative sourced and the ward uninformed. The fix is upstream — source an alternative and tell the ward — not a reminder to the nursing staff.'},
+
+   {id:'D5', head:'Time-critical: co-careldopa not yet dispensed', sub:'Mrs P Nair, 71',
+    record:{item:'Ward query: co-careldopa due 08:00, not yet received. It is 09:15.',
+            record:'Parkinson\'s disease, on a strict four-times-daily regimen.\nAdmitted overnight; medicines reconciliation not yet done.',
+            context:'The item is in the clarification queue awaiting a strength check.\nQueue is worked first-in-first-out; 6 items ahead of it.'},
+    need:['record','context'], action:'escalate', why:'critical', sev:'critical',
+    truth:'Parkinson\'s medicines are time-critical: a late dose produces immediate deterioration that can take days to recover, and she is already 75 minutes late. This is pulled out of the FIFO queue and resolved now — it is a patient-safety incident in itself, not a service delay.'},
+
+   {id:'D6', head:'Adherence dashboard — perfect collection, poor control', sub:'Miss R Thomas, 29',
+    record:{item:'Adherence dashboard: 100% collection of preventer inhaler,\n12 of 12 months. Flagged "fully adherent, no action".',
+            record:'Asthma. Three courses of oral steroids this year.\nTwo A&E attendances. Reliever use high.',
+            context:'Inhaler technique last checked at diagnosis, four years ago.'},
+    need:['record','context'], action:'call', why:'technique', sev:'major',
+    truth:'The dashboard measures collection, not ingestion — and certainly not deposition in the lung. Perfect collection alongside three steroid courses and two A&E attendances points to technique, not adherence. Bring her in and watch her use the device; a dashboard cannot see what her hands are doing.'}
+  ],
+
+  outcome:function(S,M){
+    var d3=S.done.D3, d5=S.done.D5, d6=S.done.D6;
+    return '<h3 style="margin-top:16px">By the end of the day</h3>'
+      +'<p><b>Mr Joseph (D3).</b> '+((d3&&d3.actOk)
+        ? 'You escalated immediately. He was seen within the hour with an evolving inferior MI and went '
+          +'straight for intervention.'
+        : 'The message was handled as a medicines query. It was answered at the afternoon portal check, '
+          +'nine hours after he sent it. He presented to A&E that evening with a completed myocardial '
+          +'infarction.')+'</p>'
+      +'<p><b>Mrs Nair (D5).</b> '+((d5&&d5.actOk)
+        ? 'You pulled the item from the queue and it was given at 09:30. She remained mobile.'
+        : 'The dose stayed in the FIFO queue and arrived at 11:40. She became rigid and had difficulty '
+          +'swallowing, and took three days to return to her baseline.')+'</p>'
+      +'<p><b>Miss Thomas (D6).</b> '+((d6&&d6.actOk)
+        ? 'You called her in. Her technique was actuating before inhaling — almost no drug reaching the '
+          +'lung despite four years of perfect collection.'
+        : 'She was recorded as fully adherent and no action was taken. The dashboard will say the same '
+          +'next month.')+'</p>'
+      +'<div class="fb yes" style="margin-top:8px"><div class="hd">The lesson</div>Two of these arrived '
+      +'labelled as something they were not — a red flag inside a routine message, and a supply failure '
+      +'recorded as missed doses. Adherence data shows collection, never ingestion. And an asynchronous '
+      +'channel is unsafe for anything time-critical, which the patient has no way of knowing.</div>';
+  },
+
+  reportLabel:'Shift outcome',
+  reportPlaceholder:'e.g. 60/60 — chest pain escalated from a portal message; time-critical dose pulled from the queue',
+  attachments:[{label:'1. Shift Report / Printout (PDF)'},
+               {label:'2. Reflection on digital channels and what dashboards cannot see (PDF)'}]
+});
+</script>
+</body>
+</html>

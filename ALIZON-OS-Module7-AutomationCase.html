@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 7 · Automation Business Case</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+<div id="labRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-pdf-open.js"></script>
+<script src="alizon-lab-kit.js?v=1"></script>
+<script>
+/* ============================================================
+   The board wants a picking robot because picking "looks slow". Picking
+   is not the constraint — clinical verification is, at 12 items/hour
+   against picking's 30. Automating picking increases work in progress
+   and changes nothing. Worse, the current picking error rate is driven
+   by a shelf layout that puts look-alikes together; automate that and
+   you get a fast, consistent version of the same error.
+   ============================================================ */
+AlizonLabKit.stages({
+  module:'Module 7 · Unit 1 — Introduction to Pharmacy Robotics',
+  title:'Automation Business Case',
+  unitLabel:'Pharmacy AI · Module 7 · Unit 1 · Practical 1',
+  expKey:'automationcase',
+  workTab:'Business case',
+  opbar:'linear-gradient(120deg,#101c22,#18303a)',
+  startLabel:'Open the business case',
+  finishHead:'Business case complete',
+  meterA:'Analytical rigour', meterB:'Value for money',
+  counterLabel:'Stage',
+  blurb:'The board has been offered a picking robot and wants your recommendation by Friday. '+
+        'Dispensing takes too long, everyone agrees, and picking is the part everyone can see.',
+  before:'<p class="muted">Five sources are available. Each one you open is recorded. The proposal on '+
+         'the table is plausible, expensive and aimed at the wrong step.</p>'+
+         '<p class="muted">Two indices sit alongside your mark: <b>Analytical rigour</b>, which falls '+
+         'when you recommend without the evidence, and <b>Value for money</b>, which falls if you spend '+
+         'capital on something that cannot improve the outcome.</p>',
+  gatherLabel:'Read the case',
+
+  evidence:{
+    steps:{t:'Throughput by step', s:'Items per hour at each stage',
+      body:'DISPENSING PATHWAY — CAPACITY PER HOUR\n'+
+           '------------------------------------------------------------\n'+
+           'Receive & book in     40  ████████\n'+
+           'Clinical verification 12  ██        <-- lowest\n'+
+           'Picking               30  ██████\n'+
+           'Accuracy check        25  █████\n'+
+           'Hand out              35  ███████\n'+
+           '\nCurrent output: 12 items/hour. Queue builds before verification.\n'},
+    prop:{t:'The vendor proposal', s:'What is being offered, and at what cost',
+      body:'PROPOSAL — AUTOMATED PICKING SYSTEM\n'+
+           '------------------------------------------------------------\n'+
+           'Capital cost            INR 1.4 crore\n'+
+           'Annual service          INR 12 lakh\n'+
+           'Claimed picking rate    90 items/hour (from 30)\n'+
+           'Claimed benefit         "triples dispensing throughput"\n'+
+           'Footprint               requires the current verification desk space\n'},
+    errors:{t:'Where errors come from', s:'Twelve months of picking incidents',
+      body:'PICKING ERRORS — ROOT CAUSE, LAST 12 MONTHS (n=63)\n'+
+           '------------------------------------------------------------\n'+
+           'Look-alike product adjacent on shelf        41   (65%)\n'+
+           'Wrong strength, same product family         14   (22%)\n'+
+           'Mis-read handwritten annotation              5\n'+
+           'Other                                        3\n'+
+           '\nShelf layout groups by manufacturer, not by risk. Two pairs of\n'+
+           'look-alike, sound-alike products sit side by side.\n'},
+    staff:{t:'Where the verification time goes', s:'What the pharmacists are actually doing',
+      body:'CLINICAL VERIFICATION — TIME STUDY\n'+
+           '------------------------------------------------------------\n'+
+           'Reading the clinical record          38%\n'+
+           'Chasing missing indication           24%   <-- avoidable\n'+
+           'Contacting prescribers               19%\n'+
+           'Actual clinical judgement            15%\n'+
+           'System navigation                     4%\n'+
+           '\nAlmost a quarter of the constraint is spent chasing information\n'+
+           'that the prescriber could have supplied at the point of ordering.\n'},
+    space:{t:'Estate and workflow note', s:'What installing it would displace',
+      body:'FACILITIES ASSESSMENT\n'+
+           '------------------------------------------------------------\n'+
+           'The only footprint that will take the unit is the current\n'+
+           'verification desk area. Verification would move to the back\n'+
+           'office, away from the ward-facing hatch.\n'+
+           '\nWard pharmacists currently resolve about 15 queries a day at\n'+
+           'that hatch, in person, during verification.\n'}
+  },
+
+  steps:[
+    {k:'con', t:'Find the constraint', q:'What limits dispensing throughput today?',
+     need:['steps'], right:'verify',
+     options:[['pick','Picking — it is the slowest visible activity'],
+              ['verify','Clinical verification, at 12 items per hour'],
+              ['check','The accuracy check at 25 per hour'],
+              ['all','All steps equally — the whole process is slow']],
+     explain:{
+       verify:'Correct. Throughput is set by the slowest step, and verification runs at 12 items an hour against picking\'s 30. That is why the queue builds before verification and not after it.',
+       pick:'Picking is visible and busy, which is not the same as being the constraint. At 30 items an hour it has more than twice the capacity of verification.',
+       check:'The accuracy check at 25 an hour is above the constraint and does not limit output.',
+       all:'They are not equal — there is a clear slowest step, and identifying it is the whole point of the exercise.'
+     }},
+
+    {k:'effect', t:'Predict the effect', q:'If picking is automated to 90 items an hour, what happens to output?',
+     need:['steps','prop'], right:'nothing',
+     penaltyB:{triple:40, some:20},
+     options:[['triple','Output triples, as the vendor claims'],
+              ['some','Output rises somewhat — every improvement helps'],
+              ['nothing','Output stays at 12 an hour; only work in progress increases'],
+              ['fall','Output falls because staff must learn the new system']],
+     explain:{
+       nothing:'Correct. Improving any step other than the constraint cannot raise total output. Picking would deliver items to the verification queue three times faster, and they would simply wait there. The only visible change is a larger pile of half-finished work.',
+       triple:'The vendor\'s claim assumes picking limits output. It does not. This is the single most expensive mistake in operational improvement.',
+       some:'It is intuitive and it is wrong. Non-constraint capacity is not partially useful; it converts entirely into work in progress.',
+       fall:'There would be a learning dip, but the structural point is that even a perfectly adopted picking robot cannot lift a ceiling set elsewhere.'
+     }},
+
+    {k:'auto', t:'Judge the error case', q:'The vendor also claims the robot will eliminate picking errors. Is that a sound reason to buy?',
+     need:['errors'], right:'layout',
+     options:[['yes','Yes — automation removes human picking error entirely'],
+              ['layout','No, not on its own — 65% of errors come from look-alike products sitting adjacent on a shelf, and a robot loaded from that same layout reproduces the error faster'],
+              ['none4','No, because picking errors are too few to matter'],
+              ['train','No — the answer is retraining the picking staff']],
+     explain:{
+       layout:'Correct. Automation removes execution error, not selection error. If a look-alike product is loaded into the adjacent canister, the machine will dispense the wrong one flawlessly, every time, until somebody notices. Fixing the shelf layout by risk rather than by manufacturer is free and addresses two-thirds of the incidents.',
+       yes:'It removes the error of the hand slipping, not the error of the wrong product being where the system believes the right one is. A loading error is reproduced on every subsequent dispense.',
+       none4:'Sixty-three picking errors in a year is not negligible.',
+       train:'Retraining individuals does not change a shelf layout that puts look-alikes side by side. The next person meets the same trap.'
+     }},
+
+    {k:'rec', t:'Make the recommendation', q:'What do you recommend to the board?',
+     need:['staff','space'], right:'indication',
+     penaltyB:{buy:45, defer:10},
+     options:[['buy','Buy the robot — the capital is available and automation is the direction of travel'],
+              ['indication','Decline for now. Relieve verification first: make the indication mandatory at ordering to remove the 24% spent chasing it, and re-lay the shelves by risk. Re-measure, then revisit automation against the new constraint'],
+              ['defer','Defer the decision for twelve months without action'],
+              ['small','Buy a smaller unit that fits elsewhere in the department']],
+     explain:{
+       indication:'Correct. Almost a quarter of the constraint is spent chasing an indication the prescriber could have supplied at ordering — that is capacity recoverable at no capital cost. Re-laying shelves by risk addresses most of the errors. Only after that has been measured does it make sense to ask what the new constraint is and whether automation addresses it.',
+       buy:'Worse than doing nothing: it spends 1.4 crore plus service, cannot raise output, and displaces verification away from the hatch where fifteen queries a day are resolved face to face.',
+       defer:'Deferring without acting leaves the constraint exactly where it is. The point is not to avoid spending, it is to fix the right thing.',
+       small:'A smaller unit has the same structural problem. The size of the robot is not the issue; the step it improves is.'
+     }}
+  ],
+
+  outcome:function(S,M){
+    var ok=S.ans.rec&&S.ans.rec.pick==='indication';
+    return '<h3 style="margin-top:16px">What the numbers showed</h3>'
+      +'<p>Verification runs at 12 items an hour and everything else runs faster, so verification is the '
+      +'ceiling. A picking robot at 90 an hour would deliver work to that ceiling three times faster and '
+      +'change output by nothing. Two-thirds of picking errors come from look-alike products shelved '
+      +'together, which a robot loaded from the same layout would reproduce faithfully. And installing it '
+      +'would push verification away from the hatch where fifteen queries a day are settled in person.</p>'
+      +'<p>Meanwhile 24% of the constraint is spent chasing an indication that could have been mandatory '
+      +'at ordering — free capacity, sitting in plain sight.</p>'
+      +(ok
+        ? '<div class="fb yes"><div class="hd">You fixed the right thing</div>You found the constraint, '
+          +'predicted correctly that improving elsewhere would do nothing, and recommended the change that '
+          +'costs nothing and actually lifts the ceiling.</div>'
+        : '<div class="fb no"><div class="hd">The ceiling would not have moved</div>Whatever was bought, '
+          +'output stays at 12 items an hour until verification is relieved — and the department would have '
+          +'a larger pile of picked, unverified work to show for it.</div>')
+      +'<div class="fb yes" style="margin-top:8px"><div class="hd">Carry this forward</div>Only the '
+      +'constraint limits throughput. Map the process before automating it, because automating a poor '
+      +'process gives you a fast, consistent poor process — and check what the installation displaces, not '
+      +'only what it replaces.</div>';
+  },
+
+  reportLabel:'Recommendation',
+  reportPlaceholder:'e.g. 50/50 — decline; relieve verification and re-lay shelves, then revisit',
+  attachments:[{label:'1. Business Case / Printout (PDF)'},
+               {label:'2. Reflection on constraints and automating a poor process (PDF)'}]
+});
+</script>
+</body>
+</html>
