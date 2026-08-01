@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 7 · Automated Dispensing Cabinet Investigation</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+<style>
+:root{--crimson:#b1040e;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;--panel:#fff;--bg:#f4f2ef;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --card-shadow:0 2px 10px rgba(0,0,0,.06)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1140px;margin:0 auto;padding:0 18px 80px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:72ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);
+  background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#101c22,#18303a);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:150px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--card-shadow);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.stage{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.stage span{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:100px;
+  background:#fff;border:1px solid var(--line);color:var(--muted)}
+.stage span.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.stage span.did{border-color:#137a3a;color:#137a3a}
+.ev{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:10px;margin:10px 0}
+.evb{text-align:left;font:inherit;background:#fff;border:1px solid var(--line);border-radius:11px;padding:11px 13px;cursor:pointer}
+.evb:hover{border-color:var(--crimson)}
+.evb.seen{border-color:#137a3a;background:#f4faf6}
+.evb b{display:block;font-size:13px;margin-bottom:2px}
+.evb small{color:var(--muted);font-size:11.5px}
+.out{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-family:ui-monospace,Menlo,monospace;
+  font-size:12.2px;line-height:1.65;white-space:pre-wrap;margin:10px 0;min-height:64px;overflow-x:auto}
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:13px 0 3px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.muted{color:var(--muted);font-size:12.5px}
+table.rep{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.rep th,table.rep td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.rep th{background:#f7f4f1;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}}
+</style>
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 7 · Unit 2 · Practical 1</div>
+    <h1>Automated Dispensing Cabinet Investigation</h1>
+    <p>Ward 4B's cabinet has flagged a controlled-drug discrepancy overnight. You are the pharmacist
+       investigating. The transaction log will tell you who — but who is not the same as why.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="inv">Investigation</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="cabinetaudit"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Five sources of evidence are available. Each one you open is recorded. You will be
+        asked to name a cause and choose an action, and a plausible wrong answer is available from the
+        very first screen — a named nurse whose count does not balance.</p>
+      <p class="muted">Two indices are tracked separately from your mark: <b>Investigation quality</b>,
+        which falls when you conclude without the evidence, and <b>Fairness</b>, which falls when you
+        attribute a systems failure to a person.</p>
+      <button class="btn" id="startBtn">▶ Open the investigation</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-inv">
+    <div class="opbar">
+      <div><div class="k">Stage</div><div class="v" id="mStage">1 / 4</div></div>
+      <div><div class="k">Evidence opened</div><div class="v" id="mEv">0 / 5</div></div>
+      <div class="meter" id="mQW"><div class="k">Investigation quality</div><div class="v" id="mQ">100%</div><div class="bar"><i id="bQ" style="width:100%"></i></div></div>
+      <div class="meter" id="mFW"><div class="k">Fairness</div><div class="v" id="mF">100%</div><div class="bar"><i id="bF" style="width:100%"></i></div></div>
+    </div>
+    <div class="stage" id="stageBar"></div>
+    <div id="stageArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Complete the investigation to generate your report, then write and submit it below.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=15"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+/* ============================================================
+   The evidence. The obvious suspect is Staff Nurse Rao, whose count on
+   Tuesday night does not balance. The truth is a LOADING error: on Monday
+   the pharmacy technician restocked pocket B4 with 10 mg ampoules into a
+   5 mg pocket, so every subsequent removal recorded the wrong strength.
+   The nurse's count is out because the pocket contents were never what
+   the system believed. Blaming her is the trap, and the fairness index
+   is what punishes it.
+   ============================================================ */
+var EV={
+ log:{t:'Cabinet transaction log',s:'Every removal, with user and time',
+  body:'WARD 4B · POCKET B4 · MORPHINE SULFATE INJECTION 5 mg/mL\n'+
+       '--------------------------------------------------------------\n'+
+       'Mon 09:14  RESTOCK      +20   tech.pmenon    expected on-hand 20\n'+
+       'Mon 21:40  REMOVE        -2   rn.jacob       blind count entered 18  OK\n'+
+       'Tue 02:05  REMOVE        -2   rn.rao         blind count entered 16  OK\n'+
+       'Tue 06:22  REMOVE        -2   rn.rao         blind count entered 13  DISCREPANCY (-1)\n'+
+       'Tue 14:10  REMOVE        -1   rn.jacob       blind count entered 12  OK\n'+
+       'Tue 23:55  REMOVE        -2   rn.rao         blind count entered  9  DISCREPANCY (-1)\n'+
+       'Wed 07:30  CYCLE COUNT        physical 9     system 11   DISCREPANCY (-2)\n'},
+ restock:{t:'Restock record & barcode scans',s:'What was actually loaded on Monday',
+  body:'RESTOCK EVENT  Mon 09:14  tech.pmenon\n'+
+       '--------------------------------------------------------------\n'+
+       'Pocket B4 assigned product : MORPHINE SULFATE INJ 5 mg/mL  (GTIN ...8841)\n'+
+       'Barcode scanned at load    : MORPHINE SULFATE INJ 10 mg/mL (GTIN ...8858)\n'+
+       'Scan mismatch warning      : RAISED — overridden by user\n'+
+       'Override reason recorded   : "wrong barcode on box"\n'+
+       'Quantity loaded            : 20 ampoules\n'},
+ emar:{t:'eMAR — what was administered',s:'Doses given to patients from this pocket',
+  body:'ADMINISTRATIONS FROM WARD 4B SINCE MON 09:14\n'+
+       '--------------------------------------------------------------\n'+
+       'Mon 21:45  Bed 2  morphine 10 mg  ordered 10 mg  (2 amp x 5 mg believed)\n'+
+       'Tue 02:10  Bed 6  morphine 10 mg  ordered 10 mg  (2 amp x 5 mg believed)\n'+
+       'Tue 06:25  Bed 6  morphine 10 mg  ordered 10 mg  (2 amp x 5 mg believed)\n'+
+       'Tue 14:12  Bed 3  morphine  5 mg  ordered  5 mg  (1 amp x 5 mg believed)\n'+
+       'Tue 23:58  Bed 6  morphine 10 mg  ordered 10 mg  (2 amp x 5 mg believed)\n'+
+       '\n! Every ampoule drawn from B4 since Monday contained 10 mg/mL.\n'},
+ obs:{t:'Nursing observations, Bed 6',s:'The patient who received the most',
+  body:'BED 6 · Mrs K Antony, 71 · post-operative\n'+
+       '--------------------------------------------------------------\n'+
+       'Tue 03:10  RR 9   sedation score 2   "very drowsy, rousable"\n'+
+       'Tue 07:05  RR 8   sedation score 3   naloxone 100 mcg given, good response\n'+
+       'Tue 07:40  RR 14  sedation score 1   observations resumed hourly\n'+
+       'Wed 00:30  RR 9   sedation score 2   medical review requested\n'},
+ staff:{t:'Statement — Staff Nurse Rao',s:'The user on both discrepancies',
+  body:'"I counted what was in the pocket. Both times the number I counted was one\n'+
+       ' fewer than the machine expected, and both times I entered what I actually\n'+
+       ' saw. I reported it to the nurse in charge on Tuesday morning. Nobody has\n'+
+       ' been back to me about it. I have not removed anything I did not give."\n'+
+       '\nCorroboration: nurse-in-charge handover note Tue 07:15 records the report.\n'}
+};
+
+var STAGES=[
+ {k:'gather', t:'Gather evidence'},
+ {k:'cause',  t:'Identify the cause'},
+ {k:'harm',   t:'Assess patient harm'},
+ {k:'action', t:'Decide the action'}
+];
+
+var CAUSES=[
+ ['diversion','Diversion by Staff Nurse Rao — the user on both discrepancies'],
+ ['count','Counting error by nursing staff at removal'],
+ ['loading','Loading error — the wrong strength was stocked into pocket B4'],
+ ['machine','Cabinet mechanical fault dispensing extra ampoules']
+];
+var ACTIONS=[
+ ['suspend','Suspend Staff Nurse Rao pending a diversion investigation'],
+ ['retrain','Retrain the nursing team on blind counting'],
+ ['quarantine','Quarantine pocket B4, reconcile every dose given since Monday, review Bed 6 clinically, and report as a patient-safety incident'],
+ ['adjust','Adjust the stock figure to match the physical count and monitor']
+];
+var HARM=[
+ ['none','No patient harm — the discrepancy is a stock issue'],
+ ['potential','Potential harm only — no patient received a wrong dose'],
+ ['actual','Actual harm — a patient received double the intended dose and required naloxone']
+];
+
+var S={stage:0,opened:{},q:100,f:100,ans:{},marks:{}};
+
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){
+    [].forEach.call(document.querySelectorAll('.tabs button'),function(x){x.classList.remove('on');});
+    [].forEach.call(document.querySelectorAll('.panel'),function(x){x.classList.remove('on');});
+    b.classList.add('on'); $('p-'+b.getAttribute('data-p')).classList.add('on');
+  });
+});
+function goTab(n){[].forEach.call(document.querySelectorAll('.tabs button'),function(b){if(b.getAttribute('data-p')===n)b.click();});}
+
+$('startBtn').addEventListener('click',function(){ goTab('inv'); paint(); });
+
+function meters(){
+  S.q=Math.max(0,S.q); S.f=Math.max(0,S.f);
+  $('mQ').textContent=S.q+'%'; $('bQ').style.width=S.q+'%';
+  $('mF').textContent=S.f+'%'; $('bF').style.width=S.f+'%';
+  $('mQW').className='meter'+(S.q<50?' bad':(S.q<80?' warn':''));
+  $('mFW').className='meter'+(S.f<50?' bad':(S.f<80?' warn':''));
+  $('mEv').textContent=Object.keys(S.opened).length+' / 5';
+  $('mStage').textContent=Math.min(S.stage+1,4)+' / 4';
+}
+
+function paintStageBar(){
+  $('stageBar').innerHTML=STAGES.map(function(s,i){
+    return '<span class="'+(i===S.stage?'on':(i<S.stage?'did':''))+'">'+(i+1)+'. '+s.t+'</span>';
+  }).join('');
+}
+
+function paint(){
+  paintStageBar(); meters();
+  var st=STAGES[S.stage];
+  if(!st) return finish();
+  if(st.k==='gather') return paintGather();
+  if(st.k==='cause')  return paintChoice('cause','What is the cause of the discrepancy?',CAUSES,'loading');
+  if(st.k==='harm')   return paintChoice('harm','What level of patient harm has occurred?',HARM,'actual');
+  if(st.k==='action') return paintChoice('action','What is your immediate action?',ACTIONS,'quarantine');
+}
+
+function paintGather(){
+  var keys=Object.keys(EV);
+  $('stageArea').innerHTML='<div class="card"><h3>Evidence available</h3>'
+    +'<p class="muted">Open what you need. You may proceed at any time — but a conclusion drawn without '
+    +'the evidence is recorded as such.</p>'
+    +'<div class="ev">'+keys.map(function(k){
+        return '<button class="evb'+(S.opened[k]?' seen':'')+'" data-k="'+k+'"><b>'+esc(EV[k].t)+'</b><small>'+esc(EV[k].s)+'</small></button>';
+      }).join('')+'</div>'
+    +'<div class="out" id="evOut">Nothing open.</div>'
+    +'<button class="btn" id="nextBtn">Continue to the cause</button></div>';
+  [].forEach.call($('stageArea').querySelectorAll('.evb'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-k'); S.opened[k]=true; b.classList.add('seen');
+      $('evOut').textContent=EV[k].body; meters();
+    });
+  });
+  $('nextBtn').addEventListener('click',function(){ S.stage=1; paint(); });
+}
+
+function paintChoice(key,q,list,right){
+  $('stageArea').innerHTML='<div class="card"><h3>'+esc(q)+'</h3>'
+    +'<div class="opts" id="ch">'+list.map(function(o){
+        return '<button class="opt" data-v="'+o[0]+'">'+esc(o[1])+'</button>';
+      }).join('')+'</div>'
+    +'<div class="lbl">Evidence you are relying on</div>'
+    +'<p class="muted">Opened so far: '+(Object.keys(S.opened).map(function(k){return EV[k].t;}).join(' · ')||'nothing')+'</p>'
+    +'<button class="btn" id="goBtn">Record</button><div id="fbk"></div></div>';
+  var pick=null;
+  [].forEach.call($('ch').querySelectorAll('.opt'),function(b){
+    b.addEventListener('click',function(){
+      [].forEach.call($('ch').querySelectorAll('.opt'),function(x){x.classList.remove('sel');});
+      b.classList.add('sel'); pick=b.getAttribute('data-v');
+    });
+  });
+  $('goBtn').addEventListener('click',function(){
+    if(!pick){ $('fbk').innerHTML='<div class="fb no"><div class="hd">Choose an option</div>Select an answer before recording.</div>'; return; }
+    grade(key,pick,right);
+  });
+}
+
+var EXPL={
+ cause:{
+  loading:'Correct. The restock record shows 10 mg/mL ampoules scanned into a pocket assigned 5 mg/mL, the mismatch warning raised, and the technician overriding it. Every removal since Monday recorded the wrong strength — which is why the counts drift and why the nurse could not make them balance.',
+  diversion:'Wrong, and seriously so. Nurse Rao entered the count she actually saw, reported it at the time, and the handover note corroborates her. The user shown on a discrepancy is the person who found it, not necessarily the person who caused it.',
+  count:'Not the cause. The counts were entered honestly and blind, and a counting error would not produce a consistent one-ampoule drift in the same direction.',
+  machine:'Not supported by any evidence you have. No mechanical fault is recorded, and a fault would not explain the barcode mismatch on Monday.'
+ },
+ harm:{
+  actual:'Correct. Bed 6 received three doses drawn from B4, each believed to be 10 mg and each actually 20 mg. Respiratory rate fell to 8 and naloxone was required. This is actual harm and a reportable patient-safety incident.',
+  none:'Incorrect. The eMAR and the Bed 6 observations together show a patient who received double doses and needed naloxone.',
+  potential:'Incorrect. Potential harm means nobody was given a wrong dose. Bed 6 was, three times, and required reversal.'
+ },
+ action:{
+  quarantine:'Correct, and in that order. Quarantine stops further wrong-strength doses immediately; reconciliation establishes who else received one; clinical review addresses the patient already harmed; and the incident report starts the systems investigation.',
+  suspend:'Wrong and unjust. Suspending the nurse who found and reported the discrepancy punishes the behaviour you most need, and it leaves the wrong-strength ampoules in the pocket.',
+  retrain:'Retraining does not address the cause. The counts were done correctly; the pocket contents were wrong.',
+  adjust:'Dangerous. Adjusting the figure to match the count conceals the problem and leaves 10 mg ampoules in a 5 mg pocket for the next nurse.'
+ }
+};
+
+function grade(key,pick,right){
+  var ok=pick===right;
+  var needed = key==='cause' ? ['log','restock'] : key==='harm' ? ['emar','obs'] : ['restock','emar'];
+  var looked = needed.every(function(k){ return S.opened[k]; });
+  var mark=(ok?8:0)+(looked?2:0);
+  S.marks[key]=mark; S.ans[key]={pick:pick,ok:ok,looked:looked};
+  if(!ok) S.q-=14;
+  if(!looked) S.q-=8;
+  if(key==='cause'&&pick==='diversion') S.f-=45;
+  if(key==='action'&&pick==='suspend') S.f-=35;
+  meters();
+  $('fbk').innerHTML='<div class="fb '+(ok?'yes':'no')+'"><div class="hd">'+(ok?'Correct':'Not correct')+'</div>'
+    +esc(EXPL[key][pick])+(looked?'':'<br><br><b>You concluded without opening the evidence that would have shown it.</b>')+'</div>'
+    +'<button class="btn" id="onBtn" style="margin-top:10px">Continue</button>';
+  $('onBtn').addEventListener('click',function(){ S.stage++; paint(); });
+}
+
+function finish(){
+  var total=['cause','harm','action'].reduce(function(a,k){return a+(S.marks[k]||0);},0);
+  var evMark=Math.round(Object.keys(S.opened).length/5*10);
+  var grand=total+evMark, pct=Math.round(grand/40*100);
+  var rows=[['Evidence gathered',evMark+' / 10'],
+            ['Cause identified',(S.marks.cause||0)+' / 10'],
+            ['Harm assessed',(S.marks.harm||0)+' / 10'],
+            ['Action decided',(S.marks.action||0)+' / 10']]
+            .map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>';}).join('');
+  var blamed = (S.ans.cause&&S.ans.cause.pick==='diversion')||(S.ans.action&&S.ans.action.pick==='suspend');
+
+  $('resEmpty').style.display='none';
+  $('resBox').innerHTML='<div class="card"><h3>Investigation closed</h3>'
+    +'<p><b>'+grand+' / 40</b> ('+pct+'%) &nbsp;·&nbsp; Investigation quality <b>'+S.q+'%</b> &nbsp;·&nbsp; Fairness <b>'+S.f+'%</b></p>'
+    +'<table class="rep"><tr><th>Element</th><th>Mark</th></tr>'+rows+'</table>'
+    +'<h3 style="margin-top:16px">What actually happened</h3>'
+    +'<p>A technician loaded 10 mg/mL morphine into a pocket assigned 5 mg/mL, overrode the barcode '
+    +'mismatch warning with the note "wrong barcode on box", and every dose drawn from that pocket for '
+    +'two days was double what the record said. Mrs Antony in Bed 6 received three such doses and '
+    +'needed naloxone. Staff Nurse Rao counted honestly, entered what she saw, and reported it — twice.</p>'
+    +(blamed
+      ? '<div class="fb no"><div class="hd">You blamed the person who found it</div>The user shown against a '
+        +'discrepancy is very often the person who discovered it. Attributing a systems failure to that '
+        +'person removes the only early warning the system had — the next nurse will simply adjust the '
+        +'count to match and say nothing.</div>'
+      : '<div class="fb yes"><div class="hd">You followed the evidence</div>You reached the loading error '
+        +'rather than the obvious suspect, and you protected the person who reported it. That is what makes '
+        +'the next discrepancy get reported too.</div>')
+    +'<div class="fb yes" style="margin-top:8px"><div class="hd">The designed-out lesson</div>The override that '
+    +'allowed a mismatched barcode to be loaded is the single control that would have prevented all of this. '
+    +'A warning a user can dismiss is not a control.</div>'
+    +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
+  goTab('res');
+
+  var OPTS={module:'Module 7 · Unit 2 — Automated Dispensing & Storage Systems',
+            title:'Automated Dispensing Cabinet Investigation',
+            programme:'Pharmacy AI', pct:pct,
+            resultText:grand+'/40 ('+pct+'%) · quality '+S.q+'% · fairness '+S.f+'%'};
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+    titleField:{label:'Investigation outcome',
+                placeholder:'e.g. 38/40 — loading error identified, pocket quarantined, Bed 6 reviewed, incident reported'},
+    minWords:400,
+    attachments:[{label:'1. Investigation Report / Printout (PDF)'},
+                 {label:'2. Reflection on just culture and reporting behaviour (PDF)'}],
+    reportHtml:$('resBox').innerHTML
+  });
+}
+
+meters();
+})();
+</script>
+</body>
+</html>

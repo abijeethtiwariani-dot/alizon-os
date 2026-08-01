@@ -218,8 +218,12 @@
 '\n'+
 'In conclusion, workflow optimisation and quality assurance are essential elements of modern pharmacy practice, enabling efficient, accurate, and safe medication management. The integration of automation, robotics, and artificial intelligence has transformed pharmacy workflows into highly coordinated and intelligent systems. By streamlining processes, enhancing data integration, and ensuring compliance with regulatory standards, these technologies significantly improve patient outcomes and operational efficiency. While challenges such as cost, complexity, and data security must be addressed, the benefits of workflow optimisation and quality assurance make them indispensable in contemporary healthcare systems. As technology continues to evolve, these systems will play an increasingly important role in shaping the future of pharmacy practice, ensuring high-quality, patient-centered care.\n'+
 '\n'+
-'@note\n'+
-'The practical programme for this module is delivered as supervised workplace exercises and case discussion. Browser-based simulations for this module are in development and will appear in the Practicals area of ALIZON OS when released.\n'+
+'@section Practical programme\n'+
+'\n'+
+'The practicals for this module run in ALIZON OS and are scored in the browser. Each one withholds information until you go and look for it, so the mark reflects what you investigated as well as what you concluded. Open them from the Practicals area of the portal.\n'+
+'\n'+
+'@activity Practical 1 · Automated Dispensing Cabinet Investigation (Unit 2)\n'+
+'A controlled-drug discrepancy with a named nurse on both counts. Follow the evidence instead: a technician overrode a barcode mismatch and loaded 10 mg ampoules into a 5 mg pocket, and the nurse who could not balance the count is the one who reported it.\n'+
 '\n'+
 '\n'
 };

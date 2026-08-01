@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Module 6 · Prescribing Analytics Investigation</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+<style>
+:root{--crimson:#b1040e;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;--panel:#fff;--bg:#f4f2ef;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --card-shadow:0 2px 10px rgba(0,0,0,.06)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1140px;margin:0 auto;padding:0 18px 80px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:72ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);
+  background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#131a26,#1d2a3a);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:150px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--card-shadow);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.stage{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.stage span{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:100px;
+  background:#fff;border:1px solid var(--line);color:var(--muted)}
+.stage span.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.stage span.did{border-color:#137a3a;color:#137a3a}
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 9px;text-align:left}
+table.d th{background:#f7f4f1;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+.barwrap{display:flex;align-items:center;gap:8px}
+.barwrap .b{flex:1;height:14px;background:#f0ece8;border-radius:3px;overflow:hidden;min-width:60px}
+.barwrap .b i{display:block;height:100%;background:var(--crimson);opacity:.8}
+.drill{font:inherit;font-size:11.5px;font-weight:700;border:1px solid var(--line);background:#fff;color:var(--muted);
+  border-radius:100px;padding:3px 11px;cursor:pointer}
+.drill.seen{border-color:#137a3a;color:#137a3a}
+.out{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-family:ui-monospace,Menlo,monospace;
+  font-size:12.2px;line-height:1.65;white-space:pre-wrap;margin:10px 0;min-height:58px;overflow-x:auto}
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:13px 0 3px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.muted{color:var(--muted);font-size:12.5px}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}}
+</style>
+</head>
+<body>
+<script src="alizon-lab-gate.js"></script>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="mod">Pharmacy AI · Module 6 · Unit 3 · Practical 1</div>
+    <h1>Prescribing Analytics Investigation</h1>
+    <p>The antimicrobial stewardship committee wants to know who is prescribing too many broad-spectrum
+       antibiotics. You have the data for six prescribers. One of them stands out immediately — and that
+       is exactly the problem.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="an">Analysis</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="rxanalytics"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">You will see a crude rate first. Before you draw any conclusion about a person you
+        may drill into their case mix, their clinical setting and the guideline compliance behind the
+        number. Each drill-down you open is recorded.</p>
+      <p class="muted">Two indices sit alongside your mark: <b>Analytical rigour</b>, which falls when you
+        conclude from an unadjusted number, and <b>Fairness</b>, which falls when you name a prescriber
+        the data does not convict.</p>
+      <button class="btn" id="startBtn">▶ Open the dataset</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-an">
+    <div class="opbar">
+      <div><div class="k">Stage</div><div class="v" id="mStage">1 / 4</div></div>
+      <div><div class="k">Drill-downs opened</div><div class="v" id="mDr">0 / 6</div></div>
+      <div class="meter" id="mRW"><div class="k">Analytical rigour</div><div class="v" id="mR">100%</div><div class="bar"><i id="bR" style="width:100%"></i></div></div>
+      <div class="meter" id="mFW"><div class="k">Fairness</div><div class="v" id="mF">100%</div><div class="bar"><i id="bF" style="width:100%"></i></div></div>
+    </div>
+    <div class="stage" id="stageBar"></div>
+    <div id="stageArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Complete the analysis to generate your report, then write and submit it below.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-practical-submit.js?v=3"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=15"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+/* ============================================================
+   Dr Menon has by far the highest crude broad-spectrum rate (188 per 1,000)
+   and is the obvious answer. She runs the haemato-oncology service: her
+   patients are neutropenic and broad-spectrum therapy is guideline-correct.
+   Adjusted, she is the BEST prescriber on the list.
+   Dr Sunil looks unremarkable at 104 — a whisker above the median — but he
+   works in routine outpatients, where almost none of it is justified, and
+   his guideline compliance is 41%. He is the real problem, and he is
+   invisible until you adjust.
+   ============================================================ */
+var P=[
+ {id:'menon', n:'Dr A Menon',  crude:188, setting:'Haemato-oncology inpatients',
+  mix:'78% neutropenic or immunosuppressed; 61% febrile neutropenia protocol', comply:96, adj:71,
+  note:'Broad-spectrum therapy is protocol-mandated for febrile neutropenia. Rate is expected to be high.'},
+ {id:'sunil', n:'Dr R Sunil',  crude:104, setting:'General outpatient clinic',
+  mix:'4% immunosuppressed; overwhelmingly uncomplicated community infection', comply:41, adj:167,
+  note:'Almost no case-mix justification. Documented indication missing on most; 41% guideline compliance.'},
+ {id:'jacob', n:'Dr M Jacob',  crude:112, setting:'Acute medical unit',
+  mix:'22% immunosuppressed; mixed severity', comply:88, adj:97,
+  note:'Broadly in line once acuity is accounted for.'},
+ {id:'thomas',n:'Dr S Thomas', crude:96,  setting:'Care of the elderly',
+  mix:'12% immunosuppressed; high frailty', comply:91, adj:93, note:'Unremarkable.'},
+ {id:'iqbal', n:'Dr N Iqbal',  crude:88,  setting:'Surgical wards',
+  mix:'9% immunosuppressed; largely prophylaxis', comply:84, adj:90, note:'Unremarkable.'},
+ {id:'roy',   n:'Dr P Roy',    crude:71,  setting:'General outpatient clinic',
+  mix:'5% immunosuppressed; similar population to Dr Sunil', comply:93, adj:74,
+  note:'Same clinic and case mix as Dr Sunil, with less than half the adjusted rate. The useful comparison.'}
+];
+var MEDIAN_ADJ=95;
+
+var STAGES=[{k:'crude',t:'Read the crude data'},{k:'adjust',t:'Adjust for case mix'},
+            {k:'name',t:'Identify the outlier'},{k:'act',t:'Design the response'}];
+
+var S={stage:0,drill:{},r:100,f:100,marks:{},ans:{}};
+
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){
+    [].forEach.call(document.querySelectorAll('.tabs button'),function(x){x.classList.remove('on');});
+    [].forEach.call(document.querySelectorAll('.panel'),function(x){x.classList.remove('on');});
+    b.classList.add('on'); $('p-'+b.getAttribute('data-p')).classList.add('on');
+  });
+});
+function goTab(n){[].forEach.call(document.querySelectorAll('.tabs button'),function(b){if(b.getAttribute('data-p')===n)b.click();});}
+$('startBtn').addEventListener('click',function(){ goTab('an'); paint(); });
+
+function meters(){
+  S.r=Math.max(0,S.r); S.f=Math.max(0,S.f);
+  $('mR').textContent=S.r+'%'; $('bR').style.width=S.r+'%';
+  $('mF').textContent=S.f+'%'; $('bF').style.width=S.f+'%';
+  $('mRW').className='meter'+(S.r<50?' bad':(S.r<80?' warn':''));
+  $('mFW').className='meter'+(S.f<50?' bad':(S.f<80?' warn':''));
+  $('mDr').textContent=Object.keys(S.drill).length+' / 6';
+  $('mStage').textContent=Math.min(S.stage+1,4)+' / 4';
+}
+function paintStageBar(){
+  $('stageBar').innerHTML=STAGES.map(function(s,i){
+    return '<span class="'+(i===S.stage?'on':(i<S.stage?'did':''))+'">'+(i+1)+'. '+s.t+'</span>';}).join('');
+}
+function paint(){
+  paintStageBar(); meters();
+  var st=STAGES[S.stage]; if(!st) return finish();
+  if(st.k==='crude')  return paintCrude();
+  if(st.k==='adjust') return paintAdjust();
+  if(st.k==='name')   return paintName();
+  if(st.k==='act')    return paintAct();
+}
+
+function bar(v,max){ return '<div class="barwrap"><div class="b"><i style="width:'+Math.round(v/max*100)+'%"></i></div><span>'+v+'</span></div>'; }
+
+function paintCrude(){
+  var max=Math.max.apply(null,P.map(function(p){return p.crude;}));
+  var rows=P.slice().sort(function(a,b){return b.crude-a.crude;}).map(function(p){
+    return '<tr'+(p.crude===max?' class="hot"':'')+'><td>'+esc(p.n)+'</td><td>'+bar(p.crude,max)+'</td>'
+      +'<td><button class="drill'+(S.drill[p.id]?' seen':'')+'" data-id="'+p.id+'">Drill down</button></td></tr>';
+  }).join('');
+  $('stageArea').innerHTML='<div class="card"><h3>Broad-spectrum prescriptions per 1,000 patient-days</h3>'
+    +'<p class="muted">Crude rate, last quarter. No adjustment of any kind has been applied.</p>'
+    +'<table class="d"><tr><th>Prescriber</th><th>Crude rate</th><th></th></tr>'+rows+'</table>'
+    +'<div class="out" id="drOut">Nothing opened. The crude rate is all you can see.</div>'
+    +'<button class="btn" id="nextBtn">Continue</button></div>';
+  [].forEach.call($('stageArea').querySelectorAll('.drill'),function(b){
+    b.addEventListener('click',function(){
+      var id=b.getAttribute('data-id'); S.drill[id]=true; b.classList.add('seen');
+      var p=P.filter(function(x){return x.id===id;})[0];
+      $('drOut').textContent=p.n+'\n'+'-'.repeat(46)+'\nSetting            : '+p.setting
+        +'\nCase mix           : '+p.mix+'\nGuideline compliance: '+p.comply+'%'
+        +'\nCase-mix adjusted  : '+p.adj+' per 1,000  (peer median '+MEDIAN_ADJ+')';
+      meters();
+    });
+  });
+  $('nextBtn').addEventListener('click',function(){ S.stage=1; paint(); });
+}
+
+function paintAdjust(){
+  $('stageArea').innerHTML='<div class="card"><h3>Which comparison is fair?</h3>'
+    +'<p class="muted">Before naming anybody, decide what the crude rate can and cannot support.</p>'
+    +'<div class="opts" id="ch">'
+    +[['crude','The crude rate is the fairest measure — it counts what was actually prescribed'],
+      ['adjust','The rate must be adjusted for case mix before any prescriber is compared to another'],
+      ['volume','Adjusting for total prescribing volume alone is sufficient'],
+      ['nocompare','Prescribers should never be compared with one another']]
+      .map(function(o){return '<button class="opt" data-v="'+o[0]+'">'+esc(o[1])+'</button>';}).join('')
+    +'</div><button class="btn" id="goBtn">Record</button><div id="fbk"></div></div>';
+  wire('adjust','adjust');
+}
+
+function paintName(){
+  var max=Math.max.apply(null,P.map(function(p){return p.adj;}));
+  var rows=P.slice().sort(function(a,b){return b.adj-a.adj;}).map(function(p){
+    return '<tr'+(p.adj===max?' class="hot"':'')+'><td>'+esc(p.n)+'</td><td class="n">'+p.crude+'</td>'
+      +'<td>'+bar(p.adj,max)+'</td><td class="n">'+p.comply+'%</td></tr>';}).join('');
+  $('stageArea').innerHTML='<div class="card"><h3>Case-mix adjusted rates</h3>'
+    +'<table class="d"><tr><th>Prescriber</th><th>Crude</th><th>Adjusted</th><th>Guideline compliance</th></tr>'+rows+'</table>'
+    +'<p class="muted">Peer median adjusted rate: '+MEDIAN_ADJ+' per 1,000.</p>'
+    +'<div class="lbl">Whose prescribing warrants investigation?</div>'
+    +'<div class="opts" id="ch">'+P.map(function(p){
+        return '<button class="opt" data-v="'+p.id+'">'+esc(p.n)+'</button>';}).join('')
+    +'<button class="opt" data-v="none">Nobody — the variation is explained</button></div>'
+    +'<button class="btn" id="goBtn">Record</button><div id="fbk"></div></div>';
+  wire('name','sunil');
+}
+
+function paintAct(){
+  $('stageArea').innerHTML='<div class="card"><h3>What do you do with the finding?</h3>'
+    +'<div class="opts" id="ch">'
+    +[['report','Circulate the league table to all prescribers, naming the outlier'],
+      ['confidential','Return the adjusted data to Dr Sunil confidentially with the peer comparison, agree a review of indication documentation, and re-measure next quarter'],
+      ['escalate','Report Dr Sunil to the medical director immediately'],
+      ['target','Set a broad-spectrum prescribing target for every prescriber']]
+      .map(function(o){return '<button class="opt" data-v="'+o[0]+'">'+esc(o[1])+'</button>';}).join('')
+    +'</div><button class="btn" id="goBtn">Record</button><div id="fbk"></div></div>';
+  wire('act','confidential');
+}
+
+var EXPL={
+ adjust:{
+  adjust:'Correct. Prescribers see different patients. Comparing raw rates across different case mixes is not a comparison of practice, it is a comparison of populations.',
+  crude:'Wrong. The crude rate counts prescriptions without asking who the patients were. A haemato-oncology service will always look like an outlier on a crude rate, and the comparison tells you nothing about practice.',
+  volume:'Insufficient. Volume adjustment controls for how much someone prescribes, not for how sick their patients are.',
+  nocompare:'Too far. Comparison is exactly how unwarranted variation is found — it simply has to be a fair comparison.'
+ },
+ name:{
+  sunil:'Correct, and this is the point of the exercise. Dr Sunil sits mid-table on the crude rate and is the highest once case mix is accounted for, with 41% guideline compliance in a clinic where almost none of it is justified. Dr Roy sees the same population in the same clinic at less than half the adjusted rate — that is the comparison that convicts.',
+  menon:'Wrong, and this is the trap. Dr Menon has by far the highest crude rate because her patients are neutropenic and broad-spectrum therapy is protocol-mandated. Adjusted, she is the best prescriber on the list at 71 against a median of 95, with 96% guideline compliance.',
+  jacob:'Not supported. Dr Jacob is close to the median once acuity is accounted for.',
+  thomas:'Not supported. Dr Thomas is unremarkable on every measure.',
+  iqbal:'Not supported. Dr Iqbal is below the median adjusted rate.',
+  roy:'Not supported — and note that Dr Roy is the comparison that makes the real finding visible, seeing the same patients as Dr Sunil at less than half the adjusted rate.',
+  none:'Incorrect. There is genuine unwarranted variation here; it is simply not where the crude rate points.'
+ },
+ act:{
+  confidential:'Correct. The indicator has to reach the person who can act on it, with the peer comparison that makes it meaningful, and it has to be re-measured — otherwise you have described a problem rather than changed one.',
+  report:'Poor practice. Naming an individual in a circulated league table invites gaming and defensiveness, and it will not change prescribing. It also risks naming the wrong person if the adjustment is ever questioned.',
+  escalate:'Premature. Nothing here suggests misconduct; it suggests a prescriber whose documentation and guideline adherence need support. Escalation is for when that has been tried.',
+  target:'A target applied to everyone will be met by everyone — including by recoding, and including by Dr Menon, whose rate is clinically correct and should not fall.'
+ }
+};
+
+function wire(key,right){
+  var pick=null;
+  [].forEach.call($('ch').querySelectorAll('.opt'),function(b){
+    b.addEventListener('click',function(){
+      [].forEach.call($('ch').querySelectorAll('.opt'),function(x){x.classList.remove('sel');});
+      b.classList.add('sel'); pick=b.getAttribute('data-v');
+    });
+  });
+  $('goBtn').addEventListener('click',function(){
+    if(!pick){ $('fbk').innerHTML='<div class="fb no"><div class="hd">Choose an option</div>Select an answer before recording.</div>'; return; }
+    var ok=pick===right;
+    var looked = key==='name' ? (S.drill.sunil && S.drill.menon) : Object.keys(S.drill).length>0;
+    var mark=(ok?8:0)+(looked?2:0);
+    S.marks[key]=mark; S.ans[key]={pick:pick,ok:ok,looked:looked};
+    if(!ok) S.r-=14;
+    if(!looked) S.r-=10;
+    if(key==='name'&&pick==='menon') S.f-=45;
+    if(key==='act'&&(pick==='report'||pick==='escalate')) S.f-=25;
+    meters();
+    $('fbk').innerHTML='<div class="fb '+(ok?'yes':'no')+'"><div class="hd">'+(ok?'Correct':'Not correct')+'</div>'
+      +esc(EXPL[key][pick])+(looked?'':'<br><br><b>You decided without drilling into the data behind the number.</b>')+'</div>'
+      +'<button class="btn" id="onBtn" style="margin-top:10px">Continue</button>';
+    $('onBtn').addEventListener('click',function(){ S.stage++; paint(); });
+  });
+}
+
+function finish(){
+  var drMark=Math.round(Object.keys(S.drill).length/6*10);
+  var total=['adjust','name','act'].reduce(function(a,k){return a+(S.marks[k]||0);},0)+drMark;
+  var pct=Math.round(total/40*100);
+  var blamedMenon=S.ans.name&&S.ans.name.pick==='menon';
+  var rows=[['Data explored',drMark+' / 10'],['Fair comparison',(S.marks.adjust||0)+' / 10'],
+            ['Outlier identified',(S.marks.name||0)+' / 10'],['Response designed',(S.marks.act||0)+' / 10']]
+            .map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>';}).join('');
+
+  $('resEmpty').style.display='none';
+  $('resBox').innerHTML='<div class="card"><h3>Analysis complete</h3>'
+    +'<p><b>'+total+' / 40</b> ('+pct+'%) &nbsp;·&nbsp; Analytical rigour <b>'+S.r+'%</b> &nbsp;·&nbsp; Fairness <b>'+S.f+'%</b></p>'
+    +'<table class="d"><tr><th>Element</th><th>Mark</th></tr>'+rows+'</table>'
+    +'<h3 style="margin-top:16px">What the data actually showed</h3>'
+    +'<p>Dr Menon\'s crude rate of 188 was the highest by a wide margin and was entirely explained by her '
+    +'case mix — 78% immunosuppressed patients on a febrile neutropenia protocol. Adjusted, she was the '
+    +'<b>best</b> prescriber on the list at 71 against a median of 95, with 96% guideline compliance.</p>'
+    +'<p>Dr Sunil sat mid-table on the crude rate at 104 and was the true outlier once adjusted, at 167 '
+    +'in a general clinic with 41% guideline compliance. Dr Roy, seeing the same patients in the same '
+    +'clinic, prescribed at 74.</p>'
+    +(blamedMenon
+      ? '<div class="fb no"><div class="hd">You named the wrong prescriber</div>You identified the clinician '
+        +'whose high rate was clinically correct, and left the real variation untouched. Had this gone to '
+        +'committee, a haemato-oncologist would have been asked to justify protocol-mandated therapy while '
+        +'a general clinic continued prescribing broad-spectrum antibiotics without a documented indication.</div>'
+      : '<div class="fb yes"><div class="hd">You adjusted before you accused</div>The crude rate pointed at the '
+        +'wrong person and you did not follow it. That is the whole skill.</div>')
+    +'<div class="fb yes" style="margin-top:8px"><div class="hd">Carry this forward</div>An indicator must be '
+    +'adjusted for case mix, returned to the person who can change it, and re-measured. A measure used as a '
+    +'target will be gamed — so design it so that gaming it and improving care are the same action.</div>'
+    +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
+  goTab('res');
+
+  var OPTS={module:'Module 6 · Unit 3 — Prescription Analytics & Safety Monitoring',
+            title:'Prescribing Analytics Investigation', programme:'Pharmacy AI', pct:pct,
+            resultText:total+'/40 ('+pct+'%) · rigour '+S.r+'% · fairness '+S.f+'%'};
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+    titleField:{label:'Analysis outcome',
+                placeholder:'e.g. 40/40 — crude outlier explained by case mix; true outlier identified at adjusted 167'},
+    minWords:400,
+    attachments:[{label:'1. Analysis Report / Printout (PDF)'},
+                 {label:'2. Reflection on case-mix adjustment and indicator design (PDF)'}],
+    reportHtml:$('resBox').innerHTML
+  });
+}
+
+meters();
+})();
+</script>
+</body>
+</html>

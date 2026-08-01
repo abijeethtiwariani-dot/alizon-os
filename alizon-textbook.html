@@ -1178,15 +1178,17 @@ function showGuide(){
   document.addEventListener('keydown', function k(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown',k); } });
 }
 
+/* Books load on demand — the full texts are far too large to ship on every page
+   load, so this mirrors how the exam banks are fetched. */
 function loadStarter(n){
-  var T=window.ALIZON_TEXTBOOKS||{}, b=T['m'+n];
-  if(!b){ alert('No starter book for module '+n+'.'); return false; }
-  $('mModule').value=b.meta.module; $('mTitle').value=b.meta.title; $('mSub').value=b.meta.sub;
-  $('mProg').value=b.meta.prog; $('mEd').value=b.meta.ed; $('mAuth').value=b.meta.auth;
-  $('src').value=b.src;
-  $('mScope').setAttribute('data-sig','');   /* force the unit list to rebuild */
-  render();
-  return true;
+  return AlizonBooks.load(n).then(function(b){
+    $('mModule').value=b.meta.module; $('mTitle').value=b.meta.title; $('mSub').value=b.meta.sub;
+    $('mProg').value=b.meta.prog; $('mEd').value=b.meta.ed; $('mAuth').value=b.meta.auth;
+    $('src').value=b.src;
+    $('mScope').setAttribute('data-sig','');   /* force the unit list to rebuild */
+    render();
+    return true;
+  });
 }
 $('btnStarter').addEventListener('click', function(){
   if($('src').value.trim() && !confirm('Replace what is in the editor?')) return;
@@ -1195,16 +1197,20 @@ $('btnStarter').addEventListener('click', function(){
   loadStarter(n);
 });
 $('btnPubAll').addEventListener('click', function(){
-  if(!confirm('Publish the starter textbooks for all 8 modules to the student library?\n\n'
+  if(!confirm('Publish the textbooks for all 8 modules to the student library?\n\n'
     +'Anything already published under the same module number is replaced.')) return;
   var done=[], failed=[];
   var chain=Promise.resolve();
   for(var n=1;n<=8;n++){
     (function(k){
       chain=chain.then(function(){
-        if(!loadStarter(k)) { failed.push(k); return; }
-        return publishQuiet().then(function(){ done.push(k); })
-                             .catch(function(e){ failed.push(k+' ('+((e&&e.code)||'error')+')'); });
+        /* loadStarter is async now — the book must arrive before it is published,
+           or the same editor contents would be published eight times. */
+        $('stSaved').textContent='Publishing module '+k+'\u2026';
+        return loadStarter(k)
+          .then(function(){ return publishQuiet(); })
+          .then(function(){ done.push(k); })
+          .catch(function(e){ failed.push(k+' ('+((e&&e.code)||(e&&e.message)||'error')+')'); });
       });
     })(n);
   }

@@ -492,8 +492,12 @@
 '\n'+
 'Demand forecasting and inventory analytics are essential for efficient pharmacy management and patient care. The integration of AI has transformed these processes by enabling accurate predictions, reducing wastage, and improving supply chain efficiency. Understanding these concepts is crucial for pharmacy students, as it prepares them for modern, data-driven healthcare systems.\n'+
 '\n'+
-'@note\n'+
-'The practical programme for this module is delivered as supervised workplace exercises and case discussion. Browser-based simulations for this module are in development and will appear in the Practicals area of ALIZON OS when released.\n'+
+'@section Practical programme\n'+
+'\n'+
+'The practicals for this module run in ALIZON OS and are scored in the browser. Each one withholds information until you go and look for it, so the mark reflects what you investigated as well as what you concluded. Open them from the Practicals area of the portal.\n'+
+'\n'+
+'@activity Practical 1 · Prescribing Analytics Investigation (Unit 3)\n'+
+'Six prescribers and one obvious outlier. Drill into case mix and the outlier turns out to be the best prescriber on the list, while the real unwarranted variation sat mid-table and invisible. Analytical rigour and fairness are scored alongside the mark.\n'+
 '\n'+
 '\n'
 };

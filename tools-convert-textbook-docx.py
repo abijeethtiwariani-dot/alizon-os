@@ -57,6 +57,10 @@ LABS = {
       "Screen, appraise and synthesise a body of literature under time pressure, using AI tools for the search and your own judgement for the appraisal."),
      ("1","Become the Clinical Trial Manager — Capstone Simulation","ALIZON-OS-Module5-TrialManager.html",
       "Run study ALZ-DM-2026-04 end to end. Every decision moves a compliance score that begins at 100% and only falls.")],
+ 6: [("3","Prescribing Analytics Investigation","ALIZON-OS-Module6-RxAnalytics.html",
+      "Six prescribers and one obvious outlier. Drill into case mix and the outlier turns out to be the best prescriber on the list, while the real unwarranted variation sat mid-table and invisible. Analytical rigour and fairness are scored alongside the mark.")],
+ 7: [("2","Automated Dispensing Cabinet Investigation","ALIZON-OS-Module7-CabinetAudit.html",
+      "A controlled-drug discrepancy with a named nurse on both counts. Follow the evidence instead: a technician overrode a barcode mismatch and loaded 10 mg ampoules into a 5 mg pocket, and the nurse who could not balance the count is the one who reported it.")],
 }
 CAPSTONE = ("Integrated Clinical Simulation","ALIZON-OS-Clinical-Simulation.html",
             "A full patient journey drawing on everything in the programme.")
