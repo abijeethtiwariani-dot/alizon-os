@@ -365,6 +365,37 @@ function paginate(chapters, m){
   }
   function fits(){ return content.scrollHeight <= content.clientHeight; }
 
+  /* An imported manuscript can contain a table taller than a page. Alone on a
+     fresh page it would simply be clipped and rows lost, so split it and repeat
+     the header on each continuation. Anything else oversized is left as-is —
+     clipping a paragraph loses less than silently dropping a table's rows. */
+  function splitOversized(node){
+    var table = node.matches && node.matches('table') ? node : node.querySelector && node.querySelector('table');
+    if(!table) return;
+    var head = table.querySelector('tr');
+    var rows = [].slice.call(table.querySelectorAll('tr')).slice(1);
+    if(rows.length < 2) return;
+    var guard = 0;
+    while(!fits() && rows.length > 1 && guard++ < 200){
+      var last = rows.pop();
+      if(last && last.parentNode) last.parentNode.removeChild(last);
+      carry.unshift(last);
+    }
+    if(!carry.length) return;
+    var moved = carry.splice(0, carry.length);
+    newPage();
+    var cont = table.cloneNode(false);
+    if(head) cont.appendChild(head.cloneNode(true));
+    moved.forEach(function(r){ cont.appendChild(r); });
+    var wrap = document.createElement('div');
+    wrap.className = 'tblwrap';
+    wrap.appendChild(cont);
+    content.appendChild(wrap);
+    if(!fits()) splitOversized(wrap);
+  }
+  var carry = [];
+
+
   chapters.forEach(function(ch, idx){
     var items=renderChapter(ch, idx+1);
     curChapTitle=ch.title;
@@ -385,6 +416,7 @@ function paginate(chapters, m){
         newPage();
         if(dragHeading) content.appendChild(dragHeading);
         content.appendChild(it.node);
+        if(!fits()) splitOversized(it.node);
         /* a single element taller than the page simply stays and is clipped-safe:
            it is the only thing on its page, so nothing is lost visually */
       }
@@ -395,14 +427,34 @@ function paginate(chapters, m){
     if(last && /^(H3|H4)$/.test(last.tagName)){ content.removeChild(last); newPage(); content.appendChild(last); }
   });
 
-  /* contents with real page numbers */
+  /* Contents, flowed across as many pages as it needs. A long book has more
+     entries than one page holds, and a clipped contents page silently loses
+     whole units from the listing. Body folios are unaffected: contents pages
+     are front matter and carry no folio. */
   var tb=tocPage.querySelector('#tocBody');
-  tb.innerHTML=toc.map(function(t){
-    return '<div class="tocrow'+(t.lvl===2?' sub':'')+'">'
-      +'<span class="tno">'+esc(t.lvl===1?('Ch '+t.no):t.no)+'</span>'
-      +'<span class="tt">'+esc(t.text)+'</span><span class="dots"></span>'
-      +'<span class="tp">'+t.page+'</span></div>';
-  }).join('') || '<p style="font-size:10pt;color:#8d8781">No chapters yet.</p>';
+  if(!toc.length){
+    tb.innerHTML='<p style="font-size:10pt;color:#8d8781">No units yet.</p>';
+  } else {
+    var firstBody=tocPage.nextSibling;
+    var tocContent=tocPage.querySelector('.content');
+    var tocBox=tb;
+    toc.forEach(function(t){
+      var row=el('<div class="tocrow'+(t.lvl===2?' sub':'')+'">'
+        +'<span class="tno">'+esc(t.lvl===1?('Unit '+t.no):t.no)+'</span>'
+        +'<span class="tt">'+esc(t.text)+'</span><span class="dots"></span>'
+        +'<span class="tp">'+t.page+'</span></div>');
+      tocBox.appendChild(row);
+      if(tocContent.scrollHeight > tocContent.clientHeight){
+        tocBox.removeChild(row);
+        var cont=makePage('plain');
+        cont.querySelector('.content').innerHTML='<div class="tocH">Contents <span style="font-size:11pt;font-weight:400;color:#8d8781">(continued)</span></div><div class="tocBody"></div>';
+        wrap.insertBefore(cont, firstBody);
+        tocContent=cont.querySelector('.content');
+        tocBox=cont.querySelector('.tocBody');
+        tocBox.appendChild(row);
+      }
+    });
+  }
 
   return {pages:wrap.querySelectorAll('.page').length};
 }
