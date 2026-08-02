@@ -4,8 +4,8 @@
    observational "Study of ..." sessions in the manuscript. */
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m5 = {
- meta:{module:'5', title:"Clinical Trials, Pharmacovigilance & Evidence-Based Pharmacy", sub:"Evidence, Ethics and Safety", prog:'Diploma in Pharmacy AI',
-       ed:'First Edition · 2026', auth:'Alizon School of Medical & Digital Intelligence'},
+ meta:{module:'5', title:"Clinical Trials, Pharmacovigilance & Evidence-Based Pharmacy", sub:"Evidence, Ethics and Safety", prog:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',
+       ed:'First Edition · 2026', auth:'Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P'},
  src:
 '@chapter AI in Patient Care & Personalized Medicine\n'+
 '\n'+

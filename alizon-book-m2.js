@@ -4,8 +4,8 @@
    observational "Study of ..." sessions in the manuscript. */
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m2 = {
- meta:{module:'2', title:"Digital Pharmacy, EHR & Telepharmacy", sub:"Systems, Records and Remote Care", prog:'Diploma in Pharmacy AI',
-       ed:'First Edition · 2026', auth:'Alizon School of Medical & Digital Intelligence'},
+ meta:{module:'2', title:"Digital Pharmacy, EHR & Telepharmacy", sub:"Systems, Records and Remote Care", prog:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',
+       ed:'First Edition · 2026', auth:'Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P'},
  src:
 '@chapter Introduction to Digital Pharmacy, EHR Systems and Telepharmacy\n'+
 '\n'+

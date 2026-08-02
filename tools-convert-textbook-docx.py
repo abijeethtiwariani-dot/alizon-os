@@ -279,8 +279,8 @@ if __name__ == '__main__':
               "   observational \"Study of ...\" sessions in the manuscript. */\n"
               "(function(){\n"
               "(window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m%d = {\n"
-              " meta:{module:'%d', title:%s, sub:%s, prog:'Diploma in Pharmacy AI',\n"
-              "       ed:'First Edition · 2026', auth:'Alizon School of Medical & Digital Intelligence'},\n"
+              " meta:{module:'%d', title:%s, sub:%s, prog:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',\n"
+              "       ed:'First Edition · 2026', auth:'Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P'},\n"
               " src:\n%s\n};\n})();\n") % (n, n, n, n, json.dumps(title), json.dumps(sub), js_string(body))
         open(os.path.join(OUT, f"alizon-book-m{n}.js"), 'w', encoding='utf-8').write(js)
         report.append((n, len(body.split()), body.count('@chapter'), 'ok'))

@@ -4,8 +4,8 @@
    observational "Study of ..." sessions in the manuscript. */
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m4 = {
- meta:{module:'4', title:"AI in Drug Development, Vaccines & Injectables", sub:"Discovery, Sterile Products and the Cold Chain", prog:'Diploma in Pharmacy AI',
-       ed:'First Edition · 2026', auth:'Alizon School of Medical & Digital Intelligence'},
+ meta:{module:'4', title:"AI in Drug Development, Vaccines & Injectables", sub:"Discovery, Sterile Products and the Cold Chain", prog:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',
+       ed:'First Edition · 2026', auth:'Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P'},
  src:
 '@chapter AI in Drug Discovery & Molecular Targeting\n'+
 '\n'+

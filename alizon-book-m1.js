@@ -4,8 +4,8 @@
    observational "Study of ..." sessions in the manuscript. */
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m1 = {
- meta:{module:'1', title:"AI Foundations & Digital Systems for Pharmacy Practice", sub:"A Practice-Based Introduction", prog:'Diploma in Pharmacy AI',
-       ed:'First Edition · 2026', auth:'Alizon School of Medical & Digital Intelligence'},
+ meta:{module:'1', title:"AI Foundations & Digital Systems for Pharmacy Practice", sub:"A Practice-Based Introduction", prog:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',
+       ed:'First Edition · 2026', auth:'Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P'},
  src:
 '@chapter Foundations of Artificial Intelligence in Pharmacy\n'+
 '\n'+

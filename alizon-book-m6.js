@@ -4,8 +4,8 @@
    observational "Study of ..." sessions in the manuscript. */
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m6 = {
- meta:{module:'6', title:"Pharmacy Data Analytics & Predictive Modelling", sub:"From Records to Decisions", prog:'Diploma in Pharmacy AI',
-       ed:'First Edition · 2026', auth:'Alizon School of Medical & Digital Intelligence'},
+ meta:{module:'6', title:"Pharmacy Data Analytics & Predictive Modelling", sub:"From Records to Decisions", prog:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',
+       ed:'First Edition · 2026', auth:'Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P'},
  src:
 '@chapter Introduction to Pharmacy Data & Analytics\n'+
 '\n'+

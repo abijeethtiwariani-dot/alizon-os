@@ -6,8 +6,8 @@
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m8 = {
  meta:{module:'8', title:"AI-Enabled Clinical Case Studies & Simulations",
-       sub:"Putting It Together", prog:'Diploma in Pharmacy AI',
-       ed:'First Edition · 2026', auth:'Alizon School of Medical & Digital Intelligence'},
+       sub:"Putting It Together", prog:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',
+       ed:'First Edition · 2026', auth:'Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P'},
  src:
 /* ============================== UNIT 1 ============================== */
 '@chapter AI-Based Prescription Review & Safety Audits\n\n'+

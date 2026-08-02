@@ -4,8 +4,8 @@
    observational "Study of ..." sessions in the manuscript. */
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m7 = {
- meta:{module:'7', title:"Robotics & Automation in Pharmacy Practice", sub:"Machines, Workflow and Quality", prog:'Diploma in Pharmacy AI',
-       ed:'First Edition · 2026', auth:'Alizon School of Medical & Digital Intelligence'},
+ meta:{module:'7', title:"Robotics & Automation in Pharmacy Practice", sub:"Machines, Workflow and Quality", prog:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',
+       ed:'First Edition · 2026', auth:'Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P'},
  src:
 '@chapter Introduction to Pharmacy Robotics\n'+
 '\n'+

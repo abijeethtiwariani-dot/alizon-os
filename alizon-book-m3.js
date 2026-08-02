@@ -4,8 +4,8 @@
    observational "Study of ..." sessions in the manuscript. */
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m3 = {
- meta:{module:'3', title:"AI-Based Clinical Decision Support in Pharmacy", sub:"Alerts, Interactions and Prediction", prog:'Diploma in Pharmacy AI',
-       ed:'First Edition · 2026', auth:'Alizon School of Medical & Digital Intelligence'},
+ meta:{module:'3', title:"AI-Based Clinical Decision Support in Pharmacy", sub:"Alerts, Interactions and Prediction", prog:'Certificate Course in Digital Health & Artificial Intelligence for Pharmacy',
+       ed:'First Edition · 2026', auth:'Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P'},
  src:
 '@chapter Clinical Decision Support Systems (CDSS)\n'+
 '\n'+
