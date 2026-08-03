@@ -57,6 +57,25 @@
   .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
   .msg{font-size:13px;font-weight:600;margin-top:10px}
   .msg.ok{color:var(--ok)} .msg.err{color:#b1040e}
+  .drop{border:2px dashed rgba(140,21,21,.35);border-radius:12px;background:#fff;padding:26px 20px;text-align:center;cursor:pointer;transition:.15s}
+  .drop:hover,.drop.over{border-color:var(--crimson);background:#fff7f7}
+  .drop .dz-i{font-size:26px;color:var(--crimson);line-height:1}
+  .drop .dz-t{font-size:14px;color:var(--muted);margin-top:8px}
+  .drop .dz-t .lnk{color:var(--crimson);font-weight:700;text-decoration:underline}
+  .drop .dz-f{font-size:13px;font-weight:700;color:var(--ink);margin-top:8px}
+  .found{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+  .found .f{border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:0 8px 8px 0;background:#fff;padding:10px 14px;font-size:13px}
+  .found .f b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+  .found .f span{color:var(--muted)}
+  .pubd{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+  .pubd h3{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .pubd .p{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:13.5px}
+  .pubd .p .nm{font-weight:600;flex:1;min-width:200px}
+  .pubd .p .dt{color:var(--muted);font-size:12px}
+  .pubd .p button{cursor:pointer;font:inherit;font-size:12px;font-weight:600;border-radius:6px;padding:6px 12px;border:1px solid var(--line);background:#fff}
+  .pubd .p button.rm{color:#b1040e;border-color:rgba(177,4,14,.35)}
+  .pubd .p button.rm:hover{background:#b1040e;color:#fff}
+  .pubd .none{font-size:13px;color:var(--muted)}
   footer{background:var(--crimson);color:#f3e2e2;padding:26px 24px;text-align:center;font-size:12.5px}
   footer a{color:#fff;font-weight:600}
 </style>
@@ -121,15 +140,26 @@
 
 <main><div class="wrap">
   <div class="admin" id="adminBox" style="display:none">
-    <h2>Upload / update curriculum (ASAP Excel)</h2>
-    <div class="hint">Upload the ASAP curriculum Excel (.xlsx). The system recognises the format, reads every course, module, hour and mark, and publishes it live. Re-uploading the same course updates it.</div>
-    <div class="row">
-      <input type="file" id="curFile" accept=".xlsx,.xls">
+    <h2>Upload syllabus spreadsheet</h2>
+    <div class="hint">Drop the ASAP curriculum sheet here (<b>.xlsx</b>, .xls or .csv). The system reads the format on its
+      own — course name, hours, marks, every module, unit and topic — matches it to the course, and publishes it to the
+      website and to each student&rsquo;s dashboard. One sheet per course; a workbook with several sheets uploads them all.
+      Re-uploading a course replaces its syllabus.</div>
+    <div class="drop" id="curDrop">
+      <input type="file" id="curFile" accept=".xlsx,.xls,.csv" hidden>
+      <div class="dz-i" aria-hidden="true">&#8681;</div>
+      <div class="dz-t">Drag the spreadsheet here, or <span class="lnk">choose a file</span></div>
+      <div class="dz-f" id="curFileName"></div>
+    </div>
+    <div class="row" style="margin-top:12px">
       <button class="btn" id="curParse">Read &amp; preview</button>
-      <button class="btn" id="curSave" style="display:none">Publish</button>
+      <button class="btn" id="curSave" style="display:none">Publish to students</button>
     </div>
     <div class="msg" id="curMsg"></div>
+    <div id="curFound" class="found"></div>
     <div id="curPreview" style="margin-top:16px"></div>
+
+    <div class="pubd" id="curPublished"></div>
   </div>
 
   <div class="pick">
@@ -143,7 +173,7 @@
 <footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
   <a href="https://www.alizongov.com" target="_blank" rel="noopener">alizongov.com</a> &middot; <a href="index.html">alizon.in</a></footer>
 
-<script src="alizon-curriculum.js?v=7"></script>
+<script src="alizon-curriculum.js?v=8"></script>
 <script src="print-paginate.js"></script>
 <script>
 (function(){
@@ -185,28 +215,80 @@
       if(params.get('download')==='1') setTimeout(function(){ try{ window.AlizonCurriculum.printDoc(); }catch(e){} }, 900); } }
 
   /* ---- admin upload ---- */
-  var parsed=null;
-  if(isAdmin){
-    document.getElementById('adminBox').style.display='';
-    document.getElementById('curParse').addEventListener('click',function(){
-      var f=document.getElementById('curFile'), msg=document.getElementById('curMsg'), pv=document.getElementById('curPreview');
-      var file=f&&f.files&&f.files[0];
-      if(!file){ msg.className='msg err'; msg.textContent='Choose an .xlsx file first.'; return; }
-      msg.className='msg'; msg.textContent='Reading…';
+  var parsed=null, sheetJs=null;
+  /* SheetJS is ~880 KB and only the admin ever needs it — load it on first use */
+  function loadSheetJS(){
+    if(sheetJs) return sheetJs;
+    sheetJs=new Promise(function(res,rej){
+      if(window.XLSX) return res(window.XLSX);
+      var s=document.createElement('script');
+      s.src='vendor/xlsx.full.min.js';
+      s.onload=function(){ window.XLSX?res(window.XLSX):rej(new Error('spreadsheet reader failed to start')); };
+      s.onerror=function(){ sheetJs=null; rej(new Error('could not load the spreadsheet reader')); };
+      document.head.appendChild(s);
+    });
+    return sheetJs;
+  }
+
+  function readFile(file){
+    var msg=document.getElementById('curMsg'), pv=document.getElementById('curPreview'), found=document.getElementById('curFound');
+    if(!file){ msg.className='msg err'; msg.textContent='Choose a spreadsheet first (.xlsx, .xls or .csv).'; return; }
+    msg.className='msg'; msg.textContent='Reading the spreadsheet…';
+    found.innerHTML=''; pv.innerHTML=''; document.getElementById('curSave').style.display='none';
+    loadSheetJS().then(function(){
       var r=new FileReader();
       r.onload=function(){
         try{
           parsed=window.AlizonCurriculum.parseWorkbook(r.result);
-          if(!parsed.length){ msg.className='msg err'; msg.textContent='No course/module data recognised in that file.'; return; }
-          msg.className='msg ok'; msg.textContent='Recognised '+parsed.length+' course(s): '+parsed.map(function(p){return (p.course.meta.name||p.key)+' — '+p.course.modules.length+' modules';}).join('; ');
-          /* preview the first course */
+          if(!parsed.length){ msg.className='msg err'; msg.textContent='No course or module data recognised in that file. Expected the ASAP curriculum format.'; return; }
+          msg.className='msg ok';
+          msg.textContent='Recognised '+parsed.length+' course'+(parsed.length>1?'s':'')+'. Check the preview below, then publish.';
+          found.innerHTML=parsed.map(function(p){
+            var c=p.course, mt=c.meta||{}, units=(c.modules||[]).reduce(function(a,m){return a+((m.units||[]).length);},0);
+            var known=!!window.AlizonCurriculum.get(p.key);
+            return '<div class="f"><b>'+String(mt.name||p.key).replace(/</g,'&lt;')+'</b>'
+              +'<span>'+(c.modules||[]).length+' modules · '+units+' units'
+              +(mt.duration&&mt.duration.total?' · '+mt.duration.total+' hrs':'')
+              +(mt.maxMarks?' · '+String(mt.maxMarks).replace(/</g,'&lt;')+' marks':'')
+              +' — '+(known?'updates the existing syllabus':'new course')+'</span></div>';
+          }).join('');
           window.AlizonCurriculum.render(pv, parsed[0].course);
           document.getElementById('curSave').style.display='';
         }catch(e){ msg.className='msg err'; msg.textContent='Could not read that file: '+((e&&e.message)||e); }
       };
       r.onerror=function(){ msg.className='msg err'; msg.textContent='Could not read the file.'; };
       r.readAsArrayBuffer(file);
+    })['catch'](function(e){ msg.className='msg err'; msg.textContent=(e&&e.message)||'Could not load the spreadsheet reader.'; });
+  }
+
+  /* list what is already published, with a way to remove one */
+  function fillPublished(){
+    var el=document.getElementById('curPublished'); if(!el) return;
+    var store=window.AlizonCurriculum.store(), keys=Object.keys(store);
+    if(!keys.length){ el.innerHTML='<h3>Published syllabi</h3><div class="none">Nothing published yet.</div>'; return; }
+    el.innerHTML='<h3>Published syllabi ('+keys.length+')</h3>'+keys.map(function(k){
+      var c=store[k], mt=c.meta||{}, when=c.updatedAt?new Date(c.updatedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
+      return '<div class="p"><span class="nm">'+String(mt.name||k).replace(/</g,'&lt;')+'</span>'
+        +'<span class="dt">'+(c.modules||[]).length+' modules'+(when?' · updated '+when:'')+'</span>'
+        +'<button type="button" data-view="'+k.replace(/"/g,'&quot;')+'">View</button>'
+        +'<button type="button" class="rm" data-rm="'+k.replace(/"/g,'&quot;')+'">Remove</button></div>';
+    }).join('');
+  }
+
+  if(isAdmin){
+    document.getElementById('adminBox').style.display='';
+    var drop=document.getElementById('curDrop'), fin=document.getElementById('curFile');
+    function showName(f){ document.getElementById('curFileName').textContent=f?f.name:''; }
+    drop.addEventListener('click',function(){ fin.click(); });
+    fin.addEventListener('change',function(){ showName(this.files&&this.files[0]); });
+    ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.add('over'); }); });
+    ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.remove('over'); }); });
+    drop.addEventListener('drop',function(e){
+      var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+      if(f){ try{ fin.files=e.dataTransfer.files; }catch(err){} showName(f); readFile(f); }
     });
+    document.getElementById('curParse').addEventListener('click',function(){ readFile(fin&&fin.files&&fin.files[0]); });
+
     document.getElementById('curSave').addEventListener('click',function(){
       if(!parsed||!parsed.length) return;
       var msg=document.getElementById('curMsg');
@@ -214,9 +296,27 @@
       var now=Date.now();
       parsed.forEach(function(p){ p.course.updatedAt=now; store[p.key]=p.course; });
       try{ localStorage.setItem('alizonCurriculum', JSON.stringify(store)); }catch(e){ msg.className='msg err'; msg.textContent='Save failed (too large).'; return; }
-      msg.className='msg ok'; msg.textContent='Published '+parsed.length+' course(s) — live for students.';
-      fillCourses();
+      msg.className='msg ok'; msg.textContent='Published '+parsed.length+' course'+(parsed.length>1?'s':'')+' — now live on the website and in every student dashboard.';
+      fillCourses(); fillPublished();
     });
+
+    document.getElementById('curPublished').addEventListener('click',function(e){
+      var b=e.target.closest&&e.target.closest('button'); if(!b) return;
+      var k=b.getAttribute('data-rm');
+      if(k){
+        var st=window.AlizonCurriculum.store();
+        if(!confirm('Remove the syllabus for "'+((st[k]&&st[k].meta&&st[k].meta.name)||k)+'"?\n\nStudents will no longer see it.')) return;
+        delete st[k];
+        try{ localStorage.setItem('alizonCurriculum', JSON.stringify(st)); }catch(err){}
+        fillCourses(); fillPublished();
+        var sel=document.getElementById('courseSel'); if(sel.value===k){ sel.value=''; showCourse(''); }
+        return;
+      }
+      var v=b.getAttribute('data-view');
+      if(v){ var sel2=document.getElementById('courseSel'); sel2.value=v; showCourse(v);
+        document.getElementById('syllabus').scrollIntoView({behavior:'smooth',block:'start'}); }
+    });
+    fillPublished();
   }
 
   fillCourses();

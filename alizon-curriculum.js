@@ -10,6 +10,8 @@
   function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function num(v){ var n=Number(String(v).replace(/[^\d.\-]/g,'')); return isFinite(n)?n:0; }
   function txt(v){ return String(v==null?'':v).trim(); }
+  /* purely numeric cell (serial numbers, hour counts) — num() alone never returns NaN */
+  function isNumLike(v){ var t=txt(v); return t!=='' && /^[\d.,\s%+\-]+$/.test(t); }
   function nlToBr(s){ return esc(s).replace(/\n+/g,'<br>'); }
 
   /* dense 2D array (A=col 0), so fixed column indices are reliable */
@@ -33,14 +35,46 @@
     return -1;
   }
   /* value cell to the right of a label cell containing `label` */
-  function labelValue(rows, label){
+  function labelValue(rows, label, from){
     label=label.toLowerCase();
-    for(var i=0;i<rows.length;i++){ var row=rows[i];
+    for(var i=(from||0);i<rows.length;i++){ var row=rows[i];
       for(var c=0;c<row.length;c++){ if(txt(row[c]).toLowerCase().indexOf(label)>-1){
         for(var k=c+1;k<row.length;k++){ if(txt(row[k])) return txt(row[k]); }
       } }
     }
     return '';
+  }
+  /* some ASAP sheets put the paragraph on the row BELOW its label (Course Objective /
+     Course Outcome) instead of to its right — fall back to the next prose row. */
+  function labelBelow(rows, label){
+    label=label.toLowerCase();
+    for(var i=0;i<rows.length;i++){ var row=rows[i], hit=-1;
+      for(var c=0;c<row.length;c++){ if(txt(row[c]).toLowerCase().indexOf(label)>-1){ hit=c; break; } }
+      if(hit<0) continue;
+      for(var k=hit+1;k<row.length;k++){ if(txt(row[k])) return txt(row[k]); }   /* to the right first */
+      for(var r=i+1;r<Math.min(i+3,rows.length);r++){                            /* then below */
+        for(var c2=0;c2<rows[r].length;c2++){ var v=txt(rows[r][c2]);
+          if(v.length>20 && !isNumLike(v)) return v; }
+      }
+    }
+    return '';
+  }
+  /* a numbered trailing block ("21. Text / Reference Books") -> list of its entries */
+  function listAfter(rows, label){
+    var i=firstRowContaining(rows,label); if(i<0) return [];
+    var out=[], blanks=0;
+    for(var r=i+1;r<rows.length;r++){
+      var row=rows[r], joined=row.map(txt).filter(Boolean);
+      if(!joined.length){ if(++blanks>2) break; continue; }
+      blanks=0;
+      /* a new numbered section starts with a number in col A and a label in col B */
+      if(isNumLike(row[0]) && txt(row[1]) && !isNumLike(row[1])) break;
+      /* entry rows carry the text in col C (col B holds the serial number) */
+      var t=txt(row[2]); if(!t){ for(var c=2;c<row.length;c++){ if(txt(row[c]) && !isNumLike(row[c])){ t=txt(row[c]); break; } } }
+      if(t && t.length>4) out.push(t);
+      if(out.length>60) break;
+    }
+    return out;
   }
 
   /* ------- parse one worksheet in the ASAP layout ------- */
@@ -51,14 +85,17 @@
     /* course header: locate the Code / Name / Category columns from the header row,
        then read the first values row below it (merged cells shift columns). */
     var hi=firstRowContaining(rows,'name of the course');
-    var code='', name='', category='', durTotal='', elig='';
+    var code='', name='', category='', elig='', tp='', dur={t:0,p:0,ojt:0,intern:0,total:0};
+    var metaFrom=0;
     if(hi>-1){
-      var hrow=rows[hi], cCode=-1,cName=-1,cCat=-1,cElig=-1;
+      var hrow=rows[hi], cCode=-1,cName=-1,cCat=-1,cElig=-1,cTp=-1,cDur=-1;
       for(var c=0;c<hrow.length;c++){ var t=txt(hrow[c]).toLowerCase();
         if(cCode<0 && t.indexOf('course code')>-1) cCode=c;
         if(cName<0 && t.indexOf('name of the course')>-1) cName=c;
         if(cCat<0 && t==='category') cCat=c;
         if(cElig<0 && t.indexOf('eligibility')>-1) cElig=c;
+        if(cTp<0 && t.indexOf('name and address')>-1) cTp=c;
+        if(cDur<0 && t.indexOf('duration of the course')>-1) cDur=c;
       }
       if(cName<0) cName=4; if(cCode<0) cCode=1;
       for(var r=hi+1;r<Math.min(hi+5,rows.length);r++){
@@ -67,22 +104,43 @@
           name=nm; code=txt(v[cCode]);
           category=cCat>-1?txt(v[cCat]):'';
           elig=cElig>-1?txt(v[cElig]):'';
+          tp=cTp>-1?txt(v[cTp]):'';
+          if(cDur>-1) dur={ t:num(v[cDur]), p:num(v[cDur+1]), ojt:num(v[cDur+2]),
+                            intern:num(v[cDur+3]), total:num(v[cDur+4]) };
+          metaFrom=r+1;   /* detail fields live below the header block */
           break;
         }
       }
     }
     var meta={
       code:code, name:name, category:category,
-      objective: labelValue(rows,'course objective'),
-      outcome: labelValue(rows,'course outcome'),
+      objective: labelBelow(rows,'course objective'),
+      outcome: labelBelow(rows,'course outcome'),
       mode: labelValue(rows,'mode of training'),
       medium: labelValue(rows,'medium of instruction'),
       assessment: labelValue(rows,'assessment stategy') || labelValue(rows,'assessment strategy'),
+      assessMode: labelValue(rows,'mode of assessment'),
+      assessMedium: labelValue(rows,'medium of assessment'),
       eceDuration: labelValue(rows,'duration of ece'),
       maxMarks: labelValue(rows,'maximum marks'),
       passMark: labelValue(rows,'minimum marks'),
       eligibility: elig || labelValue(rows,'eligibility criteria'),
-      duration:{ total:durTotal }
+      eligibilityDetail: labelValue(rows,'eligibility criteria', metaFrom),
+      type: labelValue(rows,'type of course'),
+      sector: labelValue(rows,'skill sector'),
+      nqr: labelValue(rows,'nqr code'),
+      batchSize: labelValue(rows,'batch size'),
+      computerLab: labelValue(rows,'computer lab included'),
+      skillLab: labelValue(rows,'skill lab included'),
+      ojtIncluded: labelValue(rows,'intership included') || labelValue(rows,'internship included'),
+      ojtPlan: labelValue(rows,'plan for implementing ojt'),
+      internPlan: labelValue(rows,'plan for implementing internship'),
+      computerLabKit: labelValue(rows,'equipments required in the computer'),
+      skillLabKit: labelValue(rows,'equipments required in the skill'),
+      nsqf: labelValue(rows,'nsqf filing'),
+      provider: tp,
+      books: listAfter(rows,'reference books'),
+      duration: dur
     };
 
     /* ------- module summary table ------- */
@@ -133,7 +191,8 @@
           if(rt.indexOf('module total')>-1){ break; }
           if(txt(rows[u][0]).toLowerCase()==='module no.'){ break; }
           var un=rows[u][1], topics=txt(rows[u][2]);
-          if((txt(un)!=='' && !isNaN(num(un))) || topics){
+          /* the ASAP template leaves spare numbered rows with no topic — skip them */
+          if(topics){
             m.units.push({ no:txt(un)?String(num(un)).replace(/\.0$/,''):'', topics:topics,
               t:num(rows[u][19]),p:num(rows[u][20]),ojt:num(rows[u][21]),intern:num(rows[u][22]),total:num(rows[u][23]) });
           }
@@ -226,15 +285,41 @@
       +'</div></div>';
 
     /* overview stat tiles */
-    var dur=(m.duration&&m.duration.total)||(totH?totH+' hours':'');
+    var d=m.duration||{}, dTot=num(d.total)||totH;
     html+='<div class="d-stats">'
-      + statTile('Duration', dur)
-      + statTile('Total training hours', totH?totH+' hrs':'')
+      + statTile('Duration', dTot?dTot+' hrs':'')
+      + statTile('Theory · Practical', (num(d.t)||num(d.p))?(num(d.t)+' · '+num(d.p)+' hrs'):(totH?totH+' hrs':''))
+      + statTile('OJT · Internship', (num(d.ojt)||num(d.intern))?(num(d.ojt)+' · '+num(d.intern)+' hrs'):'')
       + statTile('Modules', mods.length)
       + statTile('Maximum marks', m.maxMarks)
       + statTile('Pass criterion', m.passMark)
       +'</div>';
     if(m.mode) html+='<div class="d-mode"><span class="dm-l">Mode of delivery</span><span class="dm-v">'+esc(m.mode)+'</span></div>';
+
+    /* programme objective & outcome */
+    if(m.objective || m.outcome){
+      html+='<h3 class="d-sec">Programme Objective &amp; Outcome</h3><div class="d-cards">';
+      if(m.objective) html+='<div class="d-card"><span class="d-field-l">Course Objective</span><p>'+nlToBr(m.objective)+'</p></div>';
+      if(m.outcome)   html+='<div class="d-card"><span class="d-field-l">Course Outcome</span><p>'+nlToBr(m.outcome)+'</p></div>';
+      html+='</div>';
+    }
+
+    /* programme particulars — the ASAP filing fields, as a definition grid */
+    var facts=[
+      ['Type of course', m.type], ['Skill sector / area', m.sector],
+      ['NQR code &amp; version', m.nqr], ['Eligibility', m.eligibilityDetail || m.eligibility],
+      ['Medium of instruction', m.medium], ['Batch size', m.batchSize],
+      ['Computer lab', m.computerLab], ['Skill lab', m.skillLab],
+      ['OJT / Internship', m.ojtIncluded], ['Assessment strategy', m.assessment],
+      ['Mode of assessment', m.assessMode], ['Medium of assessment', m.assessMedium],
+      ['Duration of ECE', m.eceDuration], ['NSQF filing', m.nsqf],
+      ['Training provider', m.provider]
+    ].filter(function(f){ return txt(f[1]); });
+    if(facts.length){
+      html+='<h3 class="d-sec">Programme Particulars</h3><dl class="d-facts">';
+      facts.forEach(function(f){ html+='<div class="d-fact"><dt>'+f[0]+'</dt><dd>'+nlToBr(f[1])+'</dd></div>'; });
+      html+='</dl>';
+    }
 
     /* assessment & hours structure table */
     html+='<h3 class="d-sec">Assessment &amp; Hours Structure</h3>';
@@ -293,6 +378,25 @@
       html+='</div></details>';
     });
     html+='</div>';
+
+    /* training delivery — OJT, internship and lab requirements */
+    var plans=[
+      ['On-the-Job Training (OJT)', m.ojtPlan], ['Internship', m.internPlan],
+      ['Computer lab requirements', m.computerLabKit], ['Skill lab requirements', m.skillLabKit]
+    ].filter(function(f){ return txt(f[1]); });
+    if(plans.length){
+      html+='<h3 class="d-sec">Training Delivery, OJT &amp; Internship</h3><div class="d-cards">';
+      plans.forEach(function(f){ html+='<div class="d-card"><span class="d-field-l">'+f[0]+'</span><p>'+nlToBr(f[1])+'</p></div>'; });
+      html+='</div>';
+    }
+
+    /* prescribed reading */
+    if(m.books && m.books.length){
+      html+='<h3 class="d-sec">Text &amp; Reference Books</h3><ol class="d-books">';
+      m.books.forEach(function(b){ html+='<li>'+nlToBr(b)+'</li>'; });
+      html+='</ol>';
+    }
+
     html+='</div>'; /* /.d-docbody */
 
     /* document footer */
@@ -325,7 +429,7 @@
          A4 page and the footer carries "Page X of Y" (shared LHPrint paginator) */
       if(window.LHPrint && doc){
         try{ LHPrint(doc,{ headerEnd:'.d-lh-affil', footer:'.d-foot',
-          flatten:['.d-docbody','.d-mods','.d-mod','.d-mod-b','.d-units'] }); return; }catch(e){}
+          flatten:['.d-docbody','.d-mods','.d-mod','.d-mod-b','.d-units','.d-cards','.d-facts','.d-books'] }); return; }catch(e){}
       }
       try{ window.print(); }catch(e){}
     }, 60);
@@ -366,6 +470,19 @@
       +'.alz-doc .d-mode{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-top:12px;border:1px solid rgba(0,0,0,.1);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:11px 15px;background:#faf8f6}'
       +'.alz-doc .dm-l{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);flex:none}'
       +'.alz-doc .dm-v{font-size:13.5px;font-weight:600;color:var(--ink)}'
+      /* ---- objective / outcome / plan cards ---- */
+      +'.alz-doc .d-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}'
+      +'.alz-doc .d-card{border:1px solid rgba(0,0,0,.1);border-left:3px solid var(--cr);border-radius:0 10px 10px 0;padding:14px 17px;background:#faf8f6}'
+      +'.alz-doc .d-card p{font-size:13.5px;line-height:1.65;margin:0}'
+      /* ---- particulars grid ---- */
+      +'.alz-doc .d-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:rgba(0,0,0,.1);border:1px solid rgba(0,0,0,.1);border-radius:10px;overflow:hidden}'
+      +'.alz-doc .d-fact{background:#fff;padding:11px 15px}'
+      +'.alz-doc .d-fact dt{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}'
+      +'.alz-doc .d-fact dd{font-size:13px;line-height:1.55;color:var(--ink);margin:0}'
+      /* ---- reference books ---- */
+      +'.alz-doc .d-books{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}'
+      +'.alz-doc .d-books li{font-size:13.5px;line-height:1.6;color:var(--ink);padding-left:4px}'
+      +'.alz-doc .d-books li::marker{color:var(--cr);font-weight:700}'
       /* ---- section heading ---- */
       +'.alz-doc .d-sec{font-family:"Source Serif Pro",Georgia,serif;font-size:17px;font-weight:700;color:var(--ink);margin:30px 0 12px;padding-bottom:7px;border-bottom:1px solid rgba(140,21,21,.2);display:flex;align-items:center;gap:9px}'
       +'.alz-doc .d-sec:before{content:"";width:8px;height:18px;background:var(--cr);border-radius:2px;display:inline-block}'
@@ -424,7 +541,7 @@
       +'.nav,.strip,.pick,.admin,footer,#alizonBack,.alz-back,.no-print,.alz-doc .d-mod-tg{display:none!important}'
       +'main,.wrap,.box{padding:0!important;margin:0!important;border:none!important;box-shadow:none!important;max-width:none!important;background:#fff!important}'
       +'.alz-doc{max-width:none}'
-      +'.alz-doc .d-mod,.alz-doc .d-stat,.alz-doc .cur-tblwrap{box-shadow:none!important;break-inside:avoid}'
+      +'.alz-doc .d-mod,.alz-doc .d-stat,.alz-doc .cur-tblwrap,.alz-doc .d-card,.alz-doc .d-fact,.alz-doc .d-books li{box-shadow:none!important;break-inside:avoid}'
       +'.alz-doc .d-sec{break-after:avoid}}';
     document.head.appendChild(st);
     /* Ctrl/Cmd+P or OS print: open every module so the PDF shows the full syllabus */
