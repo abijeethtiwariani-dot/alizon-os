@@ -187,7 +187,6 @@ body.night .bookinner figure.dia svg .dg-w{fill:#fff}
     <div class="s" id="tbSub">ALIZON OS · Textbooks</div>
   </div>
   <div class="sp"></div>
-  <button class="tb" id="btnBack" style="display:none">← Library</button>
   <button class="tb" id="btnA">A−</button>
   <button class="tb" id="btnAA">A+</button>
   <button class="tb" id="btnTheme">◐</button>
@@ -216,6 +215,7 @@ body.night .bookinner figure.dia svg .dg-w{fill:#fff}
 </div>
 
 <script src="firebase-sync.js"></script>
+<script src="alizon-backbar.js?v=3"></script>
 <script src="alizon-textbook-render.js?v=3"></script>
 <script>
 (function(){
@@ -396,7 +396,7 @@ function bootChapters(chs, meta){
   chapters=chs;
   $('shelf').style.display='none';
   $('reader').classList.add('on');
-  $('btnBack').style.display=''; $('btnPrintR').style.display=''; $('btnPrintU').style.display='';
+  $('btnPrintR').style.display=''; $('btnPrintU').style.display='';
   $('tbTitle').textContent=meta.title||'Textbook';
   $('tbSub').textContent=meta.prog||'ALIZON OS';
   buildToc();
@@ -439,7 +439,7 @@ function boot(data, entry){
   if(!chapters.length){ alert('This book has no chapters yet.'); return; }
   $('shelf').style.display='none';
   $('reader').classList.add('on');
-  $('btnBack').style.display=''; $('btnPrintR').style.display=''; $('btnPrintU').style.display='';
+  $('btnPrintR').style.display=''; $('btnPrintU').style.display='';
   $('tbTitle').textContent=current.meta.title||'Textbook';
   $('tbSub').textContent=(current.meta.module?'Module '+current.meta.module+' · ':'')+(current.meta.prog||'ALIZON OS');
   buildToc();
@@ -506,16 +506,22 @@ window.addEventListener('scroll', function(){ if(current) updateProgressBar(); }
 function backToShelf(){
   $('reader').classList.remove('on');
   $('shelf').style.display='';
-  $('btnBack').style.display='none'; $('btnPrintR').style.display='none'; $('btnPrintU').style.display='none';
+  $('btnPrintR').style.display='none'; $('btnPrintU').style.display='none';
   $('tbTitle').textContent='Library'; $('tbSub').textContent='ALIZON OS · Textbooks';
   $('prog').style.width='0';
   current=null;
   paintShelf(false);
   window.scrollTo(0,0);
 }
+/* One Back button, two meanings: inside the reader it returns to the shelf;
+   on the shelf it leaves the library. The shared bar asks us first. */
+if(window.AlizonBackBar) AlizonBackBar.onBack(function(){
+  if($('reader').classList.contains('on')){ backToShelf(); return true; }
+  return false;
+});
 $('btnWholeRead').addEventListener('click', function(){ openEverything(false); });
 $('btnWholePrint').addEventListener('click', function(){ openEverything(true); });
-$('btnBack').addEventListener('click', backToShelf);
+
 $('btnPrintR').addEventListener('click', printWholeBook);
 
 /* One chapter = one syllabus unit, so "print this unit" is simply the chapter
@@ -557,6 +563,5 @@ applyFS(); applyTheme(); loadIndex();
 })();
 })();
 </script>
-<script src="alizon-backbar.js?v=2"></script>
 </body>
 </html>

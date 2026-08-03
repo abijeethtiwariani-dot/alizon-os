@@ -29,26 +29,59 @@ function ready(fn){
   else fn();
 }
 
-/* Strip the page's own back links so this bar is the only one.
-   Matched on the link text, because they were each hand-written. */
-var STRIP = /^\s*(←|↩|&#8592;|&larr;)?\s*(back|back to .*|go back|dashboard|home|return.*|back to alizon os|back to campus sign-in|back to homepage|career hub|all courses)\s*$/i;
+/* Remove the page's own EXIT controls so this bar is the only way out.
+   Precise by design: an over-broad sweep would also delete in-exercise
+   navigation such as "Back to the ward" or "← All cases", which move within
+   a lab rather than leaving it, and view tabs such as the HR studio's
+   "Dashboard". Those must survive. */
+var EXIT_LABELS = [
+  /^←?\s*back$/i,
+  /^←?\s*dashboard$/i,
+  /^←?\s*home$/i,
+  /^←?\s*portal$/i,
+  /^←?\s*admin portal$/i,
+  /^←?\s*library$/i,
+  /^←?\s*back to (alizon os|the portal|dashboard|homepage|campus sign-in|home)$/i,
+  /^←?\s*.{0,40} course desk$/i,
+  /^←?\s*all courses$/i,
+  /^←?\s*career hub$/i
+];
+/* Never touch anything that navigates inside the page. */
+function isInPageControl(e){
+  if(e.closest('#alizonBackBar')) return true;
+  if(e.closest('#labGate, .labgate, [data-keep-back], nav, .nav-tabs, .tabs, .toc')) return true;
+  if(e.hasAttribute('data-view') || e.hasAttribute('data-p') || e.hasAttribute('data-sec')) return true;
+  var t=(e.textContent||'').replace(/\s+/g,' ').trim();
+  /* in-exercise wording — these move within a simulation, not out of it */
+  if(/\b(case|cases|ward|list|queue|round|step|unit|chapter|shelf)\b/i.test(t)) return true;
+  return false;
+}
 function stripOldLinks(){
-  var n = 0;
-  [].forEach.call(document.querySelectorAll('a'), function(a){
-    if(a.closest('#alizonBackBar')) return;
-    if(a.closest('#labGate, .labgate, [data-keep-back]')) return;   /* the locked-out screen keeps its own */
-    var t = (a.textContent || '').replace(/\s+/g,' ').trim();
-    if(!STRIP.test(t)) return;
-    /* only strip if it actually points at a portal destination */
-    var h = (a.getAttribute('href') || '');
-    if(!/ASMDI-dashboard|os-practicals|index\.html|alizon-home|alizon-career|alizon-course|^#|^$/.test(h)) return;
-    a.parentNode && a.parentNode.removeChild(a);
+  var n=0;
+  [].forEach.call(document.querySelectorAll('a,button'), function(e){
+    if(isInPageControl(e)) return;
+    var t=(e.textContent||'').replace(/\s+/g,' ').replace(/[\u2190\u21a9\u2302]/g,'').trim();
+    var raw=(e.textContent||'').replace(/\s+/g,' ').trim();
+    if(!raw || raw.length>46) return;
+    if(!EXIT_LABELS.some(function(rx){ return rx.test(raw) || rx.test(t); })) return;
+    /* an anchor must actually be leaving; a button is judged on its label alone */
+    if(e.tagName==='A'){
+      var h=e.getAttribute('href')||'';
+      if(!h || /^javascript:/i.test(h)) return;
+    }
+    e.style.display='none';   /* hide rather than remove: page scripts may hold a reference */
+    e.setAttribute('data-alizon-hidden','1');
     n++;
   });
   return n;
 }
 
+var pageHandler = null;
 function goBack(){
+  /* A page may own a meaningful "back" of its own — the library's reader
+     returning to the shelf. If it handles the press, we stop there. */
+  try{ if(pageHandler && pageHandler() === true) return; }catch(e){}
+
   /* Opened from another window — the honest "back" is to close this one and
      return the student to the tab they were already on. */
   try{
@@ -115,5 +148,6 @@ ready(function(){
   setTimeout(stripOldLinks, 1200);
 });
 
-window.AlizonBackBar = { back: goBack, strip: stripOldLinks };
+window.AlizonBackBar = { back: goBack, strip: stripOldLinks,
+  onBack: function(fn){ pageHandler = fn; } };
 })();
