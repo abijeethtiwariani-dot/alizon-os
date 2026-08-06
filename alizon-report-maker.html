@@ -643,6 +643,8 @@ $('submitBtn').addEventListener('click',()=>{
   try{localStorage.setItem('alizonSubmissions',JSON.stringify(arr));
     toast(rec.ai ? ('Submitted ✓ — AI provisional mark: '+rec.ai.grade+' (faculty may adjust)') : 'Submitted ✓ — awaiting faculty evaluation');}
   catch(e){toast('Could not save (storage full)',true);}
+  /* submitting work marks the day present, automatically */
+  try{ if(window.AlizonAttendance && rec.reg) window.AlizonAttendance.markFor(rec.reg, docType, {module:rec.module}); }catch(e){}
 });
 
 /* ---- student roster autofill (CSV uploaded via Admin Portal) ---- */

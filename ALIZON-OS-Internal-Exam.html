@@ -227,6 +227,7 @@
 <div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="firebase-sync.js"></script>
+<script src="alizon-attendance.js"></script>
 <script src="alizon-exam-manifest.js?v=1"></script>
 <script src="alizon-pdf-open.js"></script>
 <script>
@@ -457,6 +458,8 @@
     var mine={name:S.name,reg:S.reg,code:BANK.code,paper:paper.k,pt:paper.t,score:score,total:S.qs.length,pct:pct,
               secs:timeUsed,at:new Date().toISOString()};
     all.push(mine); writeStore(all);
+    /* sitting an internal exam counts as attendance for the day */
+    try{ if(window.AlizonAttendance && S.reg) window.AlizonAttendance.markFor(S.reg,'exam',{module:BANK&&BANK.code}); }catch(e){}
     var peers=all.filter(function(a){return a && a.code===BANK.code && a.paper===paper.k;});
     peers.sort(function(a,b){ return b.pct-a.pct || a.secs-b.secs; });
     var rank=peers.findIndex(function(a){return a.at===mine.at;})+1;

@@ -66,8 +66,19 @@
     var subs=J('alizonSubmissions',[]); if(!Array.isArray(subs)) subs=[];
     subs.push(sub);
     try{ localStorage.setItem('alizonSubmissions', JSON.stringify(subs)); }catch(e){}
+    /* completing a practical is attendance for the day — record it automatically.
+       markFor() takes the reg off the report itself, so it works even when the lab
+       was opened without a signed-in profile. */
+    try{
+      if(window.AlizonAttendance){
+        var reg=sub.reg||''; var meta={ module: sub.module||sub.title||'' };
+        if(reg) window.AlizonAttendance.markFor(reg,'practical',meta);
+        else window.AlizonAttendance.mark('practical',meta);
+      }
+    }catch(e){}
     /* nudge firebase-sync (this page or the parent dashboard) to mirror it to the cloud */
     try{ window.dispatchEvent(new StorageEvent('storage',{key:'alizonSubmissions'})); }catch(e){}
+    try{ window.dispatchEvent(new StorageEvent('storage',{key:'alizonAttendance'})); }catch(e){}
     try{ if(window.parent&&window.parent!==window) window.parent.postMessage({type:'alizon-submission',id:sub.id,module:sub.module},'*'); }catch(e){}
   }
 

@@ -795,6 +795,10 @@
   .cal-day.leave{background:#fce9c4;color:#9a6a00}
   .cal-day.holiday{background:#e7eaef;color:#98a0ac}
   .cal-day.today{outline:2px solid #17181c;outline-offset:1px;font-weight:700}
+  /* a day the student actually did coursework on, not just a sign-in */
+  .cal-day.worked{position:relative;font-weight:700}
+  .cal-day.worked:after{content:"";position:absolute;bottom:5px;left:50%;transform:translateX(-50%);
+    width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.75}
   .cal-legend{display:flex;flex-wrap:wrap;gap:15px;margin-top:16px;font-size:12px;color:var(--muted)}
   .cal-legend i{width:12px;height:12px;border-radius:4px;display:inline-block;margin-right:6px;vertical-align:-1px}
   .lg-present{background:#c6f24e}.lg-absent{background:#f5a3a3}.lg-leave{background:#f5cd6b}.lg-holiday{background:#cfd4dd}
@@ -976,6 +980,7 @@
   a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #8c1515 !important;outline-offset:3px;}
 </style>
   <script src="firebase-sync.js"></script>
+  <script src="alizon-attendance.js"></script>
   <script src="print-paginate.js"></script>
 <link rel="stylesheet" href="alizon-theme.css">
 </head>
@@ -1335,7 +1340,7 @@
 <div class="dsec" id="sec-attendance">
 <!-- ATTENDANCE CALENDAR -->
     <div class="modrow">
-      <div class="modhead"><h3>Attendance</h3><span class="modsub" id="attSub">Your monthly attendance, marked by your faculty. Green is present, red absent.</span></div>
+      <div class="modhead"><h3>Attendance</h3><span class="modsub" id="attSub">Recorded automatically from your sign-ins and submitted work, and adjustable by your faculty. Green is present, red absent.</span></div>
       <div class="attwrap">
         <div class="card attsum" id="attSummary"></div>
         <div class="card attcal">
@@ -1541,9 +1546,13 @@ document.getElementById('loginForm').addEventListener('submit',e=>{
     setMsg('',null); busy(false);
     try{ if(window.alizonAuth) window.alizonAuth.signIn(isMaster?'admin':idRaw, pw, isMaster?'admin':'student'); }catch(x){}
     if(st && st.reg){
-      const prof={name:st.name||'',reg:st.reg||'',sem:'',email:st.email||'',dob:st.dob||'',batch:st.batch||''};
+      const prof={name:st.name||'',reg:st.reg||'',sem:'',email:st.email||'',dob:st.dob||'',batch:st.batch||'',course:st.course||''};
       try{ localStorage.setItem('alizonProfile',JSON.stringify(prof)); }catch(x){}
       if(window.__applyProfile) window.__applyProfile(prof);
+      /* signing in is itself attendance — record it before anything else runs */
+      try{ if(window.AlizonAttendance) window.AlizonAttendance.markFor(st.reg,'login'); }catch(x){}
+      /* panels that key off "who is signed in" (syllabus, attendance) rebuild on this */
+      try{ window.dispatchEvent(new CustomEvent('alizon-signin',{detail:{reg:st.reg}})); }catch(x){}
     }
     loginSec.style.display='none';
     app.classList.add('active');
@@ -2732,15 +2741,34 @@ function moduleResultBadge(moduleUnit, progName){
     var td=new Date(), tY=td.getFullYear(), tM=td.getMonth(), tD=td.getDate();
     var html='';
     for(var i=0;i<lead;i++) html+='<div class="cal-day empty"></div>';
+    /* entries are either a plain status string (marked by hand) or an auto object
+       written by alizon-attendance.js when the student signs in or submits work */
+    var A=window.AlizonAttendance;
+    function stOf(v){ return A?A.status(v):(typeof v==='string'?v:(v&&v.s)||''); }
+    function autoOf(v){ return A?A.isAuto(v):!!(v&&typeof v==='object'&&v.auto); }
+    function workOf(v){ return A?A.verified(v):false; }
+    function why(v){
+      if(!v||typeof v!=='string'&&!v.auto) return '';
+      if(typeof v==='string') return ' · marked by faculty';
+      var b=[];
+      if(v.l) b.push(v.l+' sign-in'+(v.l>1?'s':''));
+      if(v.p) b.push(v.p+' practical'+(v.p>1?'s':''));
+      if(v.a) b.push(v.a+' assignment'+(v.a>1?'s':''));
+      if(v.x) b.push(v.x+' self-assessment'+(v.x>1?'s':''));
+      if(v.e) b.push(v.e+' exam'+(v.e>1?'s':''));
+      return b.length?' · auto: '+b.join(', '):' · auto';
+    }
     for(var d=1;d<=days;d++){
-      var key=ymd(viewY,viewM,d); var st=data[key]||'';
+      var key=ymd(viewY,viewM,d), ent=data[key], st=stOf(ent);
       var cls='cal-day'+(st?' '+st:''); if(viewY===tY&&viewM===tM&&d===tD) cls+=' today';
-      html+='<div class="'+cls+'" title="'+key+(st?' · '+st:'')+'">'+d+'</div>';
+      if(workOf(ent)) cls+=' worked';
+      html+='<div class="'+cls+'" title="'+key+(st?' · '+st:'')+why(ent)+'">'+d+'</div>';
     }
     g.innerHTML=html;
-    var pres=0,abs=0,lv=0,hol=0,tot=0, mp=viewY+'-'+pad(viewM+1);
-    Object.keys(data).forEach(function(k){ if(k.indexOf(mp)===0){ var v=data[k];
-      if(v==='present'){pres++;tot++;} else if(v==='absent'){abs++;tot++;} else if(v==='leave'){lv++;tot++;} else if(v==='holiday'){hol++;} } });
+    var pres=0,abs=0,lv=0,hol=0,tot=0,auto=0,work=0, mp=viewY+'-'+pad(viewM+1);
+    Object.keys(data).forEach(function(k){ if(k.indexOf(mp)===0){ var e=data[k], v=stOf(e);
+      if(v==='present'){pres++;tot++;} else if(v==='absent'){abs++;tot++;} else if(v==='leave'){lv++;tot++;} else if(v==='holiday'){hol++;}
+      if(autoOf(e)) auto++; if(workOf(e)) work++; } });
     var pct=tot?Math.round(pres/tot*100):0;
     var sum=document.getElementById('attSummary');
     if(sum) sum.innerHTML=
@@ -2750,7 +2778,11 @@ function moduleResultBadge(moduleUnit, progName){
       '<div class="att-row"><span>Absent</span><b>'+abs+'</b></div>'+
       '<div class="att-row"><span>Leave</span><b>'+lv+'</b></div>'+
       '<div class="att-row"><span>Holidays</span><b>'+hol+'</b></div>'+
-      '<div class="setnote">'+(ad.sample?'Sample view — your real attendance appears here once your faculty starts marking it.':'Marked by your faculty · updates automatically.')+'</div>';
+      (auto?'<div class="att-row"><span>Auto-recorded</span><b>'+auto+'</b></div>':'')+
+      (work?'<div class="att-row"><span>With coursework</span><b>'+work+'</b></div>':'')+
+      '<div class="setnote">'+(ad.sample
+        ? 'Sample view — your real attendance appears here from your first sign-in.'
+        : 'Recorded automatically each time you sign in or submit a practical, assignment or exam. A ring marks days with coursework; your faculty can still override any day.')+'</div>';
   }
 
   /* ---------- meetings ---------- */
@@ -2984,9 +3016,52 @@ function moduleResultBadge(moduleUnit, progName){
 (function(){
   function J(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}}
   function progNames(){ return (J('alizonPrograms',[])||[]).map(function(p){return p&&p.name;}).filter(Boolean); }
+  function esc2(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  /* the signed-in student's own course. Admin signs in without a profile reg,
+     so they keep the full picker; a student only ever sees their own syllabus. */
+  function myCourse(){
+    var p=J('alizonProfile',{})||{}, reg=String(p.reg||'').toUpperCase();
+    if(!reg) return null;                       /* admin / not signed in */
+    var roster=J('alizonStudents',[]); if(!Array.isArray(roster)) roster=[];
+    var st=null;
+    for(var i=0;i<roster.length;i++){ if(String(roster[i].reg||'').toUpperCase()===reg){ st=roster[i]; break; } }
+    var name=(st&&st.course)||p.course||p.programme||'';
+    return { reg:reg, name:String(name||'').trim() };
+  }
+
+  /* single-course view: no dropdown, just their syllabus */
+  function fillMine(me){
+    var sel=document.getElementById('sylSel'),
+        wrap=sel?sel.parentNode:null,
+        el=document.getElementById('dashSyllabus'),
+        sub=document.querySelector('#syllabusRow .modsub');
+    if(wrap) wrap.style.display='none';
+    if(!el) return true;
+
+    var course=me.name ? window.AlizonCurriculum.findForCourse(me.name) : null;
+    if(!course && me.name) course=window.AlizonCurriculum.get(window.AlizonCurriculum.courseKey({meta:{name:me.name}}));
+
+    if(sub){
+      sub.innerHTML = course
+        ? 'Module details, training hours (T / P / OJT / Internship) and marks for <b>'+esc2(me.name)+'</b> — '
+          +'<a href="alizon-syllabus.html?course='+encodeURIComponent(me.name)+'" style="color:var(--gold);font-weight:600">open as a document &rarr;</a>'
+        : 'Your programme syllabus appears here as soon as the office publishes it.';
+    }
+    if(course){ window.AlizonCurriculum.render(el, course); }
+    else{
+      el.innerHTML='<div style="padding:18px;color:var(--muted);font-size:14px">'
+        +(me.name?'The syllabus for <b>'+esc2(me.name)+'</b> has not been published yet.':'Your programme is not set on your student record yet — the office can add it.')
+        +'</div>';
+    }
+    return true;
+  }
+
   function fill(){
     if(!window.AlizonCurriculum) return;
     var sel=document.getElementById('sylSel'); if(!sel) return;
+    var me=myCourse();
+    if(me){ fillMine(me); return; }
     var store=window.AlizonCurriculum.store(), opts=[];
     Object.keys(store).forEach(function(k){ var m=store[k].meta||{}; opts.push({v:k,t:(m.name||k)}); });
     progNames().forEach(function(n){ var key=window.AlizonCurriculum.courseKey({meta:{name:n}});
@@ -3010,7 +3085,9 @@ function moduleResultBadge(moduleUnit, progName){
     window.AlizonCurriculum.render(el, course);
   }
   var sel=document.getElementById('sylSel'); if(sel) sel.addEventListener('change',show);
-  window.addEventListener('storage',function(e){ if(e.key==='alizonCurriculum'||e.key==='alizonPrograms') fill(); });
+  window.addEventListener('storage',function(e){ if(e.key==='alizonCurriculum'||e.key==='alizonPrograms'||e.key==='alizonStudents') fill(); });
+  /* the panel is built before anyone signs in, so rebuild it once we know who they are */
+  window.addEventListener('alizon-signin',function(){ fill(); setTimeout(fill,1200); });
   var tries=0; var iv=setInterval(function(){ fill(); if(++tries>15) clearInterval(iv); }, 1500);
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fill); else fill();
 })();
