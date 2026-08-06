@@ -16,6 +16,11 @@
          l = sign-ins, p = practicals, a = assignments, x = self-assessments,
          e = exams, t = last activity. Written only by this file.
 
+   A sign-in on its own is NOT attendance. The status of an auto entry is
+   derived from the coursework counters (p/a/x/e): submit something and the
+   day is present, otherwise the record just notes that they signed in and
+   did no work — which is worth seeing, but is not a present.
+
    Read it through AlizonAttendance.status()/detail() so both shapes work.
 
    Public API: window.AlizonAttendance = {
@@ -38,17 +43,25 @@
   function myReg(){ var p=J('alizonProfile',{}); return String((p&&p.reg)||'').toUpperCase(); }
 
   /* ---- reading (handles the manual string and the auto object) ---- */
+  function detail(entry){ return (entry && typeof entry==='object') ? entry : null; }
+  function isAuto(entry){ return !!(entry && typeof entry==='object' && entry.auto); }
+  /* how much coursework the student actually submitted that day */
+  function workCount(entry){
+    var d=detail(entry); if(!d) return 0;
+    return (d.p|0)+(d.a|0)+(d.x|0)+(d.e|0);
+  }
+  function verified(entry){ return workCount(entry)>0; }
+  /* signed in but submitted nothing — recorded, but not attendance */
+  function signedInOnly(entry){
+    var d=detail(entry);
+    return !!(d && (d.l|0)>0 && workCount(d)===0);
+  }
+  /* An auto day is present only when there is coursework behind it, so the rule
+     holds for records written before it existed too. Manual marks pass through. */
   function status(entry){
     if(!entry) return '';
     if(typeof entry==='string') return entry;
-    return entry.s || 'present';
-  }
-  function detail(entry){ return (entry && typeof entry==='object') ? entry : null; }
-  function isAuto(entry){ return !!(entry && typeof entry==='object' && entry.auto); }
-  /* present with real coursework behind it, not just a sign-in */
-  function verified(entry){
-    var d=detail(entry); if(!d) return false;
-    return ((d.p|0)+(d.a|0)+(d.x|0)+(d.e|0))>0;
+    return verified(entry) ? 'present' : '';
   }
 
   /* drop anything older than KEEP_DAYS so the synced document cannot creep
@@ -77,11 +90,14 @@
     /* a manual mark by admin or faculty is the authority — leave it alone */
     if(typeof cur==='string') return cur;
 
-    var e = cur || { s:'present', auto:1, l:0, p:0, a:0, x:0, e:0 };
-    e.s = e.s || 'present';
+    var e = cur || { s:'', auto:1, l:0, p:0, a:0, x:0, e:0 };
     e.auto = 1;
     e[field] = (e[field]|0) + 1;
     e.t = Date.now();
+    /* present only once real work has been submitted — a sign-in alone is not
+       attendance, though it is still counted so the office can see who showed
+       up and did nothing */
+    e.s = workCount(e) > 0 ? 'present' : '';
     if(meta && meta.module){
       var m = e.m || [];
       if(m.indexOf(meta.module)<0 && m.length<12) m.push(meta.module);
@@ -120,7 +136,7 @@
   /* month summary; pass y/m to scope it, omit for the whole record */
   function summary(reg, y, m){
     var rec=forStudent(reg), prefix=(y!=null&&m!=null)?(y+'-'+pad(m+1)):'';
-    var s={ present:0, absent:0, leave:0, holiday:0, marked:0, auto:0, verified:0, pct:0 };
+    var s={ present:0, absent:0, leave:0, holiday:0, marked:0, auto:0, verified:0, idle:0, pct:0 };
     Object.keys(rec).forEach(function(d){
       if(prefix && d.indexOf(prefix)!==0) return;
       var e=rec[d], st=status(e);
@@ -130,6 +146,7 @@
       else if(st==='holiday'){ s.holiday++; }
       if(isAuto(e)) s.auto++;
       if(verified(e)) s.verified++;
+      if(signedInOnly(e)) s.idle++;      /* signed in, submitted nothing */
     });
     s.pct = s.marked ? Math.round(s.present/s.marked*100) : 0;
     return s;
@@ -138,6 +155,7 @@
   window.AlizonAttendance = {
     mark:mark, markFor:markFor,
     status:status, detail:detail, isAuto:isAuto, verified:verified,
+    workCount:workCount, signedInOnly:signedInOnly,
     dayKey:dayKey, forStudent:forStudent, today:today, since:since, summary:summary
   };
 })();

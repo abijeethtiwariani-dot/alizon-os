@@ -799,6 +799,10 @@
   .cal-day.worked{position:relative;font-weight:700}
   .cal-day.worked:after{content:"";position:absolute;bottom:5px;left:50%;transform:translateX(-50%);
     width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.75}
+  /* signed in but submitted nothing — noted, but not a present */
+  .cal-day.idle{position:relative;box-shadow:inset 0 0 0 1.5px rgba(154,123,63,.55)}
+  .cal-day.idle:after{content:"";position:absolute;bottom:5px;left:50%;transform:translateX(-50%);
+    width:5px;height:5px;border-radius:50%;border:1.5px solid rgba(154,123,63,.85)}
   .cal-legend{display:flex;flex-wrap:wrap;gap:15px;margin-top:16px;font-size:12px;color:var(--muted)}
   .cal-legend i{width:12px;height:12px;border-radius:4px;display:inline-block;margin-right:6px;vertical-align:-1px}
   .lg-present{background:#c6f24e}.lg-absent{background:#f5a3a3}.lg-leave{background:#f5cd6b}.lg-holiday{background:#cfd4dd}
@@ -1340,7 +1344,7 @@
 <div class="dsec" id="sec-attendance">
 <!-- ATTENDANCE CALENDAR -->
     <div class="modrow">
-      <div class="modhead"><h3>Attendance</h3><span class="modsub" id="attSub">Recorded automatically from your sign-ins and submitted work, and adjustable by your faculty. Green is present, red absent.</span></div>
+      <div class="modhead"><h3>Attendance</h3><span class="modsub" id="attSub">Recorded automatically from the work you submit — practicals, assignments, self-assessments and exams — and adjustable by your faculty. Green is present, red absent.</span></div>
       <div class="attwrap">
         <div class="card attsum" id="attSummary"></div>
         <div class="card attcal">
@@ -2744,9 +2748,13 @@ function moduleResultBadge(moduleUnit, progName){
     /* entries are either a plain status string (marked by hand) or an auto object
        written by alizon-attendance.js when the student signs in or submits work */
     var A=window.AlizonAttendance;
-    function stOf(v){ return A?A.status(v):(typeof v==='string'?v:(v&&v.s)||''); }
+    function workN(v){ return (v&&typeof v==='object')?((v.p|0)+(v.a|0)+(v.x|0)+(v.e|0)):0; }
+    /* an auto day counts as present only when coursework was submitted;
+       signing in on its own is recorded but is not attendance */
+    function stOf(v){ return A?A.status(v):(typeof v==='string'?v:(workN(v)?'present':'')); }
     function autoOf(v){ return A?A.isAuto(v):!!(v&&typeof v==='object'&&v.auto); }
-    function workOf(v){ return A?A.verified(v):false; }
+    function workOf(v){ return A?A.verified(v):workN(v)>0; }
+    function idleOf(v){ return A?A.signedInOnly(v):!!(v&&typeof v==='object'&&(v.l|0)>0&&!workN(v)); }
     function why(v){
       if(!v||typeof v!=='string'&&!v.auto) return '';
       if(typeof v==='string') return ' · marked by faculty';
@@ -2756,19 +2764,21 @@ function moduleResultBadge(moduleUnit, progName){
       if(v.a) b.push(v.a+' assignment'+(v.a>1?'s':''));
       if(v.x) b.push(v.x+' self-assessment'+(v.x>1?'s':''));
       if(v.e) b.push(v.e+' exam'+(v.e>1?'s':''));
-      return b.length?' · auto: '+b.join(', '):' · auto';
+      if(!b.length) return ' · auto';
+      return (workN(v)?' · ':' · signed in, no work submitted · ')+b.join(', ');
     }
     for(var d=1;d<=days;d++){
       var key=ymd(viewY,viewM,d), ent=data[key], st=stOf(ent);
       var cls='cal-day'+(st?' '+st:''); if(viewY===tY&&viewM===tM&&d===tD) cls+=' today';
       if(workOf(ent)) cls+=' worked';
+      else if(idleOf(ent)) cls+=' idle';
       html+='<div class="'+cls+'" title="'+key+(st?' · '+st:'')+why(ent)+'">'+d+'</div>';
     }
     g.innerHTML=html;
-    var pres=0,abs=0,lv=0,hol=0,tot=0,auto=0,work=0, mp=viewY+'-'+pad(viewM+1);
+    var pres=0,abs=0,lv=0,hol=0,tot=0,auto=0,work=0,idle=0, mp=viewY+'-'+pad(viewM+1);
     Object.keys(data).forEach(function(k){ if(k.indexOf(mp)===0){ var e=data[k], v=stOf(e);
       if(v==='present'){pres++;tot++;} else if(v==='absent'){abs++;tot++;} else if(v==='leave'){lv++;tot++;} else if(v==='holiday'){hol++;}
-      if(autoOf(e)) auto++; if(workOf(e)) work++; } });
+      if(autoOf(e)) auto++; if(workOf(e)) work++; if(idleOf(e)) idle++; } });
     var pct=tot?Math.round(pres/tot*100):0;
     var sum=document.getElementById('attSummary');
     if(sum) sum.innerHTML=
@@ -2778,11 +2788,11 @@ function moduleResultBadge(moduleUnit, progName){
       '<div class="att-row"><span>Absent</span><b>'+abs+'</b></div>'+
       '<div class="att-row"><span>Leave</span><b>'+lv+'</b></div>'+
       '<div class="att-row"><span>Holidays</span><b>'+hol+'</b></div>'+
-      (auto?'<div class="att-row"><span>Auto-recorded</span><b>'+auto+'</b></div>':'')+
-      (work?'<div class="att-row"><span>With coursework</span><b>'+work+'</b></div>':'')+
+      (work?'<div class="att-row"><span>Days with work</span><b>'+work+'</b></div>':'')+
+      (idle?'<div class="att-row"><span>Signed in, no work</span><b>'+idle+'</b></div>':'')+
       '<div class="setnote">'+(ad.sample
-        ? 'Sample view — your real attendance appears here from your first sign-in.'
-        : 'Recorded automatically each time you sign in or submit a practical, assignment or exam. A ring marks days with coursework; your faculty can still override any day.')+'</div>';
+        ? 'Sample view — your real attendance appears here once you start submitting work.'
+        : 'A day counts as present when you submit a practical, assignment, self-assessment or exam. Signing in is noted but does not mark you present on its own. Your faculty can override any day.')+'</div>';
   }
 
   /* ---------- meetings ---------- */

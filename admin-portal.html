@@ -709,8 +709,10 @@ h1,h2,h3{color:#111!important}
     </div>
 
     <div class="cblock"><div class="ct">Auto-recorded attendance</div>
-      <div class="ahint" style="margin-bottom:10px">Students are marked present automatically the moment they sign in or submit a
-        practical, assignment, self-assessment or internal exam. A day marked by hand below always overrides the automatic record.</div>
+      <div class="ahint" style="margin-bottom:10px">A student is marked present automatically on the day they submit a practical,
+        assignment, self-assessment or internal exam. Signing in is recorded too, but it does not count as attendance on its own —
+        those days show as <b>no work</b> so you can see who logged in and did nothing. A day marked by hand below always overrides
+        the automatic record.</div>
       <div class="arow4">
         <input id="aa-from" type="date" title="From">
         <input id="aa-to" type="date" title="To">
@@ -2714,6 +2716,9 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     out.sort(function(a,b){ return a.day===b.day ? a.reg.localeCompare(b.reg) : (a.day<b.day?1:-1); });
     return out;
   }
+  /* coursework actually submitted that day — a sign-in on its own is not attendance */
+  function aaWork(e){ return (e&&typeof e==='object')?((e.p|0)+(e.a|0)+(e.x|0)+(e.e|0)):0; }
+  function aaStatus(e){ return (typeof e==='string')?e:(aaWork(e)?'present':''); }
   function aaWhat(e){
     if(typeof e==='string') return 'marked by hand';
     if(!e||typeof e!=='object') return '';
@@ -2723,25 +2728,26 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     if(e.a) b.push(e.a+' assignment'+(e.a>1?'s':''));
     if(e.x) b.push(e.x+' self-assessment'+(e.x>1?'s':''));
     if(e.e) b.push(e.e+' exam'+(e.e>1?'s':''));
-    return b.length?b.join(' · '):'auto';
+    if(!b.length) return 'auto';
+    return (aaWork(e)?'':'signed in, no work submitted — ')+b.join(' · ');
   }
-  function aaStatus(e){ return (typeof e==='string')?e:((e&&e.s)||'present'); }
   function renderAuto(){
     var el=document.getElementById('aaList'); if(!el) return;
     var rows=aaRows(), info=document.getElementById('aaInfo');
-    var autoN=rows.filter(function(r){ return r.e&&typeof r.e==='object'&&r.e.auto; }).length;
+    var pres=rows.filter(function(r){ return aaStatus(r.e)==='present'; }).length;
+    var idle=rows.filter(function(r){ return typeof r.e==='object' && !aaWork(r.e) && (r.e.l|0)>0; }).length;
     var regs={}; rows.forEach(function(r){ regs[r.reg]=1; });
     if(info) info.textContent=rows.length
-      ? rows.length+' day-record(s) · '+autoN+' automatic · '+Object.keys(regs).length+' student(s)'
+      ? rows.length+' day-record(s) · '+pres+' present · '+idle+' signed in without submitting · '+Object.keys(regs).length+' student(s)'
       : 'Nothing recorded for this range yet.';
     el.innerHTML=rows.length? rows.slice(0,400).map(function(r){
       var st=aaStatus(r.e), auto=(r.e&&typeof r.e==='object'&&r.e.auto);
       return '<div class="citem"><div class="cinfo"><b>'+esc(r.reg)+(r.name?' — '+esc(r.name):'')
-        +' <span class="badge2">'+esc(st)+'</span>'+(auto?'':' <span class="badge2">manual</span>')+'</b>'
+        +' <span class="badge2">'+esc(st||'no work')+'</span>'+(auto?'':' <span class="badge2">manual</span>')+'</b>'
         +'<small>'+esc(r.day)+' · '+esc(aaWhat(r.e))
         +(r.e&&r.e.m&&r.e.m.length?' · '+esc(r.e.m.join(', ')):'')+'</small></div></div>';
     }).join('') + (rows.length>400?'<div class="ahint">Showing the most recent 400 — narrow the dates or export the CSV for the full list.</div>':'')
-      : '<div class="ahint">No attendance recorded yet. It fills in on its own as students sign in and submit work.</div>';
+      : '<div class="ahint">No attendance recorded yet. It fills in on its own as students submit work.</div>';
   }
   function aaCsv(){
     var rows=aaRows();
@@ -2750,7 +2756,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     var lines=[head.join(',')];
     rows.forEach(function(r){
       var e=r.e, o=(e&&typeof e==='object')?e:{};
-      var cells=[r.reg, r.name, r.day, aaStatus(e), (o.auto?'automatic':'manual'),
+      var cells=[r.reg, r.name, r.day, aaStatus(e)||'no work', (o.auto?'automatic':'manual'),
                  o.l||0, o.p||0, o.a||0, o.x||0, o.e||0, (o.m||[]).join('; ')];
       lines.push(cells.map(function(c){ c=String(c==null?'':c); return /[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c; }).join(','));
     });
