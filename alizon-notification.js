@@ -171,6 +171,173 @@
     return get(BATCH8.id);
   }
 
+  /* =========================================================
+     Paste-and-recognise
+     Takes the notification as plain text — the way it is written in a
+     document or copied off a page — and works out its own structure:
+     "N. HEADING" starts a section, tab / pipe / column-spaced pairs are a
+     table, "a) …" lines are a lettered list, prose before them is the
+     intro and prose after them is the note. Nothing has to be tagged.
+     ========================================================= */
+  function stripMd(s){
+    return String(s==null?'':s)
+      .replace(/\[([^\]]*)\]\(([^)]*)\)/g,'$1')   /* [text](url) -> text */
+      .replace(/\*\*/g,'').replace(/^#+\s*/,'')
+      .replace(/ /g,' ')
+      .trim();
+  }
+  /* split a line into exactly two columns if it plausibly is a table row */
+  function cells(line){
+    var t=line;
+    if(t.indexOf('\t')>-1){
+      var byTab=t.split('\t').map(function(x){return x.trim();}).filter(function(x,i,a){ return true; });
+      byTab=byTab.filter(function(x){ return x!==''; });
+      if(byTab.length===2) return byTab;
+      if(byTab.length>2) return [byTab[0], byTab.slice(1).join(' ')];
+      return null;
+    }
+    if(t.indexOf('|')>-1){
+      var byPipe=t.replace(/^\s*\|/,'').replace(/\|\s*$/,'').split('|').map(function(x){return x.trim();});
+      if(byPipe.every(function(x){ return /^-{2,}:?$|^:?-{2,}:?$/.test(x); })) return 'sep';
+      byPipe=byPipe.filter(function(x){ return x!==''; });
+      if(byPipe.length===2) return byPipe;
+      if(byPipe.length>2) return [byPipe[0], byPipe.slice(1).join(' ')];
+      return null;
+    }
+    /* column-aligned text: only when the line is short and splits cleanly once */
+    if(t.length<=90){
+      var m=t.split(/\s{2,}/).map(function(x){return x.trim();}).filter(Boolean);
+      if(m.length===2 && m[0].length<=60) return m;
+    }
+    return null;
+  }
+  var HEADWORDS=/^(particular|particulars|details|detail|amount|event|date|dates|sl\.?\s*no\.?|description|item|fee|fees)$/i;
+  function looksHeader(r){ return !!r && r!=='sep' && HEADWORDS.test(r[0]) && HEADWORDS.test(r[1]); }
+
+  function parse(text, base){
+    var raw=String(text||'').replace(/\r/g,'').split('\n');
+    var lines=raw.map(stripMd);
+    if(!lines.join('').trim()) return null;
+
+    var out=base ? JSON.parse(JSON.stringify(base)) : blank();
+    out.sections=[];
+
+    /* section boundaries: "1. TITLE" / "1) TITLE" on a line of its own */
+    var marks=[];
+    lines.forEach(function(l,i){
+      var m=/^(\d{1,2})\s*[.)]\s*(.+)$/.exec(l);
+      if(m && m[2].trim().length<=80 && !cells(l)) marks.push({ i:i, no:+m[1], t:m[2].trim() });
+    });
+
+    var preamble=lines.slice(0, marks.length?marks[0].i:lines.length);
+
+    /* academic year + the opening paragraph */
+    var yr=null;
+    preamble.concat(lines).some(function(l){
+      var m=/academic\s+year\s+([0-9]{4}\s*[–\-—]\s*[0-9]{2,4})/i.exec(l);
+      if(m){ yr=m[1].replace(/\s*[–\-—]\s*/,'–'); return true; }
+      return false;
+    });
+    if(yr) out.year=yr;
+
+    var paras=[], buf=[];
+    preamble.forEach(function(l){
+      if(!l.trim()){ if(buf.length){ paras.push(buf.join(' ')); buf=[]; } return; }
+      if(/^academic\s+year/i.test(l) && l.length<40) return;   /* the year banner, not prose */
+      buf.push(l.trim());
+    });
+    if(buf.length) paras.push(buf.join(' '));
+    var lede=paras.filter(function(p){ return p.length>40; })[0]||paras[0]||'';
+    if(lede) out.lede=lede;
+
+    /* course name, from the opening sentence */
+    var cm=/admission to the\s+(.+?)\s+for the academic year/i.exec(out.lede||'');
+    if(cm) out.course=cm[1].trim();
+    var bm=/\bbatch\s*[-–]?\s*(\d{1,3})\b/i.exec(text);
+    if(bm) out.batch='Batch '+bm[1];
+
+    /* each section */
+    marks.forEach(function(mk, ix){
+      var end=(ix+1<marks.length)?marks[ix+1].i:lines.length;
+      var body=lines.slice(mk.i+1, end);
+      var rows=[], head=null, items=[], before=[], after=[], b=[], sawStructure=false;
+
+      function flush(){ if(b.length){ (sawStructure?after:before).push(b.join(' ')); b=[]; } }
+
+      body.forEach(function(l){
+        var t=l.trim();
+        if(!t){ flush(); return; }
+        var li=/^\(?([a-z])\)?[.)]\s+(.+)$/i.exec(t);
+        if(li && li[1].length===1 && /[a-z]/i.test(li[1])){
+          flush(); items.push(li[2].trim()); sawStructure=true; return;
+        }
+        var c=cells(t);
+        if(c==='sep') return;
+        if(c){
+          flush();
+          if(!rows.length && !head && looksHeader(c)) head=c;
+          else rows.push(c);
+          sawStructure=true; return;
+        }
+        b.push(t);
+      });
+      flush();
+
+      var sec={ t:mk.t.replace(/\s+/g,' ').trim(), k:'text' };
+      /* title case a SHOUTED heading so it matches the rest of the document */
+      if(sec.t===sec.t.toUpperCase()){
+        sec.t=sec.t.toLowerCase().replace(/\b([a-z])/g,function(_,ch){ return ch.toUpperCase(); })
+                   .replace(/\bOf\b/g,'of').replace(/\bThe\b/g,'the').replace(/\bTo\b/g,'to')
+                   .replace(/\bAnd\b/g,'and').replace(/\bFor\b/g,'for');
+        sec.t=sec.t.charAt(0).toUpperCase()+sec.t.slice(1);
+      }
+
+      if(rows.length>=2){
+        sec.k='table';
+        sec.head=head||(/date/i.test(sec.t)?['Event','Date']:(/fee/i.test(sec.t)?['Particular','Amount']:['Particular','Details']));
+        sec.rows=rows;
+        /* highlight a genuine totals row — "Total Payable Amount", not "Total Intake" */
+        var lastRow=rows[rows.length-1];
+        if(/^(grand\s+)?total\b/i.test(lastRow[0]) && /(payable|amount|fee|due|charge|cost|₹|rs\.?\b)/i.test(lastRow[0]+' '+lastRow[1]))
+          sec.total=true;
+        if(before.length) sec.intro=before.join('\n\n');
+        if(after.length) sec.note=after.join('\n\n');
+      } else if(items.length){
+        sec.k='list';
+        sec.items=items;
+        if(before.length) sec.intro=before.join('\n\n');
+        if(after.length) sec.note=after.join('\n\n');
+      } else {
+        sec.body=before.concat(after).join('\n\n');
+      }
+
+      /* the contact block is rendered from its own fields, not as a section */
+      if(/contact/i.test(sec.t)){
+        var blob=body.join('\n');
+        var c={};
+        var em=/([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/.exec(blob); if(em) c.email=em[1];
+        var ph=/(?:helpline|phone|mobile|tel)[^\n:]*:?\s*([+0-9][0-9\s\-()]{7,})/i.exec(blob); if(ph) c.phone=ph[1].trim();
+        var wb=/(?:website)\s*:?\s*(\S+)/i.exec(blob); if(wb) c.web=wb[1].trim();
+        var addr=[], nm='';
+        body.forEach(function(l){
+          var t=l.trim(); if(!t) return;
+          if(/@|website|helpline|phone|mobile|tel\b/i.test(t)) return;
+          if(!nm){ nm=t; return; }
+          addr.push(t);
+        });
+        if(nm) c.name=nm;
+        if(addr.length) c.address=addr.join(', ');
+        out.contact=Object.assign({}, out.contact||{}, c);
+        return;                                  /* not pushed as a numbered section */
+      }
+      out.sections.push(sec);
+    });
+
+    if(!out.sections.length && !out.lede) return null;
+    if(!out.id) out.id='notification-'+String(Date.now());
+    return out;
+  }
+
   function longDate(v){
     if(!v) return '';
     var d=new Date(v+(String(v).length===10?'T00:00:00':''));
@@ -179,12 +346,14 @@
     return d.getDate()+' '+M[d.getMonth()]+' '+d.getFullYear();
   }
 
-  /* the ASAP mark, shared with the experience letter so one upload serves both */
+  /* the ASAP mark — the official artwork ships with the site; an admin upload
+     (shared with the experience letter, so one upload serves both) overrides it */
+  var ASAP_ASSET='/asap-logo.png';
   function asapMark(){
     var logo='';
     try{ if(window.AlizonExperience) logo=window.AlizonExperience.settings().asapLogo||''; }catch(e){}
-    if(logo) return '<img class="n-asap-img" src="'+esc(logo)+'" alt="ASAP Kerala">';
-    return '<div class="n-asap-txt"><b>ASAP</b><span>KERALA</span></div>';
+    return '<img class="n-asap-img" src="'+esc(logo||ASAP_ASSET)+'" alt="ASAP — Additional Skill Acquisition Programme"'
+      +' onerror="this.outerHTML=\'<div class=&quot;n-asap-txt&quot;><b>ASAP</b><span>KERALA</span></div>\'">';
   }
 
   function html(n){
@@ -256,16 +425,24 @@
         +(c.web?'<div><b>Website:</b> '+esc(c.web)+'</div>':'')
       +'</div></section>';
 
+    /* signature + seal come from the shared settings, so one upload signs
+       every document; falls back to a blank space to sign by hand */
+    var sb=null;
+    try{ if(window.AlizonExperience) sb=window.AlizonExperience.signatureBits('n',
+      { signatory:n.signatory, designation:n.designation }); }catch(e){}
+    if(!sb) sb={ seal:'<div class="n-seal">(Institution seal)</div>',
+      sign:'<div class="n-sig-area"></div><div class="n-sig-rule"></div>'
+          +'<div class="n-sig-n">'+esc(n.signatory||'')+'</div>'
+          +'<div class="n-sig-d">'+esc(n.designation||'')+'</div>'
+          +'<div class="n-sig-i">Alizon School of Medical &amp; Digital Intelligence</div>', note:'' };
     h+='<div class="n-sign">'
       +'<div class="n-sign-l">'
         +(n.place?'<div class="n-kv">Place: <b>'+esc(n.place)+'</b></div>':'')
         +(n.date?'<div class="n-kv">Date: <b>'+longDate(n.date)+'</b></div>':'')
-        +'<div class="n-seal">(Institution seal)</div></div>'
-      +'<div class="n-sign-r"><div class="n-sig-line"></div>'
-        +'<div class="n-sig-n">'+esc(n.signatory||'')+'</div>'
-        +'<div class="n-sig-d">'+esc(n.designation||'')+'</div>'
-        +'<div class="n-sig-i">Alizon School of Medical &amp; Digital Intelligence</div></div>'
+        +sb.seal+'</div>'
+      +'<div class="n-sign-r">'+sb.sign+'</div>'
       +'</div>';
+    if(sb.note) h+='<div class="n-sysnote">'+sb.note+'</div>';
 
     h+='</div>';
     h+='<footer class="n-foot"><div class="n-foot-rule"></div>'
@@ -287,8 +464,8 @@
     +'.alz-note .n-lh-name{font-family:"Source Serif Pro",Georgia,serif;font-size:clamp(17px,2.4vw,23px);font-weight:700;color:var(--cr);line-height:1.15}'
     +'.alz-note .n-lh-tag{font-size:12px;font-style:italic;color:var(--muted);margin-top:3px}'
     +'.alz-note .n-lh-addr{font-size:11px;letter-spacing:.04em;color:#8a827b;margin-top:4px;font-weight:600}'
-    +'.alz-note .n-lh-asap{flex:none;display:grid;place-items:center;min-width:70px}'
-    +'.alz-note .n-asap-img{max-width:82px;max-height:62px;object-fit:contain}'
+    +'.alz-note .n-lh-asap{flex:none;display:grid;place-items:center;min-width:96px}'
+    +'.alz-note .n-asap-img{max-width:132px;max-height:56px;object-fit:contain}'
     +'.alz-note .n-asap-txt{text-align:center;border:1.5px solid var(--gold);border-radius:8px;padding:6px 10px;line-height:1}'
     +'.alz-note .n-asap-txt b{display:block;font-family:"Source Serif Pro",Georgia,serif;font-size:19px;font-weight:700;color:var(--cr);letter-spacing:.04em}'
     +'.alz-note .n-asap-txt span{display:block;font-size:8.5px;font-weight:700;letter-spacing:.19em;color:var(--gold);margin-top:3px}'
@@ -333,7 +510,12 @@
     +'.alz-note .n-seal{margin-top:20px;width:104px;height:104px;border:1.5px dashed rgba(140,21,21,.35);border-radius:50%;'
     +'display:grid;place-items:center;font-size:10px;color:#a8a099;text-align:center;padding:8px}'
     +'.alz-note .n-sign-r{text-align:center;align-self:flex-end;min-width:230px}'
-    +'.alz-note .n-sig-line{border-top:1.5px solid var(--ink);margin-bottom:7px;height:56px}'
+    +'.alz-note .n-sig-area{height:60px;display:flex;align-items:flex-end;justify-content:center}'
+    +'.alz-note .n-sig-img{max-height:58px;max-width:210px;object-fit:contain}'
+    +'.alz-note .n-sig-rule{border-top:1.5px solid var(--ink);margin-bottom:7px}'
+    +'.alz-note .n-seal-img{border:none;padding:0}'
+    +'.alz-note .n-seal-img img{max-width:100px;max-height:100px;object-fit:contain}'
+    +'.alz-note .n-sysnote{margin-top:14px;font-size:11px;font-style:italic;color:var(--muted);text-align:center}'
     +'.alz-note .n-sig-n{font-weight:700;font-size:13.5px}'
     +'.alz-note .n-sig-d{font-size:12px;color:var(--muted)}'
     +'.alz-note .n-sig-i{font-size:11px;color:var(--muted);margin-top:2px}'
@@ -390,7 +572,7 @@
   }
 
   window.AlizonNotification = {
-    BATCH8:BATCH8, blank:blank, seed:seed,
+    BATCH8:BATCH8, blank:blank, seed:seed, parse:parse,
     list:list, get:get, published:published, save:save, remove:remove, publish:publish,
     html:html, render:render, open:open_, print:print_, css:CSS
   };

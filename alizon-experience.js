@@ -40,7 +40,11 @@
 
   var DEFAULTS = {
     asapLogo:'', signatory:'Dr Abijeeth Tiwari', designation:'Director',
-    place:'Thiruvananthapuram', hoursPer:HOURS_PER_PRACTICAL
+    place:'Thiruvananthapuram', hoursPer:HOURS_PER_PRACTICAL,
+    /* signMode 'wet' leaves a blank space to sign by hand; 'digital' applies the
+       stored signature so the PDF comes out already signed. Shared with the
+       admission notification, so one upload serves every document. */
+    signMode:'wet', signImage:'', sealImage:''
   };
   function settings(){
     var s=store()._settings||{}, out={};
@@ -164,12 +168,38 @@
   }
 
   /* ---- the ASAP mark that sits beside our crest ----
-     Uses the official artwork once an administrator uploads it; until then
-     a plain typographic mark, so the letter never ships a broken image. */
+     The official artwork ships with the site; an administrator upload
+     overrides it, and the typographic mark is the last resort. */
+  var ASAP_ASSET='/asap-logo.png';
   function asapMark(){
-    var logo=settings().asapLogo;
-    if(logo) return '<img class="x-asap-img" src="'+esc(logo)+'" alt="ASAP Kerala">';
-    return '<div class="x-asap-txt"><b>ASAP</b><span>KERALA</span></div>';
+    var logo=settings().asapLogo||ASAP_ASSET;
+    return '<img class="x-asap-img" src="'+esc(logo)+'" alt="ASAP — Additional Skill Acquisition Programme"'
+      +' onerror="this.outerHTML=\'<div class=&quot;x-asap-txt&quot;><b>ASAP</b><span>KERALA</span></div>\'">';
+  }
+
+  /* the signature block, shared with the admission notification.
+     `p` is the class prefix ('x' for the letter, 'n' for the notification). */
+  function signatureBits(p, o){
+    var s=settings();
+    o=o||{};
+    var digital=(s.signMode==='digital' && s.signImage);
+    var seal=s.sealImage
+      ? '<div class="'+p+'-seal '+p+'-seal-img"><img src="'+esc(s.sealImage)+'" alt="Institution seal"></div>'
+      : '<div class="'+p+'-seal">(Institution seal)</div>';
+    var area=digital
+      ? '<div class="'+p+'-sig-area"><img class="'+p+'-sig-img" src="'+esc(s.signImage)+'" alt="Signature"></div>'
+      : '<div class="'+p+'-sig-area"></div>';
+    return {
+      seal: seal,
+      sign: area+'<div class="'+p+'-sig-rule"></div>'
+            +'<div class="'+p+'-sig-n">'+esc(o.signatory||s.signatory)+'</div>'
+            +'<div class="'+p+'-sig-d">'+esc(o.designation||s.designation)+'</div>'
+            +'<div class="'+p+'-sig-i">Alizon School of Medical &amp; Digital Intelligence</div>',
+      digital: digital,
+      note: digital
+        ? 'This is a system-generated document. The signature above is applied digitally and the document is valid without a physical signature.'
+        : ''
+    };
   }
 
   function letterhead(){
@@ -238,15 +268,14 @@
       +'standard operating procedures and documentation practice, and worked under faculty supervision throughout. '
       +'This certificate is issued on request for the purpose of academic and employment record.</p>';
 
+    var sb=signatureBits('x');
     h+='<div class="x-sign">'
       +'<div class="x-sign-l"><div class="x-kv">Place: <b>'+esc(s.place)+'</b></div>'
         +'<div class="x-kv">Date: <b>'+longDate(rec.issued)+'</b></div>'
-        +'<div class="x-seal">(Institution seal)</div></div>'
-      +'<div class="x-sign-r"><div class="x-sig-line"></div>'
-        +'<div class="x-sig-n">'+esc(s.signatory)+'</div>'
-        +'<div class="x-sig-d">'+esc(s.designation)+'</div>'
-        +'<div class="x-sig-i">Alizon School of Medical &amp; Digital Intelligence</div></div>'
+        +sb.seal+'</div>'
+      +'<div class="x-sign-r">'+sb.sign+'</div>'
       +'</div>';
+    if(sb.note) h+='<div class="x-sysnote">'+sb.note+'</div>';
 
     h+='</div>';
     h+='<footer class="x-foot"><div class="x-foot-rule"></div>'
@@ -268,8 +297,8 @@
     +'.alz-exp .x-lh-name{font-family:"Source Serif Pro",Georgia,serif;font-size:clamp(17px,2.4vw,23px);font-weight:700;color:var(--cr);line-height:1.15}'
     +'.alz-exp .x-lh-tag{font-size:12px;font-style:italic;color:var(--muted);margin-top:3px}'
     +'.alz-exp .x-lh-addr{font-size:11px;letter-spacing:.04em;color:#8a827b;margin-top:4px;font-weight:600}'
-    +'.alz-exp .x-lh-asap{flex:none;display:grid;place-items:center;min-width:70px}'
-    +'.alz-exp .x-asap-img{max-width:82px;max-height:62px;object-fit:contain}'
+    +'.alz-exp .x-lh-asap{flex:none;display:grid;place-items:center;min-width:96px}'
+    +'.alz-exp .x-asap-img{max-width:132px;max-height:56px;object-fit:contain}'
     +'.alz-exp .x-asap-txt{text-align:center;border:1.5px solid var(--gold);border-radius:8px;padding:6px 10px;line-height:1}'
     +'.alz-exp .x-asap-txt b{display:block;font-family:"Source Serif Pro",Georgia,serif;font-size:19px;font-weight:700;color:var(--cr);letter-spacing:.04em}'
     +'.alz-exp .x-asap-txt span{display:block;font-size:8.5px;font-weight:700;letter-spacing:.19em;color:var(--gold);margin-top:3px}'
@@ -298,7 +327,12 @@
     +'.alz-exp .x-seal{margin-top:22px;width:104px;height:104px;border:1.5px dashed rgba(140,21,21,.35);border-radius:50%;'
     +'display:grid;place-items:center;font-size:10px;color:#a8a099;text-align:center;padding:8px}'
     +'.alz-exp .x-sign-r{text-align:center;align-self:flex-end;min-width:230px}'
-    +'.alz-exp .x-sig-line{border-top:1.5px solid var(--ink);margin-bottom:7px;height:58px}'
+    +'.alz-exp .x-sig-area{height:60px;display:flex;align-items:flex-end;justify-content:center}'
+    +'.alz-exp .x-sig-img{max-height:58px;max-width:210px;object-fit:contain}'
+    +'.alz-exp .x-sig-rule{border-top:1.5px solid var(--ink);margin-bottom:7px}'
+    +'.alz-exp .x-seal-img{border:none;padding:0}'
+    +'.alz-exp .x-seal-img img{max-width:100px;max-height:100px;object-fit:contain}'
+    +'.alz-exp .x-sysnote{margin-top:14px;font-size:11px;font-style:italic;color:var(--muted);text-align:center}'
     +'.alz-exp .x-sig-n{font-weight:700;font-size:13.5px}'
     +'.alz-exp .x-sig-d{font-size:12px;color:var(--muted)}'
     +'.alz-exp .x-sig-i{font-size:11px;color:var(--muted);margin-top:2px}'
@@ -350,7 +384,7 @@
     settings:settings, saveSettings:saveSettings,
     verifiedPracticals:verifiedPracticals,
     get:get, list:list, issue:issue, revoke:revoke,
-    itemHours:itemHours, uniformHours:uniformHours,
+    itemHours:itemHours, uniformHours:uniformHours, signatureBits:signatureBits,
     letterHtml:letterHtml, render:render, open:open_, css:CSS
   };
 })();

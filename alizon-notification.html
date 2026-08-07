@@ -73,7 +73,19 @@
 <main><div class="wrap">
 
   <div class="admin" id="adminBox" style="display:none">
-    <h2>Edit this notification</h2>
+    <h2>Paste the notification</h2>
+    <div class="hint">Write the notice anywhere — Word, Docs, an email — and paste the whole thing here. The system
+      reads it on its own: <b>1. HEADING</b> starts a section, tab- or pipe-separated pairs become a table,
+      <b>a)</b> lines become a lettered list, the text before them is the intro and the text after is the note.
+      Nothing needs tagging. Check what it recognised, then publish.</div>
+    <textarea id="pasteBox" placeholder="Academic Year 2026–2027&#10;&#10;Applications are invited from eligible candidates for admission to …&#10;&#10;1. ABOUT THE PROGRAMME&#10;…&#10;&#10;2. COURSE PARTICULARS&#10;Particular&#9;Details&#10;Course Duration&#9;350 Hours" style="min-height:150px"></textarea>
+    <div class="row">
+      <button class="btn" id="readBtn">Read &amp; update</button>
+      <button class="btn ghost" id="clearPaste">Clear</button>
+      <span id="readInfo" style="font-size:13px;font-weight:600;color:var(--gold)"></span>
+    </div>
+
+    <h2 style="margin-top:22px;padding-top:18px;border-top:1px solid var(--line)">Or edit the fields directly</h2>
     <div class="hint">Everything below prints on the institution letterhead with the ASAP mark. Change the batch,
       dates, fees and seat counts for the next intake and publish — students and applicants see it immediately.</div>
     <div class="grid">
@@ -109,8 +121,8 @@
 <footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
   <a href="https://www.alizongov.com" target="_blank" rel="noopener">alizongov.com</a> &middot; <a href="index.html">alizon.in</a></footer>
 
-<script src="alizon-experience.js"></script>
-<script src="alizon-notification.js"></script>
+<script src="alizon-experience.js?v=2"></script>
+<script src="alizon-notification.js?v=2"></script>
 <script src="print-paginate.js"></script>
 <script>
 (function(){
@@ -187,6 +199,30 @@
 
   if(isAdmin){
     $('adminBox').style.display='';
+
+    /* paste the notice as plain text — the parser works out the structure */
+    $('readBtn').onclick=function(){
+      var txt=$('pasteBox').value;
+      if(!txt.trim()){ $('readInfo').textContent='Paste the notification text first.'; return; }
+      var n=null;
+      try{ n=N.parse(txt, current||N.blank()); }catch(e){ n=null; }
+      if(!n||!n.sections.length){
+        $('readInfo').textContent='Could not find any sections. Each one needs a line like “1. ABOUT THE PROGRAMME”.';
+        return;
+      }
+      current=n;
+      if(!N.get(current.id) && current.id) current.published=false;
+      N.render($('sheet'), current);
+      fillForm();
+      var kinds={table:0,list:0,text:0};
+      n.sections.forEach(function(s){ kinds[s.k]=(kinds[s.k]||0)+1; });
+      $('readInfo').textContent='Recognised '+n.sections.length+' sections — '
+        +kinds.text+' text, '+kinds.table+' table, '+kinds.list+' list'
+        +(n.year?' · '+n.year:'')+'. Check the document below, then Save & publish.';
+      $('admMsg').textContent='';
+    };
+    $('clearPaste').onclick=function(){ $('pasteBox').value=''; $('readInfo').textContent=''; };
+
     $('saveBtn').onclick=function(){
       var n=readForm(); if(!n) return;
       n.published=true;

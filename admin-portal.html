@@ -630,7 +630,32 @@ h1,h2,h3{color:#111!important}
         <div id="expAsapPrev" style="min-width:90px"></div>
         <button id="expAsapClear" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font:inherit;font-size:12px;font-weight:600;cursor:pointer">Remove logo</button>
       </div>
-      <div class="ahint" style="margin-top:8px">Until the official artwork is uploaded the letter prints a plain <b>ASAP KERALA</b> word mark, so it never shows a broken image.</div>
+      <div class="ahint" style="margin-top:8px">The official ASAP artwork ships with the site — upload here only to replace it.</div>
+
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
+        <h4 style="font-size:13.5px;margin-bottom:4px">Signature &amp; seal</h4>
+        <div class="ahint" style="margin-bottom:10px">Choose whether documents leave a blank space to sign by hand, or carry the
+          signature below so the PDF comes out already signed. This applies to <b>experience letters and admission
+          notifications alike</b>. A digitally signed document prints a line saying so, which is the normal practice for
+          system-generated records.</div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Signing</label>
+            <select id="expSignMode" style="min-width:230px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
+              <option value="wet">Blank space — sign by hand</option>
+              <option value="digital">Apply the signature below</option>
+            </select></div>
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Signature image (PNG, transparent)</label>
+            <input id="expSignFile" type="file" accept="image/*" style="font:inherit;font-size:13px"></div>
+          <div id="expSignPrev" style="min-width:90px"></div>
+          <button id="expSignClear" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font:inherit;font-size:12px;font-weight:600;cursor:pointer">Remove signature</button>
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-top:12px">
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Institution seal (optional)</label>
+            <input id="expSealFile" type="file" accept="image/*" style="font:inherit;font-size:13px"></div>
+          <div id="expSealPrev" style="min-width:90px"></div>
+          <button id="expSealClear" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font:inherit;font-size:12px;font-weight:600;cursor:pointer">Remove seal</button>
+        </div>
+      </div>
     </div>
 
     <div style="margin:18px 0;border:1px solid var(--line);border-radius:12px;padding:14px 16px">
@@ -3773,7 +3798,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   setInterval(paint, 30000);
 })();
 </script>
-<script src="alizon-experience.js"></script>
+<script src="alizon-experience.js?v=2"></script>
 <script>
 /* ============ Admin · Experience letters ============ */
 (function(){
@@ -3892,7 +3917,33 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     var pv=$('expAsapPrev');
     if(pv) pv.innerHTML=s.asapLogo
       ? '<img src="'+esc(s.asapLogo)+'" alt="ASAP" style="max-width:84px;max-height:54px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:4px;background:#fff">'
-      : '<span class="ahint">No logo uploaded</span>';
+      : '<span class="ahint">Using the bundled ASAP artwork</span>';
+    if($('expSignMode')) $('expSignMode').value=s.signMode||'wet';
+    var sp=$('expSignPrev');
+    if(sp) sp.innerHTML=s.signImage
+      ? '<img src="'+esc(s.signImage)+'" alt="Signature" style="max-width:150px;max-height:52px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:4px;background:#fff">'
+      : '<span class="ahint">No signature uploaded</span>';
+    var kp=$('expSealPrev');
+    if(kp) kp.innerHTML=s.sealImage
+      ? '<img src="'+esc(s.sealImage)+'" alt="Seal" style="max-width:70px;max-height:70px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:4px;background:#fff">'
+      : '<span class="ahint">No seal uploaded</span>';
+  }
+  /* one handler for both image uploads — same size guard as the ASAP logo */
+  function imgUpload(inputId, field, label){
+    var el=$(inputId); if(!el) return;
+    el.addEventListener('change',function(){
+      var f=this.files&&this.files[0]; if(!f) return;
+      if(f.size>400*1024){ alert('That image is '+Math.round(f.size/1024)+' KB. Please use one under 400 KB so it stays inside the cloud document limit.'); this.value=''; return; }
+      var rd=new FileReader();
+      var self=this;
+      rd.onload=function(){
+        var patch={}; patch[field]=rd.result;
+        if(field==='signImage') patch.signMode='digital';   /* uploading one means you want it used */
+        X().saveSettings(patch); loadSettings(); self.value='';
+        log('Uploaded the '+label+' for letters and notifications');
+      };
+      rd.readAsDataURL(f);
+    });
   }
 
   function wire(){
@@ -3955,6 +4006,22 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     });
     var ac=$('expAsapClear');
     if(ac) ac.onclick=function(){ X().saveSettings({asapLogo:''}); loadSettings(); };
+
+    var sm=$('expSignMode');
+    if(sm) sm.onchange=function(){
+      if(this.value==='digital' && !X().settings().signImage){
+        alert('Upload a signature image first — otherwise the document would print an empty signature space with a note claiming it is signed.');
+        this.value='wet'; return;
+      }
+      X().saveSettings({signMode:this.value}); loadSettings();
+      log('Document signing set to '+(this.value==='digital'?'the stored signature':'sign by hand'));
+    };
+    imgUpload('expSignFile','signImage','signature');
+    imgUpload('expSealFile','sealImage','institution seal');
+    var sc=$('expSignClear');
+    if(sc) sc.onclick=function(){ X().saveSettings({signImage:'', signMode:'wet'}); loadSettings(); };
+    var kc=$('expSealClear');
+    if(kc) kc.onclick=function(){ X().saveSettings({sealImage:''}); loadSettings(); };
 
     var list=$('expList');
     if(list) list.addEventListener('click',function(e){
