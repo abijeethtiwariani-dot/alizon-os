@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- pwa:alizon -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#8c1515">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
+<!-- /pwa:alizon -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admission Notification | Alizon School of Medical &amp; Digital Intelligence</title>
+<meta name="description" content="Official admission notification — Certificate Course in Digital Health &amp; Artificial Intelligence for Pharmacy, Alizon School of Medical &amp; Digital Intelligence, ASAP Kerala.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.alizon.in/alizon-notification">
+<link rel="icon" href="alizon-logo.png">
+<script src="firebase-sync.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --crimson:#b1040e; --crimson-deep:#6b0f0f; --gold:#9a7b3f; --ink:#2e2d29; --muted:#6e6a63; --line:rgba(0,0,0,.12); --paper:#faf8f6; --ok:#1E8E5A; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Source Sans 3','Source Sans Pro',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;background:#f4f1ee;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;min-height:100vh;display:flex;flex-direction:column}
+  a{color:inherit;text-decoration:none}
+  .serif{font-family:'Source Serif Pro',Georgia,serif}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px;width:100%}
+  .strip{background:#181512;color:#fff;padding:30px 0 26px}
+  .strip .ey{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#e8b4b4}
+  .strip h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.7rem,4.4vw,2.5rem);font-weight:600;margin-top:8px}
+  .strip p{color:#c9c2ba;font-size:14px;margin-top:9px;max-width:70ch;line-height:1.6}
+  main{flex:1;padding:26px 0 56px}
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+  .bar select{padding:11px 13px;border:1px solid rgba(0,0,0,.18);border-radius:9px;font:inherit;font-size:14px;background:#fff;min-width:260px;max-width:100%}
+  .btn{cursor:pointer;font-family:inherit;font-weight:700;font-size:13.5px;border:none;color:#fff;background:var(--crimson);border-radius:100px;padding:11px 22px}
+  .btn:hover{background:var(--crimson-deep)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .sheet{background:#fff;border-radius:14px;padding:clamp(22px,3.4vw,40px);box-shadow:0 18px 46px -28px rgba(20,18,16,.4)}
+  .admin{background:#fff;border:1px dashed rgba(140,21,21,.35);border-radius:12px;padding:18px 20px;margin-bottom:20px}
+  .admin h2{font-family:'Source Serif Pro',Georgia,serif;font-size:17px;font-weight:600;margin-bottom:4px}
+  .admin .hint{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:13px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px}
+  .fl{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .admin input,.admin textarea{width:100%;font:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+  .admin textarea{min-height:86px;resize:vertical;line-height:1.6}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:13px}
+  .msg{font-size:13px;font-weight:600;margin-top:10px}
+  .msg.ok{color:var(--ok)} .msg.err{color:#b1040e}
+  .secbox{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:10px;background:var(--paper)}
+  .secbox .st{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .secbox .st b{font-size:13.5px;flex:1;min-width:150px}
+  .secbox .kind{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+  .secbox textarea{min-height:70px}
+  footer{background:#1A1A1A;color:#c9c9c9;padding:24px 20px;text-align:center;font-size:12.5px}
+  footer a{color:#fff;font-weight:600}
+  @media print{ .strip,.bar,.admin,footer,#alizonBackBar{display:none!important} body{background:#fff} main{padding:0} .sheet{box-shadow:none;padding:0;border-radius:0} .wrap{max-width:none;padding:0} }
+</style>
+</head>
+<body>
+
+<div class="strip"><div class="wrap">
+  <div class="ey">Office of Admissions</div>
+  <h1 class="serif">Admission Notification</h1>
+  <p>Official admission and allotment notifications issued by Alizon School of Medical &amp; Digital
+    Intelligence under the ASAP Kerala framework. Open a notification to read it in full or download it as a PDF.</p>
+</div></div>
+
+<main><div class="wrap">
+
+  <div class="admin" id="adminBox" style="display:none">
+    <h2>Edit this notification</h2>
+    <div class="hint">Everything below prints on the institution letterhead with the ASAP mark. Change the batch,
+      dates, fees and seat counts for the next intake and publish — students and applicants see it immediately.</div>
+    <div class="grid">
+      <div><label class="fl">Reference no.</label><input id="f_ref"></div>
+      <div><label class="fl">Academic year</label><input id="f_year" placeholder="2026–2027"></div>
+      <div><label class="fl">Batch</label><input id="f_batch" placeholder="Batch 8"></div>
+      <div><label class="fl">Date of notification</label><input id="f_date" type="date"></div>
+      <div><label class="fl">Signatory</label><input id="f_signatory"></div>
+      <div><label class="fl">Designation</label><input id="f_designation"></div>
+    </div>
+    <div style="margin-top:11px"><label class="fl">Course</label><input id="f_course"></div>
+    <div style="margin-top:11px"><label class="fl">Opening paragraph</label><textarea id="f_lede"></textarea></div>
+
+    <div id="secEditor" style="margin-top:14px"></div>
+
+    <div class="row">
+      <button class="btn" id="saveBtn">Save &amp; publish</button>
+      <button class="btn ghost" id="unpubBtn">Unpublish</button>
+      <button class="btn ghost" id="resetBtn">Reset to the supplied Batch 8 text</button>
+    </div>
+    <div class="msg" id="admMsg"></div>
+  </div>
+
+  <div class="bar">
+    <select id="pick"></select>
+    <button class="btn" id="dlBtn" type="button">⬇ Download PDF</button>
+    <button class="btn ghost" id="openBtn" type="button">Open in a new tab</button>
+  </div>
+
+  <div class="sheet" id="sheet"></div>
+</div></main>
+
+<footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
+  <a href="https://www.alizongov.com" target="_blank" rel="noopener">alizongov.com</a> &middot; <a href="index.html">alizon.in</a></footer>
+
+<script src="alizon-experience.js"></script>
+<script src="alizon-notification.js"></script>
+<script src="print-paginate.js"></script>
+<script>
+(function(){
+  'use strict';
+  var params=new URLSearchParams(location.search);
+  var isAdmin=(sessionStorage.getItem('alizonAdminAuth')==='1')||!!params.get('admin');
+  var N=window.AlizonNotification;
+  var current=null;
+
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function options(){
+    var all=isAdmin?N.list():N.published();
+    var sel=$('pick');
+    if(!all.length){
+      sel.innerHTML='<option value="">No notification published yet</option>';
+      N.render($('sheet'), null); return;
+    }
+    var keep=sel.value;
+    sel.innerHTML=all.map(function(n){
+      return '<option value="'+esc(n.id)+'">'+esc((n.batch?n.batch+' — ':'')+(n.title||'Notification')
+        +(n.year?' · '+n.year:'')+(n.published?'':'  (draft)'))+'</option>';
+    }).join('');
+    sel.value=(keep && N.get(keep))?keep:(params.get('n')||all[0].id);
+    show(sel.value);
+  }
+  function show(id){
+    current=N.get(id);
+    N.render($('sheet'), current);
+    if(isAdmin) fillForm();
+  }
+
+  /* ---- admin editing ---- */
+  function fillForm(){
+    if(!current) return;
+    ['ref','year','batch','date','course','lede','signatory','designation'].forEach(function(k){
+      var el=$('f_'+k); if(el) el.value=current[k]||'';
+    });
+    var host=$('secEditor'); if(!host) return;
+    host.innerHTML='<label class="fl">Sections</label>'+(current.sections||[]).map(function(s,i){
+      var body='';
+      if(s.k==='text'){
+        body='<textarea data-s="'+i+'" data-f="body">'+esc(s.body||'')+'</textarea>';
+      } else if(s.k==='list'){
+        body=(s.intro!=null?'<label class="fl" style="margin-top:8px">Intro</label><textarea data-s="'+i+'" data-f="intro">'+esc(s.intro||'')+'</textarea>':'')
+          +'<label class="fl" style="margin-top:8px">Items — one per line</label>'
+          +'<textarea data-s="'+i+'" data-f="items">'+esc((s.items||[]).join('\n'))+'</textarea>'
+          +(s.note!=null?'<label class="fl" style="margin-top:8px">Note</label><textarea data-s="'+i+'" data-f="note">'+esc(s.note||'')+'</textarea>':'');
+      } else if(s.k==='table'){
+        body='<label class="fl" style="margin-top:8px">Rows — one per line, as <b>label | value</b></label>'
+          +'<textarea data-s="'+i+'" data-f="rows">'+esc((s.rows||[]).map(function(r){return r[0]+' | '+r[1];}).join('\n'))+'</textarea>'
+          +(s.note!=null?'<label class="fl" style="margin-top:8px">Note</label><textarea data-s="'+i+'" data-f="note">'+esc(s.note||'')+'</textarea>':'');
+      }
+      return '<div class="secbox"><div class="st"><span class="kind">'+(i+1)+' · '+esc(s.k)+'</span>'
+        +'<b><input data-s="'+i+'" data-f="t" value="'+esc(s.t||'')+'"></b></div>'+body+'</div>';
+    }).join('');
+  }
+  function readForm(){
+    if(!current) return null;
+    ['ref','year','batch','date','course','lede','signatory','designation'].forEach(function(k){
+      var el=$('f_'+k); if(el) current[k]=el.value;
+    });
+    document.querySelectorAll('#secEditor [data-s]').forEach(function(el){
+      var s=current.sections[+el.getAttribute('data-s')]; if(!s) return;
+      var f=el.getAttribute('data-f'), v=el.value;
+      if(f==='items') s.items=v.split('\n').map(function(x){return x.trim();}).filter(Boolean);
+      else if(f==='rows') s.rows=v.split('\n').map(function(x){return x.trim();}).filter(Boolean)
+        .map(function(x){ var p=x.split('|'); return [ (p[0]||'').trim(), (p.slice(1).join('|')||'').trim() ]; });
+      else s[f]=v;
+    });
+    return current;
+  }
+
+  if(isAdmin){
+    $('adminBox').style.display='';
+    $('saveBtn').onclick=function(){
+      var n=readForm(); if(!n) return;
+      n.published=true;
+      if(!N.save(n)){ $('admMsg').className='msg err'; $('admMsg').textContent='Could not save.'; return; }
+      $('admMsg').className='msg ok'; $('admMsg').textContent='Saved and published — applicants can see it now.';
+      options();
+    };
+    $('unpubBtn').onclick=function(){
+      if(!current) return;
+      N.publish(current.id,false);
+      $('admMsg').className='msg ok'; $('admMsg').textContent='Unpublished — hidden from applicants, kept as a draft.';
+      options();
+    };
+    $('resetBtn').onclick=function(){
+      if(!confirm('Discard your edits and restore the supplied Batch 8 wording?')) return;
+      N.remove(N.BATCH8.id); N.seed();
+      $('admMsg').className='msg ok'; $('admMsg').textContent='Restored the supplied Batch 8 text.';
+      options();
+    };
+  }
+
+  $('pick').addEventListener('change',function(){ if(this.value) show(this.value); });
+  $('dlBtn').onclick=function(){ if(current) N.print(); };
+  $('openBtn').onclick=function(){ if(current) N.open(current.id); };
+
+  /* seed the supplied Batch 8 notice on first run, then follow the cloud */
+  N.seed();
+  options();
+  window.addEventListener('storage',function(e){ if(e.key==='alizonNotifications') options(); });
+  var tries=0, iv=setInterval(function(){ N.seed(); options(); if(++tries>10) clearInterval(iv); }, 1800);
+})();
+</script>
+<script src="alizon-backbar.js"></script>
+</body>
+</html>
