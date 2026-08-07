@@ -42,14 +42,75 @@
     asapLogo:'', signatory:'Dr Abijeeth Tiwari', designation:'Director',
     place:'Thiruvananthapuram', hoursPer:HOURS_PER_PRACTICAL,
     /* signMode 'wet' leaves a blank space to sign by hand; 'digital' applies the
-       stored signature so the PDF comes out already signed. Shared with the
-       admission notification, so one upload serves every document. */
-    signMode:'wet', signImage:'', sealImage:''
+       signatory's stored signature so the PDF comes out already signed. */
+    signMode:'wet', signImage:'', sealImage:'',
+    /* who signs what: a library of signatories, and which one signs each kind
+       of document. The Director may sign experience letters while the
+       Admissions Officer signs notifications. */
+    signers:null, docSigner:null
   };
   function settings(){
     var s=store()._settings||{}, out={};
     Object.keys(DEFAULTS).forEach(function(k){ out[k]=(s[k]==null||s[k]==='')?DEFAULTS[k]:s[k]; });
     return out;
+  }
+
+  /* ---- signatories ----
+     The library is seeded from the single signatory this used to hold, so an
+     institution that never opens the panel keeps signing exactly as before. */
+  var DOCS = { experience:'Experience letters', notification:'Admission notifications' };
+  function signers(){
+    var s=settings(), list=s.signers;
+    if(!Array.isArray(list) || !list.length){
+      return [{ id:'default', name:s.signatory, designation:s.designation, image:s.signImage||'' }];
+    }
+    return list.map(function(x){
+      return { id:x.id, name:x.name||'', designation:x.designation||'', image:x.image||'' };
+    });
+  }
+  function signerById(id){
+    var all=signers();
+    for(var i=0;i<all.length;i++){ if(all[i].id===id) return all[i]; }
+    return null;
+  }
+  /* who signs this kind of document — an explicit choice, else the first signatory */
+  function signerFor(doc){
+    var s=settings(), map=(s.docSigner&&typeof s.docSigner==='object')?s.docSigner:{};
+    return signerById(map[doc]) || signers()[0];
+  }
+  /* write the synthesized default into storage the first time anything touches
+     the library, so a later add appends to it instead of silently duplicating it */
+  function ensureSigners(){
+    var s=settings();
+    if(Array.isArray(s.signers) && s.signers.length) return s.signers;
+    var seeded=signers();
+    saveSettings({signers:seeded});
+    return seeded;
+  }
+  function saveSigner(sig){
+    var all=ensureSigners().slice(), i=-1;
+    if(!sig.id) sig.id='s'+Date.now()+Math.floor(Math.random()*1000);
+    all.forEach(function(x,ix){ if(x.id===sig.id) i=ix; });
+    if(i<0){
+      /* the same person added twice is almost always a slip — update, don't duplicate */
+      var key=function(g){ return ((g.name||'')+'|'+(g.designation||'')).toLowerCase().replace(/\s+/g,' ').trim(); };
+      var dup=-1; all.forEach(function(x,ix){ if(key(x)===key(sig)) dup=ix; });
+      if(dup>-1){ all[dup]=Object.assign({}, all[dup], sig, {id:all[dup].id}); sig.id=all[dup].id; }
+      else all.push(sig);
+    } else all[i]=Object.assign({}, all[i], sig);
+    return saveSettings({signers:all})?sig.id:null;
+  }
+  function removeSigner(id){
+    var all=ensureSigners().filter(function(x){ return x.id!==id; });
+    if(!all.length) return false;                       /* never leave none */
+    var s=settings(), map=Object.assign({}, s.docSigner||{});
+    Object.keys(map).forEach(function(d){ if(map[d]===id) delete map[d]; });
+    return saveSettings({signers:all, docSigner:map});
+  }
+  function setDocSigner(doc, id){
+    var s=settings(), map=Object.assign({}, s.docSigner||{});
+    if(id) map[doc]=id; else delete map[doc];
+    return saveSettings({docSigner:map});
   }
   function saveSettings(patch){
     var all=store(), s=all._settings||{};
@@ -179,21 +240,30 @@
 
   /* the signature block, shared with the admission notification.
      `p` is the class prefix ('x' for the letter, 'n' for the notification). */
+  /* `o` may carry: doc ('experience'|'notification'), signerId to pin one
+     signatory for a single document, and signatory/designation as a plain
+     text override for a one-off. */
   function signatureBits(p, o){
     var s=settings();
     o=o||{};
-    var digital=(s.signMode==='digital' && s.signImage);
+    var who = (o.signerId && signerById(o.signerId)) || signerFor(o.doc) || signers()[0] || {};
+    var name = o.signatory || who.name || s.signatory;
+    var desig = o.designation || who.designation || s.designation;
+    /* only sign digitally when THIS signatory actually has a signature on file */
+    var img = who.image || '';
+    var digital = (s.signMode==='digital' && !!img);
     var seal=s.sealImage
       ? '<div class="'+p+'-seal '+p+'-seal-img"><img src="'+esc(s.sealImage)+'" alt="Institution seal"></div>'
       : '<div class="'+p+'-seal">(Institution seal)</div>';
     var area=digital
-      ? '<div class="'+p+'-sig-area"><img class="'+p+'-sig-img" src="'+esc(s.signImage)+'" alt="Signature"></div>'
+      ? '<div class="'+p+'-sig-area"><img class="'+p+'-sig-img" src="'+esc(img)+'" alt="Signature of '+esc(name)+'"></div>'
       : '<div class="'+p+'-sig-area"></div>';
     return {
       seal: seal,
+      signer: who,
       sign: area+'<div class="'+p+'-sig-rule"></div>'
-            +'<div class="'+p+'-sig-n">'+esc(o.signatory||s.signatory)+'</div>'
-            +'<div class="'+p+'-sig-d">'+esc(o.designation||s.designation)+'</div>'
+            +'<div class="'+p+'-sig-n">'+esc(name)+'</div>'
+            +'<div class="'+p+'-sig-d">'+esc(desig)+'</div>'
             +'<div class="'+p+'-sig-i">Alizon School of Medical &amp; Digital Intelligence</div>',
       digital: digital,
       note: digital
@@ -268,7 +338,7 @@
       +'standard operating procedures and documentation practice, and worked under faculty supervision throughout. '
       +'This certificate is issued on request for the purpose of academic and employment record.</p>';
 
-    var sb=signatureBits('x');
+    var sb=signatureBits('x', { doc:'experience' });
     h+='<div class="x-sign">'
       +'<div class="x-sign-l"><div class="x-kv">Place: <b>'+esc(s.place)+'</b></div>'
         +'<div class="x-kv">Date: <b>'+longDate(rec.issued)+'</b></div>'
@@ -385,6 +455,8 @@
     verifiedPracticals:verifiedPracticals,
     get:get, list:list, issue:issue, revoke:revoke,
     itemHours:itemHours, uniformHours:uniformHours, signatureBits:signatureBits,
+    DOCS:DOCS, signers:signers, signerById:signerById, signerFor:signerFor,
+    saveSigner:saveSigner, removeSigner:removeSigner, setDocSigner:setDocSigner,
     letterHtml:letterHtml, render:render, open:open_, css:CSS
   };
 })();

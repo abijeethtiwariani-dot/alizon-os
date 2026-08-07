@@ -429,7 +429,7 @@
        every document; falls back to a blank space to sign by hand */
     var sb=null;
     try{ if(window.AlizonExperience) sb=window.AlizonExperience.signatureBits('n',
-      { signatory:n.signatory, designation:n.designation }); }catch(e){}
+      { doc:'notification', signerId:n.signerId }); }catch(e){}
     if(!sb) sb={ seal:'<div class="n-seal">(Institution seal)</div>',
       sign:'<div class="n-sig-area"></div><div class="n-sig-rule"></div>'
           +'<div class="n-sig-n">'+esc(n.signatory||'')+'</div>'

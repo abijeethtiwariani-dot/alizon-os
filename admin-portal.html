@@ -633,24 +633,36 @@ h1,h2,h3{color:#111!important}
       <div class="ahint" style="margin-top:8px">The official ASAP artwork ships with the site — upload here only to replace it.</div>
 
       <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
-        <h4 style="font-size:13.5px;margin-bottom:4px">Signature &amp; seal</h4>
-        <div class="ahint" style="margin-bottom:10px">Choose whether documents leave a blank space to sign by hand, or carry the
-          signature below so the PDF comes out already signed. This applies to <b>experience letters and admission
-          notifications alike</b>. A digitally signed document prints a line saying so, which is the normal practice for
-          system-generated records.</div>
-        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+        <h4 style="font-size:13.5px;margin-bottom:4px">Signatories</h4>
+        <div class="ahint" style="margin-bottom:10px">Add the people who sign for the institution, then say who signs each kind
+          of document — the Director can sign experience letters while the Admissions Officer signs notifications. With
+          <b>Signing</b> set to digital, each document carries that person&rsquo;s own signature and prints a line saying it is
+          system-generated, which is the normal practice for such records.</div>
+
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px">
           <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Signing</label>
             <select id="expSignMode" style="min-width:230px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
               <option value="wet">Blank space — sign by hand</option>
-              <option value="digital">Apply the signature below</option>
+              <option value="digital">Apply each signatory&rsquo;s signature</option>
             </select></div>
-          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Signature image (PNG, transparent)</label>
-            <input id="expSignFile" type="file" accept="image/*" style="font:inherit;font-size:13px"></div>
-          <div id="expSignPrev" style="min-width:90px"></div>
-          <button id="expSignClear" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font:inherit;font-size:12px;font-weight:600;cursor:pointer">Remove signature</button>
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Experience letters signed by</label>
+            <select id="expDocExperience" style="min-width:230px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></select></div>
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Notifications signed by</label>
+            <select id="expDocNotification" style="min-width:230px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></select></div>
         </div>
-        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-top:12px">
-          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Institution seal (optional)</label>
+
+        <div id="expSignerList"></div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)">
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Add a signatory — name</label>
+            <input id="expNewName" placeholder="e.g. Dr Ismail" style="min-width:210px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></div>
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Designation</label>
+            <input id="expNewDesig" placeholder="e.g. Admissions Officer" style="min-width:190px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></div>
+          <button id="expAddSigner" style="background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:11px 20px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">＋ Add</button>
+        </div>
+
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)">
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Institution seal (optional, shared)</label>
             <input id="expSealFile" type="file" accept="image/*" style="font:inherit;font-size:13px"></div>
           <div id="expSealPrev" style="min-width:90px"></div>
           <button id="expSealClear" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font:inherit;font-size:12px;font-weight:600;cursor:pointer">Remove seal</button>
@@ -3798,7 +3810,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   setInterval(paint, 30000);
 })();
 </script>
-<script src="alizon-experience.js?v=2"></script>
+<script src="alizon-experience.js?v=3"></script>
 <script>
 /* ============ Admin · Experience letters ============ */
 (function(){
@@ -3919,15 +3931,58 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       ? '<img src="'+esc(s.asapLogo)+'" alt="ASAP" style="max-width:84px;max-height:54px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:4px;background:#fff">'
       : '<span class="ahint">Using the bundled ASAP artwork</span>';
     if($('expSignMode')) $('expSignMode').value=s.signMode||'wet';
-    var sp=$('expSignPrev');
-    if(sp) sp.innerHTML=s.signImage
-      ? '<img src="'+esc(s.signImage)+'" alt="Signature" style="max-width:150px;max-height:52px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:4px;background:#fff">'
-      : '<span class="ahint">No signature uploaded</span>';
+    renderSigners();
     var kp=$('expSealPrev');
     if(kp) kp.innerHTML=s.sealImage
       ? '<img src="'+esc(s.sealImage)+'" alt="Seal" style="max-width:70px;max-height:70px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:4px;background:#fff">'
       : '<span class="ahint">No seal uploaded</span>';
   }
+  /* ---- signatories: who signs which document ---- */
+  function renderSigners(){
+    var host=$('expSignerList'); if(!host||!X().signers) return;
+    var all=X().signers(), s=X().settings(), map=(s.docSigner&&typeof s.docSigner==='object')?s.docSigner:{};
+    host.innerHTML=all.map(function(g){
+      return '<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px">'
+        +'<span style="flex:1;min-width:190px"><b style="font-size:13.5px">'+esc(g.name||'(unnamed)')+'</b>'
+        +'<small style="display:block;color:var(--muted);font-size:12px">'+esc(g.designation||'—')+'</small></span>'
+        +'<span style="flex:none">'+(g.image
+            ? '<img src="'+esc(g.image)+'" alt="Signature" style="max-width:140px;max-height:44px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff">'
+            : '<span class="ahint">no signature on file</span>')+'</span>'
+        +'<label style="flex:none;cursor:pointer;font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:100px;padding:7px 14px;background:var(--panel)">'
+        +(g.image?'Replace':'Upload')+' signature<input type="file" accept="image/*" data-sigup="'+esc(g.id)+'" style="display:none"></label>'
+        +(g.image?'<button type="button" data-sigdel="'+esc(g.id)+'" style="flex:none;cursor:pointer;font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:100px;padding:7px 12px;background:var(--panel);color:var(--ink)">Clear</button>':'')
+        +(all.length>1?'<button type="button" data-sigrm="'+esc(g.id)+'" style="flex:none;cursor:pointer;font:inherit;font-size:12px;font-weight:600;border:1px solid rgba(177,4,14,.35);border-radius:100px;padding:7px 12px;background:var(--panel);color:#b1040e">Remove</button>':'')
+        +'</div>';
+    }).join('');
+    /* the two "signed by" pickers */
+    Object.keys(X().DOCS).forEach(function(doc){
+      var sel=$('expDoc'+doc.charAt(0).toUpperCase()+doc.slice(1)); if(!sel) return;
+      sel.innerHTML=all.map(function(g){
+        return '<option value="'+esc(g.id)+'">'+esc(g.name||'(unnamed)')+(g.designation?' — '+esc(g.designation):'')+'</option>';
+      }).join('');
+      sel.value=map[doc]||all[0].id;
+    });
+  }
+  /* shrink a signature to a sane size before storing — several of these share
+     one synced document with a hard 1 MB ceiling */
+  function shrink(file, maxW, cb){
+    var rd=new FileReader();
+    rd.onload=function(){
+      var im=new Image();
+      im.onload=function(){
+        var w=im.width, h=im.height;
+        if(w>maxW){ h=Math.round(h*maxW/w); w=maxW; }
+        var c=document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(im,0,0,w,h);
+        try{ cb(c.toDataURL('image/png')); }catch(e){ cb(rd.result); }
+      };
+      im.onerror=function(){ cb(null); };
+      im.src=rd.result;
+    };
+    rd.onerror=function(){ cb(null); };
+    rd.readAsDataURL(file);
+  }
+
   /* one handler for both image uploads — same size guard as the ASAP logo */
   function imgUpload(inputId, field, label){
     var el=$(inputId); if(!el) return;
@@ -3938,7 +3993,6 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       var self=this;
       rd.onload=function(){
         var patch={}; patch[field]=rd.result;
-        if(field==='signImage') patch.signMode='digital';   /* uploading one means you want it used */
         X().saveSettings(patch); loadSettings(); self.value='';
         log('Uploaded the '+label+' for letters and notifications');
       };
@@ -4009,17 +4063,59 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 
     var sm=$('expSignMode');
     if(sm) sm.onchange=function(){
-      if(this.value==='digital' && !X().settings().signImage){
-        alert('Upload a signature image first — otherwise the document would print an empty signature space with a note claiming it is signed.');
+      if(this.value==='digital' && !X().signers().some(function(g){ return !!g.image; })){
+        alert('Upload a signature for at least one signatory first — otherwise a document would print an empty signature space with a note claiming it is signed.');
         this.value='wet'; return;
       }
       X().saveSettings({signMode:this.value}); loadSettings();
-      log('Document signing set to '+(this.value==='digital'?'the stored signature':'sign by hand'));
+      log('Document signing set to '+(this.value==='digital'?'each signatory’s stored signature':'sign by hand'));
     };
-    imgUpload('expSignFile','signImage','signature');
+    /* which signatory signs which document */
+    Object.keys(X().DOCS).forEach(function(doc){
+      var sel=$('expDoc'+doc.charAt(0).toUpperCase()+doc.slice(1)); if(!sel) return;
+      sel.onchange=function(){
+        X().setDocSigner(doc, this.value); loadSettings();
+        var g=X().signerById(this.value)||{};
+        log(X().DOCS[doc]+' will be signed by '+(g.name||this.value));
+      };
+    });
+    /* add / upload / clear / remove, all delegated off the list */
+    var addBtn=$('expAddSigner');
+    if(addBtn) addBtn.onclick=function(){
+      var nm=($('expNewName')||{}).value||'', dg=($('expNewDesig')||{}).value||'';
+      if(!nm.trim()){ alert('Enter the signatory’s name.'); return; }
+      X().saveSigner({ name:nm.trim(), designation:dg.trim(), image:'' });
+      $('expNewName').value=''; $('expNewDesig').value='';
+      loadSettings(); log('Added signatory '+nm.trim());
+    };
+    var slist=$('expSignerList');
+    if(slist){
+      slist.addEventListener('change',function(e){
+        var f=e.target; if(!f.getAttribute) return;
+        var id=f.getAttribute('data-sigup'); if(!id) return;
+        var file=f.files&&f.files[0]; if(!file) return;
+        if(file.size>2*1024*1024){ alert('That image is very large. Please use one under 2 MB.'); f.value=''; return; }
+        shrink(file, 600, function(dataUrl){
+          if(!dataUrl){ alert('Could not read that image.'); return; }
+          X().saveSigner({ id:id, image:dataUrl });
+          f.value=''; loadSettings();
+          var g=X().signerById(id)||{}; log('Uploaded a signature for '+(g.name||id));
+        });
+      });
+      slist.addEventListener('click',function(e){
+        var b=e.target.closest&&e.target.closest('button'); if(!b) return;
+        var clr=b.getAttribute('data-sigdel');
+        if(clr){ X().saveSigner({id:clr, image:''}); loadSettings(); return; }
+        var rm=b.getAttribute('data-sigrm');
+        if(rm){
+          var g=X().signerById(rm)||{};
+          if(!confirm('Remove '+(g.name||'this signatory')+'?')) return;
+          if(!X().removeSigner(rm)) alert('At least one signatory has to remain.');
+          loadSettings();
+        }
+      });
+    }
     imgUpload('expSealFile','sealImage','institution seal');
-    var sc=$('expSignClear');
-    if(sc) sc.onclick=function(){ X().saveSettings({signImage:'', signMode:'wet'}); loadSettings(); };
     var kc=$('expSealClear');
     if(kc) kc.onclick=function(){ X().saveSettings({sealImage:''}); loadSettings(); };
 

@@ -93,8 +93,7 @@
       <div><label class="fl">Academic year</label><input id="f_year" placeholder="2026–2027"></div>
       <div><label class="fl">Batch</label><input id="f_batch" placeholder="Batch 8"></div>
       <div><label class="fl">Date of notification</label><input id="f_date" type="date"></div>
-      <div><label class="fl">Signatory</label><input id="f_signatory"></div>
-      <div><label class="fl">Designation</label><input id="f_designation"></div>
+      <div><label class="fl">Signed by</label><select id="f_signer" style="width:100%;font:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)"></select></div>
     </div>
     <div style="margin-top:11px"><label class="fl">Course</label><input id="f_course"></div>
     <div style="margin-top:11px"><label class="fl">Opening paragraph</label><textarea id="f_lede"></textarea></div>
@@ -121,8 +120,8 @@
 <footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
   <a href="https://www.alizongov.com" target="_blank" rel="noopener">alizongov.com</a> &middot; <a href="index.html">alizon.in</a></footer>
 
-<script src="alizon-experience.js?v=2"></script>
-<script src="alizon-notification.js?v=2"></script>
+<script src="alizon-experience.js?v=3"></script>
+<script src="alizon-notification.js?v=3"></script>
 <script src="print-paginate.js"></script>
 <script>
 (function(){
@@ -159,9 +158,20 @@
   /* ---- admin editing ---- */
   function fillForm(){
     if(!current) return;
-    ['ref','year','batch','date','course','lede','signatory','designation'].forEach(function(k){
+    ['ref','year','batch','date','course','lede'].forEach(function(k){
       var el=$('f_'+k); if(el) el.value=current[k]||'';
     });
+    /* who signs THIS notification — defaults to the one set for notifications
+       in the admin portal, but a single notice can be signed by someone else */
+    var ss=$('f_signer');
+    if(ss && window.AlizonExperience && window.AlizonExperience.signers){
+      var X=window.AlizonExperience, all=X.signers(), dflt=(X.signerFor('notification')||{}).id;
+      ss.innerHTML='<option value="">Default for notifications'
+        +(dflt?' — '+esc((X.signerById(dflt)||{}).name||''):'')+'</option>'
+        +all.map(function(g){ return '<option value="'+esc(g.id)+'">'+esc(g.name||'(unnamed)')
+          +(g.designation?' — '+esc(g.designation):'')+'</option>'; }).join('');
+      ss.value=current.signerId||'';
+    }
     var host=$('secEditor'); if(!host) return;
     host.innerHTML='<label class="fl">Sections</label>'+(current.sections||[]).map(function(s,i){
       var body='';
@@ -183,9 +193,10 @@
   }
   function readForm(){
     if(!current) return null;
-    ['ref','year','batch','date','course','lede','signatory','designation'].forEach(function(k){
+    ['ref','year','batch','date','course','lede'].forEach(function(k){
       var el=$('f_'+k); if(el) current[k]=el.value;
     });
+    var ss=$('f_signer'); if(ss) current.signerId=ss.value||'';
     document.querySelectorAll('#secEditor [data-s]').forEach(function(el){
       var s=current.sections[+el.getAttribute('data-s')]; if(!s) return;
       var f=el.getAttribute('data-f'), v=el.value;
@@ -244,6 +255,8 @@
     };
   }
 
+  var sgn=$('f_signer');
+  if(sgn) sgn.addEventListener('change',function(){ if(current){ current.signerId=this.value||''; N.render($('sheet'), current); } });
   $('pick').addEventListener('change',function(){ if(this.value) show(this.value); });
   $('dlBtn').onclick=function(){ if(current) N.print(); };
   $('openBtn').onclick=function(){ if(current) N.open(current.id); };
