@@ -92,6 +92,8 @@
   }
 </style>
   <script src="firebase-sync.js"></script>
+  <script src="alizon-attendance.js"></script>
+  <script src="alizon-experience.js"></script>
 <link rel="stylesheet" href="alizon-theme.css">
 </head>
 <body>
@@ -134,6 +136,60 @@ function feesFor(st){
   }catch(e){ return []; }
 }
 
+/* attendance is recorded from submitted work — see alizon-attendance.js */
+function attendanceCard(st){
+  const A=window.AlizonAttendance; if(!A) return '';
+  const all=A.summary(st.reg);
+  if(!all.marked && !all.idle) return `<div class="card">
+      <h2><span class="ic"></span>Attendance</h2>
+      <div class="kv"><b>Status</b><span>No attendance recorded yet. It builds up as practicals, assignments and exams are submitted.</span></div>
+    </div>`;
+  const now=new Date(), mo=A.summary(st.reg, now.getFullYear(), now.getMonth());
+  const bar=p=>`<div style="height:9px;border-radius:100px;background:rgba(0,0,0,.08);overflow:hidden;margin-top:7px">
+      <div style="height:100%;width:${Math.max(0,Math.min(100,p))}%;border-radius:100px;background:linear-gradient(90deg,#8c1515,#9a7b3f)"></div></div>`;
+  return `<div class="card">
+    <h2><span class="ic"></span>Attendance</h2>
+    <div class="kv"><b>Overall</b><span class="num" style="font-weight:800;font-size:17px;color:var(--tile-gold)">${all.pct}%</span></div>
+    ${bar(all.pct)}
+    ${kv('Days present',all.present,true)}
+    ${kv('Days absent',all.absent,true)}
+    ${kv('Leave',all.leave,true)}
+    ${kv('This month',mo.marked?mo.pct+'%':'—')}
+    ${kv('Days with coursework',all.verified,true)}
+    ${all.idle?kv('Signed in, no work',all.idle,true):''}
+    <div class="kv"><b>How it is counted</b><span>A day counts as present when a practical, assignment, self-assessment or exam is submitted. Faculty can override any day.</span></div>
+  </div>`;
+}
+
+/* the letter only exists once an administrator has issued it */
+function experienceCard(st){
+  const X=window.AlizonExperience; if(!X) return '';
+  const L=X.get(st.reg);
+  if(!L){
+    const v=X.verifiedPracticals(st.reg).length;
+    if(!v) return '';
+    return `<div class="card">
+      <h2><span class="ic"></span>Practical Experience</h2>
+      ${kv('Verified practicals',v,true)}
+      <div class="kv"><b>Experience letter</b><span>${v} practical${v===1?'':'s'} verified by faculty. Your certificate of practical experience will appear here once the office issues it.</span></div>
+    </div>`;
+  }
+  return `<div class="card">
+    <h2><span class="ic"></span>Practical Experience</h2>
+    ${kv('Certificate no.',L.no,true)}
+    ${kv('Practicals certified',(L.items||[]).length,true)}
+    <div class="kv"><b>Hands-on experience</b><span class="num" style="font-weight:800;font-size:17px;color:var(--tile-gold)">${L.total} hours</span></div>
+    ${kv('Each practical',L.hoursPer+' hours')}
+    ${L.from&&L.to?kv('Period',L.from+' to '+L.to):''}
+    <div class="kv" style="border-bottom:none">
+      <b>Certificate</b>
+      <span><button type="button" onclick="AlizonExperience.open('${esc(st.reg)}')"
+        style="cursor:pointer;font:inherit;font-size:13px;font-weight:700;color:#fff;background:#8c1515;border:0;border-radius:100px;padding:9px 18px">
+        View / download letter</button></span>
+    </div>
+  </div>`;
+}
+
 function render(st){
   document.getElementById('findCard').style.display='none';
   const area=document.getElementById('profArea'); area.style.display='block';
@@ -165,6 +221,9 @@ function render(st){
       ${kv('Reference / college',st.college)}
       ${kv('Scholarship',st.scholarship!==''?st.scholarship+'%':'')}
     </div>
+
+    ${attendanceCard(st)}
+    ${experienceCard(st)}
 
     ${(function(){
       const fees=feesFor(st); if(!fees.length)return '';

@@ -390,6 +390,7 @@ h1,h2,h3{color:#111!important}
     <a data-sec="adm-results"><span class="aic"></span> Results</a>
     <a data-sec="adm-eval"><span class="aic">✔</span> Evaluation <b class="cnt" id="cntEval"></b></a>
     <a data-sec="adm-resetmarks"><span class="aic">↺</span> Reset Practical Marks</a>
+    <a data-sec="adm-exp"><span class="aic">✎</span> Experience Letters <b class="cnt" id="cntExp" style="background:var(--gold)"></b></a>
     <a data-sec="adm-exams"><span class="aic"></span> Exams <b class="cnt" id="cntExams" style="background:var(--gold)"></b></a>
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
     <a data-sec="adm-engage"><span class="aic"></span> Alerts &amp; Attendance <b class="cnt" id="cntEngage" style="background:var(--crimson)"></b></a>
@@ -584,6 +585,53 @@ h1,h2,h3{color:#111!important}
     <h2>✔ Submissions &amp; Evaluation</h2>
     <div class="ahint">Grade student practicals &amp; self-assessments. Grades &amp; feedback reflect on the student portal.</div>
     <div class="clist" id="evalList"></div>
+  </section>
+
+  <section class="apanel asec" id="adm-exp">
+    <h2>✎ Experience Letters</h2>
+    <div class="ahint">A letter is never issued on its own. Faculty evaluate a practical first; only <b>verified</b> practicals
+      appear below, and you choose which of them go on the letter. Each practical is credited as
+      <b id="expHoursLabel">30</b> hours of hands-on experience. Issuing publishes the letter to that student&rsquo;s profile.</div>
+
+    <div style="margin:18px 0;border:1px solid var(--line);border-radius:12px;padding:14px 16px">
+      <h3 style="font-size:15px;margin-bottom:8px">Issue a letter</h3>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+        <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Student</label>
+          <input id="expReg" list="expRegList" placeholder="Registration no. — e.g. ALZ102" style="min-width:280px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
+          <datalist id="expRegList"></datalist></div>
+        <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Hours per practical</label>
+          <input id="expHours" type="number" min="1" max="200" value="30" style="width:130px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></div>
+        <button id="expIssue" style="background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:11px 20px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">Issue letter</button>
+        <button id="expPreview" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:11px 20px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">Preview</button>
+      </div>
+      <div id="expPick" style="margin-top:14px"></div>
+      <div class="ahint" id="expInfo" style="margin-top:10px;color:var(--gold)"></div>
+    </div>
+
+    <div style="margin:18px 0;border:1px solid var(--line);border-radius:12px;padding:14px 16px">
+      <h3 style="font-size:15px;margin-bottom:8px">Letter settings</h3>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+        <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Signatory</label>
+          <input id="expSignatory" style="min-width:220px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></div>
+        <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Designation</label>
+          <input id="expDesignation" style="min-width:180px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></div>
+        <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Place</label>
+          <input id="expPlace" style="min-width:160px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></div>
+        <button id="expSaveSet" style="background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:11px 20px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">Save</button>
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:14px">
+        <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">ASAP Kerala logo (appears beside our crest)</label>
+          <input id="expAsap" type="file" accept="image/*" style="font:inherit;font-size:13px"></div>
+        <div id="expAsapPrev" style="min-width:90px"></div>
+        <button id="expAsapClear" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font:inherit;font-size:12px;font-weight:600;cursor:pointer">Remove logo</button>
+      </div>
+      <div class="ahint" style="margin-top:8px">Until the official artwork is uploaded the letter prints a plain <b>ASAP KERALA</b> word mark, so it never shows a broken image.</div>
+    </div>
+
+    <div style="margin:18px 0;border:1px solid var(--line);border-radius:12px;padding:14px 16px">
+      <h3 style="font-size:15px;margin-bottom:8px">Issued letters</h3>
+      <div class="clist" id="expList"></div>
+    </div>
   </section>
 
   <section class="apanel asec" id="adm-resetmarks">
@@ -3718,6 +3766,173 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   window.addEventListener('storage',function(e){ if(!e.key||e.key==='alizonSyncWarnings') paint(); });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',paint); else paint();
   setInterval(paint, 30000);
+})();
+</script>
+<script src="alizon-experience.js"></script>
+<script>
+/* ============ Admin · Experience letters ============ */
+(function(){
+  function $(id){ return document.getElementById(id); }
+  function LS(k,f){ try{var v=JSON.parse(localStorage.getItem(k)); return (v==null?f:v);}catch(e){return f;} }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function log(t){ try{ if(typeof logAct==='function') logAct(t,'eval'); }catch(e){} }
+  function X(){ return window.AlizonExperience; }
+
+  function students(){ var r=LS('alizonStudents',[]); return Array.isArray(r)?r:[]; }
+  function nameFor(reg){
+    reg=String(reg||'').toUpperCase();
+    var r=students();
+    for(var i=0;i<r.length;i++){ if(String(r[i].reg||'').toUpperCase()===reg) return r[i].name||''; }
+    return '';
+  }
+  function fillRegList(){
+    var dl=$('expRegList'); if(!dl) return;
+    /* only offer students who actually have a verified practical to certify */
+    var subs=LS('alizonSubmissions',[]); if(!Array.isArray(subs)) subs=[];
+    var seen={};
+    subs.forEach(function(s){
+      if(s&&s.type==='practical'&&s.status==='evaluated'&&s.mark!=null&&s.reg) seen[String(s.reg).toUpperCase()]=1;
+    });
+    dl.innerHTML=Object.keys(seen).sort().map(function(r){
+      var n=nameFor(r); return '<option value="'+esc(r)+'">'+esc(n?r+' — '+n:r)+'</option>';
+    }).join('');
+  }
+
+  function renderPick(){
+    var el=$('expPick'), info=$('expInfo'); if(!el) return;
+    var reg=String(($('expReg')||{}).value||'').trim().toUpperCase();
+    if(!reg){ el.innerHTML='<div class="ahint">Choose a student to see their verified practicals.</div>'; if(info) info.textContent=''; return; }
+    var items=X().verifiedPracticals(reg);
+    if(!items.length){
+      el.innerHTML='<div class="ahint">No <b>verified</b> practicals for '+esc(reg)+' yet. A practical shows up here once faculty have marked it in Evaluation.</div>';
+      if(info) info.textContent=''; return;
+    }
+    var existing=X().get(reg);
+    var chosen={}; if(existing) (existing.items||[]).forEach(function(i){ chosen[i.id]=1; });
+    el.innerHTML='<div style="font-size:12px;font-weight:700;margin-bottom:8px">Verified practicals for '
+      +esc(reg)+(nameFor(reg)?' — '+esc(nameFor(reg)):'')+' <span style="font-weight:500;color:var(--muted)">(tick the ones to certify)</span></div>'
+      +items.map(function(i){
+        var on = existing ? !!chosen[i.id] : true;   /* first issue: everything verified, ticked */
+        return '<label style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;cursor:pointer">'
+          +'<input type="checkbox" data-expitem="'+esc(i.id)+'"'+(on?' checked':'')+' style="margin-top:3px">'
+          +'<span style="flex:1;min-width:0"><b style="font-size:13.5px">'+esc(i.title)+'</b>'
+          +'<small style="display:block;color:var(--muted);font-size:12px">'+esc(i.module||'—')
+          +' · '+esc(i.mark)+'/100'+(i.by?' · verified by '+esc(i.by):'')+'</small></span></label>';
+      }).join('');
+    updateCount();
+  }
+  function picked(){
+    var reg=String(($('expReg')||{}).value||'').trim().toUpperCase();
+    var all=X().verifiedPracticals(reg), on={};
+    document.querySelectorAll('[data-expitem]').forEach(function(c){ if(c.checked) on[c.getAttribute('data-expitem')]=1; });
+    return all.filter(function(i){ return on[i.id]; });
+  }
+  function updateCount(){
+    var info=$('expInfo'); if(!info) return;
+    var n=picked().length, h=Number(($('expHours')||{}).value)||30;
+    info.textContent=n?(n+' practical'+(n===1?'':'s')+' selected · '+(n*h)+' hours of hands-on experience'):'Nothing selected.';
+  }
+
+  function renderList(){
+    var el=$('expList'); if(!el) return;
+    var rows=X().list(), badge=$('cntExp');
+    if(badge) badge.textContent=rows.length?String(rows.length):'';
+    el.innerHTML=rows.length? rows.map(function(r){
+      var L=r.letter, when=L.issued?new Date(L.issued).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
+      return '<div class="citem"><div class="cinfo"><b>'+esc(r.reg)+(nameFor(r.reg)?' — '+esc(nameFor(r.reg)):'')
+        +' <span class="badge2">'+esc(L.no)+'</span></b>'
+        +'<small>'+(L.items||[]).length+' practical(s) · '+L.total+' hours'+(when?' · issued '+esc(when):'')+'</small></div>'
+        +'<div style="display:flex;gap:8px"><button data-expview="'+esc(r.reg)+'" style="cursor:pointer;font:inherit;font-size:12px;font-weight:600;border-radius:6px;padding:6px 12px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">View</button>'
+        +'<button data-exprevoke="'+esc(r.reg)+'" style="cursor:pointer;font:inherit;font-size:12px;font-weight:600;border-radius:6px;padding:6px 12px;border:1px solid rgba(177,4,14,.35);background:var(--panel);color:#b1040e">Revoke</button></div></div>';
+    }).join('') : '<div class="ahint">No letters issued yet.</div>';
+  }
+
+  function loadSettings(){
+    var s=X().settings();
+    if($('expSignatory')) $('expSignatory').value=s.signatory;
+    if($('expDesignation')) $('expDesignation').value=s.designation;
+    if($('expPlace')) $('expPlace').value=s.place;
+    if($('expHours')) $('expHours').value=s.hoursPer;
+    if($('expHoursLabel')) $('expHoursLabel').textContent=s.hoursPer;
+    var pv=$('expAsapPrev');
+    if(pv) pv.innerHTML=s.asapLogo
+      ? '<img src="'+esc(s.asapLogo)+'" alt="ASAP" style="max-width:84px;max-height:54px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:4px;background:#fff">'
+      : '<span class="ahint">No logo uploaded</span>';
+  }
+
+  function wire(){
+    if(!X()) return;
+    var reg=$('expReg'); if(reg){ reg.addEventListener('change',renderPick); reg.addEventListener('input',function(){ if(this.value.length>=4) renderPick(); }); }
+    var hrs=$('expHours'); if(hrs) hrs.addEventListener('input',updateCount);
+    var pick=$('expPick'); if(pick) pick.addEventListener('change',updateCount);
+
+    var iss=$('expIssue');
+    if(iss) iss.onclick=function(){
+      var r=String(($('expReg')||{}).value||'').trim().toUpperCase();
+      if(!r){ alert('Choose a student first.'); return; }
+      var items=picked();
+      if(!items.length){ alert('Tick at least one verified practical to certify.'); return; }
+      var h=Number(($('expHours')||{}).value)||30;
+      if(!confirm('Issue a certificate of practical experience to '+r+'?\n\n'
+        +items.length+' verified practical(s) · '+(items.length*h)+' hours\n\nIt appears on the student’s profile immediately.')) return;
+      var rec=X().issue(r, items, { hoursPer:h, by:'Administrator' });
+      if(!rec){ alert('Could not save the letter.'); return; }
+      $('expInfo').textContent='Issued '+rec.no+' — '+rec.total+' hours, live on '+r+'’s profile.';
+      log('Issued experience letter '+rec.no+' to '+r+' ('+items.length+' practicals, '+rec.total+' hours)');
+      renderList(); renderPick();
+    };
+
+    var pv=$('expPreview');
+    if(pv) pv.onclick=function(){
+      var r=String(($('expReg')||{}).value||'').trim().toUpperCase();
+      if(!r){ alert('Choose a student first.'); return; }
+      var items=picked();
+      if(!items.length){ alert('Tick at least one practical to preview.'); return; }
+      /* preview without publishing: stash, render, restore */
+      var keep=X().get(r);
+      X().issue(r, items, { hoursPer:Number(($('expHours')||{}).value)||30, by:'preview' });
+      X().open(r);
+      if(keep){ X().issue(r, keep.items, { hoursPer:keep.hoursPer, no:keep.no, by:keep.by }); }
+      else X().revoke(r);
+    };
+
+    var ss=$('expSaveSet');
+    if(ss) ss.onclick=function(){
+      X().saveSettings({
+        signatory:($('expSignatory')||{}).value||'', designation:($('expDesignation')||{}).value||'',
+        place:($('expPlace')||{}).value||'', hoursPer:Number(($('expHours')||{}).value)||30
+      });
+      loadSettings(); log('Updated experience-letter settings');
+      $('expInfo').textContent='Letter settings saved.';
+    };
+
+    var af=$('expAsap');
+    if(af) af.addEventListener('change',function(){
+      var f=this.files&&this.files[0]; if(!f) return;
+      if(f.size>400*1024){ alert('That image is '+Math.round(f.size/1024)+' KB. Please use one under 400 KB so it stays inside the cloud document limit.'); this.value=''; return; }
+      var rd=new FileReader();
+      rd.onload=function(){ X().saveSettings({asapLogo:rd.result}); loadSettings(); log('Uploaded the ASAP Kerala logo for letters'); };
+      rd.readAsDataURL(f);
+    });
+    var ac=$('expAsapClear');
+    if(ac) ac.onclick=function(){ X().saveSettings({asapLogo:''}); loadSettings(); };
+
+    var list=$('expList');
+    if(list) list.addEventListener('click',function(e){
+      var b=e.target.closest&&e.target.closest('button'); if(!b) return;
+      var v=b.getAttribute('data-expview'); if(v){ X().open(v); return; }
+      var rv=b.getAttribute('data-exprevoke');
+      if(rv && confirm('Revoke the experience letter for '+rv+'?\n\nIt disappears from their profile.')){
+        X().revoke(rv); renderList(); renderPick(); log('Revoked the experience letter for '+rv);
+      }
+    });
+
+    var nav=document.querySelector('.anavv a[data-sec="adm-exp"]');
+    if(nav) nav.addEventListener('click',function(){ setTimeout(function(){ fillRegList(); loadSettings(); renderList(); renderPick(); },30); });
+    window.addEventListener('storage',function(e){ if(e.key==='alizonSubmissions'||e.key==='alizonExperience'||e.key==='alizonStudents'){ fillRegList(); renderList(); } });
+    fillRegList(); loadSettings(); renderList(); renderPick();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
 })();
 </script>
 </body>
