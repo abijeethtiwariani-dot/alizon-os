@@ -161,7 +161,7 @@
   /* only the data a login is checked against — pulled during bootstrap so fresh
      devices can authenticate. Operational data (fees, submissions, grievances,
      messages, activity) stays in the cloud until a real user signs in. */
-  var AUTH_KEYS = ['alizonStudents','alizonHR','alizonFaculty','alizonResults','alizonContent','alizonExamDocs','alizonNews','alizonWorkshops','alizonWsFeedback','alizonPhotos','alizonPrograms','alizonCurriculum','alizonAllotment','alizonHeroCover','alizonVacancies','alizonCareerEvents','alizonCareerPay','alizonCareerRegs','alizonLabAccess','alizonExperience'];
+  var AUTH_KEYS = ['alizonStudents','alizonHR','alizonFaculty','alizonResults','alizonContent','alizonExamDocs','alizonNews','alizonWorkshops','alizonWsFeedback','alizonPhotos','alizonPrograms','alizonCurriculum','alizonAllotment','alizonHeroCover','alizonVacancies','alizonCareerEvents','alizonCareerPay','alizonCareerRegs','alizonLabAccess','alizonExperience','alizonAttendance','alizonSubmissions'];
   function pullAuthKeys(){
     AUTH_KEYS.forEach(function(key){
       db.collection('sync').doc(key).get().then(function(doc){

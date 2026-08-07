@@ -208,8 +208,10 @@
   document.getElementById('courseSel').addEventListener('change',function(){ if(this.value) showCourse(this.value); });
 
   /* deep link ?course=NAME (used by the dashboard); &download=1 opens the PDF dialog */
-  var qc=params.get('course');
-  function tryDeepLink(){ if(!qc) return; var c=window.AlizonCurriculum.findForCourse(qc); if(c){ var host=document.getElementById('syllabus'); window.AlizonCurriculum.render(host,c);
+  var qc=params.get('course'), deepLinkDone=false;
+  /* the poller below retries until the synced data arrives, but once the deep link
+     has landed the visitor owns the selection — never stamp over it again */
+  function tryDeepLink(){ if(!qc||deepLinkDone) return; var c=window.AlizonCurriculum.findForCourse(qc); if(c){ deepLinkDone=true; var host=document.getElementById('syllabus'); window.AlizonCurriculum.render(host,c);
       var sel=document.getElementById('courseSel'); var key=window.AlizonCurriculum.courseKey(c); if([].some.call(sel.options,function(o){return o.value===key;})) sel.value=key;
       var dl=document.getElementById('dlSyl'); if(dl) dl.style.display='';
       if(params.get('download')==='1') setTimeout(function(){ try{ window.AlizonCurriculum.printDoc(); }catch(e){} }, 900); } }
@@ -309,7 +311,11 @@
         delete st[k];
         try{ localStorage.setItem('alizonCurriculum', JSON.stringify(st)); }catch(err){}
         fillCourses(); fillPublished();
-        var sel=document.getElementById('courseSel'); if(sel.value===k){ sel.value=''; showCourse(''); }
+        /* fillCourses() rebuilds the options, so a removed key leaves the select
+           blank rather than equal to k — clear the document unconditionally */
+        var sel=document.getElementById('courseSel');
+        sel.value=''; showCourse('');
+        var dl=document.getElementById('dlSyl'); if(dl) dl.style.display='none';
         return;
       }
       var v=b.getAttribute('data-view');

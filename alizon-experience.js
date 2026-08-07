@@ -60,18 +60,31 @@
     for(var i=0;i<all.length;i++){ if(String(all[i].reg||'').toUpperCase()===reg) return all[i]; }
     return {};
   }
-  /* evaluated practicals only — an unmarked submission is not experience */
+  /* evaluated practicals only — an unmarked submission is not experience.
+     A student can submit the same practical more than once and faculty may grade
+     each attempt; certifying both would bill the same work twice, so only the
+     latest evaluated attempt of a given practical is offered. */
   function verifiedPracticals(reg){
     reg=String(reg||'').toUpperCase();
     var subs=J('alizonSubmissions',[]); if(!Array.isArray(subs)) return [];
-    return subs.filter(function(s){
+    var rows=subs.filter(function(s){
       return s && s.type==='practical'
         && String(s.reg||'').toUpperCase()===reg
         && s.status==='evaluated' && s.mark!=null;
     }).map(function(s){
       return { id:s.id, title:s.title||s.module||'Practical', module:s.module||'',
-               mark:s.mark, at:s.evaluatedAt||s.ts, by:s.gradedBy||'' };
+               mark:s.mark, at:s.evaluatedAt||s.ts, by:s.gradedBy||'', attempts:1 };
     }).sort(function(a,b){ return (a.at||0)-(b.at||0); });
+
+    var byWork={}, out=[];
+    rows.forEach(function(r){
+      var k=((r.module||'')+'||'+(r.title||'')).toLowerCase().replace(/\s+/g,' ').trim();
+      var prev=byWork[k];
+      if(!prev){ byWork[k]=r; out.push(r); return; }
+      prev.attempts++;                       /* keep the newest attempt in place */
+      prev.id=r.id; prev.mark=r.mark; prev.at=r.at; prev.by=r.by;
+    });
+    return out;
   }
 
   function get(reg){ return store()[String(reg||'').toUpperCase()] || null; }
@@ -82,9 +95,22 @@
       .sort(function(a,b){ return (b.letter.issued||0)-(a.letter.issued||0); });
   }
 
-  function nextNo(){
-    var n=list().length+1, y=new Date().getFullYear();
-    return 'ALZ/EXP/'+y+'/'+('000'+n).slice(-4);
+  /* A certificate number must never be reused: a revoked letter may already be
+     printed and in someone's hands. Counting the surviving letters would rewind
+     after every revoke, so the sequence is stored and only ever goes up.
+     Takes the caller's store object and bumps the counter on it, so the
+     single save() at the end of issue() persists the new sequence too. */
+  function nextNo(all){
+    var s=all._settings||{};
+    var highest=0;
+    Object.keys(all).forEach(function(k){
+      if(k==='_settings') return;
+      var m=/(\d+)\s*$/.exec(String((all[k]||{}).no||''));
+      if(m) highest=Math.max(highest, parseInt(m[1],10)||0);
+    });
+    var n=Math.max(Number(s.seq)||0, highest)+1;
+    s.seq=n; all._settings=s;
+    return 'ALZ/EXP/'+new Date().getFullYear()+'/'+('000'+n).slice(-4);
   }
 
   /* issue for the selected verified practicals only */
@@ -93,19 +119,43 @@
     if(!reg || !items || !items.length) return null;
     opts=opts||{};
     var st=settings();
+    /* the fallback rate, used only for a practical the administrator left blank */
     var hoursPer=Number(opts.hoursPer!=null?opts.hoursPer:st.hoursPer)||HOURS_PER_PRACTICAL;
     var all=store(), prev=all[reg];
     var times=items.map(function(i){ return i.at||0; }).filter(Boolean);
+    /* hours are decided by the administrator, per practical */
+    var priced=items.map(function(i){
+      var h=Number(i.hours);
+      return { id:i.id, title:i.title, module:i.module, mark:i.mark, at:i.at, by:i.by,
+               hours: (isFinite(h)&&h>0)?h:hoursPer };
+    });
     var rec={
-      no: (prev&&prev.no)||opts.no||nextNo(),
-      issued: Date.now(), by: opts.by||'Administrator',
-      hoursPer: hoursPer, total: hoursPer*items.length,
-      items: items,
+      no: (prev&&prev.no)||opts.no||nextNo(all),
+      /* opts.issued lets a caller put a letter back exactly as it was
+         (the admin preview stashes and restores) without re-dating it */
+      issued: opts.issued||Date.now(), by: opts.by||'Administrator',
+      hoursPer: hoursPer,
+      total: priced.reduce(function(a,i){ return a+i.hours; }, 0),
+      items: priced,
       from: times.length?ymd(Math.min.apply(null,times)):'',
       to:   times.length?ymd(Math.max.apply(null,times)):''
     };
     all[reg]=rec;
     return save(all)?rec:null;
+  }
+
+  /* hours for one row — letters issued before per-practical hours existed
+     carry only the flat rate, so fall back to it */
+  function itemHours(rec, it){
+    var h=Number(it&&it.hours);
+    if(isFinite(h)&&h>0) return h;
+    return Number(rec&&rec.hoursPer)||HOURS_PER_PRACTICAL;
+  }
+  function uniformHours(rec){
+    var items=(rec&&rec.items)||[]; if(!items.length) return 0;
+    var first=itemHours(rec,items[0]);
+    for(var i=1;i<items.length;i++){ if(itemHours(rec,items[i])!==first) return 0; }
+    return first;
   }
   function revoke(reg){
     var all=store(); reg=String(reg||'').toUpperCase();
@@ -158,8 +208,12 @@
       +(st.batch?', '+esc(st.batch):'')
       +', has satisfactorily completed supervised hands-on practical training at this institution.</p>';
 
-    h+='<p class="x-p">Each practical listed below carries <b>'+rec.hoursPer+' hours</b> of hands-on experience, '
-      +'amounting to <b>'+rec.total+' hours</b> of supervised practical training in total. '
+    var uni=uniformHours(rec);
+    h+='<p class="x-p">'
+      +(uni
+        ? 'Each practical listed below carries <b>'+uni+' hours</b> of hands-on experience, amounting to '
+        : 'The practicals listed below carry the hours of hands-on experience shown against each, amounting to ')
+      +'<b>'+rec.total+' hours</b> of supervised practical training in total. '
       +'Every practical was submitted through the institution&rsquo;s laboratory platform, and was '
       +'<b>evaluated and verified</b> by the faculty before being recorded here.</p>';
 
@@ -170,7 +224,7 @@
     items.forEach(function(it,i){
       h+='<tr><td class="c">'+(i+1)+'</td><td class="l">'+esc(it.title)+'</td>'
         +'<td class="l s">'+esc(it.module||'—')+'</td>'
-        +'<td class="c">'+rec.hoursPer+'</td>'
+        +'<td class="c">'+itemHours(rec,it)+'</td>'
         +'<td class="c">'+(it.mark!=null?esc(it.mark)+'/100':'—')+'</td>'
         +'<td class="c s">'+(it.at?esc(ymd(it.at)):'—')+'</td></tr>';
     });
@@ -296,6 +350,7 @@
     settings:settings, saveSettings:saveSettings,
     verifiedPracticals:verifiedPracticals,
     get:get, list:list, issue:issue, revoke:revoke,
+    itemHours:itemHours, uniformHours:uniformHours,
     letterHtml:letterHtml, render:render, open:open_, css:CSS
   };
 })();

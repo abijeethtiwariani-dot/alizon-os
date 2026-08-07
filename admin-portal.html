@@ -590,8 +590,9 @@ h1,h2,h3{color:#111!important}
   <section class="apanel asec" id="adm-exp">
     <h2>✎ Experience Letters</h2>
     <div class="ahint">A letter is never issued on its own. Faculty evaluate a practical first; only <b>verified</b> practicals
-      appear below, and you choose which of them go on the letter. Each practical is credited as
-      <b id="expHoursLabel">30</b> hours of hands-on experience. Issuing publishes the letter to that student&rsquo;s profile.</div>
+      appear below, and you choose which of them go on the letter. <b>You decide the hours</b> credited to each
+      practical — set them row by row, or type a figure in &ldquo;Hours for all&rdquo; and apply it to every row at once
+      (it starts at <b id="expHoursLabel">30</b>). Issuing publishes the letter to that student&rsquo;s profile.</div>
 
     <div style="margin:18px 0;border:1px solid var(--line);border-radius:12px;padding:14px 16px">
       <h3 style="font-size:15px;margin-bottom:8px">Issue a letter</h3>
@@ -599,8 +600,11 @@ h1,h2,h3{color:#111!important}
         <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Student</label>
           <input id="expReg" list="expRegList" placeholder="Registration no. — e.g. ALZ102" style="min-width:280px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
           <datalist id="expRegList"></datalist></div>
-        <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Hours per practical</label>
-          <input id="expHours" type="number" min="1" max="200" value="30" style="width:130px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></div>
+        <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Hours for all</label>
+          <div style="display:flex;gap:8px">
+            <input id="expHours" type="number" min="1" max="500" value="30" style="width:106px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
+            <button id="expApplyAll" type="button" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 14px;font:inherit;font-size:12px;font-weight:700;cursor:pointer">Apply to all</button>
+          </div></div>
         <button id="expIssue" style="background:var(--crimson);color:#fff;border:0;border-radius:100px;padding:11px 20px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">Issue letter</button>
         <button id="expPreview" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:11px 20px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">Preview</button>
       </div>
@@ -1938,7 +1942,7 @@ function dbResetAll(){ var inp=document.getElementById('dbReset'),note=document.
   setTimeout(function(){ location.reload(); },800); }
 function renderData(){ var b=document.getElementById('dbBackup'); if(b&&!b._w){b._w=1;b.addEventListener('click',dbBackup);} var r=document.getElementById('dbResetBtn'); if(r&&!r._w){r._w=1;r.addEventListener('click',dbResetAll);} }
 
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-resetmarks','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-resetmarks','adm-exp','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -3808,29 +3812,59 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       if(info) info.textContent=''; return;
     }
     var existing=X().get(reg);
-    var chosen={}; if(existing) (existing.items||[]).forEach(function(i){ chosen[i.id]=1; });
+    var chosen={}, prevHours={};
+    if(existing) (existing.items||[]).forEach(function(i){ chosen[i.id]=1; prevHours[i.id]=X().itemHours(existing,i); });
+    var dflt=Number(($('expHours')||{}).value)||X().settings().hoursPer||30;
     el.innerHTML='<div style="font-size:12px;font-weight:700;margin-bottom:8px">Verified practicals for '
-      +esc(reg)+(nameFor(reg)?' — '+esc(nameFor(reg)):'')+' <span style="font-weight:500;color:var(--muted)">(tick the ones to certify)</span></div>'
+      +esc(reg)+(nameFor(reg)?' — '+esc(nameFor(reg)):'')
+      +' <span style="font-weight:500;color:var(--muted)">(tick the ones to certify, and set the hours for each)</span></div>'
       +items.map(function(i){
         var on = existing ? !!chosen[i.id] : true;   /* first issue: everything verified, ticked */
-        return '<label style="display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;cursor:pointer">'
-          +'<input type="checkbox" data-expitem="'+esc(i.id)+'"'+(on?' checked':'')+' style="margin-top:3px">'
+        var hv = prevHours[i.id]!=null ? prevHours[i.id] : dflt;
+        return '<div style="display:flex;gap:10px;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px">'
+          +'<label style="display:flex;gap:10px;align-items:flex-start;flex:1;min-width:0;cursor:pointer">'
+          /* the panel styles every input to full width — pin the box or it eats the row */
+          +'<input type="checkbox" data-expitem="'+esc(i.id)+'"'+(on?' checked':'')
+          +' style="flex:none;width:16px;min-width:16px;height:16px;margin-top:3px">'
           +'<span style="flex:1;min-width:0"><b style="font-size:13.5px">'+esc(i.title)+'</b>'
           +'<small style="display:block;color:var(--muted);font-size:12px">'+esc(i.module||'—')
-          +' · '+esc(i.mark)+'/100'+(i.by?' · verified by '+esc(i.by):'')+'</small></span></label>';
+          +' · '+esc(i.mark)+'/100'+(i.by?' · verified by '+esc(i.by):'')
+          +((i.attempts>1)?' · <b>'+i.attempts+' attempts — latest counted once</b>':'')+'</small></span></label>'
+          +'<span style="flex:none;display:flex;align-items:center;gap:6px">'
+          +'<input type="number" min="1" max="500" data-exphrs="'+esc(i.id)+'" value="'+hv+'" '
+          +'title="Hours of hands-on experience credited for this practical" '
+          +'style="width:74px;font:inherit;font-size:13px;text-align:center;padding:7px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">'
+          +'<span style="font-size:11.5px;color:var(--muted);font-weight:600">hrs</span></span>'
+          +'</div>';
       }).join('');
     updateCount();
+  }
+  /* hours are the administrator's call — read them straight off the row inputs */
+  function hoursFor(id){
+    var f=document.querySelector('[data-exphrs="'+id+'"]');
+    var h=f?Number(f.value):NaN;
+    return (isFinite(h)&&h>0)?h:(Number(($('expHours')||{}).value)||30);
   }
   function picked(){
     var reg=String(($('expReg')||{}).value||'').trim().toUpperCase();
     var all=X().verifiedPracticals(reg), on={};
     document.querySelectorAll('[data-expitem]').forEach(function(c){ if(c.checked) on[c.getAttribute('data-expitem')]=1; });
-    return all.filter(function(i){ return on[i.id]; });
+    return all.filter(function(i){ return on[i.id]; })
+              .map(function(i){ i.hours=hoursFor(i.id); return i; });
   }
   function updateCount(){
     var info=$('expInfo'); if(!info) return;
-    var n=picked().length, h=Number(($('expHours')||{}).value)||30;
-    info.textContent=n?(n+' practical'+(n===1?'':'s')+' selected · '+(n*h)+' hours of hands-on experience'):'Nothing selected.';
+    var sel=picked();
+    if(!sel.length){ info.textContent='Nothing selected.'; return; }
+    var total=sel.reduce(function(a,i){ return a+i.hours; }, 0);
+    var same=sel.every(function(i){ return i.hours===sel[0].hours; });
+    info.textContent=sel.length+' practical'+(sel.length===1?'':'s')+' selected · '
+      +total+' hours of hands-on experience'+(same?' ('+sel[0].hours+' each)':' (hours set individually)');
+  }
+  function applyAll(){
+    var h=Number(($('expHours')||{}).value)||30;
+    document.querySelectorAll('[data-exphrs]').forEach(function(f){ f.value=h; });
+    updateCount();
   }
 
   function renderList(){
@@ -3864,7 +3898,9 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     if(!X()) return;
     var reg=$('expReg'); if(reg){ reg.addEventListener('change',renderPick); reg.addEventListener('input',function(){ if(this.value.length>=4) renderPick(); }); }
     var hrs=$('expHours'); if(hrs) hrs.addEventListener('input',updateCount);
-    var pick=$('expPick'); if(pick) pick.addEventListener('change',updateCount);
+    var apl=$('expApplyAll'); if(apl) apl.onclick=applyAll;
+    var pick=$('expPick');
+    if(pick){ pick.addEventListener('change',updateCount); pick.addEventListener('input',updateCount); }
 
     var iss=$('expIssue');
     if(iss) iss.onclick=function(){
@@ -3873,8 +3909,10 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       var items=picked();
       if(!items.length){ alert('Tick at least one verified practical to certify.'); return; }
       var h=Number(($('expHours')||{}).value)||30;
+      var total=items.reduce(function(a,i){ return a+i.hours; }, 0);
       if(!confirm('Issue a certificate of practical experience to '+r+'?\n\n'
-        +items.length+' verified practical(s) · '+(items.length*h)+' hours\n\nIt appears on the student’s profile immediately.')) return;
+        +items.map(function(i){ return '· '+i.title+' — '+i.hours+' hrs'; }).join('\n')
+        +'\n\nTotal: '+total+' hours of hands-on experience.\n\nIt appears on the student’s profile immediately.')) return;
       var rec=X().issue(r, items, { hoursPer:h, by:'Administrator' });
       if(!rec){ alert('Could not save the letter.'); return; }
       $('expInfo').textContent='Issued '+rec.no+' — '+rec.total+' hours, live on '+r+'’s profile.';
@@ -3892,7 +3930,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       var keep=X().get(r);
       X().issue(r, items, { hoursPer:Number(($('expHours')||{}).value)||30, by:'preview' });
       X().open(r);
-      if(keep){ X().issue(r, keep.items, { hoursPer:keep.hoursPer, no:keep.no, by:keep.by }); }
+      if(keep){ X().issue(r, keep.items, { hoursPer:keep.hoursPer, no:keep.no, by:keep.by, issued:keep.issued }); }
       else X().revoke(r);
     };
 

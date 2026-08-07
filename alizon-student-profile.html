@@ -179,7 +179,13 @@ function experienceCard(st){
     ${kv('Certificate no.',L.no,true)}
     ${kv('Practicals certified',(L.items||[]).length,true)}
     <div class="kv"><b>Hands-on experience</b><span class="num" style="font-weight:800;font-size:17px;color:var(--tile-gold)">${L.total} hours</span></div>
-    ${kv('Each practical',L.hoursPer+' hours')}
+    ${(function(){
+      /* hours are set per practical, so only claim a flat rate when they agree —
+         otherwise this line would contradict the certificate beside it */
+      const u=X.uniformHours(L);
+      return u ? kv('Each practical',u+' hours')
+               : kv('Hours per practical','set individually — see the certificate');
+    })()}
     ${L.from&&L.to?kv('Period',L.from+' to '+L.to):''}
     <div class="kv" style="border-bottom:none">
       <b>Certificate</b>
