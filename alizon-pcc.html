@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- pwa:alizon -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#8c1515">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
+<!-- /pwa:alizon -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Police Clearance Certificate letters | Alizon School of Medical &amp; Digital Intelligence</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<script src="firebase-sync.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --crimson:#b1040e; --crimson-deep:#6b0f0f; --gold:#9a7b3f; --ink:#2e2d29; --muted:#6e6a63; --line:rgba(0,0,0,.12); --paper:#faf8f6; --ok:#1E8E5A; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Source Sans 3','Source Sans Pro',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;background:#f4f1ee;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;min-height:100vh;display:flex;flex-direction:column}
+  a{color:inherit;text-decoration:none}
+  .serif{font-family:'Source Serif Pro',Georgia,serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px;width:100%}
+  .strip{background:#181512;color:#fff;padding:30px 0 26px}
+  .strip .ey{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#e8b4b4}
+  .strip h1{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.7rem,4.4vw,2.4rem);font-weight:600;margin-top:8px}
+  .strip p{color:#c9c2ba;font-size:14px;margin-top:9px;max-width:74ch;line-height:1.6}
+  main{flex:1;padding:26px 0 56px}
+  .panel{background:#fff;border:1px solid var(--line);border-top:3px solid var(--crimson);border-radius:12px;padding:20px 22px;margin-bottom:20px}
+  .panel h2{font-family:'Source Serif Pro',Georgia,serif;font-size:17px;font-weight:600;margin-bottom:4px}
+  .hint{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px}
+  .fl{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  input,select,textarea{width:100%;font:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+  textarea{min-height:64px;resize:vertical;line-height:1.6}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+  .btn{cursor:pointer;font-family:inherit;font-weight:700;font-size:13.5px;border:none;color:#fff;background:var(--crimson);border-radius:100px;padding:11px 22px;width:auto}
+  .btn:hover{background:var(--crimson-deep)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .msg{font-size:13px;font-weight:600;margin-top:10px}
+  .msg.ok{color:var(--ok)} .msg.err{color:#b1040e}
+  .sheet{background:#fff;border-radius:14px;padding:clamp(22px,3.4vw,40px);box-shadow:0 18px 46px -28px rgba(20,18,16,.4)}
+  .log .it{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:9px;padding:10px 14px;margin-bottom:8px;font-size:13.5px}
+  .log .it b{flex:1;min-width:180px}
+  .log .it small{color:var(--muted);display:block;font-size:12px;font-weight:400}
+  .log .it button{width:auto;cursor:pointer;font:inherit;font-size:12px;font-weight:600;border-radius:6px;padding:6px 12px;border:1px solid var(--line);background:#fff}
+  .log .it button.rm{color:#b1040e;border-color:rgba(177,4,14,.35)}
+  footer{background:#1A1A1A;color:#c9c9c9;padding:24px 20px;text-align:center;font-size:12.5px}
+  .ovl{position:fixed;inset:0;z-index:900;background:rgba(20,16,14,.55);display:none;align-items:flex-start;justify-content:center;padding:5vh 16px}
+  .ovl.on{display:flex}
+  .pick{background:#fff;border-radius:14px;width:100%;max-width:620px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+  .pick .ph{padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+  .pick .ph h3{font-family:'Source Serif Pro',Georgia,serif;font-size:17px;font-weight:600}
+  .pick .ph .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .pick .pb{overflow:auto;padding:8px 10px 12px}
+  .pick .st{display:flex;gap:12px;align-items:center;width:100%;text-align:left;cursor:pointer;border:none;background:transparent;
+    padding:10px 12px;border-radius:9px;font:inherit}
+  .pick .st:hover,.pick .st:focus{background:var(--paper);outline:none}
+  .pick .av{width:36px;height:36px;flex:none;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:700;
+    background:linear-gradient(120deg,#9E0C13,#C40D16)}
+  .pick .st b{display:block;font-size:14px}
+  .pick .st small{display:block;font-size:12px;color:var(--muted)}
+  .pick .pf{padding:10px 18px 14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .pick .none{padding:22px;text-align:center;color:var(--muted);font-size:13.5px}
+  @media print{ .strip,.panel,footer,#alizonBackBar,.ovl{display:none!important} body{background:#fff} main{padding:0} .sheet{box-shadow:none;padding:0;border-radius:0} .wrap{max-width:none;padding:0} }
+</style>
+</head>
+<body>
+
+<div class="strip"><div class="wrap">
+  <div class="ey">Office of Admissions</div>
+  <h1 class="serif">Police Clearance Certificate</h1>
+  <p>Two letters for candidates who must produce a PCC before admission is confirmed — a notice to the
+    candidate telling them what is needed, and a bonafide request to the issuing authority. Both print on
+    the institution letterhead, for candidates within India or abroad.</p>
+</div></div>
+
+<main><div class="wrap">
+
+  <div class="panel">
+    <h2>Draft a letter</h2>
+    <div class="hint">Press <b>Choose…</b> to pick the candidate from the student list — their name, guardian, address,
+      programme and batch come across on their own. For an applicant not yet on the roster, simply type the details in.
+      The letter below updates as you go.</div>
+
+    <div class="grid">
+      <div><label class="fl">Letter</label>
+        <select id="f_kind">
+          <option value="candidate">Notice to the candidate — a PCC is required</option>
+          <option value="authority">Request to the issuing authority</option>
+        </select></div>
+      <div><label class="fl">Candidate is</label>
+        <select id="f_scope">
+          <option value="india">Within India</option>
+          <option value="abroad">Outside India</option>
+        </select></div>
+      <div><label class="fl">Student</label>
+        <div style="display:flex;gap:8px">
+          <input id="f_reg" placeholder="Pick from the roster" style="flex:1;min-width:0">
+          <button class="btn ghost" id="pickBtn" type="button" style="flex:none;padding:9px 15px">Choose…</button>
+        </div></div>
+      <div><label class="fl">Date of letter</label><input id="f_date" type="date"></div>
+    </div>
+
+    <div class="grid" style="margin-top:11px">
+      <div><label class="fl">Salutation</label><input id="f_salutation" placeholder="Mr / Ms"></div>
+      <div><label class="fl">Name</label><input id="f_name"></div>
+      <div><label class="fl">Father / guardian</label><input id="f_guardian"></div>
+      <div><label class="fl">Date of birth</label><input id="f_dob"></div>
+    </div>
+
+    <div style="margin-top:11px"><label class="fl">Address</label><input id="f_address"></div>
+
+    <div class="grid" style="margin-top:11px">
+      <div><label class="fl">Programme</label><input id="f_course"></div>
+      <div><label class="fl">Batch</label><input id="f_batch"></div>
+      <div id="wrapCountry"><label class="fl">Country</label><input id="f_country" placeholder="for candidates going abroad"></div>
+      <div id="wrapDeadline"><label class="fl">Submit by</label><input id="f_deadline" type="date"></div>
+    </div>
+
+    <div id="wrapAuthority" style="margin-top:11px">
+      <label class="fl">Addressed to — leave blank for the standard wording</label>
+      <textarea id="f_authority" placeholder="The Commissioner of Police,&#10;District…"></textarea>
+    </div>
+
+    <div class="grid" style="margin-top:11px">
+      <div><label class="fl">Signed by</label><select id="f_signer"></select></div>
+      <div><label class="fl">Place</label><input id="f_place"></div>
+    </div>
+
+    <div style="margin-top:11px"><label class="fl">Extra paragraph — optional</label><textarea id="f_note"></textarea></div>
+
+    <div class="row">
+      <button class="btn" id="issueBtn">Issue &amp; save</button>
+      <button class="btn ghost" id="printBtn">⬇ Download PDF</button>
+      <button class="btn ghost" id="openBtn">Open in a new tab</button>
+      <button class="btn ghost" id="newBtn">Start a fresh letter</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div class="sheet" id="sheet"></div>
+
+  <div class="panel" style="margin-top:20px">
+    <h2>Issued letters</h2>
+    <div class="hint">Kept so a letter can be reprinted with the same reference number.</div>
+    <div class="log" id="log"></div>
+  </div>
+</div></main>
+
+<div class="ovl" id="pickOvl">
+  <div class="pick" role="dialog" aria-modal="true" aria-label="Choose a student">
+    <div class="ph">
+      <h3>Choose a student</h3>
+      <div class="sub" id="pickCount"></div>
+      <input id="pickSearch" placeholder="Search by name, register number or batch" style="margin-top:10px" autocomplete="off">
+    </div>
+    <div class="pb" id="pickList"></div>
+    <div class="pf">
+      <span class="sub" id="pickHint" style="font-size:12.5px;color:var(--muted)">Not on the roster? Close this and type the details in by hand.</span>
+      <button class="btn ghost" id="pickClose" type="button" style="flex:none">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala</footer>
+
+<script src="alizon-experience.js?v=5"></script>
+<script src="alizon-pcc.js?v=1"></script>
+<script src="print-paginate.js"></script>
+<script>
+(function(){
+  'use strict';
+  var P=window.AlizonPCC, X=window.AlizonExperience;
+  var cur=P.blank();
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  var FIELDS=['kind','scope','reg','date','salutation','name','guardian','dob','address',
+              'course','batch','country','deadline','authority','signer','place','note'];
+
+  function toForm(){
+    FIELDS.forEach(function(k){
+      var el=$('f_'+k); if(!el) return;
+      el.value = (k==='signer') ? (cur.signerId||'') : (cur[k]||'');
+    });
+    fillSigners();
+    toggle();
+  }
+  function fromForm(){
+    FIELDS.forEach(function(k){
+      var el=$('f_'+k); if(!el) return;
+      if(k==='signer') cur.signerId=el.value||''; else cur[k]=el.value;
+    });
+  }
+  function fillSigners(){
+    var sel=$('f_signer'); if(!sel||!X||!X.signers) return;
+    var all=X.signers(), dflt=(X.signerFor('pcc')||{});
+    sel.innerHTML='<option value="">Default'+(dflt.name?' — '+esc(dflt.name):'')+'</option>'
+      +all.map(function(g){ return '<option value="'+esc(g.id)+'">'+esc(g.name||'(unnamed)')
+        +(g.designation?' — '+esc(g.designation):'')+'</option>'; }).join('');
+    sel.value=cur.signerId||'';
+  }
+  /* only show the fields the chosen letter actually uses */
+  function toggle(){
+    var isAuth=($('f_kind').value==='authority'), abroad=($('f_scope').value==='abroad');
+    $('wrapAuthority').style.display = isAuth?'':'none';
+    $('wrapDeadline').style.display  = isAuth?'none':'';
+    $('wrapCountry').style.display   = abroad?'':'none';
+  }
+  function draw(){ fromForm(); P.render($('sheet'), cur); }
+
+  function apply(reg){
+    var o=P.fromRoster(reg);
+    if(!o){ $('msg').className='msg'; $('msg').textContent='No roster record for '+reg+' — fill the details in by hand.'; return false; }
+    /* keep the choices already made, take the candidate's details */
+    ['name','salutation','reg','dob','guardian','address','course','batch'].forEach(function(k){ cur[k]=o[k]; });
+    $('msg').className='msg ok'; $('msg').textContent='Pulled '+(o.name||reg)+' from the roster.';
+    toForm(); draw();
+    return true;
+  }
+  function pull(){
+    var reg=($('f_reg').value||'').trim();
+    if(reg.length>=3) apply(reg);
+  }
+
+  /* ---- student picker: the roster, searchable, rather than a typed number ---- */
+  function roster(){
+    var all=[]; try{ all=JSON.parse(localStorage.getItem('alizonStudents')||'[]')||[]; }catch(e){}
+    return Array.isArray(all)?all.filter(function(x){ return x && (x.reg||x.name); }):[];
+  }
+  function initials(n){
+    return String(n||'?').replace(/^(Mr|Ms|Mrs|Dr)\.?\s*/i,'').trim().split(/\s+/)
+      .map(function(w){return w[0]||'';}).slice(0,2).join('').toUpperCase();
+  }
+  function paintPick(q){
+    var all=roster();
+    q=String(q||'').toLowerCase().trim();
+    var hits=!q ? all : all.filter(function(x){
+      return ((x.reg||'')+' '+(x.name||'')+' '+(x.batch||'')+' '+(x.course||'')).toLowerCase().indexOf(q)>-1;
+    });
+    $('pickCount').textContent=hits.length+' of '+all.length+' student'+(all.length===1?'':'s');
+    var el=$('pickList');
+    if(!all.length){ el.innerHTML='<div class="none">The roster is empty on this device. It fills in once the student list syncs.</div>'; return; }
+    if(!hits.length){ el.innerHTML='<div class="none">Nobody matches “'+esc(q)+'”.</div>'; return; }
+    el.innerHTML=hits.slice(0,300).map(function(x){
+      return '<button type="button" class="st" data-reg="'+esc(x.reg||'')+'">'
+        +'<span class="av">'+esc(initials(x.name))+'</span>'
+        +'<span style="flex:1;min-width:0"><b>'+esc(x.name||'(unnamed)')+'</b>'
+        +'<small>'+esc(x.reg||'')+(x.batch?' · '+esc(x.batch):'')+(x.course?' · '+esc(x.course):'')+'</small></span></button>';
+    }).join('') + (hits.length>300?'<div class="none">Showing the first 300 — narrow the search.</div>':'');
+  }
+  function openPick(){
+    $('pickOvl').classList.add('on');
+    $('pickSearch').value=''; paintPick('');
+    setTimeout(function(){ $('pickSearch').focus(); },30);
+  }
+  function closePick(){ $('pickOvl').classList.remove('on'); }
+  $('pickBtn').onclick=openPick;
+  $('pickClose').onclick=closePick;
+  $('pickSearch').addEventListener('input',function(){ paintPick(this.value); });
+  $('pickList').addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('[data-reg]'); if(!b) return;
+    var reg=b.getAttribute('data-reg');
+    closePick();
+    if(reg) apply(reg);
+  });
+  $('pickOvl').addEventListener('click',function(e){ if(e.target===this) closePick(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closePick(); });
+
+  function renderLog(){
+    var el=$('log'); if(!el) return;
+    var rows=P.list();
+    el.innerHTML=rows.length? rows.slice(0,60).map(function(r){
+      var when=r.ts?new Date(r.ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
+      return '<div class="it"><b>'+esc(r.name||'—')+(r.reg?' · '+esc(r.reg):'')
+        +'<small>'+esc(r.no)+' · '+esc(P.KINDS[r.kind]||r.kind)+' · '+esc(P.SCOPES[r.scope]||'')
+        +(when?' · '+esc(when):'')+'</small></b>'
+        +'<button data-open="'+esc(r.no)+'">Open</button>'
+        +'<button class="rm" data-rm="'+esc(r.no)+'">Remove</button></div>';
+    }).join('') : '<div class="hint" style="margin:0">Nothing issued yet.</div>';
+  }
+
+  FIELDS.forEach(function(k){
+    var el=$('f_'+k); if(!el) return;
+    el.addEventListener('input', draw);
+    el.addEventListener('change', function(){ if(k==='kind'||k==='scope') toggle(); draw(); });
+  });
+  $('f_reg').addEventListener('change', pull);
+  $('f_reg').addEventListener('blur', pull);
+
+  $('issueBtn').onclick=function(){
+    fromForm();
+    if(!(cur.name||'').trim()){ $('msg').className='msg err'; $('msg').textContent='Enter the candidate’s name first.'; return; }
+    var rec=P.issue(cur);
+    if(!rec){ $('msg').className='msg err'; $('msg').textContent='Could not save the letter.'; return; }
+    cur=rec;
+    $('msg').className='msg ok'; $('msg').textContent='Issued '+rec.no+' — saved and ready to print.';
+    draw(); renderLog();
+  };
+  $('printBtn').onclick=function(){ draw(); P.print(); };
+  $('openBtn').onclick=function(){ draw(); P.open(cur); };
+  $('newBtn').onclick=function(){ cur=P.blank(); toForm(); draw(); $('msg').textContent=''; };
+
+  $('log').addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('button'); if(!b) return;
+    var o=b.getAttribute('data-open');
+    if(o){ var r=P.get(o); if(r){ cur=JSON.parse(JSON.stringify(r)); toForm(); draw();
+      window.scrollTo({top:0,behavior:'smooth'}); } return; }
+    var rm=b.getAttribute('data-rm');
+    if(rm && confirm('Remove '+rm+' from the log? The letter already issued is unaffected.')){ P.remove(rm); renderLog(); }
+  });
+
+  toForm(); draw(); renderLog();
+  window.addEventListener('storage',function(e){
+    if(e.key==='alizonStudents' && $('pickOvl').classList.contains('on')) paintPick($('pickSearch').value);
+    if(e.key==='alizonPCC') renderLog();
+    if(e.key==='alizonExperience'){ fillSigners(); draw(); }
+  });
+})();
+</script>
+<script src="alizon-backbar.js"></script>
+</body>
+</html>

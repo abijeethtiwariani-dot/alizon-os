@@ -419,6 +419,7 @@ h1,h2,h3{color:#111!important}
     <a href="alizon-textbook.html" title="Compose and typeset the module textbooks — chapters, boxes, figures, contents and exercises">Textbook Studio</a>
     <a href="alizon-syllabus.html?admin=1" title="Upload the ASAP curriculum spreadsheet for a course — it publishes to the website and to every student dashboard">Syllabus Upload</a>
     <a href="alizon-notification.html?admin=1" title="Admission &amp; allotment notification — edit the batch, dates, fees and seats, then publish it as a downloadable PDF">Admission Notification</a>
+    <a href="alizon-pcc.html" title="Police Clearance Certificate — notice to the candidate, or a bonafide request to the issuing authority, within India or abroad">Police Clearance</a>
     <a href="ASMDI-dashboard.html">↩ Student dashboard</a>
   </div>
 </aside>
@@ -649,9 +650,20 @@ h1,h2,h3{color:#111!important}
             <select id="expDocExperience" style="min-width:230px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></select></div>
           <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Notifications signed by</label>
             <select id="expDocNotification" style="min-width:230px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></select></div>
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Police clearance letters signed by</label>
+            <select id="expDocPcc" style="min-width:230px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)"></select></div>
         </div>
 
         <div id="expSignerList"></div>
+
+        <div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)">
+          <label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">
+            <input type="checkbox" id="expSysNoteOn" style="width:auto;margin-right:7px">Print a note at the foot of every document</label>
+          <div class="ahint" style="margin-bottom:8px">Every letter and notification the portal produces is system-generated, so it always
+            carries a line saying so. Left blank the wording follows how the document was signed. Applies to experience letters,
+            admission notifications and police clearance letters.</div>
+          <input id="expSysNote" placeholder="Leave blank for the standard wording" style="width:100%;max-width:640px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
+        </div>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)">
           <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Add a signatory — name</label>
@@ -3816,7 +3828,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   setInterval(paint, 30000);
 })();
 </script>
-<script src="alizon-experience.js?v=4"></script>
+<script src="alizon-experience.js?v=5"></script>
 <script>
 /* ============ Admin · Experience letters ============ */
 (function(){
@@ -3937,6 +3949,8 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       ? '<img src="'+esc(s.asapLogo)+'" alt="ASAP" style="max-width:84px;max-height:54px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:4px;background:#fff">'
       : '<span class="ahint">Using the bundled ASAP artwork</span>';
     if($('expSignMode')) $('expSignMode').value=s.signMode||'wet';
+    if($('expSysNote')) $('expSysNote').value=s.sysNote||'';
+    if($('expSysNoteOn')) $('expSysNoteOn').checked=(s.sysNoteOn!==false);
     renderSigners();
     if($('expSealMode')) $('expSealMode').value=X().sealMode();
     var kp=$('expSealPrev');
@@ -4115,6 +4129,10 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
         self.value=''; loadSettings(); log('Uploaded the institution seal');
       });
     });
+    var sysN=$('expSysNote');
+    if(sysN) sysN.addEventListener('change',function(){ X().saveSettings({sysNote:this.value}); });
+    var sysOn=$('expSysNoteOn');
+    if(sysOn) sysOn.onchange=function(){ X().saveSettings({sysNoteOn:this.checked}); loadSettings(); };
     var sealMode=$('expSealMode');
     if(sealMode) sealMode.onchange=function(){
       if(this.value==='image' && !X().settings().sealImage){
