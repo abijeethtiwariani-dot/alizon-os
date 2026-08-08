@@ -208,7 +208,7 @@
       +'<div class="p-lh-txt">'
         +'<div class="p-lh-name">Alizon School of Medical &amp; Digital Intelligence</div>'
         +'<div class="p-lh-tag">Advancing Artificial Intelligence in Healthcare Education</div>'
-        +'<div class="p-lh-addr">Thiruvananthapuram, Kerala, India&nbsp; ·&nbsp; www.alizon.in</div>'
+        +'<div class="p-lh-addr">Thiruvananthapuram, Kerala, India&nbsp; ·&nbsp; www.alizongov.com</div>'
       +'</div><div class="p-lh-asap">'+asap+'</div></header>'
       +'<div class="p-affil">An initiative under <b>ASAP Kerala</b> — Additional Skill Acquisition Programme, '
       +'Department of Higher Education, Government of Kerala&nbsp; ·&nbsp; Registered with <b>Kerala Startup Mission</b></div>';
@@ -269,7 +269,7 @@
       +'<p>Issued by the Office of Admissions, Alizon School of Medical &amp; Digital Intelligence. '
       +'Authenticity may be confirmed with the institution quoting the reference number above.</p>'
       +'<div class="p-foot-b">Alizon School of Medical &amp; Digital Intelligence&nbsp; ·&nbsp; '
-      +'Thiruvananthapuram, Kerala&nbsp; ·&nbsp; www.alizon.in</div></footer>';
+      +'Thiruvananthapuram, Kerala&nbsp; ·&nbsp; www.alizongov.com</div></footer>';
     h+='</article>';
     return h;
   }

@@ -36,7 +36,7 @@
         +'<td style="vertical-align:middle;padding:0 0 10px 6px">'
           +'<div style="font-family:Georgia,\'Source Serif Pro\',serif;font-weight:700;color:#8c1515;font-size:18px;line-height:1.2">Alizon School of Medical &amp; Digital Intelligence</div>'
           +'<div style="font-size:11.5px;font-style:italic;color:#6e6a63;margin-top:2px">Advancing Artificial Intelligence in Healthcare Education</div>'
-          +'<div style="font-size:10.5px;letter-spacing:.04em;color:#8a827b;margin-top:3px;font-weight:600">Thiruvananthapuram, Kerala, India&nbsp; ·&nbsp; www.alizon.in</div>'
+          +'<div style="font-size:10.5px;letter-spacing:.04em;color:#8a827b;margin-top:3px;font-weight:600">Thiruvananthapuram, Kerala, India&nbsp; ·&nbsp; www.alizongov.com</div>'
         +'</td>'
       +'</tr></table>'
       +'<div style="font-size:9.8px;line-height:1.5;color:#5f5a54;background:#faf4f2;border-left:3px solid #9a7b3f;padding:6px 10px;margin:8px 0 14px">'
@@ -57,7 +57,7 @@
       /* ===== footer ===== */
       +'<div style="border-top:2px solid #8c1515;margin-top:18px;padding-top:8px">'
         +'<div style="font-size:10.5px;color:#8a827b;line-height:1.6">This is a system-generated practical report issued by the Controller of Examinations, Alizon School of Medical &amp; Digital Intelligence. Awaiting faculty evaluation · Pass mark 50%.</div>'
-        +'<div style="font-size:10.5px;font-weight:700;color:#8c1515;margin-top:4px">Alizon School of Medical &amp; Digital Intelligence&nbsp; ·&nbsp; Thiruvananthapuram, Kerala&nbsp; ·&nbsp; www.alizon.in</div>'
+        +'<div style="font-size:10.5px;font-weight:700;color:#8c1515;margin-top:4px">Alizon School of Medical &amp; Digital Intelligence&nbsp; ·&nbsp; Thiruvananthapuram, Kerala&nbsp; ·&nbsp; www.alizongov.com</div>'
       +'</div>'
     +'</div>';
   }

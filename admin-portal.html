@@ -3828,7 +3828,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   setInterval(paint, 30000);
 })();
 </script>
-<script src="alizon-experience.js?v=5"></script>
+<script src="alizon-experience.js?v=6"></script>
 <script>
 /* ============ Admin · Experience letters ============ */
 (function(){
@@ -3964,8 +3964,14 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     var all=X().signers(), s=X().settings(), map=(s.docSigner&&typeof s.docSigner==='object')?s.docSigner:{};
     host.innerHTML=all.map(function(g){
       return '<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px">'
-        +'<span style="flex:1;min-width:190px"><b style="font-size:13.5px">'+esc(g.name||'(unnamed)')+'</b>'
-        +'<small style="display:block;color:var(--muted);font-size:12px">'+esc(g.designation||'—')+'</small></span>'
+        /* name and designation are editable in place — the Director's own details
+           change, and the seeded entry has to be correctable */
+        +'<span style="flex:1;min-width:210px;display:flex;flex-direction:column;gap:5px">'
+        +'<input data-sigfield="name" data-sigid="'+esc(g.id)+'" value="'+esc(g.name||'')+'" placeholder="Name"'
+        +' style="width:100%;font:inherit;font-size:13.5px;font-weight:700;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">'
+        +'<input data-sigfield="designation" data-sigid="'+esc(g.id)+'" value="'+esc(g.designation||'')+'" placeholder="Designation"'
+        +' style="width:100%;font:inherit;font-size:12.5px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--muted)">'
+        +'</span>'
         +'<span style="flex:none">'+(g.image
             ? '<img src="'+esc(g.image)+'" alt="Signature" style="max-width:140px;max-height:44px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff">'
             : '<span class="ahint">no signature on file</span>')+'</span>'
@@ -4097,6 +4103,21 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     if(slist){
       slist.addEventListener('change',function(e){
         var f=e.target; if(!f.getAttribute) return;
+        /* renaming a signatory — save, then repaint so the pickers follow */
+        var fld=f.getAttribute('data-sigfield');
+        if(fld){
+          var sid=f.getAttribute('data-sigid'), patch={id:sid};
+          patch[fld]=f.value.trim();
+          if(fld==='name' && !patch.name){
+            alert('A signatory needs a name.');
+            var g0=X().signerById(sid)||{}; f.value=g0.name||''; return;
+          }
+          X().saveSigner(patch);
+          var g=X().signerById(sid)||{};
+          log('Updated signatory '+(g.name||sid));
+          loadSettings();
+          return;
+        }
         var id=f.getAttribute('data-sigup'); if(!id) return;
         var file=f.files&&f.files[0]; if(!file) return;
         if(file.size>2*1024*1024){ alert('That image is very large. Please use one under 2 MB.'); f.value=''; return; }

@@ -324,7 +324,7 @@
       +'<div class="x-lh-txt">'
         +'<div class="x-lh-name">Alizon School of Medical &amp; Digital Intelligence</div>'
         +'<div class="x-lh-tag">Advancing Artificial Intelligence in Healthcare Education</div>'
-        +'<div class="x-lh-addr">Thiruvananthapuram, Kerala, India&nbsp; ·&nbsp; www.alizon.in</div>'
+        +'<div class="x-lh-addr">Thiruvananthapuram, Kerala, India&nbsp; ·&nbsp; www.alizongov.com</div>'
       +'</div>'
       +'<div class="x-lh-asap">'+asapMark()+'</div>'
       +'</header>'
@@ -397,7 +397,7 @@
     h+='<footer class="x-foot"><div class="x-foot-rule"></div>'
       +'<p>Certificate '+esc(rec.no)+' · system-generated from verified practical records held by the Controller of Examinations. '
       +'Authenticity can be confirmed with the institution quoting the reference number above.</p>'
-      +'<div class="x-foot-b">Alizon School of Medical &amp; Digital Intelligence&nbsp; ·&nbsp; Thiruvananthapuram, Kerala&nbsp; ·&nbsp; www.alizon.in</div>'
+      +'<div class="x-foot-b">Alizon School of Medical &amp; Digital Intelligence&nbsp; ·&nbsp; Thiruvananthapuram, Kerala&nbsp; ·&nbsp; www.alizongov.com</div>'
       +'</footer>';
     h+='</article>';
     return h;

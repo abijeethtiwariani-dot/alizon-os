@@ -367,7 +367,7 @@
       +'<div class="n-lh-txt">'
         +'<div class="n-lh-name">Alizon School of Medical &amp; Digital Intelligence</div>'
         +'<div class="n-lh-tag">Advancing Artificial Intelligence in Healthcare Education</div>'
-        +'<div class="n-lh-addr">Thiruvananthapuram, Kerala, India&nbsp; ·&nbsp; www.alizon.in</div>'
+        +'<div class="n-lh-addr">Thiruvananthapuram, Kerala, India&nbsp; ·&nbsp; www.alizongov.com</div>'
       +'</div>'
       +'<div class="n-lh-asap">'+asapMark()+'</div>'
       +'</header>'
@@ -448,7 +448,7 @@
     h+='<footer class="n-foot"><div class="n-foot-rule"></div>'
       +'<p>This notification is issued by the Office of Admissions, Alizon School of Medical &amp; Digital '
       +'Intelligence. Candidates are advised to read all conditions carefully before applying.</p>'
-      +'<div class="n-foot-b">Alizon School of Medical &amp; Digital Intelligence&nbsp; ·&nbsp; Thiruvananthapuram, Kerala&nbsp; ·&nbsp; www.alizon.in</div>'
+      +'<div class="n-foot-b">Alizon School of Medical &amp; Digital Intelligence&nbsp; ·&nbsp; Thiruvananthapuram, Kerala&nbsp; ·&nbsp; www.alizongov.com</div>'
       +'</footer>';
     h+='</article>';
     return h;
