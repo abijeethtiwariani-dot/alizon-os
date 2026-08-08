@@ -100,6 +100,26 @@
 
     <div id="secEditor" style="margin-top:14px"></div>
 
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)">
+      <label class="fl">Institution seal — optional</label>
+      <div class="hint" style="margin-bottom:10px">Upload the seal once and every notification and experience letter carries it.
+        Leave it out and the document simply prints no seal. You never need to come back here unless the seal changes.</div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+        <div id="sealPrev" style="min-width:96px"></div>
+        <div style="flex:1;min-width:200px">
+          <label class="fl">On the document</label>
+          <select id="sealMode" style="width:100%;font:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)">
+            <option value="off">No seal</option>
+            <option value="image">Print the uploaded seal</option>
+            <option value="space">Leave a space to stamp by hand</option>
+          </select>
+        </div>
+        <label class="btn ghost" style="cursor:pointer;flex:none">Upload / replace<input id="sealFile" type="file" accept="image/*" style="display:none"></label>
+        <button class="btn ghost" id="sealClear" type="button">Remove</button>
+      </div>
+      <div class="msg" id="sealMsg"></div>
+    </div>
+
     <div class="row">
       <button class="btn" id="saveBtn">Save &amp; publish</button>
       <button class="btn ghost" id="unpubBtn">Unpublish</button>
@@ -120,8 +140,8 @@
 <footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
   <a href="https://www.alizongov.com" target="_blank" rel="noopener">alizongov.com</a> &middot; <a href="index.html">alizon.in</a></footer>
 
-<script src="alizon-experience.js?v=3"></script>
-<script src="alizon-notification.js?v=3"></script>
+<script src="alizon-experience.js?v=4"></script>
+<script src="alizon-notification.js?v=4"></script>
 <script src="print-paginate.js"></script>
 <script>
 (function(){
@@ -233,6 +253,45 @@
       $('admMsg').textContent='';
     };
     $('clearPaste').onclick=function(){ $('pasteBox').value=''; $('readInfo').textContent=''; };
+
+    /* ---- institution seal (shared with experience letters, entirely optional) ---- */
+    function paintSeal(){
+      var X=window.AlizonExperience; if(!X) return;
+      var st=X.settings(), mode=X.sealMode();
+      var pv=$('sealPrev');
+      if(pv) pv.innerHTML=st.sealImage
+        ? '<img src="'+esc(st.sealImage)+'" alt="Seal" style="max-width:86px;max-height:86px;object-fit:contain;border:1px solid var(--line);border-radius:10px;padding:5px;background:#fff">'
+        : '<span class="hint" style="margin:0">No seal uploaded</span>';
+      var sm=$('sealMode'); if(sm) sm.value=mode;
+      if(current) N.render($('sheet'), current);
+    }
+    var sf=$('sealFile');
+    if(sf) sf.addEventListener('change',function(){
+      var f=this.files&&this.files[0]; var self=this;
+      window.AlizonExperience.readImage(f, 400, function(dataUrl, err){
+        if(!dataUrl){ $('sealMsg').className='msg err'; $('sealMsg').textContent=err||'Could not read that image.'; self.value=''; return; }
+        window.AlizonExperience.saveSettings({ sealImage:dataUrl, sealMode:'image' });
+        self.value=''; $('sealMsg').className='msg ok'; $('sealMsg').textContent='Seal saved — it now prints on notifications and experience letters.';
+        paintSeal();
+      });
+    });
+    var sc=$('sealClear');
+    if(sc) sc.onclick=function(){
+      window.AlizonExperience.saveSettings({ sealImage:'', sealMode:'off' });
+      $('sealMsg').className='msg'; $('sealMsg').textContent='Seal removed — documents print without one.';
+      paintSeal();
+    };
+    var smSel=$('sealMode');
+    if(smSel) smSel.onchange=function(){
+      if(this.value==='image' && !window.AlizonExperience.settings().sealImage){
+        $('sealMsg').className='msg err'; $('sealMsg').textContent='Upload a seal first.';
+        this.value=window.AlizonExperience.sealMode(); return;
+      }
+      window.AlizonExperience.saveSettings({ sealMode:this.value });
+      $('sealMsg').className='msg'; $('sealMsg').textContent='';
+      paintSeal();
+    };
+    paintSeal();
 
     $('saveBtn').onclick=function(){
       var n=readForm(); if(!n) return;

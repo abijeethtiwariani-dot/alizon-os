@@ -662,8 +662,14 @@ h1,h2,h3{color:#111!important}
         </div>
 
         <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)">
-          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Institution seal (optional, shared)</label>
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">Institution seal — optional</label>
             <input id="expSealFile" type="file" accept="image/*" style="font:inherit;font-size:13px"></div>
+          <div><label style="display:block;font-size:12px;font-weight:700;margin-bottom:5px">On the document</label>
+            <select id="expSealMode" style="min-width:220px;font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">
+              <option value="off">No seal</option>
+              <option value="image">Print the uploaded seal</option>
+              <option value="space">Leave a space to stamp by hand</option>
+            </select></div>
           <div id="expSealPrev" style="min-width:90px"></div>
           <button id="expSealClear" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font:inherit;font-size:12px;font-weight:600;cursor:pointer">Remove seal</button>
         </div>
@@ -3810,7 +3816,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   setInterval(paint, 30000);
 })();
 </script>
-<script src="alizon-experience.js?v=3"></script>
+<script src="alizon-experience.js?v=4"></script>
 <script>
 /* ============ Admin · Experience letters ============ */
 (function(){
@@ -3932,6 +3938,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       : '<span class="ahint">Using the bundled ASAP artwork</span>';
     if($('expSignMode')) $('expSignMode').value=s.signMode||'wet';
     renderSigners();
+    if($('expSealMode')) $('expSealMode').value=X().sealMode();
     var kp=$('expSealPrev');
     if(kp) kp.innerHTML=s.sealImage
       ? '<img src="'+esc(s.sealImage)+'" alt="Seal" style="max-width:70px;max-height:70px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:4px;background:#fff">'
@@ -3983,22 +3990,6 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     rd.readAsDataURL(file);
   }
 
-  /* one handler for both image uploads — same size guard as the ASAP logo */
-  function imgUpload(inputId, field, label){
-    var el=$(inputId); if(!el) return;
-    el.addEventListener('change',function(){
-      var f=this.files&&this.files[0]; if(!f) return;
-      if(f.size>400*1024){ alert('That image is '+Math.round(f.size/1024)+' KB. Please use one under 400 KB so it stays inside the cloud document limit.'); this.value=''; return; }
-      var rd=new FileReader();
-      var self=this;
-      rd.onload=function(){
-        var patch={}; patch[field]=rd.result;
-        X().saveSettings(patch); loadSettings(); self.value='';
-        log('Uploaded the '+label+' for letters and notifications');
-      };
-      rd.readAsDataURL(f);
-    });
-  }
 
   function wire(){
     if(!X()) return;
@@ -4115,9 +4106,24 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
         }
       });
     }
-    imgUpload('expSealFile','sealImage','institution seal');
+    var sealIn=$('expSealFile');
+    if(sealIn) sealIn.addEventListener('change',function(){
+      var f=this.files&&this.files[0], self=this;
+      X().readImage(f, 400, function(dataUrl, err){
+        if(!dataUrl){ alert(err||'Could not read that image.'); self.value=''; return; }
+        X().saveSettings({sealImage:dataUrl, sealMode:'image'});
+        self.value=''; loadSettings(); log('Uploaded the institution seal');
+      });
+    });
+    var sealMode=$('expSealMode');
+    if(sealMode) sealMode.onchange=function(){
+      if(this.value==='image' && !X().settings().sealImage){
+        alert('Upload a seal first.'); this.value=X().sealMode(); return;
+      }
+      X().saveSettings({sealMode:this.value}); loadSettings();
+    };
     var kc=$('expSealClear');
-    if(kc) kc.onclick=function(){ X().saveSettings({sealImage:''}); loadSettings(); };
+    if(kc) kc.onclick=function(){ X().saveSettings({sealImage:'', sealMode:'off'}); loadSettings(); };
 
     var list=$('expList');
     if(list) list.addEventListener('click',function(e){

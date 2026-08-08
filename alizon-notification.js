@@ -430,7 +430,7 @@
     var sb=null;
     try{ if(window.AlizonExperience) sb=window.AlizonExperience.signatureBits('n',
       { doc:'notification', signerId:n.signerId }); }catch(e){}
-    if(!sb) sb={ seal:'<div class="n-seal">(Institution seal)</div>',
+    if(!sb) sb={ seal:'',                      /* no engine, no seal — it is optional */
       sign:'<div class="n-sig-area"></div><div class="n-sig-rule"></div>'
           +'<div class="n-sig-n">'+esc(n.signatory||'')+'</div>'
           +'<div class="n-sig-d">'+esc(n.designation||'')+'</div>'

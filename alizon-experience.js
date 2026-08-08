@@ -44,6 +44,10 @@
     /* signMode 'wet' leaves a blank space to sign by hand; 'digital' applies the
        signatory's stored signature so the PDF comes out already signed. */
     signMode:'wet', signImage:'', sealImage:'',
+    /* the seal is optional: 'off' prints nothing at all, 'space' leaves the
+       dashed circle to stamp by hand, 'image' prints the uploaded seal.
+       Left unset it follows whether a seal has been uploaded. */
+    sealMode:'',
     /* who signs what: a library of signatories, and which one signs each kind
        of document. The Director may sign experience letters while the
        Admissions Officer signs notifications. */
@@ -228,6 +232,42 @@
     delete all[reg]; return save(all);
   }
 
+  /* the seal is optional — with nothing uploaded and no explicit choice, a
+     document simply carries no seal rather than an empty placeholder */
+  function sealMode(){
+    var s=settings();
+    if(s.sealMode==='off'||s.sealMode==='space'||s.sealMode==='image') return s.sealMode;
+    return s.sealImage ? 'image' : 'off';
+  }
+
+  /* Read an image file and shrink it before it is stored. Several of these
+     (ASAP mark, seal, one signature per signatory) share a single synced
+     document with a hard 1 MB ceiling, so nothing goes in at full size.
+     cb(dataUrl) on success, cb(null, message) on failure. */
+  function readImage(file, maxW, cb){
+    if(!file){ cb(null,'No file chosen.'); return; }
+    if(!/^image\//.test(file.type||'')){ cb(null,'That is not an image file.'); return; }
+    if(file.size > 4*1024*1024){ cb(null,'That image is '+Math.round(file.size/1024/1024)+' MB. Please use one under 4 MB.'); return; }
+    var rd=new FileReader();
+    rd.onerror=function(){ cb(null,'Could not read that file.'); };
+    rd.onload=function(){
+      var im=new Image();
+      im.onerror=function(){ cb(null,'That image could not be decoded.'); };
+      im.onload=function(){
+        var w=im.width, h=im.height;
+        if(!w||!h){ cb(null,'That image has no dimensions.'); return; }
+        if(w>maxW){ h=Math.round(h*maxW/w); w=maxW; }
+        try{
+          var c=document.createElement('canvas'); c.width=w; c.height=h;
+          c.getContext('2d').drawImage(im,0,0,w,h);
+          cb(c.toDataURL('image/png'));
+        }catch(e){ cb(rd.result); }      /* tainted canvas etc — keep the original */
+      };
+      im.src=rd.result;
+    };
+    rd.readAsDataURL(file);
+  }
+
   /* ---- the ASAP mark that sits beside our crest ----
      The official artwork ships with the site; an administrator upload
      overrides it, and the typographic mark is the last resort. */
@@ -252,9 +292,11 @@
     /* only sign digitally when THIS signatory actually has a signature on file */
     var img = who.image || '';
     var digital = (s.signMode==='digital' && !!img);
-    var seal=s.sealImage
-      ? '<div class="'+p+'-seal '+p+'-seal-img"><img src="'+esc(s.sealImage)+'" alt="Institution seal"></div>'
-      : '<div class="'+p+'-seal">(Institution seal)</div>';
+    var mode=sealMode(), seal='';
+    if(mode==='image' && s.sealImage)
+      seal='<div class="'+p+'-seal '+p+'-seal-img"><img src="'+esc(s.sealImage)+'" alt="Institution seal"></div>';
+    else if(mode==='space')
+      seal='<div class="'+p+'-seal">(Institution seal)</div>';
     var area=digital
       ? '<div class="'+p+'-sig-area"><img class="'+p+'-sig-img" src="'+esc(img)+'" alt="Signature of '+esc(name)+'"></div>'
       : '<div class="'+p+'-sig-area"></div>';
@@ -456,6 +498,7 @@
     get:get, list:list, issue:issue, revoke:revoke,
     itemHours:itemHours, uniformHours:uniformHours, signatureBits:signatureBits,
     DOCS:DOCS, signers:signers, signerById:signerById, signerFor:signerFor,
+    readImage:readImage, sealMode:sealMode,
     saveSigner:saveSigner, removeSigner:removeSigner, setDocSigner:setDocSigner,
     letterHtml:letterHtml, render:render, open:open_, css:CSS
   };
