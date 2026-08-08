@@ -272,6 +272,145 @@
     rd.readAsDataURL(file);
   }
 
+  /* ---------------------------------------------------------------
+     A drop-in signatory editor, so the Director's details can be
+     corrected from any page that produces a document — not only from
+     the admin portal. Renders the library with editable name and
+     designation, a signature upload per person, and (when opts.doc is
+     given) the "signed by" choice for that kind of document.
+       AlizonExperience.signerPanel(el, {doc:'notification', onChange:fn})
+     Saves as the administrator types; the rows are never re-rendered
+     mid-edit, which would steal the caret.
+     --------------------------------------------------------------- */
+  var PANEL_CSS =
+     '.alz-sp{font-family:inherit;font-size:14px}'
+    +'.alz-sp .sp-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid rgba(0,0,0,.12);'
+    +'border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#fff}'
+    +'.alz-sp .sp-f{flex:1;min-width:190px;display:flex;flex-direction:column;gap:5px}'
+    +'.alz-sp input[type=text]{width:100%;font:inherit;font-size:13.5px;padding:7px 10px;border-radius:8px;'
+    +'border:1px solid rgba(0,0,0,.15);background:#fff;color:#26221f}'
+    +'.alz-sp .sp-d{font-size:12.5px;color:#6e6a63}'
+    +'.alz-sp .sp-ok{font-size:11px;font-weight:700;color:#1E8E5A;opacity:0;transition:opacity .25s;flex:none}'
+    +'.alz-sp img.sp-sig{max-width:130px;max-height:40px;object-fit:contain;border:1px solid rgba(0,0,0,.12);'
+    +'border-radius:8px;padding:3px;background:#fff}'
+    +'.alz-sp .sp-btn{cursor:pointer;font:inherit;font-size:12px;font-weight:600;border-radius:100px;'
+    +'padding:7px 13px;border:1px solid rgba(0,0,0,.15);background:#fff;color:#26221f;flex:none}'
+    +'.alz-sp .sp-btn.rm{color:#b1040e;border-color:rgba(177,4,14,.35)}'
+    +'.alz-sp .sp-none{font-size:12px;color:#6e6a63}'
+    +'.alz-sp .sp-pick{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:12px}'
+    +'.alz-sp label.sp-l{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;'
+    +'text-transform:uppercase;color:#6e6a63;margin-bottom:5px}'
+    +'.alz-sp select{font:inherit;font-size:14px;padding:9px 11px;border-radius:8px;border:1px solid rgba(0,0,0,.15);background:#fff;color:#26221f;min-width:230px}';
+
+  function signerPanel(el, opts){
+    if(!el) return;
+    opts=opts||{};
+    if(!document.getElementById('alzSpCss')){
+      var st=document.createElement('style'); st.id='alzSpCss'; st.textContent=PANEL_CSS;
+      document.head.appendChild(st);
+    }
+    el.className=(el.className||'')+' alz-sp';
+    var timer=null;
+
+    function pickerHtml(){
+      if(!opts.doc) return '';
+      var all=signers(), s=settings(), map=(s.docSigner&&typeof s.docSigner==='object')?s.docSigner:{};
+      return '<div class="sp-pick"><div><label class="sp-l">'+esc(DOCS[opts.doc]||'This document')+' signed by</label>'
+        +'<select data-spdoc="'+esc(opts.doc)+'">'
+        +all.map(function(g){ return '<option value="'+esc(g.id)+'"'+((map[opts.doc]||all[0].id)===g.id?' selected':'')+'>'
+            +esc(g.name||'(unnamed)')+(g.designation?' — '+esc(g.designation):'')+'</option>'; }).join('')
+        +'</select></div></div>';
+    }
+    function rowsHtml(){
+      var all=signers();
+      return all.map(function(g){
+        return '<div class="sp-row">'
+          +'<span class="sp-f">'
+            +'<input type="text" data-spfield="name" data-spid="'+esc(g.id)+'" value="'+esc(g.name||'')+'" placeholder="Name">'
+            +'<input type="text" class="sp-d" data-spfield="designation" data-spid="'+esc(g.id)+'" value="'+esc(g.designation||'')+'" placeholder="Designation">'
+          +'</span>'
+          +'<span class="sp-ok" data-spok="'+esc(g.id)+'">Saved</span>'
+          +'<span style="flex:none">'+(g.image
+              ? '<img class="sp-sig" src="'+esc(g.image)+'" alt="Signature">'
+              : '<span class="sp-none">no signature</span>')+'</span>'
+          +'<label class="sp-btn">'+(g.image?'Replace':'Upload')+'<input type="file" accept="image/*" data-spup="'+esc(g.id)+'" style="display:none"></label>'
+          +(g.image?'<button type="button" class="sp-btn" data-spclr="'+esc(g.id)+'">Clear</button>':'')
+          +(all.length>1?'<button type="button" class="sp-btn rm" data-sprm="'+esc(g.id)+'">Remove</button>':'')
+          +'</div>';
+      }).join('')
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">'
+      +'<input type="text" data-spnew="name" placeholder="Add a signatory — name" style="flex:1;min-width:170px">'
+      +'<input type="text" data-spnew="desig" placeholder="Designation" style="flex:1;min-width:150px">'
+      +'<button type="button" class="sp-btn" data-spadd="1">Add</button></div>';
+    }
+    function paint(){ el.innerHTML=pickerHtml()+rowsHtml(); }
+    function flash(id){
+      var c=el.querySelector('[data-spok="'+id+'"]'); if(!c) return;
+      c.style.opacity='1'; clearTimeout(c.__t);
+      c.__t=setTimeout(function(){ c.style.opacity='0'; },1400);
+    }
+    function changed(){ try{ if(opts.onChange) opts.onChange(); }catch(e){} }
+    function repaintPicker(){
+      var sel=el.querySelector('[data-spdoc]'); if(!sel) return;
+      var all=signers(), keep=sel.value;
+      sel.innerHTML=all.map(function(g){ return '<option value="'+esc(g.id)+'">'
+        +esc(g.name||'(unnamed)')+(g.designation?' — '+esc(g.designation):'')+'</option>'; }).join('');
+      sel.value=keep||all[0].id;
+    }
+
+    paint();
+
+    el.addEventListener('input',function(e){
+      var f=e.target, fld=f.getAttribute&&f.getAttribute('data-spfield');
+      if(!fld) return;
+      clearTimeout(timer);
+      timer=setTimeout(function(){
+        var v=f.value.trim();
+        if(fld==='name' && !v) return;
+        var patch={id:f.getAttribute('data-spid')}; patch[fld]=v;
+        saveSigner(patch); repaintPicker(); flash(patch.id); changed();
+      },350);
+    });
+    el.addEventListener('blur',function(e){
+      var f=e.target, fld=f.getAttribute&&f.getAttribute('data-spfield');
+      if(fld==='name' && !f.value.trim()){
+        var g=signerById(f.getAttribute('data-spid'))||{}; f.value=g.name||'';
+      }
+    },true);
+    el.addEventListener('change',function(e){
+      var f=e.target;
+      var doc=f.getAttribute&&f.getAttribute('data-spdoc');
+      if(doc){ setDocSigner(doc,f.value); changed(); return; }
+      var up=f.getAttribute&&f.getAttribute('data-spup');
+      if(up){
+        var file=f.files&&f.files[0];
+        readImage(file, 600, function(dataUrl, err){
+          if(!dataUrl){ alert(err||'Could not read that image.'); f.value=''; return; }
+          saveSigner({id:up, image:dataUrl}); f.value=''; paint(); changed();
+        });
+      }
+    });
+    el.addEventListener('click',function(e){
+      var b=e.target.closest && e.target.closest('button'); if(!b) return;
+      var clr=b.getAttribute('data-spclr');
+      if(clr){ saveSigner({id:clr, image:''}); paint(); changed(); return; }
+      var rm=b.getAttribute('data-sprm');
+      if(rm){
+        var g=signerById(rm)||{};
+        if(!confirm('Remove '+(g.name||'this signatory')+'?')) return;
+        if(!removeSigner(rm)) alert('At least one signatory has to remain.');
+        paint(); changed(); return;
+      }
+      if(b.getAttribute('data-spadd')){
+        var n=el.querySelector('[data-spnew="name"]'), d=el.querySelector('[data-spnew="desig"]');
+        if(!n.value.trim()){ alert('Enter the signatory’s name.'); return; }
+        saveSigner({ name:n.value.trim(), designation:(d.value||'').trim(), image:'' });
+        n.value=''; d.value=''; paint(); changed();
+      }
+    });
+    return { refresh:paint };
+  }
+
   /* ---- the ASAP mark that sits beside our crest ----
      The official artwork ships with the site; an administrator upload
      overrides it, and the typographic mark is the last resort. */
@@ -502,7 +641,7 @@
     get:get, list:list, issue:issue, revoke:revoke,
     itemHours:itemHours, uniformHours:uniformHours, signatureBits:signatureBits,
     DOCS:DOCS, signers:signers, signerById:signerById, signerFor:signerFor,
-    readImage:readImage, sealMode:sealMode,
+    readImage:readImage, sealMode:sealMode, signerPanel:signerPanel,
     saveSigner:saveSigner, removeSigner:removeSigner, setDocSigner:setDocSigner,
     letterHtml:letterHtml, render:render, open:open_, css:CSS
   };

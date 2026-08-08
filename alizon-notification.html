@@ -93,12 +93,22 @@
       <div><label class="fl">Academic year</label><input id="f_year" placeholder="2026–2027"></div>
       <div><label class="fl">Batch</label><input id="f_batch" placeholder="Batch 8"></div>
       <div><label class="fl">Date of notification</label><input id="f_date" type="date"></div>
-      <div><label class="fl">Signed by</label><select id="f_signer" style="width:100%;font:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)"></select></div>
+      <div><label class="fl">Signed by</label>
+        <div style="display:flex;gap:8px">
+          <select id="f_signer" style="flex:1;min-width:0;font:inherit;font-size:14px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)"></select>
+          <button class="btn ghost" id="editSigners" type="button" style="flex:none;padding:9px 14px">Edit…</button>
+        </div></div>
     </div>
     <div style="margin-top:11px"><label class="fl">Course</label><input id="f_course"></div>
     <div style="margin-top:11px"><label class="fl">Opening paragraph</label><textarea id="f_lede"></textarea></div>
 
     <div id="secEditor" style="margin-top:14px"></div>
+
+    <div id="signerBox" style="display:none;margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--paper)">
+      <label class="fl">Signatories — name, designation and signature</label>
+      <div class="hint" style="margin-bottom:10px">Corrections save as you type and apply to every document, not just this one.</div>
+      <div id="signerPanel"></div>
+    </div>
 
     <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)">
       <label class="fl">Institution seal — optional</label>
@@ -140,8 +150,8 @@
 <footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala &middot;
   <a href="https://www.alizongov.com" target="_blank" rel="noopener">alizongov.com</a> &middot; <a href="index.html">alizon.in</a></footer>
 
-<script src="alizon-experience.js?v=6"></script>
-<script src="alizon-notification.js?v=5"></script>
+<script src="alizon-experience.js?v=7"></script>
+<script src="alizon-notification.js?v=7"></script>
 <script src="print-paginate.js"></script>
 <script>
 (function(){
@@ -253,6 +263,24 @@
       $('admMsg').textContent='';
     };
     $('clearPaste').onclick=function(){ $('pasteBox').value=''; $('readInfo').textContent=''; };
+
+    /* the Director's details are editable right here, not only in the admin portal */
+    var spMounted=false;
+    $('editSigners').onclick=function(){
+      var box=$('signerBox'), open=box.style.display==='none';
+      box.style.display=open?'':'none';
+      this.textContent=open?'Close':'Edit…';
+      if(open && !spMounted){
+        spMounted=true;
+        window.AlizonExperience.signerPanel($('signerPanel'), { doc:'notification',
+          /* fillForm() rebuilds the "Signed by" picker; re-render from the store
+             rather than relying on `current` being set */
+          onChange:function(){
+            if(current){ fillForm(); N.render($('sheet'), current); }
+            else { var v=$('pick').value; if(v) show(v); }
+          } });
+      }
+    };
 
     /* ---- institution seal (shared with experience letters, entirely optional) ---- */
     function paintSeal(){

@@ -3832,7 +3832,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   setInterval(paint, 30000);
 })();
 </script>
-<script src="alizon-experience.js?v=6"></script>
+<script src="alizon-experience.js?v=7"></script>
 <script>
 /* ============ Admin · Experience letters ============ */
 (function(){
@@ -3975,6 +3975,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
         +' style="width:100%;font:inherit;font-size:13.5px;font-weight:700;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink)">'
         +'<input data-sigfield="designation" data-sigid="'+esc(g.id)+'" value="'+esc(g.designation||'')+'" placeholder="Designation"'
         +' style="width:100%;font:inherit;font-size:12.5px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--muted)">'
+        +'<span data-sigsaved="'+esc(g.id)+'" style="font-size:11px;font-weight:700;color:var(--success,#1E8E5A);opacity:0;transition:opacity .25s">Saved</span>'
         +'</span>'
         +'<span style="flex:none">'+(g.image
             ? '<img src="'+esc(g.image)+'" alt="Signature" style="max-width:140px;max-height:44px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff">'
@@ -3985,7 +3986,12 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
         +(all.length>1?'<button type="button" data-sigrm="'+esc(g.id)+'" style="flex:none;cursor:pointer;font:inherit;font-size:12px;font-weight:600;border:1px solid rgba(177,4,14,.35);border-radius:100px;padding:7px 12px;background:var(--panel);color:#b1040e">Remove</button>':'')
         +'</div>';
     }).join('');
-    /* the two "signed by" pickers */
+    refreshDocPickers();
+  }
+  /* rebuild only the "signed by" dropdowns — safe to call while a row is being typed in */
+  function refreshDocPickers(){
+    if(!X().signers) return;
+    var all=X().signers(), s=X().settings(), map=(s.docSigner&&typeof s.docSigner==='object')?s.docSigner:{};
     Object.keys(X().DOCS).forEach(function(doc){
       var sel=$('expDoc'+doc.charAt(0).toUpperCase()+doc.slice(1)); if(!sel) return;
       sel.innerHTML=all.map(function(g){
@@ -4107,21 +4113,6 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     if(slist){
       slist.addEventListener('change',function(e){
         var f=e.target; if(!f.getAttribute) return;
-        /* renaming a signatory — save, then repaint so the pickers follow */
-        var fld=f.getAttribute('data-sigfield');
-        if(fld){
-          var sid=f.getAttribute('data-sigid'), patch={id:sid};
-          patch[fld]=f.value.trim();
-          if(fld==='name' && !patch.name){
-            alert('A signatory needs a name.');
-            var g0=X().signerById(sid)||{}; f.value=g0.name||''; return;
-          }
-          X().saveSigner(patch);
-          var g=X().signerById(sid)||{};
-          log('Updated signatory '+(g.name||sid));
-          loadSettings();
-          return;
-        }
         var id=f.getAttribute('data-sigup'); if(!id) return;
         var file=f.files&&f.files[0]; if(!file) return;
         if(file.size>2*1024*1024){ alert('That image is very large. Please use one under 2 MB.'); f.value=''; return; }
@@ -4132,6 +4123,41 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
           var g=X().signerById(id)||{}; log('Uploaded a signature for '+(g.name||id));
         });
       });
+      /* Save as the administrator types. Waiting for the field to lose focus
+         looked like nothing was happening at all. The row is never re-rendered
+         mid-edit — that would steal the caret — only the pickers are refreshed. */
+      var typeTimer=null;
+      function commitField(f, quiet){
+        var sid=f.getAttribute('data-sigid'), fld=f.getAttribute('data-sigfield');
+        if(!sid||!fld) return;
+        var val=f.value.trim();
+        if(fld==='name' && !val) return;                 /* let them keep typing */
+        var patch={id:sid}; patch[fld]=val;
+        X().saveSigner(patch);
+        refreshDocPickers();
+        if(!quiet){
+          var chip=slist.querySelector('[data-sigsaved="'+sid+'"]');
+          if(chip){ chip.style.opacity='1'; clearTimeout(chip.__t);
+            chip.__t=setTimeout(function(){ chip.style.opacity='0'; },1400); }
+        }
+      }
+      slist.addEventListener('input',function(e){
+        var f=e.target; if(!f.getAttribute||!f.getAttribute('data-sigfield')) return;
+        clearTimeout(typeTimer);
+        typeTimer=setTimeout(function(){ commitField(f); },350);
+      });
+      slist.addEventListener('blur',function(e){
+        var f=e.target; if(!f.getAttribute||!f.getAttribute('data-sigfield')) return;
+        clearTimeout(typeTimer);
+        if(f.getAttribute('data-sigfield')==='name' && !f.value.trim()){
+          var g=X().signerById(f.getAttribute('data-sigid'))||{};
+          f.value=g.name||'';                            /* a signatory needs a name */
+          return;
+        }
+        commitField(f, true);
+        log('Updated signatory '+(f.value.trim()||''));
+      }, true);
+
       slist.addEventListener('click',function(e){
         var b=e.target.closest&&e.target.closest('button'); if(!b) return;
         var clr=b.getAttribute('data-sigdel');

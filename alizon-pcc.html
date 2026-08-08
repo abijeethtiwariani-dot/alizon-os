@@ -131,8 +131,18 @@
     </div>
 
     <div class="grid" style="margin-top:11px">
-      <div><label class="fl">Signed by</label><select id="f_signer"></select></div>
+      <div><label class="fl">Signed by</label>
+        <div style="display:flex;gap:8px">
+          <select id="f_signer" style="flex:1;min-width:0"></select>
+          <button class="btn ghost" id="editSigners" type="button" style="flex:none;padding:9px 14px">Edit…</button>
+        </div></div>
       <div><label class="fl">Place</label><input id="f_place"></div>
+    </div>
+
+    <div id="signerBox" style="display:none;margin-top:12px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--paper)">
+      <label class="fl">Signatories — name, designation and signature</label>
+      <div class="hint" style="margin-bottom:10px">Corrections save as you type and apply to every document, not just this one.</div>
+      <div id="signerPanel"></div>
     </div>
 
     <div style="margin-top:11px"><label class="fl">Extra paragraph — optional</label><textarea id="f_note"></textarea></div>
@@ -172,8 +182,8 @@
 
 <footer>&copy; 2026 Alizon School of Medical &amp; Digital Intelligence &middot; Thiruvananthapuram, Kerala</footer>
 
-<script src="alizon-experience.js?v=6"></script>
-<script src="alizon-pcc.js?v=2"></script>
+<script src="alizon-experience.js?v=7"></script>
+<script src="alizon-pcc.js?v=3"></script>
 <script src="print-paginate.js"></script>
 <script>
 (function(){
@@ -292,6 +302,17 @@
     el.addEventListener('input', draw);
     el.addEventListener('change', function(){ if(k==='kind'||k==='scope') toggle(); draw(); });
   });
+  var spMounted=false;
+  $('editSigners').onclick=function(){
+    var box=$('signerBox'), open=box.style.display==='none';
+    box.style.display=open?'':'none';
+    this.textContent=open?'Close':'Edit…';
+    if(open && !spMounted){
+      spMounted=true;
+      X.signerPanel($('signerPanel'), { doc:'pcc', onChange:function(){ fillSigners(); draw(); } });
+    }
+  };
+
   $('f_reg').addEventListener('change', pull);
   $('f_reg').addEventListener('blur', pull);
 
