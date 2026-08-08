@@ -98,8 +98,13 @@
     body>*{display:none !important}
     #printArea{display:block !important;position:static;background:#fff}
     #printArea .idcard{box-shadow:none;margin:0 auto 12mm;page-break-inside:avoid}
-    #printArea.sheet{display:grid !important;grid-template-columns:repeat(2,1fr);gap:10mm}
-    @page{margin:12mm}
+    /* A card is 84.7 × 133.4mm. Two rows only fit an A4 sheet if the page margin
+       is 10mm and the grid gap alone does the spacing — with the per-card 12mm
+       bottom margin as well, a row came to 145.4mm and just two cards printed
+       per sheet instead of four. */
+    #printArea.sheet{display:grid !important;grid-template-columns:repeat(2,1fr);gap:8mm}
+    #printArea.sheet .idcard{margin:0 auto}
+    @page{margin:10mm}
   }
   #printArea{display:none}
 </style>
