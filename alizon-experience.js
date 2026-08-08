@@ -595,7 +595,11 @@
     +'.alz-exp .x-foot-rule{height:2px;background:linear-gradient(90deg,var(--cr),var(--gold));border-radius:2px}'
     +'.alz-exp .x-foot p{font-size:10.5px;line-height:1.6;color:var(--muted);margin:10px 0 7px;text-align:center}'
     +'.alz-exp .x-foot-b{font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--cr);text-align:center}'
+    +'/* the paginator only ever creates .lhp-page at print time — a true A4 box */'
+    +'.alz-exp.lhp-page{width:210mm;max-width:210mm;padding:14mm 16mm 10mm;box-sizing:border-box}'
     +'@media print{body{background:#fff!important}'
+    +'@page{size:A4;margin:14mm 16mm}'
+    +'body{padding:0!important}'
     +'.no-print,.nav,.strip,#alizonBackBar,#azsitehdr,footer.site{display:none!important}'
     +'.alz-exp{max-width:none}'
     +'.alz-exp .x-tblwrap,.alz-exp .x-sign,.alz-exp .x-tbl tr{break-inside:avoid}}';

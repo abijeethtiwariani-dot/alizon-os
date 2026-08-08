@@ -536,6 +536,15 @@
       +'.alz-doc .d-foot p{font-size:11.5px;line-height:1.6;color:var(--muted);margin:12px 0 8px;text-align:center}'
       +'.alz-doc .d-foot-brand{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--cr);text-align:center}'
       +'.cur-empty{color:#6e6a63;font-size:14px;padding:26px 0;text-align:center}'
+      +'/* the paginator only ever creates .lhp-page at print time — a true A4 box */'
+      +'.alz-doc.lhp-page{width:210mm;max-width:210mm;padding:14mm 16mm 10mm;box-sizing:border-box}'
+      /* the 15-column hours table scrolls sideways on screen; on paper it cannot,
+         so on a printed page it drops its min-width and tightens to fit the column */
+      +'.alz-doc.lhp-page .cur-tblwrap{overflow:visible}'
+      +'.alz-doc.lhp-page .cur-tbl{min-width:0;width:100%;font-size:8.5px}'
+      +'.alz-doc.lhp-page .cur-tbl th{font-size:7.5px;padding:4px 2px;letter-spacing:0}'
+      +'.alz-doc.lhp-page .cur-tbl td{padding:4px 2px}'
+      +'.alz-doc.lhp-page .cur-tbl td.mnm{min-width:0;font-size:8.5px;line-height:1.35}'
       /* ---- print: clean official A4 document, chrome hidden ---- */
       +'@media print{body{background:#fff!important}'
       +'.nav,.strip,.pick,.admin,footer,#alizonBack,.alz-back,.no-print,.alz-doc .d-mod-tg{display:none!important}'
