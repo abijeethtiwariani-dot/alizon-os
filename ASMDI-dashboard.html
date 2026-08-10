@@ -1995,6 +1995,37 @@ function moduleResultBadge(moduleUnit, progName){
         <a class="fbtn dl" href="resources/forms/${x.f}" download>Download</a>
       </div>`).join('')}</div></div>`;
   }
+
+  /* ---- Lecture slides -------------------------------------------------
+     One 25-slide deck per Pharmacy module, generated from that module's own
+     textbook and practical briefs. Keyed by module title (not by index) so a
+     deck can never surface against another programme's "Module 1".          */
+  const SLIDE_DECKS={
+    'ai foundations & digital systems for pharmacy practice':{n:1,p:2},
+    'digital pharmacy, ehr & telepharmacy':{n:2,p:2},
+    'ai-based clinical decision support in pharmacy':{n:3,p:3},
+    'ai in drug development, vaccines & injectables':{n:4,p:3},
+    'clinical trials, pharmacovigilance & evidence-based pharmacy':{n:5,p:5},
+    'pharmacy data analytics & predictive modelling':{n:6,p:4},
+    'robotics & automation in pharmacy practice':{n:7,p:4},
+    'ai-enabled clinical case studies & simulations':{n:8,p:5}
+  };
+  function deckFor(m){
+    const k=String(m&&m.title||'').replace(/&amp;/g,'&').replace(/\s+/g,' ').trim().toLowerCase();
+    return SLIDE_DECKS[k]||null;
+  }
+  function slidesSectionHtml(m){
+    const d=deckFor(m); if(!d) return '';
+    const f='resources/slides/ALIZON-Module-'+d.n+'-Slides.pptx';
+    return `<div class="md-sec"><h3>Lecture slides <span class="c">1</span></h3>
+      <div class="formlist"><div class="formcard">
+        <div class="fic">PPT</div>
+        <div class="finfo"><b>Module ${d.n} — ${esc(m.title)}</b>
+          <span>25 slides · 4 units · all ${d.p} practical${d.p!==1?'s':''} · PowerPoint (.pptx)</span></div>
+        <a class="fbtn dl" href="${f}" download>Download</a>
+      </div></div>
+      <div style="margin-top:9px;font-size:11.5px;color:var(--muted);line-height:1.6">Optional revision aid — the same material as your module textbook, set out for class use.</div></div>`;
+  }
   function open(prog,i){
     const m=prog.modules[i]; if(!m) return;
     const notes=(m.notes||[]).filter(n=>n.published!==false), videos=m.videos||[], units=m.units||[];
@@ -2040,6 +2071,7 @@ function moduleResultBadge(moduleUnit, progName){
       <div class="md-sec"><h3>Units <span class="c">${units.length}</span></h3>${unitsHtml}</div>
       <div class="md-sec"><h3>Class videos <span class="c">${videos.length}</span></h3>${vidHtml}</div>
       <div class="md-sec"><h3>Notes &amp; materials <span class="c">${notes.length}</span></h3>${noteHtml}</div>
+      ${slidesSectionHtml(m)}
       ${formsSectionHtml()}`;
 
     inner.querySelectorAll('[data-prac]').forEach(b=>b.addEventListener('click',()=>{
