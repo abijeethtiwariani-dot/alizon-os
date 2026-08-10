@@ -20,9 +20,9 @@
 <script src="alizon-practical-submit.js?v=4"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-experiment-data.js?v=17"></script>
 <script src="alizon-pdf-open.js"></script>
-<script src="alizon-lab-kit.js?v=1"></script>
+<script src="alizon-lab-kit.js?v=2"></script>
 <script>
 /* ============================================================
    Seven referrals. The reversal is C4: a vancomycin trough that reads
@@ -48,6 +48,7 @@ AlizonLabKit.queue({
   scoreName:'Flagged',
   meterA:'Patient safety', meterB:'Clinical reasoning',
   finishLabel:'Close the clinic',
+  laterHead:'Over the next ten days',
   perItem:10,
   sevWeight:{none:0, moderate:1, major:2, critical:3},
   blurb:'Seven patients referred by the interaction screening system. For each, decide what to do and '+
@@ -73,7 +74,7 @@ AlizonLabKit.queue({
            ['appropriate','Appropriate as prescribed']],
 
   items:[
-   {id:'C1', score:'HIGH', head:'Warfarin + clarithromycin', sub:'Mr T George, 72',
+   {id:'C1', afterWho:'Warfarin + clarithromycin', after:{ok:'The antibiotic was changed. INR stayed in range and the chest infection was treated.', bad:'Both continued. INR was 7.8 on day five and he presented with a large thigh haematoma. The interaction was on the screen at the point of the decision.'}, score:'HIGH', head:'Warfarin + clarithromycin', sub:'Mr T George, 72',
     record:{alert:'MAJOR: clarithromycin may increase the effect of warfarin.',
             meds:'Warfarin 4 mg daily · bisoprolol · atorvastatin\nClarithromycin 500 mg BD started today for chest infection.',
             labs:'INR 2.5 one week ago, stable for 8 months. Hb 13.1.',
@@ -81,7 +82,7 @@ AlizonLabKit.queue({
     need:['meds'], action:'stop', why:'kinetic', sev:'major',
     truth:'Clarithromycin inhibits warfarin metabolism and the INR will climb. The cleanest action is to substitute an antibiotic that does not interact; if clarithromycin is genuinely required, the warfarin dose must be reduced with close INR monitoring. Continuing unchanged risks a bleed.'},
 
-   {id:'C2', score:'HIGH', head:'Simvastatin 40 mg + clarithromycin', sub:'Mrs A Pillai, 66',
+   {id:'C2', afterWho:'Simvastatin + clarithromycin', after:{ok:'Simvastatin held for the antibiotic course and restarted afterwards — the standard, boring, correct answer.', bad:'Both continued. She developed severe muscle pain by day four with a creatine kinase over forty times the upper limit. Rhabdomyolysis from this exact pair is one of the best-documented interactions in practice.'}, score:'HIGH', head:'Simvastatin 40 mg + clarithromycin', sub:'Mrs A Pillai, 66',
     record:{alert:'MAJOR: risk of myopathy with this combination.',
             meds:'Simvastatin 40 mg ON · ramipril · metformin\nClarithromycin 500 mg BD, day 1 of 5.',
             labs:'CK normal at baseline. eGFR 74.',
@@ -89,7 +90,7 @@ AlizonLabKit.queue({
     need:['meds'], action:'stop', why:'kinetic', sev:'major',
     truth:'CYP3A4 inhibition raises simvastatin exposure sharply, with a real risk of myopathy and rhabdomyolysis. Standard practice is to withhold the statin for the duration of the short antibiotic course — five days without a statin carries no meaningful cardiovascular cost.'},
 
-   {id:'C3', score:'MOD', head:'Metformin 1 g BD, eGFR 42', sub:'Mr S Kurian, 71',
+   {id:'C3', afterWho:'Metformin, eGFR 42', after:{ok:'Dose reduced and renal function scheduled for review. An eGFR of 42 calls for a smaller dose, not abandonment of a drug that is doing its job.', bad:'Metformin stopped outright. HbA1c rose over the following months and a second agent with worse side effects was added. Stopping is not the cautious option — it is simply a different decision, with its own harms.'}, score:'MOD', head:'Metformin 1 g BD, eGFR 42', sub:'Mr S Kurian, 71',
     record:{alert:'MODERATE: review metformin dose in renal impairment.',
             meds:'Metformin 1 g BD · gliclazide · amlodipine.',
             labs:'eGFR 42, stable across three readings over 6 months.\nHbA1c 9.4%. Lactate normal.',
@@ -97,7 +98,7 @@ AlizonLabKit.queue({
     need:['labs'], action:'adjust', why:'renal', sev:'moderate',
     truth:'Metformin is continued at a reduced maximum between eGFR 30 and 45, and stopped below 30. The renal function sets the ceiling; poor glycaemic control does not raise it. Reduce the dose and address the control by another route.'},
 
-   {id:'C4', score:'HIGH', head:'Vancomycin trough 24 mg/L — "toxic"', sub:'Miss R Thomas, 34',
+   {id:'C4', afterWho:'Vancomycin trough "24"', after:{ok:'You questioned the sample before you questioned the dose. It had been taken an hour after the infusion, not immediately before the next one. The repeat trough was 12 and the dose was correctly left alone.', bad:'The dose was cut on the strength of a mistimed sample. Levels fell subtherapeutic, the bacteraemia was undertreated, and he needed a further eleven days of therapy. A number is only as good as the moment it was taken.'}, score:'HIGH', head:'Vancomycin trough 24 mg/L — "toxic"', sub:'Miss R Thomas, 34',
     record:{alert:'HIGH: vancomycin level above target range. Reduce dose.',
             meds:'Vancomycin 1 g BD IV, day 3 · paracetamol.',
             labs:'Level 24 mg/L. Sample time 10:00.\nDose given 08:00. Next dose due 20:00.\nCreatinine stable, eGFR 88.',
@@ -105,7 +106,7 @@ AlizonLabKit.queue({
     need:['labs'], action:'repeat', why:'sampling', sev:'major',
     truth:'This is not a trough. The sample was drawn two hours after the dose, near the peak, so of course it reads high. Reducing the dose on a mistimed level would under-treat a patient with neutropenic sepsis who is finally improving. Repeat the level immediately before the next dose.'},
 
-   {id:'C5', score:'MOD', head:'SSRI + tramadol, agitated patient', sub:'Mr D Varghese, 58',
+   {id:'C5', afterWho:'SSRI + tramadol', after:{ok:'Tramadol stopped and the patient observed. Agitation settled within a day; this is serotonin toxicity caught while it is still reversible.', bad:'Continued, with the agitation attributed to pain. He deteriorated overnight with clonus, rigidity and a temperature of 39.4 and needed intensive care. Serotonin toxicity is a clinical diagnosis — no interaction score would have made it for you.'}, score:'MOD', head:'SSRI + tramadol, agitated patient', sub:'Mr D Varghese, 58',
     record:{alert:'MODERATE: increased serotonergic effect.',
             meds:'Sertraline 100 mg daily · tramadol 50 mg QDS started 36 hours ago.',
             labs:'Temperature 38.4. CK 620. Otherwise unremarkable.',
@@ -113,7 +114,7 @@ AlizonLabKit.queue({
     need:['notes','labs'], action:'stop', why:'dynamic', sev:'critical',
     truth:'Agitation, tremor, hyperreflexia, clonus and fever within 36 hours of adding tramadol to an SSRI is serotonin syndrome until proved otherwise. This is a clinical emergency: stop the serotonergic drugs now and escalate. The badge said moderate because the system saw only the drug pair, not the patient.'},
 
-   {id:'C6', score:'MOD', head:'Digoxin, nausea and visual disturbance', sub:'Mrs L Menon, 79',
+   {id:'C6', afterWho:'Digoxin, nausea and vision', after:{ok:'Digoxin held and potassium corrected. The visual disturbance resolved in two days.', bad:'Treated as gastroenteritis. Hypokalaemia was left uncorrected, which made the digoxin more toxic, and she arrested on the ward with a bradyarrhythmia. Nausea and coloured haloes in a patient on digoxin are the classic presentation, not a coincidence.'}, score:'MOD', head:'Digoxin, nausea and visual disturbance', sub:'Mrs L Menon, 79',
     record:{alert:'MODERATE: digoxin level within reference range (1.4 nmol/L).',
             meds:'Digoxin 125 mcg daily · furosemide 40 mg BD · ramipril.',
             labs:'Digoxin 1.4 nmol/L (range 1.0-2.0).\nPOTASSIUM 2.9 mmol/L. Magnesium 0.62.',
@@ -121,7 +122,7 @@ AlizonLabKit.queue({
     need:['labs','notes'], action:'stop', why:'electrolyte', sev:'critical',
     truth:'Classical digoxin toxicity — nausea, visual disturbance, bradycardia — at a level the laboratory reports as therapeutic, because hypokalaemia increases myocardial sensitivity to digoxin. Withhold the digoxin, correct the potassium and magnesium, and monitor. A level inside the range does not exclude toxicity.'},
 
-   {id:'C7', score:'LOW', head:'Amiodarone started, INR normal today', sub:'Mr B Joseph, 68',
+   {id:'C7', afterWho:'Amiodarone + warfarin', after:{ok:'You did not accept today\'s INR as reassurance. Warfarin was reduced pre-emptively and INR checked twice weekly; it stayed in range throughout.', bad:'Discharged on the strength of a normal INR taken on day one. Amiodarone inhibits warfarin metabolism over days to weeks, not hours. His INR was 6.4 at two weeks. A normal result today tells you about today.'}, score:'LOW', head:'Amiodarone started, INR normal today', sub:'Mr B Joseph, 68',
     record:{alert:'LOW: amiodarone and warfarin — monitor.',
             meds:'Warfarin 5 mg daily · amiodarone 200 mg TDS, started 4 days ago (loading).',
             labs:'INR 2.7 today. Was 2.6 last week.\nNo bleeding. Hb stable.',

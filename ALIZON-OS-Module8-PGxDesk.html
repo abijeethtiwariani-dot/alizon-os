@@ -20,9 +20,9 @@
 <script src="alizon-practical-submit.js?v=4"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-experiment-data.js?v=17"></script>
 <script src="alizon-pdf-open.js"></script>
-<script src="alizon-lab-kit.js?v=1"></script>
+<script src="alizon-lab-kit.js?v=2"></script>
 <script>
 /* ============================================================
    Six pharmacogenomic referrals. The reversal is G1: the child is an
@@ -46,6 +46,7 @@ AlizonLabKit.queue({
   counterLabel:'Reviewed',
   meterA:'Patient safety', meterB:'Genomic reasoning',
   finishLabel:'Close the desk',
+  laterHead:'What became of each referral',
   perItem:10,
   sevWeight:{none:0, moderate:1, major:2, critical:3},
   blurb:'Six patients with genotype results have been referred for a prescribing decision. Read each '+
@@ -71,7 +72,7 @@ AlizonLabKit.queue({
            ['appropriate','Appropriate as prescribed']],
 
   items:[
-   {id:'G1', head:'Codeine after tonsillectomy — child', sub:'Aarav, 6 years',
+   {id:'G1', afterWho:'Aarav, 6 · codeine', after:{ok:'Switched to a non-codeine analgesic. He was comfortable after his tonsillectomy and went home the next day.', bad:'Codeine given as prescribed. As an ultra-rapid metaboliser he converted it to morphine far faster than expected, and with obstructive sleep apnoea already compromising his airway he was found unresponsive and needed naloxone. Children have died in precisely this circumstance.'}, head:'Codeine after tonsillectomy — child', sub:'Aarav, 6 years',
     record:{gene:'CYP2D6: *1/*2xN — ULTRA-RAPID METABOLISER.',
             meds:'Codeine phosphate 3 mg/kg/day in divided doses, prescribed post-operatively.',
             notes:'Day-case tonsillectomy for obstructive sleep apnoea. Discharged home today.',
@@ -79,7 +80,7 @@ AlizonLabKit.queue({
     need:['gene','guide'], action:'switch', why:'prodrug', sev:'critical',
     truth:'Codeine is a prodrug: CYP2D6 converts it to morphine. An ultra-rapid metaboliser produces morphine faster than expected, so the risk is respiratory depression, not treatment failure — the intuition runs backwards. Combined with obstructive sleep apnoea after tonsillectomy, this is the exact situation in which children have died. Switch to a non-codeine analgesic.'},
 
-   {id:'G2', head:'Abacavir for newly diagnosed HIV', sub:'Mr J Peter, 31',
+   {id:'G2', afterWho:'HLA-B*57:01 · abacavir', after:{ok:'Abacavir avoided and an alternative chosen. This is the single clearest genotype-to-action rule in the whole field.', bad:'Abacavir started. He developed fever, rash and breathlessness on day eight; the reaction is severe and re-challenge can be fatal. The test had already been done and the result was in the record.'}, head:'Abacavir for newly diagnosed HIV', sub:'Mr J Peter, 31',
     record:{gene:'HLA-B*57:01 — POSITIVE.',
             meds:'Abacavir/lamivudine, first prescription, due to start tomorrow.',
             notes:'Newly diagnosed. Otherwise well. No previous antiretroviral exposure.',
@@ -87,7 +88,7 @@ AlizonLabKit.queue({
     need:['gene','guide'], action:'switch', why:'hypersens', sev:'critical',
     truth:'A positive HLA-B*57:01 is an absolute contraindication to abacavir. The hypersensitivity reaction is potentially fatal and there is no dose at which it is safe. An alternative regimen must be used.'},
 
-   {id:'G3', head:'Azathioprine for Crohn\'s disease', sub:'Mrs P Nair, 44',
+   {id:'G3', afterWho:'TPMT intermediate · azathioprine', after:{ok:'Dose reduced and counts monitored closely. Remission achieved without a haematological crisis.', bad:'Standard dose given. She was neutropenic at three weeks and admitted with sepsis. The enzyme that clears the drug was known in advance to be working at a fraction of normal.'}, head:'Azathioprine for Crohn\'s disease', sub:'Mrs P Nair, 44',
     record:{gene:'TPMT: intermediate activity. NUDT15: normal.',
             meds:'Azathioprine 2.5 mg/kg/day proposed.',
             notes:'Crohn\'s disease, steroid-dependent. Needs a steroid-sparing agent.',
@@ -95,7 +96,7 @@ AlizonLabKit.queue({
     need:['gene','guide'], action:'dose', why:'toxicity', sev:'major',
     truth:'Intermediate TPMT activity means reduced ability to inactivate the drug and a real risk of myelosuppression at a standard dose. The drug is not contraindicated — it is started at a reduced dose with close blood-count monitoring.'},
 
-   {id:'G4', head:'Clopidogrel after coronary stent', sub:'Mr R Sunil, 59',
+   {id:'G4', afterWho:'CYP2C19 poor metaboliser · clopidogrel', after:{ok:'Switched to an antiplatelet that does not need CYP2C19 activation. The stent stayed open.', bad:'Clopidogrel continued. As a prodrug it was barely activated, and he re-presented at five weeks with stent thrombosis. He had been taking his tablets faithfully the entire time.'}, head:'Clopidogrel after coronary stent', sub:'Mr R Sunil, 59',
     record:{gene:'CYP2C19: *2/*2 — POOR METABOLISER.',
             meds:'Clopidogrel 75 mg daily, started after drug-eluting stent 3 days ago.',
             notes:'Recent percutaneous coronary intervention. No bleeding.',
@@ -103,7 +104,7 @@ AlizonLabKit.queue({
     need:['gene','notes'], action:'switch', why:'failure', sev:'major',
     truth:'Clopidogrel is a prodrug requiring CYP2C19 activation. A poor metaboliser generates little active drug, so the risk here is treatment failure — stent thrombosis — rather than toxicity. An alternative antiplatelet should be used.'},
 
-   {id:'G5', head:'Capecitabine for colorectal cancer', sub:'Mrs K Antony, 63',
+   {id:'G5', afterWho:'DPYD variant · capecitabine', after:{ok:'Dose reduced from the outset. Treatment proceeded with manageable toxicity.', bad:'Full dose given. Severe mucositis, diarrhoea and neutropenia followed within the first cycle, treatment was abandoned, and the toxicity from this deficiency can be fatal. The result was available before the first dose.'}, head:'Capecitabine for colorectal cancer', sub:'Mrs K Antony, 63',
     record:{gene:'DPYD: heterozygous for a no-function variant.',
             meds:'Capecitabine, first cycle due Monday.',
             notes:'Adjuvant treatment after resection. Performance status 0.',
@@ -111,7 +112,7 @@ AlizonLabKit.queue({
     need:['gene','guide'], action:'dose', why:'toxicity', sev:'critical',
     truth:'Reduced dihydropyrimidine dehydrogenase activity means the fluoropyrimidine is cleared slowly, with a risk of severe and sometimes fatal toxicity. Treatment proceeds at a substantially reduced starting dose with titration, not at the standard dose.'},
 
-   {id:'G6', head:'Warfarin — genotype suggests low dose', sub:'Mr M Jacob, 70',
+   {id:'G6', afterWho:'Mr Jacob · warfarin', after:{ok:'The stable dose was left alone. Fourteen months of in-range INRs outrank a prediction of what the dose ought to be.', bad:'The dose was reduced to match the genotype. His INR fell subtherapeutic and he had a stroke seven weeks later. The genotype predicted a requirement; his INR record had already measured it.'}, head:'Warfarin — genotype suggests low dose', sub:'Mr M Jacob, 70',
     record:{gene:'VKORC1 AA and CYP2C9 *1/*3 — predicted low warfarin requirement.',
             meds:'Warfarin, currently stable on 6 mg daily for 14 months.',
             notes:'Atrial fibrillation. INR has been in range at every check for 14 months.\nGenotyping done as part of a research study, result returned now.',

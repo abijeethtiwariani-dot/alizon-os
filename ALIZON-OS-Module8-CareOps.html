@@ -20,9 +20,9 @@
 <script src="alizon-practical-submit.js?v=4"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-experiment-data.js?v=17"></script>
 <script src="alizon-pdf-open.js"></script>
-<script src="alizon-lab-kit.js?v=1"></script>
+<script src="alizon-lab-kit.js?v=2"></script>
 <script>
 /* ============================================================
    A shift's worth of digital contacts and operational signals. The
@@ -45,6 +45,9 @@ AlizonLabKit.queue({
   counterLabel:'Handled',
   meterA:'Patient safety', meterB:'Service judgement',
   finishLabel:'End the shift',
+  laterHead:'By the end of the week',
+  clock:{minutes:18, label:'Desk time',
+    expiredNote:'The desk does not empty itself. Anything still in the queue at the end of the session was carried to the next day — which is fine for a statin timing query and is not fine for chest pain sitting in an unread message.'},
   perItem:10,
   sevWeight:{none:0, moderate:1, major:2, critical:3},
   blurb:'Six items on the digital desk: portal messages, adherence data, a discharge summary and two '+
@@ -53,7 +56,10 @@ AlizonLabKit.queue({
          'and the operational context. The record stays closed until you open it.</p>'+
          '<p class="muted">Two indices sit alongside your mark: <b>Patient safety</b>, which falls when '+
          'something clinical is handled as though it were administrative, and <b>Service judgement</b>, '+
-         'which falls when an operational signal is misread.</p>',
+         'which falls when an operational signal is misread.</p>'+
+         '<p class="muted"><b>The session lasts 18 minutes.</b> The clock starts when you begin. '+
+         'Anything still in the queue at the end is carried over unactioned — which is perfectly '+
+         'fine for a question about statin timing, and is not fine for chest pain sitting unread.</p>',
 
   recordTabs:[['item','As received'],['record','Patient record'],['context','Operational context']],
   actionLabel:'Your action',
@@ -70,42 +76,42 @@ AlizonLabKit.queue({
            ['critical','Time-critical medicine delay']],
 
   items:[
-   {id:'D1', head:'Portal message — "Can I take my statin in the morning?"', sub:'Mrs S Pillai, 62',
+   {id:'D1', afterWho:'Mrs Pillai · statin timing', after:{ok:'Answered in the portal within the hour. She moved the dose to breakfast and stopped missing it. A one-line answer given quickly is good pharmaceutical care, and it cost nobody anything.', bad:'Escalated to the prescriber. She waited three days for an answer a pharmacist could have given in thirty seconds, and a clinic slot was used on it. Escalating everything is not a safe default — it is a way of moving your workload onto someone with less time.', missed:'Never answered. She stopped the statin rather than keep forgetting it.'}, head:'Portal message — "Can I take my statin in the morning?"', sub:'Mrs S Pillai, 62',
     record:{item:'"I keep forgetting my atorvastatin at night. Can I take it in the morning instead?"',
             record:'Atorvastatin 20 mg ON. No other medicines. Last lipids 6 months ago, at target.',
             context:'Sent 07:20. No other contact.'},
     need:['item'], action:'reply', why:'routine', sev:'none',
     truth:'A genuinely routine query with a clear answer — atorvastatin has a long half-life and may be taken at any consistent time. Answering in the portal is correct and efficient. Not everything needs escalating.'},
 
-   {id:'D2', head:'Discharge summary to check before it is sent', sub:'Mr T George, 74',
+   {id:'D2', afterWho:'Mr George · discharge summary', after:{ok:'Corrected before it went out. The GP saw that apixaban had been started and aspirin stopped, and prescribed accordingly.', bad:'Sent as written. Seeing no mention of a change, the GP reinstated the aspirin alongside the new apixaban. He was readmitted eleven days later with melaena on dual therapy. Every fact in that summary was true; what was missing was what changed.', missed:'Sent unchecked while you were elsewhere in the queue.'}, head:'Discharge summary to check before it is sent', sub:'Mr T George, 74',
     record:{item:'Discharge summary medication section reads:\n"Current medicines: amlodipine, ramipril, atorvastatin,\n apixaban, bisoprolol, furosemide, lansoprazole, metformin."',
             record:'Admitted with AF. During admission: apixaban STARTED,\nbisoprolol STARTED, furosemide dose DOUBLED, aspirin STOPPED.',
             context:'Goes to the GP and community pharmacy. Patient discharged this afternoon.'},
     need:['record'], action:'fix', why:'handover', sev:'major',
     truth:'The summary lists what he is on and not one word about what changed. Three medicines were started or altered and one stopped, and nobody downstream can tell. The single most valuable element of a discharge summary is what changed and why — this must be corrected before it is sent.'},
 
-   {id:'D3', head:'Portal message — "About my new tablets"', sub:'Mr B Joseph, 58',
+   {id:'D3', afterWho:'Mr Joseph · "not urgent" message', after:{ok:'Escalated within minutes. Troponin was raised; he went to the catheter lab that afternoon and did well. He had put it in the second sentence and called it not urgent.', bad:'Handled as a routine portal query. The message sat until the evening check. He presented to A&E that night with an evolving infarct. A patient cannot be expected to know which symptom belongs in which channel — that judgement was yours.', missed:'Still unread at the end of the session. Chest heaviness overnight, in the queue.'}, head:'Portal message — "About my new tablets"', sub:'Mr B Joseph, 58',
     record:{item:'"Thanks for sorting the new tablets. Quick question about when to\n take them. Also I have had a heaviness in my chest since last night\n and my left arm aches, probably the new tablets? Not urgent."',
             record:'Started amlodipine 5 mg four days ago for hypertension.\nSmoker. Father had MI at 61.',
             context:'Message sent 06:55. Portal is checked twice a day. No other contact.'},
     need:['item','record'], action:'escalate', why:'redflag', sev:'critical',
     truth:'Chest heaviness with left arm ache overnight in a 58-year-old smoker with a family history is a possible acute coronary syndrome, buried in the second sentence of a message the patient labelled "not urgent". A portal is checked twice a day. This is escalated immediately through an urgent route — the patient has no way of knowing which channel is safe for which symptom.'},
 
-   {id:'D4', head:'eMAR: 14 missed doses flagged on Ward 3', sub:'Operational signal',
+   {id:'D4', afterWho:'Ward 3 · 14 missed doses', after:{ok:'You read past the label. An alternative was sourced the same day and the ward was told; the missed-dose count fell to zero the following week.', bad:'Handled as a nursing issue and a reminder was sent to the ward. The product stayed on back-order for another nine days, the doses kept being missed, and the staff who had recorded the reason correctly all along were the ones criticised.', missed:'The report was never opened. The back-order ran a further two weeks.'}, head:'eMAR: 14 missed doses flagged on Ward 3', sub:'Operational signal',
     record:{item:'eMAR missed-dose report: 14 doses recorded as not given, Ward 3,\nlast 48 hours.',
             record:'Reasons recorded: "medicine unavailable" x 12, "patient refused" x 2.\nAll 12 unavailable doses are the same product.',
             context:'That product has been on wholesaler back-order for 6 days.\nNo alternative has been sourced and the ward has not been told.'},
     need:['record','context'], action:'fix', why:'supply', sev:'major',
     truth:'This reads as a nursing administration problem and is a supply failure. Twelve of the fourteen are one product on back-order for six days with no alternative sourced and the ward uninformed. The fix is upstream — source an alternative and tell the ward — not a reminder to the nursing staff.'},
 
-   {id:'D5', head:'Time-critical: co-careldopa not yet dispensed', sub:'Mrs P Nair, 71',
+   {id:'D5', afterWho:'Mrs Nair · co-careldopa', after:{ok:'Pulled out of the queue and dispensed immediately. She was 90 minutes late for one dose and back on schedule by the afternoon.', bad:'Left in first-in-first-out. The dose was given at 11:40, three hours and forty minutes late. She became rigid and unable to swallow, needed a nasogastric tube, and took four days to return to her baseline. A queue is a fair way to handle equivalent work; these items were not equivalent.', missed:'Never reached. The dose was given when the queue got to it.'}, head:'Time-critical: co-careldopa not yet dispensed', sub:'Mrs P Nair, 71',
     record:{item:'Ward query: co-careldopa due 08:00, not yet received. It is 09:15.',
             record:'Parkinson\'s disease, on a strict four-times-daily regimen.\nAdmitted overnight; medicines reconciliation not yet done.',
             context:'The item is in the clarification queue awaiting a strength check.\nQueue is worked first-in-first-out; 6 items ahead of it.'},
     need:['record','context'], action:'escalate', why:'critical', sev:'critical',
     truth:'Parkinson\'s medicines are time-critical: a late dose produces immediate deterioration that can take days to recover, and she is already 75 minutes late. This is pulled out of the FIFO queue and resolved now — it is a patient-safety incident in itself, not a service delay.'},
 
-   {id:'D6', head:'Adherence dashboard — perfect collection, poor control', sub:'Miss R Thomas, 29',
+   {id:'D6', afterWho:'Miss Thomas · inhaler', after:{ok:'Called in and watched using the device. She was firing the inhaler before starting to breathe in, so almost nothing reached her lungs. Technique corrected; no steroid course in the following eight months.', bad:'Left flagged as fully adherent, because the dashboard said so. She had a fourth steroid course in March and a third A&E attendance in June. The system was measuring collection and reporting it as adherence, and nobody looked at her hands.', missed:'The flag stayed green and nobody called.'}, head:'Adherence dashboard — perfect collection, poor control', sub:'Miss R Thomas, 29',
     record:{item:'Adherence dashboard: 100% collection of preventer inhaler,\n12 of 12 months. Flagged "fully adherent, no action".',
             record:'Asthma. Three courses of oral steroids this year.\nTwo A&E attendances. Reliever use high.',
             context:'Inhaler technique last checked at diagnosis, four years ago.'},

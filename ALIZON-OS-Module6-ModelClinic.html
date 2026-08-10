@@ -20,9 +20,9 @@
 <script src="alizon-practical-submit.js?v=4"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-experiment-data.js?v=17"></script>
 <script src="alizon-pdf-open.js"></script>
-<script src="alizon-lab-kit.js?v=1"></script>
+<script src="alizon-lab-kit.js?v=2"></script>
 <script>
 /* ============================================================
    Three candidate readmission models. Model B has the best headline
@@ -52,6 +52,7 @@ AlizonLabKit.stages({
          'that performs materially worse for one group of patients.</p>',
   gatherLabel:'Read the evaluation pack',
 
+  laterHead:'Six months after deployment',
   evidence:{
     head:{t:'Headline metrics', s:'What the vendor put on the first slide',
       body:'CANDIDATE MODELS — 30-DAY READMISSION (prevalence 6%)\n'+
@@ -90,7 +91,7 @@ AlizonLabKit.stages({
   },
 
   steps:[
-    {k:'acc', t:'Judge the headline', q:'Model B reports 94% accuracy. What does that tell you?',
+    {k:'acc', afterWho:'The 97% headline', after:{ok:'You called the headline useless. With an outcome this rare, a model that predicts "no" every single time scores about the same — accuracy is the wrong measure on imbalanced data.', bad:'The 97% was accepted. The model was signed off on a number that a piece of paper saying "no" would also have achieved.'}, t:'Judge the headline', q:'Model B reports 94% accuracy. What does that tell you?',
      need:['head','conf'], right:'useless',
      options:[['best','It is the strongest model — accuracy is the bottom line'],
               ['useless','Very little — with 6% prevalence, answering "no" to everyone scores 94%'],
@@ -103,7 +104,7 @@ AlizonLabKit.stages({
        more:'You have enough: prevalence and a confusion matrix are sufficient to see the problem.'
      }},
 
-    {k:'over', t:'Spot the overfitting', q:'Model C has the best AUC. What does the train/test gap tell you?',
+    {k:'over', afterWho:'The overfitting', after:{ok:'Spotted from the gap between training and validation performance. The model had memorised its training set rather than learned anything transferable.', bad:'Missed. It performed beautifully in the demonstration and fell apart on live data in the first fortnight, and confidence in the whole programme went with it.'}, t:'Spot the overfitting', q:'Model C has the best AUC. What does the train/test gap tell you?',
      need:['split'], right:'over',
      options:[['fine','Nothing concerning — it is still the best on test data'],
               ['over','A gap of 0.11 suggests overfitting; the test figure is the honest one and the model may degrade further elsewhere'],
@@ -116,7 +117,7 @@ AlizonLabKit.stages({
        ignore:'Training performance is exactly what reveals overfitting when compared with test performance.'
      }},
 
-    {k:'pick', t:'Choose a model', q:'Which model do you recommend for deployment?',
+    {k:'pick', afterWho:'The model chosen', after:{ok:'You weighed sensitivity and specificity against what each error actually costs, rather than picking the highest single number.', bad:'The model with the best headline metric was chosen. Its misses were the expensive kind — the patients it failed to flag were the ones the system existed to find.'}, t:'Choose a model', q:'Which model do you recommend for deployment?',
      need:['calib','sub'], right:'A',
      penaltyB:{C:45, B:10},
      options:[['A','Model A — modest headline figures, well calibrated, consistent across age groups'],
@@ -130,7 +131,7 @@ AlizonLabKit.stages({
        none:'Model A is genuinely fit for purpose. Rejecting everything is as much a failure of judgement as choosing badly.'
      }},
 
-    {k:'mon', t:'Plan the monitoring', q:'What must be monitored after deployment?',
+    {k:'mon', afterWho:'The monitoring plan', after:{ok:'Ongoing monitoring was specified, so drift would be caught. Populations change, prescribing changes, and a model that was right in March is not automatically right in September.', bad:'No monitoring was planned. The case mix shifted over the year, performance decayed quietly, and nobody found out until an audit went looking.'}, t:'Plan the monitoring', q:'What must be monitored after deployment?',
      need:[], right:'both',
      options:[['acc2','Accuracy, monthly'],
               ['both','Calibration and subgroup performance, with a defined trigger to withdraw the model'],

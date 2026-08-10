@@ -20,9 +20,9 @@
 <script src="alizon-practical-submit.js?v=4"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-experiment-data.js?v=17"></script>
 <script src="alizon-pdf-open.js"></script>
-<script src="alizon-lab-kit.js?v=1"></script>
+<script src="alizon-lab-kit.js?v=2"></script>
 <script>
 /* ============================================================
    Two traps. The apparent demand trend for the anticoagulant is a
@@ -51,6 +51,7 @@ AlizonLabKit.stages({
          'if a decision risks running out of something a patient cannot wait for.</p>',
   gatherLabel:'Review the data',
 
+  laterHead:'Over the next quarter',
   evidence:{
     usage:{t:'Usage trend — anticoagulant', s:'Packs issued per month',
       body:'APIXABAN 5 mg — PACKS PER MONTH\n'+
@@ -96,7 +97,7 @@ AlizonLabKit.stages({
   },
 
   steps:[
-    {k:'trend', t:'Read the trend', q:'What should the apixaban forecast be based on?',
+    {k:'trend', afterWho:'Reading the trend', after:{ok:'The one-off outbreak spike was excluded from the baseline, so the forecast described normal demand rather than an emergency that had already passed.', bad:'The outbreak was left in the baseline. The forecast projected emergency-level demand as if it were routine, and the resulting order tied up budget in stock that then expired.'}, t:'Read the trend', q:'What should the apixaban forecast be based on?',
      need:['usage','why'], right:'exclude',
      options:[['naive','Project the recent trend forward — about 520 packs next month'],
               ['avg','Average the whole year and use that'],
@@ -109,7 +110,7 @@ AlizonLabKit.stages({
        flat:'Closer, but it still carries the tender volume past 31 October, when the clinics move to direct supply.'
      }},
 
-    {k:'reorder', t:'Set the reorder level', q:'Apixaban: our own use is 185 packs per month, lead time 7 days, and you hold 40 packs of safety stock. What is the reorder level?',
+    {k:'reorder', afterWho:'The reorder level', after:{ok:'Set with lead time and variability accounted for. No stockout over the quarter.', bad:'Set on average demand alone. Average demand is met about half the time — the stockout arrived in week six, during the week the supplier was closed.'}, t:'Set the reorder level', q:'Apixaban: our own use is 185 packs per month, lead time 7 days, and you hold 40 packs of safety stock. What is the reorder level?',
      need:['lead'], right:'r83',
      options:[['r83','About 83 packs — roughly 6 packs a day over 7 days, plus 40 safety stock'],
               ['r40','40 packs — the safety stock is the reorder level'],
@@ -122,7 +123,7 @@ AlizonLabKit.stages({
        r447:'That figure is inflated by the tender and is not our demand at all.'
      }},
 
-    {k:'class', t:'Classify adrenaline', q:'Adrenaline is 0.3% of annual spend. How should it be controlled?',
+    {k:'class', afterWho:'Classifying adrenaline', after:{ok:'Classified as vital rather than by spend. It is cheap and it is the difference between an anaphylaxis surviving and not.', bad:'Classified by consumption value, which put it in the lowest tier for review. Low-cost items are exactly where this classification fails: the price of a medicine says nothing about the cost of not having it.'}, t:'Classify adrenaline', q:'Adrenaline is 0.3% of annual spend. How should it be controlled?',
      need:['value','ved'], right:'vital',
      penaltyB:{c:45, abc:30},
      options:[['c','As a class C item — minimal control, order in bulk infrequently'],
@@ -136,7 +137,7 @@ AlizonLabKit.stages({
        drop:'Devolving it removes central oversight of the item with the least reliable supply and the highest consequence of absence.'
      }},
 
-    {k:'buffer', t:'Set the buffer', q:'Adrenaline lead time ranges from 5 to 31 days with an 82% fill rate. What follows?',
+    {k:'buffer', afterWho:'The buffer', after:{ok:'A wider buffer set for the erratic, critical line and a tighter one where demand is steady. Buffers are set by variability, not by importance alone.', bad:'One uniform buffer across every line. Predictable items were overstocked and the erratic critical one still ran out — the worst of both.'}, t:'Set the buffer', q:'Adrenaline lead time ranges from 5 to 31 days with an 82% fill rate. What follows?',
      need:['lead'], right:'wide',
      penaltyB:{avg2:25},
      options:[['avg2','Use the average lead time of 12 days — averages are the standard basis'],

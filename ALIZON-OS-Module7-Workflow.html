@@ -20,9 +20,9 @@
 <script src="alizon-practical-submit.js?v=4"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-experiment-data.js?v=17"></script>
 <script src="alizon-pdf-open.js"></script>
-<script src="alizon-lab-kit.js?v=1"></script>
+<script src="alizon-lab-kit.js?v=2"></script>
 <script>
 /* ============================================================
    A service redesign cut average turnaround and everyone celebrated.
@@ -52,6 +52,7 @@ AlizonLabKit.stages({
          'investigation at a person.</p>',
   gatherLabel:'Read the review pack',
 
+  laterHead:'The following month',
   evidence:{
     avg:{t:'Headline performance', s:'What the report to the board said',
       body:'TURNAROUND TIME — BEFORE AND AFTER REDESIGN\n'+
@@ -102,7 +103,7 @@ AlizonLabKit.stages({
   },
 
   steps:[
-    {k:'read', t:'Read the result', q:'Did the redesign improve the service?',
+    {k:'read', afterWho:'Reading the result', after:{ok:'You read the distribution rather than the average, and saw that it was two different populations mixed together.', bad:'The mean was reported as if it described the service. It described nothing — no actual prescription took the average time.'}, t:'Read the result', q:'Did the redesign improve the service?',
      need:['avg','dist'], right:'mixed',
      penaltyB:{yes:0},
      options:[['yes','Yes — mean turnaround fell 22% and output rose 8%'],
@@ -116,7 +117,7 @@ AlizonLabKit.stages({
        unknown:'The percentile table answers the question directly.'
      }},
 
-    {k:'tail', t:'Judge the tail', q:'Why does the deterioration in the slowest 5% matter so much?',
+    {k:'tail', afterWho:'Judging the tail', after:{ok:'The tail was recognised as the critical part. The mean was comfortably within target while the slowest prescriptions were the urgent ones.', bad:'The tail was dismissed as a handful of outliers. Those outliers were the time-critical items, and two of them were reported as incidents that quarter.'}, t:'Judge the tail', q:'Why does the deterioration in the slowest 5% matter so much?',
      need:['which'], right:'crit',
      penaltyB:{small:20},
      options:[['small','It does not matter greatly — it is only 5% of items'],
@@ -130,7 +131,7 @@ AlizonLabKit.stages({
        staff2:'The measure exists for patients, not for appearances.'
      }},
 
-    {k:'root', t:'Find the root cause', q:'The incident form says "technician did not prioritise the item — recommend retraining". Is that the root cause?',
+    {k:'root', afterWho:'The root cause', after:{ok:'Traced to a missing field that forced a clarification call on every affected item — a process defect, not a people defect.', bad:'Stopped at the proximate cause. The staff were asked to work faster on a step that could not be completed without information the form never captured.'}, t:'Find the root cause', q:'The incident form says "technician did not prioritise the item — recommend retraining". Is that the root cause?',
      need:['miss','why'], right:'nofield',
      penaltyB:{person:45, fifo:15},
      options:[['person','Yes — the technician failed to prioritise and should be retrained'],
@@ -144,7 +145,7 @@ AlizonLabKit.stages({
        nurse:'The ward did escalate, and the dose was given fifteen minutes later. Moving the blame sideways is not root cause analysis.'
      }},
 
-    {k:'fix', t:'Decide the action', q:'What do you take back to the board?',
+    {k:'fix', afterWho:'The action taken', after:{ok:'The form was changed so the information arrives with the prescription. The clarification calls largely disappeared and the tail shortened.', bad:'A reminder and a target were issued. Nothing structural changed, so the tail returned within a fortnight — the usual fate of an action that addresses behaviour instead of design.'}, t:'Decide the action', q:'What do you take back to the board?',
      need:['dist','why'], right:'both2',
      penaltyB:{retrain2:35, revert:10},
      options:[['retrain2','Retrain the technicians and reiterate the importance of time-critical medicines'],

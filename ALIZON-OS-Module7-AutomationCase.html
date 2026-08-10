@@ -20,9 +20,9 @@
 <script src="alizon-practical-submit.js?v=4"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-experiment-data.js?v=17"></script>
 <script src="alizon-pdf-open.js"></script>
-<script src="alizon-lab-kit.js?v=1"></script>
+<script src="alizon-lab-kit.js?v=2"></script>
 <script>
 /* ============================================================
    The board wants a picking robot because picking "looks slow". Picking
@@ -52,6 +52,7 @@ AlizonLabKit.stages({
          'capital on something that cannot improve the outcome.</p>',
   gatherLabel:'Read the case',
 
+  laterHead:'A year after the decision',
   evidence:{
     steps:{t:'Throughput by step', s:'Items per hour at each stage',
       body:'DISPENSING PATHWAY — CAPACITY PER HOUR\n'+
@@ -100,7 +101,7 @@ AlizonLabKit.stages({
   },
 
   steps:[
-    {k:'con', t:'Find the constraint', q:'What limits dispensing throughput today?',
+    {k:'con', afterWho:'The real constraint', after:{ok:'Identified as the verification step, not the picking. That is where the queue was actually forming.', bad:'The wrong step was named. Automating anywhere other than the constraint moves the bottleneck without shifting the total time.'}, t:'Find the constraint', q:'What limits dispensing throughput today?',
      need:['steps'], right:'verify',
      options:[['pick','Picking — it is the slowest visible activity'],
               ['verify','Clinical verification, at 12 items per hour'],
@@ -113,7 +114,7 @@ AlizonLabKit.stages({
        all:'They are not equal — there is a clear slowest step, and identifying it is the whole point of the exercise.'
      }},
 
-    {k:'effect', t:'Predict the effect', q:'If picking is automated to 90 items an hour, what happens to output?',
+    {k:'effect', afterWho:'The predicted effect', after:{ok:'You predicted correctly that automating a non-constraint step changes nothing overall — work simply waits somewhere else.', bad:'A large time saving was predicted from speeding up a step that was never the limit. The business case promised a benefit the system could not deliver.'}, t:'Predict the effect', q:'If picking is automated to 90 items an hour, what happens to output?',
      need:['steps','prop'], right:'nothing',
      penaltyB:{triple:40, some:20},
      options:[['triple','Output triples, as the vendor claims'],
@@ -127,7 +128,7 @@ AlizonLabKit.stages({
        fall:'There would be a learning dip, but the structural point is that even a perfectly adopted picking robot cannot lift a ceiling set elsewhere.'
      }},
 
-    {k:'auto', t:'Judge the error case', q:'The vendor also claims the robot will eliminate picking errors. Is that a sound reason to buy?',
+    {k:'auto', afterWho:'The error case', after:{ok:'Traced to layout rather than to the operator. Two look-alike products stored side by side will keep producing the same error whoever is standing there.', bad:'Attributed to individual carelessness. Retraining was delivered, the layout was left alone, and the same picking error recurred twice more that year.'}, t:'Judge the error case', q:'The vendor also claims the robot will eliminate picking errors. Is that a sound reason to buy?',
      need:['errors'], right:'layout',
      options:[['yes','Yes — automation removes human picking error entirely'],
               ['layout','No, not on its own — 65% of errors come from look-alike products sitting adjacent on a shelf, and a robot loaded from that same layout reproduces the error faster'],
@@ -140,7 +141,7 @@ AlizonLabKit.stages({
        train:'Retraining individuals does not change a shelf layout that puts look-alikes side by side. The next person meets the same trap.'
      }},
 
-    {k:'rec', t:'Make the recommendation', q:'What do you recommend to the board?',
+    {k:'rec', afterWho:'The recommendation', after:{ok:'Recommended on the indication — what problem this actually solves — rather than on the technology being available. The board could see what it was buying.', bad:'Recommended on capability and payback alone. The cabinet was installed at the wrong point in the workflow and the dispensing time barely moved.'}, t:'Make the recommendation', q:'What do you recommend to the board?',
      need:['staff','space'], right:'indication',
      penaltyB:{buy:45, defer:10},
      options:[['buy','Buy the robot — the capital is available and automation is the direction of travel'],

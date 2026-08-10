@@ -101,6 +101,18 @@ tr.hot td{background:#fdf3f3}
 .barwrap{display:flex;align-items:center;gap:8px}
 .barwrap .b{flex:1;height:14px;background:#f0ece8;border-radius:3px;overflow:hidden;min-width:60px}
 .barwrap .b i{display:block;height:100%;background:var(--crimson);opacity:.8}
+.clk .v{font-variant-numeric:tabular-nums}
+.clk.warn .v{color:#ffd166}.clk.bad .v{color:#ff8a8a}
+.later{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:14px 0 4px}
+.later h4{margin:0;padding:10px 14px;background:#141210;color:#f0e7e4;font-family:var(--sans);
+  font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.later .row{display:flex;gap:12px;padding:11px 14px;border-top:1px solid var(--line);align-items:flex-start}
+.later .row:first-of-type{border-top:0}
+.later .dot{flex:none;width:9px;height:9px;border-radius:50%;margin-top:6px;background:#137a3a}
+.later .row.bad .dot{background:var(--crimson)}
+.later .who{font-size:12.5px;font-weight:800;min-width:132px;flex:none}
+.later .what{font-size:13px;line-height:1.55}
+.miss{background:#fff8e6;border:1px solid #f0dca8;border-radius:11px;padding:11px 14px;margin:10px 0;font-size:13px}
 @media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}}
 `;
 
@@ -126,6 +138,8 @@ function shell(cfg){
         +'<div><div class="k">'+esc(cfg.counterLabel||'Progress')+'</div><div class="v" id="mCount">—</div></div>'
         +'<div class="meter" id="mAW"><div class="k">'+esc(cfg.meterA)+'</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>'
         +'<div class="meter" id="mBW"><div class="k">'+esc(cfg.meterB)+'</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>'
+        +(cfg.clock?'<div class="clk" id="mCW"><div class="k">'+esc(cfg.clock.label||'Time remaining')
+            +'</div><div class="v" id="mC">'+String(cfg.clock.minutes)+':00</div></div>':'')
         +'<div style="margin-left:auto"><button class="btn ghost" id="endBtn" style="display:none">'+esc(cfg.finishLabel||'Finish')+'</button></div>'
       +'</div><div id="workArea"></div></section>'
     +'<section class="panel" id="p-res"><div id="resBox">'
@@ -159,6 +173,50 @@ function Meters(){
   };
 }
 
+/* A shift clock, where the time pressure is part of the professional reality —
+   a driver waiting at the goods-in bay, an on-call queue that keeps filling.
+   Never used on work that ought to be unhurried, like a data-quality audit.
+
+   Elapsed time is always computed from Date.now(); the interval only decides how
+   often the display repaints. Counting ticks would hand a much longer shift to
+   any student whose browser throttled the tab in the background. */
+function Clock(cfg, onExpire){
+  if(!cfg.clock) return null;
+  var total=(cfg.clock.minutes||20)*60000, t0=null, iv=null, fired=false;
+  function fmt(ms){
+    var s=Math.max(0,Math.round(ms/1000));
+    return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2);
+  }
+  function paint(){
+    var left=api.left(), box=$('mCW'), v=$('mC');
+    if(!v) return;
+    v.textContent=fmt(left);
+    if(box) box.className='clk'+(left<=total*0.15?' bad':(left<=total*0.35?' warn':''));
+    if(left<=0 && !fired){ fired=true; api.stop(); onExpire(); }
+  }
+  var api={
+    start:function(){ if(t0!=null) return; t0=Date.now(); iv=setInterval(paint,1000); paint(); },
+    stop:function(){ if(iv) clearInterval(iv); iv=null; },
+    expired:function(){ return fired; },
+    left:function(){ return t0==null?total:Math.max(0,total-(Date.now()-t0)); },
+    usedText:function(){ return t0==null?'not started':fmt(Math.min(total,Date.now()-t0))+' of '+fmt(total); }
+  };
+  return api;
+}
+
+/* "What happened next" — advance the clock past the decision and report the fate
+   of each case, branched on what the student actually did. A mark tells a student
+   whether they were right; this tells them what it cost. */
+function laterHtml(cfg, rows){
+  rows=(rows||[]).filter(function(r){ return r && r.text; });
+  if(!rows.length) return '';
+  return '<div class="later"><h4>'+esc(cfg.laterHead||'What happened next')+'</h4>'
+    +rows.map(function(r){
+      return '<div class="row'+(r.ok?'':' bad')+'"><span class="dot"></span>'
+        +'<div class="who">'+esc(r.who)+'</div><div class="what">'+r.text+'</div></div>';
+    }).join('')+'</div>';
+}
+
 function mountReport(cfg, pct, resultText, html){
   var OPTS={module:cfg.module, title:cfg.title, programme:'Pharmacy AI', pct:pct, resultText:resultText};
   if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
@@ -177,6 +235,7 @@ function queue(cfg){
   shell(cfg);
   var M=Meters(), S={cur:null,done:{},opened:{},log:[]};
   var items=cfg.items, total=items.length, per=cfg.perItem||10;
+  var C=Clock(cfg,function(){ finish(true); });
 
   function scoreClass(n){ return n>=70?'s-hi':(n>=35?'s-md':'s-lo'); }
   function paintQueue(){
@@ -257,22 +316,47 @@ function queue(cfg){
       +'<div id="qList"></div></div>'+(cfg.queueFoot?'<p class="muted" style="margin-top:10px">'+cfg.queueFoot+'</p>':'')
       +'</div><div id="workPane"></div></div>';
     paintQueue(); open(items[0].id); M.paint();
+    if(C) C.start();
   });
 
-  $('endBtn').addEventListener('click',function(){
+  function finish(expired){
+    if(S.ended) return; S.ended=true;
+    if(C) C.stop();
+    /* Anything not reached scores zero — that is the honest consequence of the
+       shift ending, and it is what the epilogue then reports on. */
+    var missed=[];
+    if(expired) items.forEach(function(r){
+      if(!S.done[r.id]){
+        missed.push(r);
+        S.done[r.id]={ok:false,actOk:false,whyOk:false,looked:false,mark:0,missed:true};
+        S.log.push({id:r.id,head:r.head,mark:0,actOk:false,whyOk:false,looked:false,sev:r.sev,missed:true});
+      }
+    });
     var got=S.log.reduce(function(a,x){return a+x.mark;},0), max=total*per;
     var pct=Math.round(got/max*100);
     var rows=S.log.map(function(x){
-      return '<tr><td>'+esc(x.head.slice(0,52))+'</td><td>'+(x.actOk?'✓':'✗')+'</td><td>'+(x.whyOk?'✓':'✗')
+      return '<tr><td>'+esc(x.head.slice(0,52))+(x.missed?' <span class="pill no">not reached</span>':'')
+        +'</td><td>'+(x.actOk?'✓':'✗')+'</td><td>'+(x.whyOk?'✓':'✗')
         +'</td><td>'+(x.looked?'✓':'✗')+'</td><td>'+x.mark+' / '+per+'</td></tr>';}).join('');
+    var later=laterHtml(cfg, items.map(function(r){
+      var d=S.done[r.id]; if(!r.after) return null;
+      var ok=!!(d&&d.actOk), txt=d&&d.missed&&r.after.missed ? r.after.missed : (ok?r.after.ok:r.after.bad);
+      return {who:r.afterWho||r.head, ok:ok&&!(d&&d.missed), text:txt};
+    }));
     var html='<div class="card"><h3>'+esc(cfg.finishHead||'Complete')+'</h3>'
-      +'<p><b>'+got+' / '+max+'</b> ('+pct+'%) &nbsp;·&nbsp; '+esc(cfg.meterA)+' <b>'+M.a+'%</b> &nbsp;·&nbsp; '+esc(cfg.meterB)+' <b>'+M.b+'%</b></p>'
+      +'<p><b>'+got+' / '+max+'</b> ('+pct+'%) &nbsp;·&nbsp; '+esc(cfg.meterA)+' <b>'+M.a+'%</b> &nbsp;·&nbsp; '+esc(cfg.meterB)+' <b>'+M.b+'%</b>'
+      +(C?' &nbsp;·&nbsp; Time used <b>'+esc(C.usedText())+'</b>':'')+'</p>'
+      +(expired&&missed.length?'<div class="miss"><b>The shift ended with '+missed.length+' item'
+        +(missed.length===1?'':'s')+' still in the queue.</b> '+esc(cfg.clock&&cfg.clock.expiredNote
+        ||'Work you never reached scores nothing, because the patient never got it either.')+'</div>':'')
       +'<table class="rep"><tr><th>Item</th><th>Action</th><th>Reason</th><th>Record opened</th><th>Mark</th></tr>'+rows+'</table>'
       +cfg.outcome(S,M)
+      +later
       +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
     $('resEmpty').style.display='none'; $('resBox').innerHTML=html; goTab('res');
     mountReport(cfg,pct,got+'/'+max+' ('+pct+'%) · '+M.a+'% / '+M.b+'%',html);
-  });
+  }
+  $('endBtn').addEventListener('click',function(){ finish(false); });
   M.paint();
 }
 
@@ -283,6 +367,7 @@ function stages(cfg){
   shell(cfg);
   var M=Meters(), S={stage:0,opened:{},marks:{},ans:{}};
   var EV=cfg.evidence, evKeys=Object.keys(EV), steps=cfg.steps;
+  var C=Clock(cfg,function(){ finish(true); });
 
   function bar(){
     var names=[{t:cfg.gatherLabel||'Gather evidence'}].concat(steps.map(function(s){return {t:s.t};}));
@@ -342,22 +427,36 @@ function stages(cfg){
       $('onBtn').addEventListener('click',function(){ S.stage++; paint(); });
     });
   }
-  function finish(){
+  function finish(expired){
+    if(S.ended) return; S.ended=true;
+    if(C) C.stop();
     var evMark=Math.round(Object.keys(S.opened).length/evKeys.length*10);
     var got=steps.reduce(function(a,s){return a+(S.marks[s.k]||0);},0)+evMark;
     var max=(steps.length+1)*10, pct=Math.round(got/max*100);
+    var undone=steps.filter(function(s){ return S.marks[s.k]==null; });
     var rows=[['Evidence gathered',evMark+' / 10']].concat(steps.map(function(s){
-      return [s.t,(S.marks[s.k]||0)+' / 10'];})).map(function(r){
+      return [s.t+(S.marks[s.k]==null?' — not reached':''),(S.marks[s.k]||0)+' / 10'];})).map(function(r){
       return '<tr><td>'+esc(r[0])+'</td><td>'+r[1]+'</td></tr>';}).join('');
+    var later=laterHtml(cfg, steps.map(function(s){
+      if(!s.after) return null;
+      var a=S.ans[s.k], ok=!!(a&&a.ok);
+      var txt=!a&&s.after.missed ? s.after.missed : (ok?s.after.ok:s.after.bad);
+      return {who:s.afterWho||s.t, ok:ok, text:txt};
+    }));
     var html='<div class="card"><h3>'+esc(cfg.finishHead||'Complete')+'</h3>'
-      +'<p><b>'+got+' / '+max+'</b> ('+pct+'%) &nbsp;·&nbsp; '+esc(cfg.meterA)+' <b>'+M.a+'%</b> &nbsp;·&nbsp; '+esc(cfg.meterB)+' <b>'+M.b+'%</b></p>'
+      +'<p><b>'+got+' / '+max+'</b> ('+pct+'%) &nbsp;·&nbsp; '+esc(cfg.meterA)+' <b>'+M.a+'%</b> &nbsp;·&nbsp; '+esc(cfg.meterB)+' <b>'+M.b+'%</b>'
+      +(C?' &nbsp;·&nbsp; Time used <b>'+esc(C.usedText())+'</b>':'')+'</p>'
+      +(expired&&undone.length?'<div class="miss"><b>Time ran out with '+undone.length+' decision'
+        +(undone.length===1?'':'s')+' still open.</b> '+esc(cfg.clock&&cfg.clock.expiredNote
+        ||'A decision never made is not a neutral outcome — the default simply happened instead.')+'</div>':'')
       +'<table class="rep"><tr><th>Element</th><th>Mark</th></tr>'+rows+'</table>'
       +cfg.outcome(S,M)
+      +later
       +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
     $('resEmpty').style.display='none'; $('resBox').innerHTML=html; goTab('res');
     mountReport(cfg,pct,got+'/'+max+' ('+pct+'%) · '+M.a+'% / '+M.b+'%',html);
   }
-  $('startBtn').addEventListener('click',function(){ goTab('work'); paint(); M.paint(); });
+  $('startBtn').addEventListener('click',function(){ goTab('work'); paint(); M.paint(); if(C) C.start(); });
   M.paint();
 }
 

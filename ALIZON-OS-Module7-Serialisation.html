@@ -20,9 +20,9 @@
 <script src="alizon-practical-submit.js?v=4"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-experiment-data.js?v=17"></script>
 <script src="alizon-pdf-open.js"></script>
-<script src="alizon-lab-kit.js?v=1"></script>
+<script src="alizon-lab-kit.js?v=2"></script>
 <script>
 /* ============================================================
    Six packs to verify at goods-in. The reversal: PACK-4 scans perfectly
@@ -48,6 +48,13 @@ AlizonLabKit.queue({
   meterA:'Supply integrity', meterB:'Verification discipline',
   finishLabel:'Close the delivery',
   perItem:10,
+  /* The driver is waiting on the bay and the cold line is open. This is one of the
+     few places in pharmacy where the clock genuinely is part of the job. */
+  clock:{minutes:14, label:'Driver waiting',
+    expiredNote:'The driver could not wait. Anything you had not verified was signed for '
+      +'unchecked and went straight to the shelf — which is exactly how a falsified pack '
+      +'enters a legitimate supply chain.'},
+  laterHead:'Three weeks later',
   sevWeight:{none:0, minor:1, major:2, critical:3},
   blurb:'A delivery of six packs has arrived. Each carries a 2D data matrix. Verify each one against '+
         'the register and decide what to do with it — accept into stock, quarantine, or escalate.',
@@ -55,7 +62,8 @@ AlizonLabKit.queue({
          'The register history stays closed until you open it, and what you opened is recorded.</p>'+
          '<p class="muted">Two indices sit alongside your mark: <b>Supply integrity</b>, which falls '+
          'when a falsified or unusable pack reaches stock, and <b>Verification discipline</b>, which '+
-         'falls when you decide without checking the register.</p>',
+         'falls when you decide without checking the register.</p>'+
+         '<p class="muted"><b>The driver waits 14 minutes.</b> The clock starts when you begin. Any pack you have not verified by then is signed for unchecked — which scores nothing, and is exactly how a falsified pack enters a legitimate supply chain.</p>',
 
   recordTabs:[['scan','Scan result'],['phys','Physical inspection'],['reg','Register history']],
   actionLabel:'Your decision',
@@ -74,27 +82,43 @@ AlizonLabKit.queue({
             phys:'Carton intact. Tamper seal unbroken. Print quality normal.\nExpiry 04/2028.',
             reg:'Issued by manufacturer 11/2025.\nNo prior decommission event. Never dispensed.'},
     need:['scan'], action:'accept', why:'ok', sev:'none',
-    truth:'Genuine and in date. Accepting it is correct — and note that accepting is a decision you are marked on, not a default.'},
+    truth:'Genuine and in date. Accepting it is correct — and note that accepting is a decision you are marked on, not a default.',
+    afterWho:'PACK-1 · Atorvastatin',
+    after:{ok:'Dispensed to four patients over the following fortnight. Nothing happened, which is the correct outcome and the one nobody ever notices.',
+      bad:'Quarantined. A genuine, in-date pack sat in the holding cage for three weeks and was returned to the supplier. Two patients were told their statin was out of stock. Over-caution is not a free action — it has a cost, and here it was paid by patients who could have been supplied.',
+      missed:'Signed for unverified. It happened to be genuine. You did not know that when you signed.'}},
 
    {id:'P2', score:'FAIL', head:'PACK-2 · Metformin 500 mg, 56 tabs', sub:'Scan failed to read',
     record:{scan:'Data matrix unreadable — 3 attempts.\nScanner error: insufficient contrast.',
             phys:'Carton scuffed along the barcode panel, consistent with transit damage.\nSeal intact, print otherwise normal. Expiry 09/2027.',
             reg:'Manual key-entry of the human-readable serial ...9920:\nACTIVE, issued 02/2026, no prior decommission. Batch matches delivery note.'},
     need:['reg'], action:'accept', why:'ok', sev:'minor',
-    truth:'A failed scan is not a failed verification. The barcode panel is physically damaged; keying the human-readable serial verifies the pack as genuine and active. Quarantining it wastes stock — but you could only know that by opening the register.'},
+    truth:'A failed scan is not a failed verification. The barcode panel is physically damaged; keying the human-readable serial verifies the pack as genuine and active. Quarantining it wastes stock — but you could only know that by opening the register.',
+    afterWho:'PACK-2 · Metformin',
+    after:{ok:'Accepted and dispensed normally. The scuff was transit damage and nothing more. You reached that conclusion by keying the serial by hand rather than trusting the scanner’s silence.',
+      bad:'Returned to the supplier as unverifiable. It was genuine. The ward ran short of metformin 500 mg that week and two prescriptions were owed. A scanner that cannot read a damaged label has told you about the label, not about the medicine.',
+      missed:'Never verified. A pack whose barcode would not read went to the shelf on trust.'}},
 
    {id:'P3', score:'OK', head:'PACK-3 · Amoxicillin 500 mg caps', sub:'Scan verified',
     record:{scan:'Serial ...1180 — ACTIVE in register.\nGTIN and batch match.',
             phys:'Carton intact, seal intact.\nEXPIRY 09/2026 — three weeks from today.',
             reg:'Issued 01/2026. No decommission event.'},
     need:['phys'], action:'quarantine', why:'expired', sev:'minor',
-    truth:'Genuine, and too short-dated to accept into stock for a course of treatment. The register is perfectly happy; the expiry date is what disqualifies it. Quarantine and return to the supplier.'},
+    truth:'Genuine, and too short-dated to accept into stock for a course of treatment. The register is perfectly happy; the expiry date is what disqualifies it. Quarantine and return to the supplier.',
+    afterWho:'PACK-3 · Amoxicillin',
+    after:{ok:'Returned to the supplier and credited. Had it gone to the shelf, a seven-day course started in week three would have finished on out-of-date antibiotic.',
+      bad:'Accepted into stock. It was dispensed eleven days later for a seven-day course, and the last two days of that course were taken after the expiry date. Nobody was harmed. Nobody would ever have known — which is precisely why the expiry check cannot depend on somebody feeling suspicious.',
+      missed:'Never checked. Short-dated stock went to the shelf with everything else.'}},
 
    {id:'P4', score:'OK', head:'PACK-4 · Sildenafil 100 mg, 8 tabs', sub:'Scan verified',
     record:{scan:'Serial ...7732 — ACTIVE in register.\nGTIN, batch and expiry all match the pack face.',
             phys:'Carton intact. Seal intact. Print quality very slightly soft on the\nreverse panel, otherwise unremarkable.',
             reg:'Issued by manufacturer 08/2025.\n!! DECOMMISSIONED 12/07/2026 at a pharmacy 900 km away —\n   supplied to a patient and the serial retired at that point.\n!! This pack carries a serial that has already been used.'},
     need:['reg'], action:'escalate', why:'dup', sev:'critical',
+    afterWho:'PACK-4 · Sildenafil',
+    after:{ok:'Escalated the same afternoon. The regulator traced the broker and found 1,400 packs from the same consignment already distributed across four states. Your single quarantined carton is what started that recall.',
+      bad:'Accepted into stock, because the scanner said verified. It was dispensed to a 61-year-old man with angina who was also taking isosorbide mononitrate. The tablets contained roughly twice the labelled sildenafil. He was admitted overnight with profound hypotension. The scan was green the entire time.',
+      missed:'Never opened. The duplicate went to the shelf and the consignment was never traced.'},
     truth:'This is the pack that matters. The scan says ACTIVE because the falsifier copied a real, valid serial — but the register shows that number was decommissioned three weeks ago at a pharmacy 900 km away when the genuine pack was supplied to a patient. A serial can only be retired once. This is a duplicate and must be quarantined and escalated immediately, not merely investigated.'},
 
    {id:'P5', score:'??', head:'PACK-5 · Clopidogrel 75 mg, 30 tabs', sub:'Serial not found',
@@ -102,6 +126,10 @@ AlizonLabKit.queue({
             phys:'Carton intact. Seal intact. Font on the batch line differs subtly\nfrom the manufacturer standard.',
             reg:'No record of this serial ever being issued.\nSupplier is a broker, not the usual wholesaler.'},
     need:['scan','reg'], action:'escalate', why:'unknown', sev:'critical',
+    afterWho:'PACK-5 · Clopidogrel',
+    after:{ok:'Escalated and analysed. The tablets contained no clopidogrel at all — chalk and colouring. Escalating rather than merely investigating is what got them to the laboratory in days instead of weeks.',
+      bad:'Not escalated. The pack reached a patient six weeks after a coronary stent, who took an antiplatelet that contained no active drug for eleven days before re-presenting with chest pain. A medicine that does nothing looks exactly like a medicine that works, until the event it was preventing arrives.',
+      missed:'Never examined. A serial that had never been issued went into stock unremarked.'},
     truth:'A serial that was never issued cannot be genuine. Combined with an unfamiliar broker in the supply chain and a subtle typographic difference, this requires immediate escalation, not routine investigation.'},
 
    {id:'P6', score:'OK', head:'PACK-6 · Ranitidine 150 mg, 60 tabs', sub:'Scan verified',
@@ -109,6 +137,10 @@ AlizonLabKit.queue({
             phys:'Carton intact, seal intact, expiry 11/2027.',
             reg:'Issued 03/2026, no decommission.\n!! BATCH RECALL NOTICE issued 5 days ago — this batch withdrawn\n   by the manufacturer for an impurity finding.'},
     need:['reg'], action:'quarantine', why:'recall', sev:'major',
+    afterWho:'PACK-6 · Ranitidine',
+    after:{ok:'Quarantined and returned under the recall. The impurity was a probable carcinogen at the levels found, and the exposure would have been chronic rather than acute — the kind of harm that never announces itself.',
+      bad:'Accepted, because everything about the pack was authentic. It was dispensed to a patient who took it for four months before the recall was reconciled against dispensing records. Authenticity and safety are different questions, and the register answers both — if you read past the first line.',
+      missed:'Never read. The recall notice was sitting in the register entry you did not open.'},
     truth:'Genuine, in date, correctly serialised — and recalled five days ago. The register carried the recall notice. A pack can be perfectly authentic and still must not reach a patient.'}
   ],
 

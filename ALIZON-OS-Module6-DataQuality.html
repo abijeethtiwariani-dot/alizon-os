@@ -20,9 +20,9 @@
 <script src="alizon-practical-submit.js?v=4"></script>
 <script src="alizon-practical-report.js?v=4"></script>
 <script src="alizon-experiment-brief.js?v=2"></script>
-<script src="alizon-experiment-data.js?v=16"></script>
+<script src="alizon-experiment-data.js?v=17"></script>
 <script src="alizon-pdf-open.js"></script>
-<script src="alizon-lab-kit.js?v=1"></script>
+<script src="alizon-lab-kit.js?v=2"></script>
 <script>
 /* ============================================================
    The dataset has two defects. The visible one is a 300% spike in
@@ -56,6 +56,7 @@ AlizonLabKit.stages({
   gatherNote:'Run whichever checks you judge necessary. You may proceed at any point — but a '+
              'conclusion drawn without the check is recorded as such.',
 
+  laterHead:'When the report reached the committee',
   evidence:{
     profile:{t:'Volume profile by week', s:'Issues per week across the year',
       body:'METFORMIN 500 mg — ISSUES PER WEEK\n'+
@@ -104,7 +105,7 @@ AlizonLabKit.stages({
   },
 
   steps:[
-    {k:'spike', t:'Explain the spike', q:'What explains the week 34 spike?',
+    {k:'spike', afterWho:'The week 34 spike', after:{ok:'Correctly identified as duplicated rows from a re-run import and removed. Loud, obvious, and harmless once named.', bad:'Mis-explained. The committee spent its first fifteen minutes discussing a demand surge that never happened.'}, t:'Explain the spike', q:'What explains the week 34 spike?',
      need:['dupes'], right:'dupe',
      options:[['demand','A genuine surge in demand that week'],
               ['dupe','A duplicated import — the same 842 rows loaded twice'],
@@ -117,7 +118,7 @@ AlizonLabKit.stages({
        error:'A prescribing error would show in one ward and one prescriber. This is 842 exact duplicate rows across the whole extract.'
      }},
 
-    {k:'worse', t:'Find the dangerous defect', q:'Which problem in this dataset is the more dangerous?',
+    {k:'worse', afterWho:'The units/packs switch', after:{ok:'Found. You corrected the conversion and documented it, and the metformin figures were right.', bad:'Missed. Supplier A\'s totals went to committee overstated roughly fifty-fold, and because the visible spike had been tidied away the report looked carefully prepared. The budget for the next quarter was built on it.', missed:'Never examined. The quiet defect went to committee untouched.'}, t:'Find the dangerous defect', q:'Which problem in this dataset is the more dangerous?',
      need:['units','dict'], right:'units',
      penaltyB:{spike:30, none:45},
      options:[['spike','The week 34 duplication — it is by far the largest distortion'],
@@ -131,7 +132,7 @@ AlizonLabKit.stages({
        none:'Both are real, and one of them silently corrupts every total that crosses week 30.'
      }},
 
-    {k:'act', t:'Decide', q:'What do you do before the committee report?',
+    {k:'act', afterWho:'What you did about it', after:{ok:'Both defects fixed and every cleaning decision recorded. Six months later someone asked why the figures changed, and there was an answer.', bad:'The dataset was passed on without the corrections documented. Nobody downstream could tell which numbers had been touched or why, so none of them could be trusted.'}, t:'Decide', q:'What do you do before the committee report?',
      need:['units'], right:'fix',
      penaltyB:{use:40, drop:15},
      options:[['use','Remove the duplicates and analyse — the rest of the data is sound'],
