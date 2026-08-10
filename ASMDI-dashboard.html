@@ -1721,21 +1721,120 @@ const DEFAULT_PROGRAMS=[
     {unit:'Module 2',title:'Clinical Risk Prediction Models',desc:'Predict readmission and complication risk from patient data.',status:'soon',href:'',units:[]}
   ]},
   {id:'hospital',name:'Hospital Administration AI',icon:'',course:'Certificate Course in Digital Health & Artificial Intelligence for Hospital Administration',modules:[
-    {unit:'Module 1',title:'AI Bed & Resource Allocation',desc:'Optimise bed occupancy and staff rostering with an AI planner.',status:'soon',href:'',units:[]},
-    {unit:'Module 2',title:'Predictive Patient Flow & Queue Management',desc:'Forecast OPD load and reduce patient waiting times.',status:'soon',href:'',units:[]}
+    {unit:'Module 1',title:'Foundations of Hospital Administration & Digital Systems',desc:'How a hospital is structured and governed, and the digital record that now runs it.',status:'soon',href:'',units:[
+      'Unit 1 – Structure, governance and departments of the modern hospital',
+      'Unit 2 – Hospital Information Systems (HIS) and the electronic record',
+      'Unit 3 – Health data standards, interoperability and ABDM',
+      'Unit 4 – Ethics, patient rights and data protection in administration']},
+    {unit:'Module 2',title:'Patient Flow, Capacity & Queue Management',desc:'The patient journey end to end — and where the waiting actually happens.',status:'soon',href:'',units:[
+      'Unit 1 – Mapping the patient journey: OPD, inpatient, emergency and discharge',
+      'Unit 2 – Bed management, occupancy and capacity planning',
+      'Unit 3 – Forecasting demand and predicting patient flow',
+      'Unit 4 – Reducing waiting time: queue theory in a real outpatient department']},
+    {unit:'Module 3',title:'Workforce Planning & Human Resource Management',desc:'Staffing a hospital: skill mix, rosters, fatigue and workforce analytics.',status:'soon',href:'',units:[
+      'Unit 1 – Workforce planning, staffing norms and skill mix',
+      'Unit 2 – Rostering, duty hours and fatigue as a safety issue',
+      'Unit 3 – Recruitment, credentialling and training records',
+      'Unit 4 – Performance management and workforce analytics']},
+    {unit:'Module 4',title:'Hospital Finance, Billing & Revenue Cycle',desc:'What a service costs, what it is billed at, and where the money leaks.',status:'soon',href:'',units:[
+      'Unit 1 – Costing a hospital service and understanding cost centres',
+      'Unit 2 – Billing, tariffs and package rates',
+      'Unit 3 – Insurance, Ayushman Bharat and claims management',
+      'Unit 4 – Revenue cycle analytics and detecting leakage']},
+    {unit:'Module 5',title:'Quality, Accreditation & Patient Safety',desc:'NABH standards, clinical indicators, and what to do when something goes wrong.',status:'soon',href:'',units:[
+      'Unit 1 – Quality frameworks and NABH accreditation standards',
+      'Unit 2 – Clinical indicators, audit and quality dashboards',
+      'Unit 3 – Incident reporting, root cause analysis and just culture',
+      'Unit 4 – Infection control and safety surveillance']},
+    {unit:'Module 6',title:'Supply Chain, Materials & Asset Management',desc:'Procurement, inventory and the biomedical equipment nobody notices until it fails.',status:'soon',href:'',units:[
+      'Unit 1 – Hospital procurement, tendering and vendor management',
+      'Unit 2 – Inventory control: ABC-VED analysis, stock levels and expiry',
+      'Unit 3 – Biomedical equipment and the asset lifecycle',
+      'Unit 4 – Predictive maintenance and supply analytics']},
+    {unit:'Module 7',title:'Health Information Systems & Hospital Analytics',desc:'Turning the data the hospital already generates into decisions.',status:'soon',href:'',units:[
+      'Unit 1 – HMIS architecture and system integration',
+      'Unit 2 – Management dashboards and reporting that gets read',
+      'Unit 3 – Predictive analytics in hospital operations',
+      'Unit 4 – Cybersecurity, business continuity and disaster recovery']},
+    {unit:'Module 8',title:'Strategy, Patient Experience & Administrative Case Studies',desc:'Service planning, patient experience, emergency preparedness and integrated cases.',status:'soon',href:'',units:[
+      'Unit 1 – Strategic planning and service line development',
+      'Unit 2 – Patient experience, grievance handling and hospital marketing',
+      'Unit 3 – Emergency preparedness and disaster management',
+      'Unit 4 – Integrated administrative case simulations']}
+  ]},
+  /* Outside the clinical portfolio — financial-literacy stream. Educational only:
+     the course teaches how markets and instruments work and is not investment advice. */
+  {id:'stockmarket',name:'Stock Market & Investment Analytics',icon:'',course:'Certificate Course in Stock Market Fundamentals & AI-Assisted Investment Analytics',modules:[
+    {unit:'Module 1',title:'Foundations of the Stock Market',desc:'What a market is, who is in it, and what actually happens when you place an order.',status:'soon',href:'',units:[
+      'Unit 1 – Markets, participants and why companies raise capital',
+      'Unit 2 – Primary and secondary markets, IPOs and listing',
+      'Unit 3 – Exchanges, indices and the role of SEBI',
+      'Unit 4 – Demat and trading accounts, order types and the trade lifecycle']},
+    {unit:'Module 2',title:'Reading a Company — Fundamental Analysis',desc:'Reading a business through its own financial statements.',status:'soon',href:'',units:[
+      'Unit 1 – The three financial statements and how they connect',
+      'Unit 2 – Ratio analysis: profitability, leverage and efficiency',
+      'Unit 3 – Valuation: earnings multiples, book value and discounted cash flow',
+      'Unit 4 – Annual reports, disclosures and recognising red flags']},
+    {unit:'Module 3',title:'Reading the Chart — Technical Analysis',desc:'What price and volume can tell you, and what they cannot.',status:'soon',href:'',units:[
+      'Unit 1 – Price, volume, timeframes and chart types',
+      'Unit 2 – Trend, support and resistance',
+      'Unit 3 – Indicators and oscillators, and the danger of over-fitting them',
+      'Unit 4 – Chart patterns and their documented limits']},
+    {unit:'Module 4',title:'Risk, Position Sizing & Portfolio Construction',desc:'The part that decides whether you survive — usually taught last, taught here early.',status:'soon',href:'',units:[
+      'Unit 1 – Risk, return and volatility',
+      'Unit 2 – Position sizing, stop losses and maximum acceptable loss',
+      'Unit 3 – Diversification, correlation and concentration risk',
+      'Unit 4 – Asset allocation, rebalancing and the long horizon']},
+    {unit:'Module 5',title:'Derivatives, Leverage & Their Dangers',desc:'Futures and options, honestly — including what the regulator\'s own data shows.',status:'soon',href:'',units:[
+      'Unit 1 – Futures and forwards: contracts, margins and settlement',
+      'Unit 2 – Options: calls, puts, premiums and payoff diagrams',
+      'Unit 3 – Leverage, margin calls and liquidation',
+      'Unit 4 – What SEBI\'s studies show about retail outcomes in F&O']},
+    {unit:'Module 6',title:'Market Data & AI-Assisted Analytics',desc:'Applying data science to price data — and why backtests flatter.',status:'soon',href:'',units:[
+      'Unit 1 – Sources of market data, cleaning and data quality',
+      'Unit 2 – Backtesting, look-ahead bias and survivorship bias',
+      'Unit 3 – Machine learning on financial time series and its limits',
+      'Unit 4 – News, sentiment and alternative data']},
+    {unit:'Module 7',title:'Behavioural Finance & Investor Psychology',desc:'Why informed people still make poor decisions with their own money.',status:'soon',href:'',units:[
+      'Unit 1 – Cognitive biases: anchoring, loss aversion and overconfidence',
+      'Unit 2 – Herding, bubbles and market crashes',
+      'Unit 3 – Process, discipline and keeping a trading journal',
+      'Unit 4 – Recognising fraud, pump-and-dump and unregistered advice']},
+    {unit:'Module 8',title:'Regulation, Taxation, Ethics & Case Studies',desc:'The legal and tax framework, and integrated cases on a simulated portfolio.',status:'soon',href:'',units:[
+      'Unit 1 – SEBI regulation and investor protection',
+      'Unit 2 – Taxation of capital gains and dividends in India',
+      'Unit 3 – Ethics, insider trading and the rules on giving advice',
+      'Unit 4 – Integrated case studies on a simulated portfolio']}
   ]}
 ];
-const PROG_VER='2026-07-13-pro';
+/* Bump on every change to DEFAULT_PROGRAMS — loadPrograms() only refreshes a
+   browser's cached copy when this string changes. */
+const PROG_VER='2026-08-10-progs';
+/* alizonPrograms is cloud-synced, and the pull lands *after* the version-gated
+   seed above. A stale cloud copy therefore used to overwrite freshly shipped
+   programmes while leaving the new version string in place — after which the
+   gate never fired again and a newly added course could never appear.
+   So the check is on the content as well as the version: if any programme this
+   build ships is absent from the stored list, re-seed. Programmes an admin
+   created that we do not ship are carried through untouched. */
 function loadPrograms(){
-  try{
-    if(localStorage.getItem('alizonProgramsVer')!==PROG_VER){
-      localStorage.setItem('alizonPrograms',JSON.stringify(DEFAULT_PROGRAMS));
-      localStorage.setItem('alizonProgramsVer',PROG_VER); return DEFAULT_PROGRAMS;
-    }
-    const s=localStorage.getItem('alizonPrograms'); if(s){ const p=JSON.parse(s); if(Array.isArray(p)&&p.length) return p; }
-  }catch(e){}
-  try{ localStorage.setItem('alizonPrograms',JSON.stringify(DEFAULT_PROGRAMS)); localStorage.setItem('alizonProgramsVer',PROG_VER); }catch(e){}
-  return DEFAULT_PROGRAMS;
+  let stored=null;
+  try{ stored=JSON.parse(localStorage.getItem('alizonPrograms')||'null'); }catch(e){}
+  let staleVer=true;
+  try{ staleVer = localStorage.getItem('alizonProgramsVer')!==PROG_VER; }catch(e){}
+  const incomplete = !Array.isArray(stored) || !stored.length
+    || DEFAULT_PROGRAMS.some(d=>!stored.some(p=>p&&p.id===d.id));
+  if(staleVer||incomplete){
+    const extra=(Array.isArray(stored)?stored:[])
+      .filter(p=>p&&p.id&&!DEFAULT_PROGRAMS.some(d=>d.id===p.id));
+    const merged=DEFAULT_PROGRAMS.concat(extra);
+    try{
+      localStorage.setItem('alizonPrograms',JSON.stringify(merged));
+      localStorage.setItem('alizonProgramsVer',PROG_VER);
+    }catch(e){}
+    return merged;
+  }
+  return stored;
 }
 function activeProgramId(){ try{ return localStorage.getItem('alizonActiveProgram')||'pharmacy'; }catch(e){ return 'pharmacy'; } }
 function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram',id); }catch(e){} }
