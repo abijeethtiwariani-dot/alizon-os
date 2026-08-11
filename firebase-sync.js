@@ -92,25 +92,54 @@
     }catch(e){}
     return null;
   }
-  function blocksMassDelete(key, val){
-    if (!GUARDED[key]) return false;
-    if (destructiveOK[key]) { destructiveOK[key] = false; return false; }
-    var before = countOf(lastSeen[key]), after = countOf(val);
+  function shrinksTooFar(beforeVal, val){
+    var before = countOf(beforeVal), after = countOf(val);
     if (before == null || after == null) return false;
     if (before - after < 5) return false;          /* small edits are normal */
     if (after > before * 0.5) return false;        /* lost less than half */
-    noteSyncProblem(key, 'A change on this device would have removed ' + (before - after)
-      + ' of ' + before + ' records from ' + key + ' for EVERY device. It was not sent to the cloud. '
+    return { before: before, after: after };
+  }
+  function refuse(key, d){
+    noteSyncProblem(key, 'A change on this device would have removed ' + (d.before - d.after)
+      + ' of ' + d.before + ' records from ' + key + ' for EVERY device. It was not sent to the cloud. '
       + 'If the deletion was intended, repeat it from the admin portal, which confirms it explicitly.');
-    console.warn('[alizon-fb] blocked mass delete on ' + key + ': ' + before + ' -> ' + after);
-    return true;
+    console.warn('[alizon-fb] blocked mass delete on ' + key + ': ' + d.before + ' -> ' + d.after);
   }
 
   function schedulePush(key, val){
     clearTimeout(pushTimers[key]);
     pushTimers[key] = setTimeout(function(){
       if (!authed) return;
-      if (blocksMassDelete(key, val)) return;
+      if (GUARDED[key]){
+        if (destructiveOK[key]) { destructiveOK[key] = false; }
+        else {
+          /* Fast path: we already know what the cloud held. */
+          var local = shrinksTooFar(lastSeen[key], val);
+          if (local) { refuse(key, local); return; }
+          /* Slow path, and the one that matters most. On a device that has not
+             finished downloading the roster yet, lastSeen is empty — so a page
+             that reads the roster, appends one record and writes it back sends
+             a one-record roster and destroys the real one for everybody. That
+             is not hypothetical: it is how 534 students became 1 on
+             11 Aug 2026, from a single manual "add student".
+             So when we have no local baseline for a guarded key, ask the cloud
+             what it holds before overwriting it. */
+          if (countOf(lastSeen[key]) == null){
+            db.collection('sync').doc(key).get().then(function(doc){
+              var remote = doc.exists ? doc.data().value : null;
+              var d = remote == null ? false : shrinksTooFar(remote, val);
+              if (d) { refuse(key, d); return; }
+              push(key, val);
+            }).catch(function(){ push(key, val); });   /* offline: do not block real work */
+            return;
+          }
+        }
+      }
+      push(key, val);
+    }, 700);
+  }
+
+  function push(key, val){
       lastSeen[key] = val;
       var bytes = val ? val.length : 0;
       if (bytes >= WARN_AT){
@@ -129,7 +158,6 @@
         noteSyncProblem(key, 'Cloud sync of ' + key + ' FAILED (' + (c || 'unknown')
           + ') at ' + Math.round(bytes/1024) + ' KB. Records saved on this device are not reaching other devices.');
       });
-    }, 700);
   }
 
   /* map each portal login to a Firebase account (synthetic emails for id-based logins) */

@@ -477,6 +477,7 @@ h1,h2,h3{color:#111!important}
       backend (same format as <b>alizon-students-*.csv</b>). Either way it reflects instantly on every portal. Date of
       birth is stored in simple number format <b>DDMMYYYY</b> (e.g. 08121996 — no spaces).</div>
 
+    <div id="stRosterWarn" class="ahint" style="display:none;border-left:3px solid var(--crimson);background:rgba(196,38,46,.07);padding:10px 12px;border-radius:0 8px 8px 0;margin:12px 0"></div>
     <h3 style="font-size:15px;margin:16px 0 8px;color:var(--gold)" id="stuFormTitle">Add a student manually</h3>
     <div class="ahint">Registration number and full name are required. The <b>password is set to the registration
       number</b> unless you type a different one — the student signs in with those on the student portal.</div>
@@ -1979,10 +1980,53 @@ const STU_FIELDS={reg:'stu-reg',name:'stu-name',salutation:'stu-sal',gender:'stu
   joined:'stu-joined',photo:'stu-photo',password:'stu-pw'};
 let stuEditReg=null;
 const stuVal=id=>(document.getElementById(id).value||'').trim();
+/* Every roster write sends the WHOLE list, so it is only ever safe to write
+   from a copy that has actually finished downloading. Adding one student to a
+   roster this browser has not received yet writes a one-student roster — and
+   the sync layer pushes that over the real one for every device. That is how
+   534 students became 1 on 11 Aug 2026, from a single manual add.
+
+   So: until the roster has arrived, the Students section will not write. */
+let stRosterSeen = 0;
+function rosterReady(){
+  const n=loadStudents().length;
+  if(n>stRosterSeen) stRosterSeen=n;
+  /* genuinely empty is legitimate on a brand-new system, but only once the
+     download has had time to land and nothing has ever appeared */
+  return n>0 || (Date.now()-stBootAt>20000 && stRosterSeen===0);
+}
+const stBootAt=Date.now();
 function saveStudents(list){
+  if(!rosterReady()){
+    toast('Still downloading the student roster — try again in a moment',true);
+    return false;
+  }
+  /* a write that loses most of the roster is a bug, not an edit */
+  const cur=loadStudents().length;
+  if(cur>=5 && list.length < cur*0.5){
+    toast('Refused: that would remove '+(cur-list.length)+' of '+cur+' students',true);
+    return false;
+  }
   localStorage.setItem('alizonStudents',JSON.stringify(list));
   localStorage.setItem('alizonStudentsUpdated',String(Date.now()));
+  return true;
 }
+/* Disable the manual form and the CSV upload until the roster is present, so
+   nobody can act on an empty list by accident. */
+function paintRosterGate(){
+  const ready=rosterReady(), n=loadStudents().length;
+  ['stu-save','stCsv','stClear','stRestore'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.disabled=!ready;
+  });
+  const warn=document.getElementById('stRosterWarn');
+  if(warn){
+    warn.style.display=ready?'none':'block';
+    warn.innerHTML='<b>Waiting for the student roster to download.</b> Adding or editing a student before it '
+      +'arrives would overwrite the real roster with whatever this browser currently holds ('+n+' record'
+      +(n===1?'':'s')+'), on every device. The form unlocks as soon as it lands.';
+  }
+}
+setInterval(paintRosterGate, 1500);
 function stuFillLists(all){
   const uniq=k=>[...new Set(all.map(s=>String(s[k]||'').trim()).filter(Boolean))].sort();
   const fill=(el,vals)=>{const d=document.getElementById(el); if(d) d.innerHTML=vals.map(v=>'<option value="'+esc(v)+'">').join('');};
@@ -2012,7 +2056,7 @@ function stuLoad(reg){
 function stuDelete(reg){
   const all=loadStudents(); const s=all.find(x=>String(x.reg)===String(reg)); if(!s) return;
   if(!confirm('Remove '+(s.name||'')+' ('+reg+') from the roster? Their login stops working.')) return;
-  saveStudents(all.filter(x=>String(x.reg)!==String(reg)));
+  if(!saveStudents(all.filter(x=>String(x.reg)!==String(reg)))) return;
   if(stuEditReg===String(reg)) stuReset();
   renderStudents(); renderAccess();
   toast('Removed '+(s.name||reg));
@@ -2034,11 +2078,13 @@ document.getElementById('stu-save').addEventListener('click',function(){
     const idx=all.findIndex(x=>String(x.reg)===stuEditReg);
     if(idx<0){ toast('Student not found',true); return; }
     all[idx]={...all[idx],...rec};
-    saveStudents(all); toast('Updated '+name);
+    if(!saveStudents(all)) return;          /* refused — roster not loaded */
+    toast('Updated '+name);
     logAct('Student updated — '+name+' ('+reg+')','update');
   } else {
     all.push(rec);
-    saveStudents(all); toast('Added '+name+' — login '+reg+' · '+rec.password);
+    if(!saveStudents(all)) return;          /* refused — roster not loaded */
+    toast('Added '+name+' — login '+reg+' · '+rec.password);
     logAct('Student added manually — '+name+' ('+reg+')','update');
   }
   stuReset(); renderStudents(); renderAccess();
