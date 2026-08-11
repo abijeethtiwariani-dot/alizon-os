@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Hospital Administration · Operations &amp; Patient Flow</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+/* operations bar */
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#101c22,#18303a);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:150px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+/* KPI grid */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(186px,1fr));gap:10px}
+.kpi{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.kpi .n{font-size:11px;color:var(--muted);font-weight:600}
+.kpi .v{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+.kpi.changed{outline:2px solid #bfe3cd}
+
+/* patient journey */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.stg{text-align:left;font:inherit;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px;cursor:pointer}
+.stg:hover{border-color:var(--crimson)}
+.stg.seen{border-color:var(--ok);background:#f4faf6}
+.stg b{display:block;font-size:13px}
+.stg .q{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:3px}
+.stg small{color:var(--muted);font-size:11.5px}
+.stg .hidden{color:var(--muted);font-style:italic;font-size:12px}
+.stg.bneck{box-shadow:inset 0 0 0 2px var(--crit)}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+
+.out{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:13px;line-height:1.7;margin:10px 0;white-space:pre-wrap}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+
+/* simulator */
+.sim{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:12px}
+.ctl{border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:#fff}
+.ctl label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}
+.ctl input[type=range]{width:100%}
+.ctl .rowv{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.ctl .cur{font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.delta{font-size:12px;font-weight:800}
+.delta.good{color:var(--ok)}.delta.bad{color:var(--crit)}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.rank{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.rank select,textarea{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:90px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=2"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Practical 1</div>
+    <h1>AI-Powered Hospital Operations, Patient Flow &amp; Resource Optimization</h1>
+    <p>You are the Operations Administrator at ALIZON SmartCare Medical Centre. It is a Monday morning
+       and the board is not healthy. Find the real bottleneck, test your fix before you order it, and
+       commit to a decision you can defend against the data.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">Operations desk</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <!-- ============ BRIEFING ============ -->
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="haops"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Every stage of the patient journey stays closed until you open it, and what you
+        opened is recorded. Deciding without looking costs you.</p>
+      <p class="muted">Two indices sit alongside your mark: <b>Operational grip</b>, which falls when you
+        act on the wrong bottleneck, and <b>Evidence discipline</b>, which falls when you commit to a
+        decision without opening the data that would have shown it.</p>
+      <div class="note"><b>The simulator produces operational estimates, not clinical predictions.</b>
+        Nothing it outputs may be used to decide anything about an individual patient.</div>
+      <button class="btn" id="startBtn">▶ Open the operations desk</button>
+    </div>
+  </section>
+
+  <!-- ============ OPERATIONS DESK ============ -->
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Shift clock</div><div class="v" id="mClock">10:30</div></div>
+      <div><div class="k">Stages opened</div><div class="v" id="mSeen">0 / 6</div></div>
+      <div class="meter" id="mAW"><div class="k">Operational grip</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Evidence discipline</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+      <div style="margin-left:auto"><button class="btn ghost" id="endBtn" style="display:none">Close the shift</button></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Complete the case on the operations desk to generate your report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=4"></script>
+<script src="../alizon-practical-report.js?v=4"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=2"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script>
+(function(){
+'use strict';
+function $(i){ return document.getElementById(i); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+/* ============================================================
+   THE MODEL
+   A deterministic queueing-style model of one hospital morning.
+   Constants are calibrated so the default configuration reproduces the
+   hospital's stated live KPIs exactly (registration 23 min, consultation
+   51 min, OP wait 74 min, lab TAT 86 min, pharmacy TAT 51 min,
+   occupancy 91%, delayed discharges 9). Change a lever and every dependent
+   figure is recomputed from these same formulas — nothing is hard-coded.
+   ============================================================ */
+var BASE={ regCounters:3, doctors:14, apptInterval:10, dischargeCoord:2, labCapacity:8, pharmCounters:4 };
+var cfg = Object.assign({}, BASE);
+
+var BEDS=[ {w:'Medicine',t:60,o:57}, {w:'Surgery',t:50,o:42}, {w:'Orthopaedics',t:40,o:37},
+           {w:'Paediatrics',t:30,o:24}, {w:'Cardiology',t:30,o:29}, {w:'General',t:90,o:84} ];
+var TOTAL_BEDS = BEDS.reduce(function(a,b){return a+b.t;},0);      /* 300 */
+var BASE_OCC   = BEDS.reduce(function(a,b){return a+b.o;},0);      /* 273 */
+
+var STAFF=[ {d:'OP',req:12,av:9}, {d:'Emergency',req:15,av:15}, {d:'IP Administration',req:10,av:7},
+            {d:'Pharmacy',req:8,av:7}, {d:'Laboratory',req:10,av:8} ];
+
+function clamp(v,lo,hi){ return Math.max(lo,Math.min(hi,v)); }
+
+/* Waiting at registration: more counters help, with diminishing returns. */
+function wReg(c){ return 29.6/Math.max(0.4,(c-1.714)); }
+/* Waiting at consultation: driven by doctors, smoothed by registration throughput
+   and by how widely appointments are staggered. */
+function wCons(d,interval,regC){
+  var smooth   = clamp(1-0.12*(regC-BASE.regCounters), 0.55, 1.25);
+  var stagger  = clamp(1-0.02*(interval-BASE.apptInterval), 0.80, 1.20);
+  return (408/Math.max(0.5,(d-6))) * smooth * stagger;
+}
+function labTAT(cap){ return 430/Math.max(0.4,(cap-3)); }
+function pharmTAT(c){ return 127.5/Math.max(0.4,(c-1.5)); }
+function delayedDischarges(coord){ return Math.max(0, Math.round(9-4*(coord-BASE.dischargeCoord))); }
+function bedsFreed(coord){ return Math.round(5.5*coord); }
+
+function model(c){
+  var reg = wReg(c.regCounters);
+  var cons= wCons(c.doctors, c.apptInterval, c.regCounters);
+  var lab = labTAT(c.labCapacity);
+  var ph  = pharmTAT(c.pharmCounters);
+  var dd  = delayedDischarges(c.dischargeCoord);
+  var freedGain = bedsFreed(c.dischargeCoord) - bedsFreed(BASE.dischargeCoord);
+  var occupied  = clamp(BASE_OCC - freedGain, 0, TOTAL_BEDS);
+  return {
+    regWait:reg, consWait:cons, opWait:reg+cons, labTAT:lab, pharmTAT:ph,
+    delayedDischarges:dd, occupied:occupied, available:TOTAL_BEDS-occupied,
+    occupancy:occupied/TOTAL_BEDS*100, bedsFreedPerDay:bedsFreed(c.dischargeCoord),
+    pendingAdmissions: Math.max(0, Math.round(14 - freedGain*0.8))
+  };
+}
+var LIVE = model(BASE);   /* the hospital as it stands right now */
+
+/* status banding */
+function band(v,mod,high,crit){ return v>=crit?'critical':v>=high?'high':v>=mod?'moderate':'normal'; }
+function r0(v){ return Math.round(v); }
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var S={ opened:{}, aiRun:false, simRuns:0, simCfg:null, started:0,
+        problems:[], ranks:{}, interventions:[], firstAction:null, reasoning:'',
+        gripA:100, discB:100, ended:false };
+
+var STAGES=[
+ {k:'reg',  t:'Registration',  q:18, m:function(M){return M.regWait;},  unit:'avg wait',
+  detail:function(M){return 'Patients waiting: 18\nAverage wait: '+r0(M.regWait)+' min\nCounters open: '+cfg.regCounters+'\nThe queue here is long but stable — it is being cleared at roughly the rate it forms.';}},
+ {k:'cons', t:'Consultation',  q:42, m:function(M){return M.consWait;}, unit:'avg wait',
+  detail:function(M){return 'Patients waiting: 42\nAverage wait: '+r0(M.consWait)+' min\nDoctors in OP: '+cfg.doctors+'\nAppointment interval: '+cfg.apptInterval+' min\nThe queue here is STILL GROWING through the 10:00–13:00 window. Arrivals exceed the rate at which consultations are completed.';}},
+ {k:'lab',  t:'Laboratory',    q:16, m:function(M){return M.labTAT;},   unit:'turnaround',
+  detail:function(M){return 'Samples waiting: 16\nAverage turnaround: '+r0(M.labTAT)+' min\nAnalyser/'+'staff capacity units: '+BASE.labCapacity+'\nClinicians cannot close cases waiting on these results, so this feeds straight back into consultation.';}},
+ {k:'pharm',t:'Pharmacy',      q:22, m:function(M){return M.pharmTAT;}, unit:'turnaround',
+  detail:function(M){return 'Prescriptions waiting: 22\nAverage turnaround: '+r0(M.pharmTAT)+' min\nCounters open: '+cfg.pharmCounters+'\nLong, but the queue is clearing steadily — this is the tail of the OP session, not its cause.';}},
+ {k:'adm',  t:'Admission',     q:14, m:function(M){return M.pendingAdmissions;}, unit:'pending',
+  detail:function(M){return 'Pending admissions: '+M.pendingAdmissions+'\nBed occupancy: '+M.occupancy.toFixed(1)+'%\nAdmissions are waiting on beds, and the beds are waiting on discharges. This queue is a symptom, not a cause.';}},
+ {k:'dis',  t:'Discharge',     q:9,  m:function(M){return M.delayedDischarges;}, unit:'delayed',
+  detail:function(M){return 'Medically fit, not yet discharged: '+M.delayedDischarges+'\nDischarge coordinators: '+cfg.dischargeCoord+'\nEvery one of these is a bed the emergency department cannot use. The delay is administrative — documentation is incomplete, not treatment.';}}
+];
+
+var PROBLEMS=[
+ {k:'occ',   t:'Bed occupancy above 90% in Medicine and Cardiology', real:true},
+ {k:'cons',  t:'OP consultation waiting time (74 min)',              real:true},
+ {k:'disch', t:'Nine delayed discharges holding beds',               real:true},
+ {k:'lab',   t:'Laboratory turnaround at 86 minutes',                real:false, near:true},
+ {k:'pharm', t:'Pharmacy turnaround at 51 minutes',                  real:false},
+ {k:'emerg', t:'Emergency attendance higher than normal',            real:false, near:true},
+ {k:'reg',   t:'Registration queue of 18 patients',                  real:false}
+];
+
+var INTERVENTIONS=[
+ {k:'reg',    t:'Add registration counters at peak',      helps:true},
+ {k:'disch',  t:'Add discharge coordinators / clear documentation before noon', helps:true},
+ {k:'stagger',t:'Stagger appointment slots',              helps:true},
+ {k:'lab',    t:'Increase laboratory capacity',           helps:true},
+ {k:'pharm',  t:'Open more pharmacy counters',            helps:false},
+ {k:'beds',   t:'Request additional inpatient beds from the board', helps:false}
+];
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function goTab(n){ [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ if(b.getAttribute('data-p')===n) b.click(); }); }
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){
+    [].forEach.call(document.querySelectorAll('.tabs button'),function(x){x.classList.remove('on');});
+    [].forEach.call(document.querySelectorAll('.panel'),function(x){x.classList.remove('on');});
+    b.classList.add('on'); $('p-'+b.getAttribute('data-p')).classList.add('on');
+  });
+});
+
+function paintMeters(){
+  $('mA').textContent=S.gripA+'%'; $('bA').style.width=S.gripA+'%';
+  $('mB').textContent=S.discB+'%'; $('bB').style.width=S.discB+'%';
+  $('mAW').className='meter'+(S.gripA<50?' bad':(S.gripA<80?' warn':''));
+  $('mBW').className='meter'+(S.discB<50?' bad':(S.discB<80?' warn':''));
+  $('mSeen').textContent=Object.keys(S.opened).length+' / '+STAGES.length;
+}
+function tickClock(){
+  if(!S.started) return;
+  var mins=Math.floor((Date.now()-S.started)/60000);           /* real elapsed, from Date.now() */
+  var t=10*60+30+mins;                                          /* shift starts 10:30 */
+  $('mClock').textContent=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
+}
+
+function kpiHtml(M){
+  var K=[
+   ['OP patients','684','normal'],
+   ['Emergency patients','76', band(76,60,70,90)],
+   ['IP admissions','96','normal'],
+   ['Available beds', String(M.available), M.available<20?'critical':M.available<35?'high':'normal'],
+   ['Occupied beds', String(M.occupied), ''],
+   ['Bed occupancy', M.occupancy.toFixed(0)+'%', band(M.occupancy,80,85,90)],
+   ['OP waiting time', r0(M.opWait)+' min', band(M.opWait,30,45,60)],
+   ['Average length of stay','4.2 days','normal'],
+   ['Pending admissions', String(M.pendingAdmissions), band(M.pendingAdmissions,6,10,16)],
+   ['Pending discharges','21',''],
+   ['Delayed discharges', String(M.delayedDischarges), band(M.delayedDischarges,3,6,10)],
+   ['Staff availability','46 / 55', 'high'],
+   ['Laboratory TAT', r0(M.labTAT)+' min', band(M.labTAT,45,60,90)],
+   ['Pharmacy TAT', r0(M.pharmTAT)+' min', band(M.pharmTAT,40,55,70)]
+  ];
+  return '<div class="kpis">'+K.map(function(k){
+    return '<div class="kpi"><div class="n">'+esc(k[0])+'</div><div class="v">'+esc(k[1])+'</div>'
+      +(k[2]?'<span class="s s-'+k[2]+'">'+k[2]+'</span>':'')+'</div>';
+  }).join('')+'</div>';
+}
+
+function flowHtml(M){
+  return '<div class="flow">'+STAGES.map(function(s){
+    var seen=S.opened[s.k];
+    return '<button class="stg'+(seen?' seen':'')+(seen&&s.k==='cons'?' bneck':'')+'" data-s="'+s.k+'">'
+      +'<b>'+esc(s.t)+'</b>'
+      +(seen ? '<div class="q">'+r0(s.m(M))+'</div><small>'+esc(s.unit)+'</small>'
+             : '<div class="hidden">closed — click to open</div>')
+      +'</button>';
+  }).join('')+'</div><div class="out" id="stageOut">Open a stage to see its figures. Nothing is shown until you look.</div>';
+}
+
+function bedHtml(M){
+  var freedGain = M.bedsFreedPerDay - bedsFreed(BASE.dischargeCoord);
+  var rows=BEDS.map(function(b){
+    /* extra discharges relieve the two fullest wards first */
+    var relief = 0;
+    if(freedGain>0){ if(b.w==='Medicine') relief=Math.round(freedGain*0.45);
+                     else if(b.w==='Cardiology') relief=Math.round(freedGain*0.25);
+                     else if(b.w==='General') relief=Math.round(freedGain*0.30); }
+    var occ=Math.max(0,b.o-relief), av=b.t-occ, pct=occ/b.t*100;
+    return '<tr'+(pct>=90?' class="hot"':'')+'><td>'+esc(b.w)+'</td><td class="n">'+b.t+'</td>'
+      +'<td class="n">'+occ+'</td><td class="n">'+av+'</td><td class="n">'+pct.toFixed(0)+'%</td></tr>';
+  }).join('');
+  return '<table class="d"><tr><th>Ward</th><th>Total</th><th>Occupied</th><th>Available</th><th>Occupancy</th></tr>'+rows+'</table>';
+}
+function staffHtml(){
+  return '<table class="d"><tr><th>Department</th><th>Required</th><th>Available</th><th>Gap</th></tr>'
+    +STAFF.map(function(s){ var g=s.av-s.req;
+      return '<tr'+(g<0?' class="hot"':'')+'><td>'+esc(s.d)+'</td><td class="n">'+s.req+'</td><td class="n">'+s.av+'</td>'
+        +'<td class="n">'+(g===0?'0':g)+'</td></tr>'; }).join('')+'</table>';
+}
+
+function simControls(){
+  var C=[
+   ['regCounters','OP registration counters',1,8,1],
+   ['doctors','Doctors in OP',8,24,1],
+   ['apptInterval','Appointment interval (min)',5,30,1],
+   ['dischargeCoord','Discharge coordinators',1,8,1],
+   ['labCapacity','Laboratory capacity units',4,16,1],
+   ['pharmCounters','Pharmacy counters',2,10,1]
+  ];
+  return '<div class="sim">'+C.map(function(c){
+    return '<div class="ctl"><label>'+esc(c[1])+'</label>'
+      +'<input type="range" id="sc-'+c[0]+'" min="'+c[2]+'" max="'+c[3]+'" step="'+c[4]+'" value="'+cfg[c[0]]+'">'
+      +'<div class="rowv"><span>baseline '+BASE[c[0]]+'</span><span class="cur" id="cv-'+c[0]+'">'+cfg[c[0]]+'</span></div></div>';
+  }).join('')+'</div>';
+}
+
+function deltaSpan(now,base,lowerBetter,unit){
+  var d=now-base, good = lowerBetter ? d<0 : d>0;
+  if(Math.abs(d)<0.5) return '<span class="delta">no change</span>';
+  return '<span class="delta '+(good?'good':'bad')+'">'+(d>0?'+':'')+r0(d)+(unit||'')+'</span>';
+}
+
+function simOut(){
+  var M=model(cfg);
+  return '<table class="d"><tr><th>Indicator</th><th>Now</th><th>Predicted</th><th>Change</th></tr>'
+   +'<tr><td>OP waiting time</td><td class="n">'+r0(LIVE.opWait)+' min</td><td class="n">'+r0(M.opWait)+' min</td><td class="n">'+deltaSpan(M.opWait,LIVE.opWait,true,' min')+'</td></tr>'
+   +'<tr><td>&nbsp;&nbsp;· registration</td><td class="n">'+r0(LIVE.regWait)+'</td><td class="n">'+r0(M.regWait)+'</td><td class="n">'+deltaSpan(M.regWait,LIVE.regWait,true,'')+'</td></tr>'
+   +'<tr><td>&nbsp;&nbsp;· consultation</td><td class="n">'+r0(LIVE.consWait)+'</td><td class="n">'+r0(M.consWait)+'</td><td class="n">'+deltaSpan(M.consWait,LIVE.consWait,true,'')+'</td></tr>'
+   +'<tr><td>Laboratory TAT</td><td class="n">'+r0(LIVE.labTAT)+' min</td><td class="n">'+r0(M.labTAT)+' min</td><td class="n">'+deltaSpan(M.labTAT,LIVE.labTAT,true,' min')+'</td></tr>'
+   +'<tr><td>Pharmacy TAT</td><td class="n">'+r0(LIVE.pharmTAT)+' min</td><td class="n">'+r0(M.pharmTAT)+' min</td><td class="n">'+deltaSpan(M.pharmTAT,LIVE.pharmTAT,true,' min')+'</td></tr>'
+   +'<tr><td>Delayed discharges</td><td class="n">'+LIVE.delayedDischarges+'</td><td class="n">'+M.delayedDischarges+'</td><td class="n">'+deltaSpan(M.delayedDischarges,LIVE.delayedDischarges,true,'')+'</td></tr>'
+   +'<tr><td>Beds freed per day</td><td class="n">'+LIVE.bedsFreedPerDay+'</td><td class="n">'+M.bedsFreedPerDay+'</td><td class="n">'+deltaSpan(M.bedsFreedPerDay,LIVE.bedsFreedPerDay,false,'')+'</td></tr>'
+   +'<tr><td>Bed occupancy</td><td class="n">'+LIVE.occupancy.toFixed(0)+'%</td><td class="n">'+M.occupancy.toFixed(0)+'%</td><td class="n">'+deltaSpan(M.occupancy,LIVE.occupancy,true,'%')+'</td></tr>'
+   +'</table><div class="note">These are <b>simulated operational estimates</b> produced by a capacity model, not clinical predictions and not a forecast of any individual patient\'s care.</div>';
+}
+
+function desk(){
+  /* The desk always shows the hospital as it actually is (LIVE). Moving a
+     simulator slider must never make the real board look better — only the
+     simulator's own Now/Predicted table reflects the trial configuration. */
+  var M=LIVE;
+  $('workArea').innerHTML =
+    '<div class="card"><h3>Hospital KPI board</h3>'
+    +'<p class="muted">ALIZON SmartCare Medical Centre · 300 beds · 12 departments · Monday, 10:30</p>'
+    +'<div id="kpiWrap">'+kpiHtml(M)+'</div></div>'
+
+   +'<div class="card"><h3>Patient journey</h3>'
+    +'<p class="muted">Registration → Consultation → Laboratory → Pharmacy → Admission / Discharge. '
+    +'Open each stage to see its figures.</p>'+flowHtml(M)+'</div>'
+
+   +'<div class="card"><h3>AI bottleneck analysis</h3>'
+    +'<p class="muted">The analyser reads the same stage data you can open above.</p>'
+    +'<button class="btn" id="aiBtn">Run AI analysis</button><div id="aiOut"></div></div>'
+
+   +'<div class="card"><h3>What-if simulation</h3>'
+    +'<p class="muted">Change one lever at a time and read the predicted effect before you commit to anything.</p>'
+    +'<div id="simWrap">'+simControls()+'</div>'
+    +'<div style="margin-top:10px"><button class="btn" id="simBtn">Run simulation</button> '
+    +'<button class="btn ghost" id="simReset">Reset to baseline</button></div>'
+    +'<div id="simOut"></div></div>'
+
+   +'<div class="card"><h3>Bed board</h3><div id="bedWrap">'+bedHtml(M)+'</div>'
+    +'<div class="fb no"><div class="hd">AI note</div>Cardiology (97%) and Medicine (95%) are at or beyond '
+    +'safe working occupancy. Bed turnover in these two wards should be prioritised over any new admission plan.</div></div>'
+
+   +'<div class="card"><h3>Staff allocation</h3>'+staffHtml()
+    +'<div class="fb no"><div class="hd">AI note</div>Deficits in OP (−3), IP Administration (−3) and Laboratory (−2). '
+    +'Emergency is fully staffed and must not be drawn down — it is the only department with no gap.</div></div>'
+
+   +'<div class="card" id="caseCard"><h3>Case 01 — Monday morning congestion</h3>'
+    +'<p>It is Monday, 10:30. OP attendance is up 27% on a normal Monday and emergency admissions are also '
+    +'above normal. Medicine and Cardiology are above 90% occupancy. Nine patients are medically ready for '
+    +'discharge but their administrative documentation is incomplete.</p>'
+
+    +'<div class="lbl">Task 1 · Identify the three major operational problems</div>'
+    +'<div class="opts" id="probOpts">'+PROBLEMS.map(function(p){
+        return '<button class="opt" data-p="'+p.k+'">'+esc(p.t)+'</button>'; }).join('')+'</div>'
+    +'<div class="muted" id="probCount">0 of 3 selected</div>'
+
+    +'<div class="lbl">Task 2 · Rank what you selected</div><div id="rankWrap" class="muted">Select your three problems first.</div>'
+
+    +'<div class="lbl">Task 3 · Choose your interventions</div>'
+    +'<div class="opts" id="intOpts">'+INTERVENTIONS.map(function(i){
+        return '<button class="opt" data-i="'+i.k+'">'+esc(i.t)+'</button>'; }).join('')+'</div>'
+
+    +'<div class="lbl">Task 4 · Run the simulation</div>'
+    +'<div class="muted" id="simState">Not yet run — use the what-if simulator above.</div>'
+
+    +'<div class="lbl">Task 5 · What would you do first?</div>'
+    +'<div class="opts" id="actOpts">'
+      +'<button class="opt" data-a="A">A · Increase OP registration capacity</button>'
+      +'<button class="opt" data-a="B">B · Focus on discharge processing</button>'
+      +'<button class="opt" data-a="C">C · Increase emergency staffing</button>'
+      +'<button class="opt" data-a="D">D · Increase laboratory capacity</button></div>'
+    +'<div class="lbl">Your reasoning — justify it against the data on this board</div>'
+    +'<textarea id="reason" placeholder="Which figures led you to this decision, and what do you expect it to change?"></textarea>'
+    +'<div style="margin-top:10px"><button class="btn" id="submitBtn">Submit administrative decision</button></div>'
+    +'<div id="caseFb"></div></div>';
+
+  wireDesk();
+  paintMeters();
+}
+
+function refreshLive(){
+  var M=LIVE;
+  $('kpiWrap').innerHTML=kpiHtml(M);
+  $('bedWrap').innerHTML=bedHtml(M);
+}
+
+function wireDesk(){
+  /* stage opening */
+  [].forEach.call($('workArea').querySelectorAll('.stg'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-s'); S.opened[k]=true;
+      var s=STAGES.filter(function(x){return x.k===k;})[0];
+      var M=LIVE;
+      $('workArea').querySelector('.flow').outerHTML = flowHtml(M);
+      /* re-wire after replacing the node */
+      wireStages();
+      $('stageOut').textContent = s.t + '\n\n' + s.detail(M);
+      paintMeters();
+    });
+  });
+
+  $('aiBtn').addEventListener('click',function(){
+    S.aiRun=true;
+    var M=model(cfg);
+    $('aiOut').innerHTML='<div class="out"><b>AI operational finding</b>\n\n'
+      +'The primary patient-flow bottleneck is the OP consultation stage. Average waiting time across the '
+      +'outpatient journey is '+r0(M.opWait)+' minutes, of which '+r0(M.consWait)+' minutes accrue at consultation, '
+      +'with peak congestion between 10:00 and 13:00. The consultation queue is still growing; the registration '
+      +'and pharmacy queues are long but stable.\n\n'
+      +'Secondary bottlenecks are laboratory turnaround ('+r0(M.labTAT)+' min), which prevents clinicians closing '
+      +'cases, and delayed inpatient discharge ('+M.delayedDischarges+' patients), which is holding '
+      +M.delayedDischarges+' beds and pushing occupancy to '+M.occupancy.toFixed(0)+'%.</div>'
+      +'<table class="d"><tr><th>Priority</th><td><b style="color:var(--crit)">Critical</b></td></tr>'
+      +'<tr><th>Main cause</th><td>Consultation capacity mismatch during the morning peak</td></tr>'
+      +'<tr><th>Secondary causes</th><td>Uneven appointment scheduling · high walk-in volume · delayed investigations · delayed discharge processing</td></tr></table>'
+      +'<div class="lbl">Recommendations</div>'
+      +'<table class="d">'
+      +'<tr><td><b>1</b></td><td>Redistribute two administrative coordinators to OP registration during the 10:00–13:00 peak.</td></tr>'
+      +'<tr><td><b>2</b></td><td>Introduce staggered appointment slots to flatten the morning arrival peak.</td></tr>'
+      +'<tr><td><b>3</b></td><td>Prioritise discharge processing before 12:00 to release beds ahead of the afternoon admission wave.</td></tr>'
+      +'<tr><td><b>4</b></td><td>Create a fast-track pathway for patients needing routine investigations only.</td></tr>'
+      +'</table>';
+  });
+
+  /* simulator */
+  ['regCounters','doctors','apptInterval','dischargeCoord','labCapacity','pharmCounters'].forEach(function(k){
+    var el=$('sc-'+k); if(!el) return;
+    el.addEventListener('input',function(){ cfg[k]=+el.value; $('cv-'+k).textContent=el.value; });
+  });
+  $('simBtn').addEventListener('click',function(){
+    S.simRuns++; S.simCfg=Object.assign({},cfg);
+    $('simOut').innerHTML=simOut();
+    $('simState').textContent='Simulation run '+S.simRuns+' — last configuration: '
+      +'registration '+cfg.regCounters+', doctors '+cfg.doctors+', appointment interval '+cfg.apptInterval
+      +' min, discharge coordinators '+cfg.dischargeCoord+', lab '+cfg.labCapacity+', pharmacy '+cfg.pharmCounters+'.';
+    refreshLive();
+  });
+  $('simReset').addEventListener('click',function(){
+    cfg=Object.assign({},BASE);
+    $('simWrap').innerHTML=simControls(); wireDesk();
+    $('simOut').innerHTML=''; refreshLive();
+  });
+
+  /* task 1 */
+  [].forEach.call($('probOpts').querySelectorAll('.opt'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-p'), i=S.problems.indexOf(k);
+      if(i>=0){ S.problems.splice(i,1); b.classList.remove('sel'); }
+      else { if(S.problems.length>=3) return; S.problems.push(k); b.classList.add('sel'); }
+      $('probCount').textContent=S.problems.length+' of 3 selected';
+      paintRanks();
+    });
+  });
+  /* task 3 */
+  [].forEach.call($('intOpts').querySelectorAll('.opt'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-i'), i=S.interventions.indexOf(k);
+      if(i>=0){ S.interventions.splice(i,1); b.classList.remove('sel'); }
+      else { S.interventions.push(k); b.classList.add('sel'); }
+    });
+  });
+  /* task 5 */
+  [].forEach.call($('actOpts').querySelectorAll('.opt'),function(b){
+    b.addEventListener('click',function(){
+      [].forEach.call($('actOpts').querySelectorAll('.opt'),function(x){x.classList.remove('sel');});
+      b.classList.add('sel'); S.firstAction=b.getAttribute('data-a');
+    });
+  });
+  $('submitBtn').addEventListener('click',submitCase);
+}
+function wireStages(){
+  [].forEach.call($('workArea').querySelectorAll('.stg'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-s'); S.opened[k]=true;
+      var M=LIVE;
+      var s=STAGES.filter(function(x){return x.k===k;})[0];
+      $('workArea').querySelector('.flow').outerHTML = flowHtml(M);
+      wireStages();
+      $('stageOut').textContent = s.t + '\n\n' + s.detail(M);
+      paintMeters();
+    });
+  });
+}
+function paintRanks(){
+  if(!S.problems.length){ $('rankWrap').innerHTML='<span class="muted">Select your three problems first.</span>'; return; }
+  $('rankWrap').innerHTML=S.problems.map(function(k){
+    var p=PROBLEMS.filter(function(x){return x.k===k;})[0];
+    return '<div class="rank"><span style="flex:1;min-width:220px">'+esc(p.t)+'</span>'
+      +'<select data-r="'+k+'"><option value="">rank…</option><option>Critical</option><option>High</option><option>Moderate</option></select></div>';
+  }).join('');
+  [].forEach.call($('rankWrap').querySelectorAll('select'),function(s){
+    s.value=S.ranks[s.getAttribute('data-r')]||'';
+    s.addEventListener('change',function(){ S.ranks[s.getAttribute('data-r')]=s.value; });
+  });
+}
+
+/* ============================================================
+   EVALUATION — reasoning against the data, not one right answer
+   ============================================================ */
+function submitCase(){
+  if(S.ended) return;
+  if(S.problems.length<3 || !S.firstAction){
+    $('caseFb').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Select three problems and a first action before submitting.</div>';
+    return;
+  }
+  S.reasoning=($('reason').value||'').trim();
+  S.ended=true;
+
+  var pts=[], strengths=[], improve=[];
+
+  /* Task 1 — problem identification (30) */
+  var hits=S.problems.filter(function(k){ return PROBLEMS.filter(function(p){return p.k===k;})[0].real; }).length;
+  var near=S.problems.filter(function(k){ var p=PROBLEMS.filter(function(x){return x.k===k;})[0]; return !p.real&&p.near; }).length;
+  var t1=Math.min(30, hits*9 + near*3);
+  pts.push(['Problem identification',t1,30]);
+  if(hits===3) strengths.push('Identified all three of the operational problems that are actually driving the congestion.');
+  else if(hits===2) strengths.push('Identified two of the three real operational problems.');
+  if(S.problems.indexOf('occ')<0 && S.problems.indexOf('disch')<0)
+    improve.push('Bed occupancy and delayed discharge were not selected — together they are what is pushing admissions into the queue.');
+  if(S.problems.indexOf('pharm')>=0)
+    improve.push('Pharmacy turnaround was selected, but that queue is clearing steadily; it is the tail of the session rather than a cause.');
+
+  /* Task 2 — ranking (15) */
+  var want={occ:'Critical',cons:'Critical',disch:'High',lab:'High',pharm:'Moderate',emerg:'Moderate',reg:'Moderate'};
+  var rk=0, ranked=0;
+  S.problems.forEach(function(k){ if(S.ranks[k]){ ranked++; if(S.ranks[k]===want[k]) rk+=5; } });
+  var t2=Math.min(15,rk); pts.push(['Ranking',t2,15]);
+  if(ranked<S.problems.length) improve.push('Not every selected problem was ranked — ranking is how a committee knows what you want done first.');
+  else if(t2>=10) strengths.push('Severity ranking matched the operational data.');
+
+  /* Task 3 — interventions (20) */
+  var good=S.interventions.filter(function(k){ return INTERVENTIONS.filter(function(i){return i.k===k;})[0].helps; }).length;
+  var bad =S.interventions.filter(function(k){ return !INTERVENTIONS.filter(function(i){return i.k===k;})[0].helps; }).length;
+  var t3=Math.max(0,Math.min(20, good*6 - bad*4)); pts.push(['Interventions chosen',t3,20]);
+  if(S.interventions.indexOf('beds')>=0)
+    improve.push('Requesting more beds does not address a discharge bottleneck — the beds you already have are occupied by patients who are ready to leave.');
+  if(good>=2) strengths.push('Chose interventions that act on the constrained stages rather than the visible ones.');
+
+  /* Task 4 — used the simulator (15) */
+  var t4 = S.simRuns>=2?15:S.simRuns===1?9:0; pts.push(['Use of the simulator',t4,15]);
+  if(S.simRuns===0) improve.push('No intervention was tested in the simulator before committing — the point of the model is to find out what a change is worth before ordering it.');
+  else if(S.simRuns>=2) strengths.push('Tested more than one configuration before committing, which is what makes the recommendation defensible.');
+
+  /* Task 5 — first action + reasoning (20) */
+  var t5=0;
+  if(S.firstAction==='B'){ t5=14; strengths.push('Chose discharge processing first — it releases beds within the same morning and relieves both the ward and the admission queue.'); }
+  else if(S.firstAction==='A'){ t5=11; improve.push('Registration capacity helps, but the queue that is still growing is consultation; registration is the smaller share of the 74 minutes.'); }
+  else if(S.firstAction==='D'){ t5=8;  improve.push('Laboratory turnaround is a genuine secondary constraint, but it does not relieve the bed position this morning.'); }
+  else { t5=4; improve.push('Emergency is the one department with no staffing gap; drawing more staff there would create a deficit without addressing the bottleneck.'); }
+  var words=S.reasoning?S.reasoning.split(/\s+/).length:0;
+  if(words>=25) t5+=6; else if(words>=10) t5+=3;
+  else improve.push('The written justification was very short. An administrative decision is judged on the reasoning as much as the choice.');
+  t5=Math.min(20,t5); pts.push(['First action and justification',t5,20]);
+
+  /* meters */
+  var openedCount=Object.keys(S.opened).length;
+  S.discB = Math.max(0, 100 - (STAGES.length-openedCount)*12 - (S.aiRun?0:8));
+  S.gripA = Math.max(0, 100 - (3-hits)*15 - bad*10);
+  paintMeters();
+  if(openedCount<STAGES.length)
+    improve.push('You committed with '+(STAGES.length-openedCount)+' stage(s) never opened. The figure you did not look at is the one that decides whether your action was right.');
+
+  var total=pts.reduce(function(a,p){return a+p[1];},0);
+  finish(total,pts,strengths,improve);
+}
+
+function finish(total,pts,strengths,improve){
+  var M=model(S.simCfg||BASE);
+  var elapsed=S.started?Math.round((Date.now()-S.started)/60000):0;
+  var probNames=S.problems.map(function(k){ return PROBLEMS.filter(function(p){return p.k===k;})[0].t
+      +(S.ranks[k]?' — '+S.ranks[k]:''); });
+  var intNames=S.interventions.map(function(k){ return INTERVENTIONS.filter(function(i){return i.k===k;})[0].t; });
+  var actMap={A:'Increase OP registration capacity',B:'Focus on discharge processing',
+              C:'Increase emergency staffing',D:'Increase laboratory capacity'};
+
+  var html='<div class="card"><h3>Hospital Operations Optimization Report</h3>'
+   +'<p class="muted">ALIZON SmartCare Medical Centre · Case 01 — Monday morning congestion · '
+   +'time on desk '+elapsed+' min</p>'
+   +'<div class="scorebig">'+total+' <span style="font-size:16px;font-weight:600;color:var(--muted)">/ 100</span></div>'
+   +'<p class="muted">Operational grip <b>'+S.gripA+'%</b> · Evidence discipline <b>'+S.discB+'%</b> · '
+   +'stages opened '+Object.keys(S.opened).length+' of '+STAGES.length+' · simulation runs '+S.simRuns+'</p>'
+
+   +'<table class="d"><tr><th>Element</th><th>Mark</th></tr>'
+   +pts.map(function(p){ return '<tr><td>'+esc(p[0])+'</td><td class="n">'+p[1]+' / '+p[2]+'</td></tr>'; }).join('')
+   +'</table>'
+
+   +'<div class="lbl">Operational data at the time of decision</div>'
+   +'<table class="d">'
+   +'<tr><td>OP waiting time</td><td class="n">'+r0(LIVE.opWait)+' min</td></tr>'
+   +'<tr><td>Bed occupancy</td><td class="n">'+LIVE.occupancy.toFixed(0)+'%</td></tr>'
+   +'<tr><td>Delayed discharges</td><td class="n">'+LIVE.delayedDischarges+'</td></tr>'
+   +'<tr><td>Laboratory TAT</td><td class="n">'+r0(LIVE.labTAT)+' min</td></tr></table>'
+
+   +'<div class="lbl">Problems identified</div><ul><li>'+(probNames.length?probNames.map(esc).join('</li><li>'):'none')+'</li></ul>'
+   +'<div class="lbl">Interventions selected</div><ul><li>'+(intNames.length?intNames.map(esc).join('</li><li>'):'none')+'</li></ul>'
+   +'<div class="lbl">Simulation result</div>'
+   +(S.simCfg
+      ? '<table class="d"><tr><th>Indicator</th><th>Baseline</th><th>Simulated</th></tr>'
+        +'<tr><td>OP waiting time</td><td class="n">'+r0(LIVE.opWait)+' min</td><td class="n">'+r0(M.opWait)+' min</td></tr>'
+        +'<tr><td>Delayed discharges</td><td class="n">'+LIVE.delayedDischarges+'</td><td class="n">'+M.delayedDischarges+'</td></tr>'
+        +'<tr><td>Bed occupancy</td><td class="n">'+LIVE.occupancy.toFixed(0)+'%</td><td class="n">'+M.occupancy.toFixed(0)+'%</td></tr></table>'
+      : '<p class="muted">No simulation was run.</p>')
+
+   +'<div class="lbl">Management decision</div><p>'+esc(actMap[S.firstAction]||'—')+'</p>'
+   +'<div class="lbl">Student reflection</div><p>'+(S.reasoning?esc(S.reasoning):'<span class="muted">none recorded</span>')+'</p>'
+
+   +'<div class="fb yes"><div class="hd">Strengths</div>'
+     +(strengths.length?'<ul><li>'+strengths.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+   +'<div class="fb no"><div class="hd">Where it could be stronger</div>'
+     +(improve.length?'<ul><li>'+improve.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+
+   +'<div class="note">All simulated figures in this report are operational estimates from a capacity model. '
+   +'They are not clinical predictions and must not be used to decide the care of any individual patient.</div>'
+   +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
+
+  $('caseFb').innerHTML='<div class="fb yes"><div class="hd">Decision recorded</div>Your report is on the '
+    +'<b>Result &amp; Record</b> tab.</div>';
+  var _re=$('resEmpty'); if(_re) _re.style.display='none';
+  $('resBox').innerHTML=html;
+  goTab('res');
+
+  var OPTS={module:'Hospital Administration · Operations & Patient Flow',
+            title:'AI-Powered Hospital Operations, Patient Flow & Resource Optimization',
+            programme:'Hospital Administration AI', pct:total,
+            resultText:total+'/100 · grip '+S.gripA+'% · evidence '+S.discB+'%'};
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme,
+    submitOpts:OPTS, titleField:{label:'Operations decision', placeholder:'e.g. Discharge-first intervention for Monday peak'},
+    minWords:400,
+    attachments:[{label:'1. Operations report / printout (PDF)'},{label:'2. Reflection on the intervention chosen (PDF)'}],
+    reportHtml:html
+  });
+}
+
+/* ============================================================
+   START
+   ============================================================ */
+var clockTimer=null;
+$('startBtn').addEventListener('click',function(){
+  /* Restarting must be a clean start — otherwise a second press re-renders the
+     desk while keeping the previous run's selections and meters. */
+  S={ opened:{}, aiRun:false, simRuns:0, simCfg:null, started:Date.now(),
+      problems:[], ranks:{}, interventions:[], firstAction:null, reasoning:'',
+      gripA:100, discB:100, ended:false };
+  cfg=Object.assign({},BASE);
+  goTab('work'); desk();
+  if(clockTimer) clearInterval(clockTimer);
+  clockTimer=setInterval(tickClock,1000); tickClock();
+});
+paintMeters();
+})();
+</script>
+</body>
+</html>

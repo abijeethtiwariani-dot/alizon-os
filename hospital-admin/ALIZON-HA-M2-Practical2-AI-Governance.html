@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Hospital Administration · AI Administrator Intelligence &amp; Responsible AI Governance</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#161226,#2a1f3d);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:162px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(186px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.tile .n{font-size:11px;color:var(--muted);font-weight:600}
+.tile .v{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+
+.out{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:13px;line-height:1.7;margin:10px 0;white-space:pre-wrap}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.opt:disabled{opacity:.5;cursor:default}
+.stack{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.stack .opt{border-radius:11px;padding:9px 13px}
+textarea,select,input[type=text],input[type=number]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:90px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+
+.rec{border:1px solid var(--line);border-radius:13px;padding:13px 15px;margin:10px 0;background:#fff}
+.rec.done{border-color:#b7e0c5;background:#f7fcf9}
+.rec .rh{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.rec .rh b{font-size:14px}
+.conf{font-size:11px;font-weight:800;padding:2px 9px;border-radius:100px;background:#eef1f4;color:#43506b}
+.evalgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(198px,1fr));gap:8px;margin:9px 0}
+.ev{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.ev label{display:block;font-size:11.5px;font-weight:800;margin-bottom:4px}
+.ev select{width:100%}
+.decide{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.chk{display:flex;align-items:flex-start;gap:8px;padding:7px 9px;border:1px solid var(--line);border-radius:10px;background:#fff;margin:5px 0;font-size:13px;cursor:pointer}
+.chk input{margin-top:3px}
+.chk.on{border-color:var(--crimson);background:#fdf3f3}
+.proj{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:11px;padding:9px 12px;margin:6px 0;background:#fff}
+.proj.sel{border-color:var(--crimson);background:#fdf3f3}
+.proj .pn{flex:1;min-width:210px;font-weight:700;font-size:13px}
+.budget{position:sticky;bottom:0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 13px;margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.budget b{font-variant-numeric:tabular-nums}
+.step{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.step.locked{opacity:.42;pointer-events:none}
+.stepno{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--crimson)}
+.matrix input[type=number]{width:64px}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=2"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 2 · Practical 2</div>
+    <h1>AI Hospital Administrator Intelligence &amp; Responsible AI Decision System</h1>
+    <p>You are the Hospital Administrator and AI Governance Officer at ALIZON SmartCare. An AI layer now
+       sits across administration and it produces recommendations faster than anyone can check them.
+       Your job is not to use the AI. Your job is to decide, case by case, whether the hospital should
+       accept it, change it, supervise it, or refuse it — and to be able to say why.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">AI command centre</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="haaig"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Every AI recommendation in the inbox must be evaluated on six dimensions before you
+        are allowed to decide on it. That is deliberate: an administrator who accepts a recommendation
+        without knowing what it was built from has not made a decision, they have forwarded one.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Governance integrity</b> falls when you accept
+        an unsafe recommendation, mishandle patient data, or let an unverified claim into an official
+        report. <b>Evidence verification</b> falls when you decide without opening the data behind the
+        recommendation.</p>
+      <div class="synth"><b>Educational simulation on synthetic data.</b> Every dataset, alert, confidence
+        figure and cost in this laboratory is generated for teaching. Nothing here is a real hospital
+        record, a real financial forecast, or advice about any individual patient.</div>
+      <button class="btn" id="startBtn">▶ Enter the AI command centre</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Recommendations closed</div><div class="v" id="mSeen">0 / 5</div></div>
+      <div class="meter" id="mAW"><div class="k">Governance integrity</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Evidence verification</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Work the command centre to generate your executive report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=4"></script>
+<script src="../alizon-practical-report.js?v=4"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=3"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script>
+(function(){
+'use strict';
+function $(i){ return document.getElementById(i); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+function inr(n){ return '₹'+Number(n).toLocaleString('en-IN'); }
+
+/* ============================================================
+   HOSPITAL PERFORMANCE — synthetic
+   ============================================================ */
+var PERF=[
+ {n:'OP attendance (month)',      v:'4,950', s:'normal'},
+ {n:'Bed occupancy',              v:'91%',   s:'high'},
+ {n:'Average OP waiting',         v:'65 min',s:'critical'},
+ {n:'Cardiology waiting (MoM)',   v:'+12%',  s:'high'},
+ {n:'Discharge before noon',      v:'31%',   s:'high'},
+ {n:'Complaints (month)',         v:'58',    s:'moderate'},
+ {n:'Data completeness (HIS)',    v:'62%',   s:'critical'},
+ {n:'Open AI recommendations',    v:'5',     s:'moderate'}
+];
+
+/* Six months of synthetic history — the predictive centre reads this */
+var HIST=[
+ {m:'Jan',op:4100,occ:79,wait:42},{m:'Feb',op:4300,occ:82,wait:45},
+ {m:'Mar',op:4500,occ:85,wait:49},{m:'Apr',op:4650,occ:87,wait:53},
+ {m:'May',op:4800,occ:89,wait:59},{m:'Jun',op:4950,occ:91,wait:65}
+];
+
+/* The verified dataset behind the AI's monthly report. The report will
+   contradict this — that is the hallucination case. */
+var DATASET={
+ cardioWaitChange:+12, cardioWaitJan:38, cardioWaitJun:43,
+ opWaitChange:+23, complaintsChange:+16, dischargeBeforeNoon:31
+};
+
+/* ============================================================
+   AI RECOMMENDATION INBOX
+   ============================================================ */
+var RECS=[
+ {k:'r1', t:'Increase OP appointment capacity in the 10:00–12:00 block',
+  alert:'OP waiting time predicted to increase by 22% tomorrow.',
+  conf:87, complete:62, basis:'Appointment book, arrival log, 6-month waiting trend.',
+  detail:'The model projects tomorrow\'s waiting time from the last 14 days of arrivals. Fourteen of those days are incomplete — the registration feed failed intermittently between the 3rd and the 11th, and missing arrivals are being read as quiet periods.',
+  best:'modify',
+  scoring:{accept:-6,modify:6,reject:1,review:4},
+  why:'The recommendation is directionally sensible and the confidence is high, but it is computed over a dataset that is 62% complete, and the gaps are not random — they are concentrated in the busiest week. High model confidence is a statement about the model\'s internal consistency, not about whether the data underneath it was any good. Modify (apply it to the two hours where the data is intact, and repair the feed) or send for human review; accepting it wholesale imports the gap.'},
+
+ {k:'r2', t:'Auto-reschedule appointments flagged as high no-show risk',
+  alert:'41 no-shows yesterday. Model can pre-emptively move high-risk bookings to overflow slots.',
+  conf:79, complete:44, basis:'Behavioural no-show model over synthetic booking histories.',
+  detail:'The high-risk group is disproportionately made up of first-visit patients with no attendance history, and of patients booked through the walk-in channel rather than online.',
+  best:'reject',
+  scoring:{accept:-10,modify:2,reject:7,review:5},
+  why:'Automatically moving a patient\'s appointment because a model scored them is a decision about a person taken without a person. The high-risk group here is mostly patients with no history at all, so the model is penalising the absence of data — and the walk-in channel skew means the burden falls on the patients least able to come back. Reject as designed; a reminder or a confirmation call is the proportionate administrative response.'},
+
+ {k:'r3', t:'Publish the AI-generated monthly performance summary to the Board pack',
+  alert:'Monthly summary ready. Includes department trends and recommended actions.',
+  conf:92, complete:88, basis:'HIS extract, complaints register, discharge log.',
+  detail:'The draft states: "The hospital\'s Cardiology waiting time decreased by 35% last month." Open the verification panel below before you decide.',
+  best:'reject',
+  scoring:{accept:-14,modify:4,reject:8,review:6},
+  why:'The summary contains a claim the dataset contradicts: Cardiology waiting rose by 12%, it did not fall by 35%. An AI-generated statement that enters a Board pack becomes an official hospital record. It must be verified line by line against source data before publication, and a document with a false performance claim in it is rejected, corrected and re-verified — not published with a caveat.'},
+
+ {k:'r4', t:'Route all Level 1 and Level 2 escalations to the automated response queue',
+  alert:'Coordinator workload above threshold. Automation available for routine escalations.',
+  conf:71, complete:81, basis:'Escalation log, coordinator time study.',
+  detail:'Level 1 and Level 2 are routine delay and extended waiting. Level 3 and above stay with a human. The automated queue sends the standard delay message and records the event.',
+  best:'modify',
+  scoring:{accept:2,modify:7,reject:0,review:5},
+  why:'This is the one recommendation where automation is broadly appropriate — routine delay messages are exactly the repetitive administrative work that should be automated. But it needs a modification: a rule that escalates automatically to a human if the same token is auto-messaged twice, otherwise a patient can be held indefinitely inside an automated loop that never notices it is failing.'},
+
+ {k:'r5', t:'Share the full patient contact dataset with the analytics vendor for model tuning',
+  alert:'Vendor requests dataset to improve prediction accuracy.',
+  conf:68, complete:95, basis:'Vendor integration request.',
+  detail:'The requested export includes patient name, phone number, address, full appointment history and previous hospital visits.',
+  best:'reject',
+  scoring:{accept:-16,modify:1,reject:8,review:4},
+  why:'Model tuning for appointment scheduling does not require names, phone numbers or addresses. Exporting identifiable patient data to an external party for a purpose it was not collected for is a data-protection failure regardless of the accuracy gain, and no confidence score makes it acceptable. Reject, and if the work is genuinely needed, supply the minimum de-identified fields under a data-sharing agreement.'}
+];
+var EVAL_DIMS=[
+ {k:'quality',  t:'Data quality',   q:'Is the dataset complete enough?'},
+ {k:'relevance',t:'Data relevance', q:'Is this data appropriate for this decision?'},
+ {k:'bias',     t:'Bias',           q:'Could this disadvantage a group?'},
+ {k:'explain',  t:'Explainability', q:'Can you explain why the AI said this?'},
+ {k:'privacy',  t:'Privacy',        q:'Is patient information protected?'},
+ {k:'oversight',t:'Human oversight',q:'Does this need human review?'}
+];
+/* The evaluation the data actually supports, used only for feedback quality */
+var EVAL_TRUTH={
+ r1:{quality:'poor',relevance:'yes',bias:'no',explain:'partly',privacy:'ok',oversight:'yes'},
+ r2:{quality:'poor',relevance:'no', bias:'yes',explain:'partly',privacy:'risk',oversight:'yes'},
+ r3:{quality:'ok',  relevance:'yes',bias:'no', explain:'no',    privacy:'ok',  oversight:'yes'},
+ r4:{quality:'ok',  relevance:'yes',bias:'no', explain:'yes',   privacy:'ok',  oversight:'yes'},
+ r5:{quality:'ok',  relevance:'no', bias:'no', explain:'partly',privacy:'risk',oversight:'yes'}
+};
+
+/* ============================================================
+   RESPONSIBLE AI CASES
+   ============================================================ */
+var MINIMISE=[
+ {k:'name',   t:'Patient name',                need:false},
+ {k:'phone',  t:'Phone number',                need:true},
+ {k:'address',t:'Address',                     need:false},
+ {k:'hist',   t:'Appointment history (counts only)', need:true},
+ {k:'visits', t:'Previous hospital visits (full clinical record)', need:false},
+ {k:'slot',   t:'Booked slot and department',  need:true},
+ {k:'channel',t:'Booking channel',             need:true},
+ {k:'id',     t:'Government ID number',        need:false}
+];
+var PRIVACY_OPTS=[
+ {k:'ignore', t:'Ignore it — no patient has complained.',ok:false,
+  why:'A breach is reportable because it happened, not because someone noticed. Ignoring it is itself a second failure and usually the one that ends careers.'},
+ {k:'delete', t:'Delete the spreadsheet from the external tool and say nothing.',ok:false,
+  why:'Deleting your copy does not retract the data — it may already be retained, cached or used for training by the external service. And quietly deleting evidence obstructs the investigation that is now required.'},
+ {k:'report', t:'Report the incident and follow the hospital’s privacy and incident-response procedure — contain, notify the data protection officer, assess the scope, record it.',ok:true,
+  why:'Correct. Containment first, then notification through the defined route, then a scoped assessment of what left the building and whose data it was. The procedure exists precisely so that this decision is not improvised under pressure.'},
+ {k:'continue',t:'Continue using the tool but remove identifiers next time.',ok:false,
+  why:'A corrected future practice does not address the disclosure that has already occurred, and continuing to use an unapproved external tool compounds it.'}
+];
+var BIAS_TABLE=[
+ {cat:'Online booking, repeat patient',   pref:'72%', slots:'Morning', n:1840},
+ {cat:'Online booking, first visit',      pref:'61%', slots:'Morning', n:640},
+ {cat:'Telephone booking, repeat patient',pref:'44%', slots:'Afternoon',n:1120},
+ {cat:'Walk-in registration',             pref:'19%', slots:'Late afternoon',n:1350}
+];
+var BIAS_OPTS=[
+ {k:'nothing',t:'Nothing is wrong — the model is allocating on attendance probability, which is legitimate.',ok:false,
+  why:'It is allocating on a proxy. Attendance probability here tracks booking channel, and booking channel tracks who has a smartphone and daytime freedom to call. The model has learned an access inequality and is now enforcing it.'},
+ {k:'proxy',  t:'Booking channel is acting as a proxy for socioeconomic access, so the model is systematically pushing one group to the least convenient slots.',ok:true,
+  why:'Correct. The variable looks operational and behaves demographically. This is the most common way a scheduling model becomes discriminatory without anyone intending it.'},
+ {k:'data',   t:'The walk-in group simply has fewer bookings, so the percentage is unreliable.',ok:false,
+  why:'1,350 records is not a small sample, and the gap is far too large to be sampling noise.'},
+ {k:'fix',    t:'Retrain the model on more data and the difference will resolve itself.',ok:false,
+  why:'More of the same data reproduces the same pattern more confidently. The variable itself has to be examined, and the allocation rule constrained.'}
+];
+
+/* ============================================================
+   INVESTMENT CASE — ₹25 lakh
+   ============================================================ */
+var BUDGET=2500000;
+var PROJECTS=[
+ {k:'queue',  t:'AI Queue System',              cost:700000, pat:9,ops:9,cst:5,dif:5,priv:4,str:8},
+ {k:'appt',   t:'Smart Appointment System',     cost:500000, pat:8,ops:8,cst:7,dif:7,priv:6,str:7},
+ {k:'comm',   t:'AI Communication Platform',    cost:400000, pat:8,ops:6,cst:8,dif:8,priv:5,str:6},
+ {k:'pred',   t:'Predictive Analytics',         cost:600000, pat:5,ops:7,cst:6,dif:4,priv:4,str:8},
+ {k:'nav',    t:'Digital Patient Navigation',   cost:300000, pat:7,ops:5,cst:9,dif:8,priv:7,str:5},
+ {k:'gov',    t:'AI Governance & Audit System', cost:400000, pat:4,ops:5,cst:8,dif:7,priv:10,str:9}
+];
+var CRITERIA=[
+ {k:'pat',t:'Patient impact',           w:25},
+ {k:'ops',t:'Operational impact',       w:25},
+ {k:'cst',t:'Cost',                     w:15},
+ {k:'dif',t:'Implementation difficulty',w:15},
+ {k:'priv',t:'Privacy risk',            w:10},
+ {k:'str',t:'Strategic value',          w:10}
+];
+function priorityScore(p){
+  return CRITERIA.reduce(function(a,c){ return a + (p[c.k]*c.w); },0)/100;
+}
+
+/* ============================================================
+   CASE 02 — EXECUTIVE DECISION
+   ============================================================ */
+var EXEC=[
+ {k:'A',t:'Fully implement AI across administration now',score:2,
+  why:'With HIS data completeness at 62%, a hospital-wide rollout industrialises the data problem. Every model built on this record inherits the same gaps, and there is no governance system in place to catch it.'},
+ {k:'B',t:'Pilot selected AI systems with governance and human review in place',score:10,
+  why:'The defensible position on this evidence: fund the governance and audit capability first, pilot the two systems whose data is adequate, keep a human in the loop, and set the measurable conditions under which the pilot expands or stops.'},
+ {k:'C',t:'Delay implementation until data quality is resolved',score:6,
+  why:'Defensible and safe, and better than a full rollout. But it treats data quality as a project that finishes before AI starts, when in practice a governed pilot is usually how the data problem gets funded and fixed.'},
+ {k:'D',t:'Reject the proposed system entirely',score:3,
+  why:'The evidence shows genuine operational pressure and at least one recommendation that was well founded. A blanket rejection ignores that, and it leaves the hospital with the same waiting times and no plan.'}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var S={};
+function freshState(){
+  return {started:Date.now(), evals:{}, decisions:{}, opened:{}, verified:false,
+          minimise:{}, privacy:null, halluc:null, bias:null, confCall:null,
+          predAction:{}, funded:[], matrix:{}, matrixRun:false,
+          exec:null, reasoning:'', integ:100, evid:100, ended:false, breaches:0};
+}
+var tabs=document.querySelectorAll('.tabs button');
+[].forEach.call(tabs,function(b){ b.addEventListener('click',function(){ goTab(b.getAttribute('data-p')); }); });
+function goTab(p){
+  [].forEach.call(tabs,function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  ['brief','work','res'].forEach(function(k){ $('p-'+k).classList.toggle('on',k===p); });
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function paintMeters(){
+  $('mA').textContent=S.integ+'%'; $('bA').style.width=S.integ+'%';
+  $('mB').textContent=S.evid+'%'; $('bB').style.width=S.evid+'%';
+  $('mAW').className='meter'+(S.integ<55?' bad':S.integ<80?' warn':'');
+  $('mBW').className='meter'+(S.evid<55?' bad':S.evid<80?' warn':'');
+  $('mSeen').textContent=Object.keys(S.decisions).length+' / '+RECS.length;
+}
+function tickClock(){
+  var s=Math.floor((Date.now()-S.started)/1000), m=Math.floor(s/60);
+  $('mClock').textContent=(m<10?'0':'')+m+':'+((s%60)<10?'0':'')+(s%60);
+}
+
+/* ============================================================
+   COMMAND CENTRE
+   ============================================================ */
+function desk(){
+  $('workArea').innerHTML=sPerf()+sInbox()+sMinimise()+sPrivacy()+sHalluc()+sBias()+sConf()+sPredict()+sInvest()+sMatrix()+sExec();
+  wireInbox(); wireMinimise(); wirePrivacy(); wireHalluc(); wireBias(); wireConf();
+  wirePredict(); wireInvest(); wireMatrix(); wireExec();
+  paintMeters(); relock();
+}
+
+/* --- 1. performance --- */
+function sPerf(){
+  return '<div class="card"><h3>Hospital performance</h3>'
+   +'<p class="muted">ALIZON SmartCare Multispecialty · month closed · synthetic dataset</p>'
+   +'<div class="tiles">'+PERF.map(function(p){
+      return '<div class="tile"><div class="n">'+esc(p.n)+'</div><div class="v">'+esc(p.v)+'</div>'
+            +'<span class="s s-'+p.s+'">'+p.s+'</span></div>'; }).join('')+'</div>'
+   +'<div class="note">Two figures on this board decide almost everything you are about to do: waiting time '
+   +'is rising, and the record it is measured from is 62% complete.</div></div>';
+}
+
+/* --- 2. AI recommendation inbox --- */
+function sInbox(){
+  return '<div class="card"><h3>AI recommendation inbox</h3>'
+   +'<p class="muted">Five open recommendations. Each must be evaluated on all six dimensions before you '
+   +'can decide on it — and opening the basis panel is part of the evaluation, not an optional extra.</p>'
+   +RECS.map(function(r){
+     return '<div class="rec" id="rec-'+r.k+'">'
+      +'<div class="rh"><b>'+esc(r.t)+'</b><span class="conf">confidence '+r.conf+'%</span>'
+      +'<span class="conf">data completeness '+r.complete+'%</span></div>'
+      +'<p class="muted" style="margin:5px 0">'+esc(r.alert)+'</p>'
+      +'<button class="btn ghost sm" data-open="'+r.k+'">Open the basis for this recommendation</button>'
+      +'<div id="ro-'+r.k+'"></div>'
+      +'<div class="evalgrid">'+EVAL_DIMS.map(function(d){
+         return '<div class="ev"><label>'+esc(d.t)+'</label><div class="muted" style="font-size:11px;margin-bottom:4px">'+esc(d.q)+'</div>'
+           +'<select data-ev="'+r.k+'" data-dim="'+d.k+'"><option value="">assess…</option>'
+           +'<option value="yes">Yes / adequate</option><option value="partly">Partly</option>'
+           +'<option value="no">No / inadequate</option></select></div>'; }).join('')+'</div>'
+      +'<div class="decide">'
+      +'<button class="opt" data-dec="'+r.k+'" data-v="accept">Accept</button>'
+      +'<button class="opt" data-dec="'+r.k+'" data-v="modify">Modify</button>'
+      +'<button class="opt" data-dec="'+r.k+'" data-v="reject">Reject</button>'
+      +'<button class="opt" data-dec="'+r.k+'" data-v="review">Request human review</button>'
+      +'</div><div id="rf-'+r.k+'"></div></div>'; }).join('')
+   +'</div>';
+}
+function wireInbox(){
+  [].forEach.call(document.querySelectorAll('[data-open]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-open'); var r=RECS.filter(function(x){return x.k===k;})[0];
+      S.opened[k]=1; b.disabled=true;
+      $('ro-'+k).innerHTML='<div class="out">BASIS\n'+r.basis+'\n\n'+r.detail+'</div>';
+      paintMeters();
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-ev]'),function(sel){
+    sel.addEventListener('change',function(){
+      var k=sel.getAttribute('data-ev'), d=sel.getAttribute('data-dim');
+      S.evals[k]=S.evals[k]||{}; S.evals[k][d]=sel.value;
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-dec]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-dec'), v=b.getAttribute('data-v');
+      var r=RECS.filter(function(x){return x.k===k;})[0];
+      var done=EVAL_DIMS.filter(function(d){ return (S.evals[k]||{})[d.k]; }).length;
+      if(done<EVAL_DIMS.length){
+        $('rf-'+k).innerHTML='<div class="fb no"><div class="hd">Evaluate first</div>'+done+' of '
+          +EVAL_DIMS.length+' dimensions assessed. Deciding on a recommendation you have not evaluated is '
+          +'not a decision — it is a forward.</div>';
+        return;
+      }
+      if(!S.opened[k]){ S.evid=Math.max(0,S.evid-12);
+        $('rf-'+k).innerHTML='<div class="fb warnb"><div class="hd">Decided without opening the basis</div>'
+          +'You have assessed six dimensions without reading what the recommendation was built from. That is '
+          +'recorded against evidence verification.</div>'; }
+      S.decisions[k]=v;
+      [].forEach.call(document.querySelectorAll('[data-dec="'+k+'"]'),function(x){ x.classList.toggle('sel',x===b); });
+      $('rec-'+k).classList.add('done');
+      var delta=r.scoring[v];
+      if(delta<0){ S.integ=Math.max(0,S.integ+Math.round(delta/2)); if(r.k==='r5'||r.k==='r3') S.breaches++; }
+      paintMeters();
+      var tone=(v===r.best)?'yes':(delta>0?'warnb':'no');
+      $('rf-'+k).innerHTML=($('rf-'+k).innerHTML||'')+'<div class="fb '+tone+'"><div class="hd">'
+        +(v===r.best?'Sound governance decision':delta>0?'Defensible, but not the strongest option':'This is the decision the case is designed to catch')
+        +'</div>'+esc(r.why)+'</div>';
+      relock();
+    });
+  });
+}
+
+/* --- 3. data minimisation --- */
+function sMinimise(){
+  return '<div class="card step" id="stMin"><div class="stepno">Responsible AI · Scenario A</div>'
+   +'<h3>Excessive patient data</h3>'
+   +'<p class="muted">The scheduling model asks for the fields below. Tick only the fields the '
+   +'administrative task actually requires — reducing no-shows on booked appointments.</p>'
+   +MINIMISE.map(function(f){
+     return '<label class="chk" data-min="'+f.k+'"><input type="checkbox" data-mc="'+f.k+'"> '+esc(f.t)+'</label>'; }).join('')
+   +'<button class="btn ghost sm" id="minGo">Confirm the data request</button><div id="minFb"></div></div>';
+}
+function wireMinimise(){
+  [].forEach.call(document.querySelectorAll('[data-mc]'),function(c){
+    c.addEventListener('change',function(){
+      S.minimise[c.getAttribute('data-mc')]=c.checked;
+      c.parentNode.classList.toggle('on',c.checked);
+    });
+  });
+  $('minGo').addEventListener('click',function(){
+    var over=MINIMISE.filter(function(f){ return !f.need && S.minimise[f.k]; });
+    var missing=MINIMISE.filter(function(f){ return f.need && !S.minimise[f.k]; });
+    if(over.length) S.integ=Math.max(0,S.integ-6*over.length);
+    paintMeters();
+    $('minFb').innerHTML='<div class="fb '+(over.length?'no':missing.length?'warnb':'yes')+'"><div class="hd">'
+      +(over.length?'More data than the task needs':missing.length?'Under-specified':'Data minimisation applied correctly')+'</div>'
+      +(over.length?'You requested '+over.map(function(f){return '<b>'+esc(f.t)+'</b>';}).join(', ')
+        +'. None of these are required to remind someone about an appointment. Data minimisation is not a '
+        +'preference — collecting more than the purpose requires is the failure, whether or not it is later misused.'
+       :missing.length?'You left out '+missing.map(function(f){return esc(f.t);}).join(', ')+', which the task does need. Minimisation means the minimum that works, not the minimum possible.'
+       :'Phone number, booked slot, department, booking channel and appointment counts are sufficient to run a reminder process. Name, address, ID and the clinical record are not needed and were correctly excluded.')
+      +'</div>';
+    relock();
+  });
+}
+
+/* --- 4. privacy incident --- */
+function sPrivacy(){
+  return '<div class="card step" id="stPriv"><div class="stepno">Responsible AI · Incident</div>'
+   +'<h3>Privacy incident simulation</h3>'
+   +'<p>A staff member has uploaded a spreadsheet containing patient identifiers into an external AI tool '
+   +'that the hospital has not approved. They have told you, and nobody else knows.</p>'
+   +'<div class="stack">'+PRIVACY_OPTS.map(function(o){
+      return '<button class="opt" data-pv="'+o.k+'">'+esc(o.t)+'</button>'; }).join('')+'</div>'
+   +'<div id="pvFb"></div></div>';
+}
+function wirePrivacy(){
+  [].forEach.call(document.querySelectorAll('[data-pv]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-pv'); var o=PRIVACY_OPTS.filter(function(x){return x.k===k;})[0];
+      S.privacy=k;
+      [].forEach.call(document.querySelectorAll('[data-pv]'),function(x){ x.classList.toggle('sel',x===b); });
+      if(!o.ok){ S.integ=Math.max(0,S.integ-14); S.breaches++; }
+      paintMeters();
+      $('pvFb').innerHTML='<div class="fb '+(o.ok?'yes':'no')+'"><div class="hd">'+(o.ok?'Correct response':'Not an acceptable response')+'</div>'+esc(o.why)+'</div>';
+      relock();
+    });
+  });
+}
+
+/* --- 5. hallucination --- */
+function sHalluc(){
+  return '<div class="card step" id="stHall"><div class="stepno">Responsible AI · Verification</div>'
+   +'<h3>AI-generated report — verify before it becomes a hospital record</h3>'
+   +'<div class="out">AI MONTHLY PERFORMANCE SUMMARY (DRAFT)\n\n'
+   +'  • OP attendance rose to 4,950 for the month.\n'
+   +'  • Bed occupancy closed at 91%.\n'
+   +'  • The hospital\'s Cardiology waiting time decreased by 35% last month.\n'
+   +'  • Complaints increased by 16%.\n'
+   +'  • Discharge before noon remained at 31%.</div>'
+   +'<button class="btn ghost sm" id="verifyBtn">Open the source dataset</button><div id="dsOut"></div>'
+   +'<div class="lbl">Which statement, if any, is not supported by the data?</div>'
+   +'<div class="stack" id="hallWrap">'
+   +'<button class="opt" data-h="op">OP attendance rose to 4,950</button>'
+   +'<button class="opt" data-h="occ">Bed occupancy closed at 91%</button>'
+   +'<button class="opt" data-h="card">Cardiology waiting time decreased by 35%</button>'
+   +'<button class="opt" data-h="comp">Complaints increased by 16%</button>'
+   +'<button class="opt" data-h="none">All statements are supported</button></div>'
+   +'<div id="hallFb"></div></div>';
+}
+function wireHalluc(){
+  $('verifyBtn').addEventListener('click',function(){
+    S.verified=true; $('verifyBtn').disabled=true;
+    $('dsOut').innerHTML='<table class="d"><tr><th>Month</th><th>OP attendance</th><th>Occupancy</th><th>Average OP wait</th></tr>'
+     +HIST.map(function(h){ return '<tr'+(h.m==='Jun'?' class="hot"':'')+'><td>'+h.m+'</td><td class="n">'+h.op.toLocaleString('en-IN')
+        +'</td><td class="n">'+h.occ+'%</td><td class="n">'+h.wait+' min</td></tr>'; }).join('')+'</table>'
+     +'<table class="d"><tr><th>Verified figure</th><th>Value</th></tr>'
+     +'<tr class="hot"><td>Cardiology waiting time, month on month</td><td class="n">+'+DATASET.cardioWaitChange+'% (38 → 43 min)</td></tr>'
+     +'<tr><td>OP waiting time, six months</td><td class="n">+'+DATASET.opWaitChange+'%</td></tr>'
+     +'<tr><td>Complaints, month on month</td><td class="n">+'+DATASET.complaintsChange+'%</td></tr>'
+     +'<tr><td>Discharge before noon</td><td class="n">'+DATASET.dischargeBeforeNoon+'%</td></tr></table>';
+  });
+  [].forEach.call(document.querySelectorAll('[data-h]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-h'); S.halluc=k;
+      [].forEach.call(document.querySelectorAll('[data-h]'),function(x){ x.classList.toggle('sel',x===b); });
+      if(!S.verified){ S.evid=Math.max(0,S.evid-15); }
+      if(k!=='card'){ S.integ=Math.max(0,S.integ-12); S.breaches++; }
+      paintMeters();
+      $('hallFb').innerHTML='<div class="fb '+(k==='card'?'yes':'no')+'"><div class="hd">'
+        +(k==='card'?'Correct — unsupported claim identified':'That statement is supported by the dataset')+'</div>'
+        +(k==='card'
+          ? 'The dataset shows Cardiology waiting time <b>rose 12%</b>, from 38 to 43 minutes. The draft claims a '
+           +'35% decrease. The correct administrative action is to reject the statement, correct it against source '
+           +'data, and record that a human verified the corrected figure before the pack is issued. An AI-generated '
+           +'sentence that enters a Board pack becomes an official hospital record, and the administrator who '
+           +'signed it owns it.'
+          : 'Check it against the source table again. The figure that contradicts the dataset is the Cardiology '
+           +'waiting time — every other statement in the draft matches.')
+        +'</div>'
+        +(!S.verified?'<div class="fb warnb"><div class="hd">Answered without opening the dataset</div>You reached a conclusion about a factual claim without looking at the source. That is the exact habit this exercise exists to break.</div>':'');
+      relock();
+    });
+  });
+}
+
+/* --- 6. bias --- */
+function sBias(){
+  return '<div class="card step" id="stBias"><div class="stepno">Responsible AI · Fairness</div>'
+   +'<h3>AI scheduling bias case</h3>'
+   +'<p class="muted">Synthetic allocation data. "Preferred slot" means the patient received one of their two '
+   +'stated preferred appointment windows.</p>'
+   +'<table class="d"><tr><th>Patient category</th><th>Records</th><th>Received preferred slot</th><th>Typical slot allocated</th></tr>'
+   +BIAS_TABLE.map(function(b){ return '<tr'+(b.pref==='19%'?' class="hot"':'')+'><td>'+esc(b.cat)+'</td><td class="n">'
+      +b.n.toLocaleString('en-IN')+'</td><td class="n">'+b.pref+'</td><td>'+esc(b.slots)+'</td></tr>'; }).join('')+'</table>'
+   +'<div class="lbl">What is happening here?</div>'
+   +'<div class="stack" id="biasWrap">'+BIAS_OPTS.map(function(o){
+      return '<button class="opt" data-bi="'+o.k+'">'+esc(o.t)+'</button>'; }).join('')+'</div>'
+   +'<div id="biasFb"></div></div>';
+}
+function wireBias(){
+  [].forEach.call(document.querySelectorAll('[data-bi]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-bi'); var o=BIAS_OPTS.filter(function(x){return x.k===k;})[0];
+      S.bias=k;
+      [].forEach.call(document.querySelectorAll('[data-bi]'),function(x){ x.classList.toggle('sel',x===b); });
+      if(!o.ok) S.integ=Math.max(0,S.integ-8);
+      paintMeters();
+      $('biasFb').innerHTML='<div class="fb '+(o.ok?'yes':'no')+'"><div class="hd">'+(o.ok?'Correct reading':'Not the explanation the data supports')+'</div>'+esc(o.why)
+        +(o.ok?'<br><br><b>Required human review:</b> constrain the allocation rule so no category can fall below a defined share of preferred slots, remove booking channel from the feature set, and re-audit monthly. Until that is in place the model should not allocate unsupervised.':'')+'</div>';
+      relock();
+    });
+  });
+}
+
+/* --- 7. confidence vs completeness --- */
+function sConf(){
+  return '<div class="card step" id="stConf"><div class="stepno">Responsible AI · Judgement</div>'
+   +'<h3>AI confidence against data reliability</h3>'
+   +'<table class="d"><tr><th>Signal</th><th>Value</th></tr>'
+   +'<tr><td>Model confidence in the recommendation</td><td class="n">87%</td></tr>'
+   +'<tr class="hot"><td>Completeness of the dataset it was computed from</td><td class="n">62%</td></tr>'
+   +'<tr><td>Are the missing records randomly distributed?</td><td class="n">No — concentrated in the busiest week</td></tr></table>'
+   +'<div class="lbl">Should the administrator accept the recommendation?</div>'
+   +'<div class="stack" id="confWrap">'
+   +'<button class="opt" data-cf="accept">Yes — 87% confidence is high and the model is well tested.</button>'
+   +'<button class="opt" data-cf="reject">No — high model confidence does not mean high decision reliability when the underlying data is incomplete, and here the gaps are systematic rather than random.</button>'
+   +'<button class="opt" data-cf="average">Average the two figures and treat it as roughly 75% reliable.</button></div>'
+   +'<div id="confFb"></div></div>';
+}
+function wireConf(){
+  [].forEach.call(document.querySelectorAll('[data-cf]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-cf'); S.confCall=k;
+      [].forEach.call(document.querySelectorAll('[data-cf]'),function(x){ x.classList.toggle('sel',x===b); });
+      if(k!=='reject') S.integ=Math.max(0,S.integ-9);
+      paintMeters();
+      var msg=k==='reject'
+        ? 'Correct. Confidence is the model\'s statement about its own internal consistency — how sure it is given what it was shown. It says nothing about whether what it was shown was complete or representative. Here the missing records sit in the busiest week, so the model is most confident precisely where it is least informed.'
+        : k==='average'
+        ? 'Confidence and completeness are not commensurable quantities and cannot be averaged. Doing so produces a number with no meaning that nevertheless looks like a justification, which is worse than either figure alone.'
+        : 'A model can be highly confident and comprehensively wrong. Confidence is computed from the data it has; it cannot account for the data it never saw. With gaps concentrated in the busiest week, this is the least reliable configuration, not the most.';
+      $('confFb').innerHTML='<div class="fb '+(k==='reject'?'yes':'no')+'"><div class="hd">'+(k==='reject'?'Correct':'Reconsider')+'</div>'+msg+'</div>';
+      relock();
+    });
+  });
+}
+
+/* --- 8. predictive operations --- */
+function sPredict(){
+  return '<div class="card step" id="stPred"><div class="stepno">Predictive management</div>'
+   +'<h3>Predictive operations centre</h3>'
+   +'<table class="d"><tr><th>Month</th><th>OP attendance</th><th>Occupancy</th><th>Average waiting</th></tr>'
+   +HIST.map(function(h){ return '<tr><td>'+h.m+'</td><td class="n">'+h.op.toLocaleString('en-IN')+'</td><td class="n">'
+      +h.occ+'%</td><td class="n">'+h.wait+' min</td></tr>'; }).join('')+'</table>'
+   +'<div class="out">SIMULATED TREND\n\nOP attendance +20.7% over six months. Occupancy +12 points.\n'
+   +'Average waiting +23 minutes (+54.8%).\n\nIf the current trend continues, operational pressure may increase next month.\n\n'
+   +'This is an extrapolation of six synthetic monthly points. It is not a forecast of real demand.</div>'
+   +'<div class="lbl">Select the responses you would take now (more than one is reasonable)</div>'
+   +'<div class="stack" id="predWrap">'
+   +'<button class="opt" data-pd="cap">Increase outpatient capacity</button>'
+   +'<button class="opt" data-pd="redist">Redistribute appointments across the week</button>'
+   +'<button class="opt" data-pd="disch">Improve discharge before noon</button>'
+   +'<button class="opt" data-pd="staff">Increase staffing across all departments</button>'
+   +'<button class="opt" data-pd="queue">Introduce digital queue management</button>'
+   +'<button class="opt" data-pd="wait">Wait another month for more data</button></div>'
+   +'<div id="predFb"></div></div>';
+}
+var PRED_GOOD={cap:1,redist:1,disch:1,queue:1};
+function wirePredict(){
+  [].forEach.call(document.querySelectorAll('[data-pd]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-pd');
+      S.predAction[k]=!S.predAction[k]; b.classList.toggle('sel',S.predAction[k]);
+      var msg='';
+      if(k==='disch'&&S.predAction[k]) msg='Discharge before noon is at 31% while occupancy is at 91%. This is the cheapest capacity in the hospital and it requires no purchase.';
+      if(k==='staff'&&S.predAction[k]) msg='Increasing staffing everywhere spends the most money for the least targeted effect — three of the six departments are not under pressure at all.';
+      if(k==='wait'&&S.predAction[k]) msg='Six consecutive months moving in the same direction is a trend, not noise. Waiting is a decision to arrive at the same problem a month later with less room to act.';
+      $('predFb').innerHTML=msg?'<div class="fb '+(PRED_GOOD[k]?'yes':'warnb')+'">'+esc(msg)+'</div>':'';
+      relock();
+    });
+  });
+}
+
+/* --- 9. investment --- */
+function sInvest(){
+  return '<div class="card step" id="stInv"><div class="stepno">Transformation case</div>'
+   +'<h3>Smart hospital investment — '+inr(BUDGET)+' available</h3>'
+   +'<p class="muted">You cannot fund everything. What you decline is part of your recommendation and the '
+   +'Board will ask you to justify it.</p>'
+   +PROJECTS.map(function(p){
+      return '<div class="proj" data-proj="'+p.k+'"><span class="pn">'+esc(p.t)+'</span>'
+        +'<span class="muted">'+inr(p.cost)+'</span>'
+        +'<button class="btn ghost sm" data-fund="'+p.k+'">Fund</button></div>'; }).join('')
+   +'<div class="budget"><span>Allocated <b id="allocV">'+inr(0)+'</b></span>'
+   +'<span>Remaining <b id="remV">'+inr(BUDGET)+'</b></span>'
+   +'<span class="muted" id="budgetNote"></span></div><div id="invFb"></div></div>';
+}
+function wireInvest(){
+  [].forEach.call(document.querySelectorAll('[data-fund]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-fund'), p=PROJECTS.filter(function(x){return x.k===k;})[0];
+      var i=S.funded.indexOf(k);
+      if(i>=0){ S.funded.splice(i,1); }
+      else {
+        var spent=S.funded.reduce(function(a,x){ return a+PROJECTS.filter(function(y){return y.k===x;})[0].cost; },0);
+        if(spent+p.cost>BUDGET){
+          $('invFb').innerHTML='<div class="fb no"><div class="hd">Over budget</div>'+esc(p.t)+' at '+inr(p.cost)
+            +' does not fit in the '+inr(BUDGET-spent)+' you have left. Choosing what to drop is the exercise.</div>';
+          return;
+        }
+        S.funded.push(k);
+      }
+      var spent2=S.funded.reduce(function(a,x){ return a+PROJECTS.filter(function(y){return y.k===x;})[0].cost; },0);
+      $('allocV').textContent=inr(spent2); $('remV').textContent=inr(BUDGET-spent2);
+      document.querySelector('[data-proj="'+k+'"]').classList.toggle('sel',S.funded.indexOf(k)>=0);
+      b.textContent=S.funded.indexOf(k)>=0?'Funded ✓':'Fund';
+      $('budgetNote').textContent=S.funded.length+' project'+(S.funded.length===1?'':'s')+' funded';
+      $('invFb').innerHTML = S.funded.indexOf('gov')<0 && S.funded.length>=3
+        ? '<div class="fb warnb"><div class="hd">Nothing is governing the systems you just bought</div>'
+          +'Three AI systems are funded and the governance and audit capability is not. Every case you worked '
+          +'through this session — the stale feed, the false Board figure, the biased allocation — was caught '
+          +'by a human looking. Without an audit system that is the only control you have.</div>'
+        : '';
+      relock();
+    });
+  });
+}
+
+/* --- 10. decision matrix --- */
+function sMatrix(){
+  return '<div class="card step" id="stMat"><div class="stepno">Decision matrix</div>'
+   +'<h3>Weighted priority scoring</h3>'
+   +'<p class="muted">Score each project 1–10 against each criterion. The weights are fixed hospital policy. '
+   +'Pre-filled with the project office\'s assessment — change any score you disagree with, and be ready to '
+   +'say why.</p>'
+   +'<table class="d matrix"><tr><th>Project</th>'
+   +CRITERIA.map(function(c){ return '<th>'+esc(c.t)+'<br><span class="muted">'+c.w+'%</span></th>'; }).join('')
+   +'<th>Priority score</th></tr>'
+   +PROJECTS.map(function(p){
+      return '<tr><td>'+esc(p.t)+'</td>'
+        +CRITERIA.map(function(c){
+           return '<td class="n"><input type="number" min="1" max="10" value="'+p[c.k]+'" data-mx="'+p.k+'" data-c="'+c.k+'"></td>'; }).join('')
+        +'<td class="n"><b id="ps-'+p.k+'">'+priorityScore(p).toFixed(2)+'</b></td></tr>'; }).join('')
+   +'</table>'
+   +'<button class="btn ghost sm" id="matGo">Rank by priority score</button><div id="matFb"></div></div>';
+}
+function wireMatrix(){
+  [].forEach.call(document.querySelectorAll('[data-mx]'),function(inp){
+    inp.addEventListener('input',function(){
+      var pk=inp.getAttribute('data-mx'), ck=inp.getAttribute('data-c');
+      S.matrix[pk]=S.matrix[pk]||{}; S.matrix[pk][ck]=Math.max(1,Math.min(10,+inp.value||1));
+      var p=PROJECTS.filter(function(x){return x.k===pk;})[0];
+      var merged={}; CRITERIA.forEach(function(c){ merged[c.k]=(S.matrix[pk]&&S.matrix[pk][c.k])||p[c.k]; });
+      $('ps-'+pk).textContent=priorityScore(merged).toFixed(2);
+    });
+  });
+  $('matGo').addEventListener('click',function(){
+    S.matrixRun=true;
+    var ranked=PROJECTS.map(function(p){
+      var merged={}; CRITERIA.forEach(function(c){ merged[c.k]=(S.matrix[p.k]&&S.matrix[p.k][c.k])||p[c.k]; });
+      return {t:p.t,k:p.k,cost:p.cost,score:priorityScore(merged)};
+    }).sort(function(a,b){ return b.score-a.score; });
+    var affordable=[], spend=0;
+    ranked.forEach(function(r){ if(spend+r.cost<=BUDGET){ affordable.push(r); spend+=r.cost; } });
+    $('matFb').innerHTML='<table class="d"><tr><th>Rank</th><th>Project</th><th>Score</th><th>Cost</th><th>Fits in budget</th></tr>'
+     +ranked.map(function(r,i){ return '<tr'+(affordable.indexOf(r)>=0?' class="cool"':'')+'><td class="n">'+(i+1)+'</td><td>'+esc(r.t)
+        +'</td><td class="n">'+r.score.toFixed(2)+'</td><td class="n">'+inr(r.cost)+'</td><td>'
+        +(affordable.indexOf(r)>=0?'yes':'—')+'</td></tr>'; }).join('')+'</table>'
+     +'<div class="fb warnb"><div class="hd">The matrix ranks, it does not decide</div>A weighted score is an '
+     +'argument in a defensible form, not an answer. Two things it cannot see: whether a project is a '
+     +'prerequisite for another, and whether a low-scoring item is the control that makes the high-scoring '
+     +'ones safe to run. Take the ranking to the Board with your reasoning, not instead of it.</div>';
+    relock();
+  });
+}
+
+/* --- 11. executive case --- */
+function sExec(){
+  return '<div class="card step" id="stExec"><div class="stepno">Case 02</div>'
+   +'<h3>Should this hospital adopt AI?</h3>'
+   +'<p>The Board wants AI introduced across administration. You have the performance data, five AI '
+   +'recommendations you have now worked through, a documented privacy incident, a false statement caught in '
+   +'a draft Board pack, a biased allocation pattern, HIS data completeness at 62%, staff resistance, and '
+   +inr(BUDGET)+'.</p>'
+   +'<div class="lbl">Your five-minute executive decision</div>'
+   +'<div class="stack" id="execWrap">'+EXEC.map(function(e){
+      return '<button class="opt" data-ex="'+e.k+'"><b>'+e.k+'.</b> '+esc(e.t)+'</button>'; }).join('')+'</div>'
+   +'<div class="lbl">Justify it to the Board (this is marked)</div>'
+   +'<textarea id="reason" placeholder="What the evidence supports, what you would fund first and why, what conditions would make you stop, and what you are explicitly not doing…"></textarea>'
+   +'<div style="margin-top:10px"><button class="btn" id="submitCase">Submit the executive decision</button></div>'
+   +'<div id="caseFb"></div></div>';
+}
+function wireExec(){
+  [].forEach.call(document.querySelectorAll('[data-ex]'),function(b){
+    b.addEventListener('click',function(){
+      S.exec=b.getAttribute('data-ex');
+      [].forEach.call(document.querySelectorAll('[data-ex]'),function(x){ x.classList.toggle('sel',x===b); });
+    });
+  });
+  $('submitCase').addEventListener('click',submitCase);
+}
+
+/* progressive unlock */
+function relock(){
+  var closed=Object.keys(S.decisions).length;
+  lock('stMin', closed<2);
+  lock('stPriv', closed<2);
+  lock('stHall', closed<3);
+  lock('stBias', !S.privacy);
+  lock('stConf', !S.halluc);
+  lock('stPred', !S.confCall);
+  lock('stInv', !S.bias);
+  lock('stMat', S.funded.length<2);
+  lock('stExec', !S.matrixRun || closed<RECS.length);
+}
+function lock(id,cond){ var el=$(id); if(el) el.classList.toggle('locked',!!cond); }
+
+/* ============================================================
+   AI GOVERNANCE SCORE — 100 marks
+   ============================================================ */
+function submitCase(){
+  if(S.ended) return;
+  if(!S.exec){ $('caseFb').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Choose an executive decision before submitting.</div>'; return; }
+  S.reasoning=($('reason').value||'').trim();
+  S.ended=true;
+  var pts=[], strengths=[], improve=[];
+
+  /* 1 — Data understanding (10) */
+  var openedN=Object.keys(S.opened).length;
+  var t1=Math.min(10, openedN*1.4 + (S.verified?3:0));
+  pts.push(['Data understanding',Math.round(t1*10)/10,10]);
+  if(openedN===RECS.length&&S.verified) strengths.push('Opened the basis behind every recommendation and the source dataset before judging any of them.');
+  if(openedN<3) improve.push('The basis panel was opened for only '+openedN+' of '+RECS.length+' recommendations. What a recommendation was computed from is the recommendation.');
+  if(!S.verified) improve.push('The source dataset was never opened, so the false performance claim was assessed on impression rather than evidence.');
+
+  /* 2 — AI interpretation (15) */
+  var interp=0;
+  RECS.forEach(function(r){ var d=S.decisions[r.k]; if(!d) return; interp += Math.max(0,r.scoring[d]); });
+  var t2=Math.min(15, interp*0.45);
+  pts.push(['AI interpretation',Math.round(t2*10)/10,15]);
+  var bestHits=RECS.filter(function(r){ return S.decisions[r.k]===r.best; }).length;
+  if(bestHits>=4) strengths.push('Reached the defensible position on '+bestHits+' of the five recommendations.');
+  if(S.decisions.r1==='accept') improve.push('Recommendation 1 was accepted at 87% confidence over a 62% complete dataset whose gaps sit in the busiest week.');
+
+  /* 3 — Administrative reasoning (15) */
+  var t3=0;
+  var e=EXEC.filter(function(x){return x.k===S.exec;})[0];
+  t3 += e.score*0.9;
+  var words=S.reasoning?S.reasoning.split(/\s+/).length:0;
+  if(words>=60) t3+=6; else if(words>=30) t3+=3.5; else if(words>=12) t3+=1.5;
+  else improve.push('The justification to the Board was very short. At executive level the reasoning is the deliverable — the option letter alone is not a decision.');
+  t3=Math.min(15,t3);
+  pts.push(['Administrative reasoning',Math.round(t3*10)/10,15]);
+  if(S.exec==='B') strengths.push('Chose a governed pilot — the position this evidence actually supports.');
+
+  /* 4 — Privacy awareness (15) */
+  var over=MINIMISE.filter(function(f){ return !f.need && S.minimise[f.k]; }).length;
+  var missing=MINIMISE.filter(function(f){ return f.need && !S.minimise[f.k]; }).length;
+  var t4=0;
+  t4 += Math.max(0, 7 - over*2.5 - missing*1);
+  if(S.privacy==='report') t4+=5; else if(S.privacy) improve.push('The privacy incident was not handled through the incident-response procedure. Containment and notification are not optional steps.');
+  if(S.decisions.r5==='reject') t4+=3;
+  else if(S.decisions.r5==='accept') improve.push('The full identifiable contact dataset was released to an external vendor. No accuracy gain makes that acceptable.');
+  t4=Math.min(15,t4);
+  pts.push(['Privacy awareness',Math.round(t4*10)/10,15]);
+  if(over===0&&missing===0&&S.privacy==='report') strengths.push('Applied data minimisation precisely and handled the incident through the correct procedure.');
+
+  /* 5 — Ethical reasoning (15) */
+  var t5=0;
+  if(S.bias==='proxy') { t5+=8; strengths.push('Identified booking channel as a proxy variable rather than accepting attendance probability as a neutral operational measure.'); }
+  else improve.push('The bias case was not correctly read. A variable that looks operational and behaves demographically is the most common route to a discriminatory scheduling model.');
+  if(S.decisions.r2==='reject') t5+=7;
+  else if(S.decisions.r2==='accept') improve.push('Automatic rescheduling on a no-show score was accepted. That moves a person’s appointment on the strength of missing data, and it falls hardest on the patients least able to return.');
+  else t5+=3;
+  t5=Math.min(15,t5);
+  pts.push(['Ethical reasoning',Math.round(t5*10)/10,15]);
+
+  /* 6 — Human oversight (10) */
+  var t6=0;
+  var reviewed=RECS.filter(function(r){ return S.decisions[r.k]==='review'||S.decisions[r.k]==='modify'; }).length;
+  t6 += Math.min(5, reviewed*1.7);
+  if(S.halluc==='card') t6+=5;
+  else improve.push('The unsupported claim in the draft Board pack was not identified. An AI sentence that enters an official record must be verified line by line before it is signed.');
+  t6=Math.min(10,t6);
+  pts.push(['Human oversight',Math.round(t6*10)/10,10]);
+  if(S.halluc==='card'&&S.verified) strengths.push('Caught the hallucinated performance figure and verified it against source data before it reached the Board pack.');
+
+  /* 7 — Risk assessment (10) */
+  var t7=0;
+  if(S.confCall==='reject') { t7+=6; strengths.push('Separated model confidence from decision reliability — the distinction the whole governance function rests on.'); }
+  else improve.push('Model confidence was treated as a measure of how reliable the decision would be. It is a measure of the model’s internal consistency given what it was shown, and says nothing about what it was not shown.');
+  var evalDone=Object.keys(S.evals).filter(function(k){ return Object.keys(S.evals[k]).length===EVAL_DIMS.length; }).length;
+  t7 += Math.min(4, evalDone*0.8);
+  t7=Math.min(10,t7);
+  pts.push(['Risk assessment',Math.round(t7*10)/10,10]);
+
+  /* 8 — Resource prioritization (10) */
+  var spend=S.funded.reduce(function(a,x){ return a+PROJECTS.filter(function(y){return y.k===x;})[0].cost; },0);
+  var t8=0;
+  if(S.funded.length>=2) t8+=3;
+  if(S.funded.indexOf('gov')>=0){ t8+=4; strengths.push('Funded the governance and audit capability — the control that makes every other system on the list safe to run.'); }
+  else improve.push('The AI governance and audit system was not funded. Every failure caught in this session was caught by a human looking; without an audit capability that remains the only control.');
+  if(S.matrixRun) t8+=2;
+  else improve.push('The decision matrix was never run, so the funding choice has no scored justification behind it.');
+  if(spend>BUDGET*0.6) t8+=1;
+  t8=Math.min(10,t8);
+  pts.push(['Resource prioritization',Math.round(t8*10)/10,10]);
+
+  if(S.breaches>=2) S.integ=Math.max(0,S.integ-10);
+  paintMeters();
+  var total=Math.round(pts.reduce(function(a,p){return a+p[1];},0));
+  finish(total,pts,strengths,improve);
+}
+
+function finish(total,pts,strengths,improve){
+  var elapsed=S.started?Math.round((Date.now()-S.started)/60000):0;
+  var e=EXEC.filter(function(x){return x.k===S.exec;})[0];
+  var decMap={accept:'Accept',modify:'Modify',reject:'Reject',review:'Request human review'};
+  var recRows=RECS.map(function(r){
+    return '<tr'+(S.decisions[r.k]===r.best?' class="cool"':'')+'><td>'+esc(r.t)+'</td><td class="n">'+r.conf+'%</td>'
+      +'<td class="n">'+r.complete+'%</td><td>'+esc(decMap[S.decisions[r.k]]||'—')+'</td>'
+      +'<td>'+esc(decMap[r.best])+'</td></tr>'; }).join('');
+  var fundRows=S.funded.map(function(k){ var p=PROJECTS.filter(function(x){return x.k===k;})[0];
+    return '<tr><td>'+esc(p.t)+'</td><td class="n">'+inr(p.cost)+'</td><td class="n">'+priorityScore(p).toFixed(2)+'</td></tr>'; }).join('');
+  var spend=S.funded.reduce(function(a,x){ return a+PROJECTS.filter(function(y){return y.k===x;})[0].cost; },0);
+  var predSel=Object.keys(S.predAction).filter(function(k){return S.predAction[k];});
+  var predMap={cap:'Increase outpatient capacity',redist:'Redistribute appointments',disch:'Improve discharge before noon',
+               staff:'Increase staffing across all departments',queue:'Introduce digital queue management',wait:'Wait another month'};
+
+  var html='<div class="card"><h3>AI-Assisted Hospital Administration &amp; Smart Transformation Report</h3>'
+   +'<p class="muted">ALIZON SmartCare Multispecialty Hospital · Case 02 — Should this hospital adopt AI? · '
+   +'time in command centre '+elapsed+' min</p>'
+   +'<div class="scorebig">'+total+' <span style="font-size:16px;font-weight:600;color:var(--muted)">/ 100</span></div>'
+   +'<p class="muted">Governance integrity <b>'+S.integ+'%</b> · Evidence verification <b>'+S.evid+'%</b> · '
+   +'recommendations closed '+Object.keys(S.decisions).length+' of '+RECS.length+'</p>'
+
+   +'<table class="d"><tr><th>Area</th><th>Marks</th></tr>'
+   +pts.map(function(p){ return '<tr><td>'+esc(p[0])+'</td><td class="n">'+p[1]+' / '+p[2]+'</td></tr>'; }).join('')
+   +'<tr><td><b>Total</b></td><td class="n"><b>'+total+' / 100</b></td></tr></table>'
+
+   +'<div class="lbl">Executive summary</div>'
+   +'<p>The hospital is under measurable operational pressure — outpatient attendance up 20.7% and average '
+   +'waiting up 54.8% across six months — while the record those measures come from is 62% complete. Five AI '
+   +'recommendations were evaluated against six governance dimensions. '+(S.exec?'The decision taken was: '+esc(e.t)+'.':'')+'</p>'
+
+   +'<div class="lbl">Hospital problem and existing digital infrastructure</div>'
+   +'<table class="d">'+PERF.map(function(p){ return '<tr><td>'+esc(p.n)+'</td><td class="n">'+esc(p.v)+'</td></tr>'; }).join('')+'</table>'
+
+   +'<div class="lbl">AI recommendations and decisions</div>'
+   +'<table class="d"><tr><th>Recommendation</th><th>Confidence</th><th>Data completeness</th><th>Your decision</th><th>Defensible position</th></tr>'+recRows+'</table>'
+
+   +'<div class="lbl">Risk assessment</div>'
+   +'<p>Model confidence was '+(S.confCall==='reject'?'correctly separated from':'not adequately separated from')
+   +' decision reliability. Recommendation 1 carried 87% confidence over a dataset that is 62% complete, with '
+   +'the missing records concentrated in the busiest week — the configuration in which a model is most '
+   +'confident and least informed.</p>'
+
+   +'<div class="lbl">Privacy assessment</div>'
+   +'<p>Data minimisation: '+MINIMISE.filter(function(f){return S.minimise[f.k];}).length+' fields requested, of which '
+   +MINIMISE.filter(function(f){ return !f.need && S.minimise[f.k]; }).length+' were not required for the task. '
+   +'Privacy incident handling: '+(S.privacy==='report'?'reported and contained through the hospital procedure':'not handled through the incident-response procedure')+'. '
+   +'Vendor data request: '+esc(decMap[S.decisions.r5]||'not decided')+'.</p>'
+
+   +'<div class="lbl">Ethical considerations</div>'
+   +'<p>The scheduling allocation showed walk-in patients receiving a preferred slot 19% of the time against '
+   +'72% for online repeat patients. '+(S.bias==='proxy'
+      ? 'This was correctly identified as booking channel acting as a proxy for socioeconomic access.'
+      : 'The proxy-variable mechanism behind this gap was not identified.')+'</p>'
+
+   +'<div class="lbl">Human oversight requirements</div>'
+   +'<p>'+(S.halluc==='card'
+      ? 'An unsupported claim (Cardiology waiting "decreased by 35%" against a verified +12%) was identified in the draft Board pack and rejected before publication.'
+      : 'The draft Board pack contained an unsupported claim that was not identified. Cardiology waiting rose 12%; the draft reported a 35% decrease.')
+   +' Recommendations sent for modification or human review: '
+   +RECS.filter(function(r){ return S.decisions[r.k]==='review'||S.decisions[r.k]==='modify'; }).length+'.</p>'
+
+   +'<div class="lbl">Predictive management response</div>'
+   +'<ul><li>'+(predSel.length?predSel.map(function(k){return esc(predMap[k]);}).join('</li><li>'):'none selected')+'</li></ul>'
+
+   +'<div class="lbl">Budget allocation</div>'
+   +(fundRows?'<table class="d"><tr><th>Project funded</th><th>Cost</th><th>Priority score</th></tr>'+fundRows
+     +'<tr><td><b>Total allocated</b></td><td class="n"><b>'+inr(spend)+'</b></td><td class="n">of '+inr(BUDGET)+'</td></tr></table>'
+     :'<p class="muted">No projects were funded.</p>')
+
+   +'<div class="lbl">Final administrator decision</div>'
+   +'<p><b>'+esc(S.exec||'—')+'.</b> '+esc(e?e.t:'')+'</p>'
+   +'<div class="fb '+(e&&e.score>=10?'yes':e&&e.score>=6?'warnb':'no')+'"><div class="hd">Assessment of the decision</div>'+esc(e?e.why:'')+'</div>'
+
+   +'<div class="lbl">Justification to the Board</div><p>'+(S.reasoning?esc(S.reasoning):'<span class="muted">none recorded</span>')+'</p>'
+
+   +'<div class="fb yes"><div class="hd">Strengths</div>'
+     +(strengths.length?'<ul><li>'+strengths.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+   +'<div class="fb no"><div class="hd">Where it could be stronger</div>'
+     +(improve.length?'<ul><li>'+improve.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+
+   +'<div class="lbl">Governance framework recorded for this exercise</div>'
+   +'<ul><li>No AI recommendation is actioned without a recorded six-dimension evaluation and a named human decision.</li>'
+   +'<li>No AI-generated statement enters an official hospital record until it has been verified against source data by a person, and that verification is logged.</li>'
+   +'<li>Model confidence is never reported without the completeness of the data behind it.</li>'
+   +'<li>Any allocation model is audited for proxy variables before it runs unsupervised, and re-audited monthly.</li>'
+   +'<li>Patient data leaves the hospital only in the minimum de-identified form the purpose requires, under an agreement.</li></ul>'
+
+   +'<div class="note">Synthetic data throughout. This exercise produces simulated administrative projections '
+   +'only — never a diagnosis, a treatment decision, advice about an individual patient, or a real financial forecast.</div>'
+   +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
+
+  $('caseFb').innerHTML='<div class="fb yes"><div class="hd">Decision recorded</div>Your executive report is on the <b>Result &amp; Record</b> tab.</div>';
+  var _re=$('resEmpty'); if(_re) _re.style.display='none';
+  $('resBox').innerHTML=html;
+  goTab('res');
+
+  var OPTS={module:'Hospital Administration · Module 2 · AI Governance & Decision Support',
+            title:'AI Hospital Administrator Intelligence & Responsible AI Decision System',
+            programme:'Hospital Administration AI', pct:total,
+            resultText:total+'/100 · governance '+S.integ+'% · verification '+S.evid+'%'};
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme,
+    submitOpts:OPTS, titleField:{label:'Executive decision', placeholder:'e.g. Governed pilot with audit capability funded first'},
+    minWords:450,
+    attachments:[{label:'1. Executive transformation report / printout (PDF)'},{label:'2. AI governance framework you would adopt (PDF)'}],
+    reportHtml:html
+  });
+}
+
+var clockTimer=null;
+$('startBtn').addEventListener('click',function(){
+  S=freshState();
+  goTab('work'); desk();
+  if(clockTimer) clearInterval(clockTimer);
+  clockTimer=setInterval(tickClock,1000); tickClock();
+});
+S=freshState(); paintMeters();
+})();
+</script>
+</body>
+</html>

@@ -1721,16 +1721,20 @@ const DEFAULT_PROGRAMS=[
     {unit:'Module 2',title:'Clinical Risk Prediction Models',desc:'Predict readmission and complication risk from patient data.',status:'soon',href:'',units:[]}
   ]},
   {id:'hospital',name:'Hospital Administration AI',icon:'',course:'Certificate Course in Digital Health & Artificial Intelligence for Hospital Administration',modules:[
-    {unit:'Module 1',title:'Foundations of Hospital Administration & Digital Systems',desc:'How a hospital is structured and governed, and the digital record that now runs it.',status:'soon',href:'',units:[
+    {unit:'Module 1',title:'Foundations of Hospital Administration & Digital Systems',desc:'How a hospital is structured and governed, the digital record that now runs it, and the operational decisions an administrator actually makes.',status:'live',href:'hospital-admin/ALIZON-HA-Practical1-Operations-Flow.html',practicals:[
+      {title:'Practical 1 · AI Hospital Operations, Patient Flow & Resource Optimization (Unit 2)',href:'hospital-admin/ALIZON-HA-Practical1-Operations-Flow.html'},
+      {title:'Practical 2 · AI-Enabled Administrator Decision Support & Performance Intelligence (Unit 2)',href:'hospital-admin/ALIZON-HA-Practical2-Decision-Support.html'}],units:[
       'Unit 1 – Structure, governance and departments of the modern hospital',
       'Unit 2 – Hospital Information Systems (HIS) and the electronic record',
       'Unit 3 – Health data standards, interoperability and ABDM',
       'Unit 4 – Ethics, patient rights and data protection in administration']},
-    {unit:'Module 2',title:'Patient Flow, Capacity & Queue Management',desc:'The patient journey end to end — and where the waiting actually happens.',status:'soon',href:'',units:[
-      'Unit 1 – Mapping the patient journey: OPD, inpatient, emergency and discharge',
-      'Unit 2 – Bed management, occupancy and capacity planning',
-      'Unit 3 – Forecasting demand and predicting patient flow',
-      'Unit 4 – Reducing waiting time: queue theory in a real outpatient department']},
+    {unit:'Module 2',title:'AI-Assisted Healthcare Administration & Smart Hospital Operations',desc:'Smart queues, appointment intelligence, administrative communication, and the governance that decides whether an AI recommendation is followed at all. 130 hrs — T60 online, P40 online practical, OJT30 hospital.',status:'live',href:'hospital-admin/ALIZON-HA-M2-Practical1-Smart-Patient-Management.html',practicals:[
+      {title:'Practical 1 · AI Smart Patient Management & Hospital Service Coordination (Units 1–2)',href:'hospital-admin/ALIZON-HA-M2-Practical1-Smart-Patient-Management.html'},
+      {title:'Practical 2 · AI Administrator Intelligence & Responsible AI Decision System (Units 3–4)',href:'hospital-admin/ALIZON-HA-M2-Practical2-AI-Governance.html'}],units:[
+      'Unit 1 – Introduction to AI in healthcare management',
+      'Unit 2 – Smart administrative technologies: queues, appointments and coordination',
+      'Unit 3 – Responsible AI and ethical administrative practice',
+      'Unit 4 – Future healthcare administration technologies and predictive management']},
     {unit:'Module 3',title:'Workforce Planning & Human Resource Management',desc:'Staffing a hospital: skill mix, rosters, fatigue and workforce analytics.',status:'soon',href:'',units:[
       'Unit 1 – Workforce planning, staffing norms and skill mix',
       'Unit 2 – Rostering, duty hours and fatigue as a safety issue',
@@ -1809,7 +1813,7 @@ const DEFAULT_PROGRAMS=[
 ];
 /* Bump on every change to DEFAULT_PROGRAMS — loadPrograms() only refreshes a
    browser's cached copy when this string changes. */
-const PROG_VER='2026-08-10-progs';
+const PROG_VER='2026-08-11-ha-m1m2-practicals';
 /* alizonPrograms is cloud-synced, and the pull lands *after* the version-gated
    seed above. A stale cloud copy therefore used to overwrite freshly shipped
    programmes while leaving the new version string in place — after which the

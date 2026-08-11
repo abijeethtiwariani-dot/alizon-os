@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Hospital Administration · Smart Patient Management &amp; Service Coordination</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#101c22,#18303a);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:158px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:10px}
+.kpi{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.kpi .n{font-size:11px;color:var(--muted);font-weight:600}
+.kpi .v{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+.kpi.changed{outline:2px solid #bfe3cd}
+
+.depts{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:10px;margin:10px 0}
+.dept{text-align:left;font:inherit;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
+.dept:hover{border-color:var(--crimson)}
+.dept.seen{border-color:var(--ok);background:#f4faf6}
+.dept b{display:block;font-size:13px}
+.dept .q{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:3px}
+.dept small{color:var(--muted);font-size:11.5px;display:block}
+.dept .hidden{color:var(--muted);font-style:italic;font-size:12px}
+.dept.hot{box-shadow:inset 0 0 0 2px var(--crit)}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+.tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px}
+.t-wait{background:#eef1f4;color:#4a5560}.t-delay{background:#fdeee6;color:var(--bad)}
+.t-crit{background:#fdecea;color:var(--crit)}.t-done{background:#e7f5ec;color:var(--ok)}
+
+.out{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:13px;line-height:1.7;margin:10px 0;white-space:pre-wrap}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+
+.sim{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:12px}
+.ctl{border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:#fff}
+.ctl label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}
+.ctl input[type=range]{width:100%}
+.ctl .rowv{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.ctl .cur{font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.delta{font-size:12px;font-weight:800}
+.delta.good{color:var(--ok)}.delta.bad{color:var(--crit)}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.opt:disabled{opacity:.5;cursor:default}
+.stack{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.stack .opt{border-radius:11px;padding:9px 13px}
+.rank{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.rank select,textarea,input[type=text],input[type=number]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:90px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.esc{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:8px 0}
+.escb{font:inherit;font-size:12.5px;text-align:left;border:1px solid var(--line);border-radius:11px;padding:9px 11px;background:#fff;cursor:pointer}
+.escb.sel{border-color:var(--crimson);background:#fdf3f3}
+.escb b{display:block;font-size:12px}
+.escb small{color:var(--muted);font-size:11px}
+.msgbox{border:1px solid var(--line);border-radius:11px;padding:11px 13px;background:#fff;margin:8px 0}
+.crit6{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px;margin-top:8px}
+.crit6 div{border:1px solid var(--line);border-radius:9px;padding:7px 9px;font-size:12px}
+.crit6 .pass{background:#e7f5ec;border-color:#b7e0c5}
+.crit6 .fail{background:#fdecea;border-color:#f3c2bd}
+.step{border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.step.locked{opacity:.42;pointer-events:none}
+.stepno{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--crimson)}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=2"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 2 · Practical 1</div>
+    <h1>AI Smart Patient Management &amp; Hospital Service Coordination</h1>
+    <p>You are the Smart Hospital Patient Services &amp; Administration Officer at ALIZON SmartCare
+       Multispecialty Hospital. One morning of the outpatient operation is yours: the queues, the
+       appointment book, the patients who did not arrive, and the ones who have been waiting far too
+       long to be told nothing. Find what is actually causing the congestion, decide what to do about
+       it, and say the right thing to the people waiting.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">Operations console</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="haspm"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">This is a service-coordination console, not a chatbot. Every department queue
+        stays closed until you open it, and what you opened is recorded. The AI will give you an
+        analysis when you ask for one — it is a starting point for your own reading of the data, not
+        a verdict, and on this shift it is not entirely right.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Service grip</b> falls when you act on
+        the wrong constraint or leave an escalation too late. <b>Communication integrity</b> falls
+        when a message you send to a waiting patient discloses something it should not, alarms them
+        unnecessarily, or leaves them without a next step.</p>
+      <div class="synth"><b>Educational simulation on synthetic data.</b> Every patient, token,
+        appointment and no-show score in this laboratory is generated. Nothing here describes a real
+        person, and no output of this system may be used to make a decision about an individual
+        patient in real healthcare.</div>
+      <button class="btn" id="startBtn">▶ Open the service console</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Shift clock</div><div class="v" id="mClock">10:45</div></div>
+      <div><div class="k">Queues opened</div><div class="v" id="mSeen">0 / 6</div></div>
+      <div class="meter" id="mAW"><div class="k">Service grip</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Communication integrity</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+      <div style="margin-left:auto"><button class="btn ghost" id="endBtn" style="display:none">Close the shift</button></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Work the shift on the operations console to generate your report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=4"></script>
+<script src="../alizon-practical-report.js?v=4"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=3"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script>
+(function(){
+'use strict';
+function $(i){ return document.getElementById(i); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+function r0(n){ return Math.round(n); }
+
+/* ============================================================
+   THE HOSPITAL
+   ALIZON SmartCare Multispecialty — 300 beds, 12 clinical departments,
+   5 OP registration counters, 3 appointment channels, 2 emergency
+   registration points, 4 pharmacy counters, 3 laboratory collection
+   counters, 2 billing counters.
+   ============================================================ */
+var HOSP={beds:300,depts:12,counters:5,channels:3,emergency:2,pharmacy:4,lab:3,billing:2};
+
+/* Live administrative situation at 10:45 */
+var BOARD=[
+ {k:'appts',   n:'Appointments today',   v:486,     s:'normal'},
+ {k:'reg',     n:'Registered',           v:372,     s:'normal'},
+ {k:'waiting', n:'Patients waiting',     v:64,      s:'high'},
+ {k:'noshow',  n:'No-shows',             v:41,      s:'moderate'},
+ {k:'wait',    n:'Average waiting',      v:'47 min',s:'high'},
+ {k:'delayed', n:'Delayed appointments', v:28,      s:'high'},
+ {k:'coord',   n:'Pending coordination', v:19,      s:'moderate'},
+ {k:'escal',   n:'Escalated cases',      v:7,       s:'critical'}
+];
+
+/* ------------------------------------------------------------
+   DEPARTMENT QUEUES — the six that carry the OP load this morning.
+   Each holds its own token list. `growing` is the operationally
+   important property: a long queue that is clearing is not the
+   constraint; a shorter queue still growing is.
+   ------------------------------------------------------------ */
+var QUEUES=[
+ {k:'gm',  name:'General Medicine',   inq:24, est:51, growing:true,  docs:3, docsPlanned:4, avgCons:9,  walkins:18, note:'Two consultants against a planned four. Arrivals still exceed departures.'},
+ {k:'ortho',name:'Orthopaedics',      inq:16, est:34, growing:false, docs:3, docsPlanned:3, avgCons:8,  walkins:5,  note:'Long but clearing steadily — the tail of the 09:00 block.'},
+ {k:'card',name:'Cardiology',         inq:11, est:29, growing:false, docs:2, docsPlanned:2, avgCons:12, walkins:2,  note:'Appointment-only. Running to schedule.'},
+ {k:'paed',name:'Paediatrics',        inq:19, est:41, growing:true,  docs:2, docsPlanned:3, avgCons:7,  walkins:11, note:'Walk-in heavy. One consultant pulled to the ward at 10:10.'},
+ {k:'derm',name:'Dermatology',        inq:7,  est:18, growing:false, docs:2, docsPlanned:2, avgCons:6,  walkins:3,  note:'Comfortable. Capacity available from 11:30.'},
+ {k:'lab', name:'Laboratory collection',inq:22,est:26,growing:false, docs:3, docsPlanned:3, avgCons:4,  walkins:9,  note:'Three collection counters open; turnaround steady.'}
+];
+
+var TOKENS={
+ gm:[ {t:'GM102',ty:'Appointment',w:18,s:'Waiting'},{t:'GM103',ty:'Walk-in',w:32,s:'Waiting'},
+      {t:'GM104',ty:'Appointment',w:44,s:'Delayed'},{t:'GM105',ty:'Follow-up',w:12,s:'Waiting'},
+      {t:'GM106',ty:'Walk-in',w:38,s:'Delayed'},   {t:'GM107',ty:'Appointment',w:71,s:'Escalate'},
+      {t:'GM108',ty:'Appointment',w:9,s:'Waiting'},{t:'GM109',ty:'Walk-in',w:26,s:'Waiting'}],
+ ortho:[{t:'OR041',ty:'Appointment',w:21,s:'Waiting'},{t:'OR042',ty:'Follow-up',w:14,s:'Waiting'},
+      {t:'OR043',ty:'Appointment',w:33,s:'Delayed'},{t:'OR044',ty:'Walk-in',w:11,s:'Waiting'}],
+ card:[{t:'CD018',ty:'Appointment',w:9,s:'Waiting'},{t:'CD019',ty:'Follow-up',w:16,s:'Waiting'},
+      {t:'CD020',ty:'Appointment',w:22,s:'Waiting'}],
+ paed:[{t:'PD077',ty:'Walk-in',w:29,s:'Waiting'},{t:'PD078',ty:'Walk-in',w:36,s:'Delayed'},
+      {t:'PD079',ty:'Appointment',w:17,s:'Waiting'},{t:'PD080',ty:'Walk-in',w:41,s:'Delayed'},
+      {t:'PD081',ty:'Follow-up',w:8,s:'Waiting'}],
+ derm:[{t:'DM012',ty:'Appointment',w:6,s:'Waiting'},{t:'DM013',ty:'Walk-in',w:13,s:'Waiting'}],
+ lab:[{t:'LB210',ty:'Collection',w:12,s:'Waiting'},{t:'LB211',ty:'Collection',w:19,s:'Waiting'},
+      {t:'LB212',ty:'Collection',w:24,s:'Delayed'}]
+};
+
+/* Appointment book — the concentration the AI will point at */
+var SLOTS=[
+ {t:'09:00',booked:18,cap:20},{t:'10:00',booked:29,cap:20},{t:'11:00',booked:31,cap:20},
+ {t:'12:00',booked:16,cap:20},{t:'14:00',booked:12,cap:20},{t:'15:00',booked:14,cap:20},
+ {t:'16:00',booked:9, cap:20}
+];
+function slotStatus(s){
+  var r=s.booked/s.cap;
+  if(r>1.4) return ['Critical','s-critical'];
+  if(r>1.05) return ['Overbooked','s-high'];
+  if(r<0.7) return ['Underutilized','s-moderate'];
+  return ['Normal','s-normal'];
+}
+
+/* No-show risk — synthetic behavioural scores, deliberately paired with a
+   completeness figure so the student sees what the band is built on. */
+var NOSHOW=[
+ {id:'A102',dept:'General Medicine',band:'Low',      score:0.08,hist:'attended last 4 of 4',complete:91},
+ {id:'A103',dept:'Orthopaedics',    band:'Moderate', score:0.34,hist:'attended 3 of 5',     complete:78},
+ {id:'A104',dept:'General Medicine',band:'High',     score:0.71,hist:'missed last 2',       complete:44},
+ {id:'A105',dept:'Cardiology',      band:'Low',      score:0.11,hist:'attended last 6 of 6',complete:88},
+ {id:'A106',dept:'Paediatrics',     band:'High',     score:0.66,hist:'first visit, no history',complete:29},
+ {id:'A107',dept:'Dermatology',     band:'Moderate', score:0.41,hist:'attended 2 of 4',     complete:73}
+];
+var NS_ACTIONS=[
+ {k:'remind', t:'Send appointment reminder',        cost:0},
+ {k:'call',   t:'Telephone confirmation',           cost:1},
+ {k:'resched',t:'Offer rescheduling',               cost:1},
+ {k:'leave',  t:'Leave the appointment unchanged',  cost:0}
+];
+/* Proportionate administrative response. High risk needs contact; Low risk
+   needs nothing beyond the standard reminder; and A106 has almost no data
+   behind its "High" band, so a phone call is right but rescheduling is not. */
+var NS_BEST={A102:['remind','leave'],A103:['remind','call'],A104:['call','resched'],
+             A105:['remind','leave'],A106:['call','remind'],A107:['remind','call']};
+
+/* ------------------------------------------------------------
+   COMMUNICATION CENTRE
+   Each scenario offers message blocks. Some leak clinical or
+   third-party information, some alarm, some leave no next step.
+   ------------------------------------------------------------ */
+var COMMS=[
+ {k:'c1',
+  scen:'Token GM107. The patient has been waiting 72 minutes because the consultant is delayed. They have asked the counter twice and are now standing at the desk.',
+  blocks:[
+   {k:'a',t:'Acknowledge the wait and apologise for it by name of the service, not the person.',good:true,dim:'clear'},
+   {k:'b',t:'Give a revised waiting estimate — approximately 25 more minutes.',good:true,dim:'action'},
+   {k:'c',t:'Explain that Dr. Menon is delayed in theatre with a critical cardiac patient.',good:false,dim:'privacy',why:'This discloses another patient’s clinical situation to an unrelated person. The reason for a clinician’s delay is not information the waiting patient is entitled to.'},
+   {k:'d',t:'Offer the choice of waiting, rescheduling today at 14:00, or being called when the consultant is 10 minutes away.',good:true,dim:'action'},
+   {k:'e',t:'Say the department is completely overwhelmed and nobody knows when it will clear.',good:false,dim:'alarm',why:'Accurate frustration is not an administrative message. It alarms, offers nothing to do, and invites escalation.'},
+   {k:'f',t:'Record the delay against the token so the next counter sees it.',good:true,dim:'action'}
+  ]},
+ {k:'c2',
+  scen:'Twenty-eight appointments in the 11:00 block will not be seen at their booked time. You must send one message to all of them before they arrive.',
+  blocks:[
+   {k:'a',t:'State plainly that the 11:00 clinic is running approximately 40 minutes late.',good:true,dim:'clear'},
+   {k:'b',t:'Ask patients who are able to arrive 30 minutes later than booked to do so.',good:true,dim:'action'},
+   {k:'c',t:'List the affected patients’ names in the message so each knows who else is delayed.',good:false,dim:'privacy',why:'A group message that discloses who else is attending the clinic is a straightforward breach. Send individually addressed messages.'},
+   {k:'d',t:'Give the counter number and a contact line for anyone who cannot wait.',good:true,dim:'action'},
+   {k:'e',t:'Promise everyone will be seen within 15 minutes of arrival.',good:false,dim:'accuracy',why:'A commitment the operation cannot keep converts one delay into a complaint. Do not promise what the queue model does not support.'},
+   {k:'f',t:'Apologise once, briefly, without repeating it three times.',good:true,dim:'professional'}
+  ]},
+ {k:'c3',
+  scen:'A patient in the Paediatrics queue has waited 41 minutes with an unwell child and has raised their voice at the registration counter. The counter clerk has asked you to intervene.',
+  blocks:[
+   {k:'a',t:'Move the conversation away from the queue to the coordination desk.',good:true,dim:'professional'},
+   {k:'b',t:'Acknowledge the wait and confirm the current position in the queue.',good:true,dim:'clear'},
+   {k:'c',t:'Tell them other parents have waited longer without complaining.',good:false,dim:'professional',why:'Comparing a patient to other patients is never an administrative response, and it discloses the state of other people’s waits.'},
+   {k:'d',t:'Ask the triage nurse to review the child now, in case the wait itself is no longer safe.',good:true,dim:'action'},
+   {k:'e',t:'Log the event as a Level 3 administrative escalation with the time and the action taken.',good:true,dim:'action'},
+   {k:'f',t:'Warn them that security will be called if they raise their voice again.',good:false,dim:'alarm',why:'Escalating the tone before offering a remedy turns a service failure into an incident. Security is a last resort, not an opening position.'}
+  ]}
+];
+
+/* ------------------------------------------------------------
+   ESCALATION — five administrative levels and four live events.
+   ------------------------------------------------------------ */
+var LEVELS=[
+ {l:1,t:'Level 1',d:'Routine delay'},
+ {l:2,t:'Level 2',d:'Extended waiting'},
+ {l:3,t:'Level 3',d:'Patient complaint'},
+ {l:4,t:'Level 4',d:'Repeated service failure'},
+ {l:5,t:'Level 5',d:'Administrative incident'}
+];
+var EVENTS=[
+ {k:'e1',t:'A follow-up appointment is running 18 minutes behind its booked slot in Cardiology.',best:1,
+  why:'Eighteen minutes inside a clinic that is otherwise to schedule is a routine delay. Escalating it consumes the coordinator you will need at 11:00.'},
+ {k:'e2',t:'Token GM107 has now waited 72 minutes with no communication and no revised estimate.',best:2,
+  why:'Extended waiting: past the service standard, no complaint yet. It needs a coordinator and a message, not a complaints process.'},
+ {k:'e3',t:'The third patient this morning has come to the desk to complain about the same 11:00 Medicine clinic.',best:4,
+  why:'One complaint is Level 3. The same failure producing repeated complaints is Level 4 — the pattern, not the individual, is now the subject.'},
+ {k:'e4',t:'A registration counter has been unstaffed since 09:40 and nobody reported it. Two patients were registered under the wrong department.',best:5,
+  why:'An unreported capacity loss that has produced misregistration is an administrative incident. It is reportable in its own right, independently of the queue it caused.'}
+];
+
+/* ------------------------------------------------------------
+   CASE 01 — OPD QUEUE CRISIS, 10:45
+   ------------------------------------------------------------ */
+var CASE={
+ at:'10:45',
+ facts:['86 patients registered','31 waiting','Average waiting time 58 minutes','Two consultants delayed',
+        '18 walk-in patients','11 appointment cancellations','7 high-priority administrative escalations',
+        'One registration counter unavailable']
+};
+var PROBLEMS=[
+ {k:'consult',t:'Consultant capacity in General Medicine is below plan (2 of 4)',real:true},
+ {k:'counter',t:'One registration counter unavailable since 09:40',real:true},
+ {k:'cluster',t:'Appointments clustered into the 10:00–11:00 block',real:false,near:true},
+ {k:'walkin', t:'Walk-in volume above the expected level',real:true},
+ {k:'nocomm', t:'No communication issued to delayed patients',real:false,near:true},
+ {k:'lab',    t:'Laboratory collection turnaround',real:false},
+ {k:'cancel', t:'Eleven appointment cancellations',real:false},
+ {k:'pharm',  t:'Pharmacy counter queue',real:false}
+];
+var INTERVENTIONS=[
+ {k:'counter', t:'Re-staff the unavailable registration counter now',helps:true,
+  eff:'Restores 20% of registration throughput within minutes. The single fastest lever available this morning.'},
+ {k:'coord',   t:'Assign a patient coordinator to General Medicine',helps:true,
+  eff:'Does not shorten the queue, but converts silent waiting into managed waiting and stops escalations forming.'},
+ {k:'inform',  t:'Issue delay notifications to the 11:00 block',helps:true,
+  eff:'Flattens the arrival spike at 11:00 by spreading arrivals across 25 minutes.'},
+ {k:'redist',  t:'Redistribute the 11:00 appointments into the afternoon',helps:true,slow:true,
+  eff:'Real, but it acts on tomorrow morning and on the 14:00 slot — it does very little to the queue standing in front of you at 10:45.'},
+ {k:'derm',    t:'Move eligible follow-ups to Dermatology capacity at 11:30',helps:true,
+  eff:'Uses genuinely idle capacity, but only a small number of patients are eligible.'},
+ {k:'overtime',t:'Ask all consultants to shorten consultation time',helps:false,
+  eff:'Shortening consultations to clear a queue trades waiting time for clinical quality. It is not an administrative decision to make.'},
+ {k:'close',   t:'Close walk-in registration for the rest of the morning',helps:false,
+  eff:'Moves the queue to the door rather than removing it, and pushes unregistered patients toward the emergency entrance.'},
+ {k:'beds',    t:'Request additional inpatient beds from the ward',helps:false,
+  eff:'This is an outpatient queue. Bed capacity changes nothing in it.'}
+];
+
+/* ------------------------------------------------------------
+   THE MODEL — deterministic. The baseline configuration reproduces
+   the 10:45 case exactly: average wait 58 minutes.
+   ------------------------------------------------------------ */
+var BASE={counters:4, coordinators:0, peakCap:20, interval:15, priority:'fifo', comms:false};
+function model(c){
+  /* Registration. A queue does not degrade in a straight line as a server is
+     lost — utilisation approaching capacity makes it degrade sharply, which is
+     why one unstaffed counter out of five costs far more than a fifth of the
+     throughput. Calibrated so the case baseline (4 of 5 counters) reproduces
+     the stated 58-minute average exactly. */
+  var reg = 12 * Math.pow(5/Math.max(1,c.counters), 3.6);
+  /* consultation contribution: overbooked 11:00 block against real capacity */
+  var peakLoad = 31 / Math.max(8,c.peakCap);          /* 1.55 at design capacity */
+  var cons = 20.1 * peakLoad;
+  /* appointment interval: shorter interval packs more in and lengthens the queue */
+  cons *= (15/Math.max(6,c.interval));
+  /* coordinators do not shorten the queue, they shorten perceived and escalated wait */
+  var coordEffect = Math.min(6, c.coordinators*3.5);
+  /* communication flattens the arrival spike */
+  var commEffect = c.comms ? 5.5 : 0;
+  /* priority rule */
+  var prio = 0;
+  if(c.priority==='appt') prio = -3.5;      /* appointments first reduces average, walk-ins wait */
+  if(c.priority==='clinical') prio = -1.5;  /* clinical urgency first: right, but not a throughput lever */
+  var wait = reg + cons - coordEffect - commEffect + prio;
+  var walkWait = wait + (c.priority==='appt' ? 19 : 0);
+  return {wait:Math.max(9,wait), walkWait:Math.max(9,walkWait),
+          escalations: Math.max(0, Math.round((wait-35)/6) + (c.coordinators?-2:0) + (c.comms?-1:0)),
+          throughput: Math.round(64 * (c.counters/5) * (c.peakCap/20) * (15/c.interval))};
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var S={}, cfg={};
+function freshState(){
+  return {opened:{}, aiRun:false, apptFixed:false, apptPlan:null, simRuns:0, simCfg:null,
+          started:Date.now(), nsActions:{}, comms:{}, commsDone:{}, escal:{},
+          problems:[], interventions:[], firstAction:null, commsStrategy:null,
+          reasoning:'', grip:100, integ:100, ended:false, privacyHits:0, seenTokens:{}};
+}
+
+/* ============================================================
+   SHELL
+   ============================================================ */
+var tabs=document.querySelectorAll('.tabs button');
+[].forEach.call(tabs,function(b){ b.addEventListener('click',function(){ goTab(b.getAttribute('data-p')); }); });
+function goTab(p){
+  [].forEach.call(tabs,function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  ['brief','work','res'].forEach(function(k){ $('p-'+k).classList.toggle('on',k===p); });
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function paintMeters(){
+  $('mA').textContent=S.grip+'%'; $('bA').style.width=S.grip+'%';
+  $('mB').textContent=S.integ+'%'; $('bB').style.width=S.integ+'%';
+  $('mAW').className='meter'+(S.grip<55?' bad':S.grip<80?' warn':'');
+  $('mBW').className='meter'+(S.integ<55?' bad':S.integ<80?' warn':'');
+  $('mSeen').textContent=Object.keys(S.opened).length+' / '+QUEUES.length;
+}
+function tickClock(){
+  var mins=Math.floor((Date.now()-S.started)/60000);
+  var t=10*60+45+mins, h=Math.floor(t/60)%24, m=t%60;
+  $('mClock').textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+}
+
+/* ============================================================
+   CONSOLE
+   ============================================================ */
+function desk(){
+  $('workArea').innerHTML=
+   sBoard()+sQueues()+sAI()+sAppt()+sNoShow()+sComms()+sEscal()+sCase()+sSim()+sCommit();
+  wireBoard(); wireQueues(); wireAI(); wireAppt(); wireNoShow(); wireComms(); wireEscal();
+  wireCase(); wireSim(); wireCommit();
+  paintMeters(); relock();
+}
+
+/* --- 1. live board --- */
+function sBoard(){
+  return '<div class="card"><h3>Live administrative situation</h3>'
+   +'<p class="muted">ALIZON SmartCare Multispecialty · '+HOSP.beds+' beds · '+HOSP.depts+' clinical departments · '
+   +HOSP.counters+' OP registration counters ('+BASE.counters+' staffed) · '+HOSP.channels+' appointment channels</p>'
+   +'<div class="kpis">'+BOARD.map(function(b){
+       return '<div class="kpi"><div class="n">'+esc(b.n)+'</div><div class="v">'+esc(String(b.v))+'</div>'
+             +'<span class="s s-'+b.s+'">'+b.s+'</span></div>'; }).join('')+'</div>'
+   +'<div class="note">Read the whole board before you open anything. Two of these eight indicators are '
+   +'consequences of the same underlying fact.</div></div>';
+}
+function wireBoard(){}
+
+/* --- 2. digital queue management --- */
+function sQueues(){
+  return '<div class="card"><h3>Digital queue management</h3>'
+   +'<p class="muted">Each department queue is closed until you open it. What you opened is recorded.</p>'
+   +'<div class="depts" id="deptWrap">'+QUEUES.map(function(q){
+       return '<button class="dept" data-q="'+q.k+'"><b>'+esc(q.name)+'</b>'
+             +'<div class="q" data-v="'+q.k+'">—</div><small class="hidden" data-h="'+q.k+'">closed — click to open</small></button>';
+     }).join('')+'</div><div id="qDetail"></div></div>';
+}
+function wireQueues(){
+  [].forEach.call($('deptWrap').querySelectorAll('.dept'),function(b){
+    b.addEventListener('click',function(){ openQueue(b.getAttribute('data-q')); });
+  });
+}
+function openQueue(k){
+  var q=QUEUES.filter(function(x){return x.k===k;})[0];
+  S.opened[k]=1;
+  var btn=$('deptWrap').querySelector('[data-q="'+k+'"]');
+  btn.classList.add('seen'); if(q.growing) btn.classList.add('hot');
+  btn.querySelector('[data-v="'+k+'"]').textContent=q.inq;
+  btn.querySelector('[data-h="'+k+'"]').textContent=q.growing?'queue still growing':'queue clearing';
+  btn.querySelector('[data-h="'+k+'"]').className='';
+  var rows=(TOKENS[k]||[]).map(function(t){
+    var cls=t.s==='Delayed'?'t-delay':t.s==='Escalate'?'t-crit':'t-wait';
+    return '<tr'+(t.w>60?' class="hot"':'')+'><td class="n">'+esc(t.t)+'</td><td>'+esc(t.ty)+'</td>'
+          +'<td class="n">'+t.w+' min</td><td><span class="tag '+cls+'">'+esc(t.s)+'</span></td></tr>';
+  }).join('');
+  $('qDetail').innerHTML='<div class="card" style="margin-top:10px"><h4>'+esc(q.name)+'</h4>'
+   +'<p><b>Patients in queue: '+q.inq+'</b> · consultants on duty '+q.docs+' of '+q.docsPlanned+' planned'
+   +' · average consultation '+q.avgCons+' min · walk-ins this session '+q.walkins+'</p>'
+   +'<table class="d"><tr><th>Token</th><th>Type</th><th>Waiting</th><th>Status</th></tr>'+rows+'</table>'
+   +'<p><b>Current estimated waiting time: '+q.est+' minutes</b></p>'
+   +'<p class="muted">'+esc(q.note)+'</p></div>';
+  paintMeters(); relock();
+}
+
+/* --- 3. AI queue analysis (with the planted reversal) --- */
+function sAI(){
+  return '<div class="card step" id="stAI"><div class="stepno">Step 2</div>'
+   +'<h3>AI queue analysis</h3>'
+   +'<p class="muted">The analyser reads arrival pattern, appointment schedule, walk-in volume, consultant '
+   +'availability, current queue, average consultation time and department capacity.</p>'
+   +'<button class="btn" id="aiBtn">Run AI queue analysis</button><div id="aiOut"></div></div>';
+}
+function wireAI(){
+  $('aiBtn').addEventListener('click',function(){
+    S.aiRun=true; $('aiBtn').disabled=true;
+    $('aiOut').innerHTML='<div class="out">AI ADMINISTRATIVE FINDING\n\n'
+     +'General Medicine is experiencing queue congestion because 31% of today\'s appointments are\n'
+     +'concentrated between 10:00 and 12:00. Walk-in volume is also above the expected level.\n\n'
+     +'SUGGESTED INTERVENTION\n'
+     +'  1. Redistribute appointments out of the 11:00 block\n'
+     +'  2. Open an additional registration counter\n'
+     +'  3. Assign a patient coordinator to General Medicine\n'
+     +'  4. Inform delayed patients of a revised estimate\n'
+     +'  5. Move eligible follow-up appointments to later slots\n\n'
+     +'Confidence 84%.  Basis: appointment book, arrival log, queue state at 10:45.</div>'
+     +'<div class="fb warnb"><div class="hd">Read this against the data you opened</div>'
+     +'The analysis is not wrong, but it is ordered wrongly for <b>10:45</b>. Redistributing the 11:00 block '
+     +'is the first item on the AI\'s list and the slowest lever in the room — it acts on arrivals that have '
+     +'not happened yet. The analyser also does not know that a registration counter has been unstaffed since '
+     +'09:40, because nobody logged it: the staffing feed still shows five counters. An AI recommendation is '
+     +'only as current as the feed behind it.</div>';
+    relock();
+  });
+}
+
+/* --- 4. smart appointment management --- */
+function sAppt(){
+  return '<div class="card step" id="stAppt"><div class="stepno">Step 3</div>'
+   +'<h3>Smart appointment management</h3>'
+   +'<table class="d" id="slotTable"></table>'
+   +'<p class="muted">Appointment imbalance detected. Redistribute the overbooked blocks into available '
+   +'capacity — the total number of appointments must stay the same. You are moving people, not deleting them.</p>'
+   +'<div id="slotEdit"></div>'
+   +'<div style="margin-top:8px"><button class="btn ghost sm" id="apptApply">Apply redistribution</button> '
+   +'<button class="btn ghost sm" id="apptReset">Reset</button></div><div id="apptFb"></div></div>';
+}
+function paintSlots(){
+  var plan=S.apptPlan||SLOTS.map(function(s){return s.booked;});
+  $('slotTable').innerHTML='<tr><th>Time</th><th>Booked</th><th>Capacity</th><th>Status</th></tr>'
+   +SLOTS.map(function(s,i){
+      var st=slotStatus({booked:plan[i],cap:s.cap});
+      return '<tr><td>'+s.t+'</td><td class="n">'+plan[i]+'</td><td class="n">'+s.cap+'</td>'
+            +'<td><span class="s '+st[1]+'">'+st[0]+'</span></td></tr>'; }).join('')
+   +'<tr><td><b>Total</b></td><td class="n"><b>'+plan.reduce(function(a,b){return a+b;},0)+'</b></td><td class="n">'
+   +SLOTS.reduce(function(a,s){return a+s.cap;},0)+'</td><td></td></tr>';
+}
+function wireAppt(){
+  paintSlots();
+  $('slotEdit').innerHTML='<div class="sim">'+SLOTS.map(function(s,i){
+    return '<div class="ctl"><label>'+s.t+' — appointments</label>'
+      +'<input type="number" min="0" max="40" value="'+s.booked+'" data-slot="'+i+'" style="width:100%"></div>';
+  }).join('')+'</div>';
+  $('apptApply').addEventListener('click',function(){
+    var plan=[].map.call($('slotEdit').querySelectorAll('[data-slot]'),function(inp){ return Math.max(0,parseInt(inp.value,10)||0); });
+    var tot=plan.reduce(function(a,b){return a+b;},0);
+    var orig=SLOTS.reduce(function(a,s){return a+s.booked;},0);
+    if(tot!==orig){
+      $('apptFb').innerHTML='<div class="fb no"><div class="hd">Total changed</div>You now have '+tot
+       +' appointments against '+orig+'. Redistribution moves patients between slots; it does not cancel them. '
+       +'Adjust until the total matches.</div>';
+      return;
+    }
+    var over=plan.filter(function(v,i){ return v>SLOTS[i].cap; }).length;
+    S.apptPlan=plan; S.apptFixed=true; paintSlots();
+    $('apptFb').innerHTML='<div class="fb '+(over?'warnb':'yes')+'"><div class="hd">Redistribution recorded</div>'
+      +(over? over+' block(s) are still above capacity. The clinic will run late in those hours — decide whether that is the trade you intend.'
+            : 'No block is above capacity. Note what this does and does not fix: the book is now balanced for the rest of the day, and the queue standing in front of you at 10:45 is unchanged.')
+      +'</div>';
+    relock();
+  });
+  $('apptReset').addEventListener('click',function(){
+    S.apptPlan=null; S.apptFixed=false; paintSlots();
+    [].forEach.call($('slotEdit').querySelectorAll('[data-slot]'),function(inp,i){ inp.value=SLOTS[i].booked; });
+    $('apptFb').innerHTML='';
+  });
+}
+
+/* --- 5. no-show management --- */
+function sNoShow(){
+  return '<div class="card step" id="stNS"><div class="stepno">Step 4</div>'
+   +'<h3>No-show risk &amp; administrative action</h3>'
+   +'<div class="synth"><b>Educational simulation based on synthetic appointment data.</b> These bands are '
+   +'produced by a demonstration model over generated booking histories. No system may be presented as '
+   +'reliably predicting whether a particular real patient will attend, and no patient may be treated '
+   +'differently on the strength of a score like this.</div>'
+   +'<table class="d" id="nsTable"></table><div id="nsFb"></div></div>';
+}
+function wireNoShow(){
+  $('nsTable').innerHTML='<tr><th>Appointment</th><th>Department</th><th>No-show risk</th><th>Behavioural history</th><th>Data completeness</th><th>Your action</th></tr>'
+   +NOSHOW.map(function(a){
+     var cls=a.band==='High'?'s-high':a.band==='Moderate'?'s-moderate':'s-normal';
+     return '<tr><td class="n">'+a.id+'</td><td>'+esc(a.dept)+'</td>'
+       +'<td><span class="s '+cls+'">'+a.band+'</span></td><td>'+esc(a.hist)+'</td>'
+       +'<td class="n">'+a.complete+'%</td>'
+       +'<td><select data-ns="'+a.id+'"><option value="">choose…</option>'
+       +NS_ACTIONS.map(function(x){return '<option value="'+x.k+'">'+esc(x.t)+'</option>';}).join('')
+       +'</select></td></tr>'; }).join('');
+  [].forEach.call($('nsTable').querySelectorAll('[data-ns]'),function(sel){
+    sel.addEventListener('change',function(){
+      var id=sel.getAttribute('data-ns'); S.nsActions[id]=sel.value;
+      var a=NOSHOW.filter(function(x){return x.id===id;})[0];
+      var msg='';
+      if(id==='A106'&&sel.value==='resched')
+        msg='<div class="fb warnb"><div class="hd">Check what the band is built on</div>A106 is a first visit with '
+         +'no attendance history — 29% data completeness. The model has almost nothing to go on, so a "High" band '
+         +'here is a statement about missing data, not about this patient. Confirming by telephone is reasonable; '
+         +'moving their appointment on the strength of that score is not.</div>';
+      else if(a.band==='Low'&&(sel.value==='call'||sel.value==='resched'))
+        msg='<div class="fb warnb"><div class="hd">Proportionality</div>'+id+' has attended consistently. '
+         +'Telephoning every low-risk booking spends the coordinator time you need for the '+CASE.at+' queue.</div>';
+      else if(a.band==='High'&&sel.value==='leave')
+        msg='<div class="fb no"><div class="hd">Nothing was done</div>A high band with usable history is exactly '
+         +'the case where a reminder or a call recovers the slot. Leaving it unchanged is a decision to lose it.</div>';
+      $('nsFb').innerHTML=msg;
+      relock();
+    });
+  });
+}
+
+/* --- 6. AI patient communication centre --- */
+function sComms(){
+  return '<div class="card step" id="stComm"><div class="stepno">Step 5</div>'
+   +'<h3>Patient communication centre</h3>'
+   +'<p class="muted">Assemble the message you would actually send. Each block you include is evaluated for '
+   +'clarity, professionalism, appropriateness, privacy safety, tone and whether it gives the patient '
+   +'something to do.</p>'
+   +COMMS.map(function(c){
+     return '<div class="msgbox"><b>Scenario '+c.k.toUpperCase()+'</b><p>'+esc(c.scen)+'</p>'
+       +'<div class="stack">'+c.blocks.map(function(b){
+          return '<button class="opt" data-c="'+c.k+'" data-b="'+b.k+'">'+esc(b.t)+'</button>'; }).join('')+'</div>'
+       +'<button class="btn ghost sm" data-send="'+c.k+'">Evaluate &amp; send</button>'
+       +'<div id="cf-'+c.k+'"></div></div>'; }).join('')
+   +'</div>';
+}
+function wireComms(){
+  [].forEach.call($('stComm').querySelectorAll('[data-c]'),function(b){
+    b.addEventListener('click',function(){
+      var c=b.getAttribute('data-c'), k=b.getAttribute('data-b');
+      S.comms[c]=S.comms[c]||{};
+      if(S.comms[c][k]){ delete S.comms[c][k]; b.classList.remove('sel'); }
+      else { S.comms[c][k]=1; b.classList.add('sel'); }
+    });
+  });
+  [].forEach.call($('stComm').querySelectorAll('[data-send]'),function(b){
+    b.addEventListener('click',function(){
+      var ck=b.getAttribute('data-send');
+      var c=COMMS.filter(function(x){return x.k===ck;})[0];
+      var chosen=Object.keys(S.comms[ck]||{});
+      if(!chosen.length){ $('cf-'+ck).innerHTML='<div class="fb no"><div class="hd">Nothing selected</div>An empty message is still a decision, and it is the one that produces the complaint.</div>'; return; }
+      var bad=c.blocks.filter(function(x){ return !x.good && chosen.indexOf(x.k)>=0; });
+      var good=c.blocks.filter(function(x){ return x.good && chosen.indexOf(x.k)>=0; });
+      var dims=['clear','professional','appropriate','privacy','tone','action'];
+      var privacyBreach=bad.some(function(x){return x.dim==='privacy';});
+      var alarm=bad.some(function(x){return x.dim==='alarm';});
+      var res={
+        clear:        good.some(function(x){return x.dim==='clear';}),
+        professional: !bad.some(function(x){return x.dim==='professional';}),
+        appropriate:  !bad.some(function(x){return x.dim==='accuracy';}),
+        privacy:      !privacyBreach,
+        tone:         !alarm,
+        action:       good.some(function(x){return x.dim==='action';})
+      };
+      S.commsDone[ck]={pass:dims.filter(function(d){return res[d];}).length, privacy:!privacyBreach, alarm:alarm};
+      if(privacyBreach){ S.integ=Math.max(0,S.integ-22); S.privacyHits++; }
+      if(alarm) S.integ=Math.max(0,S.integ-9);
+      if(!res.action) S.integ=Math.max(0,S.integ-5);
+      paintMeters();
+      var names={clear:'Clear',professional:'Professional',appropriate:'Appropriate',privacy:'Privacy-safe',tone:'Non-alarming',action:'Action-oriented'};
+      $('cf-'+ck).innerHTML='<div class="crit6">'+dims.map(function(d){
+          return '<div class="'+(res[d]?'pass':'fail')+'">'+(res[d]?'✓ ':'✕ ')+names[d]+'</div>'; }).join('')+'</div>'
+        +(bad.length?'<div class="fb no"><div class="hd">'+(privacyBreach?'Privacy breach':'Problem with this message')+'</div><ul><li>'
+            +bad.map(function(x){return esc(x.why);}).join('</li><li>')+'</li></ul></div>'
+          :'<div class="fb yes"><div class="hd">Message sent</div>Clear, bounded, and it leaves the patient with '
+           +'something to do. That is what stops a wait becoming a complaint.</div>');
+      relock();
+    });
+  });
+}
+
+/* --- 7. escalation --- */
+function sEscal(){
+  return '<div class="card step" id="stEsc"><div class="stepno">Step 6</div>'
+   +'<h3>Administrative escalation</h3>'
+   +'<table class="d"><tr><th>Level</th><th>Definition</th></tr>'
+   +LEVELS.map(function(l){return '<tr><td><b>'+l.t+'</b></td><td>'+esc(l.d)+'</td></tr>';}).join('')+'</table>'
+   +EVENTS.map(function(e){
+      return '<div class="msgbox"><p>'+esc(e.t)+'</p><div class="esc">'
+        +LEVELS.map(function(l){ return '<button class="escb" data-e="'+e.k+'" data-l="'+l.l+'"><b>'+l.t+'</b><small>'+esc(l.d)+'</small></button>'; }).join('')
+        +'</div><div id="ef-'+e.k+'"></div></div>'; }).join('')
+   +'</div>';
+}
+function wireEscal(){
+  [].forEach.call($('stEsc').querySelectorAll('[data-e]'),function(b){
+    b.addEventListener('click',function(){
+      var ek=b.getAttribute('data-e'), lv=+b.getAttribute('data-l');
+      var e=EVENTS.filter(function(x){return x.k===ek;})[0];
+      S.escal[ek]=lv;
+      [].forEach.call($('stEsc').querySelectorAll('[data-e="'+ek+'"]'),function(x){ x.classList.toggle('sel',+x.getAttribute('data-l')===lv); });
+      var diff=Math.abs(lv-e.best);
+      if(diff>=2) S.grip=Math.max(0,S.grip-7);
+      paintMeters();
+      $('ef-'+ek).innerHTML='<div class="fb '+(diff===0?'yes':diff===1?'warnb':'no')+'"><div class="hd">'
+        +(diff===0?'Correct level':diff===1?'Close':'Wrong level')+'</div>'+esc(e.why)+'</div>';
+      relock();
+    });
+  });
+}
+
+/* --- 8. case 01 --- */
+function sCase(){
+  return '<div class="card step" id="stCase"><div class="stepno">Step 7</div>'
+   +'<h3>Case 01 — OPD queue crisis at '+CASE.at+'</h3>'
+   +'<ul>'+CASE.facts.map(function(f){return '<li>'+esc(f)+'</li>';}).join('')+'</ul>'
+   +'<div class="lbl">1 · Select the three problems actually driving the congestion</div>'
+   +'<div class="opts" id="probWrap">'+PROBLEMS.map(function(p){
+      return '<button class="opt" data-p="'+p.k+'">'+esc(p.t)+'</button>'; }).join('')+'</div>'
+   +'<div class="lbl">2 · Choose your interventions</div>'
+   +'<div class="stack" id="intWrap">'+INTERVENTIONS.map(function(i){
+      return '<button class="opt" data-i="'+i.k+'">'+esc(i.t)+'</button>'; }).join('')+'</div>'
+   +'<div id="intFb"></div>'
+   +'<div class="lbl">3 · Communication strategy for the '+CASE.at+' position</div>'
+   +'<div class="stack" id="csWrap">'
+   +'<button class="opt" data-cs="none">Say nothing until the queue clears</button>'
+   +'<button class="opt" data-cs="wait">Announce a revised waiting estimate to everyone in the queue</button>'
+   +'<button class="opt" data-cs="targeted">Message the 11:00 block to arrive later, and give the waiting queue an individual revised estimate at the counter</button>'
+   +'<button class="opt" data-cs="apology">Issue a general apology with no estimate and no options</button></div>'
+   +'<div class="lbl">4 · Your first action</div>'
+   +'<div class="stack" id="actWrap">'
+   +'<button class="opt" data-a="A">Re-staff the registration counter</button>'
+   +'<button class="opt" data-a="B">Redistribute the 11:00 appointments</button>'
+   +'<button class="opt" data-a="C">Assign a patient coordinator to General Medicine</button>'
+   +'<button class="opt" data-a="D">Close walk-in registration for the morning</button></div>'
+   +'<div class="lbl">5 · Justify it against the data (this is marked)</div>'
+   +'<textarea id="reason" placeholder="Which figures told you this was the constraint, what you expect the intervention to move, and what you deliberately did not do first…"></textarea>'
+   +'<div style="margin-top:10px"><button class="btn" id="submitCase">Commit the decision</button></div>'
+   +'<div id="caseFb"></div></div>';
+}
+function wireCase(){
+  [].forEach.call($('probWrap').querySelectorAll('[data-p]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-p'), i=S.problems.indexOf(k);
+      if(i>=0){ S.problems.splice(i,1); b.classList.remove('sel'); }
+      else { if(S.problems.length>=3){ return; } S.problems.push(k); b.classList.add('sel'); }
+    });
+  });
+  [].forEach.call($('intWrap').querySelectorAll('[data-i]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-i'), i=S.interventions.indexOf(k);
+      var it=INTERVENTIONS.filter(function(x){return x.k===k;})[0];
+      if(i>=0){ S.interventions.splice(i,1); b.classList.remove('sel'); $('intFb').innerHTML=''; }
+      else { S.interventions.push(k); b.classList.add('sel');
+        $('intFb').innerHTML='<div class="fb '+(it.helps?(it.slow?'warnb':'yes'):'no')+'"><div class="hd">'
+          +esc(it.t)+'</div>'+esc(it.eff)+'</div>'; }
+    });
+  });
+  [].forEach.call($('csWrap').querySelectorAll('[data-cs]'),function(b){
+    b.addEventListener('click',function(){
+      S.commsStrategy=b.getAttribute('data-cs');
+      [].forEach.call($('csWrap').querySelectorAll('[data-cs]'),function(x){ x.classList.toggle('sel',x===b); });
+    });
+  });
+  [].forEach.call($('actWrap').querySelectorAll('[data-a]'),function(b){
+    b.addEventListener('click',function(){
+      S.firstAction=b.getAttribute('data-a');
+      [].forEach.call($('actWrap').querySelectorAll('[data-a]'),function(x){ x.classList.toggle('sel',x===b); });
+    });
+  });
+  $('submitCase').addEventListener('click',submitCase);
+}
+
+/* --- 9. what-if simulator --- */
+function sSim(){
+  return '<div class="card step" id="stSim"><div class="stepno">Step 8</div>'
+   +'<h3>What-if simulation</h3>'
+   +'<p class="muted">Baseline at '+CASE.at+' is an average wait of <b>58 minutes</b>. Change one lever at a '
+   +'time so you can attribute the effect.</p>'
+   +'<div class="sim">'
+   +ctl('counters','Registration counters staffed',1,5,BASE.counters,1)
+   +ctl('coordinators','Patient coordinators assigned',0,3,BASE.coordinators,1)
+   +ctl('peakCap','11:00 block capacity (patients)',12,34,BASE.peakCap,1)
+   +ctl('interval','Appointment interval (min)',6,25,BASE.interval,1)
+   +'<div class="ctl"><label>Queue priority rule</label><select id="cPriority">'
+   +'<option value="fifo">First come, first served</option>'
+   +'<option value="appt">Appointments before walk-ins</option>'
+   +'<option value="clinical">Clinical urgency first</option></select>'
+   +'<div class="rowv" style="margin-top:6px"><span>affects who waits, not how many</span></div></div>'
+   +'<div class="ctl"><label>Proactive delay communication</label>'
+   +'<select id="cComms"><option value="0">Not issued</option><option value="1">Issued to the 11:00 block</option></select>'
+   +'<div class="rowv" style="margin-top:6px"><span>flattens the arrival spike</span></div></div>'
+   +'</div>'
+   +'<div style="margin-top:10px"><button class="btn ghost" id="runSim">Run simulation</button> '
+   +'<button class="btn ghost sm" id="resetSim">Reset to baseline</button></div>'
+   +'<div id="simOut"></div></div>';
+}
+function ctl(k,label,min,max,val,step){
+  return '<div class="ctl"><label>'+label+'</label>'
+   +'<input type="range" id="c'+k+'" min="'+min+'" max="'+max+'" step="'+step+'" value="'+val+'">'
+   +'<div class="rowv"><span>'+min+'</span><span class="cur" id="v'+k+'">'+val+'</span><span>'+max+'</span></div></div>';
+}
+function readCfg(){
+  return {counters:+$('ccounters').value, coordinators:+$('ccoordinators').value,
+          peakCap:+$('cpeakCap').value, interval:+$('cinterval').value,
+          priority:$('cPriority').value, comms:$('cComms').value==='1'};
+}
+function wireSim(){
+  ['counters','coordinators','peakCap','interval'].forEach(function(k){
+    $('c'+k).addEventListener('input',function(){ $('v'+k).textContent=$('c'+k).value; });
+  });
+  $('resetSim').addEventListener('click',function(){
+    $('ccounters').value=BASE.counters; $('vcounters').textContent=BASE.counters;
+    $('ccoordinators').value=BASE.coordinators; $('vcoordinators').textContent=BASE.coordinators;
+    $('cpeakCap').value=BASE.peakCap; $('vpeakCap').textContent=BASE.peakCap;
+    $('cinterval').value=BASE.interval; $('vinterval').textContent=BASE.interval;
+    $('cPriority').value='fifo'; $('cComms').value='0'; $('simOut').innerHTML='';
+  });
+  $('runSim').addEventListener('click',function(){
+    var c=readCfg(), M=model(c), B=model(BASE);
+    S.simRuns++; S.simCfg=c;
+    var d=M.wait-B.wait;
+    $('simOut').innerHTML='<table class="d"><tr><th>Indicator</th><th>Baseline</th><th>Simulated</th><th>Change</th></tr>'
+     +row('Average waiting time',r0(B.wait)+' min',r0(M.wait)+' min',d)
+     +row('Walk-in waiting time',r0(B.walkWait)+' min',r0(M.walkWait)+' min',M.walkWait-B.walkWait)
+     +row('Escalations expected this session',B.escalations,M.escalations,M.escalations-B.escalations)
+     +row('Patients cleared per hour',B.throughput,M.throughput,-(M.throughput-B.throughput))
+     +'</table>'
+     +(c.priority==='appt'
+        ? '<div class="fb warnb"><div class="hd">Read the second row before you adopt this</div>Prioritising '
+         +'appointments lowers the <i>average</i> and pushes walk-in waiting to '+r0(M.walkWait)+' minutes. '
+         +'The headline improves because one group absorbs the delay. Decide whether that is the policy you '
+         +'intend to defend, and note that walk-ins at this hospital are the least able to come back tomorrow.</div>'
+        : '')
+     +(c.coordinators>0
+        ? '<div class="fb yes"><div class="hd">What the coordinator actually did</div>The queue is barely '
+         +'shorter, but expected escalations fell. A coordinator does not create capacity — it converts silent '
+         +'waiting into managed waiting, which is what most complaints are actually about.</div>' : '')
+     +'<p class="muted">Simulated operational estimates from a queueing model. Not clinical predictions.</p>';
+    relock();
+  });
+}
+function row(n,b,s,delta){
+  var cls=delta<0?'good':delta>0?'bad':'';
+  var txt=delta===0?'no change':(delta>0?'+':'')+r0(delta);
+  return '<tr><td>'+n+'</td><td class="n">'+b+'</td><td class="n"><b>'+s+'</b></td>'
+        +'<td class="n"><span class="delta '+cls+'">'+txt+'</span></td></tr>';
+}
+
+/* --- 10. commit --- */
+function sCommit(){
+  return '<div class="card no-print" id="stCommit"><h4>When you are finished</h4>'
+   +'<p class="muted">Committing closes the shift and generates your report. You cannot reopen a queue afterwards.</p></div>';
+}
+function wireCommit(){}
+
+/* Progressive unlock — each step opens when the one before it has been done. */
+function relock(){
+  var opened=Object.keys(S.opened).length;
+  lock('stAI', opened<3);
+  lock('stAppt', !S.aiRun);
+  lock('stNS', !S.aiRun);
+  lock('stComm', !S.aiRun);
+  lock('stEsc', Object.keys(S.commsDone).length<1);
+  lock('stSim', !S.aiRun);
+  lock('stCase', Object.keys(S.escal).length<2 || S.simRuns<1);
+  var hint=$('stCase');
+  if(hint && hint.classList.contains('locked')) hint.setAttribute('title','Assign at least two escalation levels and run one simulation first.');
+}
+function lock(id,cond){ var el=$(id); if(el) el.classList.toggle('locked',!!cond); }
+
+/* ============================================================
+   EVALUATION — 100 marks
+   ============================================================ */
+function submitCase(){
+  if(S.ended) return;
+  if(S.problems.length<3 || !S.firstAction || !S.commsStrategy){
+    $('caseFb').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Select three problems, a '
+      +'communication strategy and a first action before committing.</div>';
+    return;
+  }
+  S.reasoning=($('reason').value||'').trim();
+  S.ended=true;
+  var pts=[], strengths=[], improve=[];
+
+  /* 1 — queue reading (15) */
+  var opened=Object.keys(S.opened).length;
+  var sawGrowing=['gm','paed'].filter(function(k){return S.opened[k];}).length;
+  var t1=Math.min(15, opened*2 + sawGrowing*2);
+  pts.push(['Queue reading',t1,15]);
+  if(sawGrowing===2) strengths.push('Opened both of the queues that were still growing rather than the ones that merely looked long.');
+  if(!S.opened.gm) improve.push('General Medicine was never opened — it is the department the whole case turns on.');
+  if(opened<4) improve.push('Only '+opened+' of '+QUEUES.length+' queues were opened. The queue you did not look at is the one that decides whether your action was right.');
+
+  /* 2 — problem identification (20) */
+  var hits=S.problems.filter(function(k){ return PROBLEMS.filter(function(p){return p.k===k;})[0].real; }).length;
+  var near=S.problems.filter(function(k){ var p=PROBLEMS.filter(function(x){return x.k===k;})[0]; return !p.real&&p.near; }).length;
+  var t2=Math.min(20, hits*6 + near*2);
+  pts.push(['Problem identification',t2,20]);
+  if(hits===3) strengths.push('Identified all three of the operational facts actually producing the 10:45 congestion.');
+  if(S.problems.indexOf('counter')<0) improve.push('The unstaffed registration counter was not selected. It is the one constraint the AI could not see, because the staffing feed was never updated — and it is the fastest to fix.');
+  if(S.problems.indexOf('lab')>=0||S.problems.indexOf('pharm')>=0) improve.push('Laboratory or pharmacy was selected, but both queues are clearing steadily; they are downstream of the congestion, not a cause of it.');
+
+  /* 3 — interventions (15) */
+  var good=S.interventions.filter(function(k){ return INTERVENTIONS.filter(function(i){return i.k===k;})[0].helps; }).length;
+  var bad =S.interventions.filter(function(k){ return !INTERVENTIONS.filter(function(i){return i.k===k;})[0].helps; }).length;
+  var t3=Math.max(0,Math.min(15, good*5 - bad*4));
+  pts.push(['Interventions chosen',t3,15]);
+  if(bad===0&&good>=3) strengths.push('Every intervention selected acts on a constraint that is actually binding this morning.');
+  if(S.interventions.indexOf('overtime')>=0) improve.push('Shortening consultation time to clear a queue trades clinical quality for an administrative target. That is not an administrative decision to take.');
+
+  /* 4 — no-show handling (10) */
+  var nsScored=0, nsAnswered=0;
+  NOSHOW.forEach(function(a){ var v=S.nsActions[a.id]; if(!v) return; nsAnswered++;
+    if(NS_BEST[a.id].indexOf(v)>=0) nsScored+=1.7; });
+  var t4=Math.min(10, Math.round(nsScored*10)/10);
+  pts.push(['No-show management',t4,10]);
+  if(nsAnswered<NOSHOW.length) improve.push('Only '+nsAnswered+' of '+NOSHOW.length+' at-risk appointments were actioned. An unactioned high-risk slot is a slot you have decided to lose.');
+  if(S.nsActions.A106==='resched') improve.push('A106 was rescheduled on a "High" band built from 29% complete data. A band produced from missing history is a statement about the data, not the patient.');
+  else if(S.nsActions.A106==='call') strengths.push('Handled A106 proportionately — confirmed by telephone rather than acting on a score with almost no history behind it.');
+
+  /* 5 — communication (20) */
+  var commDone=Object.keys(S.commsDone).length;
+  var commPass=0; Object.keys(S.commsDone).forEach(function(k){ commPass+=S.commsDone[k].pass; });
+  var t5=Math.min(20, Math.round(commPass/ (COMMS.length*6) * 20));
+  if(S.privacyHits) t5=Math.max(0,t5-6*S.privacyHits);
+  pts.push(['Patient communication',t5,20]);
+  if(commDone<COMMS.length) improve.push('Only '+commDone+' of '+COMMS.length+' communication scenarios were completed.');
+  if(S.privacyHits) improve.push('A message disclosed information it should not have ('+S.privacyHits+' occurrence'+(S.privacyHits>1?'s':'')+'). In administration a privacy breach is not a style error — it is reportable in its own right.');
+  else if(commDone===COMMS.length) strengths.push('Every message was privacy-safe, bounded and gave the patient a next step.');
+
+  /* 6 — escalation (10) */
+  var escScore=0, escDone=0;
+  EVENTS.forEach(function(e){ var v=S.escal[e.k]; if(!v) return; escDone++;
+    var d=Math.abs(v-e.best); escScore += d===0?2.5:d===1?1.2:0; });
+  var t6=Math.min(10,Math.round(escScore*10)/10);
+  pts.push(['Escalation judgement',t6,10]);
+  if(escDone<EVENTS.length) improve.push('Not every escalation event was assigned a level.');
+  if(S.escal.e4 && S.escal.e4<4) improve.push('The unreported unstaffed counter was graded below Level 4. An unreported capacity loss that produced misregistration is an administrative incident regardless of the queue it caused.');
+
+  /* 7 — use of the simulator (5) */
+  var t7=S.simRuns>=3?5:S.simRuns===2?4:S.simRuns===1?2:0;
+  pts.push(['Use of the simulator',t7,5]);
+  if(S.simRuns===0) improve.push('Nothing was tested before committing. The point of the model is to find out what a change is worth before ordering it.');
+  else if(S.simRuns>=3) strengths.push('Tested several configurations before committing, which is what makes the recommendation defensible.');
+
+  /* 8 — decision, strategy and justification (5) */
+  var t8=0;
+  if(S.firstAction==='A'){ t8=3; strengths.push('Chose to re-staff the registration counter first — the constraint that is losing throughput now, and the one the AI could not see.'); }
+  else if(S.firstAction==='C'){ t8=2.5; improve.push('A coordinator manages the wait rather than shortening it. It is a strong second action; as a first action it leaves the lost registration capacity in place.'); }
+  else if(S.firstAction==='B'){ t8=1.5; improve.push('Redistributing the 11:00 block was the AI’s first suggestion and the slowest lever available — it acts on arrivals that have not happened, not on the 31 people already waiting.'); S.grip=Math.max(0,S.grip-8); }
+  else { t8=0; improve.push('Closing walk-in registration moves the queue to the door and pushes unregistered patients toward the emergency entrance.'); S.grip=Math.max(0,S.grip-14); }
+  if(S.commsStrategy==='targeted'){ t8+=1.5; strengths.push('Communication strategy separated the two populations — the people already waiting and the people not yet arrived need different messages.'); }
+  else if(S.commsStrategy==='none'){ S.integ=Math.max(0,S.integ-12); improve.push('Choosing to say nothing until the queue clears is what converts a delay into a complaint, and it is the single most common administrative failure in an outpatient department.'); }
+  var words=S.reasoning?S.reasoning.split(/\s+/).length:0;
+  if(words>=30) t8+=0.5;
+  else improve.push('The written justification was short. An administrative decision is judged on the reasoning as much as on the choice.');
+  t8=Math.min(5,t8);
+  pts.push(['Decision and justification',t8,5]);
+
+  /* meters */
+  S.grip=Math.max(0, S.grip - (3-hits)*8 - bad*6 - (opened<4?8:0));
+  if(!S.aiRun) S.grip=Math.max(0,S.grip-5);
+  paintMeters();
+
+  var total=Math.round(pts.reduce(function(a,p){return a+p[1];},0));
+  finish(total,pts,strengths,improve);
+}
+
+function finish(total,pts,strengths,improve){
+  var elapsed=S.started?Math.round((Date.now()-S.started)/60000):0;
+  var B=model(BASE), M=S.simCfg?model(S.simCfg):null;
+  var probNames=S.problems.map(function(k){ return PROBLEMS.filter(function(p){return p.k===k;})[0].t; });
+  var intNames=S.interventions.map(function(k){ return INTERVENTIONS.filter(function(i){return i.k===k;})[0].t; });
+  var actMap={A:'Re-staff the registration counter',B:'Redistribute the 11:00 appointments',
+              C:'Assign a patient coordinator to General Medicine',D:'Close walk-in registration'};
+  var csMap={none:'No communication until the queue clears',wait:'General revised estimate to the queue',
+             targeted:'Targeted — 11:00 block asked to arrive later, individual estimates at the counter',
+             apology:'General apology, no estimate, no options'};
+  var nsRows=NOSHOW.map(function(a){
+    var v=S.nsActions[a.id]; var t=v?NS_ACTIONS.filter(function(x){return x.k===v;})[0].t:'not actioned';
+    return '<tr><td class="n">'+a.id+'</td><td>'+a.band+'</td><td class="n">'+a.complete+'%</td><td>'+esc(t)+'</td></tr>'; }).join('');
+  var escRows=EVENTS.map(function(e){
+    return '<tr><td>'+esc(e.t)+'</td><td class="n">'+(S.escal[e.k]?'Level '+S.escal[e.k]:'—')+'</td><td class="n">Level '+e.best+'</td></tr>'; }).join('');
+
+  var html='<div class="card"><h3>Smart Patient Management Practical Report</h3>'
+   +'<p class="muted">ALIZON SmartCare Multispecialty Hospital · Case 01 — OPD queue crisis at '+CASE.at
+   +' · time on console '+elapsed+' min</p>'
+   +'<div class="scorebig">'+total+' <span style="font-size:16px;font-weight:600;color:var(--muted)">/ 100</span></div>'
+   +'<p class="muted">Service grip <b>'+S.grip+'%</b> · Communication integrity <b>'+S.integ+'%</b> · '
+   +'queues opened '+Object.keys(S.opened).length+' of '+QUEUES.length+' · simulation runs '+S.simRuns+'</p>'
+
+   +'<table class="d"><tr><th>Element</th><th>Mark</th></tr>'
+   +pts.map(function(p){ return '<tr><td>'+esc(p[0])+'</td><td class="n">'+p[1]+' / '+p[2]+'</td></tr>'; }).join('')
+   +'<tr><td><b>Total</b></td><td class="n"><b>'+total+' / 100</b></td></tr></table>'
+
+   +'<div class="lbl">Initial operational situation</div>'
+   +'<table class="d">'+BOARD.map(function(b){ return '<tr><td>'+esc(b.n)+'</td><td class="n">'+esc(String(b.v))+'</td></tr>'; }).join('')+'</table>'
+
+   +'<div class="lbl">Queue analysis</div>'
+   +'<table class="d"><tr><th>Department</th><th>In queue</th><th>Estimated wait</th><th>Opened</th><th>State</th></tr>'
+   +QUEUES.map(function(q){ return '<tr'+(q.growing?' class="hot"':'')+'><td>'+esc(q.name)+'</td><td class="n">'+q.inq
+      +'</td><td class="n">'+q.est+' min</td><td class="n">'+(S.opened[q.k]?'yes':'no')+'</td><td>'
+      +(q.growing?'still growing':'clearing')+'</td></tr>'; }).join('')+'</table>'
+
+   +'<div class="lbl">Appointment analysis</div>'
+   +(S.apptFixed
+      ? '<table class="d"><tr><th>Time</th><th>Original</th><th>Redistributed</th><th>Capacity</th></tr>'
+        +SLOTS.map(function(s,i){ return '<tr><td>'+s.t+'</td><td class="n">'+s.booked+'</td><td class="n">'
+          +S.apptPlan[i]+'</td><td class="n">'+s.cap+'</td></tr>'; }).join('')+'</table>'
+      : '<p class="muted">No redistribution was applied — the book was left as booked.</p>')
+
+   +'<div class="lbl">AI findings and how they were used</div>'
+   +'<p>'+(S.aiRun
+      ? 'The analyser attributed the congestion to appointment concentration between 10:00 and 12:00 and to '
+       +'walk-in volume, and led with redistribution. Both observations are supported by the book. Its ordering '
+       +'was not usable at 10:45, and its staffing feed did not show the unstaffed registration counter.'
+      : 'The AI analysis was never run.')+'</p>'
+
+   +'<div class="lbl">No-show management</div>'
+   +'<table class="d"><tr><th>Appointment</th><th>Risk band</th><th>Data completeness</th><th>Action taken</th></tr>'+nsRows+'</table>'
+
+   +'<div class="lbl">Communication</div>'
+   +'<p>Strategy: '+esc(csMap[S.commsStrategy]||'—')+'. Scenarios completed '+Object.keys(S.commsDone).length
+   +' of '+COMMS.length+'. Privacy breaches recorded: <b>'+S.privacyHits+'</b>.</p>'
+
+   +'<div class="lbl">Escalation decisions</div>'
+   +'<table class="d"><tr><th>Event</th><th>Your level</th><th>Expected</th></tr>'+escRows+'</table>'
+
+   +'<div class="lbl">Problems identified</div><ul><li>'+(probNames.length?probNames.map(esc).join('</li><li>'):'none')+'</li></ul>'
+   +'<div class="lbl">Interventions selected</div><ul><li>'+(intNames.length?intNames.map(esc).join('</li><li>'):'none')+'</li></ul>'
+
+   +'<div class="lbl">Simulation result</div>'
+   +(M ? '<table class="d"><tr><th>Indicator</th><th>Baseline</th><th>Simulated</th></tr>'
+        +'<tr><td>Average waiting time</td><td class="n">'+r0(B.wait)+' min</td><td class="n">'+r0(M.wait)+' min</td></tr>'
+        +'<tr><td>Walk-in waiting time</td><td class="n">'+r0(B.walkWait)+' min</td><td class="n">'+r0(M.walkWait)+' min</td></tr>'
+        +'<tr><td>Expected escalations</td><td class="n">'+B.escalations+'</td><td class="n">'+M.escalations+'</td></tr></table>'
+      : '<p class="muted">No simulation was run.</p>')
+
+   +'<div class="lbl">Final administrative decision</div><p>'+esc(actMap[S.firstAction]||'—')+'</p>'
+   +'<div class="lbl">Student reflection</div><p>'+(S.reasoning?esc(S.reasoning):'<span class="muted">none recorded</span>')+'</p>'
+
+   +'<div class="fb yes"><div class="hd">Strengths</div>'
+     +(strengths.length?'<ul><li>'+strengths.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+   +'<div class="fb no"><div class="hd">Where it could be stronger</div>'
+     +(improve.length?'<ul><li>'+improve.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+
+   +'<div class="lbl">AI limitations recorded for this exercise</div>'
+   +'<ul><li>The queue analyser reads only the feeds connected to it. On this shift the staffing feed was stale, '
+   +'so a real and fixable constraint was invisible to it.</li>'
+   +'<li>No-show bands are produced from synthetic behavioural data. A band derived from missing history describes '
+   +'the data, not the patient, and must never change how a patient is treated.</li>'
+   +'<li>All waiting figures are operational estimates from a queueing model. They are not clinical predictions '
+   +'and no decision about an individual patient follows from them.</li></ul>'
+
+   +'<div class="note">Synthetic data throughout. Nothing in this report describes a real patient.</div>'
+   +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
+
+  $('caseFb').innerHTML='<div class="fb yes"><div class="hd">Decision recorded</div>Your report is on the '
+    +'<b>Result &amp; Record</b> tab.</div>';
+  var _re=$('resEmpty'); if(_re) _re.style.display='none';
+  $('resBox').innerHTML=html;
+  goTab('res');
+
+  var OPTS={module:'Hospital Administration · Module 2 · Smart Patient Management',
+            title:'AI Smart Patient Management & Hospital Service Coordination',
+            programme:'Hospital Administration AI', pct:total,
+            resultText:total+'/100 · grip '+S.grip+'% · communication '+S.integ+'%'};
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme,
+    submitOpts:OPTS, titleField:{label:'Service coordination decision', placeholder:'e.g. Counter restoration and targeted communication for the 10:45 peak'},
+    minWords:400,
+    attachments:[{label:'1. Smart patient management report / printout (PDF)'},{label:'2. Reflection on the communication strategy chosen (PDF)'}],
+    reportHtml:html
+  });
+}
+
+/* ============================================================
+   START
+   ============================================================ */
+var clockTimer=null;
+$('startBtn').addEventListener('click',function(){
+  S=freshState(); cfg=Object.assign({},BASE);
+  goTab('work'); desk();
+  if(clockTimer) clearInterval(clockTimer);
+  clockTimer=setInterval(tickClock,1000); tickClock();
+});
+S=freshState(); paintMeters();
+})();
+</script>
+</body>
+</html>
