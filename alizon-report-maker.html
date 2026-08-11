@@ -317,9 +317,12 @@ const DEFAULT_PROGRAMS=[
     {unit:'Module 2',title:'Predictive Patient Flow & Queue Management',desc:'Forecast OPD load and reduce patient waiting times.',status:'soon',href:'',units:[]}
   ]}
 ];
-const PROG_VER='2026-07-13-pro';
+/* Read-only consumer of the shared catalogue — see the note in admin-portal.html.
+   This file's DEFAULT_PROGRAMS is a cold-start fallback only. It must never
+   write alizonPrograms or alizonProgramsVer: opening the report writer used to
+   overwrite the live catalogue with this older four-programme copy and sync it
+   to every device. */
 function loadPrograms(){ try{
-    if(localStorage.getItem('alizonProgramsVer')!==PROG_VER){ localStorage.setItem('alizonPrograms',JSON.stringify(DEFAULT_PROGRAMS)); localStorage.setItem('alizonProgramsVer',PROG_VER); return DEFAULT_PROGRAMS; }
     const s=localStorage.getItem('alizonPrograms'); if(s){const p=JSON.parse(s); if(Array.isArray(p)&&p.length)return p;} }catch(e){} return DEFAULT_PROGRAMS; }
 const DECL={
   assignment:"I hereby declare that this assignment is my original work and has been prepared by me based on my own understanding, learning, and research. I confirm that I have appropriately acknowledged any sources used in the preparation of this assignment. I understand that plagiarism, fabrication, or academic misconduct may result in rejection of the assignment.",

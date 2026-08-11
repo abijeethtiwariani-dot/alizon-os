@@ -68,10 +68,49 @@
       if (w[key]) { delete w[key]; origSet('alizonSyncWarnings', JSON.stringify(w)); }
     }catch(e){}
   }
+  /* ---- mass-deletion guard -------------------------------------------------
+     Sync is last-write-wins with no merge, so ANY device that happens to hold a
+     short copy of a roster can silently destroy the master list for everyone —
+     which is what happened to alizonStudents on 11 Aug 2026: 534 records were
+     replaced by 1, and two students added after that write were gone with them.
+
+     For the collections where a mass deletion is nearly always an accident, a
+     push that drops most of the records is refused and recorded instead. The
+     local write still stands (we never fight the user's own browser), but it is
+     not allowed to propagate until somebody says it was deliberate:
+
+         window.alizonSync.confirmDestructive('alizonStudents')
+
+     The admin portal calls that from Clear roster, so intentional wipes still
+     work exactly as before. */
+  var GUARDED = { alizonStudents:1, alizonFaculty:1, alizonHR:1, alizonSubmissions:1 };
+  var destructiveOK = {};
+  function countOf(v){
+    try{ var p = JSON.parse(v || 'null');
+      if (Array.isArray(p)) return p.length;
+      if (p && typeof p === 'object') return Object.keys(p).length;
+    }catch(e){}
+    return null;
+  }
+  function blocksMassDelete(key, val){
+    if (!GUARDED[key]) return false;
+    if (destructiveOK[key]) { destructiveOK[key] = false; return false; }
+    var before = countOf(lastSeen[key]), after = countOf(val);
+    if (before == null || after == null) return false;
+    if (before - after < 5) return false;          /* small edits are normal */
+    if (after > before * 0.5) return false;        /* lost less than half */
+    noteSyncProblem(key, 'A change on this device would have removed ' + (before - after)
+      + ' of ' + before + ' records from ' + key + ' for EVERY device. It was not sent to the cloud. '
+      + 'If the deletion was intended, repeat it from the admin portal, which confirms it explicitly.');
+    console.warn('[alizon-fb] blocked mass delete on ' + key + ': ' + before + ' -> ' + after);
+    return true;
+  }
+
   function schedulePush(key, val){
     clearTimeout(pushTimers[key]);
     pushTimers[key] = setTimeout(function(){
       if (!authed) return;
+      if (blocksMassDelete(key, val)) return;
       lastSeen[key] = val;
       var bytes = val ? val.length : 0;
       if (bytes >= WARN_AT){
@@ -104,6 +143,13 @@
   function pwFor(p){ p = String(p == null ? '' : p); return p.length >= 6 ? p : (p + 'aZ9x_'); }
 
   /* public API the portals call after a successful login */
+  /* Deliberate mass deletions announce themselves here first. One-shot: it is
+     consumed by the next push of that key, so it cannot be left switched on. */
+  window.alizonSync = {
+    confirmDestructive: function(key){ destructiveOK[key] = true; },
+    guarded: function(){ return Object.keys(GUARDED); }
+  };
+
   window.alizonAuth = {
     signIn: function(id, password, role){
       if (!auth) return Promise.resolve(false);

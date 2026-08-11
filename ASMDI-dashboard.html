@@ -1823,6 +1823,46 @@ const PROG_VER='2026-08-11-ha-m1m2m3-practicals';
    So the check is on the content as well as the version: if any programme this
    build ships is absent from the stored list, re-seed. Programmes an admin
    created that we do not ship are carried through untouched. */
+/* Structural merge, NOT a replace.
+   This used to do `DEFAULT_PROGRAMS.concat(extra)`, which threw away the stored
+   copy of every programme this build ships. That meant a PROG_VER bump silently
+   reverted anything an admin had edited on those programmes — on 11 Aug 2026 a
+   deploy undid four course renames made in the admin portal twenty minutes
+   earlier, and nothing recorded that it had happened.
+
+   Ownership is now explicit:
+     the CODE owns  — which modules exist, their practical wiring (href,
+                      practicals, units) and whether a module is live
+     the ADMIN owns — every name and wording: programme name, course line,
+                      module title and description, notes, videos, anything
+                      else they have added
+   So we backfill what the code owns and never overwrite what the admin owns. */
+function mergeProgram(stored, shipped){
+  if(!stored) return JSON.parse(JSON.stringify(shipped));
+  const out=stored;
+  if(!Array.isArray(out.modules)) out.modules=[];
+  (shipped.modules||[]).forEach((sm,idx)=>{
+    let m=out.modules.find(x=>x&&x.unit===sm.unit);
+    if(!m){
+      /* module missing entirely — a stale copy dropped it, or it is new in this
+         build. Insert it at the shipped position so ordering stays sane. */
+      m=JSON.parse(JSON.stringify(sm));
+      out.modules.splice(Math.min(idx,out.modules.length),0,m);
+      return;
+    }
+    /* practical wiring — additive, matched by href so an admin entry survives */
+    if(sm.practicals&&sm.practicals.length){
+      if(!Array.isArray(m.practicals)) m.practicals=[];
+      sm.practicals.forEach(sp=>{
+        if(sp&&sp.href&&!m.practicals.some(p=>p&&p.href===sp.href)) m.practicals.push({title:sp.title,href:sp.href});
+      });
+    }
+    if(sm.href&&!m.href) m.href=sm.href;
+    if(sm.status==='live'&&m.status!=='live') m.status='live';
+    if(sm.units&&sm.units.length&&!(m.units&&m.units.length)) m.units=sm.units.slice();
+  });
+  return out;
+}
 function loadPrograms(){
   let stored=null;
   try{ stored=JSON.parse(localStorage.getItem('alizonPrograms')||'null'); }catch(e){}
@@ -1831,9 +1871,9 @@ function loadPrograms(){
   const incomplete = !Array.isArray(stored) || !stored.length
     || DEFAULT_PROGRAMS.some(d=>!stored.some(p=>p&&p.id===d.id));
   if(staleVer||incomplete){
-    const extra=(Array.isArray(stored)?stored:[])
-      .filter(p=>p&&p.id&&!DEFAULT_PROGRAMS.some(d=>d.id===p.id));
-    const merged=DEFAULT_PROGRAMS.concat(extra);
+    const list=Array.isArray(stored)?stored:[];
+    const merged=DEFAULT_PROGRAMS.map(d=>mergeProgram(list.find(p=>p&&p.id===d.id),d))
+      .concat(list.filter(p=>p&&p.id&&!DEFAULT_PROGRAMS.some(d=>d.id===p.id)));
     try{
       localStorage.setItem('alizonPrograms',JSON.stringify(merged));
       localStorage.setItem('alizonProgramsVer',PROG_VER);

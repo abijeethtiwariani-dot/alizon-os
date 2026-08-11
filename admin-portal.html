@@ -534,7 +534,10 @@ h1,h2,h3{color:#111!important}
     <div class="arow3" style="grid-template-columns:auto 1fr auto;align-items:center">
       <label class="cadd" style="cursor:pointer;text-align:center">Upload students CSV<input type="file" id="stCsv" accept=".csv,text/csv" style="display:none"></label>
       <input id="stSearch" placeholder="Search name / reg no / batch / email…">
-      <button class="eview" id="stClear" style="color:var(--crimson)">Clear roster</button>
+      <span style="display:flex;gap:8px">
+        <button class="eview" id="stRestore" title="Put back the last roster cleared on this browser">↺ Restore</button>
+        <button class="eview" id="stClear" style="color:var(--crimson)">Clear roster</button>
+      </span>
     </div>
     <div class="hint" id="stUpResult" style="display:none;margin:10px 0 0;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.45);font-size:13px"></div>
     <div class="hint" id="stMeta" style="margin:10px 0 2px"></div>
@@ -1341,13 +1344,23 @@ const DEFAULT_PROGRAMS=[
     {unit:'Module 2',title:'Predictive Patient Flow & Queue Management',desc:'Forecast OPD load and reduce patient waiting times.',status:'soon',href:'',units:[]}
   ]}
 ];
-const PROG_VER='2026-07-13-pro';
+/* The dashboard owns the programme catalogue and its version string.
+   This portal is a CONSUMER of it — the copy of DEFAULT_PROGRAMS above is only
+   a cold-start fallback for a browser that has never synced.
+
+   It used to be authoritative: a version-gated reseed plus an unconditional
+   save() on page load meant that simply OPENING the admin portal replaced the
+   shared, cloud-synced catalogue with this file's older four-programme copy —
+   no Stock Market programme, and none of the practical wiring — and pushed
+   that over the top for every student. Never reseed and never write on load. */
 function load(){ try{
-    if(localStorage.getItem('alizonProgramsVer')!==PROG_VER){ localStorage.setItem('alizonProgramsVer',PROG_VER); return JSON.parse(JSON.stringify(DEFAULT_PROGRAMS)); }
-    const s=localStorage.getItem('alizonPrograms'); if(s){ const p=JSON.parse(s); if(Array.isArray(p)) return p; } }catch(e){}
+    const s=localStorage.getItem('alizonPrograms');
+    if(s){ const p=JSON.parse(s); if(Array.isArray(p)&&p.length) return p; } }catch(e){}
   return JSON.parse(JSON.stringify(DEFAULT_PROGRAMS)); }
-function save(p){ try{ localStorage.setItem('alizonPrograms',JSON.stringify(p)); localStorage.setItem('alizonProgramsVer',PROG_VER); }catch(e){} }
-let PROGRAMS=load(); save(PROGRAMS);
+/* save() is still the real path for admin course edits — but it must not claim
+   the version string, or the dashboard stops backfilling newly shipped labs. */
+function save(p){ try{ localStorage.setItem('alizonPrograms',JSON.stringify(p)); }catch(e){} }
+let PROGRAMS=load();
 
 /* ================= COURSE MASTER — rename/edit/delete with portal-wide cascade ================= */
 function cmEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -1901,10 +1914,35 @@ document.getElementById('stCsv').addEventListener('change',e=>{
   rd.readAsText(f);
 });
 document.getElementById('stSearch').addEventListener('input',renderStudents);
+/* Clearing the roster removes every student from every device, and there is no
+   undo in the cloud — so it takes a typed confirmation rather than one click on
+   an OK button, it says how many records are about to go, and it keeps a local
+   snapshot on this browser so the last roster can be put back. */
 document.getElementById('stClear').addEventListener('click',()=>{
-  if(!confirm('Remove the whole student roster from the portals?'))return;
+  const all=loadStudents();
+  if(!all.length){ toast('The roster is already empty'); return; }
+  const typed=prompt('This removes all '+all.length+' students from every device and cannot be undone from the cloud.\n\n'
+    +'A snapshot is kept on THIS browser only, and can be restored with the button beside this one.\n\n'
+    +'Type CLEAR to confirm:');
+  if(String(typed||'').trim().toUpperCase()!=='CLEAR'){ toast('Roster not cleared'); return; }
+  try{ localStorage.setItem('alizonStudentsSnapshot',JSON.stringify({at:Date.now(),count:all.length,rows:all})); }catch(e){}
+  try{ if(window.alizonSync) window.alizonSync.confirmDestructive('alizonStudents'); }catch(e){}
   localStorage.removeItem('alizonStudents'); localStorage.removeItem('alizonStudentsUpdated');
-  renderStudents(); toast('Roster cleared'); logAct('Cleared student roster','update');
+  renderStudents(); toast('Roster cleared — '+all.length+' records');
+  logAct('Cleared student roster — '+all.length+' students removed','update');
+});
+/* Put back the last roster this browser cleared. Merge-only: it never removes
+   anyone who has been added since. */
+const stRestoreBtn=document.getElementById('stRestore');
+if(stRestoreBtn) stRestoreBtn.addEventListener('click',()=>{
+  let snap=null; try{ snap=JSON.parse(localStorage.getItem('alizonStudentsSnapshot')||'null'); }catch(e){}
+  if(!snap||!Array.isArray(snap.rows)||!snap.rows.length){ toast('No snapshot on this browser',true); return; }
+  const now=loadStudents(), byReg={}; now.forEach(s=>{ byReg[String(s.reg||'').toUpperCase()]=1; });
+  let back=0;
+  snap.rows.forEach(s=>{ const k=String(s.reg||'').toUpperCase(); if(k&&!byReg[k]){ now.push(s); byReg[k]=1; back++; } });
+  saveStudents(now); renderStudents(); renderAccess();
+  toast(back+' student'+(back!==1?'s':'')+' restored');
+  logAct('Restored '+back+' students from the local snapshot taken '+new Date(snap.at).toLocaleString('en-GB'),'update');
 });
 function renderStudents(){
   const all=loadStudents(); const qy=(document.getElementById('stSearch').value||'').toLowerCase();
@@ -3056,7 +3094,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 <script src="alizon-motion.js"></script>
 <script src="alizon-cms.js?v=6c"></script>
 <script>window.ALIZON_OAK={root:'body',mount:'.wrap',title:'Campus Overview',editable:true}</script>
-<script src="alizon-oak.js?v=3"></script>
+<script src="alizon-oak.js?v=4"></script>
 <script>
 /* CMS editor: seed defaults by fetching the real homepage */
 (function(){
