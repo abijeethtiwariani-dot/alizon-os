@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · AI-EHR Administrative Intelligence &amp; Decision Support Simulator</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#eef1f4;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --hdr:#161b2e;--hdr2:#252c48;--accent:#0f6fb8;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px 90px}
+.hero{padding:22px 0 4px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(21px,3.2vw,29px);margin:6px 0 5px}
+.hero p{color:var(--muted);margin:0;max-width:78ch;font-size:13.5px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0 14px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:12.5px;font-weight:700;padding:7px 15px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);padding:15px 17px;margin-bottom:13px}
+.card h3{font-family:var(--serif);font-size:16.5px;margin:0 0 7px}
+.card h4{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+.btn{font:inherit;font-size:12.5px;font-weight:700;padding:8px 16px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.blue{background:var(--accent)}
+.btn.sm{padding:5px 12px;font-size:11.5px}
+.btn:disabled{opacity:.4;cursor:default}
+.muted{color:var(--muted);font-size:12px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,var(--hdr),var(--hdr2));color:#fff;
+  border-radius:12px;padding:11px 15px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:164px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:8px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff}
+.kpi .n{font-size:10.5px;color:var(--muted);font-weight:600}
+.kpi .v{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+.kpi .s{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-top:4px}
+.s-low{background:#e7f5ec;color:var(--ok)}.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}.s-critical{background:#fdecea;color:var(--crit)}
+
+table.d{width:100%;border-collapse:collapse;font-size:12.5px;margin:9px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:6px 9px;text-align:left}
+table.d th{background:#f6f8fa;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}tr.cool td{background:#f2faf5}
+
+.recon{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:#0f1115;color:#dfe3e8;
+  border-radius:10px;padding:12px 14px;white-space:pre-wrap;line-height:1.75;margin:9px 0}
+.out{background:#0f1115;color:#dfe3e8;border-radius:10px;padding:11px 13px;font-size:12.5px;line-height:1.7;margin:9px 0;white-space:pre-wrap}
+.fb{border-radius:10px;padding:10px 13px;margin-top:9px;font-size:12.5px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:8px 11px;border-radius:0 8px 8px 0;margin:9px 0;font-size:12.5px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:8px 11px;border-radius:0 8px 8px 0;margin:9px 0;font-size:12px;color:#6b5a2e}
+
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:9px;margin:10px 0}
+.cs{text-align:left;font:inherit;border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:#fff;cursor:pointer}
+.cs:hover{border-color:var(--crimson)}
+.cs.done{border-color:#b7e0c5;background:#f6fbf8}
+.cs.cur{border-color:var(--crimson);box-shadow:inset 0 0 0 2px rgba(177,4,14,.15)}
+.cs b{display:block;font-size:12.5px}
+.cs small{color:var(--muted);font-size:11px}
+.cs .st{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ok)}
+
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0}
+.stp{font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted)}
+.stp.on{background:#e7f5ec;border-color:#b7e0c5;color:var(--ok)}
+.stp.cur{background:var(--crimson);border-color:var(--crimson);color:#fff}
+
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0}
+.opt{font:inherit;font-size:12px;padding:6px 12px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:6px;margin:7px 0}
+.stack .opt{border-radius:10px;padding:8px 12px}
+.chk{display:flex;align-items:flex-start;gap:8px;padding:6px 9px;border:1px solid var(--line);border-radius:9px;background:#fff;margin:4px 0;font-size:12.5px;cursor:pointer}
+.chk.on{border-color:var(--crimson);background:#fdf3f3}
+textarea{width:100%;min-height:74px;resize:vertical;font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.lbl{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px}
+.scorebig{font-size:32px;font-weight:800;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px}
+.p-crit{background:#fdecea;color:var(--crit)}.p-warn{background:#fdf4e3;color:var(--warn)}
+.p-ok{background:#e7f5ec;color:var(--ok)}.p-info{background:#e8f1f8;color:var(--accent)}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}}
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js?v=2"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">ALIZON OS · Clinical Simulation Suite · AI-EHR Intelligence</div>
+    <h1>AI-EHR Administrative Intelligence &amp; Decision Support Simulator</h1>
+    <p>The intelligence layer that sits on top of the EHR. It reconstructs patient journeys, finds the
+       administrative delay inside them, audits documentation, flags duplicate and inconsistent records, and
+       writes an executive summary. It is also wrong often enough that the only safe way to use it is the one
+       this laboratory drills: <b>investigate, then use the AI, then verify it, then decide.</b></p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">AI-EHR command centre</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="ehrai"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Eight cases. Every one runs the same loop — open the EHR evidence, run the AI analysis,
+        verify the AI output against the record, take an administrative decision, and record the action. The
+        <b>verify</b> step is not decoration: in three of the eight cases the AI states something the record
+        does not support, and one of those would enter a patient's permanent history if you accepted it.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Verification discipline</b> falls when you decide
+        without opening the evidence. <b>Governance integrity</b> falls when an unverified AI statement is
+        accepted, patient data is handled carelessly, or an irreversible action is taken on a probability.</p>
+      <div class="synth"><b>100% synthetic data.</b> Every patient, record, timestamp and AI output here is
+        generated for teaching. This is an administrative simulator: it produces no diagnosis, no treatment
+        recommendation and no advice about any real person.</div>
+      <button class="btn" id="startBtn">▶ Open the AI-EHR command centre</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Cases resolved</div><div class="v" id="mSeen">0 / 8</div></div>
+      <div class="meter" id="mAW"><div class="k">Governance integrity</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Verification discipline</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Resolve the case library to generate your report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-attendance.js?v=2"></script>
+<script src="alizon-practical-submit.js?v=4"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="ehr-experiment-data.js?v=1"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+'use strict';
+function $(i){ return document.getElementById(i); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+/* ============================================================
+   COMMAND CENTRE
+   ============================================================ */
+var TODAY=[
+ {n:'Active patients',v:412,s:'low'},{n:'OP encounters',v:286,s:'low'},
+ {n:'IP patients',v:97,s:'moderate'},{n:'Emergency encounters',v:29,s:'moderate'},
+ {n:'Pending investigations',v:44,s:'high'},{n:'Delayed discharges',v:11,s:'high'},
+ {n:'Pending billing',v:23,s:'moderate'},{n:'Insurance delays',v:9,s:'high'},
+ {n:'Referral delays',v:4,s:'low'},{n:'Documentation gaps',v:18,s:'moderate'}
+];
+var INTEL=[
+ {n:'Registration delays',s:'High'},{n:'Documentation gaps',s:'Moderate'},{n:'Duplicate records',s:'4'},
+ {n:'Discharge delays',s:'High'},{n:'Billing delays',s:'Moderate'},{n:'Insurance delays',s:'High'},
+ {n:'Laboratory TAT',s:'Moderate'},{n:'Referral delays',s:'Low'}
+];
+var ALERTS=[
+ {k:'a1',t:'Delayed discharge',d:'Patient ready for discharge, billing incomplete.',s:'high'},
+ {k:'a2',t:'Pending laboratory result',d:'Investigation completed, result not validated.',s:'critical'},
+ {k:'a3',t:'Insurance authorisation delay',d:'Admission workflow affected.',s:'high'},
+ {k:'a4',t:'Appointment no-show cluster',d:'Department showing an unusually high no-show rate.',s:'moderate'},
+ {k:'a5',t:'Documentation gap',d:'Required administrative field incomplete.',s:'moderate'}
+];
+
+/* Journey reconstruction — the timestamps the AI reads */
+var JOURNEY=[
+ {s:'Registration',t:'Day 1 · 09:10',gap:0},
+ {s:'Consultation',t:'Day 1 · 09:45',gap:35},
+ {s:'Investigation ordered',t:'Day 1 · 10:15',gap:30},
+ {s:'Result available',t:'Day 1 · 12:05',gap:110},
+ {s:'Result reviewed',t:'Day 1 · 12:30',gap:25},
+ {s:'Admission',t:'Day 1 · 13:00',gap:30},
+ {s:'Discharge decision',t:'Day 3 · 09:30',gap:null},
+ {s:'Billing complete',t:'Day 3 · 13:20',gap:230}
+];
+
+/* ============================================================
+   THE EIGHT CASES
+   Every case: evidence → AI analysis → verification → decision.
+   `aiWrong` is the claim the record does not support.
+   ============================================================ */
+var CASES=[
+{k:'c1',n:'Case 01',t:'Duplicate patient record',pt:'ALZ-000184 / ALZ-000921',
+ evidence:'<table class="d"><tr><th>Field</th><th>ALZ-000184</th><th>ALZ-000921</th></tr>'
+  +'<tr><td>Name</td><td>Anitha Kumar</td><td>Anita Kumar</td></tr>'
+  +'<tr><td>Date of birth</td><td>12/05/1980</td><td>12/05/1980</td></tr>'
+  +'<tr><td>Mobile</td><td>98470 00184</td><td>98470 00184</td></tr>'
+  +'<tr><td>Registered</td><td>12 Jan 2026 (self)</td><td>18 Mar 2026 (emergency counter)</td></tr>'
+  +'<tr class="hot"><td>Allergies</td><td>Sulfonamides — rash</td><td><b>Not recorded</b></td></tr>'
+  +'<tr><td>Encounters</td><td>7</td><td>1</td></tr></table>',
+ ai:'Potential duplicate patient record — 92% simulated matching score on name, date of birth and mobile number. Recommend automatic merge into ALZ-000184.',
+ aiWrong:'The match is almost certainly right. The <b>recommendation</b> is what fails: a merge is irreversible, and 92% is a similarity score rather than an identification. The correct output would flag for verified human review.',
+ opts:[{k:'merge',t:'Accept — merge the records automatically',ok:false,
+        why:'A merge combines two histories irreversibly. If the match is wrong you have written one person\'s record into another\'s and there is no clean way back.'},
+       {k:'sep',t:'Keep the records separate',ok:false,
+        why:'Two live records for one patient means the sulfonamide allergy on ALZ-000184 is invisible to anyone working in ALZ-000921. That is a safety gap, not just untidy data.'},
+       {k:'review',t:'Flag for manual review — verify identity with the patient, then merge under a documented human decision',ok:true,
+        why:'Correct. Verify against a second identifier with the patient present, record who decided and on what basis, then merge. Until then treat ALZ-000921 as unsafe to document into.'}],
+ verify:true},
+
+{k:'c2',n:'Case 02',t:'Delayed discharge',pt:'ALZ-000102',
+ evidence:'<table class="d"><tr><th>Step</th><th>Status</th><th>Time</th></tr>'
+  +'<tr class="cool"><td>Clinical clearance</td><td>Complete</td><td>10:15</td></tr>'
+  +'<tr class="cool"><td>Discharge summary</td><td>Complete</td><td>11:55</td></tr>'
+  +'<tr class="cool"><td>Pharmacy</td><td>Ready</td><td>11:40</td></tr>'
+  +'<tr class="cool"><td>Billing</td><td>Complete</td><td>12:05</td></tr>'
+  +'<tr class="hot"><td>Insurance authorisation</td><td><b>Pending with insurer</b></td><td>raised 11:20</td></tr>'
+  +'<tr class="hot"><td>Patient communication</td><td><b>Not done</b></td><td>—</td></tr></table>'
+  +'<p class="muted">The patient has been waiting four hours since the discharge decision.</p>',
+ ai:'Primary administrative bottleneck: insurance authorisation. Recommend escalation to the insurance coordination team.',
+ opts:[{k:'esc',t:'Escalate the authorisation to the insurance coordination team and tell the family what they are waiting for',ok:true,
+        why:'Correct on both counts. The authorisation is the blocking step, and the second outstanding item — patient communication — is the one the family is actually experiencing. Four hours of not knowing is what produces the complaint, not the insurer.'},
+       {k:'bill',t:'Chase the billing department',ok:false,
+        why:'Billing completed at 12:05. Chasing a department that has already finished is how a delay survives an escalation.'},
+       {k:'wait',t:'Wait for the insurer to respond',ok:false,
+        why:'Waiting is what has already happened for four hours. An authorisation with no follow-up has no owner.'},
+       {k:'disch',t:'Discharge the patient and settle the insurance afterwards',ok:false,
+        why:'Discharging against an unauthorised claim transfers a financial risk to the patient or the hospital without anybody deciding to.'}],
+ verify:false},
+
+{k:'c3',n:'Case 03',t:'Missing documentation',pt:'ALZ-000341',
+ evidence:'<table class="d"><tr><th>Document</th><th>Status</th></tr>'
+  +'<tr class="cool"><td>Registration</td><td>Complete</td></tr>'
+  +'<tr class="cool"><td>Insurance</td><td>Complete</td></tr>'
+  +'<tr class="cool"><td>Admission</td><td>Complete</td></tr>'
+  +'<tr class="cool"><td>Investigation</td><td>Complete</td></tr>'
+  +'<tr class="hot"><td>Discharge summary</td><td><b>Missing</b></td></tr>'
+  +'<tr class="hot"><td>Follow-up</td><td><b>Missing</b></td></tr></table>',
+ ai:'Two required workflow documents are incomplete. Recommend assigning completion to the discharging department.',
+ opts:[{k:'assign',t:'Assign completion to the discharging department with a deadline, and hold the claim until the summary exists',ok:true,
+        why:'Correct. A discharge summary is what the receiving clinician, the follow-up appointment and the claim all depend on. Assigning it with a deadline and a hold is the action that produces it.'},
+       {k:'esc',t:'Escalate immediately to the medical director',ok:false,
+        why:'Escalation before assignment skips the person who can actually fix it in ten minutes, and spends credibility you will want for the case that needs it.'},
+       {k:'ignore',t:'Ignore — the patient has already gone home',ok:false,
+        why:'The patient going home is exactly what makes this urgent: they left without instructions and without a follow-up date, and the claim is now unsupported.'},
+       {k:'clarify',t:'Request clarification from the AI',ok:false,
+        why:'The gap is unambiguous. Asking the system to explain a missing document is a way of not acting on it.'}],
+ verify:false},
+
+{k:'c4',n:'Case 04',t:'Insurance authorisation delay',pt:'ALZ-000577',
+ evidence:'<table class="d"><tr><th>Field</th><th>Value</th></tr>'
+  +'<tr><td>Provider</td><td>National Health Insurance</td></tr>'
+  +'<tr><td>Pre-authorisation raised</td><td>Day 1 · 11:20</td></tr>'
+  +'<tr class="hot"><td>Insurer response</td><td><b>None — 51 hours elapsed</b></td></tr>'
+  +'<tr><td>Claim amount</td><td class="n">₹48,200</td></tr>'
+  +'<tr><td>Approved</td><td class="n">₹0</td></tr>'
+  +'<tr class="hot"><td>Documents attached to the request</td><td><b>2 of 4 required</b></td></tr></table>',
+ ai:'Insurer response time is the cause of the delay. Recommend following up with the insurer and recording the delay against the provider\'s service level.',
+ aiWrong:'The AI has read the elapsed time and stopped there. The record shows <b>only two of the four required documents were attached</b> to the request — so it is entirely possible the insurer is waiting on the hospital, not the reverse. Blaming the provider\'s service level on this evidence would be wrong, and it would delay the fix by another day.',
+ opts:[{k:'docs',t:'Check and complete the missing documents before attributing the delay to the insurer',ok:true,
+        why:'Correct. An incomplete submission that is chased as an insurer delay stays incomplete. Complete the pack, resubmit, and only then measure the insurer\'s response time.'},
+       {k:'sla',t:'Record the delay against the insurer\'s service level and escalate to the provider',ok:false,
+        why:'This is the AI\'s recommendation and the record does not support it yet. Two of four documents are missing — the hospital\'s own submission may be the cause.'},
+       {k:'wait',t:'Continue waiting; 51 hours is within normal range',ok:false,
+        why:'It is not within any reasonable range for an inpatient authorisation, and a patient is occupying a bed while it runs.'}],
+ verify:true},
+
+{k:'c5',n:'Case 05',t:'Laboratory workflow delay',pt:'ALZ-000184',
+ evidence:'<table class="d"><tr><th>Stage</th><th>Time</th><th>Elapsed</th></tr>'
+  +'<tr><td>Order created</td><td>09:44</td><td>—</td></tr>'
+  +'<tr><td>Sample collection</td><td>10:02</td><td class="n">18 min</td></tr>'
+  +'<tr><td>Sample received</td><td>10:15</td><td class="n">13 min</td></tr>'
+  +'<tr class="hot"><td>Processing</td><td>10:41</td><td class="n">26 min</td></tr>'
+  +'<tr class="hot"><td>Result entered</td><td>11:02</td><td class="n">21 min</td></tr>'
+  +'<tr class="hot"><td>Result validated</td><td><b>not done</b></td><td class="n">76 min and counting</td></tr></table>',
+ ai:'Laboratory turnaround of 76 minutes exceeds the target. Recommend reviewing laboratory processing capacity.',
+ aiWrong:'The processing steps are all within tolerance — 18, 13, 26 and 21 minutes. The 76 minutes is accumulating at a stage that consumes <b>no laboratory capacity at all</b>: validation, which is waiting for a person to sign it off. Buying processing capacity would change nothing.',
+ opts:[{k:'valid',t:'Escalate the unvalidated result to the validating pathologist and review the validation rota',ok:true,
+        why:'Correct. The queue is at the signature, not the analyser. The administrative fix is rota coverage for validation, not capacity.'},
+       {k:'cap',t:'Review laboratory processing capacity as the AI recommends',ok:false,
+        why:'Every processing step is inside target. Adding capacity to a stage that is not constrained is the most expensive way to change nothing.'},
+       {k:'release',t:'Release the result so the clinician can see it and validate later',ok:false,
+        why:'Releasing an unvalidated result is the workflow violation this whole alert exists to prevent.'}],
+ verify:true},
+
+{k:'c6',n:'Case 06',t:'Incorrect demographic information',pt:'ALZ-000733',
+ evidence:'<table class="d"><tr><th>Field</th><th>Recorded value</th></tr>'
+  +'<tr><td>Date of birth</td><td>12/05/1980</td></tr>'
+  +'<tr class="hot"><td>Age in record</td><td><b>52</b></td></tr>'
+  +'<tr><td>Age implied by date of birth</td><td>46</td></tr>'
+  +'<tr><td>Registration route</td><td>Emergency counter, free-text entry</td></tr></table>',
+ ai:'Demographic inconsistency detected. Age does not reconcile with date of birth. Recommend correcting the age field to 46.',
+ opts:[{k:'verify',t:'Verify against the patient’s identity document before correcting either field, then record which one was wrong',ok:true,
+        why:'Correct. Either field could be the error, and the system cannot tell you which. Silently trusting the date of birth is a guess with an audit trail attached — verify, correct, and record the source of the correction.'},
+       {k:'age',t:'Correct the age to 46 as the AI recommends',ok:false,
+        why:'That assumes the date of birth is the true value. If the date of birth was mistyped at an emergency counter, you have just propagated the error into the field that was right.'},
+       {k:'ignore',t:'Leave it — age is calculated for display anyway',ok:false,
+        why:'It is not calculated here; it was entered. An unreconciled identifier is one of the ways duplicate records get created in the first place.'}],
+ verify:false},
+
+{k:'c7',n:'Case 07',t:'Unauthorised EHR access',pt:'ALZ-000184',
+ evidence:'<table class="d"><tr><th>Time</th><th>Role</th><th>Action</th><th>Object</th></tr>'
+  +'<tr><td>09:12</td><td>Front Office</td><td>Patient registered</td><td>ALZ-000184</td></tr>'
+  +'<tr><td>11:47</td><td>Front Office</td><td>Demographics amended — mobile</td><td>ALZ-000184</td></tr>'
+  +'<tr class="hot"><td>14:03</td><td>Billing</td><td><b>Clinical documentation opened</b></td><td>ALZ-000184</td></tr>'
+  +'<tr class="hot"><td>14:05</td><td>Billing</td><td><b>Clinical documentation opened</b></td><td>ALZ-000512</td></tr>'
+  +'<tr class="hot"><td>14:07</td><td>Billing</td><td><b>Clinical documentation opened</b></td><td>ALZ-000733</td></tr></table>'
+  +'<p class="muted">The billing role has no permission for clinical documentation. Three records were opened in four minutes, none of which has an open bill.</p>',
+ ai:'Access pattern flagged. Recommend informing the user that clinical documentation is outside their role.',
+ aiWrong:'"Inform the user" treats this as a training issue. Three clinical records opened in four minutes by a role with no permission, none of them with an open bill, is not somebody clicking the wrong tab — it is a pattern, and it is reportable under the hospital\'s privacy procedure rather than correctable with a reminder.',
+ opts:[{k:'report',t:'Report it as a privacy incident, preserve the audit log, and follow the incident-response procedure',ok:true,
+        why:'Correct. Containment, preservation of the log, notification through the defined route, and a scoped assessment of whose data was viewed. Whether it turns out to be curiosity or something worse is the investigation\'s job, not yours to pre-judge.'},
+       {k:'inform',t:'Inform the user that this is outside their role',ok:false,
+        why:'This is the AI\'s recommendation and it under-reads the pattern. A quiet word also destroys the opportunity to establish what was viewed and why.'},
+       {k:'perm',t:'Widen the billing role\'s permissions so the access is no longer flagged',ok:false,
+        why:'Removing the control because it triggered is the single worst response available. The alert worked.'},
+       {k:'ignore',t:'No action — no patient has complained',ok:false,
+        why:'Privacy breaches are reportable because they occurred, not because they were noticed by the person affected.'}],
+ verify:true},
+
+{k:'c8',n:'Case 08',t:'AI-generated incorrect information',pt:'ALZ-000184',
+ evidence:'<div class="lbl">What the EHR actually contains for ALZ-000184</div>'
+  +'<table class="d"><tr><th>Date</th><th>Encounter</th></tr>'
+  +'<tr><td>12 Jan 2026</td><td>OP Consultation</td></tr>'
+  +'<tr><td>03 Feb 2026</td><td>Laboratory investigation</td></tr>'
+  +'<tr><td>18 Mar 2026</td><td>Emergency visit</td></tr>'
+  +'<tr><td>19–23 Mar 2026</td><td>IP admission and discharge</td></tr>'
+  +'<tr><td>15 Apr 2026</td><td>Follow-up</td></tr>'
+  +'<tr><td>10 Jun 2026</td><td>Current encounter</td></tr></table>'
+  +'<p class="muted">The record begins at first registration on 12 January 2026. There are no earlier encounters.</p>',
+ ai:'Patient summary generated for handover:\n\n  "The patient had a previous admission in 2024 for a similar presentation, and has a documented history of recurrent episodes."',
+ aiWrong:'There is no 2024 admission in this record. The record begins in January 2026. The system has produced a fluent, plausible, clinically-shaped sentence with nothing behind it — and it was generated for a <b>handover</b>, which is the document most likely to be read as fact by the next clinician.',
+ opts:[{k:'reject',t:'Reject the statement, correct the summary against the record, document that a human verified it, and log the AI error',ok:true,
+        why:'Correct, and in that order. Reject, correct, document the verification, and log the failure so it is visible to whoever governs the tool. An unverified AI sentence that enters a handover becomes part of a patient\'s history, and the next clinician has no way of knowing it was never true.'},
+       {k:'edit',t:'Delete the sentence and use the rest of the summary',ok:false,
+        why:'Better than publishing it, but it leaves no record that the tool fabricated a clinical history. The next person gets the same output with no warning.'},
+       {k:'accept',t:'Accept it — the AI has access to the record',ok:false,
+        why:'It does, and it still produced an event that never happened. Access to a record is not the same as being constrained by it.'},
+       {k:'ask',t:'Ask the AI to confirm whether the admission occurred',ok:false,
+        why:'Asking a system to verify its own output is not verification. The record is the source of truth and it is open in front of you.'}],
+ verify:true}
+];
+
+/* Privacy practical (Case-independent) */
+var PRIV_FIELDS=[
+ {k:'name',t:'Patient name',need:false},{k:'mrn',t:'Patient ID (MRN)',need:false},
+ {k:'pseudo',t:'Pseudonymised study ID',need:true},{k:'dept',t:'Department',need:true},
+ {k:'times',t:'Encounter timestamps',need:true},{k:'phone',t:'Mobile number',need:false},
+ {k:'addr',t:'Address',need:false},{k:'ageband',t:'Age band (not date of birth)',need:true}
+];
+var PRIV_STEPS=[
+ {k:'approve',t:'Obtain approval from the data protection officer and an approved-tool check',ok:true},
+ {k:'deid',t:'De-identify: remove direct identifiers and replace the MRN with a pseudonymised study ID',ok:true},
+ {k:'agree',t:'Confirm a data-sharing agreement is in place if anything leaves the hospital',ok:true},
+ {k:'inhouse',t:'Prefer the in-house analytics environment so nothing leaves at all',ok:true},
+ {k:'quick',t:'Upload it as-is — the analysis is only about waiting times',ok:false},
+ {k:'personal',t:'Use a personal account so the upload is not attributable',ok:false}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var S={};
+function freshState(){
+  return {started:Date.now(), cur:null, opened:{}, aiRun:{}, verified:{}, decided:{},
+          journeyRun:false, journeyAnswer:null, privFields:{}, privSteps:{}, privDone:false,
+          docAction:null, execRun:false, reasoning:'', integ:100, ver:100, ended:false};
+}
+var tabs=document.querySelectorAll('.tabs button');
+[].forEach.call(tabs,function(b){ b.addEventListener('click',function(){ goTab(b.getAttribute('data-p')); }); });
+function goTab(p){
+  [].forEach.call(tabs,function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  ['brief','work','res'].forEach(function(k){ $('p-'+k).classList.toggle('on',k===p); });
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function paintMeters(){
+  $('mA').textContent=S.integ+'%'; $('bA').style.width=S.integ+'%';
+  $('mB').textContent=S.ver+'%'; $('bB').style.width=S.ver+'%';
+  $('mAW').className='meter'+(S.integ<55?' bad':S.integ<80?' warn':'');
+  $('mBW').className='meter'+(S.ver<55?' bad':S.ver<80?' warn':'');
+  $('mSeen').textContent=Object.keys(S.decided).length+' / '+CASES.length;
+}
+function tickClock(){
+  var s=Math.floor((Date.now()-S.started)/1000), m=Math.floor(s/60);
+  $('mClock').textContent=(m<10?'0':'')+m+':'+((s%60)<10?'0':'')+(s%60);
+}
+
+/* ============================================================
+   CENTRE
+   ============================================================ */
+function desk(){
+  $('workArea').innerHTML=sBoard()+sJourney()+sDocAudit()+sAlerts()+sCases()+sPrivacy()+sExec();
+  wireJourney(); wireDocAudit(); wireCases(); wirePrivacy(); wireExec();
+  paintMeters();
+}
+function sBoard(){
+  return '<div class="card"><h3>Today’s hospital intelligence</h3>'
+   +'<div class="kpis">'+TODAY.map(function(t){
+      return '<div class="kpi"><div class="n">'+esc(t.n)+'</div><div class="v">'+t.v+'</div>'
+        +'<span class="s s-'+t.s+'">'+t.s+'</span></div>'; }).join('')+'</div>'
+   +'<div class="lbl">EHR administrative intelligence</div>'
+   +'<table class="d"><tr><th>Indicator</th><th>Status</th></tr>'
+   +INTEL.map(function(i){ var cls=i.s==='High'?' class="hot"':i.s==='Low'?' class="cool"':'';
+      return '<tr'+cls+'><td>'+esc(i.n)+'</td><td>'+esc(i.s)+'</td></tr>'; }).join('')+'</table></div>';
+}
+
+function sJourney(){
+  return '<div class="card"><h3>AI patient journey analysis — ALZ-000184</h3>'
+   +'<button class="btn blue sm" id="jBtn">Reconstruct the administrative timeline</button>'
+   +'<div id="jOut"></div></div>';
+}
+function wireJourney(){
+  $('jBtn').addEventListener('click',function(){
+    S.journeyRun=true; $('jBtn').disabled=true;
+    $('jOut').innerHTML='<div class="recon">'+JOURNEY.map(function(j,i){
+       return j.s.padEnd(24,' ')+j.t+(j.gap!=null?'   ('+j.gap+' min)':'')
+        +(i<JOURNEY.length-1?'\n   ↓\n':''); }).join('')+'</div>'
+     +'<div class="out">AI ADMINISTRATIVE FINDING\n\n'
+     +'  Three potential administrative delays in this journey:\n'
+     +'    1. Registration to consultation — 35 minutes\n'
+     +'    2. Laboratory turnaround — 110 minutes\n'
+     +'    3. Discharge decision to billing complete — 3 hours 50 minutes\n\n'
+     +'  Recommendation: investigate laboratory turnaround and discharge billing workflow.</div>'
+     +'<div class="lbl">Which of these is the delay worth acting on first?</div>'
+     +'<div class="stack" id="jWrap">'
+     +'<button class="opt" data-jj="reg">Registration to consultation — 35 minutes</button>'
+     +'<button class="opt" data-jj="lab">Laboratory turnaround — 110 minutes</button>'
+     +'<button class="opt" data-jj="disch">Discharge decision to billing — 3 hours 50 minutes</button>'
+     +'<button class="opt" data-jj="all">All three equally</button></div><div id="jFb"></div>';
+    [].forEach.call(document.querySelectorAll('[data-jj]'),function(b){
+      b.addEventListener('click',function(){
+        var k=b.getAttribute('data-jj'); S.journeyAnswer=k;
+        [].forEach.call(document.querySelectorAll('[data-jj]'),function(x){ x.classList.toggle('sel',x===b); });
+        var m={disch:['yes','Correct. Three hours fifty minutes is by far the largest block, it sits entirely inside the hospital\'s own administrative control, and unlike the other two it holds a bed while it runs. The AI listed it third; size and controllability are what should order this list.'],
+               lab:['warnb','110 minutes is real and worth fixing, but it is less than half the discharge delay and part of it is genuine processing time. The AI put it first — check why you agree.'],
+               reg:['no','35 minutes from registration to consultation is close to normal for a booked outpatient clinic. This is the smallest gap on the board.'],
+               all:['no','Treating three delays of 35, 110 and 230 minutes as equal is how an improvement programme spreads itself until nothing moves.']}[k];
+        $('jFb').innerHTML='<div class="fb '+m[0]+'"><div class="hd">Journey analysis</div>'+esc(m[1])+'</div>';
+      });
+    });
+  });
+}
+
+function sDocAudit(){
+  return '<div class="card"><h3>AI documentation completeness audit</h3>'
+   +'<table class="d"><tr><th>Document</th><th>Status</th></tr>'
+   +'<tr class="cool"><td>Registration</td><td>Complete</td></tr>'
+   +'<tr class="cool"><td>Insurance</td><td>Complete</td></tr>'
+   +'<tr class="cool"><td>Admission</td><td>Complete</td></tr>'
+   +'<tr class="cool"><td>Investigation</td><td>Complete</td></tr>'
+   +'<tr class="hot"><td>Discharge summary</td><td><b>Missing</b></td></tr>'
+   +'<tr class="hot"><td>Follow-up</td><td><b>Missing</b></td></tr></table>'
+   +'<div class="out">AI: Two required workflow documents are incomplete.</div>'
+   +'<div class="opts" id="docWrap">'
+   +'<button class="opt" data-do="escalate">Escalate</button>'
+   +'<button class="opt" data-do="assign">Assign</button>'
+   +'<button class="opt" data-do="ignore">Ignore</button>'
+   +'<button class="opt" data-do="clarify">Request clarification</button></div>'
+   +'<div id="docFb"></div></div>';
+}
+function wireDocAudit(){
+  [].forEach.call(document.querySelectorAll('[data-do]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-do'); S.docAction=k;
+      [].forEach.call(document.querySelectorAll('[data-do]'),function(x){ x.classList.toggle('sel',x===b); });
+      var m={assign:['yes','Assign with a named owner and a deadline. A discharge summary is what the follow-up appointment, the receiving clinician and the claim all depend on.'],
+             escalate:['warnb','Escalation without first assigning skips the person who could complete it in ten minutes.'],
+             ignore:['no','Ignoring a missing discharge summary leaves the patient without instructions, the follow-up unbooked and the claim unsupported.'],
+             clarify:['no','The gap is unambiguous. Asking the system to explain a missing document is a way of not acting on it.']}[k];
+      if(k==='ignore'){ S.integ=Math.max(0,S.integ-10); paintMeters(); }
+      $('docFb').innerHTML='<div class="fb '+m[0]+'">'+esc(m[1])+'</div>';
+    });
+  });
+}
+function sAlerts(){
+  return '<div class="card"><h3>AI administrative alert queue</h3>'
+   +'<table class="d"><tr><th>Alert</th><th>Detail</th><th>Severity</th></tr>'
+   +ALERTS.map(function(a){ return '<tr'+(a.s==='critical'?' class="hot"':'')+'><td><b>'+esc(a.t)+'</b></td><td>'+esc(a.d)
+      +'</td><td><span class="pill '+(a.s==='critical'?'p-crit':a.s==='high'?'p-warn':'p-info')+'">'+esc(a.s)+'</span></td></tr>'; }).join('')+'</table>'
+   +'<div class="note">Alert 02 is the one that outranks the rest. A completed investigation whose result has '
+   +'not been validated is a clinical decision waiting on an administrative signature — every other alert here '
+   +'costs time or money.</div></div>';
+}
+
+/* ---- case library ---- */
+function sCases(){
+  return '<div class="card"><h3>Case library</h3>'
+   +'<p class="muted">Eight cases. Each runs the same loop: open the EHR evidence, run the AI analysis, verify '
+   +'it against the record, then decide.</p>'
+   +'<div class="cases" id="caseWrap">'+CASES.map(function(c){
+      return '<button class="cs" data-cs="'+c.k+'"><b>'+c.n+' — '+esc(c.t)+'</b><small>'+esc(c.pt)+'</small>'
+        +'<span class="st" id="cst-'+c.k+'"></span></button>'; }).join('')+'</div>'
+   +'<div id="caseBody"></div></div>';
+}
+function wireCases(){
+  [].forEach.call(document.querySelectorAll('[data-cs]'),function(b){
+    b.addEventListener('click',function(){ openCase(b.getAttribute('data-cs')); });
+  });
+}
+function openCase(k){
+  S.cur=k;
+  var c=CASES.filter(function(x){return x.k===k;})[0];
+  [].forEach.call(document.querySelectorAll('[data-cs]'),function(x){ x.classList.toggle('cur',x.getAttribute('data-cs')===k); });
+  var step = !S.opened[k]?0 : !S.aiRun[k]?1 : (c.aiWrong&&!S.verified[k])?2 : !S.decided[k]?3 : 4;
+  $('caseBody').innerHTML='<div class="card" style="margin-top:10px"><h4>'+c.n+' — '+esc(c.t)+'</h4>'
+   +'<div class="steps">'+['Open EHR evidence','AI analysis','Verify against the record','Administrative decision','Action recorded']
+      .map(function(s,i){ return '<span class="stp '+(i<step?'on':i===step?'cur':'')+'">'+s+'</span>'; }).join('')+'</div>'
+   +(S.opened[k]?c.evidence:'<button class="btn blue sm" id="csOpen">Open the EHR evidence</button>')
+   +(S.opened[k]?(S.aiRun[k]?'<div class="out">AI ANALYSIS\n\n'+esc(c.ai)+'</div>'
+       :'<button class="btn blue sm" id="csAI">Run the AI analysis</button>'):'')
+   +(S.aiRun[k]&&c.aiWrong?(S.verified[k]
+       ?'<div class="fb no"><div class="hd">Verification finding — the AI output is not supported</div>'+c.aiWrong+'</div>'
+       :'<div class="opts" id="verWrap"><button class="opt" data-ver="ok">The AI output is supported by the record</button>'
+        +'<button class="opt" data-ver="bad">The AI output is not supported by the record</button></div><div id="verFb"></div>'):'')
+   +((S.aiRun[k]&&(!c.aiWrong||S.verified[k]))
+      ?'<div class="lbl">Administrative decision</div><div class="stack" id="decWrap">'
+       +c.opts.map(function(o){ return '<button class="opt'+(S.decided[k]===o.k?' sel':'')+'" data-dec="'+o.k+'">'+esc(o.t)+'</button>'; }).join('')
+       +'</div><div id="decFb"></div>':'')
+   +'</div>';
+  var o=$('csOpen');
+  if(o) o.addEventListener('click',function(){ S.opened[k]=1; openCase(k); });
+  var a=$('csAI');
+  if(a) a.addEventListener('click',function(){ S.aiRun[k]=1; openCase(k); });
+  [].forEach.call(document.querySelectorAll('[data-ver]'),function(b){
+    b.addEventListener('click',function(){
+      if(b.getAttribute('data-ver')==='bad'){ S.verified[k]=1; openCase(k); }
+      else{
+        S.integ=Math.max(0,S.integ-12); S.ver=Math.max(0,S.ver-10); paintMeters();
+        $('verFb').innerHTML='<div class="fb no"><div class="hd">Look again</div>Compare the AI statement line by '
+          +'line against the evidence above. Something in it is not in the record — and accepting it is how an '
+          +'unsupported claim becomes an administrative fact.</div>';
+      }
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-dec]'),function(b){
+    b.addEventListener('click',function(){
+      var dk=b.getAttribute('data-dec'), opt=c.opts.filter(function(x){return x.k===dk;})[0];
+      S.decided[k]=dk;
+      if(!S.opened[k]) S.ver=Math.max(0,S.ver-10);
+      if(!opt.ok) S.integ=Math.max(0,S.integ-9);
+      $('cst-'+k).textContent='resolved';
+      document.querySelector('[data-cs="'+k+'"]').classList.add('done');
+      paintMeters(); openCase(k);
+      $('decFb').innerHTML='<div class="fb '+(opt.ok?'yes':'no')+'"><div class="hd">'
+        +(opt.ok?'Sound administrative decision':'This is the decision the case is designed to catch')+'</div>'+esc(opt.why)+'</div>';
+    });
+  });
+}
+
+/* ---- privacy practical ---- */
+function sPrivacy(){
+  return '<div class="card"><h3>EHR privacy practical</h3>'
+   +'<p>An administrator wants to analyse waiting-time patterns and proposes exporting an EHR spreadsheet to an '
+   +'external AI system.</p>'
+   +'<div class="lbl">1 · Which fields may be included?</div>'
+   +PRIV_FIELDS.map(function(f){
+      return '<label class="chk" data-pf="'+f.k+'"><input type="checkbox" data-pc="'+f.k+'"> '+esc(f.t)+'</label>'; }).join('')
+   +'<div class="lbl">2 · What must happen before anything leaves?</div>'
+   +PRIV_STEPS.map(function(s){
+      return '<label class="chk" data-ps="'+s.k+'"><input type="checkbox" data-pk="'+s.k+'"> '+esc(s.t)+'</label>'; }).join('')
+   +'<button class="btn blue sm" id="privGo" style="margin-top:8px">Confirm the workflow</button><div id="privFb"></div></div>';
+}
+function wirePrivacy(){
+  [].forEach.call(document.querySelectorAll('[data-pc]'),function(c){
+    c.addEventListener('change',function(){ S.privFields[c.getAttribute('data-pc')]=c.checked; c.parentNode.classList.toggle('on',c.checked); });
+  });
+  [].forEach.call(document.querySelectorAll('[data-pk]'),function(c){
+    c.addEventListener('change',function(){ S.privSteps[c.getAttribute('data-pk')]=c.checked; c.parentNode.classList.toggle('on',c.checked); });
+  });
+  $('privGo').addEventListener('click',function(){
+    var over=PRIV_FIELDS.filter(function(f){ return !f.need && S.privFields[f.k]; });
+    var badStep=PRIV_STEPS.filter(function(s){ return !s.ok && S.privSteps[s.k]; });
+    var goodStep=PRIV_STEPS.filter(function(s){ return s.ok && S.privSteps[s.k]; }).length;
+    S.privDone=true;
+    if(over.length||badStep.length){ S.integ=Math.max(0,S.integ-8*(over.length+badStep.length)); paintMeters(); }
+    $('privFb').innerHTML='<div class="fb '+(over.length||badStep.length?'no':goodStep>=3?'yes':'warnb')+'"><div class="hd">'
+      +(over.length||badStep.length?'This export would be a disclosure':goodStep>=3?'Workflow is defensible':'Under-specified')+'</div>'
+      +(over.length?'You included '+over.map(function(f){return '<b>'+esc(f.t)+'</b>';}).join(', ')
+        +'. None of these are needed to analyse waiting-time patterns — timestamps, department, a pseudonymised ID and an age band are.':'')
+      +(badStep.length?' '+badStep.map(function(s){return '<b>'+esc(s.t)+'</b>';}).join(', ')+' is not an acceptable step. Using a personal account to avoid attribution is a deliberate evasion of the audit trail, which is a disciplinary matter in its own right.':'')
+      +(!over.length&&!badStep.length?'Minimised fields, de-identification, approval and an agreement before anything leaves — and the in-house environment preferred so that ideally nothing does. Operational principles only: follow your institution’s and your jurisdiction’s actual requirements for the legal position.':'')
+      +'</div>';
+  });
+}
+
+/* ---- executive summary ---- */
+function sExec(){
+  return '<div class="card"><h3>Executive summary</h3>'
+   +'<button class="btn blue sm" id="execBtn">Generate the AI executive summary</button><div id="execOut"></div>'
+   +'<div class="lbl">Your administrative findings (this is marked)</div>'
+   +'<textarea id="reasoning" placeholder="Which cases the AI got wrong and how you knew, the delay you would act on first and why, and the governance rule you would put in place…"></textarea>'
+   +'<div style="margin-top:9px"><button class="btn" id="submitAll">Generate the EHR investigation report</button></div>'
+   +'<div id="caseFb"></div></div>';
+}
+function wireExec(){
+  $('execBtn').addEventListener('click',function(){
+    S.execRun=true; $('execBtn').disabled=true;
+    $('execOut').innerHTML='<div class="out">AI EXECUTIVE SUMMARY\n\n'
+     +'  Three operational areas require immediate administrative attention:\n'
+     +'    · Discharge coordination — 11 delayed discharges, largest single journey gap 3 h 50 min\n'
+     +'    · Insurance authorisation — 9 delays, one at 51 hours\n'
+     +'    · Registration workflow — flagged High, 4 duplicate records this period\n\n'
+     +'  Documentation gaps: 18. Laboratory TAT: Moderate. Referral delays: Low.</div>'
+     +'<div class="fb warnb"><div class="hd">Read this before you forward it</div>This summary is supportable — '
+     +'and it is an aggregate. It tells you where to look, not what is true of any case: the insurance figure '
+     +'includes at least one delay that Case 04 showed was caused by the hospital\'s own incomplete submission, '
+     +'not by the insurer. An executive summary that is forwarded without the case-level check turns a hospital '
+     +'problem into a supplier complaint.</div>';
+  });
+  var ta=$('reasoning');
+  if(ta) ta.addEventListener('input',function(){ S.reasoning=ta.value; });
+  $('submitAll').addEventListener('click',submitAll);
+}
+
+/* ============================================================
+   EVALUATION — 100 marks
+   ============================================================ */
+function submitAll(){
+  if(S.ended) return;
+  var resolved=Object.keys(S.decided).length;
+  if(resolved<CASES.length){
+    $('caseFb').innerHTML='<div class="fb no"><div class="hd">Cases outstanding</div>'+resolved+' of '+CASES.length+' resolved.</div>';
+    return;
+  }
+  S.ended=true;
+  var pts=[], strengths=[], improve=[];
+
+  var opened=Object.keys(S.opened).length;
+  var t1=Math.min(10, opened*1.25);
+  pts.push(['Patient record navigation',Math.round(t1*10)/10,10]);
+  if(opened<CASES.length) improve.push('Evidence was opened for only '+opened+' of '+CASES.length+' cases. A decision taken without opening the record is the AI\'s decision, not yours.');
+
+  var t2=Math.min(15, (S.journeyRun?5:0) + (S.docAction==='assign'?4:S.docAction?1.5:0) + (S.execRun?3:0) + (opened===CASES.length?3:0));
+  pts.push(['EHR workflow understanding',Math.round(t2*10)/10,15]);
+
+  var t3=S.journeyAnswer==='disch'?15:S.journeyAnswer==='lab'?9:S.journeyAnswer?4:0;
+  pts.push(['Administrative data analysis',Math.round(t3*10)/10,15]);
+  if(S.journeyAnswer==='disch') strengths.push('Ranked the journey delays by size and controllability rather than in the order the AI listed them.');
+
+  var correct=CASES.filter(function(c){ var d=S.decided[c.k];
+    return d && c.opts.filter(function(o){return o.k===d;})[0].ok; }).length;
+  var t4=Math.min(15, correct*1.9);
+  pts.push(['Problem identification',Math.round(t4*10)/10,15]);
+  if(correct>=7) strengths.push('Reached the defensible administrative decision on '+correct+' of the eight cases.');
+  else improve.push('Reached the defensible decision on '+correct+' of eight cases.');
+
+  var aiUsed=Object.keys(S.aiRun).length;
+  var t5=Math.min(10, aiUsed*1.25);
+  pts.push(['AI-assisted analysis',Math.round(t5*10)/10,10]);
+
+  var wrongCases=CASES.filter(function(c){return c.aiWrong;});
+  var caught=wrongCases.filter(function(c){ return S.verified[c.k]; }).length;
+  var t6=Math.min(10, caught*(10/wrongCases.length));
+  pts.push(['Verification of AI output',Math.round(t6*10)/10,10]);
+  if(caught===wrongCases.length) strengths.push('Caught every AI statement the record did not support, including the fabricated 2024 admission generated for a handover.');
+  else improve.push('Caught '+caught+' of '+wrongCases.length+' unsupported AI outputs. The fabricated admission in Case 08 is the one that would have entered a patient’s permanent history.');
+
+  var overPriv=PRIV_FIELDS.filter(function(f){ return !f.need && S.privFields[f.k]; }).length;
+  var badStep=PRIV_STEPS.filter(function(s){ return !s.ok && S.privSteps[s.k]; }).length;
+  var t7=Math.max(0, Math.min(10, (S.privDone?6:0) - overPriv*1.5 - badStep*3
+        + (S.decided.c7==='report'?4:0)));
+  pts.push(['Privacy and security awareness',Math.round(t7*10)/10,10]);
+  if(S.decided.c7==='report'&&!overPriv&&!badStep) strengths.push('Handled both privacy items correctly — the unauthorised-access pattern as a reportable incident, and the export as a minimisation and approval question.');
+  if(S.decided.c7==='perm') improve.push('Widening the billing role’s permissions to stop the alert firing removes the control that detected the problem.');
+
+  var t8=Math.min(10, (S.decided.c2==='esc'?4:0) + (S.decided.c1==='review'?3:0) + (S.decided.c8==='reject'?3:0));
+  pts.push(['Administrative decision',Math.round(t8*10)/10,10]);
+
+  var words=S.reasoning?S.reasoning.split(/\s+/).length:0;
+  var t9=words>=80?5:words>=40?3.5:words>=15?2:0;
+  pts.push(['Final report',t9,5]);
+  if(words<40) improve.push('The written findings were short. An investigation is judged on the conclusion, not on the number of panels opened.');
+
+  paintMeters();
+  var total=Math.round(pts.reduce(function(a,p){return a+p[1];},0));
+  finish(total,pts,strengths,improve);
+}
+
+function finish(total,pts,strengths,improve){
+  var elapsed=S.started?Math.round((Date.now()-S.started)/60000):0;
+  var caseRows=CASES.map(function(c){
+    var d=S.decided[c.k]; var o=d?c.opts.filter(function(x){return x.k===d;})[0]:null;
+    var best=c.opts.filter(function(x){return x.ok;})[0];
+    return '<tr'+(o&&o.ok?' class="cool"':' class="hot"')+'><td>'+c.n+' — '+esc(c.t)+'</td>'
+      +'<td>'+(S.opened[c.k]?'yes':'<b>no</b>')+'</td>'
+      +'<td>'+(c.aiWrong?(S.verified[c.k]?'caught':'<b>missed</b>'):'n/a')+'</td>'
+      +'<td>'+esc(o?o.t:'—')+'</td><td>'+esc(best.t)+'</td></tr>';
+  }).join('');
+
+  var html='<div class="card"><h3>AI-EHR Administrative Investigation Report</h3>'
+   +'<p class="muted">ALIZON SmartCare Multispecialty Hospital · AI-EHR intelligence layer · time in system '+elapsed+' min</p>'
+   +'<div class="scorebig">'+total+' <span style="font-size:16px;font-weight:600;color:var(--muted)">/ 100</span></div>'
+   +'<p class="muted">Governance integrity <b>'+S.integ+'%</b> · Verification discipline <b>'+S.ver+'%</b> · '
+   +'cases resolved '+Object.keys(S.decided).length+' of '+CASES.length+'</p>'
+
+   +'<table class="d"><tr><th>Component</th><th>Marks</th></tr>'
+   +pts.map(function(p){ return '<tr><td>'+esc(p[0])+'</td><td class="n">'+p[1]+' / '+p[2]+'</td></tr>'; }).join('')
+   +'<tr><td><b>Total</b></td><td class="n"><b>'+total+' / 100</b></td></tr></table>'
+
+   +'<div class="lbl">Case library outcomes</div>'
+   +'<table class="d"><tr><th>Case</th><th>Evidence opened</th><th>AI error</th><th>Your decision</th><th>Defensible decision</th></tr>'+caseRows+'</table>'
+
+   +'<div class="lbl">Patient journey analysis</div>'
+   +'<p>'+(S.journeyRun
+      ? 'Timeline reconstructed. Delays identified: registration to consultation 35 min, laboratory turnaround 110 min, discharge decision to billing 3 h 50 min. '
+        +'Priority selected: <b>'+esc({reg:'registration',lab:'laboratory turnaround',disch:'discharge to billing',all:'all three equally'}[S.journeyAnswer]||'none')+'</b>.'
+      : 'The journey reconstruction was never run.')+'</p>'
+
+   +'<div class="lbl">Documentation audit</div>'
+   +'<p>Discharge summary and follow-up missing. Action taken: <b>'
+   +esc({escalate:'Escalate',assign:'Assign',ignore:'Ignore',clarify:'Request clarification'}[S.docAction]||'none')+'</b>.</p>'
+
+   +'<div class="lbl">Privacy assessment</div>'
+   +'<p>Export workflow: '+(S.privDone?'completed':'not completed')+'. Fields requested beyond the purpose: <b>'
+   +PRIV_FIELDS.filter(function(f){ return !f.need && S.privFields[f.k]; }).length+'</b>. '
+   +'Unauthorised-access case handled as: <b>'+esc(S.decided.c7||'—')+'</b>.</p>'
+
+   +'<div class="lbl">Your administrative findings</div>'
+   +'<p>'+(S.reasoning?esc(S.reasoning):'<span class="muted">none recorded</span>')+'</p>'
+
+   +'<div class="fb yes"><div class="hd">Strengths</div>'
+     +(strengths.length?'<ul><li>'+strengths.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+   +'<div class="fb no"><div class="hd">Where it could be stronger</div>'
+     +(improve.length?'<ul><li>'+improve.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+
+   +'<div class="lbl">Governance rules recorded for this exercise</div>'
+   +'<ul><li>No AI statement enters a patient record, a handover or a report until a person has verified it '
+   +'against source and logged that they did.</li>'
+   +'<li>No irreversible action — a record merge above all — is taken on a probability score.</li>'
+   +'<li>An access pattern outside a role is a reportable incident, not a training note, and the control that '
+   +'detected it is never widened to stop it firing.</li>'
+   +'<li>Data leaves the hospital only de-identified, minimised to the purpose, approved, and under an agreement.</li>'
+   +'<li>Aggregate summaries are checked at case level before they are forwarded as findings.</li></ul>'
+
+   +'<div class="note">100% synthetic data. This is an administrative simulator — it produces no diagnosis, no '
+   +'treatment recommendation and no advice about any real patient.</div>'
+   +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
+
+  $('caseFb').innerHTML='<div class="fb yes"><div class="hd">Report generated</div>Your investigation report is on the <b>Result &amp; Record</b> tab.</div>';
+  var _re=$('resEmpty'); if(_re) _re.style.display='none';
+  $('resBox').innerHTML=html;
+  goTab('res');
+
+  var OPTS={module:'Clinical Simulation Suite · AI-EHR Administrative Intelligence',
+            title:'AI-EHR Administrative Intelligence & Decision Support Simulation',
+            programme:'ALIZON OS', pct:total,
+            resultText:total+'/100 · governance '+S.integ+'% · verification '+S.ver+'%'};
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme,
+    submitOpts:OPTS, titleField:{label:'EHR intelligence investigation', placeholder:'e.g. Discharge-to-billing gap, and two AI outputs the record did not support'},
+    minWords:400,
+    attachments:[{label:'1. AI-EHR Administrative Investigation Report / printout (PDF)'},{label:'2. AI governance rules you would adopt for the EHR (PDF)'}],
+    reportHtml:html
+  });
+}
+
+var clockTimer=null;
+$('startBtn').addEventListener('click',function(){
+  S=freshState(); goTab('work'); desk();
+  if(clockTimer) clearInterval(clockTimer);
+  clockTimer=setInterval(tickClock,1000); tickClock();
+});
+S=freshState(); paintMeters();
+})();
+</script>
+</body>
+</html>

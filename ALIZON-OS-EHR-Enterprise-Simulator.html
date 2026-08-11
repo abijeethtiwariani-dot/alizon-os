@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Enterprise EHR &amp; Hospital Information System Simulator</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#eef1f4;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --hdr:#16232e;--hdr2:#1e3242;--accent:#0f6fb8;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px 90px}
+.hero{padding:22px 0 4px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(21px,3.2vw,29px);margin:6px 0 5px}
+.hero p{color:var(--muted);margin:0;max-width:78ch;font-size:13.5px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0 14px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:12.5px;font-weight:700;padding:7px 15px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);padding:15px 17px;margin-bottom:13px}
+.card h3{font-family:var(--serif);font-size:16.5px;margin:0 0 7px}
+.card h4{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+.btn{font:inherit;font-size:12.5px;font-weight:700;padding:8px 16px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.blue{background:var(--accent)}
+.btn.sm{padding:5px 12px;font-size:11.5px}
+.btn:disabled{opacity:.4;cursor:default}
+.muted{color:var(--muted);font-size:12px}
+
+/* ---- EHR chrome ---- */
+.ehrbar{background:linear-gradient(120deg,var(--hdr),var(--hdr2));color:#fff;border-radius:12px 12px 0 0;
+  padding:11px 15px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.ehrbar .lg{font-weight:800;letter-spacing:.02em;font-size:13.5px}
+.ehrbar .rl{margin-left:auto;display:flex;gap:8px;align-items:center;font-size:12px}
+.ehrbar select{font:inherit;font-size:12px;border-radius:7px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;padding:4px 8px}
+.ehrbar select option{color:#111}
+.phdr{background:#fff;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;padding:12px 15px;margin-bottom:13px}
+.phdr .row{display:flex;gap:22px;flex-wrap:wrap;align-items:baseline}
+.phdr .pn{font-family:var(--serif);font-size:19px;font-weight:700}
+.phdr .f{font-size:12px}
+.phdr .f b{display:block;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.pill{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px}
+.p-act{background:#e7f5ec;color:var(--ok)}.p-warn{background:#fdf4e3;color:var(--warn)}
+.p-crit{background:#fdecea;color:var(--crit)}.p-info{background:#e8f1f8;color:var(--accent)}
+.p-off{background:#eef1f4;color:#6b7480}
+
+/* modules */
+.mods{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.mods button{font:inherit;font-size:12px;font-weight:700;padding:6px 13px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.mods button.on{background:var(--hdr);color:#fff;border-color:var(--hdr)}
+.mods button.locked{opacity:.4;cursor:not-allowed}
+
+/* timeline */
+.tl{position:relative;padding-left:22px;margin:10px 0}
+.tl:before{content:"";position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:var(--line)}
+.tlitem{position:relative;margin:0 0 9px;cursor:pointer}
+.tlitem:before{content:"";position:absolute;left:-19px;top:7px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid var(--crimson)}
+.tlitem.cur:before{background:var(--crimson)}
+.tlitem .d{font-size:11px;color:var(--muted);font-weight:700}
+.tlitem .t{font-size:13px;font-weight:700}
+.tlitem .s{font-size:11.5px;color:var(--muted)}
+.tlitem.open .t{color:var(--crimson)}
+.tlbody{display:none;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:6px;background:#fbfbfc}
+.tlitem.open .tlbody{display:block}
+
+table.d{width:100%;border-collapse:collapse;font-size:12.5px;margin:9px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:6px 9px;text-align:left}
+table.d th{background:#f6f8fa;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}tr.cool td{background:#f2faf5}
+
+.wf{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:9px 0}
+.wfs{font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted)}
+.wfs.done{background:#e7f5ec;border-color:#b7e0c5;color:var(--ok)}
+.wfs.cur{background:var(--crimson);border-color:var(--crimson);color:#fff}
+.wfarrow{color:var(--muted);font-size:11px}
+
+.beds{display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:8px;margin:9px 0}
+.bed{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;font-size:12px;cursor:pointer;text-align:left;font-family:inherit}
+.bed b{display:block;font-size:12.5px}
+.bed small{color:var(--muted);font-size:10.5px}
+.bed.occupied{background:#fdf3f3;border-color:#f0c9c6}
+.bed.available{background:#f2faf5;border-color:#bfe3cd}
+.bed.cleaning{background:#fdf9ef;border-color:#e8d7ab}
+.bed.reserved{background:#eef4fb;border-color:#c3d9ee}
+.bed.sel{box-shadow:inset 0 0 0 2px var(--crimson)}
+
+.audit{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px}
+.chk{display:flex;align-items:flex-start;gap:8px;padding:6px 9px;border:1px solid var(--line);border-radius:9px;background:#fff;margin:4px 0;font-size:12.5px}
+.chk.ok{background:#f2faf5;border-color:#bfe3cd}
+.chk.miss{background:#fdf3f3;border-color:#f0c9c6}
+.fb{border-radius:10px;padding:10px 13px;margin-top:9px;font-size:12.5px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:8px 11px;border-radius:0 8px 8px 0;margin:9px 0;font-size:12.5px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:8px 11px;border-radius:0 8px 8px 0;margin:9px 0;font-size:12px;color:#6b5a2e}
+.denied{border:1px dashed #d9b3b0;background:#fdf6f5;border-radius:10px;padding:14px;text-align:center;color:var(--crit);font-size:12.5px}
+.lbl{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px}
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0}
+.opt{font:inherit;font-size:12px;padding:6px 12px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:6px;margin:7px 0}
+.stack .opt{border-radius:10px;padding:8px 12px}
+textarea{width:100%;min-height:74px;resize:vertical;font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+input[type=text]{font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.scorebig{font-size:32px;font-weight:800;font-variant-numeric:tabular-nums}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:#fff}
+.kpi .n{font-size:10.5px;color:var(--muted);font-weight:600}
+.kpi .v{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+@media print{.tabs,.mods,.btn,.no-print{display:none!important}.panel{display:block!important}}
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js?v=2"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">ALIZON OS · Clinical Simulation Suite · Enterprise EHR</div>
+    <h1>Enterprise EHR &amp; Hospital Information System Simulator</h1>
+    <p>A working hospital information system on synthetic patients. Sign in as any of eight roles and the
+       record changes shape around you: the front office sees demographics and never the clinical note, billing
+       sees charges and cannot touch documentation. Move a patient through registration, encounter, orders,
+       results, pharmacy, admission, bed allocation, insurance, discharge and referral — and watch every action
+       you take land in the audit trail with your name on it.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">EHR workspace</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="ehrent"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">This is a records system, not a quiz. Role-based access is enforced: choosing the wrong
+        role for a task will simply refuse you, and every attempt to open something your role cannot see is
+        recorded in the audit trail exactly as it would be in a real HIS.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Workflow integrity</b> falls when a step is taken
+        out of order — discharging before billing clearance, releasing a result that was never validated.
+        <b>Access discipline</b> falls when you go looking in a record your role has no business in.</p>
+      <div class="synth"><b>100% synthetic patients.</b> Every patient, encounter, result, medication and charge
+        in this simulator is generated for teaching. This is not a clinical system, it produces no diagnosis,
+        no prescription and no treatment recommendation, and nothing in it may inform the care of a real person.</div>
+      <button class="btn" id="startBtn">▶ Sign in to the EHR</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div id="ehrShell"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Complete the assigned tasks in the EHR to generate your report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-attendance.js?v=2"></script>
+<script src="alizon-practical-submit.js?v=4"></script>
+<script src="alizon-practical-report.js?v=4"></script>
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="ehr-experiment-data.js?v=1"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+'use strict';
+function $(i){ return document.getElementById(i); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+function inr(n){ return '₹'+Number(n).toLocaleString('en-IN'); }
+
+/* ============================================================
+   ROLE-BASED ACCESS CONTROL
+   ============================================================ */
+var MODULES=[
+ {k:'summary', t:'Patient summary'},
+ {k:'timeline',t:'Timeline'},
+ {k:'encounter',t:'Encounters'},
+ {k:'clinical',t:'Clinical documentation'},
+ {k:'nursing', t:'Nursing'},
+ {k:'lab',     t:'Laboratory'},
+ {k:'rad',     t:'Radiology'},
+ {k:'pharmacy',t:'Pharmacy'},
+ {k:'beds',    t:'Bed management'},
+ {k:'billing', t:'Billing &amp; insurance'},
+ {k:'discharge',t:'Discharge'},
+ {k:'referral',t:'Referrals'},
+ {k:'audit',   t:'Audit trail'}
+];
+var ROLES=[
+ {k:'admin',  t:'Administrator',            can:['summary','timeline','encounter','clinical','nursing','lab','rad','pharmacy','beds','billing','discharge','referral','audit']},
+ {k:'front',  t:'Front Office Executive',   can:['summary','timeline','encounter','referral']},
+ {k:'hosp',   t:'Hospital Administrator',   can:['summary','timeline','encounter','beds','billing','discharge','referral','audit']},
+ {k:'doctor', t:'Doctor',                   can:['summary','timeline','encounter','clinical','lab','rad','pharmacy','discharge','referral']},
+ {k:'nurse',  t:'Nurse',                    can:['summary','timeline','encounter','nursing','pharmacy']},
+ {k:'lab',    t:'Laboratory',               can:['summary','lab']},
+ {k:'rad',    t:'Radiology',                can:['summary','rad']},
+ {k:'pharm',  t:'Pharmacy',                 can:['summary','pharmacy']},
+ {k:'bill',   t:'Billing',                  can:['summary','billing','discharge']}
+];
+function role(){ return ROLES.filter(function(r){return r.k===S.role;})[0]; }
+function can(m){ return role().can.indexOf(m)>=0; }
+
+/* ============================================================
+   SYNTHETIC PATIENTS
+   ============================================================ */
+var PATIENTS=[
+{id:'ALZ-000184', name:'Anitha Kumar', age:46, sex:'Female', blood:'O+', mobile:'98470 00184',
+ dob:'12/05/1980', status:'Active', cur:'OPD',
+ addr:'Kowdiar, Thiruvananthapuram, Kerala 695003', emerg:'R. Kumar (spouse) · 98470 00185',
+ regDate:'12 Jan 2026', regType:'Self', insurer:'Kerala State Health Scheme', payer:'Insurance',
+ refSrc:'Walk-in', dept:'General Medicine',
+ allergies:['Sulfonamides — rash (recorded 2026)'],
+ problems:['Type 2 diabetes mellitus','Hypertension'],
+ meds:['Metformin 500 mg BD','Amlodipine 5 mg OD'],
+ procedures:['Coronary angiogram — Mar 2026'],
+ timeline:[
+  {d:'12 Jan 2026',t:'OP Consultation',dep:'General Medicine',s:'Completed',note:'First registration. Routine review, medication continued.'},
+  {d:'03 Feb 2026',t:'Laboratory Investigation',dep:'Laboratory',s:'Completed',note:'HbA1c, lipid profile, renal panel. All results validated and released.'},
+  {d:'18 Mar 2026',t:'Emergency Visit',dep:'Emergency',s:'Completed',note:'Presented with chest discomfort. Admitted for observation.'},
+  {d:'19 Mar 2026',t:'IP Admission',dep:'Cardiology',s:'Completed',note:'Admitted to C-104. Angiogram performed 20 Mar.'},
+  {d:'23 Mar 2026',t:'Discharge',dep:'Cardiology',s:'Completed',note:'Discharged with summary. Follow-up at 3 weeks.'},
+  {d:'15 Apr 2026',t:'Follow-up',dep:'Cardiology',s:'Completed',note:'Stable. Continued on medical management.'},
+  {d:'10 Jun 2026',t:'Current Encounter',dep:'General Medicine',s:'In progress',note:'Today. OP review, investigations ordered.',cur:true}
+ ]},
+{id:'ALZ-000102', name:'Suresh Menon', age:63, sex:'Male', blood:'B+', mobile:'99460 00102',
+ dob:'08/09/1963', status:'Admitted', cur:'IP — Medicine M-101',
+ addr:'Ernakulam, Kerala 682016', emerg:'L. Menon (daughter) · 99460 00103',
+ regDate:'04 Mar 2026', regType:'Referral', insurer:'National Health Insurance', payer:'Insurance',
+ refSrc:'Partner clinic', dept:'General Medicine',
+ allergies:['No known allergies'],
+ problems:['Chronic kidney disease stage 3','Hypertension'],
+ meds:['Telmisartan 40 mg OD','Furosemide 20 mg OD'],
+ procedures:[],
+ timeline:[
+  {d:'04 Mar 2026',t:'OP Consultation',dep:'General Medicine',s:'Completed',note:'Referred from partner clinic.'},
+  {d:'08 Jun 2026',t:'IP Admission',dep:'General Medicine',s:'Active',note:'Admitted to M-101 for fluid management.'},
+  {d:'10 Jun 2026',t:'Discharge decision',dep:'General Medicine',s:'Pending',note:'Declared fit for discharge at 10:15 today. Awaiting clearances.',cur:true}
+ ]},
+{id:'ALZ-000921', name:'Anita Kumar', age:46, sex:'Female', blood:'O+', mobile:'98470 00184',
+ dob:'12/05/1980', status:'Active', cur:'None',
+ addr:'Kowdiar, Trivandrum, Kerala 695003', emerg:'—',
+ regDate:'18 Mar 2026', regType:'Emergency', insurer:'—', payer:'Self',
+ refSrc:'Emergency walk-in', dept:'Emergency',
+ allergies:['Not recorded'],
+ problems:['Not recorded'],
+ meds:[],
+ procedures:[],
+ dupOf:'ALZ-000184',
+ timeline:[
+  {d:'18 Mar 2026',t:'Emergency registration',dep:'Emergency',s:'Completed',note:'Registered at the emergency counter under a slightly different spelling. No insurance captured.',cur:true}
+ ]}
+];
+
+/* Current encounter detail for ALZ-000184 */
+var ENC={
+ no:'ENC-2026-06-10-0417', type:'OP', dept:'General Medicine', provider:'Dr. S. Raghavan',
+ date:'10 Jun 2026', time:'09:10', mode:'Appointment', priority:'Routine',
+ reason:'Routine diabetic review; reports increased fatigue.'
+};
+var OP_STAGES=['Appointment','Registration','Queue','Consultation','Investigation','Result','Review','Pharmacy','Billing','Follow-up'];
+var IP_STAGES=['Admission request','Administrative verification','Bed request','Bed allocation','Admission',
+               'Ward transfer','Investigations / services','Discharge planning','Billing clearance','Discharge','Follow-up'];
+
+var LAB={
+ id:'LAB-00184', tests:['Complete blood count','Serum creatinine','Fasting glucose'],
+ stages:['Order created','Sample collection','Sample received','Processing','Result entered','Result validated','Result released'],
+ times:['09:44','10:02','10:15','10:41','11:02','—','—'],
+ results:[{t:'Haemoglobin',v:'11.8 g/dL',r:'12.0–15.0',f:'Low'},
+          {t:'Total leucocyte count',v:'7,400 /µL',r:'4,000–11,000',f:'Normal'},
+          {t:'Serum creatinine',v:'1.4 mg/dL',r:'0.6–1.1',f:'High'},
+          {t:'Fasting glucose',v:'148 mg/dL',r:'70–100',f:'High'}]
+};
+var RAD={
+ id:'RAD-00092', study:'Chest X-ray PA',
+ stages:['Order','Scheduling','Patient prepared','Imaging completed','Report draft','Radiologist validation','Final report'],
+ times:['09:46','10:20','10:50','10:58','11:25','—','—']
+};
+var PHARM=[
+ {drug:'Metformin 500 mg',dose:'500 mg',route:'Oral',freq:'BD',dur:'30 days',status:'Ordered',disp:'Pending'},
+ {drug:'Amlodipine 5 mg',dose:'5 mg',route:'Oral',freq:'OD',dur:'30 days',status:'Ordered',disp:'Pending'}
+];
+var PHARM_STAGES=['Order','Verification','Dispensing','Documentation','Billing'];
+
+var BEDS=[
+ {ward:'Medicine',bed:'M-101',st:'occupied',pt:'ALZ-000102'},
+ {ward:'Medicine',bed:'M-102',st:'available',pt:''},
+ {ward:'Medicine',bed:'M-103',st:'cleaning',pt:''},
+ {ward:'Surgery', bed:'S-201',st:'cleaning',pt:''},
+ {ward:'Surgery', bed:'S-202',st:'available',pt:''},
+ {ward:'Cardiology',bed:'C-101',st:'occupied',pt:'ALZ-000087'},
+ {ward:'Cardiology',bed:'C-104',st:'available',pt:''},
+ {ward:'Paediatrics',bed:'P-105',st:'reserved',pt:'ALZ-000111'}
+];
+var CHARGES=[
+ {svc:'Consultation',amt:500,st:'Billed'},
+ {svc:'Laboratory',amt:1200,st:'Billed'},
+ {svc:'Imaging',amt:2500,st:'Pending'},
+ {svc:'Pharmacy',amt:850,st:'Billed'}
+];
+var RCM=['Service delivered','Charge captured','Bill generated','Insurance / self pay','Payment','Claim','Settlement'];
+var INSURANCE={
+ provider:'National Health Insurance', policy:'Family floater · NHI-KL-88421',
+ preauth:'Pending', claim:48200, approved:0, pending:48200, status:'Awaiting authorisation',
+ raised:'10 Jun 2026 11:20', note:'Pre-authorisation for the final inpatient day submitted 11:20. No response from the insurer. This is the only item holding the discharge of ALZ-000102.'
+};
+var DISCHARGE=[
+ {k:'clin',  t:'Clinical clearance',        ok:true,  at:'10:15'},
+ {k:'inv',   t:'Investigation completion',  ok:true,  at:'09:50'},
+ {k:'med',   t:'Medication documentation',  ok:true,  at:'11:40'},
+ {k:'bill',  t:'Billing clearance',         ok:true,  at:'12:05'},
+ {k:'ins',   t:'Insurance clearance',       ok:false, at:''},
+ {k:'instr', t:'Patient instructions',      ok:true,  at:'12:10'},
+ {k:'fu',    t:'Follow-up appointment',     ok:false, at:''},
+ {k:'summ',  t:'Discharge summary',         ok:true,  at:'11:55'},
+ {k:'comm',  t:'Patient communication',     ok:false, at:''}
+];
+var REFERRALS=[
+ {id:'REF-0311',type:'Internal',from:'General Medicine',to:'Cardiology',reason:'Chest discomfort on exertion',date:'18 Mar 2026',appt:'19 Mar 2026',st:'Completed'},
+ {id:'REF-0442',type:'External',from:'ALIZON SmartCare',to:'Partner Imaging Centre',reason:'MRI not available in-house',date:'10 Jun 2026',appt:'Not scheduled',st:'Open — 14 days'}
+];
+var AUDIT=[
+ {t:'09:12',u:'Front Office',a:'Patient registered',o:'ALZ-000184'},
+ {t:'09:31',u:'Doctor',a:'Encounter opened',o:'ENC-2026-06-10-0417'},
+ {t:'09:44',u:'Doctor',a:'Investigation ordered',o:'LAB-00184'},
+ {t:'09:46',u:'Doctor',a:'Imaging ordered',o:'RAD-00092'},
+ {t:'10:15',u:'Laboratory',a:'Sample received',o:'LAB-00184'},
+ {t:'11:02',u:'Laboratory',a:'Result entered',o:'LAB-00184'},
+ {t:'11:18',u:'Doctor',a:'Result reviewed',o:'LAB-00184'},
+ {t:'11:30',u:'Billing',a:'Charge generated',o:'INV-77120'},
+ {t:'11:47',u:'Front Office',a:'Demographics amended — mobile number',o:'ALZ-000184'},
+ {t:'12:05',u:'Billing',a:'Billing clearance recorded',o:'ALZ-000102'}
+];
+
+/* ============================================================
+   ASSIGNED TASKS — what the student is marked on
+   ============================================================ */
+var TASKS=[
+ {k:'t1', t:'Find the patient and open the current encounter', hint:'Search by ID, name or mobile.'},
+ {k:'t2', t:'Move the laboratory order to a released result — without skipping validation'},
+ {k:'t3', t:'Allocate a bed for the pending cardiology admission'},
+ {k:'t4', t:'Identify why ALZ-000102 has not been discharged'},
+ {k:'t5', t:'Find the duplicate patient record and decide what to do with it'},
+ {k:'t6', t:'Answer the audit question: who changed the demographics, and when'}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var S={};
+function freshState(){
+  return {started:Date.now(), role:'front', pt:null, mod:'summary', found:false,
+          labStage:4, radStage:4, pharmStage:0, opStage:3,
+          bedSel:null, bedDone:false, labReleased:false, labSkipped:false,
+          dischargeAnswer:null, dupAnswer:null, auditAnswer:null,
+          denied:0, audit:AUDIT.slice(), tasks:{}, wf:100, acc:100,
+          reasoning:'', ended:false};
+}
+var tabs=document.querySelectorAll('.tabs button');
+[].forEach.call(tabs,function(b){ b.addEventListener('click',function(){ goTab(b.getAttribute('data-p')); }); });
+function goTab(p){
+  [].forEach.call(tabs,function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  ['brief','work','res'].forEach(function(k){ $('p-'+k).classList.toggle('on',k===p); });
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function logAudit(a,o){ S.audit.push({t:clockStr(),u:role().t,a:a,o:o||''}); }
+function clockStr(){
+  var mins=Math.floor((Date.now()-S.started)/60000);
+  var tt=12*60+30+mins, h=Math.floor(tt/60)%24, m=tt%60;
+  return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+}
+function pt(){ return PATIENTS.filter(function(p){return p.id===S.pt;})[0]; }
+
+/* ============================================================
+   SHELL
+   ============================================================ */
+function shell(){
+  $('ehrShell').innerHTML=
+   '<div class="ehrbar"><span class="lg">ALIZON HIS</span>'
+   +'<span class="muted" style="color:rgba(255,255,255,.75)">Enterprise EHR · synthetic environment</span>'
+   +'<span class="rl">Signed in as <select id="roleSel">'
+   +ROLES.map(function(r){ return '<option value="'+r.k+'"'+(r.k===S.role?' selected':'')+'>'+r.t+'</option>'; }).join('')
+   +'</select><span class="pill p-info" id="wfPill">WF 100%</span><span class="pill p-info" id="accPill">ACC 100%</span></span></div>'
+   +'<div class="phdr" id="phdr"></div>'
+   +'<div class="mods" id="mods"></div>'
+   +'<div id="modBody"></div>'
+   +'<div class="card no-print" id="taskCard"></div>';
+  $('roleSel').addEventListener('change',function(){
+    S.role=$('roleSel').value; logAudit('Role switched to '+role().t);
+    if(!can(S.mod)) S.mod=role().can[0];
+    paintHdr(); paintMods(); paintMod(); paintTasks();
+  });
+  paintHdr(); paintMods(); paintMod(); paintTasks();
+}
+function paintHdr(){
+  var p=pt();
+  if(!p){ $('phdr').innerHTML='<div class="row"><span class="muted">No patient in context — use patient search.</span></div>'; return; }
+  $('phdr').innerHTML='<div class="row"><span class="pn">'+esc(p.name)+'</span>'
+   +'<span class="pill '+(p.status==='Admitted'?'p-warn':'p-act')+'">'+esc(p.status)+'</span>'
+   +(p.dupOf?'<span class="pill p-crit">possible duplicate</span>':'')+'</div>'
+   +'<div class="row" style="margin-top:7px">'
+   +f('Patient ID',p.id)+f('Age',p.age)+f('Sex',p.sex)+f('Blood group',p.blood)
+   +f('Registration',p.status)+f('Current encounter',p.cur)+'</div>';
+}
+function f(k,v){ return '<span class="f"><b>'+k+'</b>'+esc(String(v))+'</span>'; }
+function paintMods(){
+  $('mods').innerHTML=MODULES.map(function(m){
+    var allowed=can(m.k);
+    return '<button data-m="'+m.k+'" class="'+(S.mod===m.k?'on':'')+(allowed?'':' locked')+'">'+m.t+'</button>';
+  }).join('');
+  [].forEach.call($('mods').querySelectorAll('[data-m]'),function(b){
+    b.addEventListener('click',function(){
+      var m=b.getAttribute('data-m');
+      if(!can(m)){
+        S.denied++; S.acc=Math.max(0,S.acc-8);
+        logAudit('ACCESS DENIED — attempted '+MODULES.filter(function(x){return x.k===m;})[0].t.replace(/&amp;/g,'&'));
+        S.mod=m; paintMods(); paintMod(); paintPills();
+        return;
+      }
+      S.mod=m; logAudit('Opened '+MODULES.filter(function(x){return x.k===m;})[0].t.replace(/&amp;/g,'&'), S.pt||'');
+      paintMods(); paintMod();
+    });
+  });
+}
+function paintPills(){
+  $('wfPill').textContent='WF '+S.wf+'%';
+  $('accPill').textContent='ACC '+S.acc+'%';
+  $('wfPill').className='pill '+(S.wf<60?'p-crit':S.wf<85?'p-warn':'p-info');
+  $('accPill').className='pill '+(S.acc<60?'p-crit':S.acc<85?'p-warn':'p-info');
+}
+
+/* ============================================================
+   MODULES
+   ============================================================ */
+function paintMod(){
+  var m=S.mod;
+  if(!can(m)){
+    var mt=MODULES.filter(function(x){return x.k===m;})[0].t.replace(/&amp;/g,'&');
+    $('modBody').innerHTML='<div class="card"><div class="denied"><b>Access denied</b><br>'
+      +'The <b>'+esc(role().t)+'</b> role has no permission for <b>'+esc(mt)+'</b>.<br>'
+      +'This attempt has been written to the audit trail with your role and the time — which is exactly what '
+      +'happens in a real hospital information system, and exactly how unauthorised access is later found.</div></div>';
+    return;
+  }
+  var fn={summary:mSummary,timeline:mTimeline,encounter:mEncounter,clinical:mClinical,nursing:mNursing,
+          lab:mLab,rad:mRad,pharmacy:mPharm,beds:mBeds,billing:mBilling,discharge:mDischarge,
+          referral:mReferral,audit:mAudit}[m];
+  $('modBody').innerHTML=fn();
+  var w={lab:wLab,beds:wBeds,discharge:wDischarge,summary:wSummary,audit:wAudit,pharmacy:wPharm,rad:wRad}[m];
+  if(w) w();
+}
+
+function mSummary(){
+  var p=pt();
+  if(!p) return '<div class="card"><h3>Patient search</h3>'
+    +'<p class="muted">Search by patient ID, name, mobile number or date of birth.</p>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap"><input type="text" id="pSearch" placeholder="ALZ-000184 / Anitha / 98470 00184" style="min-width:280px">'
+    +'<button class="btn blue sm" id="pGo">Search</button></div><div id="pRes"></div></div>';
+  return '<div class="card"><h3>Patient summary</h3>'
+   +'<div class="lbl">Demographics</div>'
+   +'<table class="d"><tr><td>Name</td><td>'+esc(p.name)+'</td><td>Date of birth</td><td>'+esc(p.dob)+'</td></tr>'
+   +'<tr><td>Age / sex</td><td>'+p.age+' / '+esc(p.sex)+'</td><td>Mobile</td><td>'+esc(p.mobile)+'</td></tr>'
+   +'<tr><td>Address</td><td colspan="3">'+esc(p.addr)+'</td></tr>'
+   +'<tr><td>Emergency contact</td><td colspan="3">'+esc(p.emerg)+'</td></tr></table>'
+   +'<div class="lbl">Administrative information</div>'
+   +'<table class="d"><tr><td>Patient ID</td><td>'+esc(p.id)+'</td><td>Registration date</td><td>'+esc(p.regDate)+'</td></tr>'
+   +'<tr><td>Registration type</td><td>'+esc(p.regType)+'</td><td>Payment category</td><td>'+esc(p.payer)+'</td></tr>'
+   +'<tr><td>Insurance</td><td>'+esc(p.insurer)+'</td><td>Referring source</td><td>'+esc(p.refSrc)+'</td></tr>'
+   +'<tr><td>Current department</td><td colspan="3">'+esc(p.dept)+'</td></tr></table>'
+   +(can('clinical')
+     ? '<div class="lbl">Clinical summary (synthetic)</div>'
+       +'<table class="d"><tr><td>Allergies</td><td>'+p.allergies.map(esc).join('; ')+'</td></tr>'
+       +'<tr><td>Problem list</td><td>'+(p.problems.length?p.problems.map(esc).join('; '):'—')+'</td></tr>'
+       +'<tr><td>Current medications</td><td>'+(p.meds.length?p.meds.map(esc).join('; '):'—')+'</td></tr>'
+       +'<tr><td>Previous procedures</td><td>'+(p.procedures.length?p.procedures.map(esc).join('; '):'—')+'</td></tr></table>'
+     : '<div class="lbl">Clinical summary</div><div class="denied">Hidden from the '+esc(role().t)
+       +' role. Demographics and administrative data are visible; the clinical record is not.</div>')
+   +'<button class="btn ghost sm" id="clearPt" style="margin-top:10px">Clear patient context</button></div>';
+}
+function wSummary(){
+  var g=$('pGo');
+  if(g){
+    var go=function(){
+      var q=($('pSearch').value||'').trim().toLowerCase();
+      if(!q){ $('pRes').innerHTML='<div class="fb no">Enter a search term.</div>'; return; }
+      var hits=PATIENTS.filter(function(p){
+        return [p.id,p.name,p.mobile,p.dob].join(' ').toLowerCase().indexOf(q)>=0; });
+      logAudit('Patient search — "'+q+'"');
+      $('pRes').innerHTML=hits.length
+        ? '<table class="d"><tr><th>Patient ID</th><th>Name</th><th>Age/Sex</th><th>DOB</th><th>Mobile</th><th>Status</th><th></th></tr>'
+          +hits.map(function(p){ return '<tr'+(p.dupOf?' class="hot"':'')+'><td>'+esc(p.id)+'</td><td>'+esc(p.name)
+            +'</td><td>'+p.age+'/'+p.sex.charAt(0)+'</td><td>'+esc(p.dob)+'</td><td>'+esc(p.mobile)+'</td><td>'+esc(p.status)
+            +'</td><td><button class="btn sm" data-open="'+p.id+'">Open</button></td></tr>'; }).join('')+'</table>'
+          +(hits.length>1?'<div class="fb warnb"><div class="hd">More than one record matched</div>Two of these '
+            +'records share a date of birth and a mobile number. Before you open either, note that — it is the '
+            +'signature of a duplicate, and opening the wrong one means documenting into a record that is not '
+            +'the patient\'s real history.</div>':'')
+        : '<div class="fb no">No patient matched that search.</div>';
+      [].forEach.call($('pRes').querySelectorAll('[data-open]'),function(b){
+        b.addEventListener('click',function(){
+          S.pt=b.getAttribute('data-open'); S.found=true; S.tasks.t1=1;
+          logAudit('Patient record opened',S.pt);
+          paintHdr(); paintMod(); paintTasks();
+        });
+      });
+    };
+    g.addEventListener('click',go);
+    $('pSearch').addEventListener('keydown',function(e){ if(e.key==='Enter') go(); });
+  }
+  var c=$('clearPt');
+  if(c) c.addEventListener('click',function(){ S.pt=null; paintHdr(); paintMod(); });
+}
+
+function mTimeline(){
+  var p=pt(); if(!p) return noPt();
+  return '<div class="card"><h3>Longitudinal patient timeline</h3>'
+   +'<p class="muted">The whole record for '+esc(p.name)+'. Click an encounter to open it.</p>'
+   +'<div class="tl">'+p.timeline.map(function(e,i){
+      return '<div class="tlitem'+(e.cur?' cur':'')+'" data-tl="'+i+'"><div class="d">'+esc(e.d)+'</div>'
+        +'<div class="t">'+esc(e.t)+'</div><div class="s">'+esc(e.dep)+' · '+esc(e.s)+'</div>'
+        +'<div class="tlbody">'+esc(e.note)+'</div></div>'; }).join('')+'</div></div>';
+}
+function mEncounter(){
+  var p=pt(); if(!p) return noPt();
+  var stages=p.status==='Admitted'?IP_STAGES:OP_STAGES;
+  var idx=p.status==='Admitted'?7:S.opStage;
+  return '<div class="card"><h3>Current encounter</h3>'
+   +'<table class="d"><tr><td>Encounter number</td><td>'+esc(ENC.no)+'</td><td>Type</td><td>'+esc(p.status==='Admitted'?'IP':ENC.type)+'</td></tr>'
+   +'<tr><td>Department</td><td>'+esc(p.dept)+'</td><td>Provider</td><td>'+esc(ENC.provider)+'</td></tr>'
+   +'<tr><td>Date / time</td><td>'+esc(ENC.date)+' '+esc(ENC.time)+'</td><td>Mode</td><td>'+esc(ENC.mode)+'</td></tr>'
+   +'<tr><td>Priority</td><td>'+esc(ENC.priority)+'</td><td>Reason for visit</td><td>'+esc(ENC.reason)+'</td></tr></table>'
+   +'<div class="lbl">'+(p.status==='Admitted'?'Inpatient admission workflow':'OPD workflow')+'</div>'
+   +'<div class="wf">'+stages.map(function(s,i){
+      return '<span class="wfs '+(i<idx?'done':i===idx?'cur':'')+'">'+esc(s)+'</span>'
+        +(i<stages.length-1?'<span class="wfarrow">→</span>':''); }).join('')+'</div>'
+   +'<p class="muted">Each stage is set by the department that owns it. An encounter cannot skip a stage — '
+   +'which is why a workflow that appears stuck is usually waiting on a department, not on the patient.</p></div>';
+}
+function mClinical(){
+  var p=pt(); if(!p) return noPt();
+  return '<div class="card"><h3>Clinical documentation</h3>'
+   +'<div class="synth">Synthetic clinical content, present so administration students can see what sits behind '
+   +'the administrative record. This simulator does not generate diagnoses or treatment.</div>'
+   +'<table class="d"><tr><th>Section</th><th>Recorded</th></tr>'
+   +'<tr><td>History</td><td>Routine diabetic review. Reports increased fatigue over three weeks.</td></tr>'
+   +'<tr><td>Examination</td><td>Recorded by '+esc(ENC.provider)+' at 09:31.</td></tr>'
+   +'<tr><td>Working impression</td><td>Recorded. Investigations ordered.</td></tr>'
+   +'<tr><td>Orders</td><td>LAB-00184 (CBC, creatinine, glucose); RAD-00092 (chest X-ray).</td></tr>'
+   +'<tr class="hot"><td>Discharge summary</td><td><b>Not applicable — outpatient encounter</b></td></tr></table></div>';
+}
+function mNursing(){
+  var p=pt(); if(!p) return noPt();
+  return '<div class="card"><h3>Nursing documentation</h3>'
+   +'<table class="d"><tr><th>Time</th><th>Observation</th><th>Value</th></tr>'
+   +'<tr><td>09:20</td><td>Blood pressure</td><td>138/86 mmHg</td></tr>'
+   +'<tr><td>09:20</td><td>Pulse</td><td>78 /min</td></tr>'
+   +'<tr><td>09:21</td><td>Temperature</td><td>36.8 °C</td></tr>'
+   +'<tr><td>09:21</td><td>SpO₂</td><td>98%</td></tr></table>'
+   +'<div class="lbl">Medication administration record</div>'
+   +'<table class="d"><tr><th>Medication</th><th>Due</th><th>Given</th><th>By</th></tr>'
+   +'<tr><td>Metformin 500 mg</td><td>08:00</td><td>08:05</td><td>Nurse — ward</td></tr>'
+   +'<tr class="hot"><td>Amlodipine 5 mg</td><td>08:00</td><td><b>not recorded</b></td><td>—</td></tr></table>'
+   +'<div class="note">An unrecorded administration is an administrative gap before it is anything else: the '
+   +'record cannot show whether the dose was given, and the discharge documentation audit will fail on it.</div></div>';
+}
+
+function mLab(){
+  return '<div class="card"><h3>Laboratory — order '+esc(LAB.id)+'</h3>'
+   +'<p class="muted">Tests: '+LAB.tests.map(esc).join(', ')+'</p>'
+   +'<div class="wf" id="labWf">'+LAB.stages.map(function(s,i){
+      return '<span class="wfs '+(i<S.labStage?'done':i===S.labStage?'cur':'')+'">'+esc(s)
+        +(LAB.times[i]&&i<S.labStage?' · '+LAB.times[i]:'')+'</span>'
+        +(i<LAB.stages.length-1?'<span class="wfarrow">→</span>':''); }).join('')+'</div>'
+   +'<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px">'
+   +'<button class="btn blue sm" id="labAdv">Advance to “'+esc(LAB.stages[Math.min(S.labStage,LAB.stages.length-1)])+'”</button>'
+   +'<button class="btn ghost sm" id="labSkip">Release the result now</button></div>'
+   +'<div id="labFb"></div>'
+   +(S.labStage>=4?'<div class="lbl">Result</div><table class="d"><tr><th>Test</th><th>Value</th><th>Reference</th><th>Flag</th></tr>'
+      +LAB.results.map(function(r){ return '<tr'+(r.f!=='Normal'?' class="hot"':'')+'><td>'+esc(r.t)+'</td><td>'+esc(r.v)
+        +'</td><td>'+esc(r.r)+'</td><td>'+esc(r.f)+'</td></tr>'; }).join('')+'</table>'
+      +'<p class="muted">Turnaround so far: order 09:44 → result entered 11:02 = <b>78 minutes</b>.</p>':'')
+   +'</div>';
+}
+function wLab(){
+  var a=$('labAdv'); if(!a) return;
+  a.addEventListener('click',function(){
+    if(S.labStage>=LAB.stages.length-1){ S.labReleased=true; S.tasks.t2=1; }
+    S.labStage=Math.min(LAB.stages.length-1,S.labStage+1);
+    if(S.labStage===LAB.stages.length-1){ S.labReleased=true; S.tasks.t2=1; }
+    logAudit('Laboratory stage advanced to '+LAB.stages[S.labStage],LAB.id);
+    paintMod();
+    if(S.labReleased) $('labFb').innerHTML='<div class="fb yes"><div class="hd">Result released</div>'
+      +'Entered, validated, then released — in that order. Validation is the step that makes a number a result; '
+      +'a value that has been entered but not validated is a draft, and a draft that reaches a clinician is how '
+      +'an uncorrected transcription error enters care.</div>';
+  });
+  $('labSkip').addEventListener('click',function(){
+    if(S.labStage>=LAB.stages.length-1) return;
+    S.labSkipped=true; S.labStage=LAB.stages.length-1; S.labReleased=true; S.tasks.t2=1;
+    S.wf=Math.max(0,S.wf-22);
+    logAudit('RESULT RELEASED WITHOUT VALIDATION',LAB.id);
+    paintMod(); paintPills();
+    $('labFb').innerHTML='<div class="fb no"><div class="hd">Released without validation</div>'
+      +'You have pushed a result straight to release, skipping <b>Result validated</b>. The value is now visible '
+      +'to the clinician and billable, and nobody qualified has confirmed it. In a real laboratory information '
+      +'system this is the single most serious workflow violation available to an administrator, and the audit '
+      +'trail now carries your role against it.</div>';
+  });
+}
+function mRad(){
+  return '<div class="card"><h3>Radiology — order '+esc(RAD.id)+'</h3>'
+   +'<p class="muted">Study: '+esc(RAD.study)+'</p>'
+   +'<div class="wf">'+RAD.stages.map(function(s,i){
+      return '<span class="wfs '+(i<S.radStage?'done':i===S.radStage?'cur':'')+'">'+esc(s)
+        +(RAD.times[i]&&i<S.radStage?' · '+RAD.times[i]:'')+'</span>'
+        +(i<RAD.stages.length-1?'<span class="wfarrow">→</span>':''); }).join('')+'</div>'
+   +'<button class="btn blue sm" id="radAdv" style="margin-top:8px">Advance the imaging workflow</button>'
+   +'<div class="note">The imaging charge of '+inr(2500)+' is already sitting in billing as <b>Pending</b> while '
+   +'the report is still a draft. A charge captured before the service is complete is a revenue-cycle defect, '
+   +'not a clinical one — and it is what produces a bill the patient disputes at the counter.</div></div>';
+}
+function wRad(){
+  var b=$('radAdv'); if(!b) return;
+  b.addEventListener('click',function(){
+    S.radStage=Math.min(RAD.stages.length-1,S.radStage+1);
+    logAudit('Radiology stage advanced to '+RAD.stages[S.radStage],RAD.id); paintMod();
+  });
+}
+function mPharm(){
+  return '<div class="card"><h3>Pharmacy</h3>'
+   +'<div class="synth">Administrative view only. This module tracks order → verification → dispensing → '
+   +'documentation → billing. It is not a prescribing exercise and produces no medication advice.</div>'
+   +'<table class="d"><tr><th>Medication</th><th>Dose</th><th>Route</th><th>Frequency</th><th>Duration</th><th>Order</th><th>Dispensing</th></tr>'
+   +PHARM.map(function(m){ return '<tr><td>'+esc(m.drug)+'</td><td>'+esc(m.dose)+'</td><td>'+esc(m.route)+'</td>'
+      +'<td>'+esc(m.freq)+'</td><td>'+esc(m.dur)+'</td><td>'+esc(m.status)+'</td><td>'+esc(m.disp)+'</td></tr>'; }).join('')+'</table>'
+   +'<div class="wf">'+PHARM_STAGES.map(function(s,i){
+      return '<span class="wfs '+(i<S.pharmStage?'done':i===S.pharmStage?'cur':'')+'">'+esc(s)+'</span>'
+        +(i<PHARM_STAGES.length-1?'<span class="wfarrow">→</span>':''); }).join('')+'</div>'
+   +'<button class="btn blue sm" id="phAdv">Advance the dispensing workflow</button></div>';
+}
+function wPharm(){
+  var b=$('phAdv'); if(!b) return;
+  b.addEventListener('click',function(){
+    S.pharmStage=Math.min(PHARM_STAGES.length-1,S.pharmStage+1);
+    logAudit('Pharmacy stage advanced to '+PHARM_STAGES[S.pharmStage]); paintMod();
+  });
+}
+function mBeds(){
+  var wards={};
+  BEDS.forEach(function(b){ (wards[b.ward]=wards[b.ward]||[]).push(b); });
+  return '<div class="card"><h3>Digital bed board</h3>'
+   +'<div class="kpis" style="margin-bottom:10px">'
+   +kpi('Total beds',BEDS.length)+kpi('Occupied',BEDS.filter(function(b){return b.st==='occupied';}).length)
+   +kpi('Available',BEDS.filter(function(b){return b.st==='available';}).length)
+   +kpi('Cleaning',BEDS.filter(function(b){return b.st==='cleaning';}).length)
+   +kpi('Reserved',BEDS.filter(function(b){return b.st==='reserved';}).length)+'</div>'
+   +Object.keys(wards).map(function(w){
+      return '<div class="lbl">'+esc(w)+'</div><div class="beds">'+wards[w].map(function(b){
+        return '<button class="bed '+b.st+(S.bedSel===b.bed?' sel':'')+'" data-bed="'+b.bed+'"><b>'+esc(b.bed)+'</b>'
+          +'<small>'+esc(b.st)+(b.pt?' · '+esc(b.pt):'')+'</small></button>'; }).join('')+'</div>'; }).join('')
+   +'<div class="lbl">Pending admission</div>'
+   +'<p class="muted">Cardiology admission request for a synthetic patient, raised 12:05. Allocate a bed.</p>'
+   +'<button class="btn blue sm" id="bedGo">Allocate the selected bed</button><div id="bedFb"></div></div>';
+}
+function kpi(n,v){ return '<div class="kpi"><div class="n">'+n+'</div><div class="v">'+v+'</div></div>'; }
+function wBeds(){
+  [].forEach.call(document.querySelectorAll('[data-bed]'),function(b){
+    b.addEventListener('click',function(){ S.bedSel=b.getAttribute('data-bed'); paintMod(); });
+  });
+  var g=$('bedGo'); if(!g) return;
+  g.addEventListener('click',function(){
+    if(!S.bedSel){ $('bedFb').innerHTML='<div class="fb no">Select a bed first.</div>'; return; }
+    var b=BEDS.filter(function(x){return x.bed===S.bedSel;})[0];
+    if(b.st==='occupied'||b.st==='reserved'){
+      S.wf=Math.max(0,S.wf-14); paintPills();
+      logAudit('INVALID BED ALLOCATION ATTEMPT — '+b.bed+' is '+b.st);
+      $('bedFb').innerHTML='<div class="fb no"><div class="hd">'+esc(b.bed)+' is '+esc(b.st)+'</div>'
+        +'Allocating an occupied or reserved bed is how two patients arrive at the same bed number. The board '
+        +'is the single source of truth precisely so this cannot happen verbally.</div>';
+      return;
+    }
+    if(b.st==='cleaning'){
+      S.wf=Math.max(0,S.wf-8); paintPills();
+      logAudit('Bed allocated while still flagged for cleaning — '+b.bed);
+      $('bedFb').innerHTML='<div class="fb warnb"><div class="hd">'+esc(b.bed)+' is still flagged for cleaning</div>'
+        +'It is empty, so the system will let you. Allocating a bed that housekeeping has not released moves the '
+        +'delay to the ward door and puts the porter, the patient and the cleaner in the same corridor.</div>';
+      return;
+    }
+    if(b.ward!=='Cardiology'){
+      $('bedFb').innerHTML='<div class="fb warnb"><div class="hd">'+esc(b.bed)+' allocated — outlier placement</div>'
+        +'The request was for cardiology and you have placed the patient in '+esc(b.ward)+'. Outlying is '
+        +'sometimes unavoidable, but it must be a decision rather than an accident: C-104 is free.</div>';
+      b.st='occupied'; S.bedDone=true; S.tasks.t3=1;
+      logAudit('Bed allocated (outlier) — '+b.bed); paintMod(); paintTasks(); return;
+    }
+    b.st='occupied'; S.bedDone=true; S.tasks.t3=1;
+    logAudit('Bed allocated — '+b.bed);
+    paintMod(); paintTasks();
+    $('bedFb').innerHTML='<div class="fb yes"><div class="hd">'+esc(b.bed)+' allocated</div>'
+      +'Correct ward, bed genuinely available, allocation recorded against your role and the time.</div>';
+  });
+}
+function mBilling(){
+  var total=CHARGES.reduce(function(a,c){return a+c.amt;},0);
+  return '<div class="card"><h3>Billing &amp; revenue cycle</h3>'
+   +'<table class="d"><tr><th>Service</th><th>Amount</th><th>Status</th></tr>'
+   +CHARGES.map(function(c){ return '<tr'+(c.st==='Pending'?' class="hot"':'')+'><td>'+esc(c.svc)+'</td><td class="n">'
+      +inr(c.amt)+'</td><td>'+esc(c.st)+'</td></tr>'; }).join('')
+   +'<tr><td><b>Total</b></td><td class="n"><b>'+inr(total)+'</b></td><td></td></tr></table>'
+   +'<div class="lbl">Revenue cycle</div>'
+   +'<div class="wf">'+RCM.map(function(s,i){
+      return '<span class="wfs '+(i<4?'done':i===4?'cur':'')+'">'+esc(s)+'</span>'
+        +(i<RCM.length-1?'<span class="wfarrow">→</span>':''); }).join('')+'</div>'
+   +'<div class="lbl">Insurance</div>'
+   +'<table class="d"><tr><td>Provider</td><td>'+esc(INSURANCE.provider)+'</td><td>Policy</td><td>'+esc(INSURANCE.policy)+'</td></tr>'
+   +'<tr class="hot"><td>Pre-authorisation</td><td><b>'+esc(INSURANCE.preauth)+'</b></td><td>Raised</td><td>'+esc(INSURANCE.raised)+'</td></tr>'
+   +'<tr><td>Claim amount</td><td class="n">'+inr(INSURANCE.claim)+'</td><td>Approved</td><td class="n">'+inr(INSURANCE.approved)+'</td></tr>'
+   +'<tr><td>Pending</td><td class="n">'+inr(INSURANCE.pending)+'</td><td>Status</td><td>'+esc(INSURANCE.status)+'</td></tr></table>'
+   +'<div class="note">'+esc(INSURANCE.note)+'</div></div>';
+}
+function mDischarge(){
+  var missing=DISCHARGE.filter(function(d){return !d.ok;});
+  return '<div class="card"><h3>Discharge management — ALZ-000102</h3>'
+   +'<p class="muted">Discharge decision recorded at 10:15. It is now '+clockStr()+'.</p>'
+   +DISCHARGE.map(function(d){
+      return '<div class="chk '+(d.ok?'ok':'miss')+'">'+(d.ok?'✓':'✕')+' <span>'+esc(d.t)
+        +(d.ok?' <span class="muted">— completed '+esc(d.at)+'</span>':' <span class="muted">— outstanding</span>')+'</span></div>'; }).join('')
+   +'<div class="lbl">Investigation: why has this patient not gone home?</div>'
+   +'<div class="stack" id="dischWrap">'
+   +'<button class="opt" data-di="clin">Clinical clearance has not been given</button>'
+   +'<button class="opt" data-di="bill">Billing has not been cleared</button>'
+   +'<button class="opt" data-di="ins">Insurance pre-authorisation is pending with the insurer</button>'
+   +'<button class="opt" data-di="pharm">Pharmacy has not dispensed the take-home medication</button>'
+   +'<button class="opt" data-di="summ">The discharge summary has not been written</button></div>'
+   +'<div id="diFb"></div>'
+   +'<button class="btn sm" id="doDischarge" style="margin-top:8px">Record the discharge</button>'
+   +'<div id="dgFb"></div></div>';
+}
+function wDischarge(){
+  [].forEach.call(document.querySelectorAll('[data-di]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-di'); S.dischargeAnswer=k; S.tasks.t4=1;
+      [].forEach.call(document.querySelectorAll('[data-di]'),function(x){ x.classList.toggle('sel',x===b); });
+      logAudit('Discharge bottleneck identified as '+k,'ALZ-000102');
+      var ok=k==='ins';
+      $('diFb').innerHTML='<div class="fb '+(ok?'yes':'no')+'"><div class="hd">'+(ok?'Correct':'Not what the record shows')+'</div>'
+        +(ok?'Clinical clearance 10:15, investigations 09:50, medication documentation 11:40, billing 12:05, '
+            +'summary 11:55 — all complete. The single outstanding item is the insurance pre-authorisation, raised '
+            +'at 11:20 and still with the insurer. The administrative action is to escalate the authorisation to '
+            +'the insurance coordination team, and to tell the family what they are waiting for, which nobody has '
+            +'done: patient communication is also outstanding.'
+           :'Open the checklist again and read the timestamps. That item is recorded as complete — the record '
+            +'tells you exactly which one is not.')+'</div>';
+      paintTasks();
+    });
+  });
+  $('doDischarge').addEventListener('click',function(){
+    var missing=DISCHARGE.filter(function(d){return !d.ok;});
+    if(missing.length){
+      S.wf=Math.max(0,S.wf-18); paintPills();
+      logAudit('DISCHARGE RECORDED WITH '+missing.length+' OUTSTANDING CLEARANCES','ALZ-000102');
+      $('dgFb').innerHTML='<div class="fb no"><div class="hd">Discharge recorded with '+missing.length
+        +' clearances outstanding</div>The system allowed it, because most systems do. '
+        +missing.map(function(d){return '<b>'+esc(d.t)+'</b>';}).join(', ')+' had not been completed. An unauthorised '
+        +'claim, an unbooked follow-up and a family who were never told is what this produces — and the audit '
+        +'trail records that it was you.</div>';
+    } else {
+      $('dgFb').innerHTML='<div class="fb yes"><div class="hd">Discharge recorded</div>All clearances complete.</div>';
+    }
+  });
+}
+function mReferral(){
+  return '<div class="card"><h3>Referral management</h3>'
+   +'<table class="d"><tr><th>Referral</th><th>Type</th><th>From</th><th>To</th><th>Reason</th><th>Raised</th><th>Appointment</th><th>Status</th></tr>'
+   +REFERRALS.map(function(r){ return '<tr'+(r.st.indexOf('Open')>=0?' class="hot"':'')+'><td>'+esc(r.id)+'</td><td>'+esc(r.type)
+      +'</td><td>'+esc(r.from)+'</td><td>'+esc(r.to)+'</td><td>'+esc(r.reason)+'</td><td>'+esc(r.date)
+      +'</td><td>'+esc(r.appt)+'</td><td>'+esc(r.st)+'</td></tr>'; }).join('')+'</table>'
+   +'<div class="note">REF-0442 has been open for 14 days with no appointment scheduled. An external referral '
+   +'without a booked appointment is not a referral — it is a patient who thinks they are in a queue that does '
+   +'not exist. Referral loop closure is an administrative responsibility, not the receiving centre\'s.</div></div>';
+}
+function mAudit(){
+  return '<div class="card"><h3>EHR audit trail</h3>'
+   +'<p class="muted">Every action against the record, with the role and the time. This is the module that '
+   +'answers "who changed this, and when".</p>'
+   +'<table class="d audit"><tr><th>Time</th><th>User role</th><th>Action</th><th>Object</th></tr>'
+   +S.audit.map(function(a){ return '<tr'+(a.a.indexOf('DENIED')>=0||a.a.indexOf('WITHOUT')>=0||a.a.indexOf('INVALID')>=0?' class="hot"':'')
+      +'><td>'+esc(a.t)+'</td><td>'+esc(a.u)+'</td><td>'+esc(a.a)+'</td><td>'+esc(a.o)+'</td></tr>'; }).join('')+'</table>'
+   +'<div class="lbl">Audit question: who amended the demographics on ALZ-000184, and when?</div>'
+   +'<div class="stack" id="audWrap">'
+   +'<button class="opt" data-au="doc">Doctor, 09:31</button>'
+   +'<button class="opt" data-au="front">Front Office, 11:47</button>'
+   +'<button class="opt" data-au="bill">Billing, 11:30</button>'
+   +'<button class="opt" data-au="lab">Laboratory, 11:02</button></div><div id="auFb"></div></div>';
+}
+function wAudit(){
+  [].forEach.call(document.querySelectorAll('[data-au]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-au'); S.auditAnswer=k; S.tasks.t6=1;
+      [].forEach.call(document.querySelectorAll('[data-au]'),function(x){ x.classList.toggle('sel',x===b); });
+      var ok=k==='front';
+      $('auFb').innerHTML='<div class="fb '+(ok?'yes':'no')+'"><div class="hd">'+(ok?'Correct':'Read the trail again')+'</div>'
+        +(ok?'Front Office amended the mobile number at 11:47. Note what the trail gives you and what it does not: '
+            +'it records who, what and when, but not why. That is the limit of an audit trail — it identifies the '
+            +'action and the actor, and the reason still has to be asked for.'
+           :'That entry is a different action against a different object. Look for the row that names a demographic amendment.')
+        +'</div>';
+      paintTasks();
+    });
+  });
+}
+function noPt(){ return '<div class="card"><div class="denied">No patient in context. Open <b>Patient summary</b> and search for a patient first.</div></div>'; }
+
+/* ============================================================
+   TASKS + DUPLICATE DECISION + SUBMIT
+   ============================================================ */
+function paintTasks(){
+  paintPills();
+  var done=Object.keys(S.tasks).length;
+  $('taskCard').innerHTML='<h4>Assigned tasks — '+done+' of '+TASKS.length+' complete</h4>'
+   +TASKS.map(function(t){
+      return '<div class="chk '+(S.tasks[t.k]?'ok':'')+'">'+(S.tasks[t.k]?'✓':'○')+' <span>'+esc(t.t)+'</span></div>'; }).join('')
+   +'<div class="lbl">Duplicate record decision</div>'
+   +'<p class="muted">The system flags <b>ALZ-000184 (Anitha Kumar)</b> and <b>ALZ-000921 (Anita Kumar)</b> as a '
+   +'possible duplicate — 92% simulated matching score on name, date of birth and mobile number.</p>'
+   +'<div class="stack" id="dupWrap">'
+   +'<button class="opt'+(S.dupAnswer==='merge'?' sel':'')+'" data-du="merge">Merge the records automatically</button>'
+   +'<button class="opt'+(S.dupAnswer==='sep'?' sel':'')+'" data-du="sep">Keep them separate — the names differ</button>'
+   +'<button class="opt'+(S.dupAnswer==='review'?' sel':'')+'" data-du="review">Flag for manual review and verification before any merge</button></div>'
+   +'<div id="duFb"></div>'
+   +'<div class="lbl">Your administrative findings (this is marked)</div>'
+   +'<textarea id="reasoning" placeholder="What you found in the record, which workflow was blocked and why, what you would escalate, and what the audit trail could and could not tell you…">'+esc(S.reasoning)+'</textarea>'
+   +'<div style="margin-top:9px"><button class="btn" id="submitEHR">Generate the EHR investigation report</button></div>'
+   +'<div id="subFb"></div>';
+  [].forEach.call(document.querySelectorAll('[data-du]'),function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-du'); S.dupAnswer=k; S.tasks.t5=1;
+      logAudit('Duplicate decision — '+k,'ALZ-000921');
+      var m={merge:['no','Never merge automatically. A merge combines two clinical histories irreversibly, and a 92% match is a similarity score, not an identification — if it is wrong you have written one person\'s record into another\'s and there is no clean way back. Merging is a verified, reversible, human decision.'],
+             sep:['warnb','Keeping them separate is safer than merging, but it is not a decision — it leaves the patient with two records, so an allergy recorded in one is invisible in the other. Note what ALZ-000921 is missing: allergies "not recorded", where the other record carries a sulfonamide allergy.'],
+             review:['yes','Correct. Flag, verify against a second identifier with the patient present, and merge only under a documented human decision. Until then, treat ALZ-000921 as unsafe to document into — it has no allergy record while the other has a sulfonamide allergy on file.']}[k];
+      $('duFb').innerHTML='<div class="fb '+m[0]+'"><div class="hd">Duplicate handling</div>'+esc(m[1])+'</div>';
+      paintTasks();
+    });
+  });
+  var ta=$('reasoning');
+  if(ta) ta.addEventListener('input',function(){ S.reasoning=ta.value; });
+  $('submitEHR').addEventListener('click',submitEHR);
+}
+
+function submitEHR(){
+  if(S.ended) return;
+  var done=Object.keys(S.tasks).length;
+  if(done<TASKS.length){
+    $('subFb').innerHTML='<div class="fb no"><div class="hd">Tasks outstanding</div>'+done+' of '+TASKS.length
+      +' complete. Finish them before generating the report.</div>';
+    return;
+  }
+  S.ended=true;
+  var pts=[], strengths=[], improve=[];
+
+  var t1=S.found?10:0;
+  pts.push(['Patient record navigation',t1,10]);
+
+  var modsSeen=S.audit.filter(function(a){return a.a.indexOf('Opened ')===0;}).length;
+  var t2=Math.min(15, 4 + modsSeen*1.4 + (S.labReleased&&!S.labSkipped?4:0));
+  pts.push(['EHR workflow understanding',Math.round(t2*10)/10,15]);
+  if(S.labSkipped){ improve.push('The laboratory result was released without validation. That is the most serious workflow violation available in this simulator, and it is in the audit trail against your role.'); }
+  else strengths.push('Took the laboratory order through validation before release rather than short-cutting to a released result.');
+
+  var t3=0;
+  if(S.bedDone) t3+=7;
+  if(S.dischargeAnswer) t3+=4;
+  if(S.auditAnswer) t3+=4;
+  t3=Math.min(15,t3);
+  pts.push(['Administrative data analysis',t3,15]);
+
+  var t4=S.dischargeAnswer==='ins'?15:S.dischargeAnswer?6:0;
+  pts.push(['Problem identification',t4,15]);
+  if(S.dischargeAnswer==='ins') strengths.push('Correctly isolated the insurance pre-authorisation as the single outstanding item behind the delayed discharge.');
+  else improve.push('The discharge bottleneck was not correctly identified. Every other clearance carries a completion timestamp; only the insurance authorisation does not.');
+
+  var t5=Math.min(10, (S.dupAnswer?6:0) + (S.dischargeAnswer?4:0));
+  pts.push(['AI-assisted / flagged-record analysis',t5,10]);
+
+  var t6=S.dupAnswer==='review'?10:S.dupAnswer==='sep'?5:0;
+  pts.push(['Verification before action',t6,10]);
+  if(S.dupAnswer==='merge') improve.push('The duplicate records were merged automatically on a 92% similarity score. A match score is not an identification, and a merge is irreversible.');
+  else if(S.dupAnswer==='review') strengths.push('Refused to merge on a similarity score and routed the duplicate to verified human review.');
+
+  var t7=Math.max(0, 10 - S.denied*3);
+  pts.push(['Privacy and access discipline',t7,10]);
+  if(S.denied) improve.push('You attempted '+S.denied+' access'+(S.denied>1?'es':'')+' outside your role. Each one is in the audit trail — in a real system that is what a privacy investigation finds.');
+  else strengths.push('Worked entirely within the permissions of the roles you were signed in as.');
+
+  var t8=S.auditAnswer==='front'?10:S.auditAnswer?4:0;
+  pts.push(['Administrative decision from the audit trail',t8,10]);
+
+  var words=S.reasoning?S.reasoning.split(/\s+/).length:0;
+  var t9=words>=80?5:words>=40?3.5:words>=15?2:0;
+  pts.push(['Final report',t9,5]);
+  if(words<40) improve.push('The written findings were short. An EHR investigation is judged on what you concluded, not on which screens you opened.');
+
+  var total=Math.round(pts.reduce(function(a,p){return a+p[1];},0));
+  finish(total,pts,strengths,improve);
+}
+
+function finish(total,pts,strengths,improve){
+  var elapsed=S.started?Math.round((Date.now()-S.started)/60000):0;
+  var dupMap={merge:'Merge automatically',sep:'Keep separate',review:'Flag for manual review and verification'};
+  var diMap={clin:'Clinical clearance',bill:'Billing clearance',ins:'Insurance pre-authorisation',
+             pharm:'Pharmacy dispensing',summ:'Discharge summary'};
+
+  var html='<div class="card"><h3>EHR Administrative Investigation Report</h3>'
+   +'<p class="muted">ALIZON SmartCare Multispecialty Hospital · Enterprise EHR simulation · time in system '+elapsed+' min</p>'
+   +'<div class="scorebig">'+total+' <span style="font-size:16px;font-weight:600;color:var(--muted)">/ 100</span></div>'
+   +'<p class="muted">Workflow integrity <b>'+S.wf+'%</b> · Access discipline <b>'+S.acc+'%</b> · '
+   +'unauthorised access attempts <b>'+S.denied+'</b></p>'
+
+   +'<table class="d"><tr><th>Component</th><th>Marks</th></tr>'
+   +pts.map(function(p){ return '<tr><td>'+esc(p[0])+'</td><td class="n">'+p[1]+' / '+p[2]+'</td></tr>'; }).join('')
+   +'<tr><td><b>Total</b></td><td class="n"><b>'+total+' / 100</b></td></tr></table>'
+
+   +'<div class="lbl">Patient investigated</div>'
+   +'<p>'+(S.pt?esc(S.pt)+' — '+esc((pt()||{}).name||''):'—')+'</p>'
+
+   +'<div class="lbl">Workflow findings</div>'
+   +'<table class="d"><tr><th>Workflow</th><th>State at close</th></tr>'
+   +'<tr'+(S.labSkipped?' class="hot"':'')+'><td>Laboratory LAB-00184</td><td>'+esc(LAB.stages[S.labStage])
+   +(S.labSkipped?' — <b>released without validation</b>':'')+'</td></tr>'
+   +'<tr><td>Radiology RAD-00092</td><td>'+esc(RAD.stages[S.radStage])+'</td></tr>'
+   +'<tr><td>Pharmacy</td><td>'+esc(PHARM_STAGES[S.pharmStage])+'</td></tr>'
+   +'<tr><td>Bed allocation</td><td>'+(S.bedDone?esc(S.bedSel)+' allocated':'not completed')+'</td></tr></table>'
+
+   +'<div class="lbl">Delayed discharge — ALZ-000102</div>'
+   +'<p>Identified bottleneck: <b>'+esc(diMap[S.dischargeAnswer]||'not identified')+'</b>'
+   +(S.dischargeAnswer==='ins'?' — correct. Escalate the authorisation to the insurance coordination team and inform the family, whose communication step is also outstanding.':'')+'</p>'
+   +'<table class="d"><tr><th>Clearance</th><th>Status</th></tr>'
+   +DISCHARGE.map(function(d){ return '<tr'+(d.ok?'':' class="hot"')+'><td>'+esc(d.t)+'</td><td>'
+      +(d.ok?'complete '+esc(d.at):'<b>outstanding</b>')+'</td></tr>'; }).join('')+'</table>'
+
+   +'<div class="lbl">Duplicate record</div>'
+   +'<p>ALZ-000184 / ALZ-000921 — decision: <b>'+esc(dupMap[S.dupAnswer]||'none')+'</b>. '
+   +'The duplicate carries no allergy record while the primary records a sulfonamide allergy, which is why '
+   +'documenting into the wrong record is a safety issue and not only a data-quality one.</p>'
+
+   +'<div class="lbl">Audit trail</div>'
+   +'<table class="d audit"><tr><th>Time</th><th>Role</th><th>Action</th><th>Object</th></tr>'
+   +S.audit.map(function(a){ return '<tr'+(a.a.indexOf('DENIED')>=0||a.a.indexOf('WITHOUT')>=0||a.a.indexOf('INVALID')>=0?' class="hot"':'')
+      +'><td>'+esc(a.t)+'</td><td>'+esc(a.u)+'</td><td>'+esc(a.a)+'</td><td>'+esc(a.o)+'</td></tr>'; }).join('')+'</table>'
+
+   +'<div class="lbl">Your administrative findings</div>'
+   +'<p>'+(S.reasoning?esc(S.reasoning):'<span class="muted">none recorded</span>')+'</p>'
+
+   +'<div class="fb yes"><div class="hd">Strengths</div>'
+     +(strengths.length?'<ul><li>'+strengths.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+   +'<div class="fb no"><div class="hd">Where it could be stronger</div>'
+     +(improve.length?'<ul><li>'+improve.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+
+   +'<div class="note">100% synthetic patients. This is not a clinical system: it produces no diagnosis, no '
+   +'prescription and no treatment recommendation, and nothing in this report relates to a real person.</div>'
+   +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
+
+  $('subFb').innerHTML='<div class="fb yes"><div class="hd">Report generated</div>Your investigation report is on the <b>Result &amp; Record</b> tab.</div>';
+  var _re=$('resEmpty'); if(_re) _re.style.display='none';
+  $('resBox').innerHTML=html;
+  goTab('res');
+
+  var OPTS={module:'Clinical Simulation Suite · Enterprise EHR',
+            title:'Enterprise EHR & Hospital Information System Simulation',
+            programme:'ALIZON OS', pct:total,
+            resultText:total+'/100 · workflow '+S.wf+'% · access '+S.acc+'%'};
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme,
+    submitOpts:OPTS, titleField:{label:'EHR investigation', placeholder:'e.g. Delayed discharge traced to pending pre-authorisation'},
+    minWords:400,
+    attachments:[{label:'1. EHR Administrative Investigation Report / printout (PDF)'},{label:'2. Workflow and access findings (PDF)'}],
+    reportHtml:html
+  });
+}
+
+$('startBtn').addEventListener('click',function(){
+  S=freshState(); goTab('work'); shell();
+});
+S=freshState();
+})();
+</script>
+</body>
+</html>
