@@ -798,8 +798,14 @@ h1,h2,h3{color:#111!important}
       <summary style="cursor:pointer;padding:14px 0;font-weight:800;color:var(--crimson);font-size:15px">🚀 Fresh start — hand the system over to students</summary>
       <div style="padding:0 0 18px">
         <p class="ahint" style="margin:0 0 6px">Clears the ticked demo / operational data so students logging in see a clean, fresh system. <b>Always kept:</b> faculty, students, seat allotment, courses &amp; modules, syllabus and website content — so logins and content keep working.</p>
+        <div class="ahint" style="border-left:3px solid var(--crimson);background:rgba(196,38,46,.07);padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0">
+          <b>Read the first tick carefully.</b> “Practical marks &amp; submissions” deletes <b>every practical
+          report students have submitted</b>, including work still waiting in the faculty evaluation queue.
+          It is <b>not</b> demo data and it cannot be recovered. It is left unticked on purpose — download a
+          backup from <b>Data &amp; Backup</b> before you tick it.
+        </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px 18px;margin:12px 0">
-          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonSubmissions" checked> Practical marks &amp; submissions</label>
+          <label class="fsck"><input type="checkbox" class="fs" data-k="alizonSubmissions"> Practical marks &amp; submissions <b style="color:var(--crimson)">— deletes student work</b></label>
           <label class="fsck"><input type="checkbox" class="fs" data-k="alizonGrievances" checked> Grievances &amp; enquiries</label>
           <label class="fsck"><input type="checkbox" class="fs" data-k="alizonActivity,alizonAnnounce" checked> Announcements &amp; activity feed</label>
           <label class="fsck"><input type="checkbox" class="fs" data-k="alizonNotifications,gp-notifications" checked> Notifications</label>
@@ -3756,7 +3762,13 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 (function(){
   'use strict';
   function subs(){ try{var a=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]');return Array.isArray(a)?a:[];}catch(e){return[];} }
-  function save(a){ try{ if(typeof setDB==='function') setDB('alizonSubmissions',a); else localStorage.setItem('alizonSubmissions',JSON.stringify(a)); }catch(e){} }
+  function save(a){
+    /* "Remove submissions" is a deliberate bulk delete, so tell the sync layer —
+       otherwise the mass-deletion guard refuses to propagate it and the removal
+       silently applies to this browser only. */
+    try{ if(window.alizonSync) window.alizonSync.confirmDestructive('alizonSubmissions'); }catch(e){}
+    try{ if(typeof setDB==='function') setDB('alizonSubmissions',a); else localStorage.setItem('alizonSubmissions',JSON.stringify(a)); }catch(e){}
+  }
   function log(t){ try{ if(typeof logAct==='function') logAct(t,'update'); }catch(e){} }
   function refreshEval(){ try{ if(typeof renderEval==='function') renderEval(); }catch(e){} }
   function note(m){ try{ if(typeof toast==='function') toast(m); }catch(e){} }
@@ -3858,7 +3870,13 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 
   /* C · fresh start — wipe ticked demo data, keep faculty/students/allotment */
   var OBJ_KEYS={'alizonNotifications':1,'gp-notifications':1,'gp-doc-folders':1,'gp-student-uploads':1,'gp-doc-requests':1,'alizonAnnounce':1};
-  function clearKey(k){ try{ localStorage.setItem(k, OBJ_KEYS[k]?'{}':'[]'); }catch(e){} }
+  function clearKey(k){
+    /* announce it to the sync layer, or the mass-deletion guard will (rightly)
+       refuse to propagate a wipe this large and the clear would apply only to
+       this browser */
+    try{ if(window.alizonSync) window.alizonSync.confirmDestructive(k); }catch(e){}
+    try{ localStorage.setItem(k, OBJ_KEYS[k]?'{}':'[]'); }catch(e){}
+  }
   function bindFresh(){
     var conf=document.getElementById('fsConfirm'), go=document.getElementById('fsGo');
     if(!conf||go.__b) return; go.__b=1;
@@ -3954,6 +3972,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       var s=split();
       if(!s.old.length) return;
       if(!confirm('Permanently remove '+s.old.length+' submission'+(s.old.length===1?'':'s')+' older than 6 months?\n\nThis cannot be undone. Download the archive first if you have not.')) return;
+      try{ if(window.alizonSync) window.alizonSync.confirmDestructive('alizonSubmissions'); }catch(e){}
       setDB('alizonSubmissions', s.keep);
       if(typeof logAct==='function') logAct('Trimmed '+s.old.length+' practical submissions older than 6 months ('+kb(s.old)+' KB freed)','update');
       /* the document may now be back under the warning threshold */
