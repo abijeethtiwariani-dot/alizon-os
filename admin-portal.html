@@ -1873,7 +1873,7 @@ document.getElementById('stCsv').addEventListener('change',e=>{
       const g=(r,i)=>i>-1?String(r[i]||'').trim():'';
       const iName=col('Name'),iFull=col('Full Name'),iSal=col('Salutation'),iGen=col('Gender'),
             iMail=col('Email'),iPh=col('Phone'),iDob=col('Date of Birth'),iBatch=col('Assigned Batch'),
-            iCourse=col('Course'),iStat=col('Account Status'),iJoin=col('Joined Date'),
+            iCourse=col('Course'),iProg=col('Program ID'),iStat=col('Account Status'),iJoin=col('Joined Date'),
             iRef=col('Reference By Name'),iSch=col('Scholarship %'),iPho=col('Profile Photo URL'),
             iQual=col('Education Qualification Name'),
             iMar=col('Marital Status'),iFat=col('Father/Guardian Name'),iMot=col('Mother Name'),
@@ -1884,7 +1884,8 @@ document.getElementById('stCsv').addEventListener('change',e=>{
       const parsed=rows.slice(1).filter(r=>g(r,iReg)).map(r=>({
         reg:g(r,iReg), name:g(r,iFull)||g(r,iName), salutation:g(r,iSal), gender:g(r,iGen),
         email:g(r,iMail), phone:g(r,iPh), dob:numDate(g(r,iDob)), dobRaw:g(r,iDob),
-        batch:g(r,iBatch), course:g(r,iCourse), status:g(r,iStat), joined:g(r,iJoin),
+        batch:g(r,iBatch), course:g(r,iCourse), backendProgramId:g(r,iProg),
+        status:g(r,iStat), joined:g(r,iJoin),
         college:g(r,iRef), scholarship:g(r,iSch), photo:g(r,iPho), qualification:g(r,iQual),
         marital:g(r,iMar), father:g(r,iFat), mother:g(r,iMot), category:g(r,iCat),
         address:g(r,iAddr), state:g(r,iState), district:g(r,iDist), pin:g(r,iPin), city:g(r,iCity),

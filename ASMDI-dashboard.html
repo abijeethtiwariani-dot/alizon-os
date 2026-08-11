@@ -1552,6 +1552,9 @@ document.getElementById('loginForm').addEventListener('submit',e=>{
     if(st && st.reg){
       const prof={name:st.name||'',reg:st.reg||'',sem:'',email:st.email||'',dob:st.dob||'',batch:st.batch||'',course:st.course||''};
       try{ localStorage.setItem('alizonProfile',JSON.stringify(prof)); }catch(x){}
+      /* place them in the programme their record says, before anything renders —
+         the sign-in dropdown does not decide this */
+      try{ enforceEnrolledProgramme(); if(window.__renderPractrograms) window.__renderPractrograms(); }catch(x){}
       if(window.__applyProfile) window.__applyProfile(prof);
       /* signing in is itself attendance — record it before anything else runs */
       try{ if(window.AlizonAttendance) window.AlizonAttendance.markFor(st.reg,'login'); }catch(x){}
@@ -1885,6 +1888,63 @@ function loadPrograms(){
 function activeProgramId(){ try{ return localStorage.getItem('alizonActiveProgram')||'pharmacy'; }catch(e){ return 'pharmacy'; } }
 function setActiveProgramId(id){ try{ localStorage.setItem('alizonActiveProgram',id); }catch(e){} }
 
+/* ---- which programme is this student actually enrolled in? ----------------
+   The programme used to be whatever the student picked from the dropdown on
+   the sign-in screen, and it was never compared against their record — so a
+   Pharmacy student could select Hospital Administration, sign in with their own
+   credentials, and the dashboard would greet them with someone else's syllabus
+   labelled "your programme".
+
+   The roster only carries a free-text `course` line, and it does not always
+   match a programme's own course text: the Hospital Administration students are
+   enrolled on "Advanced Certification Program in AI-assisted Hospital
+   Administration & Digital Healthcare Management", which shares no wording with
+   that programme's course line. So resolution is layered, most reliable first,
+   and returns null rather than guessing — an unresolved student is never locked
+   out, they just keep the old behaviour until an admin sets their programme. */
+const PROG_HINTS=[
+  {id:'hospital',    re:/hospital\s*admin/i},
+  {id:'paramedical', re:/paramedical/i},
+  {id:'stockmarket', re:/stock\s*market|investment\s*analytic/i},
+  {id:'pharmacy',    re:/pharmac/i},
+  {id:'medical',     re:/\bmedicine\b|\bmedical\b/i}   /* after paramedical, which contains "medical" */
+];
+function programmeForStudent(st){
+  if(!st) return null;
+  let programs=[]; try{ programs=loadPrograms()||[]; }catch(e){}
+  const has=id=>programs.some(p=>p&&p.id===id);
+  /* 1. an explicit programme on the record always wins — admin override */
+  const explicit=String(st.programId||st.programme||st.program||'').trim();
+  if(explicit&&has(explicit)) return explicit;
+  const course=String(st.course||'').trim();
+  if(!course) return null;
+  const lc=course.toLowerCase();
+  /* 2. exact course line */
+  const exact=programs.find(p=>p&&p.course&&String(p.course).toLowerCase()===lc);
+  if(exact) return exact.id;
+  /* 3. the programme's own name appears in the course text. Longest first and
+     on a word boundary, so "Paramedical" is never matched as "Medical". */
+  const byName=programs.filter(p=>p&&p.name)
+    .sort((a,b)=>String(b.name).length-String(a.name).length)
+    .find(p=>new RegExp('\\b'+String(p.name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','i').test(course));
+  if(byName) return byName.id;
+  /* 4. distinctive wording */
+  for(const h of PROG_HINTS){ if(h.re.test(course)&&has(h.id)) return h.id; }
+  return null;
+}
+function enrolledProgramId(){
+  let prof=null; try{ prof=JSON.parse(localStorage.getItem('alizonProfile')||'null'); }catch(e){}
+  return programmeForStudent(prof);
+}
+/* Put the student back in their own programme. Called on sign-in AND on every
+   render, so a stale or hand-edited alizonActiveProgram corrects itself. */
+function enforceEnrolledProgramme(){
+  const want=enrolledProgramId();
+  if(!want) return null;
+  if(activeProgramId()!==want) setActiveProgramId(want);
+  return want;
+}
+
 /* ===== Intake cycles (certificate courses have NO semesters) =====
    Certificate courses run two intakes a year — July and December — and their
    modules are measured in hours. Only degree pathways use semesters.
@@ -1986,7 +2046,9 @@ window.cycleLabel=cycleLabel;
     });
   }
   function renderTabs(){
-    const programs=loadPrograms(); let act=activeProgramId();
+    const programs=loadPrograms();
+    enforceEnrolledProgramme();          /* the record decides, not the dropdown */
+    let act=activeProgramId();
     if(!programs.some(p=>p.id===act)){ act=programs[0]&&programs[0].id; setActiveProgramId(act); }
     const prog=programs.find(p=>p.id===act);
     /* students are locked to their own programme — show only theirs, no switching */
@@ -2018,7 +2080,14 @@ window.cycleLabel=cycleLabel;
     });
   }
   const lf=document.getElementById('loginForm');
-  if(lf) lf.addEventListener('submit',()=>{ if(sel) setActiveProgramId(sel.value); renderTabs(); }, true);
+  /* The dropdown is advisory only. It still routes workshop delegates and it
+     still seeds the programme for anyone whose record cannot be resolved, but
+     an enrolled student is always placed in their own programme regardless of
+     what they picked. */
+  if(lf) lf.addEventListener('submit',()=>{
+    if(sel&&sel.value&&sel.value!=='__workshop'&&!enrolledProgramId()) setActiveProgramId(sel.value);
+    renderTabs();
+  }, true);
 
   fillLoginSelect();
   renderTabs();
