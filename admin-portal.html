@@ -473,9 +473,64 @@ h1,h2,h3{color:#111!important}
 
   <section class="apanel asec" id="adm-students">
     <h2>Students</h2>
-    <div class="ahint">Master student roster — upload the CSV exported from the backend (same format as
-      <b>alizon-students-*.csv</b>) and it reflects instantly on every portal. Date of birth is stored in simple
-      number format <b>DDMMYYYY</b> (e.g. 08121996 — no spaces).</div>
+    <div class="ahint">Master student roster — add students <b>one by one</b> below, or upload the CSV exported from the
+      backend (same format as <b>alizon-students-*.csv</b>). Either way it reflects instantly on every portal. Date of
+      birth is stored in simple number format <b>DDMMYYYY</b> (e.g. 08121996 — no spaces).</div>
+
+    <h3 style="font-size:15px;margin:16px 0 8px;color:var(--gold)" id="stuFormTitle">Add a student manually</h3>
+    <div class="ahint">Registration number and full name are required. The <b>password is set to the registration
+      number</b> unless you type a different one — the student signs in with those on the student portal.</div>
+    <div class="arow4" style="grid-template-columns:repeat(4,1fr)">
+      <input type="text" id="stu-reg" placeholder="Registration ID *">
+      <input type="text" id="stu-name" placeholder="Full name *">
+      <input type="text" id="stu-sal" placeholder="Salutation — Mr / Ms / Dr" list="stuSalList">
+      <input type="text" id="stu-gender" placeholder="Gender" list="stuGenList">
+    </div>
+    <div class="arow4" style="grid-template-columns:repeat(4,1fr);margin-top:9px">
+      <input type="text" id="stu-dob" placeholder="Date of birth — DDMMYYYY">
+      <input type="text" id="stu-batch" placeholder="Assigned batch" list="stuBatchList">
+      <input type="text" id="stu-course" placeholder="Course" list="stuCourseList">
+      <input type="text" id="stu-status" placeholder="Account status" list="stuStatusList">
+    </div>
+    <div class="arow4" style="grid-template-columns:repeat(4,1fr);margin-top:9px">
+      <input type="text" id="stu-phone" placeholder="Phone">
+      <input type="text" id="stu-email" placeholder="Email">
+      <input type="text" id="stu-schol" placeholder="Scholarship %">
+      <input type="text" id="stu-college" placeholder="College / reference by">
+    </div>
+    <details style="margin-top:11px">
+      <summary style="cursor:pointer;font-weight:700;font-size:13px;color:var(--gold)">More details (optional) — used on ID cards, certificates &amp; letters</summary>
+      <div class="arow4" style="grid-template-columns:repeat(4,1fr);margin-top:10px">
+        <input type="text" id="stu-qual" placeholder="Education qualification">
+        <input type="text" id="stu-father" placeholder="Father / guardian name">
+        <input type="text" id="stu-mother" placeholder="Mother name">
+        <input type="text" id="stu-category" placeholder="Category">
+      </div>
+      <div class="arow4" style="grid-template-columns:repeat(4,1fr);margin-top:9px">
+        <input type="text" id="stu-address" placeholder="Permanent address">
+        <input type="text" id="stu-city" placeholder="City">
+        <input type="text" id="stu-district" placeholder="District">
+        <input type="text" id="stu-state" placeholder="State">
+      </div>
+      <div class="arow4" style="grid-template-columns:repeat(4,1fr);margin-top:9px">
+        <input type="text" id="stu-pin" placeholder="PIN code">
+        <input type="text" id="stu-marital" placeholder="Marital status">
+        <input type="text" id="stu-joined" placeholder="Joined date">
+        <input type="text" id="stu-photo" placeholder="Profile photo URL">
+      </div>
+    </details>
+    <div class="arow3" style="grid-template-columns:1fr 1fr auto;align-items:end;margin-top:11px">
+      <div><label class="hint" style="display:block;margin-bottom:4px">Password (leave blank &rarr; registration number)</label><input type="text" id="stu-pw" placeholder="Auto"></div>
+      <div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="stu-save">Add student</button>
+        <button class="btn" id="stu-cancel" type="button" style="display:none">Cancel edit</button>
+      </div>
+    </div>
+    <datalist id="stuSalList"></datalist><datalist id="stuGenList"></datalist>
+    <datalist id="stuBatchList"></datalist><datalist id="stuCourseList"></datalist><datalist id="stuStatusList"></datalist>
+
+    <h3 style="font-size:15px;margin:24px 0 8px;color:var(--gold)">Bulk upload &amp; roster</h3>
     <div class="arow3" style="grid-template-columns:auto 1fr auto;align-items:center">
       <label class="cadd" style="cursor:pointer;text-align:center">Upload students CSV<input type="file" id="stCsv" accept=".csv,text/csv" style="display:none"></label>
       <input id="stSearch" placeholder="Search name / reg no / batch / email…">
@@ -1856,15 +1911,94 @@ function renderStudents(){
   const list=qy?all.filter(s=>(s.reg+' '+s.name+' '+s.batch+' '+s.email).toLowerCase().includes(qy)):all;
   const upd=localStorage.getItem('alizonStudentsUpdated');
   document.getElementById('stMeta').innerHTML=all.length
-    ? '<b>'+all.length+'</b> students on the roster'+(qy?' · showing '+list.length:'')+(upd?' · last upload '+fmt(+upd):'')
-    : 'No students yet — upload the CSV exported from the backend.';
+    ? '<b>'+all.length+'</b> students on the roster'+(qy?' · showing '+list.length:'')+(upd?' · last change '+fmt(+upd):'')
+    : 'No students yet — add one manually above, or upload the CSV exported from the backend.';
   const stc=document.getElementById('cntStud');
   if(stc){ stc.textContent=all.length; stc.classList.toggle('show',all.length>0); }
-  document.getElementById('stTable').innerHTML=list.length
-    ? '<tr><th>Reg No</th><th>Name</th><th>DOB (DDMMYYYY)</th><th>Password</th><th>Gender</th><th>Batch</th><th>Status</th><th>Phone</th><th>Email</th><th>Schol %</th><th>College / Ref</th></tr>'+
-      list.map(s=>`<tr><td class="num">${esc(s.reg)}</td><td>${esc((s.salutation?s.salutation+' ':'')+s.name)}</td><td class="num">${esc(s.dob||'—')}</td><td class="num">${esc(s.password||s.reg)}</td><td>${esc(s.gender||'—')}</td><td>${esc(s.batch||'—')}</td><td>${esc(s.status||'—')}</td><td class="num">${esc(s.phone||'—')}</td><td>${esc(s.email||'—')}</td><td>${esc(s.scholarship||'—')}</td><td>${esc(s.college||'—')}</td></tr>`).join('')
+  stuFillLists(all);
+  const tb=document.getElementById('stTable');
+  tb.innerHTML=list.length
+    ? '<tr><th>Reg No</th><th>Name</th><th>DOB (DDMMYYYY)</th><th>Password</th><th>Gender</th><th>Batch</th><th>Status</th><th>Phone</th><th>Email</th><th>Schol %</th><th>College / Ref</th><th></th></tr>'+
+      list.map(s=>`<tr><td class="num">${esc(s.reg)}</td><td>${esc((s.salutation?s.salutation+' ':'')+s.name)}</td><td class="num">${esc(s.dob||'—')}</td><td class="num">${esc(s.password||s.reg)}</td><td>${esc(s.gender||'—')}</td><td>${esc(s.batch||'—')}</td><td>${esc(s.status||'—')}</td><td class="num">${esc(s.phone||'—')}</td><td>${esc(s.email||'—')}</td><td>${esc(s.scholarship||'—')}</td><td>${esc(s.college||'—')}</td><td style="white-space:nowrap"><button class="btn stu-edit" data-reg="${esc(s.reg)}" style="padding:4px 10px;font-size:12px">Edit</button> <button class="btn stu-del" data-reg="${esc(s.reg)}" style="padding:4px 10px;font-size:12px;border-color:var(--crimson);color:var(--crimson)">Remove</button></td></tr>`).join('')
     : '';
+  tb.querySelectorAll('.stu-edit').forEach(b=>b.onclick=()=>stuLoad(b.dataset.reg));
+  tb.querySelectorAll('.stu-del').forEach(b=>b.onclick=()=>stuDelete(b.dataset.reg));
 }
+
+/* ---- manual add / edit of a single student ---- */
+const STU_FIELDS={reg:'stu-reg',name:'stu-name',salutation:'stu-sal',gender:'stu-gender',dob:'stu-dob',
+  batch:'stu-batch',course:'stu-course',status:'stu-status',phone:'stu-phone',email:'stu-email',
+  scholarship:'stu-schol',college:'stu-college',qualification:'stu-qual',father:'stu-father',
+  mother:'stu-mother',category:'stu-category',address:'stu-address',city:'stu-city',
+  district:'stu-district',state:'stu-state',pin:'stu-pin',marital:'stu-marital',
+  joined:'stu-joined',photo:'stu-photo',password:'stu-pw'};
+let stuEditReg=null;
+const stuVal=id=>(document.getElementById(id).value||'').trim();
+function saveStudents(list){
+  localStorage.setItem('alizonStudents',JSON.stringify(list));
+  localStorage.setItem('alizonStudentsUpdated',String(Date.now()));
+}
+function stuFillLists(all){
+  const uniq=k=>[...new Set(all.map(s=>String(s[k]||'').trim()).filter(Boolean))].sort();
+  const fill=(el,vals)=>{const d=document.getElementById(el); if(d) d.innerHTML=vals.map(v=>'<option value="'+esc(v)+'">').join('');};
+  fill('stuSalList',uniq('salutation').length?uniq('salutation'):['Mr','Ms','Dr']);
+  fill('stuGenList',uniq('gender').length?uniq('gender'):['Male','Female']);
+  fill('stuBatchList',uniq('batch'));
+  fill('stuCourseList',uniq('course'));
+  fill('stuStatusList',uniq('status').length?uniq('status'):['Active']);
+}
+function stuReset(){
+  stuEditReg=null;
+  Object.values(STU_FIELDS).forEach(id=>{const el=document.getElementById(id); if(el)el.value='';});
+  document.getElementById('stuFormTitle').textContent='Add a student manually';
+  document.getElementById('stu-save').textContent='Add student';
+  document.getElementById('stu-cancel').style.display='none';
+}
+function stuLoad(reg){
+  const s=loadStudents().find(x=>String(x.reg)===String(reg)); if(!s) return;
+  stuEditReg=String(s.reg);
+  Object.entries(STU_FIELDS).forEach(([k,id])=>{const el=document.getElementById(id); if(el)el.value=s[k]||'';});
+  document.getElementById('stu-pw').value=s.password||s.reg||'';
+  document.getElementById('stuFormTitle').textContent='Edit '+(s.name||s.reg);
+  document.getElementById('stu-save').textContent='Update student';
+  document.getElementById('stu-cancel').style.display='';
+  document.getElementById('stu-reg').scrollIntoView({block:'center'});
+}
+function stuDelete(reg){
+  const all=loadStudents(); const s=all.find(x=>String(x.reg)===String(reg)); if(!s) return;
+  if(!confirm('Remove '+(s.name||'')+' ('+reg+') from the roster? Their login stops working.')) return;
+  saveStudents(all.filter(x=>String(x.reg)!==String(reg)));
+  if(stuEditReg===String(reg)) stuReset();
+  renderStudents(); renderAccess();
+  toast('Removed '+(s.name||reg));
+  logAct('Student removed — '+(s.name||'')+' ('+reg+')','update');
+}
+document.getElementById('stu-cancel').addEventListener('click',stuReset);
+document.getElementById('stu-save').addEventListener('click',function(){
+  const reg=stuVal('stu-reg').toUpperCase(), name=stuVal('stu-name');
+  if(!reg){ toast('Registration ID is required',true); document.getElementById('stu-reg').focus(); return; }
+  if(!name){ toast('Full name is required',true); document.getElementById('stu-name').focus(); return; }
+  const all=loadStudents();
+  const clash=all.some(x=>String(x.reg||'').toUpperCase()===reg && String(x.reg)!==stuEditReg);
+  if(clash){ toast('Registration ID '+reg+' already exists on the roster',true); return; }
+  const rec={}; Object.entries(STU_FIELDS).forEach(([k,id])=>{ rec[k]=stuVal(id); });
+  rec.reg=reg; rec.name=name;
+  rec.dobRaw=stuVal('stu-dob'); rec.dob=numDate(rec.dobRaw);
+  rec.password=stuVal('stu-pw')||reg;
+  if(stuEditReg){
+    const idx=all.findIndex(x=>String(x.reg)===stuEditReg);
+    if(idx<0){ toast('Student not found',true); return; }
+    all[idx]={...all[idx],...rec};
+    saveStudents(all); toast('Updated '+name);
+    logAct('Student updated — '+name+' ('+reg+')','update');
+  } else {
+    all.push(rec);
+    saveStudents(all); toast('Added '+name+' — login '+reg+' · '+rec.password);
+    logAct('Student added manually — '+name+' ('+reg+')','update');
+  }
+  stuReset(); renderStudents(); renderAccess();
+});
+stuReset();
 
 /* ================= FEES & PAYMENTS (CSV upload, duplicate-safe) ================= */
 function loadFees(){ try{const a=JSON.parse(localStorage.getItem('alizonFees')||'[]');return Array.isArray(a)?a:[];}catch(e){return[];} }

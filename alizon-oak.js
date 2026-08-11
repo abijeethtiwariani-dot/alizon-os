@@ -80,13 +80,36 @@
       '<button class="oak-cover-btn" id="oakCoverBtn"><span>◈</span> Cover photo</button>'+
       '<button class="oak-cover-rm" id="oakCoverRm">✕</button>'+
       '<input type="file" id="oakCoverInput" accept="image/*" style="display:none">' : '';
+    /* the pills only appear on a page that actually has the forms they jump to */
+    var hasStu=!!document.getElementById('adm-students'), hasFac=!!document.getElementById('adm-staff');
+    var addUI=(hasStu||hasFac) ?
+      '<div class="oak-add"><b>Add New Members</b><div class="r">'+
+        (hasStu?'<a id="oakAddStu">＋ Add Student</a>':'')+
+        (hasFac?'<a id="oakAddFac">＋ Add Faculty</a>':'')+
+      '</div></div>' : '';
     return '<div class="oak-hero" id="oakHero"><div class="oak-hero-bg" id="oakHeroBg"></div>'+
       coverUI+
       '<div class="oak-hero-head">'+TITLE+'</div>'+
       '<div class="oak-hero-cards">'+
         stat('◗','Students',nS)+stat('❖','Faculty',nF)+stat('▤','Programmes',nP)+stat('✦','On Scholarship',nSch)+
-        '<div class="oak-add"><b>Add New Members</b><div class="r"><a>＋ Add Student</a><a>＋ Add Faculty</a></div></div>'+
+        addUI+
       '</div></div>';
+  }
+
+  /* ---------- 2b) "Add New Members" pills → open the matching form ---------- */
+  function jumpToForm(sec,focusId){
+    try{ if(typeof window.showSec==='function') window.showSec(sec); }catch(e){}
+    setTimeout(function(){
+      var f=document.getElementById(focusId), t=f||document.getElementById(sec);
+      if(t&&t.scrollIntoView) t.scrollIntoView({block:'center',behavior:'smooth'});
+      if(f&&f.focus) f.focus();
+    },140);
+  }
+  function wireAdd(){
+    var s=document.getElementById('oakAddStu');
+    if(s&&!s.__w){ s.__w=1; s.addEventListener('click',function(){ jumpToForm('adm-students','stu-reg'); }); }
+    var f=document.getElementById('oakAddFac');
+    if(f&&!f.__w){ f.__w=1; f.addEventListener('click',function(){ jumpToForm('adm-staff','stf-name'); }); }
   }
 
   /* ---------- 3) cover upload ---------- */
@@ -124,10 +147,10 @@
 
   function mount(){
     var host=document.querySelector(MOUNT); if(!host) return;
-    if(document.getElementById('oakHero')) { applyCover(); return; }
+    if(document.getElementById('oakHero')) { applyCover(); wireAdd(); return; }
     var wrap=document.createElement('div'); wrap.innerHTML=heroHTML();
     host.insertBefore(wrap.firstChild, host.firstChild);
-    wireCover(); applyCover();
+    wireCover(); applyCover(); wireAdd();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){setTimeout(mount,80);});
   else setTimeout(mount,80);
