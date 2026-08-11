@@ -81,7 +81,7 @@
       '<button class="oak-cover-rm" id="oakCoverRm">✕</button>'+
       '<input type="file" id="oakCoverInput" accept="image/*" style="display:none">' : '';
     /* the pills only appear on a page that actually has the forms they jump to */
-    var hasStu=!!document.getElementById('adm-students'), hasFac=!!document.getElementById('adm-staff');
+    var hasStu=!!document.getElementById('adm-students'), hasFac=!!facTarget();
     var addUI=(hasStu||hasFac) ?
       '<div class="oak-add"><b>Add New Members</b><div class="r">'+
         (hasStu?'<a id="oakAddStu">＋ Add Student</a>':'')+
@@ -97,6 +97,14 @@
   }
 
   /* ---------- 2b) "Add New Members" pills → open the matching form ---------- */
+  /* "Add Faculty" belongs in the Faculty directory, not the HR Staff register —
+     they are two different sections with two different forms. Fall back to the
+     staff form only on a page that has no faculty section at all. */
+  function facTarget(){
+    if(document.getElementById('fc-name')) return {sec:'adm-faculty',focus:'fc-name'};
+    if(document.getElementById('stf-name')) return {sec:'adm-staff',focus:'stf-name'};
+    return null;
+  }
   function jumpToForm(sec,focusId){
     try{ if(typeof window.showSec==='function') window.showSec(sec); }catch(e){}
     setTimeout(function(){
@@ -108,8 +116,8 @@
   function wireAdd(){
     var s=document.getElementById('oakAddStu');
     if(s&&!s.__w){ s.__w=1; s.addEventListener('click',function(){ jumpToForm('adm-students','stu-reg'); }); }
-    var f=document.getElementById('oakAddFac');
-    if(f&&!f.__w){ f.__w=1; f.addEventListener('click',function(){ jumpToForm('adm-staff','stf-name'); }); }
+    var f=document.getElementById('oakAddFac'), t=facTarget();
+    if(f&&t&&!f.__w){ f.__w=1; f.addEventListener('click',function(){ jumpToForm(t.sec,t.focus); }); }
   }
 
   /* ---------- 3) cover upload ---------- */
