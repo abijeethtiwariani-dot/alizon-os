@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Hospital Administration · Communication, Conflict &amp; Patient Interaction Lab</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#1c1526,#33203a);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:172px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .4s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+.meter.tense .bar i{background:#ff6b6b}
+
+.scen{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:10px 0}
+.sc{text-align:left;font:inherit;border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff;cursor:pointer}
+.sc:hover{border-color:var(--crimson)}
+.sc.done{border-color:#b7e0c5;background:#f6fbf8}
+.sc.cur{border-color:var(--crimson);box-shadow:inset 0 0 0 2px rgba(177,4,14,.16)}
+.sc b{display:block;font-size:13.5px}
+.sc small{color:var(--muted);font-size:11.5px}
+
+.convo{border:1px solid var(--line);border-radius:13px;background:#fbfaf9;padding:13px 15px;margin:10px 0;max-height:none}
+.turn{display:flex;gap:10px;margin:9px 0;align-items:flex-start}
+.turn .who{flex:none;width:70px;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:6px}
+.turn .say{flex:1;border-radius:12px;padding:9px 13px;font-size:13.5px;line-height:1.6}
+.turn.them .say{background:#fff;border:1px solid var(--line);border-left:3px solid var(--crimson)}
+.turn.you .say{background:#eef4f1;border:1px solid #cfe3d8}
+.turn.note .say{background:#fdf9ef;border:1px dashed #e0cd9d;font-size:12.5px;color:#6b5a2e}
+.stage{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px}
+.stg{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:100px;background:#eef1f4;color:#8b939c}
+.stg.on{background:#e7f5ec;color:var(--ok)}
+.stg.err{background:#fdecea;color:var(--crit)}
+
+.moves{display:flex;flex-direction:column;gap:7px;margin:10px 0}
+.mv{font:inherit;font-size:13px;text-align:left;border:1px solid var(--line);border-radius:11px;padding:10px 13px;background:#fff;cursor:pointer}
+.mv:hover{border-color:var(--crimson)}
+.mv .mt{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+textarea{width:100%;min-height:80px;resize:vertical;font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+.errchip{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:#fdecea;color:var(--crit);margin:3px 4px 0 0}
+@media print{.tabs,.opbar,.btn,.moves,.no-print{display:none!important}.panel{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=2"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 3 · Practical 2</div>
+    <h1>Healthcare Communication, Conflict Management &amp; Patient Interaction Lab</h1>
+    <p>Four conversations that go differently depending on what you say. An angry patient, a family that was
+       never told how discharge works, two departments each certain the other is wrong, and a colleague who
+       has had enough. The other person responds to your actual choices — interrupt them and they escalate,
+       solve before you have understood and they tell you that you have not listened.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">Simulation lab</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="hacom"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Each conversation tracks five stages — <b>acknowledge, clarify, explain, solution,
+        confirm</b> — and a tension level that rises and falls with what you say. Offering a solution before
+        you have acknowledged the concern and clarified the facts is the most common failure in hospital
+        communication, and here it produces the response it produces in real life.</p>
+      <p class="muted">There is no single scripted path. The other person's next line is chosen from what you
+        just did and how tense the conversation already is, so the same opening can end four different ways.</p>
+      <div class="synth"><b>Educational simulation.</b> Every character and situation is written for teaching.
+        No real person is depicted, and nothing here is clinical advice. This lab runs entirely in your
+        browser — the responses come from a rule-based conversation model built into the page, not from a
+        live language model.</div>
+      <button class="btn" id="startBtn">▶ Enter the simulation lab</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Scenarios completed</div><div class="v" id="mSeen">0 / 4</div></div>
+      <div class="meter" id="mAW"><div class="k">Tension in the room</div><div class="v" id="mA">—</div><div class="bar"><i id="bA" style="width:0%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Communication integrity</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Complete the four conversations to generate your competency report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=4"></script>
+<script src="../alizon-practical-report.js?v=4"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=4"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script>
+(function(){
+'use strict';
+function $(i){ return document.getElementById(i); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+/* ============================================================
+   MOVE TYPES
+   The five stages of a controlled conversation, plus the four
+   ways it usually goes wrong.
+   ============================================================ */
+var STAGES=['ack','clarify','explain','solve','confirm'];
+var STAGE_T={ack:'Acknowledge',clarify:'Clarify',explain:'Explain',solve:'Solution',confirm:'Confirm'};
+
+/* ============================================================
+   SCENARIOS
+   Each move: {t:text, k:type, d:tension delta, note:coaching}
+   Types: ack, clarify, explain, solve, confirm, defend, deflect,
+          interrupt, overpromise, disclose, escalate
+   ============================================================ */
+var SCEN=[
+{k:'A', title:'Angry patient', role:'Front Office Executive', who:'Patient',
+ open:'I have been waiting for three hours and nobody is giving me an answer. Three hours. Is anyone actually working here?',
+ tension:72,
+ context:'Outpatient counter, 12:40. The clinic is running 70 minutes behind because two consultants were pulled to an emergency. The patient has an appointment slip for 10:00 and has asked twice already.',
+ facts:'Two consultants were pulled to an emergency at 10:20. The clinic is 70 minutes behind. The patient is fourth in the remaining queue, roughly 25 minutes.',
+ moves:[
+  {t:'"You are right, three hours is far too long, and nobody keeping you informed makes it worse. I am sorry."',k:'ack',d:-18},
+  {t:'"Can I check your slip and tell you exactly where you are in the queue now?"',k:'clarify',d:-8},
+  {t:'"Two of our consultants were called to an emergency at 10:20, so the clinic is running about 70 minutes behind."',k:'explain',d:-6},
+  {t:'"Let me move you to the front of the queue right now."',k:'overpromise',d:+4,
+   note:'Promising to jump the queue is a promise you cannot keep, and the three people who have waited longer are standing next to you.'},
+  {t:'"Everyone here is waiting, sir. We are doing our best."',k:'defend',d:+16,
+   note:'Comparing this person to everyone else is the line that turns a complaint into an incident.'},
+  {t:'"Please lower your voice, there are other patients here."',k:'interrupt',d:+20,
+   note:'Policing their tone before addressing their problem tells them their problem is not the priority.'},
+  {t:'"You are fourth now — about 25 minutes. I will come and tell you personally if that changes."',k:'solve',d:-12},
+  {t:'"Have I understood right — the wait itself is bearable, it is not being told anything that is not?"',k:'confirm',d:-10}
+ ],
+ them:{
+  ack:['The patient\'s shoulders drop slightly. "…Thank you. That is the first time anyone has said that."',
+       '"Right. Well. At least someone has said it." The voice is lower.'],
+  clarify:['"Fine. Here." They hand over the slip. "Ten o\'clock, it says. Ten."',
+           '"Yes, look at it. It says 10:00."'],
+  explain:['"An emergency. Nobody told me that. Why did nobody just tell me that three hours ago?"',
+           '"So there was a reason. That is all I wanted — a reason."'],
+  solve:['"Twenty-five minutes. All right. And you will come and find me?"',
+         '"Fourth. Fine. I can wait twenty-five minutes if I know it is twenty-five minutes."'],
+  confirm:['"Yes. That is exactly it. I would have sat down quietly if someone had just spoken to me."',
+           '"That is right. It is the silence."'],
+  overpromise:['"Ahead of them?" They glance at the row of chairs. "They have been here longer than me. That is not what I asked for."'],
+  defend:['"Doing your best." The voice rises. "I want to speak to whoever is in charge of this department. Now."'],
+  interrupt:['"Do not tell me to lower my voice." They step closer to the counter. "Get me your supervisor."'],
+  disclose:['"…Why are you telling me about another patient?"']
+ },
+ best:['ack','clarify','explain','solve','confirm']},
+
+{k:'B', title:'Family complaint', role:'Patient Relations Executive', who:'Daughter',
+ open:'Nobody explained the discharge process to us. We were told this morning she could go home and we have been sitting here since. I do not even know what we are waiting for.',
+ tension:58,
+ context:'Ward corridor, 16:10. The discharge decision was made at 10:15. Pharmacy is ready, billing is complete, and the insurance pre-authorisation for the final day is still pending with the insurer.',
+ facts:'Discharge decision 10:15. Pharmacy ready 11:40. Billing complete 12:05. Insurance pre-authorisation still pending with the insurer since 11:20. No single person was named as owner of this discharge.',
+ moves:[
+  {t:'"You have been waiting six hours without knowing why. That should not have happened, and I am sorry."',k:'ack',d:-16},
+  {t:'"Can I check exactly which step is outstanding before I tell you anything?"',k:'clarify',d:-10},
+  {t:'"Pharmacy and billing are done. The one item outstanding is the insurance authorisation for the final day, which is with the insurer."',k:'explain',d:-8},
+  {t:'"I am taking ownership of this discharge personally. I will chase the insurer now and come back to you within 30 minutes whether or not I have an answer."',k:'solve',d:-15},
+  {t:'"Discharge usually takes a few hours, it is quite normal."',k:'defend',d:+15,
+   note:'"Normal" is the word that tells a family their six hours did not matter.'},
+  {t:'"It is the insurance company, not us. There is nothing we can do."',k:'deflect',d:+14,
+   note:'Even when another organisation is the cause, the family is your responsibility. Handing them the problem is not an explanation.'},
+  {t:'"She will definitely be home within the hour."',k:'overpromise',d:+3,
+   note:'You do not control the insurer. A promise you cannot keep buys twenty quiet minutes and costs the next conversation.'},
+  {t:'"Before I go — is there anything else you need for her to leave safely, transport, medicines, a follow-up date?"',k:'confirm',d:-9}
+ ],
+ them:{
+  ack:['"Thank you. Nobody has said that either." She unfolds her arms slightly.',
+       '"I just wanted someone to say it should not have happened."'],
+  clarify:['"Please. Anything. We have asked four people."',
+           '"Yes — find out. That is all we have wanted since lunchtime."'],
+  explain:['"So it is the insurance. Why did nobody tell us that at eleven o\'clock?"',
+           '"Then it was never anything we did. We have been sitting here thinking we had missed a form."'],
+  solve:['"You will come back either way?" She looks at you properly for the first time. "All right. Thank you."',
+         '"Someone finally owning it. Yes. Please."'],
+  confirm:['"Her tablets, and how we get her down to the car. Thank you for asking — nobody had."',
+           '"A follow-up date. I would not have thought of that until we got home."'],
+  overpromise:['"Within the hour? You are sure?" She writes down the time. "I am holding you to that."'],
+  defend:['"Normal." She stares. "My mother is 78 and she has been sitting in a plastic chair since ten this morning."'],
+  deflect:['"Nothing you can do." She takes out her phone. "Then give me the name of whoever I complain to."']
+ },
+ best:['ack','clarify','explain','solve','confirm']},
+
+{k:'C', title:'Interdepartmental conflict', role:'Ward Coordinator', who:'Billing Coordinator',
+ open:'We cannot process this discharge without the insurance documents. Front office says the patient submitted them. They are not in our system, and I am not clearing a bill on somebody\'s word.',
+ tension:54,
+ context:'Two departments, one patient, and a contradiction. Front office logged the documents as received at 11:20. Billing\'s system has nothing. Neither department has spoken to the other today.',
+ facts:'Front office logged receipt at 11:20 into the front-office register. Billing works from the insurance module. The two systems do not share a queue — a document received at the counter has to be uploaded separately, and nobody owns that step.',
+ moves:[
+  {t:'"You are right not to clear a bill on somebody\'s word. Let me find out what each of you is actually looking at."',k:'ack',d:-14},
+  {t:'"Can you tell me exactly which system you are checking, and I will ask front office which one they logged it in?"',k:'clarify',d:-14},
+  {t:'"Front office logged it in the counter register at 11:20. Your module is separate — the document was received but never uploaded across."',k:'explain',d:-10},
+  {t:'"Nobody has made a mistake here. There is no owner for the step between the counter and your module. I will get the document uploaded now and raise the gap."',k:'solve',d:-13},
+  {t:'"Front office says they have it, so it must be your system."',k:'defend',d:+17,
+   note:'Taking one department\'s side before you know what each is looking at guarantees that next time neither calls you.'},
+  {t:'"Can you just clear it this once as a favour?"',k:'overpromise',d:+11,
+   note:'Asking a colleague to bypass a financial control to solve your coordination problem is how a process gap becomes an audit finding.'},
+  {t:'"This is exactly why we have these problems with billing every week."',k:'deflect',d:+19,
+   note:'Generalising from this case to a grievance about the department ends the conversation you came to have.'},
+  {t:'"So we agree — document uploaded within the hour, and I raise the missing handover step. Anything I have missed?"',k:'confirm',d:-9}
+ ],
+ them:{
+  ack:['"Thank you. I am not being difficult — I have an auditor who asks me why I cleared things."',
+       '"Finally. Someone who is not telling me I am the obstacle."'],
+  clarify:['"The insurance module. That is the only place I can see. What are they looking at?"',
+           '"I check the module. If it is not in the module, for me it does not exist."'],
+  explain:['"So it was received. It just never came across." A pause. "That has probably happened before."',
+           '"Then the document exists and my system is blind to it. That is not a billing problem, is it."'],
+  solve:['"Upload it and I will clear it in ten minutes. And yes — please raise the gap, I have been saying it for months."',
+         '"That works. Send it across and this is done."'],
+  confirm:['"That is it. Send it, and put my name on the process note — I want it fixed."'],
+  defend:['"My system." The tone hardens. "Come and look at it yourself before you decide whose fault it is."'],
+  deflect:['"Every week." They put down the file. "Then take it up with my manager, not with me."'],
+  overpromise:['"A favour." They look at you steadily. "No. I am not signing off a claim without the document."']
+ },
+ best:['ack','clarify','explain','solve','confirm']},
+
+{k:'D', title:'Staff conflict', role:'Hospital Administrator', who:'Front Office Executive',
+ open:'The nursing department keeps sending patients down to us without informing anyone. Four times this week. The patients arrive angry, they shout at us, and then we are the ones written up for poor service. I have had enough of it.',
+ tension:63,
+ context:'Your office, end of shift. The complaint is about a process, delivered as a grievance about a department, by someone who is being blamed for the result.',
+ facts:'Four occurrences this week, all after 15:00. There is no written handover rule between nursing and registration. Two patient complaints this month were logged against front office for these incidents.',
+ moves:[
+  {t:'"Four times in a week, and you are absorbing the anger for something you did not cause. I would have had enough too."',k:'ack',d:-17},
+  {t:'"Take me through the last one. What time, which ward, what were you told?"',k:'clarify',d:-12},
+  {t:'"There is no written handover rule between the ward and registration. Without one this will keep happening, and it will keep landing on your counter."',k:'explain',d:-8},
+  {t:'"Two things. The complaints logged against your counter for these get reviewed, and I will convene nursing and front office to write the handover rule this week."',k:'solve',d:-14},
+  {t:'"I will speak to the nursing manager about their staff."',k:'deflect',d:+9,
+   note:'Framing a process failure as somebody\'s staff problem starts an interdepartmental fight and fixes nothing.'},
+  {t:'"You need to stay professional regardless of what other departments do."',k:'defend',d:+21,
+   note:'True and useless. Delivered before you have acknowledged the problem, it tells a colleague their grievance is a conduct issue.'},
+  {t:'"Everyone is under pressure at the moment, try not to take it personally."',k:'deflect',d:+13,
+   note:'"Do not take it personally" is what people say instead of doing something.'},
+  {t:'"Have I got the whole picture, or is there something about this you have not told me?"',k:'confirm',d:-11}
+ ],
+ them:{
+  ack:['They sit back. "Thank you. I thought I was going to be told to manage my tone."',
+       '"That is all I wanted — for someone to say it is not us."'],
+  clarify:['"Yesterday, 15:40, from the second floor. We were told nothing. The patient had already been admitted."',
+           '"Every time it is after three o\'clock, when the ward changes shift. I have started writing them down."'],
+  explain:['"There is no rule?" They look genuinely surprised. "We all assumed there was one and nursing was ignoring it."',
+           '"So we have been angry at each other over something nobody ever wrote down."'],
+  solve:['"If those complaints get reviewed, that matters more than you think. My team saw them go on the record."',
+         '"A rule in writing. Yes. And can we be in the room when it is written?"'],
+  confirm:['"There is one more thing. Two of my staff are talking about moving departments over this."',
+           '"Only that we stopped reporting them after the second one, because nothing happened."'],
+  defend:['"Professional." They stand up. "I have been professional four times this week while being shouted at. Is that all?"'],
+  deflect:['"Their staff." A short laugh. "So it becomes a fight between departments and we still get shouted at on Monday."']
+ },
+ best:['ack','clarify','explain','solve','confirm']}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var S={}, cur=null;
+function freshState(){
+  return {started:Date.now(), runs:{}, done:{}, integ:100, ended:false, reflection:''};
+}
+function freshRun(sc){
+  return {k:sc.k, tension:sc.tension, log:[], stages:{}, errors:{}, used:{}, turns:0,
+          order:[], finished:false, peak:sc.tension};
+}
+var tabs=document.querySelectorAll('.tabs button');
+[].forEach.call(tabs,function(b){ b.addEventListener('click',function(){ goTab(b.getAttribute('data-p')); }); });
+function goTab(p){
+  [].forEach.call(tabs,function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  ['brief','work','res'].forEach(function(k){ $('p-'+k).classList.toggle('on',k===p); });
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function paintMeters(){
+  var r=cur?S.runs[cur]:null;
+  $('mA').textContent=r?r.tension+'%':'—';
+  $('bA').style.width=(r?r.tension:0)+'%';
+  $('mAW').className='meter'+(r&&r.tension>=70?' bad':r&&r.tension>=45?' warn':'');
+  $('mB').textContent=S.integ+'%'; $('bB').style.width=S.integ+'%';
+  $('mBW').className='meter'+(S.integ<55?' bad':S.integ<80?' warn':'');
+  $('mSeen').textContent=Object.keys(S.done).length+' / '+SCEN.length;
+}
+function tickClock(){
+  var s=Math.floor((Date.now()-S.started)/1000), m=Math.floor(s/60);
+  $('mClock').textContent=(m<10?'0':'')+m+':'+((s%60)<10?'0':'')+(s%60);
+}
+
+/* ============================================================
+   LAB
+   ============================================================ */
+function desk(){
+  $('workArea').innerHTML=
+   '<div class="card"><h3>Choose a conversation</h3>'
+   +'<p class="muted">Four scenarios. Each runs until you close it or the other person ends it. You can '
+   +'replay any of them — the last run is the one recorded.</p>'
+   +'<div class="scen" id="scenWrap">'+SCEN.map(function(s){
+      return '<button class="sc" data-sc="'+s.k+'"><b>Scenario '+s.k+' — '+esc(s.title)+'</b>'
+        +'<small>You are the '+esc(s.role)+'</small></button>'; }).join('')+'</div></div>'
+   +'<div id="stage"></div>'
+   +'<div class="card" id="finalCard" style="display:none"><h3>Close the session</h3>'
+   +'<div class="lbl">What you would do differently (this is marked)</div>'
+   +'<textarea id="reflection" placeholder="Which conversation went worst and why, what you said that changed the temperature, and the sequence you would follow next time…"></textarea>'
+   +'<div style="margin-top:10px"><button class="btn" id="submitAll">Generate the competency report</button></div>'
+   +'<div id="caseFb"></div></div>';
+  [].forEach.call(document.querySelectorAll('[data-sc]'),function(b){
+    b.addEventListener('click',function(){ startScen(b.getAttribute('data-sc')); });
+  });
+  $('submitAll').addEventListener('click',submitAll);
+  paintMeters();
+}
+
+function startScen(k){
+  var sc=SCEN.filter(function(x){return x.k===k;})[0];
+  cur=k; S.runs[k]=freshRun(sc);
+  [].forEach.call(document.querySelectorAll('[data-sc]'),function(x){ x.classList.toggle('cur',x.getAttribute('data-sc')===k); });
+  var r=S.runs[k];
+  r.log.push({who:'them',text:sc.open});
+  renderStage();
+  paintMeters();
+}
+
+function renderStage(){
+  var sc=SCEN.filter(function(x){return x.k===cur;})[0], r=S.runs[cur];
+  $('stage').innerHTML='<div class="card"><h3>Scenario '+sc.k+' — '+esc(sc.title)+'</h3>'
+   +'<p class="muted">You are the <b>'+esc(sc.role)+'</b>. '+esc(sc.context)+'</p>'
+   +'<div class="lbl">What you know</div><p class="muted">'+esc(sc.facts)+'</p>'
+   +'<div class="stage">'+STAGES.map(function(st){
+      return '<span class="stg'+(r.stages[st]?' on':'')+'">'+STAGE_T[st]+'</span>'; }).join('')
+   +(Object.keys(r.errors).length?'<span class="stg err">'+Object.keys(r.errors).length+' error'+(Object.keys(r.errors).length>1?'s':'')+'</span>':'')+'</div>'
+   +'<div class="convo" id="convo">'+r.log.map(function(l){
+      return '<div class="turn '+l.who+'"><span class="who">'+(l.who==='them'?esc(sc.who):l.who==='you'?'You':'Coach')+'</span>'
+        +'<span class="say">'+esc(l.text)+'</span></div>'; }).join('')+'</div>'
+   +(r.finished
+      ? '<div class="fb '+(r.tension<30?'yes':r.tension<60?'warnb':'no')+'"><div class="hd">Conversation closed</div>'
+        +closingLine(sc,r)+'</div>'
+        +'<button class="btn ghost sm" data-replay="'+sc.k+'">Replay this scenario</button>'
+      : '<div class="moves" id="moves">'+sc.moves.map(function(m,i){
+          return '<button class="mv" data-m="'+i+'"'+(r.used[i]?' disabled':'')+'>'
+            +'<span class="mt">'+moveLabel(m.k)+'</span>'+esc(m.t)+'</button>'; }).join('')+'</div>'
+        +'<button class="btn ghost sm" id="endScen">End this conversation</button>')
+   +'</div>';
+  if(!r.finished){
+    [].forEach.call(document.querySelectorAll('[data-m]'),function(b){
+      b.addEventListener('click',function(){ play(+b.getAttribute('data-m')); });
+    });
+    $('endScen').addEventListener('click',function(){ endScen(false); });
+  } else {
+    var rp=document.querySelector('[data-replay]');
+    if(rp) rp.addEventListener('click',function(){ startScen(sc.k); });
+  }
+  var cv=$('convo'); if(cv) cv.scrollTop=cv.scrollHeight;
+}
+function moveLabel(k){
+  return {ack:'Acknowledge',clarify:'Clarify',explain:'Explain',solve:'Offer a solution',confirm:'Confirm understanding',
+          defend:'Defend the service',deflect:'Deflect',interrupt:'Manage their behaviour',
+          overpromise:'Promise',disclose:'Disclose'}[k]||k;
+}
+
+function play(i){
+  var sc=SCEN.filter(function(x){return x.k===cur;})[0], r=S.runs[cur];
+  var m=sc.moves[i];
+  r.used[i]=1; r.turns++; r.order.push(m.k);
+  r.log.push({who:'you',text:m.t});
+
+  /* premature solution: solving before acknowledging AND clarifying */
+  var premature = (m.k==='solve') && !(r.stages.ack && r.stages.clarify);
+  var d=m.d;
+  if(premature){ d=+8; r.errors.premature=1; }
+  if(m.k==='interrupt') r.errors.interrupt=1;
+  if(m.k==='defend') r.errors.defend=1;
+  if(m.k==='deflect') r.errors.deflect=1;
+  if(m.k==='overpromise') r.errors.overpromise=1;
+  if(m.k==='confirm' && !r.stages.ack) r.errors.confirmfirst=1;
+
+  if(STAGES.indexOf(m.k)>=0 && !premature) r.stages[m.k]=1;
+  r.tension=Math.max(0,Math.min(100,r.tension+d));
+  if(r.tension>r.peak) r.peak=r.tension;
+
+  /* their reply */
+  var pool=sc.them[m.k];
+  var line;
+  if(premature) line='"You have not even asked me what happened." The offer lands flat. "You are trying to make this go away."';
+  else if(pool) line=pool[Math.min(pool.length-1, r.turns%pool.length)];
+  else line='They wait, unimpressed.';
+  r.log.push({who:'them',text:line});
+
+  if(premature)
+    r.log.push({who:'note',text:'Premature solution. A remedy offered before the person feels heard and before you know the facts reads as an attempt to end the conversation, not to fix it. Acknowledge, then clarify, then solve.'});
+  else if(m.note)
+    r.log.push({who:'note',text:m.note});
+
+  /* the conversation can end badly on its own */
+  if(r.tension>=92){
+    r.log.push({who:'them',text:'"I am not discussing this with you any further. Who is your supervisor?"'});
+    endScen(true); return;
+  }
+  paintMeters(); renderStage();
+}
+
+function endScen(forced){
+  var sc=SCEN.filter(function(x){return x.k===cur;})[0], r=S.runs[cur];
+  r.finished=true; r.forced=!!forced;
+  if(!r.stages.confirm) r.errors.noconfirm=1;
+  if(!r.stages.ack) r.errors.noack=1;
+  S.done[cur]=1;
+  if(r.errors.noack) S.integ=Math.max(0,S.integ-6);
+  if(forced) S.integ=Math.max(0,S.integ-10);
+  $('finalCard').style.display=Object.keys(S.done).length>=SCEN.length?'block':'none';
+  [].forEach.call(document.querySelectorAll('[data-sc]'),function(x){
+    if(x.getAttribute('data-sc')===cur) x.classList.add('done'); });
+  paintMeters(); renderStage();
+}
+function closingLine(sc,r){
+  if(r.forced) return 'The other person ended it and asked for your supervisor. Tension reached '+r.peak
+    +'%. Every conversation that reaches this point started with a line that answered something other than what they said.';
+  var done=STAGES.filter(function(s){return r.stages[s];}).length;
+  if(r.tension<30&&done>=4) return 'Tension came down from '+sc.tension+'% to '+r.tension+'% and you completed '
+    +done+' of the five stages. This is what a controlled conversation looks like.';
+  if(r.tension<60) return 'Tension moved from '+sc.tension+'% to '+r.tension+'%, with '+done
+    +' of five stages completed. Workable, but look at which stage you skipped.';
+  return 'Tension finished at '+r.tension+'% against '+sc.tension+'% at the start. The conversation did not '
+    +'recover — check the coaching notes above for the line where it turned.';
+}
+
+/* ============================================================
+   COMPETENCY EVALUATION — 120 marks, six competencies of 20
+   ============================================================ */
+var ERR_T={premature:'Provided a premature solution',interrupt:'Managed their behaviour before their problem',
+  defend:'Defended the service instead of acknowledging the concern',deflect:'Deflected responsibility',
+  overpromise:'Promised something outside your control',noconfirm:'Failed to confirm understanding',
+  noack:'Did not acknowledge the concern',confirmfirst:'Confirmed understanding before acknowledging it'};
+
+function submitAll(){
+  if(S.ended) return;
+  if(Object.keys(S.done).length<SCEN.length){
+    $('caseFb').innerHTML='<div class="fb no"><div class="hd">Not finished</div>Complete all four conversations first.</div>';
+    return;
+  }
+  S.reflection=($('reflection').value||'').trim();
+  S.ended=true;
+
+  var comps={prof:0,emp:0,clar:0,conf:0,acc:0,esc:0};
+  var allErrors={}, strengths=[], improve=[];
+
+  SCEN.forEach(function(sc){
+    var r=S.runs[sc.k]; if(!r) return;
+    Object.keys(r.errors).forEach(function(e){ allErrors[e]=(allErrors[e]||0)+1; });
+    var stagesDone=STAGES.filter(function(s){return r.stages[s];}).length;
+    var drop=sc.tension-r.tension;
+
+    /* professional communication — did they avoid the four failure moves */
+    var badMoves=['defend','deflect','interrupt','overpromise'].filter(function(k){ return r.order.indexOf(k)>=0; }).length;
+    comps.prof += Math.max(0, 5 - badMoves*1.6);
+    /* empathy — acknowledged, and acknowledged first */
+    comps.emp += (r.stages.ack?3:0) + (r.order[0]==='ack'?2:0);
+    /* clarity — explained, and in a conversation that did not end forced */
+    comps.clar += (r.stages.explain?3:0) + (r.forced?0:2);
+    /* conflict management — tension actually came down */
+    comps.conf += drop>=40?5:drop>=25?4:drop>=10?2.5:drop>0?1:0;
+    /* information accuracy — clarified before explaining, no overpromise */
+    var ci=r.order.indexOf('clarify'), ei=r.order.indexOf('explain');
+    comps.acc += ((ci>=0&&ei>=0&&ci<ei)?3:(ei>=0?1.5:0)) + (r.order.indexOf('overpromise')>=0?0:2);
+    /* escalation judgement — solved and confirmed rather than being escalated at */
+    comps.esc += (r.stages.solve?2.5:0) + (r.stages.confirm?1.5:0) + (r.forced?0:1);
+  });
+
+  var COMP=[
+   {k:'prof',t:'Professional communication'},{k:'emp',t:'Empathy'},{k:'clar',t:'Clarity'},
+   {k:'conf',t:'Conflict management'},{k:'acc',t:'Information accuracy'},{k:'esc',t:'Escalation judgement'}
+  ];
+  var rows=COMP.map(function(c){ return [c.t, Math.min(20,Math.round(comps[c.k]*10)/10), 20]; });
+  var total=Math.round(rows.reduce(function(a,r){return a+r[1];},0));
+
+  /* reflection adjusts nothing numerically above the cap, but a missing one is called out */
+  var words=S.reflection?S.reflection.split(/\s+/).length:0;
+  if(words<25) improve.push('The written reflection was short. Communication competence is demonstrated as much by recognising what you did as by doing it.');
+  else strengths.push('Reflected on the session in enough detail to be useful to a supervisor.');
+
+  var recovered=SCEN.filter(function(sc){ var r=S.runs[sc.k]; return r && !r.forced && r.tension<30; }).length;
+  if(recovered===SCEN.length) strengths.push('Brought all four conversations below 30% tension without any of them being ended against you.');
+  else if(recovered) strengths.push('Recovered '+recovered+' of four conversations to a calm close.');
+  var forced=SCEN.filter(function(sc){ return S.runs[sc.k] && S.runs[sc.k].forced; }).length;
+  if(forced) improve.push(forced+' conversation'+(forced>1?'s were':' was')+' ended by the other person asking for a supervisor. That is the outcome the five-stage sequence exists to prevent.');
+  var ackFirst=SCEN.filter(function(sc){ return S.runs[sc.k] && S.runs[sc.k].order[0]==='ack'; }).length;
+  if(ackFirst===SCEN.length) strengths.push('Opened every conversation by acknowledging the concern before doing anything else.');
+  else improve.push('Only '+ackFirst+' of four conversations opened with acknowledgement. What you say first sets the temperature for everything after it.');
+  Object.keys(allErrors).forEach(function(e){
+    improve.push(ERR_T[e]+' — '+allErrors[e]+' scenario'+(allErrors[e]>1?'s':'')+'.');
+  });
+
+  finish(total,rows,strengths,improve,allErrors);
+}
+
+function finish(total,rows,strengths,improve,allErrors){
+  var elapsed=S.started?Math.round((Date.now()-S.started)/60000):0;
+  var scenRows=SCEN.map(function(sc){
+    var r=S.runs[sc.k];
+    var stagesDone=STAGES.filter(function(s){return r.stages[s];});
+    return '<tr'+(r.forced?' class="hot"':(r.tension<30?' class="cool"':''))+'><td>'+sc.k+' — '+esc(sc.title)+'</td>'
+      +'<td class="n">'+sc.tension+'%</td><td class="n">'+r.tension+'%</td><td class="n">'+r.peak+'%</td>'
+      +'<td>'+(stagesDone.length?stagesDone.map(function(s){return STAGE_T[s];}).join(', '):'none')+'</td>'
+      +'<td>'+(r.forced?'ended by the other person':'closed by you')+'</td></tr>';
+  }).join('');
+  var transcripts=SCEN.map(function(sc){
+    var r=S.runs[sc.k];
+    return '<div class="lbl">Scenario '+sc.k+' — '+esc(sc.title)+'</div>'
+      +'<div class="convo">'+r.log.filter(function(l){return l.who!=='note';}).map(function(l){
+        return '<div class="turn '+l.who+'"><span class="who">'+(l.who==='them'?esc(sc.who):'You')+'</span>'
+          +'<span class="say">'+esc(l.text)+'</span></div>'; }).join('')+'</div>';
+  }).join('');
+
+  var html='<div class="card"><h3>Communication &amp; Conflict Competency Report</h3>'
+   +'<p class="muted">ALIZON SmartCare Multispecialty Hospital · four-scenario simulation · time in lab '+elapsed+' min</p>'
+   +'<div class="scorebig">'+total+' <span style="font-size:16px;font-weight:600;color:var(--muted)">/ 120</span></div>'
+   +'<p class="muted">Communication integrity <b>'+S.integ+'%</b> · scenarios completed '+Object.keys(S.done).length+' of '+SCEN.length+'</p>'
+
+   +'<table class="d"><tr><th>Competency</th><th>Score</th></tr>'
+   +rows.map(function(r){ return '<tr><td>'+esc(r[0])+'</td><td class="n">'+r[1]+' / '+r[2]+'</td></tr>'; }).join('')
+   +'<tr><td><b>Total</b></td><td class="n"><b>'+total+' / 120</b></td></tr></table>'
+
+   +'<div class="lbl">Scenario outcomes</div>'
+   +'<table class="d"><tr><th>Scenario</th><th>Opening tension</th><th>Closing</th><th>Peak</th><th>Stages completed</th><th>How it ended</th></tr>'+scenRows+'</table>'
+
+   +'<div class="lbl">Communication errors detected</div>'
+   +(Object.keys(allErrors).length
+      ? '<p>'+Object.keys(allErrors).map(function(e){ return '<span class="errchip">'+esc(ERR_T[e])+' ×'+allErrors[e]+'</span>'; }).join('')+'</p>'
+      : '<p class="muted">None detected across the four conversations.</p>')
+
+   +'<div class="lbl">Recommended improvement</div>'
+   +'<p>Use <b>acknowledgement → clarification → explanation → solution → confirmation</b>, in that order. '
+   +'Acknowledgement lowers the temperature enough for anything else to be heard; clarification stops you '
+   +'explaining the wrong thing; a solution offered before either reads as an attempt to end the conversation; '
+   +'and a conversation closed without confirming understanding is the one that comes back as a complaint.</p>'
+
+   +'<div class="fb yes"><div class="hd">Strengths</div>'
+     +(strengths.length?'<ul><li>'+strengths.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+   +'<div class="fb no"><div class="hd">Where it could be stronger</div>'
+     +(improve.length?'<ul><li>'+improve.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+
+   +'<div class="lbl">Your reflection</div><p>'+(S.reflection?esc(S.reflection):'<span class="muted">none recorded</span>')+'</p>'
+
+   +'<div class="lbl">Transcripts</div>'+transcripts
+
+   +'<div class="note">Educational simulation. The other participants are generated by a rule-based '
+   +'conversation model in this page; no real person is depicted and nothing here is clinical advice.</div>'
+   +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
+
+  $('caseFb').innerHTML='<div class="fb yes"><div class="hd">Report generated</div>Your competency report is on the <b>Result &amp; Record</b> tab.</div>';
+  var _re=$('resEmpty'); if(_re) _re.style.display='none';
+  $('resBox').innerHTML=html;
+  goTab('res');
+
+  var pct=Math.round(total/120*100);
+  var OPTS={module:'Hospital Administration · Module 3 · Communication & Conflict Simulation',
+            title:'Healthcare Communication, Conflict Management & Patient Interaction Lab',
+            programme:'Hospital Administration AI', pct:pct,
+            resultText:total+'/120 ('+pct+'%) · integrity '+S.integ+'%'};
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme,
+    submitOpts:OPTS, titleField:{label:'Communication reflection', placeholder:'e.g. Acknowledgement first — what changed when I stopped explaining'},
+    minWords:350,
+    attachments:[{label:'1. Competency report / printout (PDF)'},{label:'2. Personal communication improvement plan (PDF)'}],
+    reportHtml:html
+  });
+}
+
+var clockTimer=null;
+$('startBtn').addEventListener('click',function(){
+  S=freshState(); cur=null; goTab('work'); desk();
+  if(clockTimer) clearInterval(clockTimer);
+  clockTimer=setInterval(tickClock,1000); tickClock();
+});
+S=freshState(); paintMeters();
+})();
+</script>
+</body>
+</html>

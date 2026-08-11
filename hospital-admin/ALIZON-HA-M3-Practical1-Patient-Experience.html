@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALIZON OS · Hospital Administration · Patient Experience &amp; Service Recovery Command Centre</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#12202a,#1d3a44);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:168px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.tile .n{font-size:11px;color:var(--muted);font-weight:600}
+.tile .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+
+.bars{margin:10px 0}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lb{min-width:150px}
+.barrow .tr{flex:1;height:12px;border-radius:6px;background:#eee;overflow:hidden}
+.barrow .tr i{display:block;height:100%;background:linear-gradient(90deg,#b1040e,#d4626a)}
+.barrow .pc{min-width:42px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+
+.case{border:1px solid var(--line);border-radius:13px;padding:0;margin:10px 0;background:#fff;overflow:hidden}
+.case.done{border-color:#b7e0c5}
+.case .ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 14px;background:#faf8f6;border-bottom:1px solid var(--line);cursor:pointer}
+.case .ch b{font-size:13.5px}
+.case .cb{padding:12px 14px;display:none}
+.case.open .cb{display:block}
+.src{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px;background:#eef1f4;color:#43506b}
+.quote{border-left:3px solid var(--crimson);background:#fdf6f6;padding:10px 13px;border-radius:0 9px 9px 0;margin:8px 0;font-size:13.5px;font-style:italic}
+.aiblock{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:12.8px;line-height:1.65;margin:10px 0}
+.aiblock b{color:#8fd0ff;font-weight:700}
+.aifield{display:grid;grid-template-columns:170px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.aifield:last-child{border-bottom:none}
+.aifield .fk{color:#9aa7b4;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.aifield .fv{font-weight:700}
+.judge{display:flex;gap:5px}
+.judge button{font:inherit;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#dfe3e8;cursor:pointer}
+.judge button.ok{border-color:#5ec27a;color:#5ec27a}
+.judge button.no{border-color:#ff8f8f;color:#ff8f8f}
+.judge button.sel{background:#fff;color:#0f1115;border-color:#fff}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.stack .opt{border-radius:11px;padding:9px 13px}
+textarea,select,input[type=text]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:80px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:#eef1f4;color:#43506b}
+.chip.bad{background:#fdecea;color:var(--crit)}
+.chip.good{background:#e7f5ec;color:var(--ok)}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}.case .cb{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=2"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 3 · Practical 1</div>
+    <h1>AI Patient Experience, Feedback &amp; Service-Recovery Command Centre</h1>
+    <p>You are the Patient Relations Officer at ALIZON SmartCare. Complaints, feedback forms, NPS verbatims,
+       call transcripts and public reviews all arrive here. An AI layer classifies each one before you see it.
+       Your job is to decide whether its reading is right, correct it where it is not, write the reply that
+       actually goes out, and turn a pile of individual complaints into the systemic finding management needs.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">Command centre</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="hapx"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Every case carries an AI analysis with nine fields. You must judge each field
+        <b>Agree</b> or <b>Disagree</b> before you can close the case — and on several of these cases the AI
+        is confidently wrong in a way that matters. Accepting its classification unchanged is recorded.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Service recovery</b> falls when a case is
+        closed without the action it needed. <b>Communication integrity</b> falls when a reply you send
+        discloses something it should not — and one of these cases is a public review, where confirming that
+        someone is a patient at all is itself a disclosure.</p>
+      <div class="synth"><b>Educational simulation on synthetic data.</b> Every complaint, review, transcript
+        and score here is written for teaching. Nothing describes a real person or a real hospital, and no
+        output of this system is clinical advice.</div>
+      <button class="btn" id="startBtn">▶ Open the command centre</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Cases closed</div><div class="v" id="mSeen">0 / 6</div></div>
+      <div class="meter" id="mAW"><div class="k">Service recovery</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Communication integrity</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Work the case queue to generate your Patient Experience Incident Report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=4"></script>
+<script src="../alizon-practical-report.js?v=4"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=4"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script>
+(function(){
+'use strict';
+function $(i){ return document.getElementById(i); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];}); }
+
+/* ============================================================
+   COMMAND CENTRE BOARD
+   ============================================================ */
+var BOARD=[
+ {n:'Total complaints (month)',v:148,s:'moderate'},
+ {n:'High priority',v:12,s:'high'},
+ {n:'In service recovery',v:31,s:'moderate'},
+ {n:'Escalated',v:8,s:'critical'},
+ {n:'Net Promoter Score',v:62,s:'moderate'},
+ {n:'Open beyond 48 hrs',v:17,s:'high'}
+];
+var ISSUES=[
+ {t:'Waiting time',p:38},{t:'Communication',p:24},{t:'Billing',p:16},
+ {t:'Staff behaviour',p:12},{t:'Facilities',p:10}
+];
+/* Calibrated so the split reproduces the board's headline score exactly:
+   75% promoters − 13% detractors = NPS 62. */
+var NPS={promoters:372,passives:60,detractors:64,total:496};
+
+/* ============================================================
+   THE CASE QUEUE
+   Each case carries an AI analysis. `wrong` lists the fields where
+   the AI reading is not supportable, with the correction.
+   ============================================================ */
+var CASES=[
+{k:'c1', src:'Complaint form', ref:'PX-2211', dept:'General Medicine / Front Office',
+ text:'I waited 2 hours for my appointment. Nobody at reception told me what was happening. When I asked, the receptionist was rude.',
+ ai:{category:'Waiting time',sentiment:'Negative',severity:'Moderate',
+     root:'Outpatient department running behind schedule',
+     action:'Apologise for the delay',
+     recovery:'Offer priority rescheduling at the next available slot',
+     escalation:'Front office supervisor',
+     response:'We apologise for the long wait on your visit. Our outpatient department was running behind schedule that day. We have rescheduled you as a priority for your next appointment.',
+     insight:'Waiting time is the leading complaint category this month.'},
+ wrong:{root:'The complaint contains two failures, and the AI has kept only the visible one. The patient did not complain about waiting — they complained that <b>nobody told them anything</b> and that asking produced rudeness. A two-hour wait that is explained produces a shrug; a two-hour wait in silence produces this form. The root cause is a queue-communication failure, and the staff conduct is a second, separate issue that does not disappear because the delay is explained.',
+        insight:'Filing this under "waiting time" is how a hospital spends a year buying capacity while its actual defect is that nobody speaks to the queue. The management insight is that a large share of what is logged as waiting-time complaints is communication failure wearing a waiting-time label.'},
+ best:{cat:'comm',esc:2,actions:['explain','coach','queueinfo']},
+ goodResp:['ack','explain','specific','contact'], badResp:['blame','minimise']},
+
+{k:'c2', src:'Public review', ref:'PX-2214', dept:'Cardiology',
+ text:'Terrible experience at this hospital. My mother was kept waiting in cardiology for her angiogram results and the staff would not tell us anything. Avoid this place.',
+ ai:{category:'Waiting time',sentiment:'Negative',severity:'Moderate',
+     root:'Delayed release of investigation results',
+     action:'Reply publicly with the specifics of the case',
+     recovery:'Publish the actual turnaround time for this patient to show the delay was short',
+     escalation:'None required — public review only',
+     response:'We are sorry about your mother\'s experience. Our records show her angiogram was reported within 4 hours on 12 June and the cardiology team did speak with her at 3pm. Please contact us if you need further clarification.',
+     insight:'One negative public review; low operational impact.'},
+ wrong:{action:'A public reply must never confirm that a named person is a patient, never quote their record, and never correct their account with clinical detail. Doing so discloses their care to everyone who reads the page — and the person posting is a family member, who may not have any right to that information either.',
+        recovery:'Publishing this patient\'s turnaround time in a public forum is a disclosure of their medical record. Winning the argument in public is the failure mode here.',
+        response:'This draft names the procedure, the date, the reporting time and a conversation. Every one of those is protected information, and the hospital has just published it in response to a review.',
+        escalation:'A public allegation about clinical communication in a cardiology pathway is not a nothing. It goes to patient relations for an offline invitation and, because it concerns results communication, to the department.'},
+ best:{cat:'comm',esc:3,actions:['offline','privacy','review']},
+ goodResp:['pubgeneric','puboffline'], badResp:['pubdetail','pubdeny','pubclinical']},
+
+{k:'c3', src:'Call transcript', ref:'PX-2219', dept:'Billing / Discharge',
+ text:'[Recorded call] "We were told at 10 in the morning that she could go home. We finally left at 6 in the evening. Every time I asked, billing said insurance, and insurance said billing. Nobody owned it. My mother is 78 and she sat in a chair for six hours."',
+ ai:{category:'Billing',sentiment:'Negative',severity:'Moderate',
+     root:'Insurance authorisation delay',
+     action:'Explain the insurance process to the family',
+     recovery:'Waive the room charge for the delayed period',
+     escalation:'Billing supervisor',
+     response:'We are sorry for the delay in your discharge. Insurance authorisation can take time and we appreciate your patience.',
+     insight:'Billing complaints are 16% of the month\'s volume.'},
+ wrong:{severity:'A 78-year-old kept sitting for six hours past a discharge decision is not a moderate service issue. Prolonged waiting in a chair after a discharge decision carries real risk for a frail elderly patient, and severity has to reflect who it happened to, not only what the process failure was.',
+        root:'The insurance delay is the mechanism. The root cause is that <b>no single role owned the discharge</b> — the family was passed between two departments, each of which was waiting for the other. An authorisation delay with a named owner produces one apologetic phone call, not six hours in a chair.',
+        action:'Explaining the insurance process to the family answers a question they did not ask. They are not confused about insurance; they are telling you nobody took responsibility.'},
+ best:{cat:'coord',esc:3,actions:['owner','apolcall','pathway']},
+ goodResp:['ack','ownership','specific','contact'], badResp:['minimise','process']},
+
+{k:'c4', src:'NPS verbatim (score 3)', ref:'PX-2223', dept:'Front Office',
+ text:'Booked online, arrived on time, then was told my appointment was not in the system and I had to register again as a walk-in. Waited another hour. The online booking is pointless.',
+ ai:{category:'Front office',sentiment:'Negative',severity:'Low',
+     root:'Individual registration error',
+     action:'Apologise to the patient',
+     recovery:'None required',
+     escalation:'None required',
+     response:'We are sorry for the inconvenience caused during your visit.',
+     insight:'Isolated front-office incident.'},
+ wrong:{root:'Treat this as an individual error and you will see it again next week. A booking that exists in the online channel but not at the counter is a <b>systems integration failure</b>, and it silently converts booked patients into walk-ins — which is also why the walk-in numbers in the operations report do not match the booking numbers.',
+        severity:'A defect that reclassifies patients without anyone noticing is not low severity just because each individual instance is survivable.',
+        recovery:'A detractor who took the trouble to write is the cheapest service-recovery opportunity a hospital gets. "None required" is how a 3 becomes a 0.'},
+ best:{cat:'systems',esc:2,actions:['itlog','recontact','audit']},
+ goodResp:['ack','specific','ownership','contact'], badResp:['minimise','process']},
+
+{k:'c5', src:'Feedback form', ref:'PX-2227', dept:'Paediatrics',
+ text:'The nurse in paediatrics was wonderful with my son and explained everything. But the department was very hot, the water cooler was empty all afternoon, and there was nowhere to change him.',
+ ai:{category:'Facilities',sentiment:'Negative',severity:'Moderate',
+     root:'Facilities maintenance backlog',
+     action:'Log a maintenance request',
+     recovery:'Offer a written apology',
+     escalation:'Facilities supervisor',
+     response:'We are sorry that the facilities did not meet your expectations. A maintenance request has been raised.',
+     insight:'Facilities complaints are 10% of volume.'},
+ wrong:{sentiment:'This is mixed feedback, not negative feedback, and the difference is operationally important. The clinical interaction was praised by name. Logging it as purely negative loses the one thing this hospital is doing well in that department, and the nurse never hears it.',
+        recovery:'A written apology for a hot room reads as a form letter. The recovery here is to fix the facility and to pass the compliment to the named staff member — recognition is part of the patient-experience loop, not a nicety.'},
+ best:{cat:'facilities',esc:1,actions:['maint','compliment','changing']},
+ goodResp:['ack','thankstaff','specific'], badResp:['minimise']},
+
+{k:'c6', src:'Staff report', ref:'PX-2231', dept:'Front Office / Nursing',
+ text:'[Internal] Front office reports that nursing has been sending patients down to registration without informing us, so we have people arriving at the counter who are already admitted and we cannot process them. It has happened four times this week and the patients get angry with us.',
+ ai:{category:'Staff behaviour',sentiment:'Negative',severity:'Low',
+     root:'Interpersonal conflict between departments',
+     action:'Advise both departments to communicate better',
+     recovery:'Not applicable — internal matter',
+     escalation:'None required',
+     response:'Please liaise directly with the nursing department to resolve this.',
+     insight:'Minor internal friction.'},
+ wrong:{category:'This is not staff behaviour. It is a <b>broken handover process</b> that is producing angry patients at a counter four times a week. Classifying a process failure as an interpersonal problem guarantees it is never fixed, because you cannot fix a process by telling two teams to get along.',
+        recovery:'"Not applicable — internal matter" is wrong on its face: the people absorbing this failure are patients standing at a counter being told they are in the wrong place.',
+        escalation:'A repeating cross-department failure with patient impact is exactly what operations escalation exists for. Four times in one week is a pattern, not an incident.'},
+ best:{cat:'process',esc:3,actions:['handover','joint','track']},
+ goodResp:['ack','ownership','process2'], badResp:['blame','minimise']}
+];
+
+var AI_FIELDS=[
+ {k:'category',t:'Category'},{k:'sentiment',t:'Sentiment'},{k:'severity',t:'Severity'},
+ {k:'root',t:'Root cause'},{k:'action',t:'Immediate action'},{k:'recovery',t:'Service recovery'},
+ {k:'escalation',t:'Escalation'},{k:'response',t:'Draft response'},{k:'insight',t:'Management insight'}
+];
+var CATS=[
+ {k:'wait',t:'Waiting time'},{k:'comm',t:'Communication'},{k:'coord',t:'Coordination / ownership'},
+ {k:'systems',t:'Systems / integration'},{k:'facilities',t:'Facilities'},
+ {k:'process',t:'Process failure'},{k:'behaviour',t:'Staff behaviour'},{k:'billing',t:'Billing'}
+];
+var ESC=[
+ {l:1,t:'Level 1 — log and close locally'},
+ {l:2,t:'Level 2 — department supervisor'},
+ {l:3,t:'Level 3 — patient relations / operations'},
+ {l:4,t:'Level 4 — quality committee'},
+ {l:5,t:'Level 5 — reportable administrative incident'}
+];
+var ACTIONS=[
+ {k:'explain',t:'Introduce a spoken queue update every 20 minutes when a clinic runs over'},
+ {k:'coach',t:'Counsel and coach the counter staff member on the exchange'},
+ {k:'queueinfo',t:'Display live estimated waiting time at the counter'},
+ {k:'offline',t:'Invite the reviewer to a private channel to discuss the case'},
+ {k:'privacy',t:'Brief the review-response team never to confirm patient status publicly'},
+ {k:'review',t:'Refer the results-communication concern to the department'},
+ {k:'owner',t:'Assign a single named discharge owner for every inpatient'},
+ {k:'apolcall',t:'Telephone apology from the administrator to the family'},
+ {k:'pathway',t:'Map the discharge-to-billing-to-insurance pathway and publish the handoffs'},
+ {k:'itlog',t:'Raise an integration defect with the booking system vendor'},
+ {k:'recontact',t:'Contact the detractor, resolve it, and re-survey'},
+ {k:'audit',t:'Audit a week of online bookings against counter records'},
+ {k:'maint',t:'Raise the maintenance and cooling request with a due date'},
+ {k:'compliment',t:'Pass the compliment to the named nurse and their manager'},
+ {k:'changing',t:'Provide a baby-changing facility in the paediatric waiting area'},
+ {k:'handover',t:'Define and publish the nursing-to-registration handover rule'},
+ {k:'joint',t:'Hold a joint front-office and nursing working session'},
+ {k:'track',t:'Track recurrence weekly until it reaches zero'},
+ {k:'nothing',t:'No corrective action — close the case'},
+ {k:'blamestaff',t:'Issue a written warning to the individual staff member and close it'}
+];
+var RESP_BLOCKS=[
+ {k:'ack',t:'Acknowledge specifically what went wrong, in their words.',good:true},
+ {k:'explain',t:'Explain briefly why it happened, without excusing it.',good:true},
+ {k:'specific',t:'State the specific change being made as a result.',good:true},
+ {k:'ownership',t:'Name who now owns it and by when.',good:true},
+ {k:'contact',t:'Give a named contact and a direct line for follow-up.',good:true},
+ {k:'thankstaff',t:'Acknowledge the positive part of their feedback and confirm it was passed on.',good:true},
+ {k:'process2',t:'Confirm the handover rule that has been put in place.',good:true},
+ {k:'pubgeneric',t:'[Public] Reply generically: we are sorry to read this, we take it seriously.',good:true},
+ {k:'puboffline',t:'[Public] Invite them to contact patient relations directly, with the channel.',good:true},
+ {k:'minimise',t:'Note that waits of this length are normal at peak times.',good:false,
+  why:'Telling a person their experience was normal is the single most reliable way to convert a complaint into an escalation.'},
+ {k:'blame',t:'Explain that the department was short-staffed that day because of absence.',good:false,
+  why:'Internal staffing problems are not the patient’s to absorb, and naming absence shifts blame onto colleagues in a document the patient keeps.'},
+ {k:'process',t:'Describe the internal procedure in full so they understand the complexity.',good:false,
+  why:'Process detail is what an organisation offers instead of accountability. The patient is not asking how the machine works.'},
+ {k:'pubdetail',t:'[Public] Correct their account using the dates and times from the record.',good:false,privacy:true,
+  why:'This confirms the person is a patient and publishes their record to correct them in public. It is a disclosure, and it is the most common serious mistake hospitals make when replying to reviews.'},
+ {k:'pubclinical',t:'[Public] State when the results were reported and who spoke to them.',good:false,privacy:true,
+  why:'Clinical timings and conversations are protected information. Publishing them in a review reply discloses care to every reader.'},
+ {k:'pubdeny',t:'[Public] State that the allegation is untrue and the standard was met.',good:false,privacy:true,
+  why:'A public denial both implies knowledge of their record and turns a service failure into a dispute the hospital cannot win in that forum.'}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var S={};
+function freshState(){
+  return {started:Date.now(), open:{}, judged:{}, cat:{}, esc:{}, actions:{}, resp:{},
+          closed:{}, npsRun:false, systemic:null, reasoning:'',
+          recovery:100, integ:100, privacyHits:0, ended:false};
+}
+var tabs=document.querySelectorAll('.tabs button');
+[].forEach.call(tabs,function(b){ b.addEventListener('click',function(){ goTab(b.getAttribute('data-p')); }); });
+function goTab(p){
+  [].forEach.call(tabs,function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  ['brief','work','res'].forEach(function(k){ $('p-'+k).classList.toggle('on',k===p); });
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function paintMeters(){
+  $('mA').textContent=S.recovery+'%'; $('bA').style.width=S.recovery+'%';
+  $('mB').textContent=S.integ+'%'; $('bB').style.width=S.integ+'%';
+  $('mAW').className='meter'+(S.recovery<55?' bad':S.recovery<80?' warn':'');
+  $('mBW').className='meter'+(S.integ<55?' bad':S.integ<80?' warn':'');
+  $('mSeen').textContent=Object.keys(S.closed).length+' / '+CASES.length;
+}
+function tickClock(){
+  var s=Math.floor((Date.now()-S.started)/1000), m=Math.floor(s/60);
+  $('mClock').textContent=(m<10?'0':'')+m+':'+((s%60)<10?'0':'')+(s%60);
+}
+
+/* ============================================================
+   CENTRE
+   ============================================================ */
+function desk(){ $('workArea').innerHTML=sBoard()+sNPS()+sQueue()+sSystemic(); wireQueue(); wireNPS(); wireSystemic(); paintMeters(); }
+
+function sBoard(){
+  return '<div class="card"><h3>Patient experience command centre</h3>'
+   +'<div class="tiles">'+BOARD.map(function(b){
+      return '<div class="tile"><div class="n">'+esc(b.n)+'</div><div class="v">'+b.v+'</div>'
+            +'<span class="s s-'+b.s+'">'+b.s+'</span></div>'; }).join('')+'</div>'
+   +'<div class="lbl">Top issues by logged category</div><div class="bars">'
+   +ISSUES.map(function(i){ return '<div class="barrow"><span class="lb">'+esc(i.t)+'</span>'
+      +'<span class="tr"><i style="width:'+i.p+'%"></i></span><span class="pc">'+i.p+'%</span></div>'; }).join('')+'</div>'
+   +'<div class="note">These categories are how the complaints were <b>logged</b>, not necessarily what caused '
+   +'them. Part of your job this session is to find out whether that distinction matters here.</div></div>';
+}
+
+function sNPS(){
+  return '<div class="card"><h3>Net Promoter Score</h3>'
+   +'<p class="muted">'+NPS.total+' responses this month.</p>'
+   +'<button class="btn ghost sm" id="npsBtn">Calculate NPS from the response split</button>'
+   +'<div id="npsOut"></div></div>';
+}
+function wireNPS(){
+  $('npsBtn').addEventListener('click',function(){
+    S.npsRun=true; $('npsBtn').disabled=true;
+    var pp=Math.round(NPS.promoters/NPS.total*100), dp=Math.round(NPS.detractors/NPS.total*100);
+    $('npsOut').innerHTML='<table class="d"><tr><th>Group</th><th>Definition</th><th>Responses</th><th>Share</th></tr>'
+     +'<tr class="cool"><td>Promoters</td><td>9–10</td><td class="n">'+NPS.promoters+'</td><td class="n">'+pp+'%</td></tr>'
+     +'<tr><td>Passives</td><td>7–8</td><td class="n">'+NPS.passives+'</td><td class="n">'+Math.round(NPS.passives/NPS.total*100)+'%</td></tr>'
+     +'<tr class="hot"><td>Detractors</td><td>0–6</td><td class="n">'+NPS.detractors+'</td><td class="n">'+dp+'%</td></tr>'
+     +'<tr><td><b>NPS = % promoters − % detractors</b></td><td></td><td class="n"></td><td class="n"><b>'+(pp-dp)+'</b></td></tr></table>'
+     +'<div class="fb warnb"><div class="hd">What the headline hides</div>A score of '+(pp-dp)+' is a respectable '
+     +'number, and '+NPS.detractors+' people had a bad enough experience to say so. Passives are invisible in the '
+     +'arithmetic — they cancel out entirely — so a hospital can hold its NPS steady while steadily converting '
+     +'promoters into passives. Read the verbatims, not the score.</div>';
+  });
+}
+
+function sQueue(){
+  return '<div class="card"><h3>Case queue</h3>'
+   +'<p class="muted">Six live cases. Judge every AI field, set your own classification, choose the corrective '
+   +'actions and write the reply that goes out.</p>'
+   +CASES.map(function(c){ return caseHTML(c); }).join('')+'</div>';
+}
+function caseHTML(c){
+  return '<div class="case" id="case-'+c.k+'">'
+   +'<div class="ch" data-toggle="'+c.k+'"><span class="src">'+esc(c.src)+'</span><b>'+esc(c.ref)+'</b>'
+   +'<span class="muted">'+esc(c.dept)+'</span><span style="margin-left:auto" class="muted" id="cst-'+c.k+'">open</span></div>'
+   +'<div class="cb">'
+   +'<div class="quote">'+esc(c.text)+'</div>'
+   +'<div class="aiblock">'+AI_FIELDS.map(function(f){
+      return '<div class="aifield"><span class="fk">'+f.t+'</span><span class="fv">'+esc(c.ai[f.k])+'</span>'
+        +'<span class="judge"><button class="ok" data-j="'+c.k+'" data-f="'+f.k+'" data-v="agree">Agree</button>'
+        +'<button class="no" data-j="'+c.k+'" data-f="'+f.k+'" data-v="disagree">Disagree</button></span></div>'; }).join('')
+   +'</div><div id="jf-'+c.k+'"></div>'
+   +'<div class="lbl">Your classification</div>'
+   +'<div class="opts" data-cat="'+c.k+'">'+CATS.map(function(x){
+      return '<button class="opt" data-catk="'+x.k+'">'+esc(x.t)+'</button>'; }).join('')+'</div>'
+   +'<div class="lbl">Escalation</div>'
+   +'<div class="opts" data-esc="'+c.k+'">'+ESC.map(function(x){
+      return '<button class="opt" data-escl="'+x.l+'">'+esc(x.t)+'</button>'; }).join('')+'</div>'
+   +'<div class="lbl">Corrective actions</div>'
+   +'<div class="stack" data-act="'+c.k+'">'+ACTIONS.map(function(a){
+      return '<button class="opt" data-actk="'+a.k+'">'+esc(a.t)+'</button>'; }).join('')+'</div>'
+   +'<div class="lbl">Build the reply that goes out</div>'
+   +'<div class="stack" data-resp="'+c.k+'">'+RESP_BLOCKS.map(function(b){
+      return '<button class="opt" data-respk="'+b.k+'">'+esc(b.t)+'</button>'; }).join('')+'</div>'
+   +'<button class="btn" data-close="'+c.k+'">Close the case</button>'
+   +'<div id="cf-'+c.k+'"></div></div></div>';
+}
+function wireQueue(){
+  [].forEach.call(document.querySelectorAll('[data-toggle]'),function(h){
+    h.addEventListener('click',function(){ $('case-'+h.getAttribute('data-toggle')).classList.toggle('open'); });
+  });
+  [].forEach.call(document.querySelectorAll('[data-j]'),function(b){
+    b.addEventListener('click',function(){
+      var ck=b.getAttribute('data-j'), f=b.getAttribute('data-f'), v=b.getAttribute('data-v');
+      var c=CASES.filter(function(x){return x.k===ck;})[0];
+      S.judged[ck]=S.judged[ck]||{}; S.judged[ck][f]=v;
+      [].forEach.call(document.querySelectorAll('[data-j="'+ck+'"][data-f="'+f+'"]'),function(x){ x.classList.toggle('sel',x===b); });
+      var isWrong=!!c.wrong[f];
+      if(v==='disagree'&&isWrong)
+        $('jf-'+ck).innerHTML='<div class="fb yes"><div class="hd">Correct — '+esc(AI_FIELDS.filter(function(x){return x.k===f;})[0].t)+'</div>'+c.wrong[f]+'</div>';
+      else if(v==='agree'&&isWrong)
+        $('jf-'+ck).innerHTML='<div class="fb no"><div class="hd">Look at this field again</div>'
+          +'You have accepted the AI reading of <b>'+esc(AI_FIELDS.filter(function(x){return x.k===f;})[0].t)
+          +'</b>. Read the case text once more and ask what the person is actually complaining about.</div>';
+      else if(v==='disagree')
+        $('jf-'+ck).innerHTML='<div class="fb warnb"><div class="hd">This field is supportable</div>'
+          +'Disagreeing with a field the case text supports costs you time and credibility. Reserve the '
+          +'correction for the fields that are actually wrong.</div>';
+      else $('jf-'+ck).innerHTML='';
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-cat]'),function(wrap){
+    var ck=wrap.getAttribute('data-cat');
+    [].forEach.call(wrap.querySelectorAll('[data-catk]'),function(b){
+      b.addEventListener('click',function(){ S.cat[ck]=b.getAttribute('data-catk');
+        [].forEach.call(wrap.querySelectorAll('[data-catk]'),function(x){ x.classList.toggle('sel',x===b); }); });
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-esc]'),function(wrap){
+    var ck=wrap.getAttribute('data-esc');
+    [].forEach.call(wrap.querySelectorAll('[data-escl]'),function(b){
+      b.addEventListener('click',function(){ S.esc[ck]=+b.getAttribute('data-escl');
+        [].forEach.call(wrap.querySelectorAll('[data-escl]'),function(x){ x.classList.toggle('sel',x===b); }); });
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-act]'),function(wrap){
+    var ck=wrap.getAttribute('data-act');
+    [].forEach.call(wrap.querySelectorAll('[data-actk]'),function(b){
+      b.addEventListener('click',function(){
+        var k=b.getAttribute('data-actk'); S.actions[ck]=S.actions[ck]||{};
+        S.actions[ck][k]=!S.actions[ck][k]; b.classList.toggle('sel',S.actions[ck][k]); });
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-resp]'),function(wrap){
+    var ck=wrap.getAttribute('data-resp');
+    [].forEach.call(wrap.querySelectorAll('[data-respk]'),function(b){
+      b.addEventListener('click',function(){
+        var k=b.getAttribute('data-respk'); S.resp[ck]=S.resp[ck]||{};
+        S.resp[ck][k]=!S.resp[ck][k]; b.classList.toggle('sel',S.resp[ck][k]); });
+    });
+  });
+  [].forEach.call(document.querySelectorAll('[data-close]'),function(b){
+    b.addEventListener('click',function(){ closeCase(b.getAttribute('data-close')); });
+  });
+}
+
+function closeCase(ck){
+  var c=CASES.filter(function(x){return x.k===ck;})[0];
+  var judged=Object.keys(S.judged[ck]||{}).length;
+  if(judged<AI_FIELDS.length){
+    $('cf-'+ck).innerHTML='<div class="fb no"><div class="hd">Judge the analysis first</div>'+judged+' of '
+      +AI_FIELDS.length+' fields assessed. Closing a case on an AI reading you have not checked is how the '
+      +'wrong root cause enters the quality report.</div>';
+    return;
+  }
+  if(!S.cat[ck]||!S.esc[ck]){
+    $('cf-'+ck).innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Set your own classification and an escalation level.</div>';
+    return;
+  }
+  var resp=Object.keys(S.resp[ck]||{}).filter(function(k){return S.resp[ck][k];});
+  if(!resp.length){
+    $('cf-'+ck).innerHTML='<div class="fb no"><div class="hd">No reply written</div>A case closed without a reply is a complaint the person never heard back about.</div>';
+    return;
+  }
+  var badResp=resp.filter(function(k){ return !RESP_BLOCKS.filter(function(b){return b.k===k;})[0].good; });
+  var privacy=badResp.filter(function(k){ return RESP_BLOCKS.filter(function(b){return b.k===k;})[0].privacy; });
+  var acts=Object.keys(S.actions[ck]||{}).filter(function(k){return S.actions[ck][k];});
+  var goodActs=acts.filter(function(k){ return c.best.actions.indexOf(k)>=0; }).length;
+
+  if(privacy.length){ S.integ=Math.max(0,S.integ-24); S.privacyHits+=privacy.length; }
+  else if(badResp.length) S.integ=Math.max(0,S.integ-7*badResp.length);
+  if(!goodActs || acts.indexOf('nothing')>=0) S.recovery=Math.max(0,S.recovery-12);
+  if(S.cat[ck]!==c.best.cat) S.recovery=Math.max(0,S.recovery-6);
+  S.closed[ck]=1;
+  $('case-'+ck).classList.add('done');
+  $('cst-'+ck).textContent='closed';
+  paintMeters();
+
+  var msg='';
+  if(privacy.length) msg+='<div class="fb no"><div class="hd">Disclosure in the reply</div><ul><li>'
+    +privacy.map(function(k){ return esc(RESP_BLOCKS.filter(function(b){return b.k===k;})[0].why); }).join('</li><li>')+'</li></ul></div>';
+  else if(badResp.length) msg+='<div class="fb warnb"><div class="hd">Weak blocks in the reply</div><ul><li>'
+    +badResp.map(function(k){ return esc(RESP_BLOCKS.filter(function(b){return b.k===k;})[0].why); }).join('</li><li>')+'</li></ul></div>';
+  msg+='<div class="fb '+(S.cat[ck]===c.best.cat?'yes':'warnb')+'"><div class="hd">Case closed</div>'
+    +'Your classification: <b>'+esc(CATS.filter(function(x){return x.k===S.cat[ck];})[0].t)+'</b>'
+    +(S.cat[ck]===c.best.cat?' — this matches what the case text supports.'
+      :' — the reading the case text supports is <b>'+esc(CATS.filter(function(x){return x.k===c.best.cat;})[0].t)+'</b>.')
+    +' Corrective actions that address the cause: '+goodActs+' of '+c.best.actions.length+'.</div>';
+  $('cf-'+ck).innerHTML=msg;
+}
+
+/* systemic finding */
+function sSystemic(){
+  return '<div class="card"><h3>Monthly management finding</h3>'
+   +'<p class="muted">You have now worked six cases logged under five different categories. Management wants '
+   +'one finding, not six complaints.</p>'
+   +'<div class="stack" id="sysWrap">'
+   +'<button class="opt" data-sy="wait">Waiting time is the dominant problem and capacity must increase.</button>'
+   +'<button class="opt" data-sy="comm">A large share of what is logged as waiting-time, billing and staff-behaviour complaints is one failure — nobody communicates with, or takes ownership of, a patient who is waiting.</button>'
+   +'<button class="opt" data-sy="staff">Staff attitude is the recurring theme and training is required.</button>'
+   +'<button class="opt" data-sy="mixed">The complaints are unrelated; each needs its own departmental action.</button></div>'
+   +'<div id="sysFb"></div>'
+   +'<div class="lbl">Your reasoning (this is marked)</div>'
+   +'<textarea id="reason" placeholder="What the six cases have in common, what the logged categories hide, and the one thing you would put in front of the quality committee…"></textarea>'
+   +'<div style="margin-top:10px"><button class="btn" id="submitAll">Submit the incident report</button></div>'
+   +'<div id="caseFb"></div></div>';
+}
+function wireSystemic(){
+  [].forEach.call(document.querySelectorAll('[data-sy]'),function(b){
+    b.addEventListener('click',function(){
+      S.systemic=b.getAttribute('data-sy');
+      [].forEach.call(document.querySelectorAll('[data-sy]'),function(x){ x.classList.toggle('sel',x===b); });
+      var m={wait:'Capacity is the expensive answer and the one the logged categories point at. Look at what the patients actually wrote: in four of the six cases the wait was tolerable and the silence was not.',
+             comm:'This is what the case texts support. The categories in the logging system describe where the complaint landed, not what produced it — which is why the hospital can hold a respectable NPS while the same failure recurs under five different labels.',
+             staff:'Two cases involve staff conduct, and in both the conduct sits downstream of a process that puts staff in an impossible position. Training a receptionist to be pleasant while nobody tells them when the clinic will clear is a way of blaming the person at the counter.',
+             mixed:'Six separate departmental actions is the finding that produces six memos and no change. Look for what they share.'};
+      $('sysFb').innerHTML='<div class="fb '+(S.systemic==='comm'?'yes':'warnb')+'">'+esc(m[S.systemic])+'</div>';
+    });
+  });
+  $('submitAll').addEventListener('click',submitAll);
+}
+
+/* ============================================================
+   EVALUATION — 100 marks
+   ============================================================ */
+function submitAll(){
+  if(S.ended) return;
+  var closed=Object.keys(S.closed).length;
+  if(closed<CASES.length){
+    $('caseFb').innerHTML='<div class="fb no"><div class="hd">Cases still open</div>'+closed+' of '+CASES.length+' closed.</div>';
+    return;
+  }
+  if(!S.systemic){ $('caseFb').innerHTML='<div class="fb no"><div class="hd">Incomplete</div>Select a management finding.</div>'; return; }
+  S.reasoning=($('reason').value||'').trim();
+  S.ended=true;
+  var pts=[], strengths=[], improve=[];
+
+  /* 1 — review of the AI analysis (20) */
+  var caught=0, total=0, falsePos=0;
+  CASES.forEach(function(c){
+    AI_FIELDS.forEach(function(f){
+      var j=(S.judged[c.k]||{})[f.k]; if(!j) return;
+      if(c.wrong[f.k]){ total++; if(j==='disagree') caught++; }
+      else if(j==='disagree') falsePos++;
+    });
+  });
+  var t1=Math.max(0,Math.min(20, (caught/Math.max(1,total))*22 - falsePos*0.8));
+  pts.push(['Review of the AI analysis',Math.round(t1*10)/10,20]);
+  if(caught===total) strengths.push('Caught every field where the AI reading was not supportable — '+total+' of '+total+'.');
+  else improve.push('Caught '+caught+' of '+total+' unsupportable AI fields. An AI classification accepted unchanged becomes the hospital’s official account of what happened.');
+  if(falsePos>4) improve.push('Disagreed with '+falsePos+' fields the case text actually supported. Over-correction costs credibility as surely as under-correction.');
+
+  /* 2 — classification (15) */
+  var catHits=CASES.filter(function(c){ return S.cat[c.k]===c.best.cat; }).length;
+  var t2=Math.min(15, catHits*2.5);
+  pts.push(['Classification and root cause',Math.round(t2*10)/10,15]);
+  if(catHits>=5) strengths.push('Classified '+catHits+' of '+CASES.length+' cases by cause rather than by symptom.');
+  if(S.cat.c6==='behaviour') improve.push('The internal handover case was classified as staff behaviour. A process failure logged as an interpersonal problem is never fixed, because you cannot fix a process by asking two teams to get along.');
+
+  /* 3 — escalation (10) */
+  var escScore=0;
+  CASES.forEach(function(c){ var v=S.esc[c.k]; if(!v) return; var d=Math.abs(v-c.best.esc);
+    escScore += d===0?1.7:d===1?0.9:0; });
+  var t3=Math.min(10,escScore);
+  pts.push(['Escalation judgement',Math.round(t3*10)/10,10]);
+  if(S.esc.c2 && S.esc.c2<3) improve.push('The public review was escalated below Level 3. A public allegation about results communication needs patient relations and the department, not a reply and a close.');
+
+  /* 4 — patient response quality (20) */
+  var respScore=0, respBad=0;
+  CASES.forEach(function(c){
+    var chosen=Object.keys(S.resp[c.k]||{}).filter(function(k){return S.resp[c.k][k];});
+    var good=chosen.filter(function(k){ return c.goodResp.indexOf(k)>=0; }).length;
+    var bad=chosen.filter(function(k){ return (c.badResp||[]).indexOf(k)>=0
+        || !RESP_BLOCKS.filter(function(b){return b.k===k;})[0].good; }).length;
+    respBad+=bad;
+    respScore += Math.max(0, good*1.1 - bad*1.4);
+  });
+  var t4=Math.max(0,Math.min(20, respScore));
+  if(S.privacyHits) t4=Math.max(0,t4-5*S.privacyHits);
+  pts.push(['Patient response quality',Math.round(t4*10)/10,20]);
+  if(S.privacyHits) improve.push('A reply disclosed protected information ('+S.privacyHits+' block'+(S.privacyHits>1?'s':'')+'). On a public review, confirming that a named person is a patient is itself the disclosure — before any clinical detail is added.');
+  else strengths.push('No reply disclosed protected information, including on the public review.');
+
+  /* 5 — corrective action (15) */
+  var actScore=0;
+  CASES.forEach(function(c){
+    var acts=Object.keys(S.actions[c.k]||{}).filter(function(k){return S.actions[c.k][k];});
+    var good=acts.filter(function(k){ return c.best.actions.indexOf(k)>=0; }).length;
+    var bad=acts.filter(function(k){ return k==='nothing'||k==='blamestaff'; }).length;
+    actScore += Math.max(0, good*1.0 - bad*1.5);
+  });
+  var t5=Math.max(0,Math.min(15,actScore));
+  pts.push(['Corrective action',Math.round(t5*10)/10,15]);
+  var blamed=CASES.filter(function(c){ return (S.actions[c.k]||{}).blamestaff; }).length;
+  if(blamed) improve.push('A written warning was issued as the corrective action in '+blamed+' case(s). Disciplining the person at the counter for a failure the process created is how a hospital loses both the staff member and the improvement.');
+
+  /* 6 — systemic finding (15) */
+  var t6=S.systemic==='comm'?11:S.systemic==='staff'?5:S.systemic==='wait'?4:2;
+  var words=S.reasoning?S.reasoning.split(/\s+/).length:0;
+  if(words>=50) t6+=4; else if(words>=25) t6+=2.5; else if(words>=10) t6+=1;
+  else improve.push('The management finding was barely argued. A quality committee acts on the reasoning, not the option chosen.');
+  t6=Math.min(15,t6);
+  pts.push(['Management finding',Math.round(t6*10)/10,15]);
+  if(S.systemic==='comm') strengths.push('Reached the finding the six cases actually support: one communication and ownership failure appearing under five different logged categories.');
+
+  /* 7 — use of the NPS split (5) */
+  var t7=S.npsRun?5:0;
+  pts.push(['Feedback data analysis',t7,5]);
+  if(!S.npsRun) improve.push('The NPS split was never opened, so the report quotes a headline score without knowing how many detractors sit behind it.');
+
+  paintMeters();
+  var total2=Math.round(pts.reduce(function(a,p){return a+p[1];},0));
+  finish(total2,pts,strengths,improve);
+}
+
+function finish(total,pts,strengths,improve){
+  var elapsed=S.started?Math.round((Date.now()-S.started)/60000):0;
+  var sysMap={wait:'Waiting time is dominant; increase capacity',
+    comm:'One communication and ownership failure appearing under five logged categories',
+    staff:'Staff attitude is the recurring theme',mixed:'Unrelated complaints; separate departmental actions'};
+  var caseRows=CASES.map(function(c){
+    var mine=S.cat[c.k]?CATS.filter(function(x){return x.k===S.cat[c.k];})[0].t:'—';
+    var want=CATS.filter(function(x){return x.k===c.best.cat;})[0].t;
+    var judged=Object.keys(S.judged[c.k]||{});
+    var caught=AI_FIELDS.filter(function(f){ return c.wrong[f.k] && (S.judged[c.k]||{})[f.k]==='disagree'; }).length;
+    var wrongN=AI_FIELDS.filter(function(f){ return c.wrong[f.k]; }).length;
+    return '<tr'+(S.cat[c.k]===c.best.cat?' class="cool"':'')+'><td>'+esc(c.ref)+'</td><td>'+esc(c.src)+'</td>'
+      +'<td>'+esc(c.ai.category)+'</td><td>'+esc(mine)+'</td><td>'+esc(want)+'</td>'
+      +'<td class="n">'+caught+'/'+wrongN+'</td><td class="n">'+(S.esc[c.k]?'L'+S.esc[c.k]:'—')+'</td></tr>';
+  }).join('');
+  var pp=Math.round(NPS.promoters/NPS.total*100), dp=Math.round(NPS.detractors/NPS.total*100);
+
+  var html='<div class="card"><h3>Patient Experience Incident Report</h3>'
+   +'<p class="muted">ALIZON SmartCare Multispecialty Hospital · monthly case review · time in centre '+elapsed+' min</p>'
+   +'<div class="scorebig">'+total+' <span style="font-size:16px;font-weight:600;color:var(--muted)">/ 100</span></div>'
+   +'<p class="muted">Service recovery <b>'+S.recovery+'%</b> · Communication integrity <b>'+S.integ+'%</b> · '
+   +'cases closed '+Object.keys(S.closed).length+' of '+CASES.length+'</p>'
+
+   +'<table class="d"><tr><th>Element</th><th>Mark</th></tr>'
+   +pts.map(function(p){ return '<tr><td>'+esc(p[0])+'</td><td class="n">'+p[1]+' / '+p[2]+'</td></tr>'; }).join('')
+   +'<tr><td><b>Total</b></td><td class="n"><b>'+total+' / 100</b></td></tr></table>'
+
+   +'<div class="lbl">Feedback position</div>'
+   +'<table class="d"><tr><th>Measure</th><th>Value</th></tr>'
+   +BOARD.map(function(b){ return '<tr><td>'+esc(b.n)+'</td><td class="n">'+b.v+'</td></tr>'; }).join('')
+   +(S.npsRun?'<tr class="hot"><td>NPS calculated ('+pp+'% promoters − '+dp+'% detractors)</td><td class="n">'+(pp-dp)+'</td></tr>':'')
+   +'</table>'
+
+   +'<div class="lbl">Case review</div>'
+   +'<table class="d"><tr><th>Ref</th><th>Source</th><th>AI category</th><th>Your category</th><th>Supported by the text</th><th>AI errors caught</th><th>Escalation</th></tr>'+caseRows+'</table>'
+
+   +'<div class="lbl">Service recovery actions recorded</div>'
+   +'<ul>'+CASES.map(function(c){
+      var acts=Object.keys(S.actions[c.k]||{}).filter(function(k){return S.actions[c.k][k];})
+        .map(function(k){ return ACTIONS.filter(function(a){return a.k===k;})[0].t; });
+      return '<li><b>'+esc(c.ref)+'</b> — '+(acts.length?acts.map(esc).join('; '):'<span class="muted">none recorded</span>')+'</li>'; }).join('')+'</ul>'
+
+   +'<div class="lbl">Management finding</div>'
+   +'<p>'+esc(sysMap[S.systemic]||'—')+'</p>'
+   +'<div class="lbl">Reasoning</div><p>'+(S.reasoning?esc(S.reasoning):'<span class="muted">none recorded</span>')+'</p>'
+
+   +'<div class="fb yes"><div class="hd">Strengths</div>'
+     +(strengths.length?'<ul><li>'+strengths.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+   +'<div class="fb no"><div class="hd">Where it could be stronger</div>'
+     +(improve.length?'<ul><li>'+improve.map(esc).join('</li><li>')+'</li></ul>':'—')+'</div>'
+
+   +'<div class="lbl">AI limitations recorded for this exercise</div>'
+   +'<ul><li>The classifier reads the words of a complaint, not its cause. It reliably returns the category the '
+   +'complaint <i>mentions</i>, which is why waiting time is over-represented in the logged data and '
+   +'communication is under-represented.</li>'
+   +'<li>A generated draft reply is not privacy-aware. On a public review it will happily quote the record to '
+   +'correct the reviewer, which is a disclosure the hospital cannot retract.</li>'
+   +'<li>Severity scoring does not know who the patient is. The same process failure is not the same event for '
+   +'a 78-year-old waiting in a chair.</li></ul>'
+
+   +'<div class="note">Synthetic data throughout. Nothing in this report describes a real patient, reviewer or '
+   +'staff member, and none of it is clinical advice.</div>'
+   +'<p class="muted no-print" style="font-size:12px">Now write and submit your report below — faculty will evaluate it.</p></div>';
+
+  $('caseFb').innerHTML='<div class="fb yes"><div class="hd">Report generated</div>Your incident report is on the <b>Result &amp; Record</b> tab.</div>';
+  var _re=$('resEmpty'); if(_re) _re.style.display='none';
+  $('resBox').innerHTML=html;
+  goTab('res');
+
+  var OPTS={module:'Hospital Administration · Module 3 · Patient Experience & Service Recovery',
+            title:'AI Patient Experience, Feedback & Service-Recovery Command Centre',
+            programme:'Hospital Administration AI', pct:total,
+            resultText:total+'/100 · recovery '+S.recovery+'% · communication '+S.integ+'%'};
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme,
+    submitOpts:OPTS, titleField:{label:'Management finding', placeholder:'e.g. Communication and ownership failure across five logged categories'},
+    minWords:400,
+    attachments:[{label:'1. Patient Experience Incident Report / printout (PDF)'},{label:'2. Service recovery plan for the month (PDF)'}],
+    reportHtml:html
+  });
+}
+
+var clockTimer=null;
+$('startBtn').addEventListener('click',function(){
+  S=freshState(); goTab('work'); desk();
+  if(clockTimer) clearInterval(clockTimer);
+  clockTimer=setInterval(tickClock,1000); tickClock();
+});
+S=freshState(); paintMeters();
+})();
+</script>
+</body>
+</html>

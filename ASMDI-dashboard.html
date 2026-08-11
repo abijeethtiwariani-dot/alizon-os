@@ -1735,11 +1735,13 @@ const DEFAULT_PROGRAMS=[
       'Unit 2 – Smart administrative technologies: queues, appointments and coordination',
       'Unit 3 – Responsible AI and ethical administrative practice',
       'Unit 4 – Future healthcare administration technologies and predictive management']},
-    {unit:'Module 3',title:'Workforce Planning & Human Resource Management',desc:'Staffing a hospital: skill mix, rosters, fatigue and workforce analytics.',status:'soon',href:'',units:[
-      'Unit 1 – Workforce planning, staffing norms and skill mix',
-      'Unit 2 – Rostering, duty hours and fatigue as a safety issue',
-      'Unit 3 – Recruitment, credentialling and training records',
-      'Unit 4 – Performance management and workforce analytics']},
+    {unit:'Module 3',title:'Patient Experience, Communication & Service Recovery',desc:'What patients actually complain about, how a hospital answers them, and how a difficult conversation is held to a controlled close.',status:'live',href:'hospital-admin/ALIZON-HA-M3-Practical1-Patient-Experience.html',practicals:[
+      {title:'Practical 1 · AI Patient Experience, Feedback & Service-Recovery Command Centre',href:'hospital-admin/ALIZON-HA-M3-Practical1-Patient-Experience.html'},
+      {title:'Practical 2 · Communication, Conflict Management & Patient Interaction Lab',href:'hospital-admin/ALIZON-HA-M3-Practical2-Communication-Lab.html'}],units:[
+      'Unit 1 – Patient experience, feedback channels and NPS',
+      'Unit 2 – Complaint handling, root cause and service recovery',
+      'Unit 3 – Professional communication and difficult conversations',
+      'Unit 4 – Conflict management across departments and teams']},
     {unit:'Module 4',title:'Hospital Finance, Billing & Revenue Cycle',desc:'What a service costs, what it is billed at, and where the money leaks.',status:'soon',href:'',units:[
       'Unit 1 – Costing a hospital service and understanding cost centres',
       'Unit 2 – Billing, tariffs and package rates',
@@ -1813,7 +1815,7 @@ const DEFAULT_PROGRAMS=[
 ];
 /* Bump on every change to DEFAULT_PROGRAMS — loadPrograms() only refreshes a
    browser's cached copy when this string changes. */
-const PROG_VER='2026-08-11-ha-m1m2-practicals';
+const PROG_VER='2026-08-11-ha-m1m2m3-practicals';
 /* alizonPrograms is cloud-synced, and the pull lands *after* the version-gated
    seed above. A stale cloud copy therefore used to overwrite freshly shipped
    programmes while leaving the new version string in place — after which the
