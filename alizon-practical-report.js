@@ -157,8 +157,18 @@
           })();
         });
         host.querySelector('#aprDownload').addEventListener('click',function(){
-          if(window.AlizonPracticalSubmit&&AlizonPracticalSubmit.download) AlizonPracticalSubmit.download(subOpts,reportObj);
-          else alert('Download service not loaded — please refresh and try again.');
+          var b=this;
+          if(!(window.AlizonPracticalSubmit&&AlizonPracticalSubmit.downloadPdf)){
+            alert('Download service not loaded — please refresh and try again.'); return;
+          }
+          var txt=b.textContent;
+          b.disabled=true;
+          AlizonPracticalSubmit.downloadPdf(subOpts,reportObj,function(s){
+            b.textContent = s==='preparing' ? 'Preparing PDF…'
+                          : s==='rendering' ? 'Building your PDF…'
+                          : s==='fallback'  ? 'Opening print view…' : txt;
+            if(s==='done'||s==='fallback'){ b.disabled=false; setTimeout(function(){ b.textContent=txt; }, s==='done'?1800:600); }
+          });
         });
         host.querySelector('#aprOut').scrollIntoView({behavior:'smooth',block:'nearest'});
       });

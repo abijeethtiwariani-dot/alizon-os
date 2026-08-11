@@ -271,6 +271,7 @@
   .newprog{border:1px dashed rgba(161,98,7,.55)}
 </style>
   <script src="firebase-sync.js"></script>
+<script src="alizon-backup.js?v=1"></script>
   <script src="print-paginate.js"></script>
 <link rel="stylesheet" href="alizon-theme.css">
 <style id="friendly-admin">
@@ -1239,6 +1240,19 @@ h1,h2,h3{color:#111!important}
     <h3 style="font-size:15px;margin:14px 0 8px;color:var(--gold)">Full backup</h3>
     <div class="ahint">Download all data as a single <b>.zip</b> (one JSON file per store, plus a manifest) to keep on your own hardware.</div>
     <button class="cadd" id="dbBackup">Download full backup (.zip)</button>
+
+    <h3 style="font-size:15px;margin:24px 0 8px;color:var(--gold)">Automatic snapshots</h3>
+    <div class="ahint">The system photographs your data <b>once a day</b>, and again <b>immediately before
+      anything destructive</b> — a roster clear, a fresh start, a submission trim, a marks reset. Snapshots are
+      kept in the cloud for 14 days and can be put back here without touching anything else. This is what was
+      missing on 11 August, when submitted practical work was cleared and there was no copy of it anywhere.</div>
+    <div class="crow n" style="gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
+      <button class="cadd" id="bkNow">Take a snapshot now</button>
+      <span class="ahint" id="bkLast" style="margin:0"></span>
+    </div>
+    <div style="overflow-x:auto;max-height:44vh;overflow-y:auto;margin-top:10px"><table class="stt" id="bkTable"></table></div>
+    <div class="hint" id="bkNote" style="margin-top:8px"></div>
+
     <h3 style="font-size:15px;margin:24px 0 8px;color:var(--crimson)">Danger zone — reset everything</h3>
     <div class="ahint">Permanently deletes <b>ALL</b> data on this device and in the cloud. Your admin password is kept so you stay signed in. <b>Download a backup first.</b> Type <b>DELETE</b> to confirm.</div>
     <div class="crow n" style="gap:8px;align-items:center;flex-wrap:wrap">
@@ -1934,6 +1948,7 @@ document.getElementById('stClear').addEventListener('click',()=>{
     +'Type CLEAR to confirm:');
   if(String(typed||'').trim().toUpperCase()!=='CLEAR'){ toast('Roster not cleared'); return; }
   try{ localStorage.setItem('alizonStudentsSnapshot',JSON.stringify({at:Date.now(),count:all.length,rows:all})); }catch(e){}
+  try{ if(window.AlizonBackup) AlizonBackup.snapshotNow('before clearing the roster'); }catch(e){}
   try{ if(window.alizonSync) window.alizonSync.confirmDestructive('alizonStudents'); }catch(e){}
   localStorage.removeItem('alizonStudents'); localStorage.removeItem('alizonStudentsUpdated');
   renderStudents(); toast('Roster cleared — '+all.length+' records');
@@ -2221,7 +2236,59 @@ function dbResetAll(){ var inp=document.getElementById('dbReset'),note=document.
   try{logAct('Reset - all data deleted','update');}catch(e){}
   if(note){note.style.color='var(--gold)'; note.textContent='All data deleted. Reloading...';}
   setTimeout(function(){ location.reload(); },800); }
-function renderData(){ var b=document.getElementById('dbBackup'); if(b&&!b._w){b._w=1;b.addEventListener('click',dbBackup);} var r=document.getElementById('dbResetBtn'); if(r&&!r._w){r._w=1;r.addEventListener('click',dbResetAll);} }
+/* ---- automatic snapshots (alizon-backup.js) ---- */
+function bkFmt(iso){ try{ return new Date(iso).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return iso||'—'; } }
+function bkRender(){
+  var t=document.getElementById('bkTable'), l=document.getElementById('bkLast');
+  if(!t||!window.AlizonBackup) return;
+  var last=AlizonBackup.lastRun();
+  if(l) l.innerHTML=last?('Last snapshot <b>'+bkFmt(last)+'</b>'):'<b style="color:var(--crimson)">No snapshot taken yet on this browser.</b>';
+  t.innerHTML='<tr><th>Data</th><th>Date</th><th>Records</th><th>Taken because</th><th></th></tr>'
+    +'<tr><td colspan="5" style="color:var(--muted);padding:12px">Loading snapshots…</td></tr>';
+  AlizonBackup.list().then(function(rows){
+    t.innerHTML='<tr><th>Data</th><th>Date</th><th>Records</th><th>Taken because</th><th></th></tr>'
+      +(rows.length?rows.map(function(r){
+          return '<tr><td>'+esc(String(r.key||'').replace(/^alizon/,''))+'</td><td class="num">'+esc(r.date||'')+'</td>'
+            +'<td class="num">'+(r.count==null?'—':r.count)+'</td><td>'+esc(r.reason||'daily')+'</td>'
+            +'<td><button class="btn bk-restore" data-bk="'+esc(r.id)+'" style="padding:4px 10px;font-size:12px">Restore</button></td></tr>';
+        }).join('')
+        :'<tr><td colspan="5" style="color:var(--muted);padding:12px">No snapshots yet — take one now, or one will be taken automatically.</td></tr>');
+    [].forEach.call(t.querySelectorAll('.bk-restore'),function(b){
+      b.addEventListener('click',function(){
+        var id=b.getAttribute('data-bk');
+        if(!confirm('Restore '+id+'?\n\nThis replaces that data store on every device with the snapshot. Anything added since will be lost.\n\nA snapshot of the CURRENT data is taken first, so this is reversible.')) return;
+        b.disabled=true; b.textContent='…';
+        AlizonBackup.snapshotNow('before restore of '+id).then(function(){
+          return AlizonBackup.restore(id);
+        }).then(function(r){
+          document.getElementById('bkNote').innerHTML='<b style="color:var(--success)">Restored '+esc(r.key)+'</b> from '+esc(r.date)+' — '+r.count+' records. Every device will pick it up.';
+          try{ logAct('Restored '+r.key+' from the '+r.date+' snapshot ('+r.count+' records)','update'); }catch(e){}
+          try{ renderStudents(); renderEval&&renderEval(); }catch(e){}
+          bkRender();
+        }).catch(function(e){
+          b.disabled=false; b.textContent='Restore';
+          document.getElementById('bkNote').innerHTML='<b style="color:var(--crimson)">Could not restore</b> — '+esc(e&&e.message||'unknown error');
+        });
+      });
+    });
+  });
+}
+function renderData(){
+  var b=document.getElementById('dbBackup'); if(b&&!b._w){b._w=1;b.addEventListener('click',dbBackup);}
+  var r=document.getElementById('dbResetBtn'); if(r&&!r._w){r._w=1;r.addEventListener('click',dbResetAll);}
+  var n=document.getElementById('bkNow');
+  if(n&&!n._w){ n._w=1; n.addEventListener('click',function(){
+    n.disabled=true; n.textContent='Taking snapshot…';
+    AlizonBackup.snapshotNow('manual').then(function(res){
+      n.disabled=false; n.textContent='Take a snapshot now';
+      document.getElementById('bkNote').innerHTML=res.offline
+        ? '<b style="color:var(--crimson)">Not signed in to the cloud</b> — snapshot not taken.'
+        : '<b style="color:var(--success)">Snapshot taken</b> — '+res.saved+' data store(s).';
+      bkRender();
+    });
+  }); }
+  bkRender();
+}
 
 const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-resetmarks','adm-exp','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
 function showSec(id){
@@ -3809,6 +3876,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   'use strict';
   function subs(){ try{var a=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]');return Array.isArray(a)?a:[];}catch(e){return[];} }
   function save(a){
+    try{ if(window.AlizonBackup && !save.__snapped){ save.__snapped=1; AlizonBackup.snapshotNow('before resetting practical marks'); } }catch(e){}
     /* "Remove submissions" is a deliberate bulk delete, so tell the sync layer —
        otherwise the mass-deletion guard refuses to propagate it and the removal
        silently applies to this browser only. */
@@ -3931,7 +3999,11 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       if(conf.value.trim().toUpperCase()!=='RESET')return;
       var keys=[]; document.querySelectorAll('.fs:checked').forEach(function(c){ String(c.dataset.k).split(',').forEach(function(k){k=k.trim(); if(k&&keys.indexOf(k)<0)keys.push(k);}); });
       if(!keys.length){ note('Tick at least one category to clear'); return; }
-      if(!confirm('Fresh start: permanently clear '+keys.length+' data set(s) for a hand-over to students?\n\nKept safe: faculty, students, allotment, courses, syllabus, content.\n\nThis cannot be undone.'))return;
+      if(!confirm('Fresh start: permanently clear '+keys.length+' data set(s) for a hand-over to students?\n\n'
+        +(keys.indexOf('alizonSubmissions')>=0?'⚠ THIS INCLUDES EVERY PRACTICAL REPORT STUDENTS HAVE SUBMITTED,\n   including work still waiting in the faculty evaluation queue.\n\n':'')
+        +'Kept safe: faculty, students, allotment, courses, syllabus, content.\n\n'
+        +'A snapshot is taken first and can be restored from Data & Backup.'))return;
+      try{ if(window.AlizonBackup) AlizonBackup.snapshotNow('before fresh start'); }catch(e){}
       keys.forEach(clearKey);
       conf.value=''; go.disabled=true; go.style.opacity='.5';
       log('Fresh start — cleared: '+keys.join(', '));
@@ -4018,6 +4090,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       var s=split();
       if(!s.old.length) return;
       if(!confirm('Permanently remove '+s.old.length+' submission'+(s.old.length===1?'':'s')+' older than 6 months?\n\nThis cannot be undone. Download the archive first if you have not.')) return;
+      try{ if(window.AlizonBackup) AlizonBackup.snapshotNow('before trimming old submissions'); }catch(e){}
       try{ if(window.alizonSync) window.alizonSync.confirmDestructive('alizonSubmissions'); }catch(e){}
       setDB('alizonSubmissions', s.keep);
       if(typeof logAct==='function') logAct('Trimmed '+s.old.length+' practical submissions older than 6 months ('+kb(s.old)+' KB freed)','update');

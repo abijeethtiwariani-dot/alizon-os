@@ -173,7 +173,71 @@
       return window.AlizonPracticalSubmit;
     },
     submit:function(opts,report){ doSubmit(opts||{},report||{}); },
-    /* build the letterheaded report and open it in a printable window for download / Save-as-PDF */
+    /* Produce a REAL .pdf file the student can keep and attach.
+       This used to open a print window and rely on the browser's Save-as-PDF,
+       which needs pop-ups allowed and, on a phone, often produces nothing at
+       all — while the submission flow asks the student to attach a PDF of
+       their work. So: build the PDF here, download it, and fall back to the
+       print window only if the libraries cannot be reached (offline). */
+    downloadPdf:function(opts,report,onState){
+      opts=opts||{}; report=report||{};
+      var p=profile();
+      var name=(report.name||p.name||'').trim()||'Candidate', reg=(report.reg||p.reg||'').trim();
+      var html=wrapReport({module:opts.module,programme:opts.programme,resultText:report.resultText,html:report.html||''},name,reg);
+      var fname=((opts.title||'Practical Report')+' - '+name+(reg?' '+reg:''))
+        .replace(/[\\/:*?"<>|]+/g,' ').replace(/\s+/g,' ').trim()+'.pdf';
+      function state(s){ try{ if(onState) onState(s); }catch(e){} }
+
+      function need(src,test){
+        return new Promise(function(res,rej){
+          if(test()) return res();
+          var s=document.createElement('script'); s.src=src;
+          s.onload=function(){ test()?res():rej(new Error('loaded but missing')); };
+          s.onerror=function(){ rej(new Error('offline')); };
+          document.head.appendChild(s);
+        });
+      }
+      var CDN='https://cdnjs.cloudflare.com/ajax/libs/';
+      state('preparing');
+      Promise.all([
+        need(CDN+'jspdf/2.5.1/jspdf.umd.min.js', function(){ return !!(window.jspdf&&window.jspdf.jsPDF); }),
+        need(CDN+'html2canvas/1.4.1/html2canvas.min.js', function(){ return !!window.html2canvas; })
+      ]).then(function(){
+        /* Render at A4 width so the layout is the printed one, not the screen one. */
+        var A4W=794, A4H=1123, PAD=38;
+        var host=document.createElement('div');
+        host.style.cssText='position:fixed;left:-10000px;top:0;width:'+A4W+'px;background:#fff;padding:'+PAD+'px;'
+          +'box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;color:#111';
+        host.innerHTML=html;
+        document.body.appendChild(host);
+        state('rendering');
+        return html2canvas(host,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false})
+          .then(function(canvas){
+            document.body.removeChild(host);
+            var pdf=new window.jspdf.jsPDF({unit:'px',format:'a4',orientation:'portrait',compress:true});
+            var pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+            /* slice the tall canvas into page-height strips */
+            var sliceH=Math.floor(canvas.width*(ph/pw));
+            var y=0, first=true;
+            while(y<canvas.height){
+              var h=Math.min(sliceH,canvas.height-y);
+              var part=document.createElement('canvas');
+              part.width=canvas.width; part.height=h;
+              part.getContext('2d').drawImage(canvas,0,y,canvas.width,h,0,0,canvas.width,h);
+              var img=part.toDataURL('image/jpeg',0.92);
+              if(!first) pdf.addPage();
+              pdf.addImage(img,'JPEG',0,0,pw,h*(pw/canvas.width));
+              first=false; y+=h;
+            }
+            pdf.save(fname);
+            state('done');
+          });
+      }).catch(function(){
+        state('fallback');
+        window.AlizonPracticalSubmit.download(opts,report);
+      });
+    },
+    /* printable-window fallback, kept for offline use */
     download:function(opts,report){
       opts=opts||{}; report=report||{};
       var p=profile();
