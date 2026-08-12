@@ -1,0 +1,125 @@
+{
+ "1": {
+  "no": 1,
+  "title": "Foundations of Hospital Administration & Digital Healthcare Systems",
+  "hours": "130",
+  "note": "(Regulatory/Licence/Diff types of healthcare facility/Hospital governance/overview about clinical and non clinical of hospital in general/vendor management - outsourced services, support services eg F",
+  "units": [
+   "Introduction to Hospital Administration: evolution of healthcare administration; structure of healthcare organizations; hospital administration fundamentals; smart healthcare systems | Online Practical: virtual hospital tour & organization-structure mapping exercise",
+   "Digital Healthcare Systems: hospital information systems; electronic health records (EHR); telemedicine & telehealth; digital patient registration systems; smart healthcare technologies | Online Practical: hands-on HIS/EHR demo software lab & telemedicine platform demo",
+   "Healthcare Operations Management: hospital workflow management; front office & patient coordination; OP/IP workflow systems; administrative communication systems; healthcare service integration | Online Practical: OP/IP workflow simulation & online front-office role play",
+   "Emerging Trends in Healthcare Administration: smart hospitals; digital healthcare infrastructure; healthcare automation systems; AI in healthcare administration; future trends | Online Practical: smart-hospital case exploration & AI tool demonstrations"
+  ],
+  "ojt": "OJT (Module-linked): supervised exposure in partner hospital - administration department familiarization, front office & OP/IP workflow observation with logbook"
+ },
+ "2": {
+  "no": 2,
+  "title": "AI-assisted Healthcare Administration & Smart Hospital Operations",
+  "hours": "130",
+  "note": "AI Validation process + Ethical management in context of DPDT Act + Utilisation of Public AI tools for hospital management + demonstartions ...) | To develop hands-on capability in AI-assisted adminis",
+  "units": [
+   "Introduction to AI in Healthcare Management: fundamentals of artificial intelligence; AI-assisted administrative systems; healthcare automation basics; applications of AI in hospital administration | Online Practical: guided demo of AI-assisted administrative workflow tools",
+   "Smart Administrative Technologies: smart patient management systems; digital queue & appointment systems; AI-supported communication systems; administrative monitoring systems; digital coordination platforms | Online Practical: hands-on lab on digital queue/appointment & patient management demo systems",
+   "Responsible AI & Ethical Administrative Practice: ethical AI usage in healthcare; patient data privacy & security; human supervision in AI-supported systems; AI limitations in administrative practice | Online Practical: privacy & responsible-AI scenario workshop with checklist exercises",
+   "Future Healthcare Administration Technologies: predictive healthcare management; smart hospital innovations; AI-supported decision-support systems; digital healthcare transformation | Online Practical: AI decision-support tool walkthrough & mini case presentation"
+  ],
+  "ojt": "OJT (Module-linked): supervised exposure in partner hospital - smart queue/appointment, patient management and AI-supported administrative system observation"
+ },
+ "3": {
+  "no": 3,
+  "title": "Healthcare Communication, Professional Practice & Patient Experience Management",
+  "hours": "130",
+  "note": "Complaint management, patient experience management system, satisfaction rate, hospitals can compare themselves, ref platform vector, digital patient experience management, esclation, evaluation, clos",
+  "units": [
+   "Professional Practice in Healthcare Administration: professional behaviour; administrative ethics; patient rights & confidentiality; workplace discipline & responsibility | Online Practical: professional-scenario role plays & ethics case discussions (online)",
+   "Healthcare Communication Systems: administrative communication; patient interaction management; telehealth communication practices; interdepartmental coordination; digital communication platforms | Online Practical: telehealth communication simulation & mock patient-call lab",
+   "Patient Experience & Service Management: patient-centered service systems; patient satisfaction & NPS/feedback systems; front office coordination; patient support services; healthcare hospitality concepts | Online Practical: patient-feedback data analysis & service-recovery role play",
+   "Teamwork & Administrative Coordination: healthcare team coordination; conflict management basics; leadership & coordination skills; administrative workflow communication | Online Practical: virtual team coordination exercise & conflict-resolution simulation"
+  ],
+  "ojt": "OJT (Module-linked): supervised exposure in partner hospital - patient interaction, front-office coordination and patient support activities under mentor supervision"
+ },
+ "4": {
+  "no": 4,
+  "title": "Healthcare Informatics, Documentation & Digital Workflow Management",
+  "hours": "130",
+  "note": "Separate session on DPDP to be included, cyber security to be stressed, vulnerability analysis penetration test, access control measures,digital health policies | To build practical skills in healthca",
+  "units": [
+   "Foundations of Healthcare Informatics: introduction to healthcare informatics; clinical & administrative data management; healthcare information exchange; digital healthcare infrastructure | Online Practical: healthcare data classification & information-flow mapping exercise",
+   "Healthcare Documentation Systems: electronic medical records; administrative documentation standards; digital reporting systems; medical documentation ethics; record management systems | Online Practical: hands-on EMR demo software lab & digital report preparation",
+   "Digital Workflow Management: administrative workflow systems; digital coordination systems; healthcare database basics; workflow optimization; smart administrative practices | Online Practical: workflow mapping & optimization exercise using digital tools",
+   "Healthcare Data Security & Compliance: healthcare data protection; information security in healthcare; documentation auditing basics; legal aspects of digital documentation; compliance standards | Online Practical: data-privacy scenario drill & mock documentation audit (online)"
+  ],
+  "ojt": "OJT (Module-linked): supervised exposure in partner hospital - Medical Records Department, documentation workflow and record management observation & practice"
+ },
+ "5": {
+  "no": 5,
+  "title": "Healthcare Quality, Patient Safety & Hospital Support Systems",
+  "hours": "130",
+  "note": "NABH edition, Quality tools eg FMEA, RCA, Risk register, Incident reporting \u2026.. NABH Self assessment checklist | To develop applied understanding of patient safety, emergency coordination, infection p",
+  "units": [
+   "Patient Safety & Safe Administrative Practices: principles of patient safety; risk reduction in healthcare; safety reporting systems; patient-centered safety systems | Online Practical: incident-reporting simulation & risk-register preparation exercise",
+   "Emergency & Support Coordination Systems: emergency response coordination; administrative support in emergencies; disaster preparedness basics; emergency communication systems | Online Practical: virtual emergency communication drill & disaster-preparedness tabletop exercise",
+   "Infection Prevention & Hospital Safety: infection prevention principles; biomedical waste management; occupational safety awareness; hospital safety protocols | Online Practical: BMW segregation virtual demo & safety-protocol checklist exercise",
+   "Healthcare Quality & Accreditation Systems: healthcare quality standards; hospital quality monitoring; NABH & accreditation awareness; quality improvement systems | Online Practical: mock NABH self-assessment using standard checklists & quality-indicator exercise"
+  ],
+  "ojt": "OJT (Module-linked): supervised exposure in partner hospital - quality cell, safety rounds, infection control and NABH documentation observation"
+ },
+ "6": {
+  "no": 6,
+  "title": "Healthcare Data Analytics, AI Decision Support & Predictive Hospital Management",
+  "hours": "130",
+  "note": "Statistical measures of indices, Benchmark rates, eg avg hospital stay | To develop applied skills in hospital data analytics, KPI dashboards, predictive hospital management and generative AI-based de",
+  "units": [
+   "Healthcare Data Analytics Foundations: types of hospital data; key hospital KPIs (bed occupancy, ALOS, OPD conversion, TAT, bed turnover); data collection & validation; visualization basics | Online Practical: KPI calculation lab using sample hospital datasets",
+   "Hospital Dashboards & MIS Reporting: MIS dashboard design; department scorecards; spreadsheet & BI tool basics; real-time performance monitoring; management reporting | Online Practical: build a live hospital MIS dashboard (spreadsheet/BI tool lab)",
+   "Predictive Hospital Management: patient flow & bed demand forecasting concepts; OT & appointment scheduling optimization; queue prediction & waiting-time reduction; resource planning with data | Online Practical: bed-demand forecasting & queue-analysis exercise on sample data",
+   "Generative AI & Decision Support for Administrators: AI assistants & chatbots for administrative work; prompt-writing skills for hospital administrators; AI-supported report drafting & summarization; limitations & human oversight | Online Practical: generative-AI prompt lab - drafting administrative reports, summaries & SOPs with review"
+  ],
+  "ojt": "OJT (Module-linked): supervised exposure in partner hospital - MIS/statistics section, KPI data collection and dashboard/report support under mentor supervision"
+ },
+ "7": {
+  "no": 7,
+  "title": "Hospital Finance, Revenue Cycle Management, Health Insurance & Digital Health Ecosystem",
+  "hours": "130",
+  "note": "Revenue leakage and digital claim process, coding, ABHA ID system | To build competency in hospital finance, revenue cycle management, health insurance/TPA coordination, government schemes and the ABD",
+  "units": [
+   "Hospital Finance Basics: hospital budgeting & cost centers; tariff & billing structures; purchase, stores & inventory basics; financial reports awareness | Online Practical: hospital tariff & estimate preparation exercise (online lab)",
+   "Revenue Cycle Management (RCM): registration-to-payment revenue cycle; billing & claims workflow; denial management basics; RCM automation & AI-supported billing tools | Online Practical: end-to-end billing & claims workflow lab on demo software",
+   "Health Insurance & Scheme Coordination: health insurance fundamentals; TPA coordination; cashless & reimbursement workflows; Ayushman Bharat PM-JAY & state schemes; medical coding awareness (ICD basics) | Online Practical: mock pre-authorization & claim documentation exercise",
+   "Digital Health Ecosystem & Compliance: ABDM & ABHA ID awareness; digital payment & e-billing systems; statutory, legal & audit compliance awareness | Online Practical: ABDM/ABHA portal demo walkthrough & compliance checklist exercise"
+  ],
+  "ojt": "OJT (Module-linked): supervised exposure in partner hospital - billing counter, insurance/TPA desk and scheme help-desk observation & assistance"
+ },
+ "8": {
+  "no": 8,
+  "title": "Professional Elective Module: Case Studies",
+  "hours": "160",
+  "note": "- Student chooses ANY ONE elective | To provide in-depth, case study-based online learning with extended hospital OJT in one chosen area aligned with the learner's career interest. | Learner analyses ",
+  "units": [
+   "Elective 1: Case Studies in Hospital Operations & Patient Coordination",
+   "Elective 2: Case Studies in Digital Front Office & Healthcare Communication Systems",
+   "Elective 3: Case Studies in Healthcare Quality, NABH & Accreditation Systems",
+   "Elective 4: Case Studies in Healthcare Informatics & Digital Workflow Management",
+   "Elective 5: Case Studies in AI-assisted Hospital Administration & Smart Healthcare Systems",
+   "Elective 6: Case Studies in Hospital Revenue Cycle, Health Insurance & TPA Coordination"
+  ]
+ },
+ "9": {
+  "no": 9,
+  "title": "Employability Skills, Leadership & Digital-AI Productivity",
+  "hours": "130",
+  "note": "More stress on professional accountability, human element, people management to be stressed | To develop communication, career-readiness, leadership, entrepreneurship and digital-AI productivity skill",
+  "units": [
+   "Communication & Personality Development: professional English & workplace communication for healthcare; grooming & etiquette; presentation skills; email & telephone etiquette | Online Practical: recorded presentation task & communication role plays",
+   "Digital & AI Productivity Skills: office productivity tools (documents, spreadsheets, presentations); AI productivity assistants for administrative work; digital collaboration & scheduling tools; digital professionalism | Online Practical: AI-assisted document/report preparation lab",
+   "Career Readiness: resume & cover letter preparation; interview & group discussion skills; professional networking & LinkedIn branding; healthcare job market awareness | Online Practical: online mock interview, GD session & LinkedIn profile lab",
+   "Leadership, Entrepreneurship & Telehealth Careers: leadership & team management basics; healthcare startup & innovation awareness; telehealth service operations basics; digital healthcare career pathways | Online Practical: mini business-model canvas exercise for a digital health idea",
+   "S.L. Goel - Hospital Administration and Management, Deep & Deep Publications",
+   "B.M. Sakharkar - Principles of Hospital Administration and Planning, Jaypee Brothers",
+   "Robert E. Hoyt & William R. Hersh - Health Informatics: Practical Guide",
+   "Adam Bohr & Kaveh Memarzadeh - Artificial Intelligence in Healthcare, Academic Press",
+   "NABH (QCI) - Accreditation Standards for Hospitals (latest edition); ABDM official guidelines - abdm.gov.in; PM-JAY operational guidelines - pmjay.gov.in"
+  ],
+  "ojt": "OJT (Module-linked): professional shadowing & workplace-behaviour exposure with administrative mentor during hospital placement"
+ }
+}
