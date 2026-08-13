@@ -113,13 +113,15 @@
    "Communication & Personality Development: professional English & workplace communication for healthcare; grooming & etiquette; presentation skills; email & telephone etiquette | Online Practical: recorded presentation task & communication role plays",
    "Digital & AI Productivity Skills: office productivity tools (documents, spreadsheets, presentations); AI productivity assistants for administrative work; digital collaboration & scheduling tools; digital professionalism | Online Practical: AI-assisted document/report preparation lab",
    "Career Readiness: resume & cover letter preparation; interview & group discussion skills; professional networking & LinkedIn branding; healthcare job market awareness | Online Practical: online mock interview, GD session & LinkedIn profile lab",
-   "Leadership, Entrepreneurship & Telehealth Careers: leadership & team management basics; healthcare startup & innovation awareness; telehealth service operations basics; digital healthcare career pathways | Online Practical: mini business-model canvas exercise for a digital health idea",
+   "Leadership, Entrepreneurship & Telehealth Careers: leadership & team management basics; healthcare startup & innovation awareness; telehealth service operations basics; digital healthcare career pathways | Online Practical: mini business-model canvas exercise for a digital health idea"
+  ],
+  "ojt": "OJT (Module-linked): professional shadowing & workplace-behaviour exposure with administrative mentor during hospital placement",
+  "references": [
    "S.L. Goel - Hospital Administration and Management, Deep & Deep Publications",
    "B.M. Sakharkar - Principles of Hospital Administration and Planning, Jaypee Brothers",
    "Robert E. Hoyt & William R. Hersh - Health Informatics: Practical Guide",
    "Adam Bohr & Kaveh Memarzadeh - Artificial Intelligence in Healthcare, Academic Press",
    "NABH (QCI) - Accreditation Standards for Hospitals (latest edition); ABDM official guidelines - abdm.gov.in; PM-JAY operational guidelines - pmjay.gov.in"
-  ],
-  "ojt": "OJT (Module-linked): professional shadowing & workplace-behaviour exposure with administrative mentor during hospital placement"
+  ]
  }
 }
