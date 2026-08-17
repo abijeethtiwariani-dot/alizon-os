@@ -48,6 +48,9 @@
   .top .dl:hover{filter:brightness(1.08)}
   .top #submitBtn{border-color:rgba(217,164,65,.5);color:var(--gold)}
   .top #submitBtn:hover{background:var(--gold-soft)}
+  /* submit stays locked until the student has taken a copy of the report away */
+  .top #submitBtn:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line);color:var(--muted)}
+  .top #submitBtn:disabled:hover{background:var(--pill);border-color:var(--line)}
 
   .layout{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:22px;display:grid;
     grid-template-columns:minmax(360px,470px) 1fr;gap:22px;align-items:start}
@@ -82,6 +85,10 @@
     padding:9px 6px;border-radius:100px;cursor:pointer;transition:.2s}
   .seg button.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
   .modenote{font-size:12.5px;border-radius:10px;padding:10px 13px;margin-bottom:16px;display:flex;gap:8px;align-items:flex-start}
+  .modenote ol.stp{margin:5px 0 0;padding-left:18px}
+  .modenote ol.stp li{margin:3px 0}
+  .modenote ol.stp li.ok{opacity:.6;text-decoration:line-through}
+  .modenote .dlok{display:block;margin-top:6px;font-weight:700}
   .modenote.up{background:rgba(46,139,106,.14);border:1px solid rgba(46,139,106,.35);color:#8fe0bd}
   .modenote.dl{background:var(--gold-soft);border:1px solid rgba(217,164,65,.32);color:#ecd9ab}
   .grp{margin-bottom:16px}
@@ -385,9 +392,10 @@ function fillUnits(){
   if(!units.length){ sel.innerHTML='<option value="">— (choose a module with units) —</option>'; sel.disabled=true; }
   else { sel.disabled=false; sel.innerHTML='<option value="">— Select unit —</option>'+units.map(u=>`<option>${esc(u)}</option>`).join(''); }
 }
-$('f-prog').addEventListener('change',()=>{fillModules();render();});
-$('f-module').addEventListener('change',()=>{fillUnits();render();});
-$('f-unit').addEventListener('change',render);
+/* changing programme/module/unit makes it a different report — re-lock submit */
+$('f-prog').addEventListener('change',()=>{fillModules();render();updateModeUI();});
+$('f-module').addEventListener('change',()=>{fillUnits();render();updateModeUI();});
+$('f-unit').addEventListener('change',()=>{render();updateModeUI();});
 
 /* ---- sections editor ---- */
 function renderSections(){
@@ -449,16 +457,36 @@ $('seg').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
   }
   updateModeUI(); render();
 }));
+/* ---- download-before-submit gate ---------------------------------------
+   All three report types — self-assessment, practical and assignment — have to
+   be downloaded before they can be submitted, so the student keeps their own
+   copy of exactly what was handed in and can produce it during moderation.
+   The gate is keyed to the document, not to the session: switching type,
+   programme, module or unit asks for a fresh download rather than letting a
+   copy of one report unlock the submission of a different one. */
+let dlKey='', dlFmt='';
+function docKey(){ return docType+'|'+$('f-prog').value+'|'+moduleLabel(); }
+function isDownloaded(){ return !!dlKey && dlKey===docKey(); }
+function markDownloaded(fmt){ dlKey=docKey(); dlFmt=fmt; updateModeUI(); }
+function typeLabelFor(t){ return t==='self'?'Self-assessment':t==='assignment'?'Assignment':'Practical'; }
+
 function updateModeUI(){
-  // submit for assignments, practicals & self-assessment; all can also be downloaded
-  const canSubmit = (docType==='practical'||docType==='self'||docType==='assignment');
-  $('submitBtn').style.display = canSubmit ? '' : 'none';
-  $('submitBtn').textContent = docType==='self' ? '✔ Submit self-assessment' : docType==='assignment' ? '✔ Submit assignment' : '✔ Submit practical';
+  const label=typeLabelFor(docType), lower=label.toLowerCase(), ok=isDownloaded();
+  const btn=$('submitBtn');
+  btn.style.display='';
+  btn.disabled=!ok;
+  btn.textContent=(ok?'✔ Submit ':'🔒 Submit ')+lower;
+  btn.title=ok ? ('Submit this '+lower+' to your dashboard')
+               : ('Download your '+lower+' report first — Word or PDF');
   const n=$('modeNote');
-  if(canSubmit){ n.className='modenote up';
-    n.innerHTML='✔ <div><b>'+(docType==='self'?'Self-assessment':docType==='assignment'?'Assignment':'Practical')+':</b> fill it in and <b>submit it to your dashboard</b> — you can download a copy too.</div>'; }
-  else { n.className='modenote dl';
-    n.innerHTML='<div><b>Assignment (theory):</b> download as PDF or Word, then upload it to our submission website. (No dashboard submission for theory.)</div>'; }
+  n.className='modenote '+(ok?'up':'dl');
+  n.innerHTML='<div><b>'+label+'</b>'+
+    '<ol class="stp">'+
+      '<li class="'+(ok?'ok':'')+'">Fill it in, then <b>download your report</b> — Word (.doc) or PDF.</li>'+
+      '<li>'+(ok?'<b>Submit</b> it to your dashboard.':'<b>Submit</b> unlocks once the report has been downloaded.')+'</li>'+
+    '</ol>'+
+    (ok?'<span class="dlok">✓ Downloaded as '+dlFmt+' — you can submit now.</span>':'')+
+  '</div>';
 }
 
 /* ---- build document ---- */
@@ -551,6 +579,7 @@ function fileBase(){
 $('pdfBtn').addEventListener('click',()=>{
   if(window.LHPrint){ LHPrint(document.getElementById('doc'),{headerEnd:'.dh',footer:'.foot'}); }
   else window.print();
+  markDownloaded('PDF');
 });
 $('wordBtn').addEventListener('click',()=>{
   const css=document.querySelector('style').textContent;
@@ -561,6 +590,7 @@ $('wordBtn').addEventListener('click',()=>{
   const blob=new Blob(['﻿'+html],{type:'application/msword'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileBase()+'.doc';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+  markDownloaded('Word (.doc)');
 });
 
 /* ---- submit (PRACTICALS ONLY) ---- */
@@ -634,18 +664,23 @@ $('submitBtn').addEventListener('click',()=>{
   const name=$('f-name').value.trim();
   if(!name){toast('Enter your student name first',true);$('f-name').focus();return;}
   if(!moduleLabel()){toast('Choose your module & unit first',true);$('f-module').focus();return;}
+  if(!isDownloaded()){toast('Download your '+typeLabelFor(docType).toLowerCase()+' report first — Word or PDF',true);return;}
   const rec={id:'s'+Date.now()+'_'+Math.floor(Math.random()*1000),
     type:docType, typeLabel:(docType==='self'?'Self-Assessment':docType==='assignment'?'Assignment':'Practical'),
     name,reg:$('f-reg').value.trim(),programme:$('f-prog').value,module:moduleLabel(),
     title:$('f-title').value.trim(),no:$('f-no').value.trim(),course:$('f-course').value.trim(),date:$('f-date').value.trim(),
-    score:(docType==='self'?saTotal():null),words:countWords(),ts:Date.now(),html:$('doc').innerHTML.split(LOGO).join('alizon-logo.png')};
+    score:(docType==='self'?saTotal():null),words:countWords(),ts:Date.now(),
+    downloadedAs:dlFmt,   /* the student holds a copy in this format */
+    html:$('doc').innerHTML.split(LOGO).join('alizon-logo.png')};
   /* assignments are graded by faculty only — no auto AI provisional mark (it isn't tuned for assignments) */
   if(docType==='assignment'){ rec.status='submitted'; }
   else { rec.ai=aiEvaluate(rec); rec.status='ai-evaluated'; }
   let arr=[];try{arr=JSON.parse(localStorage.getItem('alizonSubmissions')||'[]');if(!Array.isArray(arr))arr=[];}catch(e){}
   arr.unshift(rec);if(arr.length>60)arr=arr.slice(0,60);
   try{localStorage.setItem('alizonSubmissions',JSON.stringify(arr));
-    toast(rec.ai ? ('Submitted ✓ — AI provisional mark: '+rec.ai.grade+' (faculty may adjust)') : 'Submitted ✓ — awaiting faculty evaluation');}
+    toast(rec.ai ? ('Submitted ✓ — AI provisional mark: '+rec.ai.grade+' (faculty may adjust)') : 'Submitted ✓ — awaiting faculty evaluation');
+    /* this report is handed in — a further submission needs its own download */
+    dlKey=''; dlFmt=''; updateModeUI();}
   catch(e){toast('Could not save (storage full)',true);}
   /* submitting work marks the day present, automatically */
   try{ if(window.AlizonAttendance && rec.reg) window.AlizonAttendance.markFor(rec.reg, docType, {module:rec.module}); }catch(e){}
@@ -674,6 +709,10 @@ try{ const pf=JSON.parse(localStorage.getItem('alizonProfile')||'{}');
   if(pf.name&&!$('f-name').value)$('f-name').value=pf.name;
   if(pf.reg&&!$('f-reg').value)$('f-reg').value=pf.reg;
   if(pf.name||pf.reg)render();
+}catch(e){}
+/* deep link from the dashboard: alizon-report-maker.html?type=self|practical|assignment */
+try{ const t=new URLSearchParams(location.search).get('type');
+  if(t&&t!==docType){ const b=$('seg').querySelector('button[data-type="'+t+'"]'); if(b)b.click(); }
 }catch(e){}
 </script>
 <script src="alizon-backbar.js?v=3"></script>

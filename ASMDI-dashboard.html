@@ -1219,6 +1219,25 @@
       <div class="subtable" id="examList"></div>
     </div>
 
+<!-- REPORTS TO DOWNLOAD, THEN SUBMIT -->
+    <div class="modrow" id="reportsrow">
+      <div class="modhead">
+        <h3>Reports &amp; Submission</h3>
+        <span class="modsub">Fill your report in Assessments and <b>download your copy</b> — Word or PDF. Submission
+          unlocks only once the report has been downloaded, so you always hold a copy of exactly what you handed in.</span>
+      </div>
+      <div class="formlist" id="reportKinds"></div>
+    </div>
+
+<!-- BLANK FORMS & TEMPLATES -->
+    <div class="modrow" id="formsrow">
+      <div class="modhead">
+        <h3>Forms &amp; Templates</h3>
+        <span class="modsub">The official blank formats and protocols — download these before you start writing.</span>
+      </div>
+      <div class="formlist" id="formKinds"></div>
+    </div>
+
 <!-- SUBMITTED PRACTICALS -->
     <div class="modrow" id="submissions">
       <div class="modhead">
@@ -2203,6 +2222,32 @@ function moduleResultBadge(moduleUnit, progName){
     {t:'Reflective Learning &amp; Self-Assessment Report', f:'Reflective-Learning-and-Self-Assessment-Report.pdf', d:'Record your reflective learning and self-assessment.'},
     {t:'Student Feedback Form', f:'Student-Feedback-Form.pdf', d:'Share your feedback on the module and teaching.'}
   ];
+  /* Assessments tab — the three things a student writes, each opening the report
+     maker preset to that type. Download is the first step there, not an extra:
+     the Submit button stays locked until the report has been downloaded. */
+  const REPORT_KINDS=[
+    {t:'Assignment', k:'assignment', ic:'ASG', d:'Your written assignment in the institute format — download it, then submit for faculty marking.'},
+    {t:'Practical Report', k:'practical', ic:'PRA', d:'Aim, procedure, observation and result for a practical you have completed.'},
+    {t:'Self-Assessment', k:'self', ic:'SLF', d:'Rate your own learning against the module outcomes and reflect on it.'}
+  ];
+  function renderAssessmentRows(){
+    const a=document.getElementById('reportKinds');
+    if(a) a.innerHTML=REPORT_KINDS.map(x=>`<div class="formcard">
+      <div class="fic">${x.ic}</div>
+      <div class="finfo"><b>${x.t}</b><span>${x.d}</span></div>
+      <a class="fbtn dl" href="alizon-report-maker.html?type=${x.k}">Write &amp; download</a>
+    </div>`).join('');
+    const b=document.getElementById('formKinds');
+    if(b) b.innerHTML=PROGRAMME_FORMS.map(x=>`<div class="formcard">
+      <div class="fic">PDF</div>
+      <div class="finfo"><b>${x.t}</b><span>${x.d}</span></div>
+      <a class="fbtn" href="resources/forms/${x.f}" target="_blank" rel="noopener">Open</a>
+      <a class="fbtn dl" href="resources/forms/${x.f}" download>Download</a>
+    </div>`).join('');
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',renderAssessmentRows);
+  else renderAssessmentRows();
+
   function formsSectionHtml(){
     return `<div class="md-sec"><h3>Forms &amp; Resources <span class="c">${PROGRAMME_FORMS.length}</span></h3>
       <div class="formlist">${PROGRAMME_FORMS.map(x=>`<div class="formcard">
@@ -2374,8 +2419,8 @@ function moduleResultBadge(moduleUnit, progName){
   function render(){
     const subs=loadSubs().filter(s=>s.type==='practical'||s.type==='self'||s.type==='assignment');
     const sub=document.getElementById('subSub');
-    if(!subs.length){ list.innerHTML='<div class="subempty">Nothing submitted yet. Open <b>Assessments</b>, choose <b>Practical</b> or <b>Self-Assessment</b> + your module/unit, then click <b>Submit</b>. (Theory assignments are download-only.)</div>';
-      if(sub) sub.textContent='Practicals & self-assessment forms you submitted from Assessments.'; return; }
+    if(!subs.length){ list.innerHTML='<div class="subempty">Nothing submitted yet. Open <b>Assessments</b>, choose <b>Assignment</b>, <b>Practical</b> or <b>Self-Assessment</b> + your module/unit, <b>download your report</b>, then click <b>Submit</b>.</div>';
+      if(sub) sub.textContent='Assignments, practicals & self-assessment forms you submitted from Assessments.'; return; }
     if(sub) sub.textContent=subs.length+' submission'+(subs.length!==1?'s':'')+' from this device.';
     list.innerHTML=summaryCardHtml(subs)+subs.map(s=>{ const isSA=s.type==='self'; const isAsg=s.type==='assignment';
       const tlabel=isSA?'Self-Assessment':(isAsg?'Assignment':'Practical');
