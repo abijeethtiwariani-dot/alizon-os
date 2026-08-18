@@ -108,6 +108,130 @@
   </div>
 </section>
 
+<!-- ===== TEXTBOOKS (public catalogue) ===== -->
+<section id="azbooks">
+  <div class="in">
+    <div class="section-head">
+      <span class="eyebrow">Course Textbooks</span>
+      <h2>What you will study</h2>
+      <p>Every module has a written textbook, authored in-house and issued to enrolled students.
+         The contents of each are listed in full below, with an opening extract you can read now.
+         The complete text opens in the student library once you are enrolled.</p>
+    </div>
+
+    <div class="bkfilter" id="bkFilter"></div>
+    <div class="bkgrid" id="bkGrid"><p class="bkmuted">Loading the catalogue…</p></div>
+
+    <div class="bknote">
+      Textbooks are revised each edition; page counts are typeset equivalents.
+      Enrolled students read the full text in the <a href="alizon-library.html">ALIZON OS library</a>.
+    </div>
+  </div>
+</section>
+
+<style>
+#azbooks{background:#fff;padding:72px 0}
+#azbooks .bkfilter{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+#azbooks .bkfilter button{font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:9px 17px;border-radius:100px;
+  border:1px solid #e3ddd8;background:#fff;color:#4a443f;transition:.18s}
+#azbooks .bkfilter button:hover{border-color:#b1040e;color:#b1040e}
+#azbooks .bkfilter button.on{background:#8c1515;border-color:#8c1515;color:#fff}
+#azbooks .bkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
+#azbooks .bk{border:1px solid #ece7e2;border-radius:14px;background:#fdfcfb;padding:20px 21px;display:flex;flex-direction:column}
+#azbooks .bk .badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:#8c1515;background:#f7ecec;border-radius:100px;padding:4px 11px;margin-bottom:10px;align-self:flex-start}
+#azbooks .bk h3{font-family:Georgia,'Source Serif Pro',serif;font-size:18px;line-height:1.3;margin:0 0 5px;color:#26221f}
+#azbooks .bk .sub{font-size:13px;color:#6e6a63;font-style:italic;margin:0 0 10px}
+#azbooks .bk .by{font-size:12px;color:#8a827b;margin:0 0 12px}
+#azbooks .bk .stats{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#4a443f;
+  border-top:1px solid #ece7e2;border-bottom:1px solid #ece7e2;padding:10px 0;margin-bottom:12px}
+#azbooks .bk .stats b{display:block;font-size:16px;font-family:Georgia,serif;color:#8c1515;line-height:1.2}
+#azbooks .bk .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+#azbooks .bk .acts button,#azbooks .bk .acts a{font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:none;
+  padding:8px 15px;border-radius:100px;border:1px solid #d9d2cc;background:#fff;color:#4a443f;transition:.18s}
+#azbooks .bk .acts button:hover,#azbooks .bk .acts a:hover{border-color:#b1040e;color:#b1040e}
+#azbooks .bk .acts a.pri{background:#8c1515;border-color:#8c1515;color:#fff}
+#azbooks .bk .panel{display:none;margin-top:14px;border-top:1px solid #ece7e2;padding-top:12px}
+#azbooks .bk .panel.on{display:block}
+#azbooks .bk .ch{margin:0 0 11px}
+#azbooks .bk .ch>b{font-size:13.5px;color:#26221f;display:block;margin-bottom:3px}
+#azbooks .bk .ch ul{margin:0;padding-left:17px}
+#azbooks .bk .ch li{font-size:12.5px;color:#6e6a63;line-height:1.55}
+#azbooks .bk .extract p{font-size:13.5px;line-height:1.72;color:#3c3733;margin:0 0 10px}
+#azbooks .bk .extract .fade{font-size:12px;color:#8a827b;font-style:italic;border-top:1px dashed #e0d8d2;padding-top:9px}
+#azbooks .bkmuted{color:#8a827b;font-size:14px}
+#azbooks .bknote{margin-top:24px;font-size:12.5px;color:#8a827b;border-left:3px solid #9a7b3f;padding:8px 14px;background:#faf8f5}
+@media(max-width:640px){#azbooks{padding:52px 0}#azbooks .bkgrid{grid-template-columns:1fr}}
+</style>
+
+<script>
+(function(){
+  var grid=document.getElementById('bkGrid'), filt=document.getElementById('bkFilter');
+  var BOOKS=[], active='all';
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+
+  fetch('book-catalogue.json').then(function(r){ return r.json(); }).then(function(d){
+    BOOKS=(d&&d.books)||[];
+    if(!BOOKS.length){ grid.innerHTML='<p class="bkmuted">The catalogue is being updated.</p>'; return; }
+    var progs=[]; BOOKS.forEach(function(b){ if(progs.indexOf(b.programme)<0) progs.push(b.programme); });
+    filt.innerHTML='<button data-p="all" class="on">All textbooks ('+BOOKS.length+')</button>'+
+      progs.map(function(p){
+        var n=BOOKS.filter(function(b){return b.programme===p;}).length;
+        return '<button data-p="'+esc(p)+'">'+esc(p)+' ('+n+')</button>'; }).join('');
+    [].forEach.call(filt.querySelectorAll('button'),function(btn){
+      btn.addEventListener('click',function(){
+        active=btn.getAttribute('data-p');
+        [].forEach.call(filt.querySelectorAll('button'),function(b){ b.classList.toggle('on',b===btn); });
+        render();
+      });
+    });
+    render();
+  }).catch(function(){
+    grid.innerHTML='<p class="bkmuted">The catalogue could not be loaded just now.</p>';
+  });
+
+  function render(){
+    var list=BOOKS.filter(function(b){ return active==='all'||b.programme===active; });
+    grid.innerHTML=list.map(function(b,i){
+      return '<article class="bk">'+
+        '<span class="badge">'+esc(b.programme)+' · Module '+esc(b.module)+'</span>'+
+        '<h3>'+esc(b.title)+'</h3>'+
+        (b.sub?'<p class="sub">'+esc(b.sub)+'</p>':'')+
+        '<p class="by">'+esc(b.authors||'Alizon faculty')+(b.edition?' · '+esc(b.edition):'')+'</p>'+
+        '<div class="stats">'+
+          '<span><b>'+b.stats.chapters+'</b>units</span>'+
+          '<span><b>'+b.stats.sections+'</b>topics</span>'+
+          '<span><b>'+b.stats.pages+'</b>pages</span>'+
+        '</div>'+
+        '<div class="acts">'+
+          '<button type="button" data-t="c" data-i="'+i+'">Contents</button>'+
+          '<button type="button" data-t="x" data-i="'+i+'">Read an extract</button>'+
+          '<a class="pri" href="ASMDI-dashboard.html">Read in full ↗</a>'+
+        '</div>'+
+        '<div class="panel" id="bkc'+i+'">'+b.chapters.map(function(c,n){
+            return '<div class="ch"><b>Unit '+(n+1)+' · '+esc(c.title)+'</b>'+
+              (c.sections.length?'<ul>'+c.sections.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':'')+
+            '</div>'; }).join('')+'</div>'+
+        '<div class="panel extract" id="bkx'+i+'">'+
+          (b.sample||'').split('\n\n').filter(Boolean).map(function(p){ return '<p>'+esc(p)+'</p>'; }).join('')+
+          '<p class="fade">Extract from Unit 1. The complete textbook is issued to enrolled students in the ALIZON OS library.</p>'+
+        '</div>'+
+      '</article>';
+    }).join('');
+    [].forEach.call(grid.querySelectorAll('.acts button'),function(btn){
+      btn.addEventListener('click',function(){
+        var i=btn.getAttribute('data-i'), t=btn.getAttribute('data-t');
+        var mine=document.getElementById((t==='c'?'bkc':'bkx')+i);
+        var other=document.getElementById((t==='c'?'bkx':'bkc')+i);
+        if(other) other.classList.remove('on');
+        mine.classList.toggle('on');
+      });
+    });
+  }
+})();
+</script>
+
 <!-- ===== CTA ===== -->
 <section class="cta-band">
   <div class="in">
@@ -126,7 +250,7 @@
         <a class="brand" href="index.html" style="margin-bottom:14px"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON OS<small style="color:#bdbdbd">Practical Learning Platform</small></span></a>
         <p style="color:#bdbdbd;max-width:34ch">The practical-learning platform of Alizon School of Medical &amp; Digital Intelligence, Kerala.</p>
       </div>
-      <div><h4>Platform</h4><a href="os-practicals.html">Practicals</a><a href="alizon-library.html">Library</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a></div>
+      <div><h4>Platform</h4><a href="os-practicals.html">Practicals</a><a href="os-practicals.html#azbooks">Textbooks</a><a href="alizon-library.html">Library</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a></div>
       <div><h4>Students</h4><a href="ASMDI-dashboard.html">ALIZON OS Portal</a><a href="alizon-verify.html">Certificates</a><a href="alizon-verify.html">Verify</a></div>
       <div><h4>Institution</h4><a href="https://alizongov.com" target="_blank" rel="noopener">Official Website ↗</a><a href="index.html">Home</a><a href="alizon-academics.html">Academics</a></div>
     </div>

@@ -1,0 +1,1152 @@
+{
+ "generated": "run tools-build-book-catalogue.js to refresh",
+ "books": [
+  {
+   "id": "m1",
+   "module": "1",
+   "title": "AI Foundations & Digital Systems for Pharmacy Practice",
+   "sub": "A Practice-Based Introduction",
+   "programme": "Pharmacy AI",
+   "programmeId": "pharmacy",
+   "course": "Certificate Course in Digital Health & Artificial Intelligence for Pharmacy",
+   "edition": "First Edition · 2026",
+   "authors": "Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P",
+   "chapters": [
+    {
+     "title": "Foundations of Artificial Intelligence in Pharmacy",
+     "sections": [
+      "Introduction to Artificial Intelligence",
+      "Machine Learning and Deep Learning",
+      "Role of AI in Healthcare and Pharmaceutical Sciences",
+      "AI Applications in Drug Discovery, Formulation Development and Stability Studies",
+      "Overview of AI in Pharmacovigilance and Medication Safety",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Digital Pharmacy & Information Systems",
+     "sections": [
+      "Introduction",
+      "Definition of Digital Pharmacy",
+      "Pharmacy Information Systems (PIS) and Hospital Information Systems (HIS)",
+      "Classification of Information Systems in Pharmacy",
+      "Based on Function",
+      "Based on Scope",
+      "Comparison of PIS and HIS",
+      "Drug Databases, Clinical Drug References and Digital Formularies",
+      "Classification of Drug Information Sources",
+      "Integration with Electronic Health Records (EHR)",
+      "Benefits of EHR Integration",
+      "Data Storage and Cloud Systems",
+      "Digital Workflow Management",
+      "Challenges in Digital Pharmacy Systems",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Ethics, Regulation & Data Protection in Digital Pharmacy",
+     "sections": [
+      "Introduction",
+      "Definition of Ethics in Digital Pharmacy",
+      "PCI Regulations and Professional Responsibilities",
+      "Classification of Ethical Principles in Digital Pharmacy",
+      "Patient Safety and Medication Error Prevention",
+      "Strategies for Error Prevention",
+      "Data Privacy, Confidentiality and Consent",
+      "Cybersecurity in Digital Pharmacy",
+      "Classification of Cybersecurity Measures",
+      "Data Integrity and Audit Trails",
+      "Importance of Audit Trails",
+      "Challenges in Ethics and Data Protection",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Computer Applications & Digital Documentation",
+     "sections": [
+      "Introduction",
+      "Electronic Prescriptions and Digital Medication Orders",
+      "Definition of E-Prescription",
+      "Classification of Electronic Prescriptions",
+      "Advantages of E-Prescriptions",
+      "Electronic Patient Records and Pharmacy Documentation",
+      "Definition of Electronic Health Records (EHR)",
+      "Classification of Electronic Records",
+      "Importance of Digital Documentation",
+      "Digital Reporting, Billing and Regulatory Documentation",
+      "Classification of Digital Documentation Systems",
+      "Features of Digital Reporting Systems",
+      "Introduction to Pharmacy Software, Dashboards and User Interfaces",
+      "Classification of Pharmacy Software",
+      "Components of a User Interface",
+      "Advantages of Digital Systems in Pharmacy",
+      "Challenges in Digital Documentation",
+      "Conclusion",
+      "Digital Pharmacy, EHR Systems & Telepharmacy",
+      "Introduction to Digital Pharmacy, EHR Systems and Telepharmacy",
+      "Practical programme"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 55,
+    "words": 5236,
+    "pages": 14
+   },
+   "sample": "Artificial Intelligence (AI) is defined as the ability of machines or computer systems to perform tasks that normally require human intelligence such as learning, reasoning, decision-making, and problem-solving. In the modern healthcare environment, AI has become a powerful tool that enhances the efficiency and accuracy of medical and pharmaceutical practices. The rapid growth of digital technologies has enabled AI to process large volumes of healthcare data, making it easier for professionals to deliver precise and patient-centered care. AI systems function by using algorithms, data, and computational models to identify patterns and generate meaningful outputs that support decision-making.\n\nArtificial Intelligence can be better understood through its classification based on capability and functionality. Based on capability, AI is divided into Artificial Narrow Intelligence (ANI), Artificial General Intelligence (AGI), and Artificial Super Intelligence (ASI). Artificial Narrow Intelligence refers to systems designed to perform specific tasks such as drug interaction checking, prescription validation, and clinical alerts, and it is the most commonly used form of AI in healthcare today. Artificial General Intelligence refers to systems that can perform any intellectual task similar to a human being, although this type of AI is still under development and not yet implemented in real-world healthcare systems. Artificial Super Intelligence is a theoretical concept where machines surpass human intelligence in all aspects, including reasoning, creativity, and decision-making.\n\nBased on functionality, AI is classified into reactive machines, limited memory systems, theory of mind, and self-aware systems. Reactive machines are basic systems that respond only to present inputs and do not store past data, making them limited in learning ability. Limited memory systems can use past data to improve decision-making and are widely used in healthcare applications such as clinical decision support systems. Theory of mind refers to systems that can understand human emotions and behavior, while self-aware systems are advanced systems that possess consciousness; however, both are still under research and not yet practically available. A key point to understand is that MOST HEALTHCARE AI TODAY FALLS UNDER LIMITED MEMORY SYSTEMS, WHICH USE DATA FOR DECISION SUPPORT."
+  },
+  {
+   "id": "m2",
+   "module": "2",
+   "title": "Digital Pharmacy, EHR & Telepharmacy",
+   "sub": "Systems, Records and Remote Care",
+   "programme": "Pharmacy AI",
+   "programmeId": "pharmacy",
+   "course": "Certificate Course in Digital Health & Artificial Intelligence for Pharmacy",
+   "edition": "First Edition · 2026",
+   "authors": "Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P",
+   "chapters": [
+    {
+     "title": "Introduction to Digital Pharmacy, EHR Systems and Telepharmacy",
+     "sections": [
+      "Definition of Digital Pharmacy",
+      "Electronic Health Record (EHR) Systems",
+      "Telepharmacy",
+      "Integration of Digital Pharmacy, EHR and Telepharmacy",
+      "Classification of Digital Healthcare Systems",
+      "Data Management and Security",
+      "Advantages of Digital Healthcare Systems",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Electronic Health Records (EHR) in Pharmacy Practice",
+     "sections": [
+      "Definition of Electronic Health Records (EHR)",
+      "Structure and Components of EHR Systems",
+      "Medication History, Allergy Records and Laboratory Data Medication",
+      "Integration of Pharmacy Systems with Hospital EHR",
+      "Role of EHR in Continuity of Care",
+      "Role of EHR in Medication Safety",
+      "Advantages of EHR Systems",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Telepharmacy & Remote Patient Care",
+     "sections": [
+      "Definition of Telepharmacy",
+      "Concept and Models of Telepharmacy",
+      "Remote Prescription Review and Counselling",
+      "Follow-up of Chronic Disease and Therapy Adherence",
+      "Legal Considerations in Telepharmacy",
+      "Ethical Considerations in Telepharmacy",
+      "Privacy and Data Protection",
+      "Cybersecurity in Telepharmacy",
+      "Advantages of Telepharmacy",
+      "Challenges and Limitations",
+      "Future Scope of Telepharmacy",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Digital Inventory, ADR & Compliance Systems",
+     "sections": [
+      "Integration of Inventory, ADR and Compliance Systems",
+      "Advantages of Digital Systems",
+      "Challenges and Limitations",
+      "Future Scope",
+      "Conclusion",
+      "AI-Based Clinical Decision Support in Pharmacy",
+      "AI-Based Clinical Decision Support in Pharmacy",
+      "Practical programme"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 38,
+    "words": 5663,
+    "pages": 15
+   },
+   "sample": "Digital transformation has brought significant changes to healthcare systems worldwide, and pharmacy practice is no exception. The integration of computer technologies, communication systems, and data management tools has led to the development of digital pharmacy, Electronic Health Record (EHR) systems, and telepharmacy services. These advancements have improved efficiency, accuracy, accessibility, and patient safety in healthcare delivery. Understanding these concepts is essential for pharmacy students, as modern pharmacy practice is increasingly dependent on digital systems and technology-driven processes. Digital systems not only support routine pharmacy operations but also enhance clinical decision-making and patient-centered care.\n\nDigital pharmacy refers to the use of digital technologies, information systems, and software applications to manage pharmacy services such as prescription processing, medication dispensing, patient data management, and communication with healthcare professionals. It involves the integration of various tools including Pharmacy Information Systems, electronic prescriptions, drug databases, and digital documentation systems. The primary goal of digital pharmacy is to improve accuracy, reduce errors, and enhance the quality of patient care.\n\nDigital pharmacy can be classified based on its application and level of integration. Based on application, it includes clinical digital pharmacy, which focuses on patient care and medication management, and operational digital pharmacy, which focuses on inventory management, billing, and workflow automation. Based on integration, digital pharmacy systems can be standalone systems that operate independently or integrated systems that are connected with hospital information systems and other healthcare platforms. INTEGRATED DIGITAL PHARMACY SYSTEMS PROVIDE BETTER COORDINATION AND IMPROVE PATIENT OUTCOMES."
+  },
+  {
+   "id": "m3",
+   "module": "3",
+   "title": "AI-Based Clinical Decision Support in Pharmacy",
+   "sub": "Alerts, Interactions and Prediction",
+   "programme": "Pharmacy AI",
+   "programmeId": "pharmacy",
+   "course": "Certificate Course in Digital Health & Artificial Intelligence for Pharmacy",
+   "edition": "First Edition · 2026",
+   "authors": "Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P",
+   "chapters": [
+    {
+     "title": "Clinical Decision Support Systems (CDSS)",
+     "sections": [
+      "Principles and Components of CDSS",
+      "Role of CDSS in Clinical and Hospital Pharmacy",
+      "Integration with EHR and Prescription Systems",
+      "Clinical Alerts and Decision Workflows",
+      "Advantages of CDSS",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Drug Interaction & Dose Optimization Software Tools",
+     "sections": [
+      "Definition of Drug Interaction Software",
+      "Classification of Drug Interaction Software",
+      "Introduction to Dose Adjustment & Dose Modification Software",
+      "Therapeutic Drug Monitoring (TDM) Software Tools",
+      "Role of Software Tools in Clinical Pharmacy",
+      "Integration with Clinical Systems",
+      "Advantages of Drug Interaction and Dose Optimization Tools",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Pharmacogenomics & Antibiogram Analysis",
+     "sections": [
+      "Role of Genetics in Drug Response",
+      "Use of Pharmacogenomic Databases",
+      "Interpretation of Hospital Antibiograms",
+      "Selection of Safe and Effective Antimicrobial Therapy",
+      "Integration with Clinical Systems",
+      "Advantages of Pharmacogenomics and Antibiogram Analysis",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Predictive Pharmacovigilance",
+     "sections": [
+      "Signal Detection and Risk Prediction",
+      "AI-Based Adverse Drug Reaction Monitoring",
+      "Identifying High-Risk Patients and Medicines",
+      "Use of Safety Dashboards and Alerts",
+      "Integration with Clinical Systems",
+      "Advantages of Predictive Pharmacovigilance",
+      "Challenges and Limitations",
+      "Conclusion",
+      "AI in Drug Development, Vaccines & Injectables",
+      "Practical programme"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 34,
+    "words": 4959,
+    "pages": 13
+   },
+   "sample": "Clinical Decision Support Systems (CDSS) are advanced digital tools designed to assist healthcare professionals in making accurate, timely, and evidence-based clinical decisions. With the increasing complexity of healthcare data and treatment protocols, CDSS plays a crucial role in enhancing patient care, improving medication safety, and supporting clinical workflows. In pharmacy practice, CDSS helps pharmacists and physicians analyze patient data, identify potential risks, and select appropriate therapies. These systems integrate clinical knowledge with patient-specific data to provide alerts, recommendations, and decision support.\n\nDefinition of Clinical Decision Support System (CDSS) A Clinical Decision Support System is defined as a computer-based system that uses clinical knowledge, patient data, and algorithms to provide healthcare professionals with recommendations, alerts, and guidance for clinical decision-making.\n\nCDSS systems can be classified based on their design and functionality. One classification includes knowledge-based systems and non-knowledge-based systems. Knowledge-based systems rely on predefined rules, clinical guidelines, and databases to generate recommendations. These systems use “if-then” logic to provide alerts and suggestions. Non-knowledge-based systems use artificial intelligence and machine learning algorithms to analyze large datasets and identify patterns, making predictions without predefined rules. BOTH TYPES ARE IMPORTANT IN MODERN HEALTHCARE SYSTEMS.\n\nAnother classification is based on their mode of operation, including active CDSS and passive CDSS. Active systems automatically generate alerts and recommendations during clinical workflows, while passive systems require users to manually access information. ACTIVE CDSS IS MORE COMMON IN HOSPITAL SETTINGS."
+  },
+  {
+   "id": "m4",
+   "module": "4",
+   "title": "AI in Drug Development, Vaccines & Injectables",
+   "sub": "Discovery, Sterile Products and the Cold Chain",
+   "programme": "Pharmacy AI",
+   "programmeId": "pharmacy",
+   "course": "Certificate Course in Digital Health & Artificial Intelligence for Pharmacy",
+   "edition": "First Edition · 2026",
+   "authors": "Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P",
+   "chapters": [
+    {
+     "title": "AI in Drug Discovery & Molecular Targeting",
+     "sections": [
+      "Drug Discovery Pipeline and Target Identification",
+      "AI-Based Molecular Modelling and Screening",
+      "Lead Compound Selection and Optimisation",
+      "Pre-clinical Data Analysis",
+      "Integration with Digital Systems",
+      "Advantages of AI in Drug Discovery",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "AI Support in Scientific Research & Data Analysis",
+     "sections": [
+      "AI Support for Scientific Writing",
+      "AI-Assisted Literature Review & Reference Management",
+      "AI-Supported Biostatistical Analysis",
+      "AI Assistance in Meta-Analysis & Systematic Reviews",
+      "AI Support for Research Paper Drafting & Publication Preparation",
+      "Ethical & Responsible Use of AI in Research",
+      "Integration with Research Systems",
+      "Advantages of AI in Research",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Injectable Medicines & Sterile Products",
+     "sections": [
+      "Types of Injectables and AI-Based Route Optimization",
+      "AI in Aseptic Processing and Sterility Assurance",
+      "AI in Quality Control of Parenteral Products",
+      "AI in Regulatory Standards for Injectables",
+      "Integration of AI in Injectable Manufacturing",
+      "Advantages of AI in Injectable Medicines",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Vaccines & Cold-Chain Analytics",
+     "sections": [
+      "Vaccine Types and Development Stages",
+      "Storage, Transportation and Temperature Monitoring",
+      "Digital Cold-Chain Tracking Systems",
+      "Vaccine Safety and Compliance",
+      "Integration of AI in Vaccine Supply Chain",
+      "Advantages of AI in Vaccines and Cold-Chain Management",
+      "Challenges and Limitations",
+      "Future Scope",
+      "Conclusion",
+      "Clinical Trials, Pharmacovigilance & Evidence-Based Pharmacy",
+      "Introduction to Clinical Trials, Pharmacovigilance & Evidence-Based Pharmacy",
+      "Practical programme"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 38,
+    "words": 4333,
+    "pages": 11
+   },
+   "sample": "Artificial Intelligence (AI) is revolutionizing the process of drug discovery and molecular targeting by enabling faster, more accurate, and cost-effective identification of new therapeutic compounds. Traditional drug discovery is a complex and time-consuming process that involves multiple stages, including target identification, screening, lead optimization, and pre-clinical testing. AI technologies such as machine learning, deep learning, and data analytics are now being used to analyze vast biological and chemical datasets, predict drug-target interactions, and optimize drug design. These advancements have significantly improved the efficiency and success rate of drug development.\n\nDefinition of AI in Drug Discovery AI in drug discovery refers to the use of computational algorithms, machine learning models, and data-driven approaches to identify drug targets, design molecules, and optimize therapeutic compounds.\n\nAI-based drug discovery can be classified into target-based discovery and phenotype-based discovery. Target-based discovery focuses on identifying specific biological targets such as proteins or genes, while phenotype-based discovery focuses on observing changes in biological systems without predefined targets. BOTH APPROACHES ARE IMPORTANT IN MODERN DRUG DEVELOPMENT.\n\nThe drug discovery pipeline is a systematic process that involves identifying a biological target, screening compounds, optimizing leads, and conducting pre-clinical and clinical studies. Target identification is the first and most critical step, where researchers identify molecules such as proteins or genes that are associated with a disease.\n\nAI plays a key role in target identification by analyzing genomic, proteomic, and clinical data to identify potential targets. Machine learning models can predict the role of specific genes or proteins in disease pathways, helping researchers focus on the most promising targets."
+  },
+  {
+   "id": "m5",
+   "module": "5",
+   "title": "Clinical Trials, Pharmacovigilance & Evidence-Based Pharmacy",
+   "sub": "Evidence, Ethics and Safety",
+   "programme": "Pharmacy AI",
+   "programmeId": "pharmacy",
+   "course": "Certificate Course in Digital Health & Artificial Intelligence for Pharmacy",
+   "edition": "First Edition · 2026",
+   "authors": "Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P",
+   "chapters": [
+    {
+     "title": "AI in Patient Care & Personalized Medicine",
+     "sections": [
+      "AI in Diagnosis and Clinical Decision-Making",
+      "AI in Personalized Treatment Planning",
+      "AI in Patient Monitoring and Remote Care",
+      "AI in Predictive Analytics and Risk Assessment",
+      "Integration with Healthcare Systems",
+      "Advantages of AI in Patient Care",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Good Clinical Practice (GCP) & Ethics",
+     "sections": [
+      "Principles of GCP",
+      "Patient Safety and Trial Integrity",
+      "Ethics Committees and Regulatory Oversight",
+      "Data Quality and Audit Readiness",
+      "Integration of AI in GCP and Ethics",
+      "Advantages of AI in GCP Compliance",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Pharmacovigilance & ADR Reporting",
+     "sections": [
+      "Types of Adverse Drug Reactions",
+      "National and International Pharmacovigilance Systems",
+      "Digital ADR Reporting Tools",
+      "Risk Management and Safety Monitoring",
+      "Integration with Clinical and Digital Systems",
+      "Advantages of AI in Pharmacovigilance",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Evidence-Based Pharmacy & AI-Driven Literature Analysis",
+     "sections": [
+      "Evidence-Based Medicine Principles",
+      "Clinical Guidelines and Treatment Protocols",
+      "AI-Based Literature Review and Meta-Analysis Tools",
+      "Translating Evidence into Pharmacy Practice",
+      "Integration with Digital Healthcare Systems",
+      "Advantages of AI in Evidence-Based Pharmacy",
+      "Challenges and Limitations",
+      "Conclusion",
+      "Practical programme"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 33,
+    "words": 3647,
+    "pages": 10
+   },
+   "sample": "Artificial Intelligence (AI) is transforming patient care and advancing the concept of personalized medicine in modern healthcare. Traditional treatment approaches often follow a generalized model, where similar treatments are provided to all patients with the same condition. However, individual variations in genetics, lifestyle, environment, and disease progression can significantly affect treatment outcomes. AI enables healthcare professionals to move from a “one-size-fits-all” approach to a personalized, patient-centered model of care.\n\nDefinition of AI in Patient Care AI in patient care refers to the use of machine learning algorithms, data analytics, and intelligent systems to assist in diagnosis, treatment planning, monitoring, and decision-making based on individual patient data.\n\nPersonalized medicine, also known as precision medicine, involves tailoring medical treatment to the individual characteristics of each patient. AI plays a key role in this process by analyzing large datasets, including genetic information, clinical history, and lifestyle factors, to provide customized treatment recommendations.\n\nAI applications in patient care can be classified into diagnostic support, treatment optimization, patient monitoring, and predictive analytics. DIAGNOSTIC AI helps identify diseases, TREATMENT AI suggests therapies, MONITORING AI tracks patient health, and PREDICTIVE AI forecasts outcomes.\n\nAI systems assist healthcare professionals in diagnosing diseases by analyzing patient data such as symptoms, laboratory results, imaging data, and medical history. Machine learning models can identify patterns and provide diagnostic suggestions with high accuracy."
+  },
+  {
+   "id": "m6",
+   "module": "6",
+   "title": "Pharmacy Data Analytics & Predictive Modelling",
+   "sub": "From Records to Decisions",
+   "programme": "Pharmacy AI",
+   "programmeId": "pharmacy",
+   "course": "Certificate Course in Digital Health & Artificial Intelligence for Pharmacy",
+   "edition": "First Edition · 2026",
+   "authors": "Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P",
+   "chapters": [
+    {
+     "title": "Introduction to Pharmacy Data & Analytics",
+     "sections": [
+      "Types of Pharmacy and Healthcare Data",
+      "Data Collection, Cleaning and Validation",
+      "Role of Data in Clinical and Hospital Pharmacy",
+      "Basics of Healthcare Analytics",
+      "Integration with Digital Healthcare Systems",
+      "Advantages of Pharmacy Data Analytics",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Machine Learning in Pharmacy Practice",
+     "sections": [
+      "Supervised and Unsupervised Learning Concepts",
+      "Use of AI in Drug-Utilisation Analysis",
+      "Pattern Recognition and Risk Prediction",
+      "Introduction to Predictive Models",
+      "Integration with Healthcare Systems",
+      "Advantages of Machine Learning in Pharmacy",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Prescription Analytics & Safety Monitoring",
+     "sections": [
+      "Prescription Trend Analysis",
+      "Detection of Irrational Drug Use",
+      "Identification of High-Risk Medicines and Patients",
+      "Digital Dashboards and Alerts",
+      "Integration with Healthcare Systems",
+      "Advantages of Prescription Analytics",
+      "Challenges and Limitations",
+      "Conclusion"
+     ]
+    },
+    {
+     "title": "Demand Forecasting & Inventory Analytics",
+     "sections": [
+      "Drug Consumption and Forecasting Models",
+      "Stock Optimisation and Wastage Reduction",
+      "Expiry, Batch and Recall Analytics",
+      "Supply Chain and Logistics Insights",
+      "Integration with Digital Systems",
+      "Advantages of Demand Forecasting & Inventory Analytics",
+      "Challenges and Limitations",
+      "Conclusion",
+      "Practical programme"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 33,
+    "words": 4367,
+    "pages": 11
+   },
+   "sample": "Pharmacy data analytics and predictive modelling are rapidly transforming modern healthcare by enabling data-driven decision-making, improving patient outcomes, and optimizing pharmaceutical services. In today’s digital healthcare ecosystem, vast amounts of data are generated from sources such as Electronic Health Records (EHR), pharmacy information systems, clinical trials, and pharmacovigilance databases. Artificial Intelligence (AI) and advanced analytics techniques play a crucial role in processing this data, identifying patterns, and generating actionable insights.\n\nDefinition of Pharmacy Data Analytics Pharmacy data analytics refers to the systematic collection, processing, and analysis of healthcare and pharmaceutical data to support clinical, operational, and research decision-making.\n\nDefinition of Predictive Modelling Predictive modelling is the use of statistical techniques and machine learning algorithms to analyze historical data and predict future outcomes, such as disease progression, medication response, and risk of adverse events.\n\nPharmacy data analytics can be classified into descriptive analytics, diagnostic analytics, predictive analytics, and prescriptive analytics. Descriptive analytics summarizes past data, diagnostic analytics explains causes, predictive analytics forecasts future outcomes, and prescriptive analytics suggests optimal actions.\n\nType | Description\n\nDescriptive Analytics | Summarizes past data\n\nDiagnostic Analytics | Explains causes\n\nPredictive Analytics | Forecasts outcomes\n\nPrescriptive Analytics | Recommends actions\n\nPredictive modelling uses AI algorithms such as regression models, decision trees, and neural networks to analyze data and generate predictions. These models help pharmacists and healthcare professionals identify high-risk patients, optimize medication therapy, and improve healthcare planning."
+  },
+  {
+   "id": "m7",
+   "module": "7",
+   "title": "Robotics & Automation in Pharmacy Practice",
+   "sub": "Machines, Workflow and Quality",
+   "programme": "Pharmacy AI",
+   "programmeId": "pharmacy",
+   "course": "Certificate Course in Digital Health & Artificial Intelligence for Pharmacy",
+   "edition": "First Edition · 2026",
+   "authors": "Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P",
+   "chapters": [
+    {
+     "title": "Introduction to Pharmacy Robotics",
+     "sections": [
+      "Introduction",
+      "Introduction"
+     ]
+    },
+    {
+     "title": "Automated Dispensing & Storage Systems",
+     "sections": [
+      "Table 1: Classification of Automated Dispensing & Storage Systems",
+      "Table 2: Applications of Automated Systems",
+      "Table 3: Benefits and Limitations"
+     ]
+    },
+    {
+     "title": "Smart Packaging & Medication Tracking",
+     "sections": [
+      "Table 1: Classification of Smart Packaging & Tracking Technologies",
+      "Table 2: Applications of Smart Packaging",
+      "Table 3: Benefits and Limitations"
+     ]
+    },
+    {
+     "title": "Workflow Optimisation & Quality Assurance",
+     "sections": [
+      "Table 1: Classification of Workflow Optimisation Systems",
+      "Table 2: Applications",
+      "Table 3: Benefits and Limitations",
+      "Practical programme"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 12,
+    "words": 4636,
+    "pages": 12
+   },
+   "sample": "The integration of robotics and automation is transforming modern pharmacy practice by enhancing accuracy, efficiency, and patient safety. As healthcare systems increasingly adopt digital technologies, pharmacies are evolving from traditional dispensing centers into highly automated, data-driven environments.\n\nThis module introduces learners to the role of robotic systems and automated technologies in pharmacy operations. It explores how automation supports key functions such as medication dispensing, packaging, labeling, inventory management, and error reduction. Robotic dispensing systems, automated storage and retrieval systems, and smart medication cabinets are now widely used in hospital and community pharmacy settings to streamline workflows and minimize human error.\n\nIn addition to operational efficiency, automation plays a critical role in improving medication safety. By reducing manual handling and incorporating barcode verification, artificial intelligence, and real-time monitoring, these technologies help ensure accurate drug delivery and enhance patient outcomes.\n\nThe module also highlights emerging trends such as AI-powered robotic systems, telepharmacy, and integration with electronic health records (EHRs). Ethical considerations, cost implications, and the future scope of automation in pharmacy practice are also discussed to provide a balanced understanding.\n\nBy the end of this module, learners will gain foundational knowledge of how robotics and automation are reshaping pharmacy services and how these innovations can be effectively implemented in real-world healthcare settings.\n\nThe rapid advancement of healthcare technologies has significantly transformed pharmacy practice, with robotics and automation emerging as key drivers of efficiency, accuracy, and patient safety. In modern healthcare systems, the increasing complexity of medication therapy, rising patient demands, and the need for error-free dispensing have necessitated the adoption of advanced technological solutions. Robotics and automation in pharmacy practice represent a paradigm shift from traditional manual workflows to intelligent, technology-enabled systems that enhance both operational performance and clinical outcomes."
+  },
+  {
+   "id": "m8",
+   "module": "8",
+   "title": "AI-Enabled Clinical Case Studies & Simulations",
+   "sub": "Putting It Together",
+   "programme": "Pharmacy AI",
+   "programmeId": "pharmacy",
+   "course": "Certificate Course in Digital Health & Artificial Intelligence for Pharmacy",
+   "edition": "First Edition · 2026",
+   "authors": "Dr Abijeeth Tiwari, Dr Ismail, Anandhu A P",
+   "chapters": [
+    {
+     "title": "AI-Based Prescription Review & Safety Audits",
+     "sections": [
+      "Reviewing in a fixed order",
+      "Patterns that should stop you",
+      "Using AI screening properly",
+      "The audit cycle"
+     ]
+    },
+    {
+     "title": "Drug Interaction & Dose Optimisation Simulations",
+     "sections": [
+      "Interactions you must know cold",
+      "Dosing to organ function",
+      "Making the recommendation"
+     ]
+    },
+    {
+     "title": "Clinical & Pharmacogenomic Case Simulations",
+     "sections": [
+      "The drug-gene pairs that are already practice",
+      "Prodrugs invert the logic",
+      "Genomics as one input among several",
+      "Explaining and recording a result"
+     ]
+    },
+    {
+     "title": "Digital Patient Care & Pharmacy Operations",
+     "sections": [
+      "What adherence data does and does not show",
+      "Discharge is the dangerous moment",
+      "Operational measures",
+      "Digital contact and its limits",
+      "Practical programme"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 16,
+    "words": 3072,
+    "pages": 8
+   },
+   "sample": "- Conduct a structured prescription review and state what each step catches\n\n- Recognise the classic high-risk prescribing patterns by sight\n\n- Use AI screening output as a reading order rather than a verdict\n\n- Plan, run and close a prescription safety audit\n\nA review that follows the same sequence every time misses less than one driven by whatever catches the eye first. Begin with the six checks, then ask the clinical questions.\n\nBeyond those six: is there an indication for every medicine, and a medicine for every indication? Is anything being used to treat the side effect of something else? Is the duration defined, or has a short course quietly become permanent?\n\nAn audit that finds the indication routinely omitted from antibiotic prescriptions has found a real defect. Without an indication nobody downstream can judge whether the choice, the dose or the duration was right, and nobody can stop it at review.\n\nSome combinations are dangerous often enough that they should be recognised on sight rather than reasoned out each time.\n\nPattern | Why it matters | Usual action\n\nWarfarin + a macrolide such as clarithromycin | Marked rise in INR and bleeding risk | Avoid, or reduce dose with close INR monitoring\n\nMethotrexate written as a daily dose | It is a weekly drug; daily dosing has killed patients | Stop and clarify before any supply"
+  },
+  {
+   "id": "ha1",
+   "module": "1",
+   "title": "Foundations of Hospital Administration & Digital Healthcare Systems",
+   "sub": "Hospital Administration & Digital Healthcare Management",
+   "programme": "Hospital Administration",
+   "programmeId": "hospital",
+   "course": "Advanced Certification Program in AI-Assisted Hospital Administration & Digital Healthcare Management",
+   "edition": "First Edition · 2026",
+   "authors": "Alizon School of Medical & Digital Intelligence",
+   "chapters": [
+    {
+     "title": "Foundations of Hospital Administration and Digital Healthcare Systems",
+     "sections": [
+      "How Hospital Administration Became a Profession",
+      "How Healthcare Organisations Are Structured",
+      "The Fundamentals of Running a Hospital",
+      "The Language of Hospital Performance",
+      "Smart Healthcare Systems and the Digital Layer",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Digital Healthcare Systems: The Information Backbone of the Modern Hospital",
+     "sections": [
+      "From Paper Registers to Digital Systems",
+      "Hospital Information Systems",
+      "Electronic Health Records",
+      "Telemedicine and Telehealth",
+      "Digital Patient Registration Systems",
+      "Smart Healthcare Technologies",
+      "Online Practical: HIS/EHR Demonstration Lab and Telemedicine Platform",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Healthcare Operations Management: Workflow, Front Office and Service Integration",
+     "sections": [
+      "What Operations Management Means Inside a Hospital",
+      "Hospital Workflow Management",
+      "The Front Office and Patient Coordination",
+      "OP and IP Workflow Systems",
+      "Administrative Communication Systems",
+      "Healthcare Service Integration",
+      "Online Practical: OP/IP Workflow Simulation and Front-Office Role Play",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Emerging Trends in Healthcare Administration: Smart Hospitals, Automation and Artificial Intelligence",
+     "sections": [
+      "From Computerised Hospitals to Smart Hospitals",
+      "Digital Healthcare Infrastructure in India",
+      "Healthcare Automation Systems",
+      "Artificial Intelligence in Healthcare Administration",
+      "Future Trends and the Administrator's Response",
+      "Summary"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 28,
+    "words": 13030,
+    "pages": 34
+   },
+   "sample": "A hospital is one of the most complicated organisations a society builds. It runs every hour of the year, it cannot refuse an emergency, its output is measured in human recovery rather than units shipped, and its most powerful decision-makers, the clinicians, are not in the management line at all. Administration exists because clinical excellence alone does not produce a working hospital. Someone has to make sure the oxygen manifold is filled before the ICU needs it, that the medical record of a patient who came in 2019 can be found in ten minutes, that the bill is raised correctly under a government scheme, and that the nurse on the night shift is not the only qualified person awake in a fifty-bed block.\n\nFor most of Indian history, that coordinating work was informal. Hospitals grew out of charitable, missionary, princely and municipal traditions, and were run by a senior physician who carried the additional burden of accounts and staff. The modern shape of the field emerged after independence, when large public systems were created and a chain of primary health centres, community health centres, district hospitals and medical college hospitals was laid out. Coordination at that scale could no longer be a doctor's evening duty. Formal training in hospital administration began in India in the mid-twentieth century and matured into recognised postgraduate qualifications, and the field acquired its own body of knowledge: hospital planning, materials management, quality assurance, health economics and health information systems."
+  },
+  {
+   "id": "ha2",
+   "module": "2",
+   "title": "AI-assisted Healthcare Administration & Smart Hospital Operations",
+   "sub": "Hospital Administration & Digital Healthcare Management",
+   "programme": "Hospital Administration",
+   "programmeId": "hospital",
+   "course": "Advanced Certification Program in AI-Assisted Hospital Administration & Digital Healthcare Management",
+   "edition": "First Edition · 2026",
+   "authors": "Alizon School of Medical & Digital Intelligence",
+   "chapters": [
+    {
+     "title": "Foundations of Artificial Intelligence in Hospital Administration",
+     "sections": [
+      "Why Hospital Administration Is Now a Data Problem",
+      "Fundamentals of Artificial Intelligence",
+      "AI-Assisted Administrative Systems",
+      "Healthcare Automation Basics",
+      "Applications in Indian Hospital Administration",
+      "The Administrator's Role and the Unit Practical",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Smart Administrative Technologies for Hospital Operations",
+     "sections": [
+      "From Paper Registers to Administrative Software",
+      "Smart Patient Management Systems",
+      "Digital Queue and Appointment Systems",
+      "AI-Supported Communication Systems",
+      "Administrative Monitoring Systems and Digital Coordination Platforms",
+      "Implementation, Risk and Human Factors",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Responsible AI and Ethical Administrative Practice",
+     "sections": [
+      "Why Ethics Belongs in the Administrator's Job Description",
+      "Ethical AI Use in the Indian Healthcare Setting",
+      "Patient Data Privacy and Security",
+      "Human Supervision in AI-Supported Systems",
+      "What AI Cannot Do in Administrative Practice",
+      "Online Practical: Privacy and Responsible-AI Scenario Workshop",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Future Healthcare Administration Technologies",
+     "sections": [
+      "From Reactive to Predictive Healthcare Management",
+      "Smart Hospital Innovations: Instrumenting the Building and the Bed",
+      "AI-Supported Decision-Support Systems",
+      "Digital Healthcare Transformation and the Indian Digital Health Stack",
+      "Governance, Risk and the Administrator's Duties",
+      "Summary"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 27,
+    "words": 13011,
+    "pages": 34
+   },
+   "sample": "A hospital is, among other things, a machine for producing records. Every patient who walks into the outpatient department generates an entry in the OP register, a token number, a consultation note, sometimes an investigation request and a pharmacy bill. Every admission generates an IP number, a case sheet, a nursing chart, a set of billing line items and, finally, a discharge summary that must be filed in the Medical Records Department. A district hospital with a hundred beds and six hundred outpatients a day is generating tens of thousands of discrete data points every week, and almost all of the administrator's traditional work has consisted of collecting those points, counting them, and reporting them upward.\n\nFor most of the twentieth century this counting was done by hand. The bed board on the wall of the nursing station was a physical board. The daily census was taken at midnight by a nurse walking the ward. Bed occupancy was worked out at the end of the month by a clerk with a calculator. The information was correct, but it arrived late, and information that arrives late cannot be used to make a decision. By the time an administrator learned that the average length of stay in the orthopaedic ward had crept from four days to six, the quarter was over.\n\nTwo things have changed. The first is that hospitals in India are now largely digital at the point of capture. Hospital Information Systems, Laboratory Information Systems, PACS for imaging, and the national digital public infrastructure built under the Ayushman Bharat Digital Mission have moved the record from paper into a database. Under ABDM a patient can hold an ABHA number, a fourteen-digit health account identifier, and consent to share records across facilities. The second change is that software can now perform tasks that previously required a person to read, judge and decide — reading a scanned discharge summary and pulling out the diagnosis, predicting which admitted patients are likely to be discharged tomorrow, flagging a claim that will probably be rejected by the TPA."
+  },
+  {
+   "id": "ha3",
+   "module": "3",
+   "title": "Healthcare Communication, Professional Practice & Patient Experience Management",
+   "sub": "Hospital Administration & Digital Healthcare Management",
+   "programme": "Hospital Administration",
+   "programmeId": "hospital",
+   "course": "Advanced Certification Program in AI-Assisted Hospital Administration & Digital Healthcare Management",
+   "edition": "First Edition · 2026",
+   "authors": "Alizon School of Medical & Digital Intelligence",
+   "chapters": [
+    {
+     "title": "Professional Practice in Healthcare Administration",
+     "sections": [
+      "Why Healthcare Administration Is Held to a Higher Standard",
+      "Professional Behaviour: What It Looks Like on the Floor",
+      "Administrative Ethics: Principles and Their Everyday Collisions",
+      "Patient Rights and the Duty of Confidentiality",
+      "Workplace Discipline, Responsibility and Accountability",
+      "Online Practical: Conduct Scenarios and a Patient-Rights Case Discussion",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Healthcare Communication Systems: Coordinating Care Across People, Departments and Distance",
+     "sections": [
+      "Why Communication Is an Administrative System, Not a Personal Skill",
+      "Administrative Communication: Channels, Records and Authority",
+      "Patient Interaction Management",
+      "Telehealth Communication Practices",
+      "Interdepartmental Coordination",
+      "Digital Communication Tools and Their Governance",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Patient Experience and Service Management",
+     "sections": [
+      "What Patient-Centred Service Systems Actually Mean",
+      "Measuring It: Satisfaction Scores, NPS and Feedback Systems",
+      "Front Office Coordination",
+      "Patient Support Services",
+      "Healthcare Service Quality and Service Recovery",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Teamwork and Administrative Coordination in the Indian Hospital",
+     "sections": [
+      "The Healthcare Team and How Coordination Actually Works",
+      "Communication Structures in the Administrative Workflow",
+      "Operational Indicators as a Coordination Language",
+      "Conflict Management in a Clinical Setting",
+      "Leadership, Delegation and Building a Coordinating Culture",
+      "Online Practical: Conflict Simulation and Coordination Case",
+      "Summary"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 27,
+    "words": 12901,
+    "pages": 34
+   },
+   "sample": "Every profession has rules of conduct, but hospitals differ from ordinary workplaces in one decisive respect: the person the organisation exists to serve arrives frightened, in pain, partially undressed, unable to judge the quality of the service, and unable to walk away and buy elsewhere. A patient waiting outside the Casualty at two in the morning cannot compare prices, cannot verify the qualifications of the person taking their blood pressure, and cannot postpone the purchase. Economists call this an asymmetry of information and of bargaining power. Ethics calls it vulnerability. It is the single fact from which almost every rule of professional practice in a hospital descends.\n\nAn administrator sits at a peculiar point in this arrangement. Doctors and nurses have their own statutory councils, registers and codes of conduct — the National Medical Commission and the state medical councils for physicians, the nursing councils for nurses, the pharmacy councils for pharmacists. Hospital administration in India has no equivalent single statutory register. Administrators are governed instead by the law that binds the establishment, by the terms of their employment, by accreditation standards such as those of the National Accreditation Board for Hospitals and Healthcare Providers, and by the ordinary criminal and civil law that binds any citizen. The absence of a licence to lose does not lower the standard. It raises the burden of self-regulation, because the person deciding whether an administrative act is proper is very often the administrator alone."
+  },
+  {
+   "id": "ha4",
+   "module": "4",
+   "title": "Healthcare Informatics, Documentation & Digital Workflow Management",
+   "sub": "Hospital Administration & Digital Healthcare Management",
+   "programme": "Hospital Administration",
+   "programmeId": "hospital",
+   "course": "Advanced Certification Program in AI-Assisted Hospital Administration & Digital Healthcare Management",
+   "edition": "First Edition · 2026",
+   "authors": "Alizon School of Medical & Digital Intelligence",
+   "chapters": [
+    {
+     "title": "Foundations of Healthcare Informatics",
+     "sections": [
+      "Healthcare Informatics as a Discipline",
+      "Clinical and Administrative Data Management",
+      "From Records to Indicators",
+      "Healthcare Information Exchange",
+      "Digital Healthcare Infrastructure and Its Governance",
+      "Online Practical: Healthcare Data Structure Mapping",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Healthcare Documentation Systems: Records, Standards and Ethics in the Digital Hospital",
+     "sections": [
+      "Why Documentation Is the Hospital's Central Nervous System",
+      "Electronic Medical Records: Anatomy, Adoption and the Indian Digital Health Stack",
+      "Administrative Documentation Standards and the Regulatory Frame",
+      "The Medical Records Department, Retention and Digital Reporting",
+      "Ethics, Confidentiality and the DPDP Act 2023",
+      "Building a Documentation Audit Culture",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Digital Workflow Management in the Hospital",
+     "sections": [
+      "What a Workflow Is, and Why Hospitals Must Manage Them Deliberately",
+      "Administrative Workflow Systems",
+      "Digital Coordination Systems",
+      "Healthcare Database Basics",
+      "Workflow Optimisation and Its Measures",
+      "Smart Administrative Practices",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Healthcare Data Security, Compliance and the Law of Digital Documentation",
+     "sections": [
+      "Why Patient Data Is Treated Differently",
+      "The Legal Framework in India",
+      "Information Security in Practice",
+      "Digital Documentation and Its Legal Weight",
+      "Documentation Auditing",
+      "Compliance as a Continuing System",
+      "Summary"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 28,
+    "words": 13223,
+    "pages": 35
+   },
+   "sample": "Healthcare informatics is the study of how health data is captured, stored, moved, protected and turned into decisions. It sits at the meeting point of three older subjects — clinical practice, information science and management — and it exists because hospitals are, in an unglamorous but literal sense, information factories. A busy district hospital that sees a thousand or more outpatients in a day does not merely deliver a thousand consultations; it creates a thousand record entries, several hundred laboratory results, a few hundred pharmacy transactions, a stream of insurance pre-authorisation requests, and a stack of statutory returns. Every one of those is data that somebody must be able to find again, correctly, months later.\n\nThe discipline is often confused with the hospital's IT department, and the distinction matters for an administrator. The IT department is responsible for machines, networks and software working. Informatics is responsible for whether the information those machines carry is complete, accurate, meaningful and usable by a clinician at two in the morning. A hospital can have an excellent server room and poor informatics: a Hospital Information System in which a large share of admissions carry no recorded working diagnosis is a technical success and an informatics failure.\n\nThe field is normally taught as a family of related specialisations. Clinical informatics deals with the patient record and the decisions taken from it; nursing and pharmacy informatics with the documentation and medication-safety systems of those departments; imaging informatics with the acquisition, storage and reporting of scans; public health informatics with surveillance and programme reporting; and health management informatics — the strand this programme is most concerned with — with the data an institution needs in order to plan, cost, staff and account for its services. The vocabulary differs between them; the underlying obligation does not. A fact recorded once must remain trustworthy everywhere it is later used."
+  },
+  {
+   "id": "ha5",
+   "module": "5",
+   "title": "Healthcare Quality, Patient Safety & Hospital Support Systems",
+   "sub": "Hospital Administration & Digital Healthcare Management",
+   "programme": "Hospital Administration",
+   "programmeId": "hospital",
+   "course": "Advanced Certification Program in AI-Assisted Hospital Administration & Digital Healthcare Management",
+   "edition": "First Edition · 2026",
+   "authors": "Alizon School of Medical & Digital Intelligence",
+   "chapters": [
+    {
+     "title": "Patient Safety and Safe Administrative Practices",
+     "sections": [
+      "Why Patient Safety Became an Administrative Discipline",
+      "Principles of Patient Safety",
+      "Risk Reduction in Healthcare",
+      "Safety Reporting Systems",
+      "Patient-Centred Safety Systems",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Emergency and Support Coordination Systems",
+     "sections": [
+      "Why Emergencies Are an Administrative Problem",
+      "The Anatomy of an Emergency Response Plan",
+      "Administrative Support During an Emergency",
+      "Disaster Preparedness as a Continuous Cycle",
+      "Emergency Communication Systems",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Infection Prevention and Hospital Safety",
+     "sections": [
+      "Why a Hospital Must Defend Itself Against Itself",
+      "The Chain of Infection and the Practices That Break It",
+      "Biomedical Waste Management as a Legal Duty",
+      "Occupational Safety for the Hospital Workforce",
+      "Hospital Safety Systems Beyond Infection",
+      "Audit, Data and the Digital Record",
+      "Online Practical: Waste Segregation and an Infection Control Audit",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Healthcare Quality and Accreditation Systems",
+     "sections": [
+      "What \"Quality\" Means in a Hospital",
+      "Healthcare Quality Standards and How They Are Written",
+      "NABH Awareness and the Accreditation Journey",
+      "Hospital Quality Monitoring: Indicators, Data and the Dashboard",
+      "Quality Improvement Systems in Practice",
+      "Summary"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 26,
+    "words": 12572,
+    "pages": 33
+   },
+   "sample": "A hospital is one of the few workplaces where a routine error can kill. This is not a rhetorical statement; it is the operating assumption behind every patient safety system in the world. A wrong decimal point on an insulin order, a blood bag hung on the wrong patient, an unlabelled specimen bottle, a wet corridor floor near the OP registration counter — each is an ordinary administrative failure that becomes a clinical catastrophe because of where it happens.\n\nFor most of the twentieth century, when a patient was harmed in hospital, the explanation stopped at the person nearest the harm. The nurse who gave the drug, the resident who wrote the order, the technician who mislabelled the sample. The response was equally simple: a memo, a warning, sometimes a transfer. The harm then recurred, often within months, because nothing about the system that produced it had changed.\n\nThe modern discipline of patient safety rests on a different explanation. Harm in a hospital is usually the end point of a chain of small system weaknesses that line up: a look-alike drug packaging, a ward that is short-staffed at 2 a.m., a verbal order taken over a noisy phone line, a bed board that is twelve hours out of date. The individual at the end of that chain is the last person with an opportunity to stop it, not the sole cause of it. This is why patient safety is an administrative discipline and not merely a clinical one. Drug packaging, staffing rosters, phone systems, signage, equipment maintenance contracts, housekeeping schedules and record-keeping formats are all administrative artefacts, and every one of them can either trap an error or let it through."
+  },
+  {
+   "id": "ha6",
+   "module": "6",
+   "title": "Healthcare Data Analytics, AI Decision Support & Predictive Hospital Management",
+   "sub": "Hospital Administration & Digital Healthcare Management",
+   "programme": "Hospital Administration",
+   "programmeId": "hospital",
+   "course": "Advanced Certification Program in AI-Assisted Hospital Administration & Digital Healthcare Management",
+   "edition": "First Edition · 2026",
+   "authors": "Alizon School of Medical & Digital Intelligence",
+   "chapters": [
+    {
+     "title": "Foundations of Healthcare Data Analytics: Hospital Data, Key Performance Indicators and Data Quality",
+     "sections": [
+      "The Types of Data a Hospital Generates",
+      "Key Hospital Performance Indicators",
+      "Data Collection and Validation",
+      "Visualisation and Turning Numbers into Decisions",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Hospital Dashboards and MIS Reporting",
+     "sections": [
+      "Why Hospitals Need a Management Information System",
+      "From Raw Records to Indicators: Definitions Before Displays",
+      "Designing an MIS Dashboard",
+      "Department Scorecards",
+      "Tools: Spreadsheets, BI Platforms and Real-Time Monitoring",
+      "Management Reporting: Turning Numbers into Decisions",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Predictive Hospital Management: Forecasting Flow, Scheduling Capacity and Shortening the Wait",
+     "sections": [
+      "Patient Flow and the Logic of Bed Demand Forecasting",
+      "Blocked Beds, Delayed Discharges and the Real Bottleneck",
+      "Operation Theatre and Appointment Scheduling",
+      "Queue Prediction and Reducing Waiting Time",
+      "Resource Planning, Governance and Data Discipline",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Generative AI and Decision Support for the Hospital Administrator",
+     "sections": [
+      "What Generative AI Is, and What It Is Not",
+      "Assistants and Chatbots Across Administrative Workflows",
+      "Prompt-Writing as a Professional Skill",
+      "Decision Support: Helping a Decision Without Making It",
+      "Verifying AI Output: The Administrator Remains the Author",
+      "Limits, Risks and Governance in the Indian Setting",
+      "Online Practical: Prompt-Writing and Verification Laboratory",
+      "Summary"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 26,
+    "words": 13314,
+    "pages": 35
+   },
+   "sample": "A hospital is one of the most data-dense organisations in a district. Every outpatient token, every bed allotment, every drug issued from the pharmacy, every laboratory sample, every claim raised against a Pradhan Mantri Jan Arogya Yojana (PM-JAY) package leaves a record. Yet in a large number of Indian hospitals this data is captured faithfully and used almost not at all. Registers are filled, monthly returns are typed up for the management or for the district authority, and the numbers are never turned back on the hospital itself to answer the questions that matter: why did the emergency department become gridlocked last Tuesday, why does the orthopaedic ward run at 96 per cent occupancy while the paediatric ward runs at 40, why do discharges bunch up after 4 pm, why do a fifth of the patients who complete an outpatient consultation never proceed to the investigation that was advised.\n\nHealthcare data analytics is the discipline of closing that gap. It is not, at its foundation, a matter of artificial intelligence or of sophisticated statistics. It is a matter of knowing what data the hospital already holds, knowing whether that data is trustworthy, converting it into a small number of well-defined indicators, and presenting those indicators in a form that a decision-maker can act on within the working day. Everything that comes later in this module — clinical decision support, predictive models for admissions and readmissions, machine learning on longitudinal records — rests on this foundation. A predictive model built on a bed census that nobody reconciles at midnight will predict nonsense with great confidence."
+  },
+  {
+   "id": "ha8",
+   "module": "8",
+   "title": "Professional Elective Module: Case Studies",
+   "sub": "Hospital Administration & Digital Healthcare Management",
+   "programme": "Hospital Administration",
+   "programmeId": "hospital",
+   "course": "Advanced Certification Program in AI-Assisted Hospital Administration & Digital Healthcare Management",
+   "edition": "First Edition · 2026",
+   "authors": "Alizon School of Medical & Digital Intelligence",
+   "chapters": [
+    {
+     "title": "Case Studies in Hospital Operations and Patient Coordination",
+     "sections": [
+      "Why Hospitals Are Taught Through Cases",
+      "Case One: Outpatient Flow and Turnaround Time",
+      "Case Two: Bed Management, the Census and Inpatient Flow",
+      "Case Three: Discharge Delay as a System Failure",
+      "Case Four: Patient Coordination Across the Journey",
+      "The Online Practical: Working the Case and Presenting the Decision",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Case Studies in Digital Front Office and Healthcare Communication Systems",
+     "sections": [
+      "Why the Front Office Is a Clinical System, Not a Reception Desk",
+      "Case One — Registration and the Duplicate Identity Problem",
+      "Case Two — Appointments, No-Shows and the Overbooked Clinic",
+      "Case Three — Queue Management and the Anatomy of a Waiting Area",
+      "Case Four — Communication Failure and Service Recovery",
+      "Communication Channels, Consent and the Data Protection Duty",
+      "Working a Case: Method and Practical",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Case Studies in Healthcare Quality, NABH and Accreditation Systems",
+     "sections": [
+      "Why Quality Needs Cases, Not Just Checklists",
+      "The Systems a Case Sits Inside",
+      "Case One: Incident Analysis After a Medication Error",
+      "Case Two: Reading Quality Indicators Honestly",
+      "Case Three: A Standard, a Gap and a System Fix",
+      "Case Four: Preparing a Hospital for Assessment",
+      "Online Practical: Work the Case, Present the Decision",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Case Studies in Healthcare Informatics and Digital Workflow Management",
+     "sections": [
+      "Why Hospitals Teach Through Cases",
+      "Case One: Record Completeness and the Medical Records Department",
+      "Case Two: Coding Accuracy and What It Costs",
+      "Case Three: HIS Implementation and Why It Fails",
+      "Case Four: Workflow Redesign and Measurement",
+      "The Online Practical: Working the Case and Presenting the Decision",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Case Studies in AI-Assisted Hospital Administration and Smart Healthcare Systems",
+     "sections": [
+      "How to Work a Case",
+      "Case One: A Recommendation the Administrator Should Not Have Followed",
+      "Case Two: Recognising and Containing Model Failure",
+      "Case Three: Data Protection Where Analytics Meet the Medical Record",
+      "Case Four: Human Oversight That Is Real Rather Than Nominal",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Case Studies in Hospital Revenue Cycle, Health Insurance and TPA Coordination",
+     "sections": [
+      "Reading the Revenue Cycle as One Continuous Record",
+      "Case One: The Pre-authorisation That Arrived Too Late",
+      "Case Two: Denial Management as a Discipline, Not a Chase",
+      "Case Three: A PM-JAY Package Dispute",
+      "Case Four: Reconciling a TPA Account",
+      "Governance Running Through All Four Cases",
+      "Online Practical: Work the Case, Present the Decision",
+      "Summary"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 6,
+    "sections": 44,
+    "words": 18578,
+    "pages": 49
+   },
+   "sample": "Hospital administration is not learned by memorising definitions. A graduate can recite that average length of stay is inpatient days divided by discharges and still be unable to explain why the medicine ward of a secondary care hospital runs at six days while its surgical ward runs at three, or what to do about it. The gap between knowing an indicator and acting on it is closed by working cases.\n\nA case in hospital operations has three parts that must stay separate in the learner's mind. First, the data given: the OP register extract, the bed board snapshot, the discharge timestamps, the census sheet. Second, the analysis expected: what the numbers say, including what they do not say. Third, the administrative decision: an implementable instruction naming who does what, by when, and how it will be measured. Students collapse the three into one vague sentence such as \"the hospital should improve discharge efficiency.\" That is not a decision. \"From the first of next month the ward physician on the medicine floor will complete discharge orders for planned discharges before the morning round ends, and the nursing station will file the discharge summary to medical records within two hours of physical discharge\" is a decision, because someone can be held to it and it can be audited.\n\nSeparating data from inference matters for a second reason. Hospital data is often incomplete, inconsistently recorded, or produced by staff with an interest in how it looks; a ward measured on occupancy has an incentive to record occupancy generously. An administrator who cannot distinguish what the register says from what happened will make confident wrong decisions, so every case opens with two questions: what is the data source, and how was it captured?"
+  },
+  {
+   "id": "ha9",
+   "module": "9",
+   "title": "Employability Skills, Leadership & Digital-AI Productivity",
+   "sub": "Hospital Administration & Digital Healthcare Management",
+   "programme": "Hospital Administration",
+   "programmeId": "hospital",
+   "course": "Advanced Certification Program in AI-Assisted Hospital Administration & Digital Healthcare Management",
+   "edition": "First Edition · 2026",
+   "authors": "Alizon School of Medical & Digital Intelligence",
+   "chapters": [
+    {
+     "title": "Communication and Personality Development for the Hospital Administrator",
+     "sections": [
+      "Why Communication Is Clinical Work, Not Soft Work",
+      "Professional English for the Healthcare Workplace",
+      "Grooming, Etiquette and Professional Presence",
+      "Presentation Skills: Speaking to a Room That Has Other Things to Do",
+      "Email and Workplace Writing",
+      "Practising the Skill",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Digital and AI Productivity Skills for Hospital Administration",
+     "sections": [
+      "Why Productivity Tools Are Clinical Infrastructure",
+      "Documents: Templates, Version Control and the Record",
+      "Spreadsheets: Turning the Census into a Decision",
+      "Presentations: Making a Case to People Who Decide",
+      "AI Productivity Assistants in Administrative Work",
+      "Digital Collaboration and Shared Working",
+      "Building a Personal Productivity System",
+      "Online Practical: Productivity Tool and AI Assistant Lab",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Career Readiness for the Hospital Administrator",
+     "sections": [
+      "Understanding the Indian Healthcare Job Market",
+      "The Resume as an Evidence Document",
+      "The Cover Letter and the Application Package",
+      "Interview Skills",
+      "Group Discussion Skills",
+      "Professional Networking and LinkedIn Branding",
+      "Online Practical: Resume Building and Mock Interview",
+      "Summary"
+     ]
+    },
+    {
+     "title": "Leadership, Entrepreneurship and the Telehealth Career Landscape",
+     "sections": [
+      "Why Leadership Is a Technical Skill in a Hospital",
+      "Managing Teams: Rosters, Handovers, Conflict and Performance",
+      "Healthcare Startups and Innovation: How the Sector Actually Builds Things",
+      "Telehealth as a Service Line",
+      "Career Pathways in Digital Health",
+      "Using AI Tools Without Losing Professional Judgement",
+      "Online Practical: Leadership Case Exercise and Career Pathway Mapping",
+      "Summary"
+     ]
+    }
+   ],
+   "stats": {
+    "chapters": 4,
+    "sections": 32,
+    "words": 12146,
+    "pages": 32
+   },
+   "sample": "A hospital is an organisation in which strangers make consequential decisions about one another's bodies under time pressure, in a language that at least one party does not fully understand. Almost every failure that reaches a grievance register, a consumer court, or a NABH non-conformity begins as a communication failure. A patient party is not told that the surgeon has been pulled into an emergency and the elective case will now start at 4 p.m.; three hours later the attender is shouting at the front desk. A discharge summary reaches a family in English at 9 p.m., nobody explains that the tapering dose of steroid must not be stopped abruptly, and the patient is readmitted in a week. A junior administrator sends a one-line email to the pharmacy that reads \"urgent, need stock position\", and receives, twelve hours later, a stock position for the wrong month.\n\nNone of these are clinical errors in the narrow sense. All of them are administrative errors, and all of them are communication errors. This is why an accredited hospital administration programme treats professional English, workplace writing, grooming and presentation as examinable competencies rather than as decoration. The administrator is the connective tissue of the institution: the person who stands between a consultant and a housekeeping supervisor, between a Third Party Administrator's medical officer and a distressed relative, between the NABH assessor and the medical records department. Every one of those relationships is conducted through language and bearing."
+  }
+ ]
+}
