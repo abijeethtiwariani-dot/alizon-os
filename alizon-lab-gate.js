@@ -24,7 +24,18 @@
    file, so the logic is duplicated here on purpose — change both together. */
 (function () {
   'use strict';
-  var LOGIN = 'ASMDI-dashboard.html';
+  /* Root-relative: hospital-admin/ labs sit in a subfolder, where a bare
+     filename resolves inside that folder and 404s. The blocked page is
+     scroll-locked, so this button is the student's only way out — it must
+     never be a dead end. */
+  var LOGIN = '/ASMDI-dashboard.html';
+
+  /* A lab folder that belongs to exactly one programme. Ownership normally
+     comes from alizonPrograms, but that list is cloud-synced: a student whose
+     copy predates a newly shipped lab sees no owner for it, and an unowned lab
+     is treated as cross-programme and opens for everyone. Folder layout cannot
+     go stale the way a synced list can, so it backs the list up. */
+  var FOLDER_OWNER = { 'hospital-admin': { id:'hospital', name:'Hospital Administration' } };
   function get(k, d){ try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } }
   function sess(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
 
@@ -60,6 +71,14 @@
       });
     });
   });
+  if (!owners.length) {
+    /* the synced list does not know this lab — fall back to its folder */
+    var dir = (location.pathname.split('/').slice(-2)[0] || '').toLowerCase();
+    var byFolder = FOLDER_OWNER[dir];
+    if (byFolder) {
+      owners = [programs.filter(function (p) { return p && p.id === byFolder.id; })[0] || byFolder];
+    }
+  }
   if (!owners.length) return;                        /* cross-programme lab */
 
   /* an admin may open a lab to everyone by listing it in alizonLabAccess */
