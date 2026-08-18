@@ -21,8 +21,14 @@
 if(window.__alizonBackBar) return;
 window.__alizonBackBar = true;
 
-var DASH = 'ASMDI-dashboard.html';
-var FALLBACK = 'os-practicals.html';
+/* Root-relative: labs also live in subfolders (hospital-admin/), where a bare
+   filename would resolve against the folder and 404. */
+var DASH = '/ASMDI-dashboard.html';
+/* Back used to fall back to the practicals index, which is the PUBLIC page and
+   opens with "Sign in to the student portal" — a signed-in student pressing
+   Back landed on what looks like a logout. With nowhere to go back to, the
+   dashboard is the honest destination. */
+var FALLBACK = DASH;
 
 function ready(fn){
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
