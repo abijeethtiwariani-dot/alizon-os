@@ -138,6 +138,39 @@ function build(){
      sticky element only sticks to the top if it appears before the content. */
   document.body.insertBefore(bar, document.body.firstChild);
 
+  /* The bar floats over the page, and several pages keep their own controls in
+     the same corner: in the report maker it landed exactly on the Word and PDF
+     buttons, so a student pressing Download hit Back instead and lost the page
+     with their work on it. Rather than hand-reserve a corner on all 51 pages,
+     the bar looks at what it is covering and steps out of the way. */
+  function avoidCollisions(){
+    if(window.innerWidth <= 700) return;   /* sticky strip: in flow, cannot overlap */
+    bar.style.top = '10px'; bar.style.bottom = ''; bar.style.left = ''; bar.style.right = '10px';
+    var controls = document.querySelectorAll('a,button,input,select,summary,[role=button]');
+    for(var pass = 0; pass < 4; pass++){
+      var r = bar.getBoundingClientRect(), lowest = null;
+      for(var i = 0; i < controls.length; i++){
+        var e = controls[i];
+        if(bar.contains(e)) continue;
+        var b = e.getBoundingClientRect();
+        if(b.width < 2 || b.height < 2) continue;
+        if(b.right <= r.left || b.left >= r.right || b.bottom <= r.top || b.top >= r.bottom) continue;
+        if(lowest === null || b.bottom > lowest) lowest = b.bottom;
+      }
+      if(lowest === null) return;          /* nothing underneath — stay put */
+      bar.style.top = Math.round(lowest + 8) + 'px';
+    }
+    /* still colliding after four steps — take the empty bottom-left corner */
+    bar.style.top = 'auto'; bar.style.right = 'auto';
+    bar.style.bottom = '16px'; bar.style.left = '16px';
+  }
+  avoidCollisions();
+  /* page chrome can render late, and a resize changes what is where */
+  setTimeout(avoidCollisions, 1400);
+  var rt; window.addEventListener('resize', function(){
+    clearTimeout(rt); rt = setTimeout(avoidCollisions, 200);
+  });
+
   bar.querySelector('#abbBack').addEventListener('click', goBack);
   bar.querySelector('#abbDash').addEventListener('click', function(){ location.href = DASH; });
 
