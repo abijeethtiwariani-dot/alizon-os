@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module 5 · Practical 2 — Safety Round, BMW Segregation &amp; Mock NABH Self-Assessment | ALIZON OS</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#12202a,#1d3a44);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:168px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.tile .n{font-size:11px;color:var(--muted);font-weight:600}
+.tile .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+
+.bars{margin:10px 0}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lb{min-width:150px}
+.barrow .tr{flex:1;height:12px;border-radius:6px;background:#eee;overflow:hidden}
+.barrow .tr i{display:block;height:100%;background:linear-gradient(90deg,#b1040e,#d4626a)}
+.barrow .pc{min-width:42px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+
+.case{border:1px solid var(--line);border-radius:13px;padding:0;margin:10px 0;background:#fff;overflow:hidden}
+.case.done{border-color:#b7e0c5}
+.case .ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 14px;background:#faf8f6;border-bottom:1px solid var(--line);cursor:pointer}
+.case .ch b{font-size:13.5px}
+.case .cb{padding:12px 14px;display:none}
+.case.open .cb{display:block}
+.src{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px;background:#eef1f4;color:#43506b}
+.quote{border-left:3px solid var(--crimson);background:#fdf6f6;padding:10px 13px;border-radius:0 9px 9px 0;margin:8px 0;font-size:13.5px;font-style:italic}
+.aiblock{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:12.8px;line-height:1.65;margin:10px 0}
+.aiblock b{color:#8fd0ff;font-weight:700}
+.aifield{display:grid;grid-template-columns:170px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.aifield:last-child{border-bottom:none}
+.aifield .fk{color:#9aa7b4;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.aifield .fv{font-weight:700}
+.judge{display:flex;gap:5px}
+.judge button{font:inherit;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#dfe3e8;cursor:pointer}
+.judge button.ok{border-color:#5ec27a;color:#5ec27a}
+.judge button.no{border-color:#ff8f8f;color:#ff8f8f}
+.judge button.sel{background:#fff;color:#0f1115;border-color:#fff}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.stack .opt{border-radius:11px;padding:9px 13px}
+textarea,select,input[type=text]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:80px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:#eef1f4;color:#43506b}
+.chip.bad{background:#fdecea;color:var(--crit)}
+.chip.good{background:#e7f5ec;color:var(--ok)}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}.case .cb{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=4"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 5 · Practical 2</div>
+    <h1>Safety Round, BMW Segregation &amp; Mock NABH Self-Assessment</h1>
+    <p>The accreditation assessors arrive in six weeks. You walk the hospital as the quality cell, scoring
+       what you find against NABH objective elements and the Bio-Medical Waste Management Rules. Seven
+       observation points, two of which will not read the way they look — the tidiest area in the hospital is
+       not the compliant one.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">Safety round</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="hanabh"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Each stop opens with what you can see from the doorway. The <b>detailed inspection stays
+        closed until you carry it out</b>, and what you inspected is recorded. Scoring an area on appearance is
+        exactly what a self-assessment is meant to prevent.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Patient safety risk</b> falls when a real hazard
+        is scored compliant. <b>Accreditation readiness</b> falls when a finding is graded below what the
+        evidence supports — and fabricated documentation is a major non-conformity, not a paperwork slip.</p>
+      <div class="synth"><b>Educational simulation on synthetic data.</b> Every ward, register, staff member and
+        finding here is invented for teaching. Nothing describes a real hospital or a real assessment, and this
+        exercise is not an NABH assessment, a legal opinion, or a real compliance determination.</div>
+      <button class="btn" id="startBtn">▶ Begin the safety round</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Stops completed</div><div class="v" id="mSeen">0 / 7</div></div>
+      <div class="meter" id="mAW"><div class="k">Patient safety risk</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Accreditation readiness</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Complete the safety round to generate your Mock NABH Self-Assessment Report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=5"></script>
+<script src="../alizon-practical-report.js?v=5"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=8"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script src="../alizon-backbar.js?v=5"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+/* ---------------------------------------------------------------------------
+   SAFETY ROUND
+   Colour coding follows the Bio-Medical Waste Management Rules, 2016:
+     yellow  anatomical, soiled, expired medicines, chemical
+     red     contaminated recyclable plastics — tubing, IV sets, catheters, gloves
+     white   sharps, translucent puncture-proof
+     blue    glassware, vials, ampoules, metallic implants
+     general non-BMW municipal waste
+--------------------------------------------------------------------------- */
+var CASES=[
+ {id:'ST-1', area:'Medical ward · utility room', oe:'Hospital Infection Control',
+  seen:'Spotless. Bins colour-coded, lids closed, floor clean, register on the wall neatly filled in.',
+  detail:['Segregation on inspection is correct in all four bins.',
+          'BMW handling register is complete for the whole week — <b>including Thursday, Friday and Saturday, which have not happened yet</b>.',
+          'Entries for those days are already signed by the ward sister.',
+          'Weights recorded for future days are identical to last week\'s.',
+          'Staff state the register is "filled in advance to save time on the round".'],
+  truth:'major',
+  right:{grade:'nc', act:'major'},
+  why:'The tidiest area in the hospital and the most serious finding on the round. The segregation is genuinely correct, which is why appearance misleads here — but a register signed for days that have not occurred is fabricated evidence, and every other record this ward produces now carries the same doubt. Under any accreditation standard this is a major non-conformity, and it is also a safety finding: nobody can now show what waste actually left this ward.',
+  later:{ok:'Raised as a major non-conformity. Pre-signing stopped hospital-wide, and the practice was found on two other wards.',
+         bad:'Scored compliant on appearance. The assessors pulled the same register in week six and the finding became the headline of the visit.'}},
+
+ {id:'ST-2', area:'Central store · behind the CSSD', oe:'Facility &amp; Safety Management',
+  seen:'Cluttered, boxes stacked on the floor, poor lighting, generally untidy.',
+  detail:['Clutter is packaging awaiting collection; nothing is sterile stock.',
+          'Sterile items are in the adjacent room, on racks, off the floor, in date, temperature logged.',
+          'Fire exit clear, extinguishers in date and pressure-checked.',
+          'Lighting is poor and is on the estates work list with a job number.',
+          'No expired stock found on inspection.'],
+  truth:'minor',
+  right:{grade:'partial', act:'observation'},
+  why:'Untidy is not non-compliant. Nothing about the clutter touches sterility, egress or fire safety, and the lighting fault is already logged with a job number. Grading this as a non-conformity spends credibility on housekeeping and teaches staff that the quality cell scores appearance — which is precisely what produced the pre-signed register at the first stop.',
+  later:{ok:'Recorded as an observation with the lighting job number attached. Cleared before the visit.',
+         bad:'Raised as a non-conformity. The store team spent two days tidying and the real findings elsewhere went unaddressed.'}},
+
+ {id:'ST-3', area:'Emergency department · sharps station', oe:'Hospital Infection Control',
+  seen:'Sharps container in use at the bedside, three-quarters full.',
+  detail:['Container is puncture-proof, translucent, correctly labelled.',
+          '<b>Filled beyond the marked three-quarter line</b>; needles visible at the rim.',
+          'Two used <b>needles resting on the trolley top</b> beside it.',
+          'Nearest replacement container is in the store, two corridors away.',
+          'Two needlestick injuries reported in this department in the past year, both at container change.'],
+  truth:'major',
+  right:{grade:'nc', act:'immediate'},
+  why:'An overfilled sharps container with needles at the rim and loose needles on the trolley is an active injury hazard to staff and to cleaners, in a department with two needlestick injuries already. This is not a finding to write up and revisit — it is corrected during the round, and the reason it happened is that replacements are two corridors away.',
+  later:{ok:'Container replaced immediately during the round; spare containers stocked at the point of use. No further injuries that year.',
+         bad:'Written up for later action. A housekeeper sustained a needlestick emptying the trolley that evening.'}},
+
+ {id:'ST-4', area:'Post-operative ward · waste segregation', oe:'Bio-Medical Waste Management',
+  seen:'Four bins in the bay, staff segregating as you watch.',
+  detail:['Blood-soaked dressings → <b>yellow</b>. Correct.',
+          'Used IV set and tubing → <b>red</b>. Correct.',
+          'Broken medicine ampoule → <b>blue</b>. Correct.',
+          'Used syringe with needle attached → <b>white puncture-proof</b>. Correct.',
+          'Patient\'s lunch tray waste and newspapers → <b>yellow</b>. <span style="color:var(--crit)">Incorrect — this is general municipal waste.</span>',
+          'Ward\'s yellow-bag weight is running at roughly double the comparable ward.'],
+  truth:'minor',
+  right:{grade:'partial', act:'training'},
+  why:'Five of six calls are right, and the sixth is the one people rarely think of as an error: general waste put into the yellow stream. Over-segregation is not the safe side of the line. It doubles incineration cost and volume, it is itself a deviation from the Rules, and the doubled bag weight is the measurable symptom. A short retraining fixes it.',
+  later:{ok:'Retrained at the safety huddle. Yellow-bag weight fell to the comparable ward\'s level within a month.',
+         bad:'Passed as compliant because "nothing unsafe went in the wrong bin". Disposal cost stayed at double and the deviation was found at the visit.'}},
+
+ {id:'ST-5', area:'Paediatric ward · fire exit', oe:'Facility &amp; Safety Management',
+  seen:'Corridor clear, signage lit, exit door visible.',
+  detail:['Exit route unobstructed and signage illuminated.',
+          '<b>Exit door is locked</b>. Staff explain it is locked against child abduction risk.',
+          'No break-glass release and no key held on the ward; the key is with security.',
+          'Fire drill record shows the last drill used a different exit.',
+          'Ward has 22 paediatric beds.'],
+  truth:'major',
+  right:{grade:'nc', act:'immediate'},
+  why:'Two legitimate safety requirements in direct conflict, resolved in the most dangerous way available. Child security is a real concern and locking a fire exit is not the answer to it — a locked exit with no release and no key on the ward means 22 children behind a door that will not open. This needs correcting today, with a controlled release that satisfies both risks.',
+  later:{ok:'Break-glass release fitted within 48 hours; security requirement met without locking the egress.',
+         bad:'Scored partial with a 90-day action plan. The ward remained one locked door from a fire evacuation for three months.'}},
+
+ {id:'ST-6', area:'Outpatient pharmacy · cold chain', oe:'Medication Management',
+  seen:'Vaccine refrigerator running, thermometer visible, log on the door.',
+  detail:['Temperature log completed twice daily, signed, no gaps.',
+          'Readings all within 2-8°C.',
+          '<b>Two excursions recorded in the last month, both actioned</b>: stock quarantined, manufacturer consulted, outcome documented.',
+          'Alarm tested monthly; test records present.',
+          'Back-up power confirmed on the refrigerator circuit.'],
+  truth:'compliant',
+  right:{grade:'compliant', act:'none'},
+  why:'A system that has recorded two excursions and acted on both is stronger evidence of control than a log with no excursions at all — the second usually means nobody is looking. Everything the standard asks for is present, and the honest recording of deviations is the finding to commend, not to query.',
+  later:{ok:'Scored compliant and cited as good practice in the self-assessment.',
+         bad:'Queried as "two excursions in a month". The pharmacist began recording only readings that were in range.'}},
+
+ {id:'ST-7', area:'ICU · hand hygiene', oe:'Hospital Infection Control',
+  seen:'Dispensers at every bed space, audit board shows 96% compliance.',
+  detail:['Dispensers present, filled, within reach at all bed spaces.',
+          'Audit board shows 96% compliance for the quarter.',
+          'Audits are <b>performed by the ward\'s own staff on their own shift</b>, announced in advance.',
+          'The infection-control team\'s unannounced audit last month recorded <b>62%</b>.',
+          'Neither figure is wrong; they measure different things.',
+          'Two device-associated infections in the unit this quarter, above the internal threshold.'],
+  truth:'minor',
+  right:{grade:'partial', act:'training'},
+  why:'The 96% is not a lie — it is an announced self-audit, which measures what staff do when they know they are watched. The 62% unannounced figure measures practice. The finding is not the hand hygiene rate but the measurement method: a self-audited, pre-announced indicator reported to the board as assurance, alongside an infection rate that disagrees with it.',
+  later:{ok:'Hand hygiene audit moved to unannounced, independent observation. The reported rate fell and the infection rate followed it down.',
+         bad:'Scored compliant on the 96%. The board continued to receive assurance that the infection numbers contradicted.'}}
+];
+
+var GRADES=[['compliant','Compliant'],['partial','Partially compliant'],['nc','Non-compliant']];
+var ACTS=[['none','No action — commend'],['observation','Observation, log it'],
+          ['training','Retraining / corrective action'],['immediate','Correct now — during the round'],
+          ['major','Raise as major non-conformity']];
+
+var S=null, timer=null;
+function fresh(){ return {started:0,i:0,done:[],opened:{},safety:100,ready:100}; }
+function clockTick(){ if(!S||!S.started) return;
+  var s=Math.floor((Date.now()-S.started)/1000);
+  var el=$('mClock'); if(el) el.textContent=('0'+Math.floor(s/60)).slice(-2)+':'+('0'+(s%60)).slice(-2); }
+function meters(){
+  $('mA').textContent=S.safety+'%'; $('bA').style.width=S.safety+'%';
+  $('mB').textContent=S.ready+'%';  $('bB').style.width=S.ready+'%';
+  $('mAW').classList.toggle('bad',S.safety<70);
+  $('mBW').classList.toggle('bad',S.ready<70);
+  $('mSeen').textContent=S.done.length+' / '+CASES.length;
+}
+
+function render(){
+  var c=CASES[S.i]; if(!c) return finish();
+  var opened=!!S.opened[c.id];
+  $('workArea').innerHTML=
+   '<div class="card case">'+
+    '<div class="chipbar"><span class="chip">'+esc(c.id)+'</span><span class="chip">'+esc(c.area)+'</span>'+
+      '<span class="chip">NABH: '+c.oe+'</span><span class="chip">Stop '+(S.i+1)+' of '+CASES.length+'</span></div>'+
+    '<h3>From the doorway</h3>'+
+    '<div class="note">'+esc(c.seen)+'</div>'+
+    (opened
+      ? '<h3>On inspection</h3><ul class="muted" style="line-height:1.75">'+
+          c.detail.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>'
+      : '<button class="btn" id="openBtn">Carry out the inspection</button>'+
+        '<p class="muted" style="margin-top:8px">You have seen the area. You have not inspected it. '+
+        'You may score this stop on appearance — that is recorded, and it is what a self-assessment exists to prevent.</p>')+
+    '<h3>Your assessment</h3>'+
+    '<p class="muted">1 · Compliance against the objective element</p>'+
+    '<div class="chipbar" id="gRow">'+GRADES.map(function(x){
+       return '<button class="btn ghost" data-g="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<p class="muted">2 · Action</p>'+
+    '<div class="chipbar" id="aRow">'+ACTS.map(function(x){
+       return '<button class="btn ghost" data-a="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<button class="btn" id="commitBtn" disabled>Record this stop →</button>'+
+   '</div>';
+
+  if(!opened) $('openBtn').addEventListener('click',function(){ S.opened[c.id]=1; render(); });
+  var pick={g:null,a:null};
+  function sync(){ $('commitBtn').disabled=!(pick.g&&pick.a); }
+  function wire(row,key,attr){
+    [].forEach.call($(row).querySelectorAll('button'),function(b){
+      b.addEventListener('click',function(){ pick[key]=b.getAttribute(attr);
+        [].forEach.call($(row).querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);}); sync(); }); }); }
+  wire('gRow','g','data-g'); wire('aRow','a','data-a');
+  $('commitBtn').addEventListener('click',function(){ commit(c,pick); });
+}
+
+function commit(c,pick){
+  var gOk=pick.g===c.right.grade, aOk=pick.a===c.right.act;
+  /* a live hazard or fabricated evidence scored compliant */
+  if(c.truth==='major' && pick.g==='compliant') S.safety-=25;
+  if(c.truth==='major' && pick.a!==c.right.act) S.ready-=15;
+  /* grading sound practice down, or housekeeping up, costs credibility */
+  if(c.truth==='compliant' && pick.g!=='compliant') S.ready-=12;
+  if(c.truth==='minor' && pick.g==='nc') S.ready-=8;
+  if(!gOk) S.ready-=5;
+  if(!aOk) S.safety-=4;
+  var blind=!S.opened[c.id];
+  if(blind) S.safety-=10;
+  S.safety=Math.max(0,S.safety); S.ready=Math.max(0,S.ready);
+
+  S.done.push({id:c.id,gOk:gOk,aOk:aOk,blind:blind,truth:c.truth,why:c.why,
+               later:(gOk&&aOk)?c.later.ok:c.later.bad});
+  meters();
+  $('workArea').innerHTML=
+   '<div class="card">'+
+     '<h3>'+(gOk&&aOk?'<span style="color:var(--ok)">Recorded — sound assessment</span>'
+                     :'<span style="color:var(--crit)">Recorded — review this one</span>')+'</h3>'+
+     '<div class="note">'+esc(c.why)+'</div>'+
+     '<p class="muted"><b>Correct:</b> '+esc((GRADES.filter(function(x){return x[0]===c.right.grade;})[0]||['',''])[1])+
+       ' · action <b>'+esc((ACTS.filter(function(x){return x[0]===c.right.act;})[0]||['',''])[1])+'</b>.</p>'+
+     '<button class="btn" id="nextBtn">'+(S.i+1<CASES.length?'Next stop →':'End the round →')+'</button>'+
+   '</div>';
+  $('nextBtn').addEventListener('click',function(){ S.i++; render(); });
+}
+
+function finish(){
+  if(timer){ clearInterval(timer); timer=null; }
+  var mins=Math.max(1,Math.round((Date.now()-S.started)/60000));
+  var g=S.done.filter(function(d){return d.gOk;}).length;
+  var a=S.done.filter(function(d){return d.aOk;}).length;
+  var majors=CASES.filter(function(c){return c.truth==='major';}).length;
+  var majorsCaught=S.done.filter(function(d){return d.truth==='major'&&d.gOk;}).length;
+  var opened=Object.keys(S.opened).length;
+  var score=Math.round(g*5 + a*5 + S.safety*0.09 + S.ready*0.09 + (majorsCaught/majors)*8 + (opened/CASES.length)*6);
+  score=Math.max(0,Math.min(100,score));
+  var band=score>=85?'Outstanding':score>=70?'Competent':score>=55?'Developing':'Needs improvement';
+  var rows=S.done.map(function(d,i){
+    return '<tr><td>'+(i+1)+'</td><td>'+esc(d.id)+'</td>'+
+      '<td>'+(d.gOk?'<span class="chip good">graded</span>':'<span class="chip bad">misgraded</span>')+'</td>'+
+      '<td>'+(d.aOk?'<span class="chip good">right action</span>':'<span class="chip bad">wrong action</span>')+'</td>'+
+      '<td class="muted">'+esc(d.later)+'</td></tr>';}).join('');
+  var html=
+   '<div class="card">'+
+     '<h3>Mock NABH Self-Assessment — outcome</h3>'+
+     '<p><span class="scorebig">'+score+'</span> / 100 &nbsp; <b>'+band+'</b></p>'+
+     '<div class="chipbar">'+
+       '<span class="chip'+(majorsCaught<majors?' bad':' good')+'">Major findings identified: '+majorsCaught+'/'+majors+'</span>'+
+       '<span class="chip">Grades correct: '+g+'/'+CASES.length+'</span>'+
+       '<span class="chip">Actions correct: '+a+'/'+CASES.length+'</span>'+
+       '<span class="chip">Patient safety risk '+S.safety+'%</span>'+
+       '<span class="chip">Accreditation readiness '+S.ready+'%</span>'+
+       '<span class="chip'+(opened<CASES.length?' bad':'')+'">Stops inspected: '+opened+'/'+CASES.length+'</span>'+
+       '<span class="chip">Session '+mins+' min</span>'+
+     '</div>'+
+     (majorsCaught<majors?'<div class="note"><b>The tidiest area was the worst finding.</b> ST-1 segregated its waste correctly and signed its handling register for three days that had not happened. Fabricated evidence is a major non-conformity, and it puts every other record that ward produces in doubt.</div>':'')+
+     '<h3>What happened next</h3>'+
+     '<table class="tbl"><thead><tr><th>#</th><th>Stop</th><th>Grade</th><th>Action</th><th>Outcome</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+     '<div class="synth">Synthetic teaching data. This is an educational simulation, not an NABH assessment, a legal opinion or a real compliance determination.</div>'+
+   '</div>';
+  $('resBox').innerHTML=html;
+  var e=$('resEmpty'); if(e) e.remove();
+  tab('res');
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter',
+    module:'Hospital Administration AI · Module 5 · Practical 2 — Safety Round, BMW Segregation & Mock NABH Self-Assessment',
+    title:'Safety Round, BMW Segregation & Mock NABH Self-Assessment',
+    programme:'Hospital Administration AI',
+    submitOpts:{module:'Hospital Administration AI · Module 5 · Practical 2', title:'Safety Round, BMW Segregation & Mock NABH Self-Assessment', programme:'Hospital Administration AI', pct:score},
+    titleField:{label:'The finding that mattered most', placeholder:'e.g. ST-1 — BMW register signed for days that had not occurred'},
+    minWords:400,
+    autoPct:function(){ return score; },
+    autoResultText:function(){ return score+'/100 · '+band; },
+    autoResult:function(){ return html; },
+    attachments:[{label:'1. Self-assessment checklist (PDF)'},{label:'2. Reflection (PDF)'}]
+  });
+}
+
+function tab(p){
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  [].forEach.call(document.querySelectorAll('.panel'),function(x){ x.classList.remove('on'); });
+  $('p-'+p).classList.add('on');
+}
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){ tab(b.getAttribute('data-p')); }); });
+
+$('startBtn').addEventListener('click',function(){
+  S=fresh(); S.started=Date.now();
+  if(timer) clearInterval(timer);
+  timer=setInterval(clockTick,1000); clockTick();
+  meters(); render(); tab('work');
+});
+})();
+</script>
+</body>
+</html>

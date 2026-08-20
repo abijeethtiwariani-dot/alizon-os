@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module 7 · Practical 1 — Revenue Cycle, Leakage &amp; Denial Management Desk | ALIZON OS</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#12202a,#1d3a44);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:168px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.tile .n{font-size:11px;color:var(--muted);font-weight:600}
+.tile .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+
+.bars{margin:10px 0}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lb{min-width:150px}
+.barrow .tr{flex:1;height:12px;border-radius:6px;background:#eee;overflow:hidden}
+.barrow .tr i{display:block;height:100%;background:linear-gradient(90deg,#b1040e,#d4626a)}
+.barrow .pc{min-width:42px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+
+.case{border:1px solid var(--line);border-radius:13px;padding:0;margin:10px 0;background:#fff;overflow:hidden}
+.case.done{border-color:#b7e0c5}
+.case .ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 14px;background:#faf8f6;border-bottom:1px solid var(--line);cursor:pointer}
+.case .ch b{font-size:13.5px}
+.case .cb{padding:12px 14px;display:none}
+.case.open .cb{display:block}
+.src{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px;background:#eef1f4;color:#43506b}
+.quote{border-left:3px solid var(--crimson);background:#fdf6f6;padding:10px 13px;border-radius:0 9px 9px 0;margin:8px 0;font-size:13.5px;font-style:italic}
+.aiblock{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:12.8px;line-height:1.65;margin:10px 0}
+.aiblock b{color:#8fd0ff;font-weight:700}
+.aifield{display:grid;grid-template-columns:170px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.aifield:last-child{border-bottom:none}
+.aifield .fk{color:#9aa7b4;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.aifield .fv{font-weight:700}
+.judge{display:flex;gap:5px}
+.judge button{font:inherit;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#dfe3e8;cursor:pointer}
+.judge button.ok{border-color:#5ec27a;color:#5ec27a}
+.judge button.no{border-color:#ff8f8f;color:#ff8f8f}
+.judge button.sel{background:#fff;color:#0f1115;border-color:#fff}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.stack .opt{border-radius:11px;padding:9px 13px}
+textarea,select,input[type=text]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:80px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:#eef1f4;color:#43506b}
+.chip.bad{background:#fdecea;color:var(--crit)}
+.chip.good{background:#e7f5ec;color:var(--ok)}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}.case .cb{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=4"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 7 · Practical 1</div>
+    <h1>Revenue Cycle, Leakage &amp; Denial Management Desk</h1>
+    <p>You run the revenue cycle desk at ALIZON SmartCare. Six items are open: money earned and never billed,
+       claims returned by insurers, and suggestions from the AI billing assistant about how to recover more.
+       Two of those suggestions would work. Both are fraud. The month's recovery target is real, and so is
+       the line you are not allowed to cross to reach it.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">RCM desk</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="harcm"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Each item opens with the amount at stake and what the billing system says about it. The
+        <b>underlying record stays closed until you open it</b>, and what you opened is recorded.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Net revenue position</b> tracks money correctly
+        recovered or correctly returned. <b>Compliance integrity</b> falls when revenue is recovered by a route
+        the documentation does not support — and it falls hardest on the two items where taking the money is
+        easy, defensible-sounding and unlawful.</p>
+      <div class="synth"><b>Educational simulation on synthetic data.</b> Every patient, claim, tariff, code and
+        rupee figure here is invented for teaching. Nothing describes a real hospital, insurer or scheme, and
+        nothing this system outputs is billing, coding, legal or financial advice.</div>
+      <button class="btn" id="startBtn">▶ Open the RCM desk</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Items closed</div><div class="v" id="mSeen">0 / 6</div></div>
+      <div class="meter" id="mAW"><div class="k">Net revenue position</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Compliance integrity</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Work the desk to generate your Revenue Cycle &amp; Denial Management Report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=5"></script>
+<script src="../alizon-practical-report.js?v=5"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=8"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script src="../alizon-backbar.js?v=5"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+var CASES=[
+ {id:'RC-1', amt:'₹1,84,000', head:'Physiotherapy delivered all month, never charged',
+  sys:'Billing system: no charges posted against physiotherapy for 214 documented sessions.',
+  detail:['214 sessions documented in the clinical notes across 61 inpatients.',
+          'Every session signed by the therapist with date and duration.',
+          'Charge capture is <b>manual</b>: the therapist writes a slip and walks it to billing.',
+          'Slips for the month were found <b>in the therapy department drawer</b>, unsent.',
+          'Tariff for the session type is published and unambiguous: ₹860.',
+          'Services were delivered, documented and are chargeable. Nothing about the coding is in doubt.'],
+  truth:'recover', right:{a:'bill'},
+  why:'This is charge capture failure, not a claims problem: work was done, documented and never turned into a bill. It is the largest single recoverable item on the desk and the cleanest, because the documentation already supports every rupee. The recurring fix is the manual slip — a process that depends on someone walking paper across a corridor will leak every month it is not watched.',
+  later:{ok:'Billed against documented sessions, and charge capture moved into the therapy module. Leakage stopped.',
+         bad:'Written off as unrecoverable. The same leak recurred the next month, and the month after.'}},
+
+ {id:'RC-2', amt:'₹2,40,000', head:'Cashless claim denied — "service not covered"',
+  sys:'TPA denial code: service not covered under the policy.',
+  detail:['Pre-authorisation for the procedure <b>was obtained</b> before admission.',
+          'Approval reference is in the file, dated two days before surgery.',
+          'The <b>approval letter was not attached</b> to the final claim submission.',
+          'The policy schedule shows the procedure is covered.',
+          'The denial is a documentation denial wearing a coverage denial\'s label.',
+          'Appeal window: open for another 19 days.'],
+  truth:'recover', right:{a:'appeal'},
+  why:'The denial reason and the actual reason are different things, which is the first lesson of denial management. Coverage was never in question — an approval exists and the policy covers the procedure. What is missing is the approval letter in the submission packet. This is a fully recoverable claim that will stay denied for as long as somebody reads the denial code and believes it.',
+  later:{ok:'Resubmitted with the approval letter attached. Paid within the cycle.',
+         bad:'Accepted as "not covered" and written off. ₹2,40,000 lost to a missing attachment.'}},
+
+ {id:'RC-3', amt:'₹1,15,000', head:'Claim denied — policy lapsed before admission',
+  sys:'Insurer: cover not in force on the date of admission.',
+  detail:['Policy lapsed <b>eleven days before</b> the patient was admitted.',
+          'Eligibility check at registration: <b>not performed</b>. The field is optional in the system.',
+          'The insurer\'s denial is correct on the facts.',
+          'Patient was not informed at admission that cover was unverified.',
+          'Two further admissions this month had the same unverified field.',
+          'The amount is recoverable from the patient, who was never told they were uninsured.'],
+  truth:'upstream', right:{a:'upstream'},
+  why:'The insurer is right and no appeal will change that, so the money is not the finding — the process is. Eligibility verification is optional in the registration screen, three patients this month were admitted without it, and one of them now owes a bill they had every reason to think was covered. Appealing a correct denial wastes the desk\'s time; making the eligibility field mandatory stops the next three.',
+  later:{ok:'Denial accepted, the eligibility field made mandatory at registration, and the patient\'s situation handled with a counselled payment plan.',
+         bad:'Appealed twice and denied twice. The registration gap stayed open and four more patients were admitted uninsured.'}},
+
+ {id:'RC-4', amt:'₹96,000', head:'AI billing assistant suggests a higher-paying code',
+  sys:'AI assistant: "Similar cases are usually coded at the higher-complexity code. Recoding would add ₹96,000. Confidence: high."',
+  detail:['The operative note describes a <b>straightforward, uncomplicated</b> procedure.',
+          'No complication, no extended time, no additional resource is documented.',
+          'The higher-complexity code requires documented complexity that <b>is not present</b>.',
+          'The assistant\'s suggestion is based on <b>what similar-looking cases were coded as</b>, not on this record.',
+          'Coding must reflect the documented episode, not the population average.',
+          'Billing for a higher-paid service than the one documented is <b>upcoding</b> — a fraudulent claim.'],
+  truth:'fraud', right:{a:'reject'},
+  why:'The assistant is doing exactly what it was built to do — find the pattern — and the pattern here is other people\'s coding, not this patient\'s care. Nothing in the operative note supports the higher code, and submitting it would claim payment for complexity that did not occur. That is upcoding. It is recoverable money in the sense that it would arrive, and it is a fraudulent claim in every sense that matters, including for the person who signs it.',
+  later:{ok:'Rejected, and the assistant\'s suggestions were made advisory-only with mandatory coder sign-off against the record.',
+         bad:'Accepted on the assistant\'s confidence score. The pattern repeated across 40 claims and surfaced in the payer\'s audit as a systematic upcoding finding.'}},
+
+ {id:'RC-5', amt:'₹1,32,000', head:'Package case — bill the implant separately?',
+  sys:'AI assistant: "Implant is billed separately in 38% of comparable submissions. Adding it recovers ₹1,32,000."',
+  detail:['Procedure was performed under a <b>scheme package rate</b>.',
+          'The package specification <b>explicitly includes the implant</b>.',
+          'Billing an included component as a separate line is <b>unbundling</b>.',
+          'The assistant\'s 38% figure describes what other submitters did, not what the package permits.',
+          'Under the scheme, the beneficiary must not be charged the difference either.',
+          'Package rates are the terms the hospital accepted on empanelment.'],
+  truth:'fraud', right:{a:'reject'},
+  why:'The second temptation, dressed differently. A package rate is a price agreed for a defined bundle, and pulling an included item out to bill it again is claiming twice for one thing. That 38% of comparable submissions did it is not a defence — it is a description of how common the practice is, and the same statistic will appear in the audit that finds it. The hospital agreed to these terms when it took empanelment.',
+  later:{ok:'Rejected and billed at the package rate. The assistant\'s benchmark prompt was disabled for package cases.',
+         bad:'Unbundled and claimed. Recovered in the short term, flagged in a scheme audit, and the empanelment came under review.'}},
+
+ {id:'RC-6', amt:'−₹47,500', head:'Patient overcharged — private room rate on a general ward stay',
+  sys:'Billing system: room rent posted at private tariff for 19 days.',
+  detail:['Patient occupied a <b>general ward bed</b> throughout the admission.',
+          'Room rent posted at the <b>private room tariff</b>, ₹2,500 higher per day.',
+          '19 days × ₹2,500 = <b>₹47,500 overcharged</b>.',
+          'Cause: bed-category field not updated when the patient moved from private to general on day 2.',
+          'The patient has <b>already paid in full</b> and has not complained.',
+          'Nobody outside the hospital knows.'],
+  truth:'refund', right:{a:'refund'},
+  why:'The only item on the desk that reduces this month\'s revenue, and the one that most clearly defines the job. The patient paid for nineteen days of a room they did not occupy, has not noticed, and has no way to find out. None of that changes what is owed. A revenue cycle that only ever moves money in one direction is not a revenue cycle, it is a collection operation — and the bed-category field that caused it will overcharge somebody else next week if it is not fixed.',
+  later:{ok:'Refunded without being asked, and the bed-category change made an automatic trigger on transfer.',
+         bad:'Left uncorrected because the patient had not complained. Found in an internal audit, refunded with interest, and reported as a billing-integrity finding.'}}
+];
+
+var ACTS=[['bill','Bill it — documentation supports the charge'],
+          ['appeal','Appeal the denial with documentation'],
+          ['upstream','Accept the loss — fix the upstream process'],
+          ['reject','Reject the suggestion — not supported by the record'],
+          ['refund','Refund the patient']];
+
+var S=null, timer=null;
+function fresh(){ return {started:0,i:0,done:[],opened:{},rev:100,comp:100}; }
+function clockTick(){ if(!S||!S.started) return;
+  var s=Math.floor((Date.now()-S.started)/1000);
+  var el=$('mClock'); if(el) el.textContent=('0'+Math.floor(s/60)).slice(-2)+':'+('0'+(s%60)).slice(-2); }
+function meters(){
+  $('mA').textContent=S.rev+'%';  $('bA').style.width=S.rev+'%';
+  $('mB').textContent=S.comp+'%'; $('bB').style.width=S.comp+'%';
+  $('mAW').classList.toggle('bad',S.rev<70);
+  $('mBW').classList.toggle('bad',S.comp<70);
+  $('mSeen').textContent=S.done.length+' / '+CASES.length;
+}
+
+function render(){
+  var c=CASES[S.i]; if(!c) return finish();
+  var opened=!!S.opened[c.id];
+  $('workArea').innerHTML=
+   '<div class="card case">'+
+    '<div class="chipbar"><span class="chip">'+esc(c.id)+'</span>'+
+      '<span class="chip'+(c.amt.indexOf('−')===0?' bad':'')+'">'+esc(c.amt)+'</span>'+
+      '<span class="chip">Item '+(S.i+1)+' of '+CASES.length+'</span></div>'+
+    '<h3>'+esc(c.head)+'</h3>'+
+    '<div class="note">'+esc(c.sys)+'</div>'+
+    (opened
+      ? '<h3>The record</h3><ul class="muted" style="line-height:1.75">'+
+          c.detail.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>'
+      : '<button class="btn" id="openBtn">Open the record</button>'+
+        '<p class="muted" style="margin-top:8px">You have the amount and what the system says. You have not read the record. '+
+        'You may act on the system\'s word — that is recorded, and it is how an assistant\'s suggestion becomes a claim.</p>')+
+    '<h3>Your decision</h3>'+
+    '<div class="chipbar" id="aRow">'+ACTS.map(function(x){
+       return '<button class="btn ghost" data-a="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<button class="btn" id="commitBtn" disabled>Record this decision →</button>'+
+   '</div>';
+  if(!opened) $('openBtn').addEventListener('click',function(){ S.opened[c.id]=1; render(); });
+  var pick={a:null};
+  [].forEach.call($('aRow').querySelectorAll('button'),function(b){
+    b.addEventListener('click',function(){ pick.a=b.getAttribute('data-a');
+      [].forEach.call($('aRow').querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);});
+      $('commitBtn').disabled=false; }); });
+  $('commitBtn').addEventListener('click',function(){ commit(c,pick); });
+}
+
+function commit(c,pick){
+  var ok=pick.a===c.right.a;
+  /* taking money the record does not support is the compliance failure */
+  if(c.truth==='fraud' && pick.a!=='reject') S.comp-=30;
+  if(c.truth==='refund' && pick.a!=='refund') S.comp-=20;
+  /* leaving recoverable money on the table, or chasing an unrecoverable claim */
+  if(c.truth==='recover' && pick.a!==c.right.a) S.rev-=18;
+  if(c.truth==='upstream' && pick.a==='appeal') S.rev-=10;
+  if(!ok) S.rev-=4;
+  var blind=!S.opened[c.id];
+  if(blind) S.comp-=10;
+  S.rev=Math.max(0,S.rev); S.comp=Math.max(0,S.comp);
+  S.done.push({id:c.id,ok:ok,blind:blind,truth:c.truth,why:c.why,
+               later:ok?c.later.ok:c.later.bad});
+  meters();
+  $('workArea').innerHTML=
+   '<div class="card">'+
+     '<h3>'+(ok?'<span style="color:var(--ok)">Recorded — sound decision</span>'
+               :'<span style="color:var(--crit)">Recorded — review this one</span>')+'</h3>'+
+     '<div class="note">'+esc(c.why)+'</div>'+
+     '<p class="muted"><b>Correct:</b> '+esc((ACTS.filter(function(x){return x[0]===c.right.a;})[0]||['',''])[1])+'.</p>'+
+     '<button class="btn" id="nextBtn">'+(S.i+1<CASES.length?'Next item →':'Close the desk →')+'</button>'+
+   '</div>';
+  $('nextBtn').addEventListener('click',function(){ S.i++; render(); });
+}
+
+function finish(){
+  if(timer){ clearInterval(timer); timer=null; }
+  var mins=Math.max(1,Math.round((Date.now()-S.started)/60000));
+  var ok=S.done.filter(function(d){return d.ok;}).length;
+  var frauds=CASES.filter(function(c){return c.truth==='fraud';}).length;
+  var fraudsRefused=S.done.filter(function(d){return d.truth==='fraud'&&d.ok;}).length;
+  var refunded=S.done.filter(function(d){return d.truth==='refund'&&d.ok;}).length>0;
+  var opened=Object.keys(S.opened).length;
+  /* components sum to exactly 100 on a flawless run */
+  var score=Math.round(ok*9 + S.rev*0.12 + S.comp*0.12 + (fraudsRefused/frauds)*10 + (refunded?6:0) + (opened/CASES.length)*6);
+  score=Math.max(0,Math.min(100,score));
+  var band=score>=85?'Outstanding':score>=70?'Competent':score>=55?'Developing':'Needs improvement';
+  var rows=S.done.map(function(d,i){
+    return '<tr><td>'+(i+1)+'</td><td>'+esc(d.id)+'</td>'+
+      '<td>'+(d.ok?'<span class="chip good">right call</span>':'<span class="chip bad">wrong call</span>')+'</td>'+
+      '<td class="muted">'+esc(d.later)+'</td></tr>';}).join('');
+  var html=
+   '<div class="card">'+
+     '<h3>Revenue Cycle &amp; Denial Management — outcome</h3>'+
+     '<p><span class="scorebig">'+score+'</span> / 100 &nbsp; <b>'+band+'</b></p>'+
+     '<div class="chipbar">'+
+       '<span class="chip'+(fraudsRefused<frauds?' bad':' good')+'">Improper claims refused: '+fraudsRefused+'/'+frauds+'</span>'+
+       '<span class="chip'+(refunded?' good':' bad')+'">Overcharge '+(refunded?'refunded':'NOT refunded')+'</span>'+
+       '<span class="chip">Decisions correct: '+ok+'/'+CASES.length+'</span>'+
+       '<span class="chip">Net revenue position '+S.rev+'%</span>'+
+       '<span class="chip">Compliance integrity '+S.comp+'%</span>'+
+       '<span class="chip'+(opened<CASES.length?' bad':'')+'">Records opened: '+opened+'/'+CASES.length+'</span>'+
+       '<span class="chip">Session '+mins+' min</span>'+
+     '</div>'+
+     (fraudsRefused<frauds?'<div class="note"><b>RC-4 and RC-5 were the two that pay.</b> Upcoding a straightforward procedure and unbundling an implant included in a package rate would both have recovered money, and both are fraudulent claims. That other submitters do it is a description of how common it is, not a defence.</div>':'')+
+     (refunded?'':'<div class="note"><b>RC-6 was the one that costs.</b> A patient paid nineteen days of private room rent for a general ward bed, has not noticed, and cannot find out. Nothing about that changes what is owed.</div>')+
+     '<h3>What happened next</h3>'+
+     '<table class="tbl"><thead><tr><th>#</th><th>Item</th><th>Decision</th><th>Outcome</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+     '<div class="synth">Synthetic teaching data. This report is an educational record of a simulated exercise and is not billing, coding, legal or financial advice.</div>'+
+   '</div>';
+  $('resBox').innerHTML=html;
+  var e=$('resEmpty'); if(e) e.remove();
+  tab('res');
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter',
+    module:'Hospital Administration AI · Module 7 · Practical 1 — Revenue Cycle, Leakage & Denial Management Desk',
+    title:'Revenue Cycle, Leakage & Denial Management Desk',
+    programme:'Hospital Administration AI',
+    submitOpts:{module:'Hospital Administration AI · Module 7 · Practical 1', title:'Revenue Cycle, Leakage & Denial Management Desk', programme:'Hospital Administration AI', pct:score},
+    titleField:{label:'The item that mattered most', placeholder:'e.g. RC-6 — refunding an overcharge nobody had noticed'},
+    minWords:400,
+    autoPct:function(){ return score; },
+    autoResultText:function(){ return score+'/100 · '+band; },
+    autoResult:function(){ return html; },
+    attachments:[{label:'1. Denial analysis worksheet (PDF)'},{label:'2. Reflection (PDF)'}]
+  });
+}
+
+function tab(p){
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  [].forEach.call(document.querySelectorAll('.panel'),function(x){ x.classList.remove('on'); });
+  $('p-'+p).classList.add('on');
+}
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){ tab(b.getAttribute('data-p')); }); });
+
+$('startBtn').addEventListener('click',function(){
+  S=fresh(); S.started=Date.now();
+  if(timer) clearInterval(timer);
+  timer=setInterval(clockTick,1000); clockTick();
+  meters(); render(); tab('work');
+});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module 6 · Practical 1 — Hospital KPI Validation &amp; MIS Board Pack | ALIZON OS</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#12202a,#1d3a44);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:168px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.tile .n{font-size:11px;color:var(--muted);font-weight:600}
+.tile .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+
+.bars{margin:10px 0}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lb{min-width:150px}
+.barrow .tr{flex:1;height:12px;border-radius:6px;background:#eee;overflow:hidden}
+.barrow .tr i{display:block;height:100%;background:linear-gradient(90deg,#b1040e,#d4626a)}
+.barrow .pc{min-width:42px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+
+.case{border:1px solid var(--line);border-radius:13px;padding:0;margin:10px 0;background:#fff;overflow:hidden}
+.case.done{border-color:#b7e0c5}
+.case .ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 14px;background:#faf8f6;border-bottom:1px solid var(--line);cursor:pointer}
+.case .ch b{font-size:13.5px}
+.case .cb{padding:12px 14px;display:none}
+.case.open .cb{display:block}
+.src{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px;background:#eef1f4;color:#43506b}
+.quote{border-left:3px solid var(--crimson);background:#fdf6f6;padding:10px 13px;border-radius:0 9px 9px 0;margin:8px 0;font-size:13.5px;font-style:italic}
+.aiblock{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:12.8px;line-height:1.65;margin:10px 0}
+.aiblock b{color:#8fd0ff;font-weight:700}
+.aifield{display:grid;grid-template-columns:170px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.aifield:last-child{border-bottom:none}
+.aifield .fk{color:#9aa7b4;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.aifield .fv{font-weight:700}
+.judge{display:flex;gap:5px}
+.judge button{font:inherit;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#dfe3e8;cursor:pointer}
+.judge button.ok{border-color:#5ec27a;color:#5ec27a}
+.judge button.no{border-color:#ff8f8f;color:#ff8f8f}
+.judge button.sel{background:#fff;color:#0f1115;border-color:#fff}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.stack .opt{border-radius:11px;padding:9px 13px}
+textarea,select,input[type=text]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:80px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:#eef1f4;color:#43506b}
+.chip.bad{background:#fdecea;color:var(--crit)}
+.chip.good{background:#e7f5ec;color:var(--ok)}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}.case .cb{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=4"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 6 · Practical 1</div>
+    <h1>Hospital KPI Validation &amp; MIS Board Pack</h1>
+    <p>You are the MIS analyst at ALIZON SmartCare and the board pack goes out on Friday. Six indicators have
+       arrived from the departments, each with the raw numbers behind it. Recompute them, decide which mean what
+       they appear to mean, and decide what the board is told — because the fastest way to mislead a board is
+       with a figure that is arithmetically correct.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">MIS desk</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="hakpi"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Each indicator opens with the figure the department reported. The <b>raw data behind it
+        stays closed until you open it</b>, and what you opened is recorded. An indicator signed off without
+        the raw numbers is an indicator taken on trust.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Data integrity</b> falls when a misleading figure
+        reaches the board. <b>Decision usefulness</b> falls when a sound figure is withheld or escalated — a
+        board pack that reports nothing until everything is perfect is not cautious, it is useless.</p>
+      <div class="synth"><b>Educational simulation on synthetic data.</b> Every dataset, department and figure
+        here is invented for teaching. Nothing describes a real hospital, and no output of this system is a
+        real performance, clinical or governance determination.</div>
+      <button class="btn" id="startBtn">▶ Open the MIS desk</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Indicators cleared</div><div class="v" id="mSeen">0 / 6</div></div>
+      <div class="meter" id="mAW"><div class="k">Data integrity</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Decision usefulness</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Validate the indicator set to generate your MIS Validation &amp; Board Pack Report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=5"></script>
+<script src="../alizon-practical-report.js?v=5"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=8"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script src="../alizon-backbar.js?v=5"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+/* ---------------------------------------------------------------------------
+   INDICATOR SET — every figure below is arithmetically checkable from the raw
+   data shown. Four of the six are misleading as presented; one of those four
+   is arithmetically correct, which is the point of the exercise.
+--------------------------------------------------------------------------- */
+var CASES=[
+ {id:'KPI-1', dept:'Medical records', name:'Average length of stay (ALOS)',
+  reported:'3.1 days — improved from 4.8', tone:'good',
+  raw:['Total inpatient days for the month: <b>5,952</b>',
+       'Inpatient discharges: <b>1,240</b>',
+       'Day-care cases handled: <b>680</b>',
+       'The reported figure divides 5,952 by <b>1,920</b> — discharges plus day-care.',
+       'Day-care cases contribute no inpatient days; they were added to the denominator only.',
+       'Last month\'s figure of 4.8 used inpatient discharges alone.'],
+  check:'5,952 ÷ 1,240 = 4.80 days. The reported 3.1 divides by 1,920.',
+  truth:'misleading', right:{v:'misleading', c:'denominator', a:'correct'},
+  why:'ALOS has not moved. Adding 680 day-care cases to the denominator while adding none of their days to the numerator mathematically forces the average down, and comparing it to a prior month computed the other way turns an accounting change into a performance improvement. The board would be told the hospital is discharging patients 1.7 days sooner than it is.',
+  later:{ok:'Corrected to 4.80 with the definition footnoted. The apparent improvement disappeared and nobody planned around it.',
+         bad:'Published as a 35% improvement. The board approved a bed-reduction proposal built on it.'}},
+
+ {id:'KPI-2', dept:'Bed management', name:'Bed occupancy rate',
+  reported:'103% — flagged as a data error', tone:'bad',
+  raw:['Sanctioned beds: <b>300</b>',
+       'Beds closed for civil work all month: <b>12</b> → available beds <b>288</b>',
+       'Average midnight census: <b>296</b> patients',
+       '296 ÷ 288 = 102.8%',
+       'Occupancy above 100% is expected when computed on available rather than sanctioned beds, because census counts patients present at midnight including those in transit areas.'],
+  check:'296 ÷ 288 = 102.8%. Correct as computed on available beds.',
+  truth:'sound', right:{v:'sound', c:'genuine', a:'publish'},
+  why:'The figure is right and the alarm is misplaced. Occupancy over 100% is a normal consequence of dividing by available beds while twelve are closed — and it is telling the board something true and urgent, which is that the hospital is running above its working capacity. Sending it back as a data error would delete the most useful number on the page.',
+  later:{ok:'Published with the closed-bed note. The board reinstated the twelve beds the following month.',
+         bad:'Returned as a suspected error. The capacity problem went unreported for a further quarter.'}},
+
+ {id:'KPI-3', dept:'Laboratory', name:'Report turnaround time (TAT)',
+  reported:'41 minutes — improved from 86', tone:'good',
+  raw:['Previous definition: clock starts at <b>sample collection on the ward</b>.',
+       'New definition this month: clock starts at <b>sample receipt in the laboratory</b>.',
+       'Average ward-to-lab transport time: <b>44 minutes</b>, unchanged.',
+       '41 + 44 = 85 minutes from collection — against 86 last month.',
+       'No process in the laboratory changed during the period.'],
+  check:'Collection-to-report is 85 min, essentially unchanged from 86.',
+  truth:'misleading', right:{v:'misleading', c:'definition', a:'correct'},
+  why:'Nothing improved. Moving the start of the clock past the 44-minute transport leg removes that time from the measure and from nobody\'s waiting. The patient waits the same 85 minutes they waited last month. Worse, the redefinition hides the only part of the pathway that was actually addressable — the transport leg is now invisible to the very report meant to manage it.',
+  later:{ok:'Reported on both definitions. The 44-minute transport leg became a project and fell to 19 minutes.',
+         bad:'Published as a halving of TAT. The lab was commended and the transport delay was never examined.'}},
+
+ {id:'KPI-4', dept:'Outpatients', name:'OPD to inpatient conversion rate',
+  reported:'4.2% — below the 8% benchmark', tone:'bad',
+  raw:['New OPD attendances: <b>6,400</b>',
+       'Follow-up OPD attendances: <b>14,900</b>',
+       'Total OPD attendances: <b>21,300</b>',
+       'Admissions arising from OPD: <b>890</b>',
+       'Reported figure: 890 ÷ 21,300 = 4.18%',
+       'The 8% benchmark is defined on <b>new attendances only</b>.'],
+  check:'On the benchmark definition: 890 ÷ 6,400 = 13.9%, well above 8%.',
+  truth:'misleading', right:{v:'misleading', c:'denominator', a:'correct'},
+  why:'The department is being marked down for arithmetic. Follow-up attendances are not candidates for admission and the published benchmark excludes them; measured the way the benchmark is defined, conversion is 13.9%, not 4.2%. Comparing two numbers computed on different populations is the most common error in hospital reporting and the hardest to see, because both numbers are individually correct.',
+  later:{ok:'Recomputed on new attendances and reported as 13.9% against the benchmark. The improvement plan was cancelled as unnecessary.',
+         bad:'Published as underperformance. Outpatients spent two quarters on an improvement plan for a problem it did not have.'}},
+
+ {id:'KPI-5', dept:'Quality cell', name:'Gross inpatient mortality rate',
+  reported:'0.89% — improved from 1.40%', tone:'good',
+  raw:['Inpatient deaths this month: <b>11</b>',
+       'Inpatient discharges: <b>1,240</b>',
+       '11 ÷ 1,240 = 0.89%. <b>The arithmetic is correct.</b>',
+       'Discharges against medical advice, taken home in extremis: <b>38 this month, 6 last month</b>.',
+       'Of the 38, twenty-nine were recorded as "prognosis explained, family requested discharge".',
+       'A death after discharge does not appear in inpatient mortality.'],
+  check:'0.89% is correctly computed. DAMA rose from 6 to 38 in the same period.',
+  truth:'misleading', right:{v:'misleading', c:'exclusion', a:'escalate'},
+  why:'This is the one figure on the page with nothing wrong with its arithmetic, and it is the most serious item in the set. Mortality did not fall by a third; deaths moved out of the denominator. A sixfold rise in patients taken home in extremis, in the same month the mortality rate improved, is a clinical governance signal — and reporting the improvement without it would tell the board the opposite of what happened.',
+  later:{ok:'Escalated to the medical director with both figures. A review of end-of-life discharge practice followed.',
+         bad:'Published as a mortality improvement. The DAMA rise was noticed eight months later during an external review.'}},
+
+ {id:'KPI-6', dept:'Infection control', name:'Device-associated infection rate',
+  reported:'2.1 per 1,000 device-days — improved from 2.6', tone:'good',
+  raw:['Infections this month: <b>17</b> (last month: <b>15</b>)',
+       'Device-days this month: <b>8,100</b> (last month: <b>5,770</b>)',
+       '17 ÷ 8,100 × 1,000 = <b>2.10</b>',
+       '15 ÷ 5,770 × 1,000 = <b>2.60</b>',
+       'Denominator matches the national surveillance definition.',
+       'A manager has queried the figure because the raw count went <b>up</b>.'],
+  check:'Rate 2.10 vs 2.60. Correct: the count rose, exposure rose faster.',
+  truth:'sound', right:{v:'sound', c:'genuine', a:'publish'},
+  why:'The query is the teaching point and the figure is sound. Seventeen infections is more than fifteen, and the rate still fell, because device-days rose 40%. A rate exists precisely to separate how much harm occurred from how much exposure there was, and abandoning the rate for the raw count whenever they disagree would make the indicator unusable in any month the hospital gets busier.',
+  later:{ok:'Published with both the count and the rate shown, and the query answered at the meeting.',
+         bad:'Withheld pending validation. Infection control lost a month of reporting and the query recurred.'}}
+];
+
+var VS=[['sound','Sound — means what it appears to mean'],['misleading','Misleading as presented']];
+var CS=[['denominator','Denominator or population error'],['definition','Definition or measurement change'],
+        ['exclusion','Cases moved out of the count'],['genuine','Figure is sound as computed']];
+var AS=[['publish','Publish to the board'],['correct','Correct the figure, then publish'],
+        ['withhold','Withhold pending validation'],['escalate','Escalate — governance signal']];
+
+var S=null, timer=null;
+function fresh(){ return {started:0,i:0,done:[],opened:{},integ:100,use:100}; }
+function clockTick(){ if(!S||!S.started) return;
+  var s=Math.floor((Date.now()-S.started)/1000);
+  var el=$('mClock'); if(el) el.textContent=('0'+Math.floor(s/60)).slice(-2)+':'+('0'+(s%60)).slice(-2); }
+function meters(){
+  $('mA').textContent=S.integ+'%'; $('bA').style.width=S.integ+'%';
+  $('mB').textContent=S.use+'%';   $('bB').style.width=S.use+'%';
+  $('mAW').classList.toggle('bad',S.integ<70);
+  $('mBW').classList.toggle('bad',S.use<70);
+  $('mSeen').textContent=S.done.length+' / '+CASES.length;
+}
+
+function render(){
+  var c=CASES[S.i]; if(!c) return finish();
+  var opened=!!S.opened[c.id];
+  $('workArea').innerHTML=
+   '<div class="card case">'+
+    '<div class="chipbar"><span class="chip">'+esc(c.id)+'</span><span class="chip">'+esc(c.dept)+'</span>'+
+      '<span class="chip">Indicator '+(S.i+1)+' of '+CASES.length+'</span></div>'+
+    '<h3>'+esc(c.name)+'</h3>'+
+    '<div class="note"><b>Reported:</b> '+esc(c.reported)+'</div>'+
+    (opened
+      ? '<h3>Raw data</h3><ul class="muted" style="line-height:1.75">'+
+          c.raw.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>'+
+        '<div class="synth"><b>Recomputed:</b> '+esc(c.check)+'</div>'
+      : '<button class="btn" id="openBtn">Open the raw data</button>'+
+        '<p class="muted" style="margin-top:8px">You have the department\'s figure. You have not seen the numbers behind it. '+
+        'You may clear this indicator on the figure alone — that is recorded.</p>')+
+    '<h3>Your validation</h3>'+
+    '<p class="muted">1 · Does the figure mean what it appears to mean?</p>'+
+    '<div class="chipbar" id="vRow">'+VS.map(function(x){
+       return '<button class="btn ghost" data-v="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<p class="muted">2 · Why?</p>'+
+    '<div class="chipbar" id="cRow">'+CS.map(function(x){
+       return '<button class="btn ghost" data-c="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<p class="muted">3 · What does the board receive?</p>'+
+    '<div class="chipbar" id="aRow">'+AS.map(function(x){
+       return '<button class="btn ghost" data-a="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<button class="btn" id="commitBtn" disabled>Record this validation →</button>'+
+   '</div>';
+
+  if(!opened) $('openBtn').addEventListener('click',function(){ S.opened[c.id]=1; render(); });
+  var pick={v:null,c:null,a:null};
+  function sync(){ $('commitBtn').disabled=!(pick.v&&pick.c&&pick.a); }
+  function wire(row,key,attr){
+    [].forEach.call($(row).querySelectorAll('button'),function(b){
+      b.addEventListener('click',function(){ pick[key]=b.getAttribute(attr);
+        [].forEach.call($(row).querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);}); sync(); }); }); }
+  wire('vRow','v','data-v'); wire('cRow','c','data-c'); wire('aRow','a','data-a');
+  $('commitBtn').addEventListener('click',function(){ commit(c,pick); });
+}
+
+function commit(c,pick){
+  var vOk=pick.v===c.right.v, cOk=pick.c===c.right.c, aOk=pick.a===c.right.a;
+  if(c.truth==='misleading' && pick.a==='publish') S.integ-=22;
+  if(c.truth==='misleading' && !vOk) S.integ-=8;
+  if(c.truth==='sound' && (pick.a==='withhold'||pick.a==='escalate')) S.use-=15;
+  if(c.truth==='sound' && !vOk) S.use-=6;
+  if(!cOk) S.integ-=4;
+  var blind=!S.opened[c.id];
+  if(blind) S.integ-=10;
+  S.integ=Math.max(0,S.integ); S.use=Math.max(0,S.use);
+  S.done.push({id:c.id,vOk:vOk,cOk:cOk,aOk:aOk,blind:blind,truth:c.truth,why:c.why,
+               later:(vOk&&cOk&&aOk)?c.later.ok:c.later.bad});
+  meters();
+  var all=vOk&&cOk&&aOk;
+  $('workArea').innerHTML=
+   '<div class="card">'+
+     '<h3>'+(all?'<span style="color:var(--ok)">Recorded — sound validation</span>'
+                :'<span style="color:var(--crit)">Recorded — review this one</span>')+'</h3>'+
+     '<div class="note">'+esc(c.why)+'</div>'+
+     '<p class="muted"><b>Correct:</b> '+esc((VS.filter(function(x){return x[0]===c.right.v;})[0]||['',''])[1])+
+       ' · '+esc((CS.filter(function(x){return x[0]===c.right.c;})[0]||['',''])[1])+
+       ' · <b>'+esc((AS.filter(function(x){return x[0]===c.right.a;})[0]||['',''])[1])+'</b>.</p>'+
+     '<button class="btn" id="nextBtn">'+(S.i+1<CASES.length?'Next indicator →':'Close the pack →')+'</button>'+
+   '</div>';
+  $('nextBtn').addEventListener('click',function(){ S.i++; render(); });
+}
+
+function finish(){
+  if(timer){ clearInterval(timer); timer=null; }
+  var mins=Math.max(1,Math.round((Date.now()-S.started)/60000));
+  var v=S.done.filter(function(d){return d.vOk;}).length;
+  var c=S.done.filter(function(d){return d.cOk;}).length;
+  var a=S.done.filter(function(d){return d.aOk;}).length;
+  var mis=CASES.filter(function(x){return x.truth==='misleading';}).length;
+  var misCaught=S.done.filter(function(d){return d.truth==='misleading'&&d.vOk&&d.aOk;}).length;
+  var opened=Object.keys(S.opened).length;
+  var score=Math.round(v*3 + c*3 + a*5 + S.integ*0.11 + S.use*0.11 + (misCaught/mis)*8 + (opened/CASES.length)*6);
+  score=Math.max(0,Math.min(100,score));
+  var band=score>=85?'Outstanding':score>=70?'Competent':score>=55?'Developing':'Needs improvement';
+  var rows=S.done.map(function(d,i){
+    return '<tr><td>'+(i+1)+'</td><td>'+esc(d.id)+'</td>'+
+      '<td>'+(d.vOk?'<span class="chip good">read</span>':'<span class="chip bad">misread</span>')+'</td>'+
+      '<td>'+(d.cOk?'<span class="chip good">cause</span>':'<span class="chip bad">cause</span>')+'</td>'+
+      '<td>'+(d.aOk?'<span class="chip good">right call</span>':'<span class="chip bad">wrong call</span>')+'</td>'+
+      '<td class="muted">'+esc(d.later)+'</td></tr>';}).join('');
+  var html=
+   '<div class="card">'+
+     '<h3>MIS Validation &amp; Board Pack — outcome</h3>'+
+     '<p><span class="scorebig">'+score+'</span> / 100 &nbsp; <b>'+band+'</b></p>'+
+     '<div class="chipbar">'+
+       '<span class="chip'+(misCaught<mis?' bad':' good')+'">Misleading indicators caught: '+misCaught+'/'+mis+'</span>'+
+       '<span class="chip">Board decisions correct: '+a+'/'+CASES.length+'</span>'+
+       '<span class="chip">Data integrity '+S.integ+'%</span>'+
+       '<span class="chip">Decision usefulness '+S.use+'%</span>'+
+       '<span class="chip'+(opened<CASES.length?' bad':'')+'">Raw data opened: '+opened+'/'+CASES.length+'</span>'+
+       '<span class="chip">Session '+mins+' min</span>'+
+     '</div>'+
+     (misCaught<mis?'<div class="note"><b>KPI-5 is the one to catch.</b> Its arithmetic is correct — 11 deaths in 1,240 discharges really is 0.89%. What makes it misleading is that discharges against medical advice rose from 6 to 38 in the same month. The deaths did not stop; they left the denominator.</div>':'')+
+     '<h3>What happened next</h3>'+
+     '<table class="tbl"><thead><tr><th>#</th><th>Indicator</th><th>Reading</th><th>Cause</th><th>Board call</th><th>Outcome</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+     '<div class="synth">Synthetic teaching data. This report is an educational record of a simulated validation exercise and is not a real performance or governance determination.</div>'+
+   '</div>';
+  $('resBox').innerHTML=html;
+  var e=$('resEmpty'); if(e) e.remove();
+  tab('res');
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter',
+    module:'Hospital Administration AI · Module 6 · Practical 1 — Hospital KPI Validation & MIS Board Pack',
+    title:'Hospital KPI Validation & MIS Board Pack',
+    programme:'Hospital Administration AI',
+    submitOpts:{module:'Hospital Administration AI · Module 6 · Practical 1', title:'Hospital KPI Validation & MIS Board Pack', programme:'Hospital Administration AI', pct:score},
+    titleField:{label:'The indicator that mattered most', placeholder:'e.g. KPI-5 — mortality fell because DAMA rose'},
+    minWords:400,
+    autoPct:function(){ return score; },
+    autoResultText:function(){ return score+'/100 · '+band; },
+    autoResult:function(){ return html; },
+    attachments:[{label:'1. Recalculation worksheet (PDF)'},{label:'2. Reflection (PDF)'}]
+  });
+}
+
+function tab(p){
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  [].forEach.call(document.querySelectorAll('.panel'),function(x){ x.classList.remove('on'); });
+  $('p-'+p).classList.add('on');
+}
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){ tab(b.getAttribute('data-p')); }); });
+
+$('startBtn').addEventListener('click',function(){
+  S=fresh(); S.started=Date.now();
+  if(timer) clearInterval(timer);
+  timer=setInterval(clockTick,1000); clockTick();
+  meters(); render(); tab('work');
+});
+})();
+</script>
+</body>
+</html>

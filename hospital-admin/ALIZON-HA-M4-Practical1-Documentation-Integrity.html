@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module 4 · Practical 1 — Clinical Documentation Integrity &amp; EMR Records Desk | ALIZON OS</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#12202a,#1d3a44);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:168px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.tile .n{font-size:11px;color:var(--muted);font-weight:600}
+.tile .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+
+.bars{margin:10px 0}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lb{min-width:150px}
+.barrow .tr{flex:1;height:12px;border-radius:6px;background:#eee;overflow:hidden}
+.barrow .tr i{display:block;height:100%;background:linear-gradient(90deg,#b1040e,#d4626a)}
+.barrow .pc{min-width:42px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+
+.case{border:1px solid var(--line);border-radius:13px;padding:0;margin:10px 0;background:#fff;overflow:hidden}
+.case.done{border-color:#b7e0c5}
+.case .ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 14px;background:#faf8f6;border-bottom:1px solid var(--line);cursor:pointer}
+.case .ch b{font-size:13.5px}
+.case .cb{padding:12px 14px;display:none}
+.case.open .cb{display:block}
+.src{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px;background:#eef1f4;color:#43506b}
+.quote{border-left:3px solid var(--crimson);background:#fdf6f6;padding:10px 13px;border-radius:0 9px 9px 0;margin:8px 0;font-size:13.5px;font-style:italic}
+.aiblock{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:12.8px;line-height:1.65;margin:10px 0}
+.aiblock b{color:#8fd0ff;font-weight:700}
+.aifield{display:grid;grid-template-columns:170px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.aifield:last-child{border-bottom:none}
+.aifield .fk{color:#9aa7b4;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.aifield .fv{font-weight:700}
+.judge{display:flex;gap:5px}
+.judge button{font:inherit;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#dfe3e8;cursor:pointer}
+.judge button.ok{border-color:#5ec27a;color:#5ec27a}
+.judge button.no{border-color:#ff8f8f;color:#ff8f8f}
+.judge button.sel{background:#fff;color:#0f1115;border-color:#fff}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.stack .opt{border-radius:11px;padding:9px 13px}
+textarea,select,input[type=text]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:80px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:#eef1f4;color:#43506b}
+.chip.bad{background:#fdecea;color:var(--crit)}
+.chip.good{background:#e7f5ec;color:var(--ok)}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}.case .cb{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=4"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 4 · Practical 1</div>
+    <h1>Clinical Documentation Integrity &amp; EMR Records Desk</h1>
+    <p>You run the Medical Records Department at ALIZON SmartCare for one working morning. Six charts are
+       queued for audit before the Health Information Management committee sits at noon. An AI documentation
+       engine has already scored each one. Your job is to decide whether its reading survives contact with the
+       actual chart — and a record that reads as complete is not the same thing as a record that is safe.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">Records desk</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="hadoc"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">The AI score is visible immediately. The <b>chart itself stays closed until you open it</b>,
+        and which charts you opened is recorded. A verdict reached without opening the chart is a verdict reached
+        on the engine's word.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Record integrity</b> falls when a defective chart is
+        accepted, and also when a sound chart is returned — clinician time is not free. <b>Legal defensibility</b>
+        falls when a chart carrying a legal defect is passed to the committee: an unsigned entry, a late entry with
+        no addendum marker, or an amendment with no audit trail behind it.</p>
+      <div class="synth"><b>Educational simulation on synthetic data.</b> Every patient, note, timestamp and
+        identifier here is invented for teaching. Nothing describes a real person or a real hospital, and nothing
+        this system outputs is clinical advice or a real coding determination.</div>
+      <button class="btn" id="startBtn">▶ Open the records desk</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Charts audited</div><div class="v" id="mSeen">0 / 6</div></div>
+      <div class="meter" id="mAW"><div class="k">Record integrity</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Legal defensibility</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Audit the chart queue to generate your Documentation Integrity Audit Report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=5"></script>
+<script src="../alizon-practical-report.js?v=5"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=8"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script src="../alizon-backbar.js?v=5"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+/* ---------------------------------------------------------------------------
+   THE QUEUE
+   Each chart carries an AI documentation score the student sees at once, and a
+   chart body they must open. Two of the six invert the engine's reading: one it
+   passes is unsafe, one it fails is sound. Everything is synthetic.
+--------------------------------------------------------------------------- */
+var CASES=[
+ {id:'MR-4471', pt:'Male, 62', enc:'Inpatient · Cardiology · Day 4',
+  ai:{score:72, verdict:'Deficient — missing discharge summary', conf:'High'},
+  chart:[
+   'Admission note 04:12 — signed, consultant.',
+   'Daily progress notes days 1-3 — signed.',
+   'Day 4 progress note — entered 11:40, <b>no signature block</b>.',
+   'Discharge summary — not filed.',
+   'Nursing records — complete.'],
+  truth:'deficient-legal',
+  right:{judge:'agree', act:'return'},
+  why:'The engine is right that the record is incomplete, but it under-reads the defect. The unsigned day-4 entry is not merely missing text — an unsigned clinical entry is not attributable, and an unattributable entry cannot be defended. It must go back for signature and addendum, not simply be waited on.',
+  later:{ok:'Signed and completed the same afternoon; the chart went to committee clean.',
+         bad:'The committee received a chart with an unattributable entry. Medical records carried the finding for the quarter.'}},
+
+ {id:'MR-4488', pt:'Female, 34', enc:'Day care · General surgery',
+  ai:{score:64, verdict:'Deficient — discharge summary absent', conf:'High'},
+  chart:[
+   'Pre-op assessment — signed.',
+   'Operation note — signed, timed.',
+   'Post-op observations — complete.',
+   'Discharge summary — <b>filed under encounter ENC-4488-B</b> (same patient, same episode, second encounter ID raised in error at registration).',
+   'Audit trail shows the summary authored and signed at 16:05.'],
+  truth:'sound',
+  right:{judge:'disagree', act:'accept'},
+  why:'The summary exists, signed and timed. The engine looked at one encounter ID and reported what was missing from it. The defect is a registration duplicate, not a documentation failure — returning this to the surgeon wastes clinician time and hides the real fault, which belongs to front-office encounter creation.',
+  later:{ok:'You raised the duplicate-encounter fault with registration; four similar cases surfaced that month.',
+         bad:'The surgeon was asked to rewrite a discharge summary that already existed. The registration fault went unreported and kept recurring.'}},
+
+ {id:'MR-4502', pt:'Male, 71', enc:'Inpatient · Medicine · Day 9',
+  ai:{score:91, verdict:'Complete — minor coding query', conf:'Medium'},
+  chart:[
+   'All entries signed and timed.',
+   'Day 6 entry amended 3 days later — <b>amendment carries no reason and no audit-trail entry</b>.',
+   'Original text of the day-6 entry is not retrievable from the interface.',
+   'Coding query: secondary diagnosis sequencing.'],
+  truth:'deficient-legal',
+  right:{judge:'disagree', act:'escalate'},
+  why:'A 91% completeness score measures fields filled, not whether the record can be trusted. An amendment with no reason and no retrievable original is the one defect that cannot be repaired later — if the chart is ever questioned, there is no way to show what it said before. This escalates; it is not a coding query.',
+  later:{ok:'Escalated. IT restored the prior version from the database journal and the amendment was properly marked.',
+         bad:'Passed as a coding query. Eleven weeks later the record was requested for an insurance dispute and the original entry could not be produced.'}},
+
+ {id:'MR-4517', pt:'Female, 58', enc:'Inpatient · Orthopaedics · Day 2',
+  ai:{score:98, verdict:'Complete — no action required', conf:'High'},
+  chart:[
+   'Every field populated. Every entry signed.',
+   'Day 2 progress note reads: "Post-op day 3 following right total knee replacement. Wound reviewed, dressing changed."',
+   'This admission: <b>day 2</b>, and the planned procedure is <b>left</b> knee replacement, <b>scheduled for tomorrow</b>.',
+   'The identical paragraph appears in this patient\'s admission of March last year.',
+   'Nursing notes for today describe pre-operative preparation.'],
+  truth:'unsafe',
+  right:{judge:'disagree', act:'escalate'},
+  why:'This is the highest-scoring chart in the queue and the most dangerous. The note has been copy-forwarded from a previous admission: it documents a post-operative course for a procedure that has not happened, on the wrong side. A completeness engine cannot see this, because every field is full — the text is internally consistent and externally false. Acting on this chart, a clinician could reasonably believe the knee had been done.',
+  later:{ok:'Escalated within the hour. The note was retracted and the surgical site verified before the list next morning.',
+         bad:'Passed as complete. The copy-forwarded note stayed in the chart through the pre-operative check, and the side was confirmed only because the patient said so.'}},
+
+ {id:'MR-4530', pt:'Male, 45', enc:'Outpatient · Follow-up',
+  ai:{score:55, verdict:'Deficient — sparse clinical detail', conf:'Low'},
+  chart:[
+   'Consultation note is four lines: presenting complaint, examination, plan, signature.',
+   'All four lines are timed, signed and attributable.',
+   'Investigation results linked and acknowledged.',
+   'Nothing is missing that the encounter type requires.'],
+  truth:'sound',
+  right:{judge:'disagree', act:'accept'},
+  why:'Brevity is not deficiency. A routine follow-up documented in four attributable lines meets the standard for the encounter type; the engine is scoring word count as if it were quality. Returning this teaches clinicians to pad notes, which makes records longer and no safer.',
+  later:{ok:'Accepted. You raised the low-confidence scoring pattern with the vendor at the quarterly review.',
+         bad:'Returned for "more detail". The department began padding routine notes; average note length rose 40% and the audit found no improvement in defensibility.'}},
+
+ {id:'MR-4546', pt:'Female, 29', enc:'Emergency · Discharged',
+  ai:{score:80, verdict:'Deficient — late entry', conf:'Medium'},
+  chart:[
+   'Attendance 22:40. Clinical entry authored <b>07:15 the following morning</b>.',
+   'The entry is <b>not marked as a late entry</b> and reads as contemporaneous.',
+   'Signed and attributable.',
+   'Discharge advice documented and given.'],
+  truth:'deficient-legal',
+  right:{judge:'agree', act:'return'},
+  why:'A late entry is entirely acceptable and often unavoidable; an unmarked one is not. Written nine hours after the event but presented as contemporaneous, it misrepresents when the clinician formed that view. The fix is small — an addendum marker with the true authoring time — and it is the difference between a defensible record and one that will not survive examination.',
+  later:{ok:'Returned and marked as a late entry with the true authoring time. Defensible.',
+         bad:'Passed unmarked. The chart was later disclosed in a complaint file, and the timing discrepancy became the complaint.'}}
+];
+
+var JUDGES=[['agree','The AI reading is right'],['disagree','The AI reading is wrong']];
+var ACTS=[['accept','Accept — file for committee'],
+          ['return','Return to clinician for addendum'],
+          ['escalate','Escalate to HIM committee now'],
+          ['recode','Send to coding for re-sequencing']];
+
+var S=null, timer=null;
+
+function fresh(){
+  return {started:0, i:0, done:[], opened:{}, integrity:100, legal:100, finished:false};
+}
+function clockTick(){
+  if(!S||!S.started) return;
+  var s=Math.floor((Date.now()-S.started)/1000);
+  var el=$('mClock'); if(el) el.textContent=('0'+Math.floor(s/60)).slice(-2)+':'+('0'+(s%60)).slice(-2);
+}
+function meters(){
+  $('mA').textContent=S.integrity+'%'; $('bA').style.width=S.integrity+'%';
+  $('mB').textContent=S.legal+'%';     $('bB').style.width=S.legal+'%';
+  $('mAW').classList.toggle('bad',S.integrity<70);
+  $('mBW').classList.toggle('bad',S.legal<70);
+  $('mSeen').textContent=S.done.length+' / '+CASES.length;
+}
+
+function render(){
+  var c=CASES[S.i];
+  if(!c) return finish();
+  var opened=!!S.opened[c.id];
+  $('workArea').innerHTML=
+   '<div class="card case">'+
+    '<div class="chipbar"><span class="chip">'+esc(c.id)+'</span><span class="chip">'+esc(c.pt)+'</span>'+
+      '<span class="chip">'+esc(c.enc)+'</span><span class="chip">Chart '+(S.i+1)+' of '+CASES.length+'</span></div>'+
+    '<h3>AI documentation engine</h3>'+
+    '<div class="note"><b>Completeness '+c.ai.score+'%</b> — '+esc(c.ai.verdict)+
+      ' <span class="muted">(engine confidence: '+esc(c.ai.conf)+')</span></div>'+
+    (opened
+      ? '<h3>The chart</h3><ul class="muted" style="line-height:1.75">'+
+          c.chart.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>'
+      : '<button class="btn" id="openBtn">Open the chart</button>'+
+        '<p class="muted" style="margin-top:8px">The engine has told you its score. It has not shown you the record. '+
+        'You may dispose of the chart without opening it — that is recorded, and it is how the engine\'s errors get through.</p>')+
+    ('<h3>Your audit</h3>'+
+        '<p class="muted">1 · Does the engine\'s reading survive the chart?</p>'+
+        '<div class="chipbar" id="judgeRow">'+JUDGES.map(function(j){
+            return '<button class="btn ghost" data-j="'+j[0]+'">'+esc(j[1])+'</button>';}).join('')+'</div>'+
+        '<p class="muted">2 · What happens to this chart?</p>'+
+        '<div class="chipbar" id="actRow">'+ACTS.map(function(a){
+            return '<button class="btn ghost" data-a="'+a[0]+'">'+esc(a[1])+'</button>';}).join('')+'</div>'+
+        '<button class="btn" id="commitBtn" disabled>Record this audit →</button>')+
+   '</div>';
+
+  if(!opened) $('openBtn').addEventListener('click',function(){ S.opened[c.id]=1; render(); });
+  var pick={j:null,a:null};
+  function sync(){ $('commitBtn').disabled=!(pick.j&&pick.a); }
+  [].forEach.call($('judgeRow').querySelectorAll('button'),function(b){
+    b.addEventListener('click',function(){ pick.j=b.getAttribute('data-j');
+      [].forEach.call($('judgeRow').querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);}); sync(); });
+  });
+  [].forEach.call($('actRow').querySelectorAll('button'),function(b){
+    b.addEventListener('click',function(){ pick.a=b.getAttribute('data-a');
+      [].forEach.call($('actRow').querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);}); sync(); });
+  });
+  $('commitBtn').addEventListener('click',function(){ commit(c,pick); });
+}
+
+function commit(c,pick){
+  var judgeOk = pick.j===c.right.judge;
+  var actOk   = pick.a===c.right.act;
+  /* a defective chart accepted, or a sound chart returned, costs integrity */
+  if(!actOk){
+    if(c.truth==='sound' && pick.a!=='accept') S.integrity-=12;
+    else if(c.truth!=='sound' && pick.a==='accept') S.integrity-=20;
+    else S.integrity-=8;
+  }
+  /* passing a legal defect to committee is the defensibility failure */
+  if((c.truth==='deficient-legal'||c.truth==='unsafe') && pick.a==='accept') S.legal-=25;
+  if(!judgeOk) S.integrity-=5;
+  /* disposing of a chart on the engine's score alone is its own failure, and
+     it is the one that lets a copy-forwarded note reach the committee */
+  var blind=!S.opened[c.id];
+  if(blind) S.integrity-=10;
+  S.integrity=Math.max(0,S.integrity); S.legal=Math.max(0,S.legal);
+
+  S.done.push({id:c.id, judge:pick.j, act:pick.a, judgeOk:judgeOk, actOk:actOk, blind:blind,
+               truth:c.truth, why:c.why, later:(judgeOk&&actOk)?c.later.ok:c.later.bad});
+  meters();
+
+  $('workArea').innerHTML=
+   '<div class="card">'+
+     '<h3>'+(judgeOk&&actOk?'<span style="color:var(--ok)">Recorded — sound audit</span>'
+                          :'<span style="color:var(--crit)">Recorded — review this one</span>')+'</h3>'+
+     '<div class="note">'+esc(c.why)+'</div>'+
+     '<p class="muted"><b>Correct reading:</b> '+
+        (c.right.judge==='agree'?'the engine was right':'the engine was wrong')+
+        ', and the chart should have been <b>'+esc((ACTS.filter(function(a){return a[0]===c.right.act;})[0]||['',''])[1])+'</b>.</p>'+
+     '<button class="btn" id="nextBtn">'+(S.i+1<CASES.length?'Next chart →':'Close the queue →')+'</button>'+
+   '</div>';
+  $('nextBtn').addEventListener('click',function(){ S.i++; render(); });
+}
+
+function finish(){
+  S.finished=true;
+  if(timer){ clearInterval(timer); timer=null; }
+  var mins=Math.max(1,Math.round((Date.now()-S.started)/60000));
+  var judged=S.done.filter(function(d){return d.judgeOk;}).length;
+  var acted =S.done.filter(function(d){return d.actOk;}).length;
+  var opened=Object.keys(S.opened).length;
+  /* the components must sum to 100 only when all of them are earned: a blind
+     run that happens to guess right must not reach the same mark as an audit */
+  var score=Math.round(judged*6 + acted*7 + (S.integrity*0.08) + (S.legal*0.08) + (opened/CASES.length)*6);
+  score=Math.max(0,Math.min(100,score));
+  var band = score>=85?'Outstanding' : score>=70?'Competent' : score>=55?'Developing' : 'Needs improvement';
+
+  var rows=S.done.map(function(d,i){
+    return '<tr><td>'+(i+1)+'</td><td>'+esc(d.id)+'</td>'+
+      '<td>'+(d.judgeOk?'<span class="chip good">read</span>':'<span class="chip bad">misread</span>')+'</td>'+
+      '<td>'+(d.actOk?'<span class="chip good">right action</span>':'<span class="chip bad">wrong action</span>')+'</td>'+
+      '<td class="muted">'+esc(d.later)+'</td></tr>';}).join('');
+
+  var html=
+   '<div class="card">'+
+     '<h3>Documentation Integrity Audit — outcome</h3>'+
+     '<p><span class="scorebig">'+score+'</span> / 100 &nbsp; <b>'+band+'</b></p>'+
+     '<div class="chipbar">'+
+       '<span class="chip">Engine readings judged correctly: '+judged+'/'+CASES.length+'</span>'+
+       '<span class="chip">Correct dispositions: '+acted+'/'+CASES.length+'</span>'+
+       '<span class="chip">Record integrity '+S.integrity+'%</span>'+
+       '<span class="chip">Legal defensibility '+S.legal+'%</span>'+
+       '<span class="chip'+(opened<CASES.length?' bad':'')+'">Charts opened: '+opened+'/'+CASES.length+'</span>'+
+       '<span class="chip">Session '+mins+' min</span>'+
+     '</div>'+
+     '<h3>What happened next</h3>'+
+     '<table class="tbl"><thead><tr><th>#</th><th>Chart</th><th>Engine</th><th>Disposition</th><th>Outcome</th></tr></thead>'+
+       '<tbody>'+rows+'</tbody></table>'+
+     '<div class="synth">Synthetic teaching data. This report is an educational record of a simulated audit and is not a real coding, legal or clinical determination.</div>'+
+   '</div>';
+  $('resBox').innerHTML=html;
+  var e=$('resEmpty'); if(e) e.remove();
+  tab('res');
+
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter',
+    module:'Hospital Administration AI · Module 4 · Practical 1 — Clinical Documentation Integrity & EMR Records Desk',
+    title:'Clinical Documentation Integrity & EMR Records Desk',
+    programme:'Hospital Administration AI',
+    submitOpts:{module:'Hospital Administration AI · Module 4 · Practical 1', title:'Clinical Documentation Integrity & EMR Records Desk', programme:'Hospital Administration AI', pct:score},
+    titleField:{label:'The chart that mattered most', placeholder:'e.g. MR-4517 — copy-forwarded operative note'},
+    minWords:400,
+    autoPct:function(){ return score; },
+    autoResultText:function(){ return score+'/100 · '+band; },
+    autoResult:function(){ return html; },
+    attachments:[{label:'1. Audit worksheet (PDF)'},{label:'2. Reflection (PDF)'}]
+  });
+}
+
+function tab(p){
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  [].forEach.call(document.querySelectorAll('.panel'),function(x){ x.classList.remove('on'); });
+  $('p-'+p).classList.add('on');
+}
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){ tab(b.getAttribute('data-p')); });
+});
+
+$('startBtn').addEventListener('click',function(){
+  S=fresh(); S.started=Date.now();
+  if(timer) clearInterval(timer);
+  timer=setInterval(clockTick,1000); clockTick();
+  meters(); render(); tab('work');
+});
+})();
+</script>
+</body>
+</html>

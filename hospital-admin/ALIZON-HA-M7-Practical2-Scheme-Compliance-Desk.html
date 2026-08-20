@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module 7 · Practical 2 — Pre-Authorisation, PM-JAY &amp; ABDM Compliance Desk | ALIZON OS</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#12202a,#1d3a44);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:168px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.tile .n{font-size:11px;color:var(--muted);font-weight:600}
+.tile .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+
+.bars{margin:10px 0}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lb{min-width:150px}
+.barrow .tr{flex:1;height:12px;border-radius:6px;background:#eee;overflow:hidden}
+.barrow .tr i{display:block;height:100%;background:linear-gradient(90deg,#b1040e,#d4626a)}
+.barrow .pc{min-width:42px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+
+.case{border:1px solid var(--line);border-radius:13px;padding:0;margin:10px 0;background:#fff;overflow:hidden}
+.case.done{border-color:#b7e0c5}
+.case .ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 14px;background:#faf8f6;border-bottom:1px solid var(--line);cursor:pointer}
+.case .ch b{font-size:13.5px}
+.case .cb{padding:12px 14px;display:none}
+.case.open .cb{display:block}
+.src{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px;background:#eef1f4;color:#43506b}
+.quote{border-left:3px solid var(--crimson);background:#fdf6f6;padding:10px 13px;border-radius:0 9px 9px 0;margin:8px 0;font-size:13.5px;font-style:italic}
+.aiblock{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:12.8px;line-height:1.65;margin:10px 0}
+.aiblock b{color:#8fd0ff;font-weight:700}
+.aifield{display:grid;grid-template-columns:170px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.aifield:last-child{border-bottom:none}
+.aifield .fk{color:#9aa7b4;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.aifield .fv{font-weight:700}
+.judge{display:flex;gap:5px}
+.judge button{font:inherit;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#dfe3e8;cursor:pointer}
+.judge button.ok{border-color:#5ec27a;color:#5ec27a}
+.judge button.no{border-color:#ff8f8f;color:#ff8f8f}
+.judge button.sel{background:#fff;color:#0f1115;border-color:#fff}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.stack .opt{border-radius:11px;padding:9px 13px}
+textarea,select,input[type=text]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:80px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:#eef1f4;color:#43506b}
+.chip.bad{background:#fdecea;color:var(--crit)}
+.chip.good{background:#e7f5ec;color:var(--ok)}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}.case .cb{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=4"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 7 · Practical 2</div>
+    <h1>Pre-Authorisation, PM-JAY &amp; ABDM Compliance Desk</h1>
+    <p>You staff the insurance and scheme help desk. Six packets are open — cashless pre-authorisations,
+       a scheme claim, a consent record and a payment that should never have been taken. Some will be paid,
+       some will be returned, and one of them is a matter for the hospital rather than the insurer.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">Scheme desk</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="hascm"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Each packet opens with the desk summary. The <b>documents behind it stay closed until you
+        open them</b>, and what you opened is recorded. A packet submitted on its summary is a packet nobody read.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Claim outcome</b> falls when a payable claim is
+        abandoned or a defective one is pushed through to certain rejection. <b>Scheme compliance</b> falls when
+        a submission or a payment breaches the terms the hospital accepted on empanelment — including the term
+        that a scheme beneficiary is not asked for money.</p>
+      <div class="synth"><b>Educational simulation on synthetic data.</b> Every patient, packet, policy, scheme
+        reference and figure is invented for teaching. Scheme and ABDM behaviour is <b>simplified for the
+        exercise</b> and is not a statement of current rules. Nothing here is legal, insurance or billing advice.</div>
+      <button class="btn" id="startBtn">▶ Open the scheme desk</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Packets closed</div><div class="v" id="mSeen">0 / 6</div></div>
+      <div class="meter" id="mAW"><div class="k">Claim outcome</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Scheme compliance</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Work the packet queue to generate your Pre-Authorisation &amp; Scheme Compliance Report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=5"></script>
+<script src="../alizon-practical-report.js?v=5"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=8"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script src="../alizon-backbar.js?v=5"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+var CASES=[
+ {id:'PK-1', kind:'Scheme pre-authorisation', head:'Package procedure — implant claimed as a separate line',
+  sys:'Desk summary: documentation complete, ready to submit.',
+  detail:['All clinical documents, estimates and beneficiary identification are present.',
+          'Procedure is submitted under a <b>defined package rate</b>.',
+          'The package specification <b>includes the implant</b>.',
+          'The packet claims the implant again as a <b>separate line item</b>.',
+          'Everything else in the packet is correct and payable.',
+          'Submitting as it stands would be a claim for an item already inside the package price.'],
+  truth:'fix', right:{a:'correct'},
+  why:'A packet can be complete and still be wrong. Every document is present, which is why the desk summary calls it ready — but the implant sits inside the package price and is being claimed a second time on its own line. Corrected, this is a clean payable submission; sent as it stands, it is a duplicate claim that the scheme will find, and that puts the whole packet and the hospital\'s standing at risk rather than just the line.',
+  later:{ok:'Separate line removed, submitted at the package rate, approved without query.',
+         bad:'Submitted with the duplicate line. Approval delayed, the claim was flagged, and the hospital\'s submissions went to enhanced scrutiny.'}},
+
+ {id:'PK-2', kind:'Cashless claim — rejected', head:'TPA cites a pre-existing disease waiting period',
+  sys:'TPA rejection: condition is pre-existing; policy waiting period not completed.',
+  detail:['Policy is 14 months old; the pre-existing waiting period is 24 months.',
+          'The condition was <b>first diagnosed during this admission</b>.',
+          'No prior consultation, prescription or investigation for it exists anywhere.',
+          'The discharge summary states clearly: <b>new diagnosis, first presentation</b>.',
+          'The TPA\'s decision rests on an assumption, not on a record.',
+          'Appeal window is open, and the evidence needed is already in the file.'],
+  truth:'payable', right:{a:'appeal'},
+  why:'A pre-existing disease clause applies to conditions that existed before the policy, and the only evidence here says this one did not. The rejection is an assumption dressed as a finding, and it is the commonest rejection in cashless work precisely because hospitals accept it. The counter-evidence — first presentation, no prior treatment record — is already in the file and needs only to be put in front of the TPA.',
+  later:{ok:'Appealed with the first-presentation evidence. Rejection reversed and the claim settled.',
+         bad:'Rejection accepted and the bill passed to the patient, who paid for a condition their policy covered.'}},
+
+ {id:'PK-3', kind:'Digital health record', head:'ABHA number created and records linked — consent not recorded',
+  sys:'Registration: ABHA created at the counter to speed up the queue.',
+  detail:['ABHA number generated for the patient at registration.',
+          'Health records linked to it the same day.',
+          '<b>No consent artefact recorded</b> for either the creation or the linking.',
+          'Staff state the patient "agreed verbally while queuing".',
+          'The consent field exists in the workflow and was <b>skipped to save time</b>.',
+          'Linking a person\'s health records without recorded consent is the failure here, whatever was said at the counter.'],
+  truth:'compliance', right:{a:'compliance'},
+  why:'Nothing about this is a claims problem and no insurer will ever raise it, which is exactly why it gets skipped. A digital health identity works on recorded consent; a verbal agreement at a busy counter leaves nothing to show and nothing the patient can later withdraw. The correction is to obtain and record consent properly, unlink until that is done, and stop treating the consent step as the part of the workflow you drop when the queue is long.',
+  later:{ok:'Records unlinked, consent taken and recorded properly, and the consent field made non-skippable.',
+         bad:'Left as it was. Consent was found missing across two months of registrations during an internal review.'}},
+
+ {id:'PK-4', kind:'Emergency admission', head:'Pre-authorisation not obtained before treatment began',
+  sys:'Desk summary: pre-auth missing at admission — likely rejection.',
+  detail:['Patient arrived by ambulance, haemodynamically unstable.',
+          'Treatment began immediately; <b>this is the correct clinical order of events</b>.',
+          'Emergency intimation to the insurer was sent <b>the same day</b>, with reference recorded.',
+          'Clinical notes document the emergency clearly and contemporaneously.',
+          'The scheme provides for treatment first and authorisation to follow in emergencies.',
+          'The packet is complete apart from a pre-admission approval that could not lawfully have been waited for.'],
+  truth:'payable', right:{a:'submit'},
+  why:'The desk summary has mistaken correct practice for a defect. Nobody delays resuscitation to wait for an approval letter, which is why emergency provisions exist, and this packet has done everything they require — immediate treatment, same-day intimation with a reference, contemporaneous documentation. Abandoning it as a likely rejection would forfeit a payable claim and, worse, teach the department that emergencies are a billing problem.',
+  later:{ok:'Submitted with the emergency intimation reference. Approved retrospectively.',
+         bad:'Written off as un-authorised. A payable emergency claim was abandoned, and staff began asking about insurance before stabilising patients.'}},
+
+ {id:'PK-5', kind:'Scheme beneficiary', head:'Beneficiary was asked to pay ₹18,000 in cash',
+  sys:'Billing: ₹18,000 collected from the patient. Procedure covered under the scheme.',
+  detail:['Patient is a <b>verified scheme beneficiary</b> and the procedure is covered.',
+          'Hospital is <b>empanelled</b> for this package.',
+          '₹18,000 was collected in cash at the counter, described to the patient as "the consumables part".',
+          'Consumables are <b>inside the package rate</b>.',
+          'Cashless treatment for eligible beneficiaries is the basis of empanelment.',
+          'The patient borrowed the money and has not complained.'],
+  truth:'breach', right:{a:'refund'},
+  why:'This is the most serious packet on the desk and the only one where the wrong party has already paid. Empanelment means eligible beneficiaries receive cashless treatment; charging one for a component that sits inside the package is a breach of the terms the hospital agreed to and defeats the purpose of the scheme, which exists so that a family does not borrow to be treated. The money goes back, the claim goes through the scheme, and the counter practice that produced it gets stopped.',
+  later:{ok:'Refunded in full, claim submitted through the scheme, and counter staff retrained on cashless obligations.',
+         bad:'Left alone because the patient had not complained. Surfaced in a scheme grievance months later, with the empanelment placed under review.'}},
+
+ {id:'PK-6', kind:'Cashless pre-authorisation', head:'Straightforward planned admission — packet complete',
+  sys:'Desk summary: documentation complete, ready to submit.',
+  detail:['Policy in force; eligibility verified at registration and recorded.',
+          'Clinical justification, estimate and treating doctor\'s notes all attached.',
+          'Procedure covered; no waiting period applies.',
+          'Estimate is within the tariff and the coding matches the documented procedure.',
+          'Beneficiary identification verified and attached.',
+          'Nothing is missing and nothing is over-claimed.'],
+  truth:'payable', right:{a:'submit'},
+  why:'Most packets are fine, and a desk that treats every submission as a puzzle will miss the ones that are. This is what a correct packet looks like: eligibility verified before admission rather than after, coding that matches the documentation, an estimate within tariff and nothing claimed twice. It submits as it stands, and recognising that quickly is what leaves time for the packets that need work.',
+  later:{ok:'Submitted unchanged and approved within the cycle.',
+         bad:'Held for a further review it did not need. The admission was delayed by two days for nothing.'}}
+];
+
+var ACTS=[['submit','Submit as it stands'],
+          ['correct','Correct the packet, then submit'],
+          ['appeal','Appeal with the evidence in the file'],
+          ['refund','Refund the patient, then claim through the scheme'],
+          ['compliance','Compliance action — consent and process']];
+
+var S=null, timer=null;
+function fresh(){ return {started:0,i:0,done:[],opened:{},claim:100,comp:100}; }
+function clockTick(){ if(!S||!S.started) return;
+  var s=Math.floor((Date.now()-S.started)/1000);
+  var el=$('mClock'); if(el) el.textContent=('0'+Math.floor(s/60)).slice(-2)+':'+('0'+(s%60)).slice(-2); }
+function meters(){
+  $('mA').textContent=S.claim+'%'; $('bA').style.width=S.claim+'%';
+  $('mB').textContent=S.comp+'%';  $('bB').style.width=S.comp+'%';
+  $('mAW').classList.toggle('bad',S.claim<70);
+  $('mBW').classList.toggle('bad',S.comp<70);
+  $('mSeen').textContent=S.done.length+' / '+CASES.length;
+}
+
+function render(){
+  var c=CASES[S.i]; if(!c) return finish();
+  var opened=!!S.opened[c.id];
+  $('workArea').innerHTML=
+   '<div class="card case">'+
+    '<div class="chipbar"><span class="chip">'+esc(c.id)+'</span><span class="chip">'+esc(c.kind)+'</span>'+
+      '<span class="chip">Packet '+(S.i+1)+' of '+CASES.length+'</span></div>'+
+    '<h3>'+esc(c.head)+'</h3>'+
+    '<div class="note">'+esc(c.sys)+'</div>'+
+    (opened
+      ? '<h3>The documents</h3><ul class="muted" style="line-height:1.75">'+
+          c.detail.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>'
+      : '<button class="btn" id="openBtn">Open the packet</button>'+
+        '<p class="muted" style="margin-top:8px">You have the desk summary. You have not opened the documents. '+
+        'You may act on the summary — that is recorded, and two of these summaries are wrong.</p>')+
+    '<h3>Your decision</h3>'+
+    '<div class="chipbar" id="aRow">'+ACTS.map(function(x){
+       return '<button class="btn ghost" data-a="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<button class="btn" id="commitBtn" disabled>Record this decision →</button>'+
+   '</div>';
+  if(!opened) $('openBtn').addEventListener('click',function(){ S.opened[c.id]=1; render(); });
+  var pick={a:null};
+  [].forEach.call($('aRow').querySelectorAll('button'),function(b){
+    b.addEventListener('click',function(){ pick.a=b.getAttribute('data-a');
+      [].forEach.call($('aRow').querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);});
+      $('commitBtn').disabled=false; }); });
+  $('commitBtn').addEventListener('click',function(){ commit(c,pick); });
+}
+
+function commit(c,pick){
+  var ok=pick.a===c.right.a;
+  if(c.truth==='breach' && pick.a!=='refund') S.comp-=30;
+  if(c.truth==='compliance' && pick.a!=='compliance') S.comp-=22;
+  if(c.truth==='fix' && pick.a==='submit') S.comp-=18;
+  if(c.truth==='payable' && (pick.a==='refund'||pick.a==='compliance')) S.claim-=18;
+  if(c.truth==='payable' && !ok) S.claim-=12;
+  if(!ok) S.claim-=4;
+  var blind=!S.opened[c.id];
+  if(blind) S.comp-=10;
+  S.claim=Math.max(0,S.claim); S.comp=Math.max(0,S.comp);
+  S.done.push({id:c.id,ok:ok,blind:blind,truth:c.truth,why:c.why,later:ok?c.later.ok:c.later.bad});
+  meters();
+  $('workArea').innerHTML=
+   '<div class="card">'+
+     '<h3>'+(ok?'<span style="color:var(--ok)">Recorded — sound decision</span>'
+               :'<span style="color:var(--crit)">Recorded — review this one</span>')+'</h3>'+
+     '<div class="note">'+esc(c.why)+'</div>'+
+     '<p class="muted"><b>Correct:</b> '+esc((ACTS.filter(function(x){return x[0]===c.right.a;})[0]||['',''])[1])+'.</p>'+
+     '<button class="btn" id="nextBtn">'+(S.i+1<CASES.length?'Next packet →':'Close the desk →')+'</button>'+
+   '</div>';
+  $('nextBtn').addEventListener('click',function(){ S.i++; render(); });
+}
+
+function finish(){
+  if(timer){ clearInterval(timer); timer=null; }
+  var mins=Math.max(1,Math.round((Date.now()-S.started)/60000));
+  var ok=S.done.filter(function(d){return d.ok;}).length;
+  var refunded=S.done.filter(function(d){return d.truth==='breach'&&d.ok;}).length>0;
+  var consent=S.done.filter(function(d){return d.truth==='compliance'&&d.ok;}).length>0;
+  var payable=CASES.filter(function(c){return c.truth==='payable';}).length;
+  var payableKept=S.done.filter(function(d){return d.truth==='payable'&&d.ok;}).length;
+  var opened=Object.keys(S.opened).length;
+  /* components sum to exactly 100 on a flawless run */
+  var score=Math.round(ok*10 + S.claim*0.11 + S.comp*0.11 + (refunded?6:0) + (consent?6:0) + (opened/CASES.length)*6);
+  score=Math.max(0,Math.min(100,score));
+  var band=score>=85?'Outstanding':score>=70?'Competent':score>=55?'Developing':'Needs improvement';
+  var rows=S.done.map(function(d,i){
+    return '<tr><td>'+(i+1)+'</td><td>'+esc(d.id)+'</td>'+
+      '<td>'+(d.ok?'<span class="chip good">right call</span>':'<span class="chip bad">wrong call</span>')+'</td>'+
+      '<td class="muted">'+esc(d.later)+'</td></tr>';}).join('');
+  var html=
+   '<div class="card">'+
+     '<h3>Pre-Authorisation &amp; Scheme Compliance — outcome</h3>'+
+     '<p><span class="scorebig">'+score+'</span> / 100 &nbsp; <b>'+band+'</b></p>'+
+     '<div class="chipbar">'+
+       '<span class="chip'+(refunded?' good':' bad')+'">Beneficiary charge '+(refunded?'refunded':'NOT refunded')+'</span>'+
+       '<span class="chip'+(consent?' good':' bad')+'">Consent failure '+(consent?'actioned':'missed')+'</span>'+
+       '<span class="chip">Payable claims kept: '+payableKept+'/'+payable+'</span>'+
+       '<span class="chip">Claim outcome '+S.claim+'%</span>'+
+       '<span class="chip">Scheme compliance '+S.comp+'%</span>'+
+       '<span class="chip'+(opened<CASES.length?' bad':'')+'">Packets opened: '+opened+'/'+CASES.length+'</span>'+
+       '<span class="chip">Session '+mins+' min</span>'+
+     '</div>'+
+     (refunded?'':'<div class="note"><b>PK-5 is the packet that matters most.</b> A verified beneficiary was charged ₹18,000 in cash for consumables that sit inside the package rate, at a hospital empanelled to treat them cashless. They borrowed the money and did not complain.</div>')+
+     '<h3>What happened next</h3>'+
+     '<table class="tbl"><thead><tr><th>#</th><th>Packet</th><th>Decision</th><th>Outcome</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+     '<div class="synth">Synthetic teaching data, with scheme and ABDM behaviour simplified for the exercise. Not a statement of current rules, and not legal, insurance or billing advice.</div>'+
+   '</div>';
+  $('resBox').innerHTML=html;
+  var e=$('resEmpty'); if(e) e.remove();
+  tab('res');
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter',
+    module:'Hospital Administration AI · Module 7 · Practical 2 — Pre-Authorisation, PM-JAY & ABDM Compliance Desk',
+    title:'Pre-Authorisation, PM-JAY & ABDM Compliance Desk',
+    programme:'Hospital Administration AI',
+    submitOpts:{module:'Hospital Administration AI · Module 7 · Practical 2', title:'Pre-Authorisation, PM-JAY & ABDM Compliance Desk', programme:'Hospital Administration AI', pct:score},
+    titleField:{label:'The packet that mattered most', placeholder:'e.g. PK-5 — cash taken from a cashless beneficiary'},
+    minWords:400,
+    autoPct:function(){ return score; },
+    autoResultText:function(){ return score+'/100 · '+band; },
+    autoResult:function(){ return html; },
+    attachments:[{label:'1. Pre-authorisation worksheet (PDF)'},{label:'2. Reflection (PDF)'}]
+  });
+}
+
+function tab(p){
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  [].forEach.call(document.querySelectorAll('.panel'),function(x){ x.classList.remove('on'); });
+  $('p-'+p).classList.add('on');
+}
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){ tab(b.getAttribute('data-p')); }); });
+
+$('startBtn').addEventListener('click',function(){
+  S=fresh(); S.started=Date.now();
+  if(timer) clearInterval(timer);
+  timer=setInterval(clockTick,1000); clockTick();
+  meters(); render(); tab('work');
+});
+})();
+</script>
+</body>
+</html>

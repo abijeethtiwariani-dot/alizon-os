@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module 6 · Practical 2 — Predictive Bed Planning &amp; the AI Decision-Support Desk | ALIZON OS</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#12202a,#1d3a44);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:168px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.tile .n{font-size:11px;color:var(--muted);font-weight:600}
+.tile .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+
+.bars{margin:10px 0}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lb{min-width:150px}
+.barrow .tr{flex:1;height:12px;border-radius:6px;background:#eee;overflow:hidden}
+.barrow .tr i{display:block;height:100%;background:linear-gradient(90deg,#b1040e,#d4626a)}
+.barrow .pc{min-width:42px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+
+.case{border:1px solid var(--line);border-radius:13px;padding:0;margin:10px 0;background:#fff;overflow:hidden}
+.case.done{border-color:#b7e0c5}
+.case .ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 14px;background:#faf8f6;border-bottom:1px solid var(--line);cursor:pointer}
+.case .ch b{font-size:13.5px}
+.case .cb{padding:12px 14px;display:none}
+.case.open .cb{display:block}
+.src{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px;background:#eef1f4;color:#43506b}
+.quote{border-left:3px solid var(--crimson);background:#fdf6f6;padding:10px 13px;border-radius:0 9px 9px 0;margin:8px 0;font-size:13.5px;font-style:italic}
+.aiblock{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:12.8px;line-height:1.65;margin:10px 0}
+.aiblock b{color:#8fd0ff;font-weight:700}
+.aifield{display:grid;grid-template-columns:170px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.aifield:last-child{border-bottom:none}
+.aifield .fk{color:#9aa7b4;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.aifield .fv{font-weight:700}
+.judge{display:flex;gap:5px}
+.judge button{font:inherit;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#dfe3e8;cursor:pointer}
+.judge button.ok{border-color:#5ec27a;color:#5ec27a}
+.judge button.no{border-color:#ff8f8f;color:#ff8f8f}
+.judge button.sel{background:#fff;color:#0f1115;border-color:#fff}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.stack .opt{border-radius:11px;padding:9px 13px}
+textarea,select,input[type=text]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:80px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:#eef1f4;color:#43506b}
+.chip.bad{background:#fdecea;color:var(--crit)}
+.chip.good{background:#e7f5ec;color:var(--ok)}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}.case .cb{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=4"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 6 · Practical 2</div>
+    <h1>Predictive Bed Planning &amp; the AI Decision-Support Desk</h1>
+    <p>Six outputs are waiting on your desk: forecasts from the hospital's predictive models and drafts from
+       its generative AI assistant. Every one of them is fluent, confident and instantly usable. Your job is
+       to decide which deserve to be acted on, which need checking against the source first, and which the
+       assistant should never have been asked to produce at all.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">Decision desk</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="haaidx"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Each item opens with the AI output as it was handed to you. The <b>source data and model
+        detail stay closed until you open them</b>, and what you opened is recorded. Acting on a fluent draft
+        without checking its source is the specific failure this practical exists to teach.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Factual integrity</b> falls when an unverified or
+        fabricated output is used. <b>Decision quality</b> falls when a sound model is overridden — an
+        administrator who rejects every forecast has bought an expensive system and disabled it.</p>
+      <div class="synth"><b>Educational simulation on synthetic data.</b> Every model, dataset, draft and figure
+        here is invented for teaching. Nothing describes a real hospital, and this system produces no clinical
+        advice and no real forecast.</div>
+      <button class="btn" id="startBtn">▶ Open the decision desk</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Items closed</div><div class="v" id="mSeen">0 / 6</div></div>
+      <div class="meter" id="mAW"><div class="k">Factual integrity</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Decision quality</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Work the decision desk to generate your AI Decision-Support Review Report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=5"></script>
+<script src="../alizon-practical-report.js?v=5"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=8"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script src="../alizon-backbar.js?v=5"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+var CASES=[
+ {id:'AI-1', src:'Bed-demand forecasting model', kind:'Forecast',
+  out:'Next Tuesday will require <b>312 inpatient beds</b> against 288 available. Recommend opening the 24-bed escalation ward from Monday night.',
+  detail:['Model trained on 36 months of daily census.',
+          'Next Monday is the day after the festival weekend.',
+          'Post-festival Tuesday census in the last three years: <b>309, 315, 307</b>.',
+          'Current census is unremarkable, which is why the forecast looks alarmist today.',
+          'Escalation ward takes 14 hours to staff and open.',
+          'Model\'s error on this pattern over three years: within ±6 beds.'],
+  truth:'sound', right:{v:'sound', a:'act'},
+  why:'The forecast looks wrong precisely because it is doing its job — predicting a state the hospital is not yet in. Three consecutive years of post-festival Tuesdays at 307-315 beds, and a model accurate to within six beds on this pattern, is about as good as hospital forecasting gets. The cost of acting and being wrong is a ward opened unnecessarily; the cost of not acting is 24 patients with nowhere to go on a day the model called a week early.',
+  later:{ok:'Escalation ward opened Monday night. Tuesday peaked at 311; no ambulance diverts.',
+         bad:'Forecast overridden as alarmist. Tuesday peaked at 311, the escalation ward could not open for 14 hours, and six patients waited overnight in the emergency department.'}},
+
+ {id:'AI-2', src:'Queue-optimisation model', kind:'Recommendation',
+  out:'Opening <b>one additional registration counter at 09:00</b> will reduce average OPD waiting time by 40%.',
+  detail:['Model optimises the registration stage in isolation.',
+          'Registration service time: 2.1 min. Queue at 09:00: 34 people.',
+          'Downstream: <b>a single billing counter</b>, service time 4.6 min, queue at 09:30: <b>61 people</b>.',
+          'Consultation itself has spare capacity until 10:15.',
+          'Total patient journey time is dominated by the billing stage.',
+          'Adding registration capacity moves patients to the billing queue faster.'],
+  truth:'flawed', right:{v:'flawed', a:'reject'},
+  why:'The model optimised the stage it was pointed at and ignored the system it sits in. Registration is not the constraint — billing is, at more than twice the service time and nearly twice the queue. Speeding up the stage before a bottleneck does not reduce total waiting; it relocates the queue and makes the bottleneck worse. The recommendation is not wrong about registration, it is answering a question nobody needed answered.',
+  later:{ok:'Rejected, and the billing counter was doubled instead. Average journey time fell 26%.',
+         bad:'Counter opened. Registration queues vanished, billing queues grew, and total waiting time was unchanged.'}},
+
+ {id:'AI-3', src:'Theatre scheduling optimiser', kind:'Recommendation',
+  out:'Reordering Thursday\'s list fits <b>two additional cases</b> and raises theatre utilisation from 71% to 88%.',
+  detail:['The optimiser reorders purely to minimise idle theatre minutes.',
+          'The proposed order places the <b>4-year-old paediatric case last</b>, at 16:40.',
+          'That child would be fasting from midnight — <b>over 16 hours</b>.',
+          'Standard practice is to schedule paediatric cases first on the list.',
+          'The proposal also assumes one surgeon covers two theatres between 11:00 and 12:30.',
+          'That surgeon is the <b>on-call surgeon</b> for the emergency theatre in the same window.'],
+  truth:'flawed', right:{v:'flawed', a:'reject'},
+  why:'Utilisation rose because the optimiser was given only one thing to care about and no constraints worth the name. A four-year-old fasting sixteen hours is a clinical harm the objective function cannot see, and double-booking the on-call surgeon means the emergency theatre has no surgeon at all for ninety minutes. Both are consequences of asking a model to maximise a number rather than to schedule a hospital.',
+  later:{ok:'Rejected and returned to theatre management with the paediatric and on-call constraints written into the model.',
+         bad:'Adopted for utilisation. The child was cancelled at 16:00 after 16 hours fasting, and an emergency laparotomy waited 70 minutes for a surgeon.'}},
+
+ {id:'AI-4', src:'Generative AI assistant', kind:'Drafted board summary',
+  out:'"Performance this quarter was solid. Bed occupancy averaged 94%, average length of stay held at 4.8 days, and <b>readmission within 30 days improved to 6.4%</b>, continuing the downward trend of the previous two quarters."',
+  detail:['Occupancy 94% — <b>matches the source pack</b>.',
+          'ALOS 4.8 days — <b>matches the source pack</b>.',
+          'Readmission rate: <b>the source pack contains no readmission figure at all</b>. The hospital does not currently measure it.',
+          'There is no "downward trend of the previous two quarters" in any attached document.',
+          'The paragraph is fluent, correctly formatted and reads exactly like the other summaries.',
+          'Two of three figures are verifiable. The third was generated.'],
+  truth:'flawed', right:{v:'flawed', a:'verify'},
+  why:'This is the most dangerous item on the desk because it is 80% right. Two figures check out, the register is perfect, and the fabricated statistic sits between them wearing the same clothes. A reader has no way to tell which numbers came from the pack and which the model produced to complete a sentence — and a board that acts on a readmission rate the hospital does not measure has been misled by its own paperwork. Every figure goes back to source before any of it is used.',
+  later:{ok:'Sent back for source-checking. The readmission sentence was removed and a measurement gap was identified.',
+         bad:'Published verbatim. The board cited a 6.4% readmission rate for two quarters before anyone asked where it came from.'}},
+
+ {id:'AI-5', src:'Generative AI assistant', kind:'Drafted SOP',
+  out:'A complete standard operating procedure for <b>in-hospital cardiac arrest response</b>, including drug sequence, defibrillation energy levels and post-resuscitation targets. Requested by an administrator to "save the clinical team some time".',
+  detail:['The draft is well structured and internally consistent.',
+          'It cites no guideline version and no source.',
+          'Two of the stated energy levels do not match the current resuscitation council guidance.',
+          'The hospital\'s resuscitation committee owns this document.',
+          'No clinician has reviewed the draft.',
+          'The requester holds an administrative role with no clinical authority.'],
+  truth:'flawed', right:{v:'flawed', a:'escalate'},
+  why:'The failure is not that the draft has errors — it is that the request should never have been made. Clinical protocol is owned by the resuscitation committee and issued under clinical governance, and an administrative assistant, human or artificial, has no standing to author it. That two energy levels are wrong merely demonstrates the point. This does not get corrected and used; it gets referred, and the administrator gets a conversation about the boundary.',
+  later:{ok:'Referred to the resuscitation committee, and the boundary was written into the AI usage policy.',
+         bad:'Tidied up and circulated as a draft SOP. It reached two wards as a laminated card before the committee saw it.'}},
+
+ {id:'AI-6', src:'Generative AI assistant', kind:'Thematic summary',
+  out:'Forty patient complaint verbatims summarised into <b>five themes</b>, each with a count and three representative quotes.',
+  detail:['Spot-check of 12 of the 40 verbatims: every one is allocated to a defensible theme.',
+          'All fifteen quoted extracts appear <b>verbatim in the source file</b>; none is paraphrased or invented.',
+          'Counts sum to 40 with no double-counting.',
+          'The model flagged 3 verbatims as ambiguous and left them for human allocation rather than forcing a theme.',
+          'Output carries the source file name and the date range.',
+          'A named officer will sign the summary before it goes to the committee.'],
+  truth:'sound', right:{v:'sound', a:'act'},
+  why:'This is what defensible use looks like, and it is worth recognising as clearly as the failures. The task is summarisation of supplied text rather than generation of facts, every quote is traceable to source, the counts reconcile, the model declined to guess on ambiguous cases, and a human signs it. Rejecting this on general suspicion of AI would mean doing forty verbatims by hand for no gain in accuracy.',
+  later:{ok:'Used with the officer\'s sign-off. The complaints committee had themed data a fortnight earlier than usual.',
+         bad:'Rejected on principle. An officer spent two days re-reading forty verbatims and produced the same five themes.'}}
+];
+
+var VS=[['sound','Sound — usable as it stands'],['flawed','Flawed — not usable as it stands']];
+var AS=[['act','Act on it'],['reject','Reject — do not act'],
+        ['verify','Verify every figure against source first'],
+        ['escalate','Out of scope — refer to clinical governance']];
+
+var S=null, timer=null;
+function fresh(){ return {started:0,i:0,done:[],opened:{},fact:100,dec:100}; }
+function clockTick(){ if(!S||!S.started) return;
+  var s=Math.floor((Date.now()-S.started)/1000);
+  var el=$('mClock'); if(el) el.textContent=('0'+Math.floor(s/60)).slice(-2)+':'+('0'+(s%60)).slice(-2); }
+function meters(){
+  $('mA').textContent=S.fact+'%'; $('bA').style.width=S.fact+'%';
+  $('mB').textContent=S.dec+'%';  $('bB').style.width=S.dec+'%';
+  $('mAW').classList.toggle('bad',S.fact<70);
+  $('mBW').classList.toggle('bad',S.dec<70);
+  $('mSeen').textContent=S.done.length+' / '+CASES.length;
+}
+
+function render(){
+  var c=CASES[S.i]; if(!c) return finish();
+  var opened=!!S.opened[c.id];
+  $('workArea').innerHTML=
+   '<div class="card case">'+
+    '<div class="chipbar"><span class="chip">'+esc(c.id)+'</span><span class="chip">'+esc(c.src)+'</span>'+
+      '<span class="chip">'+esc(c.kind)+'</span><span class="chip">Item '+(S.i+1)+' of '+CASES.length+'</span></div>'+
+    '<h3>What the system produced</h3>'+
+    '<div class="note">'+c.out+'</div>'+
+    (opened
+      ? '<h3>Source &amp; model detail</h3><ul class="muted" style="line-height:1.75">'+
+          c.detail.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>'
+      : '<button class="btn" id="openBtn">Open the source data</button>'+
+        '<p class="muted" style="margin-top:8px">You have the output. You have not checked it. '+
+        'You may decide on the output alone — that is recorded, and it is exactly how a fabricated figure reaches a board.</p>')+
+    '<h3>Your decision</h3>'+
+    '<p class="muted">1 · Is this output usable as it stands?</p>'+
+    '<div class="chipbar" id="vRow">'+VS.map(function(x){
+       return '<button class="btn ghost" data-v="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<p class="muted">2 · What do you do with it?</p>'+
+    '<div class="chipbar" id="aRow">'+AS.map(function(x){
+       return '<button class="btn ghost" data-a="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<button class="btn" id="commitBtn" disabled>Record this decision →</button>'+
+   '</div>';
+  if(!opened) $('openBtn').addEventListener('click',function(){ S.opened[c.id]=1; render(); });
+  var pick={v:null,a:null};
+  function sync(){ $('commitBtn').disabled=!(pick.v&&pick.a); }
+  function wire(row,key,attr){
+    [].forEach.call($(row).querySelectorAll('button'),function(b){
+      b.addEventListener('click',function(){ pick[key]=b.getAttribute(attr);
+        [].forEach.call($(row).querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);}); sync(); }); }); }
+  wire('vRow','v','data-v'); wire('aRow','a','data-a');
+  $('commitBtn').addEventListener('click',function(){ commit(c,pick); });
+}
+
+function commit(c,pick){
+  var vOk=pick.v===c.right.v, aOk=pick.a===c.right.a;
+  if(c.truth==='flawed' && pick.a==='act') S.fact-=22;
+  if(c.id==='AI-4' && pick.a!=='verify') S.fact-=10;
+  if(c.id==='AI-5' && pick.a==='act') S.fact-=10;
+  if(c.truth==='sound' && pick.a==='reject') S.dec-=18;
+  if(!vOk) S.dec-=5;
+  if(!aOk) S.dec-=5;
+  var blind=!S.opened[c.id];
+  if(blind) S.fact-=10;
+  S.fact=Math.max(0,S.fact); S.dec=Math.max(0,S.dec);
+  S.done.push({id:c.id,vOk:vOk,aOk:aOk,blind:blind,truth:c.truth,why:c.why,
+               later:(vOk&&aOk)?c.later.ok:c.later.bad});
+  meters();
+  $('workArea').innerHTML=
+   '<div class="card">'+
+     '<h3>'+(vOk&&aOk?'<span style="color:var(--ok)">Recorded — sound decision</span>'
+                     :'<span style="color:var(--crit)">Recorded — review this one</span>')+'</h3>'+
+     '<div class="note">'+esc(c.why)+'</div>'+
+     '<p class="muted"><b>Correct:</b> '+esc((VS.filter(function(x){return x[0]===c.right.v;})[0]||['',''])[1])+
+       ' · <b>'+esc((AS.filter(function(x){return x[0]===c.right.a;})[0]||['',''])[1])+'</b>.</p>'+
+     '<button class="btn" id="nextBtn">'+(S.i+1<CASES.length?'Next item →':'Close the desk →')+'</button>'+
+   '</div>';
+  $('nextBtn').addEventListener('click',function(){ S.i++; render(); });
+}
+
+function finish(){
+  if(timer){ clearInterval(timer); timer=null; }
+  var mins=Math.max(1,Math.round((Date.now()-S.started)/60000));
+  var v=S.done.filter(function(d){return d.vOk;}).length;
+  var a=S.done.filter(function(d){return d.aOk;}).length;
+  var fab=S.done.filter(function(d){return d.id==='AI-4'&&d.aOk;}).length>0;
+  var opened=Object.keys(S.opened).length;
+  var score=Math.round(v*6 + a*8 + S.fact*0.09 + S.dec*0.09 + (fab?6:0) + (opened/CASES.length)*6);
+  score=Math.max(0,Math.min(100,score));
+  var band=score>=85?'Outstanding':score>=70?'Competent':score>=55?'Developing':'Needs improvement';
+  var rows=S.done.map(function(d,i){
+    return '<tr><td>'+(i+1)+'</td><td>'+esc(d.id)+'</td>'+
+      '<td>'+(d.vOk?'<span class="chip good">read</span>':'<span class="chip bad">misread</span>')+'</td>'+
+      '<td>'+(d.aOk?'<span class="chip good">right call</span>':'<span class="chip bad">wrong call</span>')+'</td>'+
+      '<td class="muted">'+esc(d.later)+'</td></tr>';}).join('');
+  var html=
+   '<div class="card">'+
+     '<h3>AI Decision-Support Review — outcome</h3>'+
+     '<p><span class="scorebig">'+score+'</span> / 100 &nbsp; <b>'+band+'</b></p>'+
+     '<div class="chipbar">'+
+       '<span class="chip'+(fab?' good':' bad')+'">Fabricated figure '+(fab?'caught':'MISSED')+'</span>'+
+       '<span class="chip">Decisions correct: '+a+'/'+CASES.length+'</span>'+
+       '<span class="chip">Factual integrity '+S.fact+'%</span>'+
+       '<span class="chip">Decision quality '+S.dec+'%</span>'+
+       '<span class="chip'+(opened<CASES.length?' bad':'')+'">Sources opened: '+opened+'/'+CASES.length+'</span>'+
+       '<span class="chip">Session '+mins+' min</span>'+
+     '</div>'+
+     (fab?'':'<div class="note"><b>AI-4 carried the fabricated figure.</b> Occupancy and ALOS both matched the source pack; the readmission rate of 6.4% appears nowhere in it, because the hospital does not measure readmissions at all. Two verifiable figures either side are what made the third one invisible.</div>')+
+     '<h3>What happened next</h3>'+
+     '<table class="tbl"><thead><tr><th>#</th><th>Item</th><th>Reading</th><th>Decision</th><th>Outcome</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+     '<div class="synth">Synthetic teaching data. This report is an educational record of a simulated review and is not a real forecast, clinical protocol or governance determination.</div>'+
+   '</div>';
+  $('resBox').innerHTML=html;
+  var e=$('resEmpty'); if(e) e.remove();
+  tab('res');
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter',
+    module:'Hospital Administration AI · Module 6 · Practical 2 — Predictive Bed Planning & the AI Decision-Support Desk',
+    title:'Predictive Bed Planning & the AI Decision-Support Desk',
+    programme:'Hospital Administration AI',
+    submitOpts:{module:'Hospital Administration AI · Module 6 · Practical 2', title:'Predictive Bed Planning & the AI Decision-Support Desk', programme:'Hospital Administration AI', pct:score},
+    titleField:{label:'The output that mattered most', placeholder:'e.g. AI-4 — fabricated readmission rate between two true figures'},
+    minWords:400,
+    autoPct:function(){ return score; },
+    autoResultText:function(){ return score+'/100 · '+band; },
+    autoResult:function(){ return html; },
+    attachments:[{label:'1. Verification worksheet (PDF)'},{label:'2. Reflection (PDF)'}]
+  });
+}
+
+function tab(p){
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  [].forEach.call(document.querySelectorAll('.panel'),function(x){ x.classList.remove('on'); });
+  $('p-'+p).classList.add('on');
+}
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){ tab(b.getAttribute('data-p')); }); });
+
+$('startBtn').addEventListener('click',function(){
+  S=fresh(); S.started=Date.now();
+  if(timer) clearInterval(timer);
+  timer=setInterval(clockTick,1000); clockTick();
+  meters(); render(); tab('work');
+});
+})();
+</script>
+</body>
+</html>

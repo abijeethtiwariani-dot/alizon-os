@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module 5 · Practical 1 — Patient Safety Incident Desk, RCA &amp; Risk Register | ALIZON OS</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../alizon-logo.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+:root{--crimson:#b1040e;--deep:#7A0309;--ink:#141210;--muted:#5f5a54;--line:#e6e2de;
+  --panel:#fff;--bg:#f4f2ef;--ok:#137a3a;--warn:#b7791f;--bad:#c2410c;--crit:#a31515;
+  --serif:"Source Serif Pro",Georgia,serif;--sans:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14.5px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+.hero{padding:26px 0 6px}
+.hero .mod{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--crimson)}
+.hero h1{font-family:var(--serif);font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+.hero p{color:var(--muted);margin:0;max-width:76ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:8px 0;background:var(--bg)}
+.tabs button{font:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:100px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:16px 18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-size:17px;margin:0 0 8px}
+.card h4{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.btn{font:inherit;font-size:13px;font-weight:700;padding:9px 18px;border-radius:100px;border:0;background:var(--crimson);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--crimson);border:1px solid var(--crimson)}
+.btn.sm{padding:6px 13px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.muted{color:var(--muted);font-size:12.5px}
+
+.opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#12202a,#1d3a44);color:#fff;
+  border-radius:14px;padding:12px 16px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.opbar .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.opbar .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.meter{min-width:168px}
+.meter .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:5px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:#5ec27a;transition:width .35s}
+.meter.warn .bar i{background:#e0a800}.meter.bad .bar i{background:#ff6b6b}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff}
+.tile .n{font-size:11px;color:var(--muted);font-weight:600}
+.tile .v{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .s{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-top:5px}
+.s-normal{background:#e7f5ec;color:var(--ok)}
+.s-moderate{background:#fdf4e3;color:var(--warn)}
+.s-high{background:#fdeee6;color:var(--bad)}
+.s-critical{background:#fdecea;color:var(--crit)}
+
+.bars{margin:10px 0}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lb{min-width:150px}
+.barrow .tr{flex:1;height:12px;border-radius:6px;background:#eee;overflow:hidden}
+.barrow .tr i{display:block;height:100%;background:linear-gradient(90deg,#b1040e,#d4626a)}
+.barrow .pc{min-width:42px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+
+table.d{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+table.d th,table.d td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+table.d th{background:#faf8f6;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.d td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.hot td{background:#fdf3f3}
+tr.cool td{background:#f4faf6}
+
+.case{border:1px solid var(--line);border-radius:13px;padding:0;margin:10px 0;background:#fff;overflow:hidden}
+.case.done{border-color:#b7e0c5}
+.case .ch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:11px 14px;background:#faf8f6;border-bottom:1px solid var(--line);cursor:pointer}
+.case .ch b{font-size:13.5px}
+.case .cb{padding:12px 14px;display:none}
+.case.open .cb{display:block}
+.src{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:100px;background:#eef1f4;color:#43506b}
+.quote{border-left:3px solid var(--crimson);background:#fdf6f6;padding:10px 13px;border-radius:0 9px 9px 0;margin:8px 0;font-size:13.5px;font-style:italic}
+.aiblock{background:#0f1115;color:#dfe3e8;border-radius:11px;padding:12px 14px;font-size:12.8px;line-height:1.65;margin:10px 0}
+.aiblock b{color:#8fd0ff;font-weight:700}
+.aifield{display:grid;grid-template-columns:170px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.aifield:last-child{border-bottom:none}
+.aifield .fk{color:#9aa7b4;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.aifield .fv{font-weight:700}
+.judge{display:flex;gap:5px}
+.judge button{font:inherit;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#dfe3e8;cursor:pointer}
+.judge button.ok{border-color:#5ec27a;color:#5ec27a}
+.judge button.no{border-color:#ff8f8f;color:#ff8f8f}
+.judge button.sel{background:#fff;color:#0f1115;border-color:#fff}
+
+.opts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.opt{font:inherit;font-size:12.5px;padding:7px 13px;border-radius:100px;border:1px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.opt.sel{border-color:var(--crimson);background:#fdf3f3;color:var(--crimson);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+.stack .opt{border-radius:11px;padding:9px 13px}
+textarea,select,input[type=text]{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:7px 10px;background:#fff}
+textarea{width:100%;min-height:80px;resize:vertical}
+.lbl{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+.fb{border-radius:11px;padding:11px 14px;margin-top:10px;font-size:13px;line-height:1.55}
+.fb.yes{background:#e7f5ec;border:1px solid #b7e0c5}
+.fb.no{background:#fdecea;border:1px solid #f3c2bd}
+.fb.warnb{background:#fdf4e3;border:1px solid #ecd9a8}
+.fb .hd{font-weight:800;margin-bottom:3px}
+.note{border-left:3px solid var(--crimson);background:#fdf3f3;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+.synth{border-left:3px solid var(--warn);background:#fdf9ef;padding:9px 12px;border-radius:0 8px 8px 0;margin:10px 0;font-size:12.5px;color:#6b5a2e}
+.scorebig{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.chip{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:#eef1f4;color:#43506b}
+.chip.bad{background:#fdecea;color:var(--crit)}
+.chip.good{background:#e7f5ec;color:var(--ok)}
+@media print{.tabs,.opbar,.btn,.no-print{display:none!important}.panel{display:block!important}.case .cb{display:block!important}}
+</style>
+<link rel="stylesheet" href="../alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="../alizon-lab-gate.js?v=4"></script>
+<div id="labRoot">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="mod">Hospital Administration AI · Module 5 · Practical 1</div>
+    <h1>Patient Safety Incident Desk, RCA &amp; Risk Register</h1>
+    <p>You staff the Quality &amp; Patient Safety cell at ALIZON SmartCare. Six incident reports came in
+       overnight, each pre-classified by a triage engine that grades on the harm that reached the patient.
+       You decide what actually happened, how deep the investigation goes, and what enters the risk register —
+       and the report where nobody was hurt is not automatically the small one.</p>
+  </div>
+
+  <div class="tabs">
+    <button data-p="brief" class="on">Briefing</button>
+    <button data-p="work">Incident desk</button>
+    <button data-p="res">Result &amp; Record</button>
+  </div>
+
+  <section class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="hasaf"></div>
+    <div class="card no-print">
+      <h3>Before you start</h3>
+      <p class="muted">Each report opens with the triage engine's harm grade. The <b>full report stays closed
+        until you open it</b>, and what you opened is recorded. You may dispose of an incident on the harm
+        grade alone — that is exactly how a recurring system fault gets closed as a one-off.</p>
+      <p class="muted">Two indices sit alongside your mark. <b>Systemic risk captured</b> falls when a fault
+        that will recur is closed locally without reaching the register. <b>Reporting culture</b> falls when
+        an individual is disciplined for a failure the system set them up for — punish the person and the next
+        incident simply goes unreported.</p>
+      <div class="synth"><b>Educational simulation on synthetic data.</b> Every incident, patient, drug and
+        staff member here is invented for teaching. Nothing describes a real event or a real hospital, and
+        nothing this system outputs is clinical advice or a real safety determination.</div>
+      <button class="btn" id="startBtn">▶ Open the incident desk</button>
+    </div>
+  </section>
+
+  <section class="panel" id="p-work">
+    <div class="opbar">
+      <div><div class="k">Session clock</div><div class="v" id="mClock">00:00</div></div>
+      <div><div class="k">Incidents closed</div><div class="v" id="mSeen">0 / 6</div></div>
+      <div class="meter" id="mAW"><div class="k">Systemic risk captured</div><div class="v" id="mA">100%</div><div class="bar"><i id="bA" style="width:100%"></i></div></div>
+      <div class="meter" id="mBW"><div class="k">Reporting culture</div><div class="v" id="mB">100%</div><div class="bar"><i id="bB" style="width:100%"></i></div></div>
+    </div>
+    <div id="workArea"></div>
+  </section>
+
+  <section class="panel" id="p-res">
+    <div id="resBox"><p class="muted" id="resEmpty">Work the incident queue to generate your Patient Safety Incident &amp; Risk Register Report.</p></div>
+    <div id="reportWriter" class="no-print"></div>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="../firebase-sync.js"></script>
+<script src="../alizon-attendance.js?v=2"></script>
+<script src="../alizon-practical-submit.js?v=5"></script>
+<script src="../alizon-practical-report.js?v=5"></script>
+<script src="../alizon-experiment-brief.js?v=2"></script>
+<script src="ha-experiment-data.js?v=8"></script>
+<script src="../alizon-pdf-open.js"></script>
+<script src="../alizon-backbar.js?v=5"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+
+/* ---------------------------------------------------------------------------
+   INCIDENT QUEUE
+   The triage engine grades on harm reaching the patient. Two reports invert
+   that reading: INC-3 is a no-harm near miss carrying the highest systemic
+   risk in the queue, and INC-2 is a harm event with no recurring cause.
+--------------------------------------------------------------------------- */
+var CASES=[
+ {id:'INC-1', ward:'Medical ward · 03:20', grade:'No harm', gnote:'triage engine: low priority',
+  head:'Patient found on the floor beside the bed; no injury',
+  body:['Patient 78, admitted with pneumonia, found sitting on the floor at 03:20. No injury on examination.',
+        'Falls-risk assessment on admission: <b>not completed</b>.',
+        'Bed rails down. Call bell out of reach on the far locker.',
+        'Night staffing: one nurse to fourteen beds, per the roster template.',
+        'Third unwitnessed fall on this ward in six weeks; the previous two also had no completed falls assessment.'],
+  truth:'systemic',
+  right:{sev:'nearmiss', inv:'rca', reg:'yes'},
+  why:'No injury this time is luck, not control. A missing falls assessment, rails down, an unreachable call bell and a third recurrence in six weeks describe a system that will keep producing falls until something changes — and the next patient may not land as softly. The absence of harm is the reason to investigate now, while it is still cheap.',
+  later:{ok:'RCA found the falls assessment was buried on page 4 of the admission pack. Moved to page 1; unwitnessed falls halved over the next quarter.',
+         bad:'Closed as no harm. Nine days later a patient on the same ward fell and sustained a fractured neck of femur.'}},
+
+ {id:'INC-2', ward:'Day surgery · 11:05', grade:'Moderate harm', gnote:'triage engine: high priority',
+  head:'Patient reacted to local anaesthetic; treated, recovered fully',
+  body:['Documented anaphylactoid reaction to lignocaine during a minor procedure.',
+        'Allergy history taken and documented correctly; <b>no previous exposure recorded anywhere</b>.',
+        'Emergency drugs to hand, reaction treated within two minutes, full recovery, discharged next day.',
+        'Team debrief held the same afternoon.',
+        'No comparable event in this unit in the past four years.'],
+  truth:'oneoff',
+  right:{sev:'harm', inv:'local', reg:'no'},
+  why:'A genuine harm event, correctly graded, and still not a system fault. The history was taken, the allergy was not knowable, the response was immediate and correct. Opening a full root-cause analysis here consumes the quality cell\'s capacity and finds nothing, and a risk-register entry for "patients may have undiagnosed allergies" is not a risk that can be treated.',
+  later:{ok:'Closed with a local debrief and a duty-of-candour conversation with the patient. Correct.',
+         bad:'A full RCA ran for five weeks and concluded no cause. The quality cell had no capacity left for the falls cluster on the medical ward.'}},
+
+ {id:'INC-3', ward:'Pharmacy store · 16:40', grade:'No harm', gnote:'triage engine: low priority',
+  head:'Wrong ampoule picked; caught at the second check before administration',
+  body:['Nurse picked <b>potassium chloride</b> instead of <b>sodium chloride</b> for a flush.',
+        'Caught by the second checker. Nothing was administered. Patient unaware.',
+        'The two ampoules are <b>the same size, same clear glass, near-identical label typography</b>, stored in adjacent unlabelled bins.',
+        'Store layout is identical on all six wards.',
+        'Two similar near misses reported in the last year; both closed as no harm.',
+        'Concentrated potassium chloride given as a flush is potentially fatal.'],
+  truth:'systemic',
+  right:{sev:'nearmiss', inv:'rca', reg:'yes'},
+  why:'This is the most dangerous item in the queue and it is graded lowest, because harm is measured after the fact and this one was stopped by a human being paying attention. The hazard is unchanged: look-alike ampoules of a drug that can kill, in adjacent unlabelled bins, replicated on six wards. Relying on the second check to catch it is relying on the last barrier, every time. Two identical near misses were already closed as no harm.',
+  later:{ok:'Concentrated potassium removed from ward stock to pharmacy-only supply across all six wards, per national guidance. The hazard was designed out.',
+         bad:'Closed as no harm for the third time. Four months later the second check was skipped during a night shift.'}},
+
+ {id:'INC-4', ward:'Outpatients · 09:50', grade:'Minor harm', gnote:'triage engine: medium priority',
+  head:'Patient given another patient\'s prescription at the counter',
+  body:['Two patients with the same surname and similar first names attending the same clinic.',
+        'Prescription handed over after checking <b>name only</b>; no second identifier.',
+        'Error noticed by the patient in the car park; nothing taken. Prescription retrieved.',
+        'Counter protocol requires <b>two identifiers</b> — name and date of birth.',
+        'Staff member is new, three weeks in post; identifier training not yet delivered.',
+        'Four other new starters this quarter also awaiting the same training.'],
+  truth:'systemic',
+  right:{sev:'nearmiss', inv:'rca', reg:'yes'},
+  why:'The temptation is to correct the individual, who did skip a step. But five new starters are working a counter without the training the protocol assumes, which makes this an induction failure with a queue of people waiting to repeat it. Discipline here would be both unjust and ineffective — the sixth new starter would do the same thing next month.',
+  later:{ok:'Identifier training moved into day-one induction and the backlog cleared within a fortnight.',
+         bad:'The individual was written up. The training backlog remained, and a similar handover error occurred six weeks later with a different new starter.'}},
+
+ {id:'INC-5', ward:'ICU · 22:15', grade:'Severe harm', gnote:'triage engine: critical',
+  head:'Ventilator alarm not responded to for four minutes',
+  body:['Alarm sounded 22:15. Response at 22:19. Patient desaturated; recovered after intervention.',
+        'Alarm audible at the central station. <b>Nurse assigned to the bed was assisting an emergency at another bed.</b>',
+        'ICU staffed at 1:3 that night against a 1:2 establishment for ventilated patients.',
+        'Escalation policy for short staffing exists; <b>it was not invoked</b>.',
+        'Shift coordinator states they were unaware the ratio had breached.',
+        'No live visibility of ratios anywhere in the unit.'],
+  truth:'systemic',
+  right:{sev:'harm', inv:'rca', reg:'yes'},
+  why:'Correctly graded severe and correctly requiring RCA, but the finding is not the four minutes. It is that a staffing escalation policy existed and could not be triggered, because nobody could see the ratio had breached. The nurse was at another emergency; there was no second nurse to be at this one. What enters the register is the absence of live ratio visibility, not the response time.',
+  later:{ok:'RCA produced a live ratio display at the coordinator station with automatic escalation. Two breaches were escalated in the following month.',
+         bad:'RCA concluded "delayed alarm response" and recommended vigilance. The ratio breached again the following week, unseen.'}},
+
+ {id:'INC-6', ward:'Radiology · 14:00', grade:'No harm', gnote:'triage engine: low priority',
+  head:'MRI safety question raised about a patient with an implant',
+  body:['Radiographer paused a scan to query an implant of uncertain type.',
+        'Checked, confirmed MR-conditional, scan proceeded safely. Delay 25 minutes.',
+        'The safety checklist worked exactly as designed: <b>uncertainty raised, scan stopped, verified, resumed</b>.',
+        'Staff member reported it voluntarily as a learning point, not as a failure.'],
+  truth:'good',
+  right:{sev:'nearmiss', inv:'none', reg:'no'},
+  why:'This is a system working, reported voluntarily. It needs acknowledgement and a thank-you, not an investigation. Treating a successful safety stop as an incident to be investigated is the fastest way to teach staff that reporting brings scrutiny — and a hospital where good catches stop being reported has lost its early-warning system.',
+  later:{ok:'Acknowledged and shared as a positive learning example at the safety huddle. Reporting rates held.',
+         bad:'An investigation was opened into "the delay". Voluntary reports from radiology fell by half over the next two quarters.'}}
+];
+
+var SEVS=[['nearmiss','Near miss / no harm'],['harm','Harm reached the patient']];
+var INVS=[['none','Acknowledge — no investigation'],['local','Local resolution &amp; debrief'],['rca','Full root-cause analysis']];
+var REGS=[['yes','Enter on the risk register'],['no','Do not add to the register']];
+
+var S=null, timer=null;
+function fresh(){ return {started:0,i:0,done:[],opened:{},sys:100,culture:100}; }
+function clockTick(){ if(!S||!S.started) return;
+  var s=Math.floor((Date.now()-S.started)/1000);
+  var el=$('mClock'); if(el) el.textContent=('0'+Math.floor(s/60)).slice(-2)+':'+('0'+(s%60)).slice(-2); }
+function meters(){
+  $('mA').textContent=S.sys+'%';     $('bA').style.width=S.sys+'%';
+  $('mB').textContent=S.culture+'%'; $('bB').style.width=S.culture+'%';
+  $('mAW').classList.toggle('bad',S.sys<70);
+  $('mBW').classList.toggle('bad',S.culture<70);
+  $('mSeen').textContent=S.done.length+' / '+CASES.length;
+}
+
+function render(){
+  var c=CASES[S.i]; if(!c) return finish();
+  var opened=!!S.opened[c.id];
+  $('workArea').innerHTML=
+   '<div class="card case">'+
+    '<div class="chipbar"><span class="chip">'+esc(c.id)+'</span><span class="chip">'+esc(c.ward)+'</span>'+
+      '<span class="chip'+(c.grade==='Severe harm'?' bad':'')+'">Engine grade: '+esc(c.grade)+'</span>'+
+      '<span class="chip">Report '+(S.i+1)+' of '+CASES.length+'</span></div>'+
+    '<h3>'+esc(c.head)+'</h3>'+
+    '<div class="note">'+esc(c.gnote)+'</div>'+
+    (opened
+      ? '<h3>The report</h3><ul class="muted" style="line-height:1.75">'+
+          c.body.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>'
+      : '<button class="btn" id="openBtn">Open the full report</button>'+
+        '<p class="muted" style="margin-top:8px">You have the harm grade. You have not read the report. '+
+        'You may close this incident on the grade alone — that is recorded, and it is how a recurring fault becomes a one-off.</p>')+
+    '<h3>Your determination</h3>'+
+    '<p class="muted">1 · What happened to the patient?</p>'+
+    '<div class="chipbar" id="sRow">'+SEVS.map(function(x){
+       return '<button class="btn ghost" data-s="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<p class="muted">2 · How far does the investigation go?</p>'+
+    '<div class="chipbar" id="iRow">'+INVS.map(function(x){
+       return '<button class="btn ghost" data-i="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>'+
+    '<p class="muted">3 · Risk register?</p>'+
+    '<div class="chipbar" id="rRow">'+REGS.map(function(x){
+       return '<button class="btn ghost" data-r="'+x[0]+'">'+esc(x[1])+'</button>';}).join('')+'</div>'+
+    '<button class="btn" id="commitBtn" disabled>Record this determination →</button>'+
+   '</div>';
+
+  if(!opened) $('openBtn').addEventListener('click',function(){ S.opened[c.id]=1; render(); });
+  var pick={s:null,i:null,r:null};
+  function sync(){ $('commitBtn').disabled=!(pick.s&&pick.i&&pick.r); }
+  function wire(row,key,attr){
+    [].forEach.call($(row).querySelectorAll('button'),function(b){
+      b.addEventListener('click',function(){ pick[key]=b.getAttribute(attr);
+        [].forEach.call($(row).querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);}); sync(); }); });
+  }
+  wire('sRow','s','data-s'); wire('iRow','i','data-i'); wire('rRow','r','data-r');
+  $('commitBtn').addEventListener('click',function(){ commit(c,pick); });
+}
+
+function commit(c,pick){
+  var sOk=pick.s===c.right.sev, iOk=pick.i===c.right.inv, rOk=pick.r===c.right.reg;
+  /* a fault that will recur, closed without reaching the register */
+  if(c.truth==='systemic' && pick.r!=='yes') S.sys-=22;
+  if(c.truth==='systemic' && pick.i==='none') S.sys-=8;
+  /* investigating a good catch, or over-investigating a true one-off, costs the culture */
+  if(c.truth==='good' && pick.i!=='none') S.culture-=20;
+  if(c.truth==='oneoff' && pick.i==='rca') S.culture-=10;
+  if(!sOk) S.sys-=4;
+  if(!rOk && c.truth!=='systemic') S.sys-=4;
+  var blind=!S.opened[c.id];
+  if(blind) S.sys-=10;
+  S.sys=Math.max(0,S.sys); S.culture=Math.max(0,S.culture);
+
+  S.done.push({id:c.id,sOk:sOk,iOk:iOk,rOk:rOk,blind:blind,truth:c.truth,why:c.why,
+               later:(sOk&&iOk&&rOk)?c.later.ok:c.later.bad});
+  meters();
+  var all=sOk&&iOk&&rOk;
+  $('workArea').innerHTML=
+   '<div class="card">'+
+     '<h3>'+(all?'<span style="color:var(--ok)">Recorded — sound determination</span>'
+                :'<span style="color:var(--crit)">Recorded — review this one</span>')+'</h3>'+
+     '<div class="note">'+esc(c.why)+'</div>'+
+     '<p class="muted"><b>Correct:</b> '+esc((SEVS.filter(function(x){return x[0]===c.right.sev;})[0]||['',''])[1])+
+       ' · <b>'+(INVS.filter(function(x){return x[0]===c.right.inv;})[0]||['',''])[1]+'</b>'+
+       ' · '+(c.right.reg==='yes'?'on the risk register':'not on the register')+'.</p>'+
+     '<button class="btn" id="nextBtn">'+(S.i+1<CASES.length?'Next report →':'Close the queue →')+'</button>'+
+   '</div>';
+  $('nextBtn').addEventListener('click',function(){ S.i++; render(); });
+}
+
+function finish(){
+  if(timer){ clearInterval(timer); timer=null; }
+  var mins=Math.max(1,Math.round((Date.now()-S.started)/60000));
+  var sev=S.done.filter(function(d){return d.sOk;}).length;
+  var inv=S.done.filter(function(d){return d.iOk;}).length;
+  var reg=S.done.filter(function(d){return d.rOk;}).length;
+  var systemicCaught=S.done.filter(function(d){return d.truth==='systemic'&&d.rOk&&d.iOk;}).length;
+  var systemicTotal=CASES.filter(function(c){return c.truth==='systemic';}).length;
+  var opened=Object.keys(S.opened).length;
+  var score=Math.round(sev*2 + inv*4 + reg*4 + S.sys*0.12 + S.culture*0.12 + (systemicCaught/systemicTotal)*10 + (opened/CASES.length)*6);
+  score=Math.max(0,Math.min(100,score));
+  var band=score>=85?'Outstanding':score>=70?'Competent':score>=55?'Developing':'Needs improvement';
+  var rows=S.done.map(function(d,i){
+    return '<tr><td>'+(i+1)+'</td><td>'+esc(d.id)+'</td>'+
+      '<td>'+(d.sOk?'<span class="chip good">graded</span>':'<span class="chip bad">misgraded</span>')+'</td>'+
+      '<td>'+(d.iOk?'<span class="chip good">right depth</span>':'<span class="chip bad">wrong depth</span>')+'</td>'+
+      '<td>'+(d.rOk?'<span class="chip good">register ok</span>':'<span class="chip bad">register wrong</span>')+'</td>'+
+      '<td class="muted">'+esc(d.later)+'</td></tr>';}).join('');
+  var html=
+   '<div class="card">'+
+     '<h3>Patient Safety Incident &amp; Risk Register — outcome</h3>'+
+     '<p><span class="scorebig">'+score+'</span> / 100 &nbsp; <b>'+band+'</b></p>'+
+     '<div class="chipbar">'+
+       '<span class="chip'+(systemicCaught<systemicTotal?' bad':' good')+'">System faults captured: '+systemicCaught+'/'+systemicTotal+'</span>'+
+       '<span class="chip">Investigation depth correct: '+inv+'/'+CASES.length+'</span>'+
+       '<span class="chip">Register decisions correct: '+reg+'/'+CASES.length+'</span>'+
+       '<span class="chip">Systemic risk captured '+S.sys+'%</span>'+
+       '<span class="chip">Reporting culture '+S.culture+'%</span>'+
+       '<span class="chip'+(opened<CASES.length?' bad':'')+'">Reports opened: '+opened+'/'+CASES.length+'</span>'+
+       '<span class="chip">Session '+mins+' min</span>'+
+     '</div>'+
+     (systemicCaught<systemicTotal?'<div class="note"><b>INC-3 was the one to catch.</b> It was graded lowest in the queue because nothing reached the patient — and it describes look-alike potassium chloride in adjacent unlabelled bins on six wards, stopped only by the last human barrier, for the third time.</div>':'')+
+     '<h3>What happened next</h3>'+
+     '<table class="tbl"><thead><tr><th>#</th><th>Incident</th><th>Grade</th><th>Investigation</th><th>Register</th><th>Outcome</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+     '<div class="synth">Synthetic teaching data. This report is an educational record of a simulated incident review and is not a real safety determination or clinical advice.</div>'+
+   '</div>';
+  $('resBox').innerHTML=html;
+  var e=$('resEmpty'); if(e) e.remove();
+  tab('res');
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter',
+    module:'Hospital Administration AI · Module 5 · Practical 1 — Patient Safety Incident Desk, RCA & Risk Register',
+    title:'Patient Safety Incident Desk, RCA & Risk Register',
+    programme:'Hospital Administration AI',
+    submitOpts:{module:'Hospital Administration AI · Module 5 · Practical 1', title:'Patient Safety Incident Desk, RCA & Risk Register', programme:'Hospital Administration AI', pct:score},
+    titleField:{label:'The incident that mattered most', placeholder:'e.g. INC-3 — look-alike potassium chloride, no harm, highest risk'},
+    minWords:400,
+    autoPct:function(){ return score; },
+    autoResultText:function(){ return score+'/100 · '+band; },
+    autoResult:function(){ return html; },
+    attachments:[{label:'1. Risk register entry (PDF)'},{label:'2. Reflection (PDF)'}]
+  });
+}
+
+function tab(p){
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){ b.classList.toggle('on',b.getAttribute('data-p')===p); });
+  [].forEach.call(document.querySelectorAll('.panel'),function(x){ x.classList.remove('on'); });
+  $('p-'+p).classList.add('on');
+}
+[].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+  b.addEventListener('click',function(){ tab(b.getAttribute('data-p')); }); });
+
+$('startBtn').addEventListener('click',function(){
+  S=fresh(); S.started=Date.now();
+  if(timer) clearInterval(timer);
+  timer=setInterval(clockTick,1000); clockTick();
+  meters(); render(); tab('work');
+});
+})();
+</script>
+</body>
+</html>
