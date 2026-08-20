@@ -89,6 +89,11 @@
   .modenote ol.stp li{margin:3px 0}
   .modenote ol.stp li.ok{opacity:.6;text-decoration:line-through}
   .modenote .dlok{display:block;margin-top:6px;font-weight:700}
+  .modenote .stpdl{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+  .modenote .stpdl button{font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;padding:8px 15px;
+    border-radius:100px;border:1.5px solid var(--crimson);background:var(--crimson);color:#fff}
+  .modenote .stpdl button.alt{background:#fff;color:var(--crimson)}
+  .modenote .stpdl button:hover{filter:brightness(1.07)}
   .modenote.up{background:rgba(46,139,106,.14);border:1px solid rgba(46,139,106,.35);color:#8fe0bd}
   .modenote.dl{background:var(--gold-soft);border:1px solid rgba(217,164,65,.32);color:#ecd9ab}
   .grp{margin-bottom:16px}
@@ -199,8 +204,8 @@
     <div class="sp">
       <a class="back" href="ASMDI-dashboard.html">← Portal</a>
       <button id="submitBtn" title="Submit this practical to your dashboard">✔ Submit practical</button>
-      <button id="wordBtn" title="Download an editable Word file">Word (.doc)</button>
-      <button class="dl" id="pdfBtn" title="Print or save as PDF">PDF</button>
+      <button id="wordBtn" title="Download an editable Word file">&#10515; Download Word</button>
+      <button class="dl" id="pdfBtn" title="Download your report as a PDF">&#10515; Download PDF</button>
     </div>
   </div>
 </header>
@@ -485,8 +490,19 @@ function updateModeUI(){
       '<li class="'+(ok?'ok':'')+'">Fill it in, then <b>download your report</b> — Word (.doc) or PDF.</li>'+
       '<li>'+(ok?'<b>Submit</b> it to your dashboard.':'<b>Submit</b> unlocks once the report has been downloaded.')+'</li>'+
     '</ol>'+
-    (ok?'<span class="dlok">✓ Downloaded as '+dlFmt+' — you can submit now.</span>':'')+
+    (ok?'<span class="dlok">✓ Downloaded as '+dlFmt+' — you can submit now.</span>'
+       :'<div class="stpdl">'+
+          '<button type="button" id="noteWord" class="alt">⤓ Download Word</button>'+
+          '<button type="button" id="notePdf">⤓ Download PDF</button>'+
+        '</div>')+
   '</div>';
+  /* the header buttons sit in a far corner and students were not finding them;
+     these are the same action, offered where the instruction is being read */
+  if(!ok){
+    var nw=n.querySelector('#noteWord'), np=n.querySelector('#notePdf');
+    if(nw) nw.addEventListener('click',function(){ $('wordBtn').click(); });
+    if(np) np.addEventListener('click',function(){ $('pdfBtn').click(); });
+  }
 }
 
 /* ---- build document ---- */
