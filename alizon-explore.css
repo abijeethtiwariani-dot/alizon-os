@@ -1,0 +1,167 @@
+/* alizon-explore.css — interactive programme explorer + reveal animations.
+   Scoped under #azExplore and .az-reveal so nothing here can leak into the
+   existing page styles. */
+
+/* ---- scroll reveal ----
+   Content is hidden ONLY while <html class="az-anim"> is present, and that
+   class is added by alizon-explore.js after it has confirmed it can observe
+   and reveal again. If the script fails to load, throws, or the browser has
+   no IntersectionObserver, nothing is ever hidden. */
+html.az-anim .az-reveal{opacity:0;transform:translateY(18px);
+  transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+html.az-anim .az-reveal.az-in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html.az-anim .az-reveal{opacity:1;transform:none;transition:none}}
+
+/* ---- the explorer ---- */
+#azExplore{background:linear-gradient(180deg,#fff 0%,#faf9f7 100%);padding:78px 0}
+#azExplore .in{max-width:1180px;margin:0 auto;padding:0 24px}
+
+#azExplore .axtotals{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:26px 0 34px}
+#azExplore .axtot{background:#fff;border:1px solid #ece7e2;border-radius:14px;padding:18px 20px;text-align:center;
+  box-shadow:0 1px 2px rgba(16,24,40,.03),0 10px 24px -18px rgba(16,24,40,.18)}
+#azExplore .axtot b{display:block;font-family:var(--serif,Georgia,serif);font-size:38px;line-height:1;color:#8c1515;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#azExplore .axtot span{display:block;margin-top:6px;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:#6e6a63;font-weight:600}
+
+/* tabs */
+#azExplore .axtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+#azExplore .axtabs button{font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;padding:10px 18px;border-radius:100px;
+  border:1px solid #e3ddd8;background:#fff;color:#4a443f;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+#azExplore .axtabs button i{font-style:normal;font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;background:#f3efeb;color:#8a827b}
+#azExplore .axtabs button:hover{border-color:#b1040e;color:#b1040e}
+#azExplore .axtabs button.on{background:#8c1515;border-color:#8c1515;color:#fff;box-shadow:0 6px 18px -8px rgba(140,21,21,.6)}
+#azExplore .axtabs button.on i{background:rgba(255,255,255,.22);color:#fff}
+
+/* selected-programme header */
+#azExplore .axhead{display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  background:#fff;border:1px solid #ece7e2;border-radius:16px;padding:22px 24px;margin-bottom:20px}
+#azExplore .axhead h3{font-family:var(--serif,Georgia,serif);font-size:22px;margin:0 0 4px;color:#26221f}
+#azExplore .axhead p{font-size:13.5px;color:#6e6a63;margin:0 0 12px;max-width:60ch}
+#azExplore .axnums{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:#4a443f}
+#azExplore .axnums b{font-family:var(--serif,Georgia,serif);font-size:19px;color:#8c1515;margin-right:5px}
+#azExplore .axhead-r{text-align:center;flex:none}
+#azExplore .axhead-r span{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a827b;margin-top:4px;font-weight:600}
+#azExplore .axr{width:78px;height:78px;transform:rotate(-90deg)}
+#azExplore .axr-bg{fill:none;stroke:#f0eae5;stroke-width:7}
+#azExplore .axr-fg{fill:none;stroke:#8c1515;stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset 1.1s cubic-bezier(.2,.7,.2,1)}
+#azExplore .axr-t{transform:rotate(90deg);transform-origin:32px 32px;font-size:15px;font-weight:700;fill:#26221f;
+  font-family:var(--sans,Arial,sans-serif)}
+
+/* module cards */
+#azExplore .axmods{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+#azExplore .axmod{border:1px solid #ece7e2;border-radius:14px;background:#fff;padding:18px 20px;
+  transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s,border-color .25s}
+#azExplore .axmod:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(16,24,40,.35);border-color:#ded6cf}
+#azExplore .axmod.live{border-left:3px solid #8c1515}
+#azExplore .axmod-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+#azExplore .axunit{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#8a827b}
+#azExplore .axpill{font-size:10.5px;font-weight:700;letter-spacing:.05em;padding:3px 10px;border-radius:100px}
+#azExplore .axpill.ok{background:#e7f5ec;color:#12704a}
+#azExplore .axpill.soon{background:#f3efeb;color:#8a827b}
+#azExplore .axmod h4{font-family:var(--serif,Georgia,serif);font-size:16px;line-height:1.35;margin:0 0 6px;color:#26221f}
+#azExplore .axmod p{font-size:13px;line-height:1.6;color:#6e6a63;margin:0 0 10px}
+#azExplore .axmeta{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#9a7b3f}
+#azExplore .axpr{margin:10px 0 0;padding-left:16px;border-top:1px solid #f2ede8;padding-top:9px}
+#azExplore .axpr li{font-size:12.5px;line-height:1.55;color:#4a443f;margin-bottom:3px}
+
+/* card entry animation */
+#azExplore .axfade{opacity:0;transform:translateY(12px)}
+#azExplore .axfade-in{opacity:1;transform:none;
+  transition:opacity .5s cubic-bezier(.2,.7,.2,1) var(--d,0ms),transform .5s cubic-bezier(.2,.7,.2,1) var(--d,0ms)}
+@media(prefers-reduced-motion:reduce){
+  #azExplore .axfade,#azExplore .axfade-in{opacity:1;transform:none;transition:none}
+  #azExplore .axr-fg{transition:none}
+}
+@media(max-width:640px){
+  #azExplore{padding:52px 0}
+  #azExplore .axmods{grid-template-columns:1fr}
+  #azExplore .axhead{padding:18px}
+}
+
+/* ================= lab & textbook filter (os-practicals) ================= */
+.lfbar{margin:0 0 22px}
+.lfsearch{position:relative;display:flex;align-items:center;margin-bottom:14px}
+.lfsearch svg{position:absolute;left:16px;width:18px;height:18px;color:#8a827b;pointer-events:none}
+.lfsearch input{width:100%;font:inherit;font-size:15px;padding:14px 44px 14px 46px;border-radius:100px;
+  border:1px solid #e3ddd8;background:#fff;color:#26221f;transition:.2s;box-shadow:0 1px 2px rgba(16,24,40,.03)}
+.lfsearch input::placeholder{color:#a49c94}
+.lfsearch input:focus{outline:none;border-color:#b1040e;box-shadow:0 0 0 4px rgba(177,4,14,.10)}
+.lfsearch button{position:absolute;right:12px;width:26px;height:26px;border:0;border-radius:50%;cursor:pointer;
+  background:#f0eae5;color:#6e6a63;font-size:17px;line-height:1;display:grid;place-items:center}
+.lfsearch button:hover{background:#e4dbd4;color:#b1040e}
+.lfchips{display:flex;gap:7px;flex-wrap:wrap}
+.lfchips button{font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;padding:8px 15px;border-radius:100px;
+  border:1px solid #e3ddd8;background:#fff;color:#4a443f;transition:.18s;display:inline-flex;align-items:center;gap:7px}
+.lfchips button i{font-style:normal;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:100px;background:#f3efeb;color:#8a827b}
+.lfchips button:hover{border-color:#b1040e;color:#b1040e}
+.lfchips button.on{background:#8c1515;border-color:#8c1515;color:#fff}
+.lfchips button.on i{background:rgba(255,255,255,.22);color:#fff}
+.lfcount{margin:12px 0 0;font-size:12.5px;color:#8a827b;font-weight:600;letter-spacing:.02em}
+.lfempty{margin:22px 0;padding:22px;text-align:center;border:1px dashed #ded6cf;border-radius:14px;color:#8a827b;font-size:14px}
+.bksearch{margin-bottom:16px}
+@media(max-width:640px){.lfsearch input{font-size:14px;padding:12px 40px 12px 42px}}
+
+/* ===================== "try a practical" taster ===================== */
+#azTasterSec{background:linear-gradient(165deg,#1a0708 0%,#2b0c0e 55%,#1a0708 100%);color:#fff;padding:76px 0}
+#azTasterSec .in{max-width:920px;margin:0 auto;padding:0 24px}
+#azTasterSec .section-head .eyebrow{color:#e9a2a6}
+#azTasterSec .section-head h2{color:#fff}
+#azTasterSec .section-head p{color:rgba(255,255,255,.72)}
+#azTaster{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.13);border-radius:20px;
+  padding:30px 32px;margin-top:28px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+
+#azTaster .tsprog{display:flex;align-items:center;gap:8px;margin-bottom:18px}
+#azTaster .tsprog i{width:34px;height:4px;border-radius:100px;background:rgba(255,255,255,.2);display:block;transition:.4s}
+#azTaster .tsprog i.done{background:#e9a2a6}
+#azTaster .tsprog i.now{background:#fff;width:52px}
+#azTaster .tsprog span{margin-left:8px;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);font-weight:700}
+
+#azTaster .tskick{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#e9a2a6;font-weight:800;margin-bottom:10px}
+#azTaster .tsstem{font-size:16.5px;line-height:1.72;color:rgba(255,255,255,.92);margin:0 0 18px}
+#azTaster .tsstem b{color:#fff;font-weight:700}
+#azTaster .tsq{font-family:var(--serif,Georgia,serif);font-size:19px;color:#fff;margin:0 0 14px}
+
+#azTaster .tsopts{display:flex;flex-direction:column;gap:10px}
+#azTaster .tsopts button{font:inherit;font-size:14.5px;line-height:1.55;text-align:left;cursor:pointer;
+  padding:15px 18px;border-radius:13px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);
+  color:rgba(255,255,255,.92);transition:.2s}
+#azTaster .tsopts button:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.4);transform:translateX(3px)}
+#azTaster .tsopts button.locked{cursor:default;transform:none}
+#azTaster .tsopts button.correct{border-color:#4ade80;background:rgba(74,222,128,.14);color:#fff}
+#azTaster .tsopts button.wrong{border-color:#f87171;background:rgba(248,113,113,.14);color:#fff}
+#azTaster .tsopts button.locked:hover{transform:none}
+
+#azTaster .tsfeed{display:none}
+#azTaster .tsfeed.show{display:block;margin-top:18px;padding:18px 20px;border-radius:13px;
+  animation:tsIn .45s cubic-bezier(.2,.7,.2,1)}
+#azTaster .tsfeed.ok{background:rgba(74,222,128,.10);border:1px solid rgba(74,222,128,.32)}
+#azTaster .tsfeed.no{background:rgba(248,113,113,.10);border:1px solid rgba(248,113,113,.32)}
+#azTaster .tsverdict{font-weight:800;font-size:14px;letter-spacing:.05em;margin-bottom:7px;color:#fff}
+#azTaster .tsfeed p{font-size:14.5px;line-height:1.72;color:rgba(255,255,255,.9);margin:0 0 14px}
+#azTaster .tsfeed b{color:#fff}
+#azTaster .tsnext{font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;padding:10px 20px;border-radius:100px;
+  border:0;background:#fff;color:#8c1515}
+#azTaster .tsnext:hover{filter:brightness(.95)}
+#azTaster .tsfrom{margin:18px 0 0;font-size:12px;color:rgba(255,255,255,.5)}
+#azTaster .tsfrom b{color:rgba(255,255,255,.75)}
+
+#azTaster .tsdone{text-align:center;padding:14px 0}
+#azTaster .tsscore{font-family:var(--serif,Georgia,serif);font-size:62px;line-height:1;color:#fff}
+#azTaster .tsscore span{font-size:24px;color:rgba(255,255,255,.5);margin-left:6px}
+#azTaster .tsmsg{font-size:16.5px;line-height:1.7;color:#fff;max-width:56ch;margin:16px auto 10px}
+#azTaster .tssub{font-size:14px;line-height:1.7;color:rgba(255,255,255,.66);max-width:60ch;margin:0 auto 22px}
+#azTaster .tsacts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#azTaster .tsacts .btn-ghost{border-color:rgba(255,255,255,.4);color:#fff;background:transparent}
+#azTaster .tsacts .btn-ghost:hover{background:rgba(255,255,255,.12)}
+
+@keyframes tsIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  #azTaster .tsfeed.show{animation:none}
+  #azTaster .tsopts button:hover{transform:none}
+}
+@media(max-width:640px){
+  #azTasterSec{padding:52px 0}
+  #azTaster{padding:22px 20px}
+  #azTaster .tsscore{font-size:48px}
+}

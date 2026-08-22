@@ -7,6 +7,7 @@
 <title>ALIZON OS — The Practical Learning Platform | Alizon School of Medical &amp; Digital Intelligence</title>
 <meta name="description" content="ALIZON OS is the practical-learning platform of Alizon School of Medical & Digital Intelligence — browser-based virtual practicals, AI-scored assessments, online examinations, results and certificates.">
 <link rel="stylesheet" href="alizon-clone.css?v=7">
+<link rel="stylesheet" href="alizon-explore.css?v=4">
 </head>
 <body>
 
@@ -50,7 +51,7 @@
 <div class="explore">Explore ALIZON OS ▾</div>
 
 <!-- ===== PILLAR BAND (Stanford-style intro) ===== -->
-<section class="pillar-band">
+<section class="az-reveal pillar-band">
   <h2 id="pbH">Advancing Healthcare Intelligence</h2>
   <p id="pbP">A spirit of optimism and possibility drives everything we build — AI-powered virtual practicals, digital examinations and verifiable credentials that prepare the next generation of clinicians and health technologists in Kerala and beyond.</p>
   <a class="btn btn-primary" href="https://alizongov.com" target="_blank" rel="noopener">About Alizon →</a>
@@ -62,7 +63,7 @@
     <span class="eyebrow" id="hbIntroEy">What is ALIZON OS</span>
     <h2 id="hbIntroH">Everything a student needs — in the browser.</h2>
     <p id="hbIntroP1">ALIZON OS brings the full learning journey online: run virtual practicals, sit AI-scored assessments, download hall tickets, check module-wise results and verify certificates — no installs, on any device.</p>
-    <p id="hbIntroP2">Built for the four AI healthcare programmes and mapped to the ASAP Kerala curriculum, every module follows the same rigorous Aim · Principle · Theory · Requirements · Procedure · Guided-Method standard.</p>
+    <p id="hbIntroP2">Built for the five AI healthcare programmes and mapped to the ASAP Kerala curriculum, every module follows the same rigorous Aim · Principle · Theory · Requirements · Procedure · Guided-Method standard.</p>
     <a class="btn btn-dark" href="os-practicals.html" style="margin-top:8px">See the practicals →</a>
   </div>
   <img id="hbIntroImg" src="https://storage.googleapis.com/alizon-web-app-production.firebasestorage.app/cms%2Fhome-hero%2F4cc12870-3323-4f30-88d0-0061d929ec37-large.webp" alt="Students using ALIZON OS">
@@ -76,7 +77,7 @@
 
       <a class="card" href="os-practicals.html" style="color:inherit">
         <img id="hbC1Img" src="https://images.unsplash.com/photo-1579165466741-7f35e4755660?auto=format&fit=crop&w=900&q=70" alt="">
-        <div class="body"><span class="badge">11 Modules</span><h3 id="hbC1T">Virtual Practicals &amp; Labs</h3><p id="hbC1D">Browser-based practicals with AI scoring — Digital Dispensing OSCE, Clinical Simulation, Drug Discovery and more.</p><span class="more">Explore practicals →</span></div>
+        <div class="body"><span class="badge">59 Practicals</span><h3 id="hbC1T">Virtual Practicals &amp; Labs</h3><p id="hbC1D">Browser-based practicals with AI scoring — Digital Dispensing OSCE, Clinical Simulation, Drug Discovery and more.</p><span class="more">Explore practicals →</span></div>
       </a>
 
       <a class="card" href="alizon-exam.html" style="color:inherit">
@@ -109,12 +110,28 @@
 </section>
 
 <!-- ===== IMPACT ===== -->
-<section class="impact">
+<!-- ===== PROGRAMME EXPLORER (live, generated from the real curriculum) ===== -->
+<section id="azExplore" class="az-reveal">
+  <div class="in">
+    <div class="section-head">
+      <span class="eyebrow">The Curriculum, Live</span>
+      <h2>Every programme, every module, as it stands today</h2>
+      <p>Not a brochure. This is generated from the curriculum actually running in ALIZON OS —
+         choose a programme to see its modules, how many units each carries, and which practicals are built.</p>
+    </div>
+    <div class="axtotals" id="axTotals"></div>
+    <div class="axtabs" id="axTabs" role="tablist"></div>
+    <div class="axhead" id="axHead"></div>
+    <div class="axmods" id="axModules"></div>
+  </div>
+</section>
+
+<section class="az-reveal impact">
   <div class="in">
     <div class="section-head"><span class="eyebrow">Impact</span><h2 id="hbImpH">Built for scale</h2><p id="hbImpSub">Empowering the next generation of healthcare professionals through AI-driven practical learning.</p></div>
     <div class="stats">
-      <div class="stat"><b id="hbSt1">4</b><span id="hbSl1">AI Programmes</span></div>
-      <div class="stat"><b id="hbSt2">11</b><span id="hbSl2">Practical Modules</span></div>
+      <div class="stat"><b id="hbSt1">5</b><span id="hbSl1">AI Programmes</span></div>
+      <div class="stat"><b id="hbSt2">59</b><span id="hbSl2">Practicals Built</span></div>
       <div class="stat"><b id="hbSt3">100%</b><span id="hbSl3">Browser-based</span></div>
       <div class="stat"><b id="hbSt4">24/7</b><span id="hbSl4">Access</span></div>
       <div class="stat"><b id="hbSt5">150+</b><span id="hbSl5">Scholarships Awarded</span></div>
@@ -165,5 +182,6 @@
 var b=document.getElementById('burger');
 if(b)b.addEventListener('click',function(){alert('Mobile menu — wire to your nav drawer');});
 </script>
+<script src="alizon-explore.js?v=3" defer></script>
 </body>
 </html>
