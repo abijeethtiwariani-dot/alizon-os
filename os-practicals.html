@@ -7,6 +7,7 @@
 <title>Virtual Practicals &amp; Labs — ALIZON OS | Alizon School of Medical &amp; Digital Intelligence</title>
 <meta name="description" content="Browser-based virtual practicals and AI-scored labs on ALIZON OS — Digital Dispensing OSCE, Clinical Simulation, AI Drug Discovery, Antimicrobial Stewardship and more.">
 <link rel="stylesheet" href="alizon-clone.css?v=7">
+<link rel="stylesheet" href="alizon-explore.css?v=4">
 </head>
 <body>
 
@@ -38,7 +39,7 @@
     <div class="cta"><a class="btn btn-primary" href="ASMDI-dashboard.html">Launch from the Portal ↗</a></div>
   </div>
 </section>
-<div class="explore">18 Practical Labs · Mock Practice · Internal Exam · 8 Modules ▾</div>
+<div class="explore">59 Practicals · 29 Modules · 104 Units · Mock Practice · Internal Exam ▾</div>
 
 <!-- ===== FEATURED: Digital Dispensing ===== -->
 <section class="feature">
@@ -105,6 +106,20 @@
       <a class="card" href="ALIZON-OS-EHR-AI-Intelligence.html" style="color:inherit"><div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 15l3-4 2.5 3L16 9l2 3"/><circle cx="17" cy="7" r="1.6"/></svg></div><div class="body"><span class="badge">All programmes</span><h3>AI-EHR Administrative Intelligence</h3><p>Eight cases run as investigate → analyse → verify → decide. Three of the eight AI outputs are not supported by the record, including a previous admission the system invents for a handover.</p><span class="more">Open lab →</span></div></a>
 
     </div>
+  </div>
+</section>
+
+<!-- ===== TRY A PRACTICAL (public taster — no sign-in, nothing stored) ===== -->
+<section id="azTasterSec">
+  <div class="in">
+    <div class="section-head">
+      <span class="eyebrow">Try it now</span>
+      <h2>Three decisions. No sign-in required.</h2>
+      <p>These are real decision points from three ALIZON OS practicals. In every one the system in
+         front of you — a screening tool, a completeness engine, a correct calculation — is confident,
+         and wrong. See how you do.</p>
+    </div>
+    <div id="azTaster"></div>
   </div>
 </section>
 
@@ -295,5 +310,7 @@
 </script>
 <script src="firebase-sync.js" defer></script>
 <script src="alizon-cms.js?v=6" defer></script>
+<script src="alizon-labfilter.js?v=1" defer></script>
+<script src="alizon-taster.js?v=1" defer></script>
 </body>
 </html>
