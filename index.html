@@ -8,6 +8,7 @@
 <meta name="description" content="ALIZON OS is the practical-learning platform of Alizon School of Medical & Digital Intelligence — browser-based virtual practicals, AI-scored assessments, online examinations, results and certificates.">
 <link rel="stylesheet" href="alizon-clone.css?v=7">
 <link rel="stylesheet" href="alizon-explore.css?v=4">
+<link rel="stylesheet" href="alizon-showcase.css?v=1">
 </head>
 <body>
 
@@ -110,6 +111,19 @@
 </section>
 
 <!-- ===== IMPACT ===== -->
+<!-- ===== INSIDE A PRACTICAL (self-playing showcase) ===== -->
+<section id="azShowcaseSec">
+  <div class="in">
+    <div class="section-head">
+      <span class="eyebrow">Inside a practical</span>
+      <h2>Watch the highest-scoring chart in the queue turn out to be the dangerous one</h2>
+      <p>Most platforms describe their labs. This is one running. A documentation engine has scored a
+         patient record 98% complete and cleared it — and the record says something the engine cannot see.</p>
+    </div>
+    <div id="azShowcase"></div>
+  </div>
+</section>
+
 <!-- ===== PROGRAMME EXPLORER (live, generated from the real curriculum) ===== -->
 <section id="azExplore" class="az-reveal">
   <div class="in">
@@ -183,5 +197,6 @@ var b=document.getElementById('burger');
 if(b)b.addEventListener('click',function(){alert('Mobile menu — wire to your nav drawer');});
 </script>
 <script src="alizon-explore.js?v=3" defer></script>
+<script src="alizon-showcase.js?v=2" defer></script>
 </body>
 </html>
