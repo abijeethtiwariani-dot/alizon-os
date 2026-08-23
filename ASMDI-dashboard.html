@@ -3711,6 +3711,15 @@ function moduleResultBadge(moduleUnit, progName){
     var stored=null;
     try{ stored=JSON.parse(localStorage.getItem('alizonPrograms')||'null'); }catch(e){ return false; }
     if(!Array.isArray(stored)||!stored.length) return false;
+    /* Change detection is a straight before/after comparison of the whole
+       structure. It used to be a `changed` flag set by the second loop, which
+       silently lost every repair: mergeProgram() below already upgrades status
+       and backfills practicals IN PLACE, so by the time the second loop asked
+       "is this module not live yet?" the answer was always no. The flag stayed
+       false, the write never happened, and the corrected copy was discarded on
+       every pass — which is why students kept seeing modules as "coming soon"
+       however many times the repair ran. */
+    var beforeJSON=JSON.stringify(stored);
     var changed=false;
     /* A module this build ships but the stored copy has never heard of must be
        added here, not only in loadPrograms() — the cloud copy lands AFTER that
@@ -3750,8 +3759,10 @@ function moduleResultBadge(moduleUnit, progName){
         if(dm.units&&dm.units.length&&!(sm.units&&sm.units.length)){ sm.units=dm.units.slice(); changed=true; }
       });
     });
+    var afterJSON=JSON.stringify(stored);
+    changed = changed || (afterJSON!==beforeJSON);
     if(changed){
-      try{ localStorage.setItem('alizonPrograms',JSON.stringify(stored)); }catch(e){}
+      try{ localStorage.setItem('alizonPrograms',afterJSON); }catch(e){}
       try{ if(typeof window.__renderProgs==='function') window.__renderProgs(); }catch(e){}
       try{ console.log('[alizon] practical wiring restored'); }catch(e){}
     }
