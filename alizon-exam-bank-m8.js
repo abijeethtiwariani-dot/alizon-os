@@ -1,4 +1,4 @@
-/* ALIZON OS — Module 8 examination question bank
+/* ALIZON AOS — Module 8 examination question bank
    AI-Enabled Clinical Case Studies & Simulations · 4 units × 25 MCQs
    Written as short clinical vignettes to match the case-based nature of the module */
 (window.ALIZON_EXAM_BANKS = window.ALIZON_EXAM_BANKS || {})['ALZ-PH-M8'] = window.ALIZON_EXAM_M8 = {

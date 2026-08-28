@@ -8,14 +8,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALIZON OS · Staff Portal</title>
+<title>ALIZON AOS · Staff Portal</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
   :root{
@@ -158,7 +158,7 @@
 <header class="top">
   <div class="in">
     <img class="logo" src="alizon-logo.png" alt="Alizon">
-    <div class="bt"><b>ALIZON OS</b><small>Staff Portal</small></div>
+    <div class="bt"><b>ALIZON AOS</b><small>Staff Portal</small></div>
     <div class="sp">
       <a href="alizon-hr-studio.html" id="lnkHR" style="display:none">HR Studio</a>
       <a href="alizon-home.html">← Home</a>
@@ -515,7 +515,7 @@ function docShell(title,ref,body){
     '<div style="margin-top:38px;display:flex;justify-content:space-between;align-items:flex-end">'+
       '<div style="max-width:250px;border:1.5px dashed #C9A96A;border-radius:10px;padding:11px 14px;font-family:Arial,sans-serif">'+
         '<div style="font-size:9.5px;font-weight:700;letter-spacing:.14em;color:#7A0309;text-transform:uppercase">✓ System-Generated Document</div>'+
-        '<div style="font-size:9.5px;color:#8A8384;line-height:1.55;margin-top:4px">Issued electronically via ALIZON OS.<br>Valid without a physical seal or signature.</div></div>'+
+        '<div style="font-size:9.5px;color:#8A8384;line-height:1.55;margin-top:4px">Issued electronically via ALIZON AOS.<br>Valid without a physical seal or signature.</div></div>'+
       '<div style="text-align:left"><div style="width:220px;border-top:1px solid #9B9394;margin-bottom:7px"></div>'+
         '<div style="font-weight:600">Office of Human Resources</div>'+
         '<div style="font-family:Arial,sans-serif;font-size:12.5px;color:#4A4546">Alizon School of Medical &amp; Digital Intelligence</div></div></div>'+
@@ -615,7 +615,7 @@ function ackBlockHtml(ob){
     declListHtml()+
     '<div style="margin-top:22px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">'+
       '<div><img src="'+ob.signatureImg+'" style="height:64px;max-width:240px"><div style="width:230px;border-top:1px solid #9B9394;margin-top:2px;padding-top:5px;font-family:Arial,sans-serif;font-size:12.5px"><b>'+esc(ob.legalName)+'</b><br>Employee signature</div></div>'+
-      '<div style="font-family:Arial,sans-serif;font-size:12px;color:#555;text-align:right">Signed electronically via ALIZON OS<br>Date: '+fmtDate(ob.signedAt)+(ob.place?'<br>Place: '+esc(ob.place):'')+'<br>Ref: '+esc(ob.ref)+'</div>'+
+      '<div style="font-family:Arial,sans-serif;font-size:12px;color:#555;text-align:right">Signed electronically via ALIZON AOS<br>Date: '+fmtDate(ob.signedAt)+(ob.place?'<br>Place: '+esc(ob.place):'')+'<br>Ref: '+esc(ob.ref)+'</div>'+
     '</div></div>';
 }
 function dlSignedAck(ob){ if(!ob)return; dlDoc('Letter of Appointment — Signed',ob.ref,joiningLetterBody()+ackBlockHtml(ob),ME.empid+'_Joining_Letter_Signed.doc'); }

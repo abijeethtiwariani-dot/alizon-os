@@ -1,4 +1,4 @@
-/* Alizon OS — service worker KILL-SWITCH (v2).
+/* Alizon AOS — service worker KILL-SWITCH (v2).
    Pages no longer register this; they actively unregister instead. This file
    only exists so browsers that still hold an old registration clean themselves
    up on next activation.

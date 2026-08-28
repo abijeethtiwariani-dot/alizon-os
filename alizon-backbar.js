@@ -2,7 +2,7 @@
    One navigation control for every app page, with exactly two actions.
 
    The portal had grown seven different ways of going back — "← Dashboard",
-   "← Home", "← Career hub", "← Back to Alizon OS", "← Back to campus sign-in"
+   "← Home", "← Career hub", "← Back to Alizon AOS", "← Back to campus sign-in"
    and others — placed differently on each page. Worse, labs open with
    target="_blank", so a fresh tab has no history and an ordinary back link
    leads nowhere.
@@ -47,7 +47,7 @@ var EXIT_LABELS = [
   /^←?\s*portal$/i,
   /^←?\s*admin portal$/i,
   /^←?\s*library$/i,
-  /^←?\s*back to (alizon os|the portal|dashboard|homepage|campus sign-in|home)$/i,
+  /^←?\s*back to (alizon aos|the portal|dashboard|homepage|campus sign-in|home)$/i,
   /^←?\s*.{0,40} course desk$/i,
   /^←?\s*all courses$/i,
   /^←?\s*career hub$/i

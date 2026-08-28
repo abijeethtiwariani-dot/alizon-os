@@ -1,4 +1,4 @@
-/* ALIZON OS — Module 6 examination question bank
+/* ALIZON AOS — Module 6 examination question bank
    Pharmacy Data Analytics & Predictive Modelling · 4 units × 25 MCQs        */
 (window.ALIZON_EXAM_BANKS = window.ALIZON_EXAM_BANKS || {})['ALZ-PH-M6'] = window.ALIZON_EXAM_M6 = {
   module: 'Module 6 · Pharmacy Data Analytics & Predictive Modelling',

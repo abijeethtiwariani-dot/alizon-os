@@ -1,5 +1,5 @@
 /* ============================================================
-   ALIZON OS — shared multi-page print paginator
+   ALIZON AOS — shared multi-page print paginator
    Splits a single rendered document element into real A4 pages
    for printing: repeats the letterhead header + footer on every
    page, keeps content clear of the footer, and stamps

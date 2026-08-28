@@ -1,4 +1,4 @@
-/* ALIZON OS — practical/lab access gate.
+/* ALIZON AOS — practical/lab access gate.
    Include on every ALIZON-OS-Module*.html / lab page:
      <script src="alizon-lab-gate.js"></script>
 
@@ -55,7 +55,7 @@
   if (isAdmin || isFaculty) return;                 /* staff see everything */
   if (!isStudent) return block(
     'Student access only',
-    'This practical is available to logged-in Alizon students. Please sign in to the ALIZON OS portal to continue.');
+    'This practical is available to logged-in Alizon students. Please sign in to the ALIZON AOS portal to continue.');
 
   /* ---- which programmes claim this file? -------------------------------- */
   var programs = get('alizonPrograms', []);

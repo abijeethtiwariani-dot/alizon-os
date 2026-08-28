@@ -1,5 +1,5 @@
 /* ============================================================
-   ALIZON OS — Firebase Auth + Firestore sync (secured)
+   ALIZON AOS — Firebase Auth + Firestore sync (secured)
    • Every portal login signs the user into Firebase Auth
      (accounts auto-create on first login from the roster).
    • Firestore rules require authentication, so the database

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Library — ALIZON OS</title>
+<title>Library — ALIZON AOS</title>
 <meta name="description" content="Read your module textbooks — Alizon School of Medical &amp; Digital Intelligence.">
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="alizon-logo.png">
@@ -184,7 +184,7 @@ body.night .bookinner figure.dia svg .dg-w{fill:#fff}
   <img src="alizon-logo.png" alt="Alizon">
   <div>
     <div class="t" id="tbTitle">Library</div>
-    <div class="s" id="tbSub">ALIZON OS · Textbooks</div>
+    <div class="s" id="tbSub">ALIZON AOS · Textbooks</div>
   </div>
   <div class="sp"></div>
   <button class="tb" id="btnA">A−</button>
@@ -398,7 +398,7 @@ function bootChapters(chs, meta){
   $('reader').classList.add('on');
   $('btnPrintR').style.display=''; $('btnPrintU').style.display='';
   $('tbTitle').textContent=meta.title||'Textbook';
-  $('tbSub').textContent=meta.prog||'ALIZON OS';
+  $('tbSub').textContent=meta.prog||'ALIZON AOS';
   buildToc();
   showChapter(0, true);
 }
@@ -441,7 +441,7 @@ function boot(data, entry){
   $('reader').classList.add('on');
   $('btnPrintR').style.display=''; $('btnPrintU').style.display='';
   $('tbTitle').textContent=current.meta.title||'Textbook';
-  $('tbSub').textContent=(current.meta.module?'Module '+current.meta.module+' · ':'')+(current.meta.prog||'ALIZON OS');
+  $('tbSub').textContent=(current.meta.module?'Module '+current.meta.module+' · ':'')+(current.meta.prog||'ALIZON AOS');
   buildToc();
   var pr=progressOf(current.id);
   showChapter(pr && pr.ch<chapters.length ? pr.ch : 0, true);
@@ -507,7 +507,7 @@ function backToShelf(){
   $('reader').classList.remove('on');
   $('shelf').style.display='';
   $('btnPrintR').style.display='none'; $('btnPrintU').style.display='none';
-  $('tbTitle').textContent='Library'; $('tbSub').textContent='ALIZON OS · Textbooks';
+  $('tbTitle').textContent='Library'; $('tbSub').textContent='ALIZON AOS · Textbooks';
   $('prog').style.width='0';
   current=null;
   paintShelf(false);

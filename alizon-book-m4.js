@@ -1,6 +1,6 @@
 /* alizon-book-m4.js — Module 4 textbook.
    Body text converted from the author's manuscript; the practical programme is
-   generated from the labs actually running in ALIZON OS, replacing the older
+   generated from the labs actually running in ALIZON AOS, replacing the older
    observational "Study of ..." sessions in the manuscript. */
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m4 = {
@@ -458,7 +458,7 @@
 '\n'+
 '@section Practical programme\n'+
 '\n'+
-'The practicals for this module run in ALIZON OS and are scored in the browser. Each one withholds information until you go and look for it, so the mark reflects what you investigated as well as what you concluded. Open them from the Practicals area of the portal.\n'+
+'The practicals for this module run in ALIZON AOS and are scored in the browser. Each one withholds information until you go and look for it, so the mark reflects what you investigated as well as what you concluded. Open them from the Practicals area of the portal.\n'+
 '\n'+
 '@activity Practical 1 · AI Support in Scientific Research & Data Analysis (Unit 2)\n'+
 'A twenty-five row dataset with four planted problems. Clean it defensibly, choose the right test, interpret the result, and verify an AI-drafted summary against what the data actually shows.\n'+

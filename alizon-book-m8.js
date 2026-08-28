@@ -331,7 +331,7 @@
 'Q: A record shows conflicting allergy entries. Describe how you resolve it and by when.\n\n'+
 
 '@section Practical programme\n\n'+
-'The practicals for this module run in ALIZON OS and are scored in the browser. Each one withholds '+
+'The practicals for this module run in ALIZON AOS and are scored in the browser. Each one withholds '+
 'information until you go and look for it, so the mark reflects what you investigated as well as '+
 'what you concluded.\n\n'+
 '@activity Practical 1 · AI Prescription Review & Safety Audit (Unit 1)\n'+

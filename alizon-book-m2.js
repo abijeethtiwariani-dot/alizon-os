@@ -1,6 +1,6 @@
 /* alizon-book-m2.js — Module 2 textbook.
    Body text converted from the author's manuscript; the practical programme is
-   generated from the labs actually running in ALIZON OS, replacing the older
+   generated from the labs actually running in ALIZON AOS, replacing the older
    observational "Study of ..." sessions in the manuscript. */
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m2 = {
@@ -390,7 +390,7 @@
 '\n'+
 '@section Practical programme\n'+
 '\n'+
-'The practicals for this module run in ALIZON OS and are scored in the browser. Each one withholds information until you go and look for it, so the mark reflects what you investigated as well as what you concluded. Open them from the Practicals area of the portal.\n'+
+'The practicals for this module run in ALIZON AOS and are scored in the browser. Each one withholds information until you go and look for it, so the mark reflects what you investigated as well as what you concluded. Open them from the Practicals area of the portal.\n'+
 '\n'+
 '@activity Practical 1 · Digital Dispensing — FEFO/FIFO & Patient Counselling (Unit 1)\n'+
 'A ten-case dispensing OSCE with real stock logic. Pick the correct batch by earliest expiry, spot the wrong strength, and counsel the patient. Scored against a 110-mark rubric with automatic critical-fail detection.\n'+

@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
@@ -142,7 +142,7 @@
 </style>
 <header id="azsitehdr">
   <div class="azhdr-util"><div class="in">
-    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON OS<small>Medical &amp; Digital Intelligence</small></span></a>
+    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON AOS<small>Medical &amp; Digital Intelligence</small></span></a>
     <div class="util-r"><span class="lbl">Information for:</span>
       <a href="ASMDI-dashboard.html">Students</a><a href="alizon-faculty-portal.html">Faculty &amp; Staff Login</a><a href="alizon-results.html">Results</a><a href="alizon-verify.html">Verify</a><a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
     </div>
@@ -176,7 +176,7 @@
   if(!course){ document.getElementById('noCourse').style.display='block'; document.getElementById('deskTiles').style.display='none'; return; }
   var _tc=document.getElementById('tCourse'); if(_tc)_tc.textContent=course;
   document.getElementById('hCourse').textContent=course;
-  document.title='ALIZON OS · '+course+' — Course Desk';
+  document.title='ALIZON AOS · '+course+' — Course Desk';
 
   function loadResults(){ try{var d=JSON.parse(localStorage.getItem('alizonResults')||'{}'); return (d&&d.courses)?d:{courses:{}}; }catch(e){ return {courses:{}}; } }
   function docs(){ try{var a=JSON.parse(localStorage.getItem('alizonExamDocs')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }

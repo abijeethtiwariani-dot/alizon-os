@@ -8,13 +8,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALIZON OS · Faculty Portal</title>
+<title>ALIZON AOS · Faculty Portal</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
   :root{
@@ -182,7 +182,7 @@
 <!-- LOGIN GATE -->
 <div id="gate">
   <form class="gate-card" id="gateForm" autocomplete="off">
-    <div class="gbrand"><img src="alizon-logo.png" alt=""><b>ALIZON OS</b></div>
+    <div class="gbrand"><img src="alizon-logo.png" alt=""><b>ALIZON AOS</b></div>
     <h2>Faculty Portal</h2>
     <p class="gsub">Sign in to grade, respond and manage your teaching.</p>
     <label for="gf-id">Login ID (faculty email or admin)</label>
@@ -198,7 +198,7 @@
 <header class="top">
   <div class="in">
     <img class="logo" src="alizon-logo.png" alt="Alizon">
-    <div class="bt"><b>ALIZON OS</b><small>Faculty Portal</small></div>
+    <div class="bt"><b>ALIZON AOS</b><small>Faculty Portal</small></div>
     <div class="sp">
       <span class="who" id="whoami"></span>
       <a href="alizon-home.html">Home →</a>
@@ -560,7 +560,7 @@ function noteDocHtml(p,m,n){
     <div class="dep">${esc(p.name)} · ${esc(m.unit)}${n.unit?' · '+esc(n.unit):''}</div></div>
     <div class="dt">${esc(n.title||'Course Notes')}</div><div class="dsub">${esc(m.title)}</div>
     <p class="body">${esc(n.body||'')}</p>
-    <div class="foot">Official course note · ALIZON OS · ${new Date(n.ts||Date.now()).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}${n.published===false?' · CURRENTLY REVOKED (not visible to students)':''}</div>`;
+    <div class="foot">Official course note · ALIZON AOS · ${new Date(n.ts||Date.now()).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}${n.published===false?' · CURRENTLY REVOKED (not visible to students)':''}</div>`;
 }
 function renderNotes(){
   const {p,m}=curMod($('nProg'),$('nMod')); const el=$('notesList');

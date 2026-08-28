@@ -1,6 +1,6 @@
 /* alizon-taster.js — "Try a practical" on the public practicals page.
 
-   Three real decision points lifted from three real ALIZON OS practicals, so a
+   Three real decision points lifted from three real ALIZON AOS practicals, so a
    visitor can experience what the platform actually asks of a student instead
    of reading a description of it. No sign-in, no scoring record, no storage:
    state lives in a closure variable and dies with the page. This file reads
@@ -81,7 +81,7 @@
         return '<button type="button" data-n="' + n + '">' + esc(o.t) + '</button>'; }).join('') +
       '</div>' +
       '<div class="tsfeed" id="tsFeed"></div>' +
-      '<p class="tsfrom">From <b>' + esc(c.from) + '</b> — one of 59 practicals in ALIZON OS.</p>';
+      '<p class="tsfrom">From <b>' + esc(c.from) + '</b> — one of 59 practicals in ALIZON AOS.</p>';
 
     [].forEach.call(host.querySelectorAll('.tsopts button'), function (b) {
       b.addEventListener('click', function () {

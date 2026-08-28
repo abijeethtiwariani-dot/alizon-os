@@ -1,4 +1,4 @@
-/* ALIZON OS — Module 3 examination question bank
+/* ALIZON AOS — Module 3 examination question bank
    AI-Based Clinical Decision Support in Pharmacy · 4 units × 25 MCQs         */
 (window.ALIZON_EXAM_BANKS = window.ALIZON_EXAM_BANKS || {})['ALZ-PH-M3'] = window.ALIZON_EXAM_M3 = {
   module: 'Module 3 · AI-Based Clinical Decision Support in Pharmacy',

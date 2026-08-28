@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
@@ -90,7 +90,7 @@
 <body>
 <div class="top"><div class="in">
   <img src="alizon-logo.png" alt="">
-  <div class="bt"><b>Course Documents</b><small>ALIZON OS · Examination Office</small></div>
+  <div class="bt"><b>Course Documents</b><small>ALIZON AOS · Examination Office</small></div>
   <div class="sp"><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a></div>
 </div></div>
 
@@ -135,7 +135,7 @@
 
   document.getElementById('crumb').innerHTML='<a href="alizon-course.html?course='+encodeURIComponent(course)+'">← '+esc(course)+' course desk</a>';
   document.getElementById('hTitle').textContent=course;
-  document.title='ALIZON OS · '+course+' — Course Documents';
+  document.title='ALIZON AOS · '+course+' — Course Documents';
 
   function docs(){ try{var a=JSON.parse(localStorage.getItem('alizonExamDocs')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];} }
   function forCourse(d){ var c=(d.course||'').trim(); return !c || c==='all' || c.toLowerCase()===course.toLowerCase(); }

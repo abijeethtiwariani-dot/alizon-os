@@ -1,4 +1,4 @@
-/* ALIZON OS — Module 1 internal examination question bank
+/* ALIZON AOS — Module 1 internal examination question bank
    Certificate Course in Digital Health & Artificial Intelligence for Pharmacy
    4 units × 25 multiple-choice questions · 1 mark each · no negative marking
    c = index of the correct option · e = explanation shown in the answer review   */

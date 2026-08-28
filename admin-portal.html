@@ -8,13 +8,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALIZON OS · Admin Portal — Course Management</title>
+<title>ALIZON AOS · Admin Portal — Course Management</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="alizon-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -220,7 +220,7 @@
     /* repeating letterhead band (logo + unit) on every printed page + page numbers */
     @page{margin:30mm 15mm 20mm;
       @bottom-right{content:"Page " counter(page) " of " counter(pages);font-family:Inter,-apple-system,sans-serif;font-size:9pt;color:#666}
-      @bottom-left{content:"ALIZON OS · Official document";font-family:Inter,-apple-system,sans-serif;font-size:8pt;color:#999}}
+      @bottom-left{content:"ALIZON AOS · Official document";font-family:Inter,-apple-system,sans-serif;font-size:8pt;color:#999}}
     .np-fixhead{display:flex !important;position:fixed;top:0;left:0;right:0;height:24mm;
       align-items:center;justify-content:center;gap:9px;background:#fff;border-bottom:1.5px solid #7A0309;padding:0 6mm}
     .np-fixhead img{width:30px;height:30px;object-fit:contain;flex:none}
@@ -341,7 +341,7 @@ h1,h2,h3{color:#111!important}
 </style>
 <div id="adminGate">
   <form class="gate-card" id="gateForm" autocomplete="off">
-    <div class="gbrand"><img src="alizon-logo.png" alt=""><b>ALIZON OS</b></div>
+    <div class="gbrand"><img src="alizon-logo.png" alt=""><b>ALIZON AOS</b></div>
     <h2>Admin Portal</h2>
     <p class="gsub">Restricted — administrator sign-in required.</p>
     <label for="ga-id">Login ID</label>
@@ -373,7 +373,7 @@ h1,h2,h3{color:#111!important}
 <header class="top">
   <div class="in">
     <img class="logo" src="alizon-logo.png" alt="Alizon">
-    <div class="bt"><b>ALIZON OS</b><small>Admin Portal</small></div>
+    <div class="bt"><b>ALIZON AOS</b><small>Admin Portal</small></div>
     <div class="sp">
       <button class="reset" id="resetBtn" title="Restore the default programmes & courses">↺ Reset defaults</button>
       <a class="back" href="ASMDI-dashboard.html">Student dashboard →</a>
@@ -1589,7 +1589,7 @@ function render(){
       <div class="dt">${esc(n.title||'Course Notes')}</div>
       <div class="dsub">${esc(m.title)}</div>
       <p class="body">${esc(n.body||'')}</p>
-      <div class="foot">Official course note · ALIZON OS · ${new Date(n.ts||Date.now()).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}${n.published===false?' · CURRENTLY REVOKED (not visible to students)':''}</div>`;
+      <div class="foot">Official course note · ALIZON AOS · ${new Date(n.ts||Date.now()).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}${n.published===false?' · CURRENTLY REVOKED (not visible to students)':''}</div>`;
   }
   host.querySelectorAll('[data-npv]').forEach(b=>b.addEventListener('click',()=>{
     const p=PROGRAMS[+b.dataset.p], m=p.modules[+b.dataset.m], n=(m.notes||[])[+b.dataset.n]; if(!n)return;
@@ -3497,7 +3497,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   });
   /* ---- HOME page images (intro + 6 showcase tiles) — upload / link / reset ---- */
   var HI=[
-    ['hb-intro-img','Intro photo (beside "What is ALIZON OS")'],
+    ['hb-intro-img','Intro photo (beside "What is ALIZON AOS")'],
     ['hb-c1-img','Tile 1 · Virtual Practicals & Labs'],
     ['hb-c2-img','Tile 2 · Examinations & Hall Tickets'],
     ['hb-c3-img','Tile 3 · Results'],

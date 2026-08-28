@@ -1,4 +1,4 @@
-/* ALIZON OS — Module 5 examination question bank
+/* ALIZON AOS — Module 5 examination question bank
    Clinical Trials, Pharmacovigilance & Evidence-Based Pharmacy · 4 × 25 MCQs */
 (window.ALIZON_EXAM_BANKS = window.ALIZON_EXAM_BANKS || {})['ALZ-PH-M5'] = window.ALIZON_EXAM_M5 = {
   module: 'Module 5 · Clinical Trials, Pharmacovigilance & Evidence-Based Pharmacy',

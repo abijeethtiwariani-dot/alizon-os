@@ -1,5 +1,5 @@
 /* ============================================================
-   ALIZON OS — shared CMS bridge (alizon-cms.js)
+   ALIZON AOS — shared CMS bridge (alizon-cms.js)
    Loaded by alizon-home.html (applies overrides) AND
    admin-portal.html (uses the fields map to build the editor).
 

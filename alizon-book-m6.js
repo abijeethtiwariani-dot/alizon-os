@@ -1,6 +1,6 @@
 /* alizon-book-m6.js — Module 6 textbook.
    Body text converted from the author's manuscript; the practical programme is
-   generated from the labs actually running in ALIZON OS, replacing the older
+   generated from the labs actually running in ALIZON AOS, replacing the older
    observational "Study of ..." sessions in the manuscript. */
 (function(){
 (window.ALIZON_TEXTBOOKS = window.ALIZON_TEXTBOOKS || {}).m6 = {
@@ -494,7 +494,7 @@
 '\n'+
 '@section Practical programme\n'+
 '\n'+
-'The practicals for this module run in ALIZON OS and are scored in the browser. Each one withholds information until you go and look for it, so the mark reflects what you investigated as well as what you concluded. Open them from the Practicals area of the portal.\n'+
+'The practicals for this module run in ALIZON AOS and are scored in the browser. Each one withholds information until you go and look for it, so the mark reflects what you investigated as well as what you concluded. Open them from the Practicals area of the portal.\n'+
 '\n'+
 '@activity Practical 1 · Pharmacy Data Quality Audit (Unit 1)\n'+
 'A 300% spike that turns out to be a duplicated import, and the defect that actually matters: a quantity column that switched from packs to units mid-year, so every total spanning the change is wrong and nothing looks unusual.\n'+

@@ -1,4 +1,4 @@
-/* ALIZON OS — Module 4 examination question bank
+/* ALIZON AOS — Module 4 examination question bank
    AI in Drug Development, Vaccines & Injectables · 4 units × 25 MCQs         */
 (window.ALIZON_EXAM_BANKS = window.ALIZON_EXAM_BANKS || {})['ALZ-PH-M4'] = window.ALIZON_EXAM_M4 = {
   module: 'Module 4 · AI in Drug Development, Vaccines & Injectables',

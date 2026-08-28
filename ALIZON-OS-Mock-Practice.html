@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta name="theme-color" content="#8c1515">
-<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, follow">
-<title>ALIZON OS · Mock Practice</title>
+<title>ALIZON AOS · Mock Practice</title>
 <script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -223,7 +223,7 @@
       BANK=b; $('startBtn').disabled=false;
       $('modLine').textContent=BANK.module+' · '+BANK.units.reduce(function(a,u){return a+u.qs.length;},0)+' questions in the bank';
       /* keep the tab title and heading on the module actually loaded — see Internal-Exam */
-      document.title='ALIZON OS · Module '+n+' · Mock Practice';
+      document.title='ALIZON AOS · Module '+n+' · Mock Practice';
       $('pgTitle').textContent='Module '+n+' · Mock Practice';
       picked={}; BANK.units.forEach(function(u){ picked[u.n]=true; });
       buildUnits(); paintPool();

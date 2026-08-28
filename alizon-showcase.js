@@ -1,5 +1,5 @@
 /* alizon-showcase.js — "Inside a practical": a self-playing, 12-second
-   illustration of what an ALIZON OS practical actually does, built from a real
+   illustration of what an ALIZON AOS practical actually does, built from a real
    case (Module 4 · Practical 1, chart MR-4517).
 
    It is a dramatisation of the interface, not the interface itself, and it says
@@ -22,7 +22,7 @@
   function shell() {
     host.innerHTML =
       '<div class="scwin">' +
-        '<div class="scbar"><i></i><i></i><i></i><span>ALIZON OS — Records Desk · Module 4 · Practical 1</span></div>' +
+        '<div class="scbar"><i></i><i></i><i></i><span>ALIZON AOS — Records Desk · Module 4 · Practical 1</span></div>' +
         '<div class="scbody">' +
 
           '<div class="scops">' +
@@ -90,7 +90,7 @@
           '<button class="btn btn-ghost" type="button" id="scReplay">Replay</button>' +
         '</div>' +
       '</div>' +
-      '<p class="scnote">An illustration of a real ALIZON OS practical, on synthetic teaching data.</p>';
+      '<p class="scnote">An illustration of a real ALIZON AOS practical, on synthetic teaching data.</p>';
 
     el('#scReplay').addEventListener('click', function () { play(true); });
   }

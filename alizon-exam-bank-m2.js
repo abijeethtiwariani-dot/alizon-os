@@ -1,4 +1,4 @@
-/* ALIZON OS — Module 2 examination question bank
+/* ALIZON AOS — Module 2 examination question bank
    Digital Pharmacy, EHR & Telepharmacy · 4 units × 25 MCQs · 1 mark each      */
 (window.ALIZON_EXAM_BANKS = window.ALIZON_EXAM_BANKS || {})['ALZ-PH-M2'] = window.ALIZON_EXAM_M2 = {
   module: 'Module 2 · Digital Pharmacy, EHR & Telepharmacy',

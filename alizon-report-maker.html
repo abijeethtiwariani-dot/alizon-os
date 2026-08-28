@@ -8,13 +8,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALIZON OS · Assessments — Report &amp; Form Maker</title>
+<title>ALIZON AOS · Assessments — Report &amp; Form Maker</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="alizon-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -200,7 +200,7 @@
 <header class="top">
   <div class="in">
     <img class="logo" src="alizon-logo.png" alt="Alizon">
-    <div class="bt"><b>ALIZON OS</b><small>Assessments · Report &amp; Form Maker</small></div>
+    <div class="bt"><b>ALIZON AOS</b><small>Assessments · Report &amp; Form Maker</small></div>
     <div class="sp">
       <a class="back" href="ASMDI-dashboard.html">← Portal</a>
       <button id="submitBtn" title="Submit this practical to your dashboard">✔ Submit practical</button>
@@ -540,7 +540,7 @@ function buildDoc(){
     ${decl}
     <h3 class="sn">${bodyNo} · ${docType==='practical'?'Practical':'Assignment'}</h3>
     ${body}
-    <div class="foot">Generated with the ALIZON OS Assessments · Report &amp; Form Maker · alizongov.com</div>`;
+    <div class="foot">Generated with the ALIZON AOS Assessments · Report &amp; Form Maker · alizongov.com</div>`;
 }
 function buildSA(){
   const v=id=>$(id).value.trim();
@@ -580,7 +580,7 @@ function buildSA(){
     <h3 class="sn">Faculty Review (Optional)</h3>
     <p class="body" style="min-height:44px">&nbsp;</p>
     <div class="sig">Faculty Signature: <span class="line"></span> &nbsp;&nbsp;&nbsp; Date: <span class="line" style="min-width:120px"></span></div>
-    <div class="foot">Generated with the ALIZON OS Assessments · Report &amp; Form Maker · alizongov.com</div>`;
+    <div class="foot">Generated with the ALIZON AOS Assessments · Report &amp; Form Maker · alizongov.com</div>`;
 }
 function countWords(){ const t=docType==='self'?sa.b.join(' ')+' '+sa.c.join(' ')+' '+sa.dRes:sections.map(s=>s.b).join(' ')+' '+$('f-declText').value; return (t.match(/\S+/g)||[]).length; }
 function render(){ $('doc').innerHTML=buildDoc(); $('totalWords').textContent=countWords()+' words'; }

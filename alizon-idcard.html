@@ -8,14 +8,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALIZON OS · ID Card Studio</title>
+<title>ALIZON AOS · ID Card Studio</title>
 <meta name="robots" content="noindex,nofollow">
 <script src="firebase-sync.js"></script>
 <style>
@@ -115,7 +115,7 @@
 
 <div class="top"><div class="in">
   <img class="logo" src="alizon-logo.png" alt="" onerror="this.style.display='none'">
-  <div class="bt"><b>ID Card Studio</b><small>ALIZON OS</small></div>
+  <div class="bt"><b>ID Card Studio</b><small>ALIZON AOS</small></div>
   <div class="sp"><a href="ASMDI-dashboard.html" target="_top" id="idcBack">← Dashboard</a></div>
 </div></div>
 
@@ -227,7 +227,7 @@ function cardHtml(m){
       '</div>'+
     '</div>'+
     '<div class="idc-foot"><div class="idc-bars">'+barsHtml(m.id)+'</div>'+
-      '<div class="sg"><b>'+sig+'</b>Authorised signatory · ALIZON OS</div></div>'+
+      '<div class="sg"><b>'+sig+'</b>Authorised signatory · ALIZON AOS</div></div>'+
   '</div>';
 }
 
@@ -334,7 +334,7 @@ function downloadPng(m){
       x.textAlign='right';x.font='italic 700 22px Georgia, serif';x.fillStyle='#231D1E';
       x.fillText(m.role==='Student'?'Registrar':'HR Office',W-52,H-56);
       x.font='700 12px Inter, sans-serif';x.fillStyle='#8A8384';
-      x.fillText('AUTHORISED SIGNATORY · ALIZON OS',W-52,H-34);
+      x.fillText('AUTHORISED SIGNATORY · ALIZON AOS',W-52,H-34);
       var url;
       try{ url=c.toDataURL('image/png'); }
       catch(e){ drawInitials(); try{ url=c.toDataURL('image/png'); }catch(e2){ return; } }

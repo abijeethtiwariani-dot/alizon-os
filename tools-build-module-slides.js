@@ -531,7 +531,7 @@ function buildModule(n) {
         s2.addText(fit(t, 124), { x:7.3, y, w:5.48, h:sh-0.05, fontSize:11.5, color:INK,
           fontFace:SANS, lineSpacing:15, margin:0 });
       });
-      if (more) s2.addText(`+ ${p.procedure.length-6} further steps — see the practical brief on ALIZON OS`,
+      if (more) s2.addText(`+ ${p.procedure.length-6} further steps — see the practical brief on ALIZON AOS`,
         { x:7.3, y:2.1 + 6*sh + 0.06, w:5.48, h:0.3, fontSize:10.5, italic:true,
           color:MUT, fontFace:SANS, margin:0 });
       foot(s2);
@@ -546,7 +546,7 @@ function buildModule(n) {
       color:GOLD, charSpacing:2.2, fontFace:SANS, margin:0 });
     s.addText(`Completing Module ${n}`, { x:0.85, y:1.2, w:11, h:0.72, fontSize:34, bold:true,
       color:WHITE, fontFace:SERIF, margin:0 });
-    [ ['Practicals', `Complete all ${pracs.length} practical${pracs.length===1?'':'s'} on ALIZON OS. Every submission is evaluated by faculty.`],
+    [ ['Practicals', `Complete all ${pracs.length} practical${pracs.length===1?'':'s'} on ALIZON AOS. Every submission is evaluated by faculty.`],
       ['Attendance', 'Attendance is recorded automatically from submitted work — signing in alone does not count.'],
       ['Examination', `${qTotal} multiple-choice questions across ${bank.units.length} units. Practise on the mock paper before the internal examination.`],
       ['Certificate', 'Faculty-verified practicals earn a Certificate of Practical Experience, with the hours set by the institution.']

@@ -1,4 +1,4 @@
-/* ALIZON OS — examination question-bank manifest
+/* ALIZON AOS — examination question-bank manifest
    Lists every bank available to the mock-practice, internal-examination and
    admin question-bank pages. Those pages load ONLY the bank the user selects,
    so adding a module here is the single change needed to publish it.

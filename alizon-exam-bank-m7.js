@@ -1,4 +1,4 @@
-/* ALIZON OS — Module 7 examination question bank
+/* ALIZON AOS — Module 7 examination question bank
    Robotics & Automation in Pharmacy Practice · 4 units × 25 MCQs            */
 (window.ALIZON_EXAM_BANKS = window.ALIZON_EXAM_BANKS || {})['ALZ-PH-M7'] = window.ALIZON_EXAM_M7 = {
   module: 'Module 7 · Robotics & Automation in Pharmacy Practice',

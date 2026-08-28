@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alizon OS">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
 <!-- /pwa:alizon -->
 
@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* ALIZON OS dark chrome */
+  /* ALIZON AOS dark chrome */
   --bg:#070810; --navy:#0D1024; --navy2:#1A1D2E;
   --ink:#f5f4f6; --muted:#9a9db2;
   --line:rgba(255,255,255,.09); --line-soft:rgba(255,255,255,.06);
@@ -332,7 +332,7 @@ table.emp tr:hover td{background:rgba(255,255,255,.03)}
   <div class="actions">
     <a class="btn" href="alizon-letterhead/" title="General-purpose letterhead — notices, memos, certificates, course notifications">Letterhead</a>
     <a class="btn" href="alizon-staff-portal.html" title="Employee self-service portal">Staff Portal</a>
-    <a class="btn" href="admin-portal.html" title="Back to the ALIZON OS admin portal">← Admin Portal</a>
+    <a class="btn" href="admin-portal.html" title="Back to the ALIZON AOS admin portal">← Admin Portal</a>
     <button class="btn" id="btnWord" title="Download an editable Word file">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
       Word (.doc)
@@ -777,7 +777,7 @@ Academic induction · Office of the Dean · dean@alizongov.com · +91 471 000 00
         <div class="sig-block">
           <div class="sysgen">
             <div class="sg-b">✓ System-Generated Document</div>
-            <div class="sg-t">Issued electronically via ALIZON OS.<br>Valid without a physical seal or signature.</div>
+            <div class="sg-t">Issued electronically via ALIZON AOS.<br>Valid without a physical seal or signature.</div>
           </div>
           <div class="sig">
             <div class="line"></div>
@@ -1538,7 +1538,7 @@ let EMP=[
 ];
 let DOCLOG=[];
 
-/* persistence: shared ALIZON OS localStorage (same-origin as dashboard/admin) */
+/* persistence: shared ALIZON AOS localStorage (same-origin as dashboard/admin) */
 function persist(){
   try{ localStorage.setItem('alizonHR', JSON.stringify({EMP,DOCLOG})); }catch(e){}
 }

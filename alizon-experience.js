@@ -453,7 +453,7 @@
       digital: digital,
       note: (s.sysNoteOn===false) ? '' : (String(s.sysNote||'').trim() || (digital
         ? 'This is a system-generated document. The signature above is applied digitally and the document is valid without a physical signature.'
-        : 'This is a system-generated document issued from ALIZON OS. It is valid when it bears the signature and seal of the institution.'))
+        : 'This is a system-generated document issued from ALIZON AOS. It is valid when it bears the signature and seal of the institution.'))
     };
   }
 

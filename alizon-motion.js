@@ -1,5 +1,5 @@
 /* =====================================================================
-   ALIZON OS — shared GSAP motion layer (loaded after vendor/gsap + ScrollTrigger)
+   ALIZON AOS — shared GSAP motion layer (loaded after vendor/gsap + ScrollTrigger)
    Safe everywhere: no-ops if GSAP is missing, an element is absent, or the
    user prefers reduced motion. clearProps after every tween so print styles
    and later JS never inherit stale inline styles.
