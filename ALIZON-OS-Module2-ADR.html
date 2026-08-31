@@ -129,6 +129,44 @@
   .frow .fl{font-size:11.5px;font-weight:700;color:var(--muted);padding-top:9px}
   .frow.miss input,.frow.miss textarea{border-color:var(--danger)}
 
+  /* ===== How to Report — student reporting guide ===== */
+  .hrlead{font-size:14px;line-height:1.72;max-width:84ch}
+  .hrsteps{counter-reset:hrs;display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:4px}
+  .hrstep{counter-increment:hrs;position:relative;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:14px 16px 15px 55px}
+  .hrstep::before{content:counter(hrs);position:absolute;left:15px;top:15px;width:27px;height:27px;border-radius:50%;
+    display:grid;place-items:center;font-size:12.5px;font-weight:800;color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .hrstep h3{font-size:15.5px;margin:0 0 5px}
+  .hrstep p{font-size:13.5px;line-height:1.66;margin:0 0 7px}
+  .hrstep p:last-child{margin-bottom:0}
+  .hrstep ul{margin:7px 0 0 17px;font-size:13.2px;line-height:1.7}
+  .hrstep .why{display:block;margin-top:9px;font-size:12.6px;color:var(--muted);line-height:1.62;border-left:3px solid var(--gold);padding-left:11px}
+  .hrkey{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:11px 0 3px}
+  .hrkey div{background:var(--panel);border:1.5px solid rgba(196,13,22,.32);border-radius:12px;padding:12px 14px}
+  .hrkey b{display:block;font-size:13px;margin-bottom:4px;color:var(--crimson)}
+  .hrkey span{font-size:12.4px;color:var(--muted);line-height:1.58}
+  .hrchan{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;margin-top:9px}
+  .hrchan div{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:12.9px;line-height:1.62}
+  .hrchan b{display:block;font-size:12.8px;color:var(--teal);margin-bottom:4px}
+  .hrwarn{background:rgba(196,38,46,.07);border:1px solid rgba(196,38,46,.28);border-radius:12px;padding:13px 16px;font-size:13.4px;line-height:1.66;margin-top:11px}
+  .hrwarn b{color:var(--danger)}
+  .hrok{background:rgba(30,142,90,.09);border:1px solid rgba(30,142,90,.3);border-radius:12px;padding:13px 16px;font-size:13.4px;line-height:1.66;margin-top:11px}
+  .hrok b{color:var(--success)}
+  .hrmis{margin:7px 0 0;padding:0;list-style:none;display:grid;gap:7px}
+  .hrmis li{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--danger);border-radius:9px;padding:9px 13px;font-size:13.2px;line-height:1.62}
+  .hrmis li b{color:var(--danger)}
+  .hrchk{display:grid;gap:6px;margin:11px 0 4px}
+  .hrchk label{display:flex;gap:9px;align-items:flex-start;background:var(--panel2);border:1px solid var(--line);border-radius:9px;
+    padding:9px 12px;font-size:13.1px;cursor:pointer;line-height:1.52}
+  .hrchk label.req{border-color:rgba(196,13,22,.3)}
+  .hrchk input{margin-top:2px;accent-color:var(--crimson);flex:none;width:15px;height:15px}
+  .hrchk .tagq{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--crimson);margin-left:auto;flex:none;padding-top:2px}
+  .hrspec{background:var(--panel2);border:1px dashed var(--line);border-radius:12px;padding:15px 17px;margin-top:9px}
+  .hrspec .sh{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--crimson);margin:13px 0 5px;padding-bottom:3px;border-bottom:1px solid var(--line)}
+  .hrspec .sh:first-child{margin-top:0}
+  .hrspec .fr{display:grid;grid-template-columns:210px 1fr;gap:6px 14px;font-size:12.9px;line-height:1.6;padding:3px 0}
+  .hrspec .fr span{color:var(--muted);font-weight:600}
+  @media(max-width:620px){.hrspec .fr{grid-template-columns:1fr;gap:1px}.hrspec .fr span{font-size:11px;text-transform:uppercase;letter-spacing:.04em}}
+
   @media print{.tabs,.btn,.no-print,.opbar{display:none!important} body{background:#fff} .panel{display:block!important}}
 </style>
 <link rel="stylesheet" href="alizon-practical-glass.css?v=1">
@@ -145,6 +183,7 @@
 
   <div class="tabs">
     <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="howto">How to Report</button>
     <button class="tab" data-p="desk">Reporting Desk</button>
     <button class="tab" data-p="report">Result &amp; Record</button>
   </div>
@@ -162,6 +201,10 @@
         <li>A serious, unexpected, suspected reaction starts a <b>24-hour reporting clock</b>. The clock in this exercise is compressed.</li>
         <li>A report missing any of the four minimum elements is <b>invalid</b> and does not count as reported.</li>
       </ol>
+      <p style="margin-top:11px;font-size:13.5px"><b>Not sure how any of that is actually done?</b> The
+        <button class="btn ghost sm no-print" id="briefToHowto" style="vertical-align:baseline">How to Report</button>
+        tab is the full reporting guide — what is reportable, the four minimum elements, the seriousness criteria,
+        the form filled section by section, where it goes and by when. It stays available while you work the desk.</p>
     </div>
     <div class="card"><h2 style="font-size:18px">Assessment rubric</h2>
       <div class="tw"><table class="rubric"><thead><tr><th>Assessment criteria</th><th>Marks</th></tr></thead><tbody>
@@ -181,6 +224,242 @@
         <span class="badge">🧮 Causality Expert</span><span class="badge">⏱ Within 24 Hours</span><span class="badge">🏅 Valid Report</span>
       </div>
       <p class="muted" style="font-size:12.5px;margin-top:8px" id="badgeCrit"></p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-howto">
+    <div class="guide">
+      <h2>How to report — the student's guide</h2>
+      <p>This section is the reference for the practical. It is <b>how an adverse drug reaction is actually reported in India</b>:
+         what counts as reportable, the four elements without which a report does not exist, how each box on the form is filled,
+         where the form goes and by when. Read it before you take the call, and keep it open while you work the desk.</p>
+      <p style="margin-top:8px"><b>The one rule that governs everything below:</b> you report on <b>suspicion, not proof</b>.
+         You are never required to establish that the medicine caused the reaction — only that you suspect it might have.
+         Deciding causality is the assessor's job, and it is done after your report arrives, not before you send it.</p>
+      <div class="row no-print" style="margin-top:12px">
+        <button class="btn sm" id="hrGo">▶ Go to the Reporting Desk</button>
+        <button class="btn ghost sm" id="hrPrint">🖨 Print this guide</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size:18px">Who reports, and to whom</h2>
+      <p class="hrlead" style="margin-top:7px">Reporting in India runs through the <b>Pharmacovigilance Programme of India (PvPI)</b>, launched in 2010, whose
+        National Coordination Centre is the <b>Indian Pharmacopoeia Commission (IPC) at Ghaziabad</b>. Reports are collected by
+        <b>ADR Monitoring Centres (AMCs)</b> — usually a hospital department, and in this exercise your own — which check and
+        code each case before forwarding it to the NCC. The NCC assesses and collates the national data and uploads it to
+        <b>VigiBase</b>, the WHO global database held by the Uppsala Monitoring Centre, so that a signal too rare to see in one
+        country can emerge from the world's data. Regulatory action in India is taken by <b>CDSCO</b> on the NCC's recommendation.</p>
+      <p class="hrlead" style="margin-top:9px"><b>Anyone may report.</b> Doctors, pharmacists, nurses, dentists and other healthcare
+        professionals report, and so may <b>patients and their carers</b> on the consumer form. You do not need seniority, permission,
+        or a diagnosis to file a report.</p>
+      <div class="hrok"><b>Reporting is not an accusation.</b> A report is a safety observation, not an admission of negligence,
+        and it is not a complaint against the prescriber. The reporter's identity is held in confidence and the patient is
+        identified only by initials. Fear of blame is the single largest cause of under-reporting — and under-reporting is
+        how avoidable harm continues.</div>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size:18px">The eight steps</h2>
+      <div class="hrsteps">
+
+        <div class="hrstep">
+          <h3>Decide that it is reportable — and lower your threshold</h3>
+          <p>If you suspect a medicine has harmed a patient, it is reportable. Report it even when the reaction is well known,
+             even when you think someone else will report it, and even when you are not sure the drug is responsible.</p>
+          <p style="margin-bottom:4px"><b>Report all of these:</b></p>
+          <ul>
+            <li>Any suspected adverse reaction, whether or not it is listed in the product information</li>
+            <li>Reactions to <b>over-the-counter, herbal, Ayurvedic, Unani, Siddha and homoeopathic</b> products, and to self-medication</li>
+            <li>Harm arising from <b>medication errors, overdose, misuse, abuse and off-label use</b></li>
+            <li><b>Lack of expected efficacy</b>, particularly with antimicrobials, antiepileptics, anticoagulants, vaccines and contraceptives</li>
+            <li>Reactions in <b>pregnancy and breastfeeding</b>, and any suspected effect on the foetus or infant</li>
+            <li><b>Drug interactions</b>, drug–food interactions, and withdrawal reactions</li>
+            <li>Suspected <b>spurious, falsified or substandard</b> medicines, and product quality problems</li>
+          </ul>
+          <span class="why">Why the threshold is low: pre-marketing trials enrol a few thousand patients for a few months. A reaction
+            occurring in one patient in ten thousand cannot appear in them. Every such reaction that is ever discovered is discovered
+            because somebody who was not certain reported anyway.</span>
+        </div>
+
+        <div class="hrstep">
+          <h3>Secure the four minimum elements — without these there is no report</h3>
+          <p>A case is <b>valid</b> only if all four are present. A form missing any one of them is not entered into the database and
+             does not count as having been reported, however much other detail it contains.</p>
+          <div class="hrkey">
+            <div><b>1 · An identifiable patient</b><span>Initials, age or date of birth, sex, or a hospital number. Enough to know this is one specific person and to recognise a duplicate. Never the full name.</span></div>
+            <div><b>2 · An identifiable reporter</b><span>Your name, qualification and contact details — so the case can be followed up. Held in confidence.</span></div>
+            <div><b>3 · A suspect medicine</b><span>At least the name. Brand and batch matter greatly for quality problems and biologicals, but the name alone makes the report valid.</span></div>
+            <div><b>4 · A suspected reaction</b><span>What happened to the patient, described in clinical terms, with the date it began.</span></div>
+          </div>
+          <span class="why">Everything else on the form is desirable and improves the case — none of it is required for validity.
+            The rule exists so that incomplete information is never a reason to stay silent: send the four, then follow up with the rest.</span>
+        </div>
+
+        <div class="hrstep">
+          <h3>Classify seriousness — before you think about causality</h3>
+          <p><b>Serious is a regulatory category defined by outcome, not a description of how unpleasant the reaction is.</b>
+             An agonising but self-limiting reaction is not serious; a symptomless finding that lands the patient in hospital is.
+             Seriousness decides the reporting speed, so it is settled first and independently of whether the drug is to blame.</p>
+          <p style="margin-bottom:4px">A reaction is <b>serious</b> if it:</p>
+          <ul>
+            <li>Results in <b>death</b></li>
+            <li>Is <b>life-threatening</b> — the patient was at risk of death at the time of the event</li>
+            <li>Requires <b>inpatient hospitalisation, or prolongs an existing admission</b></li>
+            <li>Results in <b>persistent or significant disability or incapacity</b></li>
+            <li>Causes a <b>congenital anomaly or birth defect</b></li>
+            <li>Is another <b>medically important event</b> — one requiring intervention to prevent any of the above</li>
+          </ul>
+          <span class="why">Do not confuse <b>serious</b> with <b>severe</b>. Severity describes intensity — a severe headache.
+            Seriousness describes consequence. A severe headache is not serious; a symptomless rise in INR to 9 is.</span>
+        </div>
+
+        <div class="hrstep">
+          <h3>Establish expectedness against the product information</h3>
+          <p><b>Expected</b> means the reaction is already described in the approved reference safety information — the Summary of
+             Product Characteristics or package insert. It does <b>not</b> mean common, mild or predictable. A rare and fatal reaction
+             that is listed is <b>expected</b>; a trivial one that is not listed is <b>unexpected</b>.</p>
+          <p>Expectedness does not change whether you report. It changes the <b>urgency</b>, because a reaction that is
+             <b>serious and unexpected and suspected</b> is the combination that triggers expedited reporting and is the most likely
+             to represent a new signal.</p>
+        </div>
+
+        <div class="hrstep">
+          <h3>Choose the right form and the right programme</h3>
+          <p>Not every adverse event goes to PvPI on the ADR form. Sending a case to the wrong programme delays it and loses it.</p>
+          <div class="tw"><table><thead><tr><th>What happened</th><th>Where it goes</th></tr></thead><tbody>
+            <tr><td>Suspected reaction to a medicine (allopathic, OTC, herbal, AYUSH), including errors and quality problems</td><td><b>PvPI</b> — Suspected Adverse Drug Reaction Reporting Form, via your AMC</td></tr>
+            <tr><td>A patient or carer wishes to report themselves</td><td><b>PvPI</b> — Medicines Side Effect Reporting Form (consumer version)</td></tr>
+            <tr><td>Adverse event following immunisation under the national programme</td><td><b>AEFI</b> surveillance — AEFI reporting form to the district immunisation officer</td></tr>
+            <tr><td>Failure or injury caused by a medical device, implant or diagnostic kit</td><td><b>MvPI</b> — Materiovigilance Programme of India, also coordinated by IPC</td></tr>
+            <tr><td>Transfusion reaction to blood or a blood product</td><td><b>HvPI</b> — Haemovigilance Programme of India, NIB Noida</td></tr>
+            <tr><td>Serious adverse event in a patient enrolled in a clinical trial</td><td><b>Sponsor, Ethics Committee and CDSCO</b> under the New Drugs and Clinical Trials Rules — not the spontaneous route</td></tr>
+          </tbody></table></div>
+          <span class="why">When a case could belong to two programmes — a device used to give a medicine, a reaction to a
+            transfused product — report it to both rather than choosing. A duplicate is trivial to reconcile; a missed case is not.</span>
+        </div>
+
+        <div class="hrstep">
+          <h3>Fill the form — section by section</h3>
+          <p>The PvPI Suspected ADR Reporting Form runs in lettered sections. What each expects, and the mistake students most often
+             make in it, is set out below. Write what you know; enter <b>"not known"</b> rather than leaving a box empty, so the
+             assessor can tell the difference between missing information and information you have not yet sought.</p>
+          <div class="tw"><table><thead><tr><th style="width:26%">Section</th><th style="width:37%">What you write</th><th>The common mistake</th></tr></thead><tbody>
+            <tr><td><b>A · Patient information</b><br><span class="muted">Initials, age or date of birth, sex, weight</span></td><td>Initials only, age at the time of the event, and weight where a dose calculation matters</td><td>Writing the full name — a confidentiality breach; or giving today's age rather than the age when it happened</td></tr>
+            <tr><td><b>B · Suspected reaction</b><br><span class="muted">Date started, date of recovery, description</span></td><td>What was observed, in clinical terms, with the date of onset and how it evolved</td><td>Writing a diagnosis you have assumed ("drug allergy") instead of describing what you actually saw</td></tr>
+            <tr><td><b>C · Suspect medicine(s)</b><br><span class="muted">Name, manufacturer, batch and expiry, dose, route, frequency, therapy dates, indication</span></td><td>Brand <i>and</i> generic name, the batch number from the pack, the dates therapy started and stopped, and why it was prescribed</td><td>Omitting the batch number and the therapy start date — the two fields that make a quality investigation and a temporal assessment possible</td></tr>
+            <tr><td><b>Dechallenge</b><br><span class="muted">Did the reaction settle when the drug was stopped or reduced?</span></td><td>Yes, no, or <b>not applicable / not known</b> — including when the drug was stopped too recently to tell</td><td>Answering "no" when the drug was stopped yesterday. That is <b>unknown</b>, and recording it as "no" wrongly argues against the drug</td></tr>
+            <tr><td><b>Rechallenge</b><br><span class="muted">Did it reappear when the drug was given again?</span></td><td>Almost always <b>not done</b> — and correctly so, since deliberate rechallenge after a serious reaction is unethical</td><td>Recording "no" for a rechallenge that was never performed</td></tr>
+            <tr><td><b>Concomitant medicines</b></td><td>Everything else the patient takes, with dates — prescribed, OTC, herbal, AYUSH and supplements</td><td>Listing only the prescription chart, so the interacting product is never seen</td></tr>
+            <tr><td><b>D · Other relevant history</b></td><td>Allergies, previous reactions, comorbidities, renal or hepatic impairment, pregnancy, smoking and alcohol</td><td>Leaving it blank — this is where the alternative explanations live, and their absence is itself evidence</td></tr>
+            <tr><td><b>E · Seriousness and outcome</b></td><td>Tick every seriousness criterion that applies, then the outcome: recovered, recovering, not recovered, recovered with sequelae, fatal, or unknown</td><td>Ticking "serious" on the strength of how distressing it was, rather than against the six defined outcomes</td></tr>
+            <tr><td><b>F · Reporter details</b></td><td>Name, profession, address with PIN, telephone and email, date and signature</td><td>Leaving contact details off — which makes follow-up impossible and costs the report its validity</td></tr>
+          </tbody></table></div>
+        </div>
+
+        <div class="hrstep">
+          <h3>Submit it — and know the clock you are working to</h3>
+          <p>Hand the completed form to your <b>ADR Monitoring Centre</b>. Where there is no AMC, or the reporter is a patient, any of
+             the national routes below may be used directly.</p>
+          <div class="hrchan">
+            <div><b>Your AMC</b>The normal route, and the fastest. The pharmacovigilance associate checks the form with you, codes the reaction and forwards it.</div>
+            <div><b>Toll-free helpline</b>1800-180-3024 — for reporting by telephone and for advice on completing a form.</div>
+            <div><b>Email</b>Scan or complete the form and send it to the NCC at the IPC.</div>
+            <div><b>ADR PvPI mobile app</b>Report from the ward, with the form's fields on the phone.</div>
+            <div><b>Online</b>The reporting form on the IPC website. Confirm you are using the current version of the form before you submit.</div>
+          </div>
+          <div class="tw" style="margin-top:12px"><table><thead><tr><th>Who is reporting</th><th>By when</th></tr></thead><tbody>
+            <tr><td>Healthcare professional, spontaneous report to an AMC</td><td>Voluntary and without a statutory deadline — but <b>as soon as possible</b>, and the same working day for a serious reaction, while the detail is still accurate and the batch still traceable</td></tr>
+            <tr><td>Investigator, serious adverse event in a clinical trial</td><td>To the sponsor, the Ethics Committee and CDSCO <b>within 24 hours</b> of becoming aware, with the detailed report following <b>within 14 days</b></td></tr>
+            <tr><td>Marketing authorisation holder, serious unexpected reaction occurring in India</td><td><b>Within 15 calendar days</b> of first knowledge, to CDSCO</td></tr>
+            <tr><td>Marketing authorisation holder, periodic reporting</td><td>Periodic Safety Update Reports on the schedule set in the licensing rules</td></tr>
+          </tbody></table></div>
+          <div class="hrwarn"><b>The clock in this practical is compressed.</b> The desk gives you a 24-hour expedited window running at
+            one simulated hour per second, because the case is a serious, suspected reaction. Treat it as the discipline the real
+            timeline demands, not as the statutory deadline for a spontaneous report.</div>
+        </div>
+
+        <div class="hrstep">
+          <h3>Follow it up — and act on the patient in front of you</h3>
+          <p>A report is a beginning. Send the outstanding items as soon as you have them: the batch number, the outcome, laboratory
+             and histology results, and what happened after withdrawal. Respond to the AMC when it queries the case.</p>
+          <p><b>Causality is assessed after submission</b>, at the AMC and the NCC, using the <b>WHO-UMC</b> scale — certain, probable,
+             possible, unlikely, conditional, unassessable — supported where appropriate by the <b>Naranjo</b> algorithm, which you use
+             on the desk. A case scored <i>unassessable</i> is almost always one whose form was too thin to assess. That is within your control.</p>
+          <div class="hrwarn"><b>Filing the report is not the clinical intervention.</b> Reporting protects future patients; this patient
+            still needs the reaction <b>recorded as an allergy in the record</b> so the drug cannot be re-prescribed, needs to be told what
+            to avoid — including drugs that cross-react — needs the referrals the reaction demands, and where appropriate an alert card.
+            A perfectly completed form beside a chart that still lists the drug is a failed practical.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card no-print">
+      <h2 style="font-size:18px">Before you submit — validity check</h2>
+      <p class="muted" style="font-size:13px;margin-top:4px">Tick what your report actually contains. The four marked
+        <b>required</b> decide whether the case is valid at all; the rest decide how useful it is.</p>
+      <div class="hrchk" id="hrChk"></div>
+      <div class="row"><button class="btn sm" id="hrCheck">Check my report</button>
+        <button class="btn ghost sm" id="hrReset">Clear</button></div>
+      <div id="hrOut"></div>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size:18px">A completed specimen — the case you are about to work</h2>
+      <p class="muted" style="font-size:13px;margin-top:4px">This is the carbamazepine case from the desk, written up as it would be
+        submitted. Dates are illustrative; note how little of it is speculation and how often "not known" appears where the answer
+        genuinely is not known.</p>
+      <div class="hrspec">
+        <div class="sh">A · Patient information</div>
+        <div class="fr"><span>Patient initials</span><div>D. S.</div></div>
+        <div class="fr"><span>Age at time of event</span><div>62 years</div></div>
+        <div class="fr"><span>Sex</span><div>Female</div></div>
+        <div class="fr"><span>Weight</span><div>64 kg</div></div>
+
+        <div class="sh">B · Suspected adverse reaction</div>
+        <div class="fr"><span>Date reaction started</span><div>10 days after starting therapy; febrile prodrome for 2 days before the eruption</div></div>
+        <div class="fr"><span>Date of recovery</span><div>Not recovered at the time of reporting</div></div>
+        <div class="fr"><span>Describe the reaction</span><div>Widespread maculopapular eruption beginning on the chest and spreading to the face, arms and back, progressing over 24 hours to blistering with skin detachment. Ulceration of the oral mucosa preventing swallowing, with conjunctival injection and discharge, and ulceration of the genital mucosa — three mucosal surfaces involved. Preceded by two days of fever and myalgia. Clinical picture consistent with Stevens–Johnson syndrome / toxic epidermal necrolysis.</div></div>
+
+        <div class="sh">C · Suspect medicine</div>
+        <div class="fr"><span>Name (generic / brand)</span><div>Carbamazepine — brand and manufacturer as printed on the dispensed pack</div></div>
+        <div class="fr"><span>Batch no. and expiry</span><div>To be taken from the pack and forwarded — requested from the ward</div></div>
+        <div class="fr"><span>Dose, route, frequency</span><div>200 mg, oral, twice daily</div></div>
+        <div class="fr"><span>Therapy dates</span><div>Started 10 days before onset; stopped the day before this report</div></div>
+        <div class="fr"><span>Indication</span><div>Newly diagnosed seizure disorder</div></div>
+        <div class="fr"><span>Dechallenge</span><div>Not known — the drug was withdrawn only yesterday and the eruption characteristically continues to evolve for several days after withdrawal</div></div>
+        <div class="fr"><span>Rechallenge</span><div>Not done — rechallenge would be unethical in a suspected severe cutaneous adverse reaction</div></div>
+        <div class="fr"><span>Concomitant medicines</span><div>Levothyroxine and omeprazole, both taken unchanged for several years. No OTC, herbal or AYUSH products reported.</div></div>
+
+        <div class="sh">D · Other relevant history</div>
+        <div class="fr"><span>History</span><div>No previous drug reaction of any kind. No known allergies. No intercurrent infection identified. HLA-B*15:02 status not known — testing to be discussed.</div></div>
+
+        <div class="sh">E · Seriousness and outcome</div>
+        <div class="fr"><span>Seriousness</span><div>Serious — life-threatening, and required hospitalisation</div></div>
+        <div class="fr"><span>Outcome</span><div>Not recovered at the time of reporting</div></div>
+        <div class="fr"><span>Expectedness</span><div>Expected — Stevens–Johnson syndrome is described in the approved product information as a rare reaction. Reported expeditiously nonetheless on grounds of seriousness.</div></div>
+        <div class="fr"><span>Action taken</span><div>Carbamazepine withdrawn and recorded as an allergy in the record. Patient counselled that the aromatic anticonvulsants cross-react. Urgent dermatology and ophthalmology review requested. Alert card to be issued.</div></div>
+
+        <div class="sh">F · Reporter</div>
+        <div class="fr"><span>Reporter</span><div>Name, qualification, department, hospital address with PIN, telephone, email, signature and date</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size:18px">Ten ways students lose a report</h2>
+      <ol class="hrmis">
+        <li><b>Waiting until you are sure.</b> Certainty about a rare reaction only ever arrives after enough reports have accumulated. Yours is one of them.</li>
+        <li><b>Assuming somebody else has reported it.</b> In practice nobody has. Duplicates are reconciled in minutes; silence is permanent.</li>
+        <li><b>Not reporting because the reaction is already well known.</b> Known reactions still need numbers — that is how frequency, risk factors and severity are established.</li>
+        <li><b>Leaving off your contact details.</b> The report becomes invalid and unfollowable at once.</li>
+        <li><b>Writing the patient's full name.</b> A confidentiality breach; initials with age and sex are all that is wanted.</li>
+        <li><b>Recording "no" where the answer is "not known".</b> Most often on dechallenge and rechallenge — and it systematically argues against the drug on evidence that does not exist.</li>
+        <li><b>Omitting the batch number.</b> Without it a quality defect cannot be traced to a batch, and a biological cannot be traced to a product.</li>
+        <li><b>Recording a diagnosis instead of an observation.</b> Write what you saw; the assessor draws the conclusion.</li>
+        <li><b>Confusing severe with serious</b>, and so reporting an intense but trivial reaction urgently while a symptomless dangerous one waits.</li>
+        <li><b>Filing the form and stopping there</b> — leaving the drug un-flagged in the record, where it will be prescribed again.</li>
+      </ol>
     </div>
   </section>
 
@@ -610,6 +889,59 @@
       autoResultText:function(){ return S&&S.result?((S.result.pass?'PASS':'FAIL')+' '+S.result.total+'/100'):''; }
     });
   }
+  /* ---------- How to Report: validity self-check ---------- */
+  var HRQ=[
+   {t:'An identifiable patient — initials with age and sex, or a hospital number', req:true},
+   {t:'An identifiable reporter — my name, profession and contact details', req:true},
+   {t:'The suspect medicine, named', req:true},
+   {t:'The suspected reaction, described, with the date it began', req:true},
+   {t:'Batch number and expiry, taken from the dispensed pack', req:false},
+   {t:'Dose, route, frequency, and the dates therapy started and stopped', req:false},
+   {t:'The indication — why the medicine was prescribed', req:false},
+   {t:'Concomitant medicines, including OTC, herbal and AYUSH products', req:false},
+   {t:'Dechallenge and rechallenge recorded — with "not known" where it is not known', req:false},
+   {t:'Relevant history, so alternative causes can be judged', req:false},
+   {t:'Seriousness ticked against the defined outcome criteria, and the outcome stated', req:false},
+   {t:'Action taken, and the reaction recorded as an allergy in the patient’s record', req:false}
+  ];
+  (function(){
+    var w=$('hrChk'); if(!w) return;
+    w.innerHTML=HRQ.map(function(q,i){
+      return '<label class="'+(q.req?'req':'')+'"><input type="checkbox" data-hr="'+i+'"><span>'+esc(q.t)+'</span>'
+        +(q.req?'<span class="tagq">required</span>':'')+'</label>';}).join('');
+    function picked(){ var s={}; [].forEach.call(w.querySelectorAll('input[data-hr]'),function(c){ s[c.getAttribute('data-hr')]=c.checked; }); return s; }
+    $('hrCheck').addEventListener('click',function(){
+      var s=picked(), missReq=[], extra=0, extraTot=0;
+      HRQ.forEach(function(q,i){
+        if(q.req){ if(!s[i]) missReq.push(q.t); }
+        else { extraTot++; if(s[i]) extra++; }
+      });
+      var out=$('hrOut'), h;
+      if(missReq.length){
+        h='<div class="fb no"><div class="hd">Not a valid report — '+missReq.length+' of the four minimum elements missing</div>'
+          +'<p>As it stands this case would not be entered in the database, whatever else it contains. Add:</p>'
+          +'<ul>'+missReq.map(function(m){return '<li>'+esc(m)+'</li>';}).join('')+'</ul></div>';
+      } else {
+        var band = extra>=7 ? {c:'ok', t:'Valid, and a strong case'}
+                 : extra>=4 ? {c:'part',t:'Valid, and worth strengthening'}
+                            : {c:'part',t:'Valid, but thin'};
+        h='<div class="fb '+band.c+'"><div class="hd">'+band.t+' — all four minimum elements present</div>'
+          +'<p>Supporting detail: <b>'+extra+' of '+extraTot+'</b>. '
+          +(extra>=7 ? 'This is the kind of report an assessor can actually score, rather than returning as unassessable.'
+                     : 'Send it now — validity is what matters — then follow up with the rest. The items you have left unticked are the ones that most often decide whether causality can be assessed at all.')
+          +'</p></div>';
+      }
+      out.innerHTML=h;
+    });
+    $('hrReset').addEventListener('click',function(){
+      [].forEach.call(w.querySelectorAll('input[data-hr]'),function(c){c.checked=false;});
+      $('hrOut').innerHTML='';
+    });
+    $('hrGo').addEventListener('click',function(){ switchTab('desk'); window.scrollTo(0,0); });
+    var b2=$('briefToHowto'); if(b2) b2.addEventListener('click',function(){ switchTab('howto'); window.scrollTo(0,0); });
+    $('hrPrint').addEventListener('click',function(){ window.print(); });
+  })();
+
   function switchTab(p){
     [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);});
     [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);});
