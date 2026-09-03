@@ -51,8 +51,15 @@
   var isFaculty = !!sess('alizonFacultyAuth');
   var prof      = get('alizonProfile', null);
   var isStudent = !!(prof && (prof.reg || prof.name));
+  /* The staff test account (alizon-test-mode.js) opens every practical in
+     every programme. It is deliberately a localStorage flag, not a session
+     one: staff open labs in new tabs, and sessionStorage does not survive
+     that. Test mode writes nothing to institutional data, so the access it
+     grants is to look, not to alter. */
+  var isTest = false;
+  try { isTest = localStorage.getItem('alizonTestMode') === '1'; } catch (e) {}
 
-  if (isAdmin || isFaculty) return;                 /* staff see everything */
+  if (isAdmin || isFaculty || isTest) return;       /* staff see everything */
   if (!isStudent) return block(
     'Student access only',
     'This practical is available to logged-in Alizon students. Please sign in to the ALIZON AOS portal to continue.');

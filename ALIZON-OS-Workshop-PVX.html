@@ -189,7 +189,8 @@
 <link rel="stylesheet" href="alizon-practical-glass.css?v=1">
 </head>
 <body>
-<script src="alizon-lab-gate.js?v=4"></script>
+<script src="alizon-test-mode.js?v=1"></script>
+<script src="alizon-lab-gate.js?v=5"></script>
 <div class="wrap">
 
   <div class="hero">
@@ -501,9 +502,9 @@
 <script src="pvx-engine.js?v=1"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="firebase-sync.js"></script>
-<script src="alizon-attendance.js?v=2"></script>
+<script src="alizon-attendance.js?v=3"></script>
 <script src="alizon-practical-report.js?v=5"></script>
-<script src="alizon-practical-submit.js?v=5"></script>
+<script src="alizon-practical-submit.js?v=6"></script>
 <script>
 (function(){
 'use strict';
@@ -1091,6 +1092,7 @@ function mountWriter(){
 /* ---------------- attempts log (this device) ---------------- */
 var AKEY='alizonPvxAttempts';
 function saveAttempt(){
+  if(window.AlizonTest && window.AlizonTest.blocks('a PV-X attempt record')) return;
   try{
     var list=JSON.parse(localStorage.getItem(AKEY)||'[]');
     var p=profile();

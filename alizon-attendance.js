@@ -79,6 +79,8 @@
 
   /* ---- writing ---- */
   function markFor(reg, kind, meta){
+    /* test mode never marks anybody present — see alizon-test-mode.js */
+    if (window.AlizonTest && window.AlizonTest.blocks('an attendance mark')) return null;
     reg=String(reg||'').toUpperCase();
     var field=KINDS[kind];
     if(!reg || !field) return null;

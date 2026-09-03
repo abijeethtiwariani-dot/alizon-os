@@ -391,6 +391,7 @@ h1,h2,h3{color:#111!important}
     <a data-sec="adm-results"><span class="aic"></span> Results</a>
     <a data-sec="adm-eval"><span class="aic">✔</span> Evaluation <b class="cnt" id="cntEval"></b></a>
     <a data-sec="adm-resetmarks"><span class="aic">↺</span> Reset Practical Marks</a>
+    <a data-sec="adm-labs"><span class="aic">▶</span> Open a Practical</a>
     <a data-sec="adm-exp"><span class="aic">✎</span> Experience Letters <b class="cnt" id="cntExp" style="background:var(--gold)"></b></a>
     <a data-sec="adm-exams"><span class="aic"></span> Exams <b class="cnt" id="cntExams" style="background:var(--gold)"></b></a>
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
@@ -752,6 +753,22 @@ h1,h2,h3{color:#111!important}
       <h3 style="font-size:15px;margin-bottom:8px">Issued letters</h3>
       <div class="clist" id="expList"></div>
     </div>
+  </section>
+
+  <section class="apanel asec" id="adm-labs">
+    <h2>▶ Open a Practical</h2>
+    <div class="ahint">Open any practical in any programme and work it exactly as a student would — to check it, to demonstrate it, or to find a fault. This uses the <b>staff test account</b>: while it is on, <b>nothing you do is saved</b>. No report reaches the evaluation queue, no attendance is marked, no examination attempt enters the ranking.</div>
+
+    <div id="labTestState" style="margin:16px 0;border:1px solid var(--line);border-radius:12px;padding:14px 16px"></div>
+
+    <div style="margin:16px 0;border:1px solid var(--line);border-radius:12px;padding:14px 16px">
+      <h3 style="font-size:15px;margin-bottom:6px">Signing in on the student portal instead</h3>
+      <div class="ahint" style="margin:0">If you would rather come in through the student dashboard, sign in there with
+        <b>admin</b> / <b>admin123</b> (or <b>test</b> / <b>test</b>). Either one opens every programme's practicals and
+        saves nothing. It does <b>not</b> open this portal — the admin portal keeps its own password.</div>
+    </div>
+
+    <div id="labList"></div>
   </section>
 
   <section class="apanel asec" id="adm-resetmarks">
@@ -2290,7 +2307,7 @@ function renderData(){
   bkRender();
 }
 
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-resetmarks','adm-exp','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-resetmarks','adm-labs','adm-exp','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -4143,6 +4160,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   setInterval(paint, 30000);
 })();
 </script>
+<script src="alizon-test-mode.js?v=1"></script>
 <script src="alizon-experience.js?v=9"></script>
 <script>
 /* ============ Admin · Experience letters ============ */
@@ -4521,6 +4539,85 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
     fillRegList(); loadSettings(); renderList(); renderPick();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
+})();
+</script>
+
+<script>
+/* ===== Open a Practical =========================================
+   Staff had no route into a practical except signing in as a real student,
+   which files that student a report and marks them present. This opens any
+   lab in the staff test account instead: full access to every programme,
+   and every institutional write suppressed while it is on.
+
+   The list is built from alizonPrograms, so it stays correct as programmes
+   and practicals change — there is no second list here to fall behind. */
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  function esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+  function progs(){ try{ return JSON.parse(localStorage.getItem('alizonPrograms')||'[]')||[]; }catch(e){ return []; } }
+  function on(){ try{ return !!(window.AlizonTest && window.AlizonTest.isOn()); }catch(e){ return false; } }
+
+  function renderState(){
+    var host=$('labTestState'); if(!host) return;
+    host.innerHTML = on()
+      ? '<h3 style="font-size:15px;margin-bottom:6px;color:#7c2d12">Test account is ON</h3>'
+        +'<div class="ahint" style="margin:0 0 10px">Practicals opened from here will not save anything. Every page shows a '
+        +'<b>TEST MODE</b> badge while this is on.</div>'
+        +'<button class="abtn" type="button" id="labTestOff">Turn the test account off</button>'
+      : '<h3 style="font-size:15px;margin-bottom:6px">Test account is off</h3>'
+        +'<div class="ahint" style="margin:0 0 10px">Turn it on to open practicals outside your own programme without writing '
+        +'anything. Opening a practical below turns it on for you.</div>'
+        +'<button class="abtn" type="button" id="labTestOn">Turn the test account on</button>';
+    var b1=$('labTestOn'), b2=$('labTestOff');
+    if(b1) b1.addEventListener('click',function(){ window.AlizonTest.start('admin'); renderState(); renderList(); });
+    if(b2) b2.addEventListener('click',function(){ window.AlizonTest.stop(false); renderState(); renderList(); });
+  }
+
+  function open(href){
+    if(!on()) { try{ window.AlizonTest.start('admin'); }catch(e){} renderState(); }
+    window.open(href, '_blank', 'noopener');
+  }
+
+  function renderList(){
+    var host=$('labList'); if(!host) return;
+    var ps=progs();
+    if(!ps.length){ host.innerHTML='<div class="ahint">The programme list has not downloaded to this device yet. Give it a moment and reopen this page.</div>'; return; }
+    var h='', n=0;
+    ps.forEach(function(p){
+      var rows='';
+      (p.modules||[]).forEach(function(m){
+        var items=[];
+        if(m.href) items.push({t:m.unit+' — '+(m.title||''), h:m.href, kind:'module'});
+        (m.practicals||[]).forEach(function(pr){ if(pr&&pr.href) items.push({t:pr.title, h:pr.href, kind:'practical'}); });
+        /* one row per distinct file — a module href is usually its first practical */
+        var seen={};
+        items.forEach(function(it){
+          var key=String(it.h).split('/').pop().split('?')[0].toLowerCase();
+          if(seen[key]) return; seen[key]=1; n++;
+          rows+='<tr><td style="white-space:nowrap;color:var(--muted)">'+esc(m.unit||'')+'</td>'
+               +'<td>'+esc(it.t||'')+'</td>'
+               +'<td style="white-space:nowrap"><code style="font-size:11px">'+esc(key)+'</code></td>'
+               +'<td style="text-align:right"><button class="abtn ghost" type="button" data-open="'+esc(it.h)+'">Open ↗</button></td></tr>';
+        });
+      });
+      if(!rows) return;
+      h+='<div style="margin:16px 0;border:1px solid var(--line);border-radius:12px;padding:14px 16px">'
+        +'<h3 style="font-size:15px;margin-bottom:8px">'+esc(p.name||p.id)+'</h3>'
+        +'<div style="overflow-x:auto"><table class="atbl" style="width:100%"><tr><th>Module</th><th>Practical</th><th>File</th><th></th></tr>'
+        +rows+'</table></div></div>';
+    });
+    host.innerHTML = h + '<div class="ahint">'+n+' practical pages across '+ps.length+' programmes.</div>';
+    host.querySelectorAll('button[data-open]').forEach(function(b){
+      b.addEventListener('click',function(){ open(b.getAttribute('data-open')); });
+    });
+  }
+
+  function boot(){ renderState(); renderList(); }
+  var nav=document.querySelector('.anavv a[data-sec="adm-labs"]');
+  if(nav) nav.addEventListener('click',function(){ setTimeout(boot,40); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
 </script>
 </body>

@@ -983,8 +983,9 @@
   html:not(.theme-dark) .login-card h1{font-family:'Source Serif Pro',Georgia,serif !important;}
   a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #8c1515 !important;outline-offset:3px;}
 </style>
+  <script src="alizon-test-mode.js?v=1"></script>
   <script src="firebase-sync.js"></script>
-  <script src="alizon-attendance.js?v=2"></script>
+  <script src="alizon-attendance.js?v=3"></script>
   <script src="print-paginate.js"></script>
 <link rel="stylesheet" href="alizon-theme.css">
 </head>
@@ -1539,7 +1540,12 @@ document.getElementById('loginForm').addEventListener('submit',e=>{
   const pw=document.getElementById('lg-pw').value||'';
   const errEl=document.getElementById('lgErr');
   const btn=document.querySelector('#loginForm button[type="submit"]')||document.querySelector('#loginForm button');
-  const isMaster = idRaw.toLowerCase()==='admin' && pw==='admin123';
+  /* `admin`/`admin123` and `test`/`test` both open the staff test account —
+     they sign in as a student would, but with every programme unlocked and
+     every institutional write suppressed. See alizon-test-mode.js. */
+  var testKind = null;
+  try{ testKind = window.AlizonTest ? window.AlizonTest.matches(idRaw, pw) : null; }catch(e){}
+  const isMaster = !!testKind;
 
   function setMsg(text,mode){
     if(!errEl)return;
@@ -1568,6 +1574,16 @@ document.getElementById('loginForm').addEventListener('submit',e=>{
   function enterApp(st){
     setMsg('',null); busy(false);
     try{ if(window.alizonAuth) window.alizonAuth.signIn(isMaster?'admin':idRaw, pw, isMaster?'admin':'student'); }catch(x){}
+    if(isMaster && !st){
+      /* Without this the master login wrote no profile at all, so every
+         practical answered "Student access only" — the bug that made the
+         labs untestable. */
+      try{
+        var tp = window.AlizonTest.start(testKind);
+        if(window.__applyProfile) window.__applyProfile(tp);
+        if(window.__renderPractrograms) window.__renderPractrograms();
+      }catch(x){}
+    }
     if(st && st.reg){
       const prof={name:st.name||'',reg:st.reg||'',sem:'',email:st.email||'',dob:st.dob||'',batch:st.batch||'',course:st.course||''};
       try{ localStorage.setItem('alizonProfile',JSON.stringify(prof)); }catch(x){}
@@ -1957,6 +1973,10 @@ function programmeForStudent(st){
   return null;
 }
 function enrolledProgramId(){
+  /* The staff test account is deliberately unenrolled: returning null here
+     leaves the programme dropdown free, so a tester can walk into any
+     programme's practicals. Real students are unaffected. */
+  try{ if(window.AlizonTest && window.AlizonTest.isOn()) return null; }catch(e){}
   let prof=null; try{ prof=JSON.parse(localStorage.getItem('alizonProfile')||'null'); }catch(e){}
   return programmeForStudent(prof);
 }

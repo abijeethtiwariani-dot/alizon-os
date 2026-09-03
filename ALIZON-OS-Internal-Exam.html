@@ -146,7 +146,8 @@
 <link rel="stylesheet" href="alizon-practical-glass.css?v=1">
 </head>
 <body>
-<script src="alizon-lab-gate.js?v=4"></script>
+<script src="alizon-test-mode.js?v=1"></script>
+<script src="alizon-lab-gate.js?v=5"></script>
 <div class="wrap">
 
   <!-- ================= SETUP ================= -->
@@ -227,7 +228,7 @@
 <div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="firebase-sync.js"></script>
-<script src="alizon-attendance.js?v=2"></script>
+<script src="alizon-attendance.js?v=3"></script>
 <script src="alizon-exam-manifest.js?v=1"></script>
 <script src="alizon-pdf-open.js"></script>
 <script>
@@ -304,6 +305,8 @@
   /* ---------- attempt store (used for the genuine rank) ---------- */
   function readStore(){ try{ return JSON.parse(localStorage.getItem(STORE)||'[]')||[]; }catch(e){ return []; } }
   function writeStore(a){
+    /* A staff test sitting must not enter the institution-wide ranking. */
+    if(window.AlizonTest && window.AlizonTest.blocks('an examination attempt')) return;
     /* alizonExamAttempts is registered in firebase-sync KEYS, so this setItem
        is mirrored to Firestore and pulled onto every other signed-in device.
        Capped so the synced document stays well inside Firestore's 1 MB limit. */
