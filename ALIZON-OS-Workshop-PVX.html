@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON AOS · PV-X — AI ADR Detective · Pharmacovigilance Virtual Patient</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#fff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A;--danger:#C4262E;--warn:#B45309;--teal:#0E6F76;--purple:#6D28D9;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;--teal:#4bc2c9;--purple:#a78bfa;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(13px,2.6vw,26px) 80px}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(15px,2.4vw,22px);box-shadow:var(--card-shadow);margin-bottom:15px}
+  .muted{color:var(--muted)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:10px 20px;color:#fff;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .btn:hover{filter:brightness(1.07)} .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
+  .btn.ok{background:linear-gradient(120deg,#0f6b45,var(--success))}
+  .btn.sm{font-size:12.5px;padding:8px 15px}
+  .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  textarea{min-height:70px;resize:vertical;line-height:1.55}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:9px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
+  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .22s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:420px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:15px}
+  .guide h2{font-size:18px;margin-bottom:6px} .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.72} .guide p{font-size:13.5px}
+
+  .opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#1a2340,#243156);color:#fff;border-radius:14px;
+    padding:11px 16px;display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:14px;box-shadow:0 12px 32px -22px rgba(0,0,0,.8)}
+  .opbar .ttl{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px}
+  .opbar .m{display:flex;flex-direction:column;gap:2px;min-width:92px}
+  .opbar .m .k{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;opacity:.62}
+  .opbar .m .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+  .opbar .m.bad .v{color:#ff8a8a} .opbar .m.good .v{color:#7de3b0} .opbar .m.warn .v{color:#f3c46b}
+  .meter{height:5px;border-radius:100px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:2px}
+  .meter i{display:block;height:100%;background:#7de3b0;transition:width .4s}
+  .meter i.warn{background:#f3c46b} .meter i.bad{background:#ff8a8a}
+  .opbar .sp{margin-left:auto}
+  .clock{background:rgba(0,0,0,.32);border-radius:100px;padding:6px 15px;font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+  .clock.warn{background:rgba(196,38,46,.5);animation:pul 1.1s infinite}
+  @keyframes pul{50%{opacity:.55}}
+
+  .task{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:15px 17px;box-shadow:var(--card-shadow);margin-bottom:14px}
+  .task .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .task h3{font-size:17px;margin:7px 0 4px}
+  .task .q{font-size:14px;font-weight:600;line-height:1.55;margin:8px 0 4px}
+  .opts{display:grid;gap:7px;margin-top:9px}
+  .opt{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font:inherit;font-size:13.5px;text-align:left;color:var(--ink);
+    background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;line-height:1.5}
+  .opt:hover{border-color:var(--gold)}
+  .opt .lt{flex:none;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--pill);border:1px solid var(--line);font-size:10.5px;font-weight:800;color:var(--muted)}
+  .opt.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)} .opt.pick .lt{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .opt.right{border-color:var(--success);background:rgba(30,142,90,.07)} .opt.right .lt{background:var(--success);border-color:var(--success);color:#fff}
+  .opt.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)} .opt.wrong .lt{background:var(--danger);border-color:var(--danger);color:#fff}
+  .fb{border-radius:11px;padding:12px 15px;margin-top:12px;font-size:13.5px;line-height:1.65;border:1px solid}
+  .fb.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.34)}
+  .fb.part{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.34)}
+  .fb.no{background:rgba(196,38,46,.08);border-color:rgba(196,38,46,.32)}
+  .fb .hd{font-weight:800;font-size:12.5px;margin-bottom:5px}
+  .fb.ok .hd{color:var(--success)} .fb.part .hd{color:var(--warn)} .fb.no .hd{color:var(--danger)}
+  .fb ul{margin:6px 0 0 17px}
+
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:11px;margin:8px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:15px;font-weight:700;padding:13px 17px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .outcome{border:1px solid var(--line);border-left:4px solid var(--success);border-radius:11px;padding:12px 15px;margin-bottom:9px;background:var(--panel2);font-size:13.5px;line-height:1.6}
+  .outcome.harm{border-left-color:var(--danger)}
+  .outcome b{display:block;margin-bottom:3px}
+  .bar{height:8px;border-radius:100px;background:var(--pill);overflow:hidden;min-width:70px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))} .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
+
+  .chat{max-height:330px;overflow-y:auto;padding:4px 2px;margin-bottom:11px}
+  .bub{max-width:84%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.6;margin-bottom:9px}
+  .bub.pt{background:var(--pill);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .bub.me{background:rgba(14,111,118,.12);border:1px solid rgba(14,111,118,.32);margin-left:auto;border-bottom-right-radius:4px}
+  .bub .who{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  .asks{display:grid;gap:7px}
+  .ask{cursor:pointer;font:inherit;font-size:13px;text-align:left;color:var(--ink);background:var(--panel2);
+    border:1.5px solid var(--line);border-radius:10px;padding:9px 13px;line-height:1.5}
+  .ask:hover{border-color:var(--gold)} .ask.used{opacity:.4;pointer-events:none}
+  .naranjo{display:grid;gap:6px;margin-top:9px}
+  .nq{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--panel2);
+    border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px}
+  .nq .yn{display:flex;gap:5px}
+  .nq .yn button{cursor:pointer;font:inherit;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:100px;
+    background:var(--panel);border:1.5px solid var(--line);color:var(--ink);min-width:46px}
+  .nq .yn button.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .nscore{display:flex;gap:12px;align-items:center;margin-top:10px;padding:10px 13px;background:var(--gold-soft);
+    border:1px solid rgba(161,98,7,.3);border-radius:10px;font-size:13.5px}
+  .nscore b{font-size:20px;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .form{display:grid;gap:11px;margin-top:9px}
+  .frow{display:grid;grid-template-columns:170px 1fr;gap:11px;align-items:start}
+  @media(max-width:620px){.frow{grid-template-columns:1fr}}
+  .frow .fl{font-size:11.5px;font-weight:700;color:var(--muted);padding-top:9px}
+  .frow.miss input,.frow.miss textarea{border-color:var(--danger)}
+
+  @media print{.tabs,.btn,.no-print,.opbar{display:none!important} body{background:#fff} .panel{display:block!important}}
+
+  /* ---- PV-X additions ---- */
+  .hero h1{font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
+  .hero p{font-size:13.5px;color:var(--muted);max-width:80ch}
+  .synth{border-left:3px solid var(--warn);background:rgba(180,83,9,.08);padding:9px 13px;border-radius:0 10px 10px 0;
+    margin:10px 0;font-size:12.5px;color:var(--warn);line-height:1.6}
+  .cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:10px;margin:12px 0}
+  .cs{cursor:pointer;font:inherit;text-align:left;background:var(--panel2);border:1.5px solid var(--line);
+    border-radius:13px;padding:13px 15px;color:var(--ink);line-height:1.5}
+  .cs:hover{border-color:var(--gold)} .cs.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)}
+  .cs .lv{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--crimson)}
+  .cs b{display:block;font-size:14px;margin:4px 0 3px;font-family:'Source Serif Pro',serif}
+  .cs small{color:var(--muted);font-size:11.5px;display:block}
+  .cs .pz{display:inline-block;margin-top:7px;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;
+    background:var(--pill);border:1px solid var(--line);color:var(--muted)}
+  .src{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0}
+  .srcb{cursor:pointer;font:inherit;text-align:left;background:var(--panel2);border:1.5px solid var(--line);
+    border-radius:12px;padding:12px 14px;color:var(--ink)}
+  .srcb:hover{border-color:var(--gold)} .srcb.done{border-color:var(--success);background:rgba(30,142,90,.06)}
+  .srcb b{display:block;font-size:13.5px} .srcb small{color:var(--muted);font-size:11.5px}
+  .transcript{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+    max-height:260px;overflow:auto;font-size:12.5px;line-height:1.65}
+  .tl{display:grid;gap:7px;margin-top:9px}
+  .tli{display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:start;background:var(--panel2);
+    border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;font-size:13px;cursor:pointer}
+  .tli.on{border-color:var(--crimson);background:rgba(196,13,22,.05)}
+  .tli input{margin-top:3px;accent-color:var(--crimson)}
+  .tli .dt{font-weight:700;font-size:12px;color:var(--gold)}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+  .chip{cursor:pointer;font:inherit;font-size:12.5px;padding:7px 14px;border-radius:100px;background:var(--panel2);
+    border:1.5px solid var(--line);color:var(--ink)}
+  .chip.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+  .filters select,.filters input{font:inherit;font-size:12.5px;padding:7px 10px;border-radius:8px;
+    border:1px solid var(--line);background:var(--panel2);color:var(--ink)}
+  .dbwrap{max-height:390px;overflow:auto;border:1px solid var(--line);border-radius:12px}
+  .dbwrap table{min-width:820px} .dbwrap th{position:sticky;top:0;z-index:2}
+  tr.flagd td{background:rgba(196,13,22,.09)!important}
+  .reveal{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:11px;margin:10px 0}
+  .rv{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:12.5px;line-height:1.6}
+  .rv h4{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .rv.hit{border-left:4px solid var(--success)} .rv.mis{border-left:4px solid var(--danger)}
+  .wow{background:linear-gradient(120deg,#1a2340,#3a1d22);color:#fff;border-radius:16px;padding:22px 24px;margin-bottom:14px}
+  .wow h2{font-size:22px;margin-bottom:10px;color:#fff}
+  .wow .ln{font-size:15px;line-height:2;font-variant-numeric:tabular-nums}
+  .wow .ln b{color:var(--gold);font-size:19px;font-family:'Source Serif Pro',serif}
+  .wow .fin{margin-top:14px;font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#7de3b0}
+  .kbd{font-size:11.5px;color:var(--muted);margin-top:6px}
+  .qq{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:100px;margin-left:7px}
+  .qq.excellent{background:rgba(30,142,90,.16);color:var(--success)}
+  .qq.relevant{background:rgba(14,111,118,.14);color:var(--teal)}
+  .qq.poor{background:rgba(180,83,9,.14);color:var(--warn)}
+  .qq.irrelevant{background:var(--pill);color:var(--muted)}
+  .qq.leading{background:rgba(196,38,46,.14);color:var(--danger)}
+  .qq.fishing{background:rgba(109,40,217,.14);color:var(--purple)}
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js?v=4"></script>
+<div class="wrap">
+
+  <div class="hero">
+    <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">
+      Pharmacy AI · Workshop Project · Pharmacovigilance</div>
+    <h1>PV-X — AI ADR Detective</h1>
+    <p><b>Interview. Investigate. Identify. Report.</b> You are not given a case. You are given a patient who has
+      noticed something, and everything else you must go and find. Nothing is volunteered that you did not ask for.</p>
+    <div class="synth"><b>Educational simulation.</b> Every patient, identifier, batch number and laboratory value in this
+      workshop is fictional and synthetic. It is for training and assessment only and must never be used as clinical
+      decision support or entered into a real safety database.</div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn ghost sm" id="themeBtn" type="button">Light / dark</button>
+      <button class="btn ghost sm" id="facBtn" type="button" style="display:none">Faculty desk</button>
+      <span class="muted" style="font-size:12px" id="whoami"></span>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-p="brief">1 · Brief</button>
+    <button class="tab" data-p="interview">2 · Interview</button>
+    <button class="tab" data-p="sources">3 · Investigate</button>
+    <button class="tab" data-p="timeline">4 · Timeline</button>
+    <button class="tab" data-p="assess">5 · Assessment</button>
+    <button class="tab" data-p="icsr">6 · ICSR</button>
+    <button class="tab" data-p="db">7 · Database</button>
+    <button class="tab" data-p="decide">8 · Decision</button>
+    <button class="tab" data-p="debrief">9 · Debrief</button>
+    <button class="tab" data-p="report">10 · Report</button>
+    <button class="tab" data-p="faculty" id="facTab" style="display:none">Faculty</button>
+  </div>
+
+  <div class="opbar" id="opbar" style="display:none">
+    <div class="ttl" id="obCase">—</div>
+    <div class="m"><span class="k">Completeness</span><span class="v" id="obComp">0%</span>
+      <span class="meter"><i id="obCompB" style="width:0"></i></span></div>
+    <div class="m"><span class="k">Investigative discipline</span><span class="v" id="obDis">100</span>
+      <span class="meter"><i id="obDisB" style="width:100%"></i></span></div>
+    <div class="m"><span class="k">Case integrity</span><span class="v" id="obInt">100</span>
+      <span class="meter"><i id="obIntB" style="width:100%"></i></span></div>
+    <div class="m"><span class="k">Regulatory clock</span><span class="v" id="obDay">Day 0 / 15</span></div>
+    <div class="sp"></div>
+    <div class="clock" id="obClock">00:00</div>
+  </div>
+
+  <!-- ============ 1 · BRIEF ============ -->
+  <div class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="pvx"></div>
+
+    <div class="card">
+      <h2 style="font-size:19px;margin-bottom:5px">Choose your case</h2>
+      <p class="muted" style="font-size:13px">Seven patients, seven different kinds of difficulty. Each one has a complete
+        hidden record. You will see none of it until the debrief — only what the patient tells you, and what you can get
+        out of the doctor, the pharmacist, the medical record and the laboratory.</p>
+      <div class="cases" id="caseList"></div>
+      <div class="row" style="margin-top:6px">
+        <button class="btn" id="startBtn" type="button" disabled>Take the case</button>
+        <span class="muted" style="font-size:12.5px" id="startHint">Select a case above.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:16px;margin-bottom:6px">How you are marked</h3>
+      <div class="tw"><table class="rubric">
+        <tr><th>Competency</th><th>Marks</th></tr>
+        <tr><td>Patient interviewing — question quality, no leading, no fishing</td><td>10</td></tr>
+        <tr><td>Relevant questioning — breadth of the history taken</td><td>10</td></tr>
+        <tr><td>Case completeness — the critical checklist actually established</td><td>12</td></tr>
+        <tr><td>Timeline construction</td><td>10</td></tr>
+        <tr><td>ADR identification</td><td>10</td></tr>
+        <tr><td>Seriousness assessment and criterion</td><td>10</td></tr>
+        <tr><td>Causality — the score AND the reasoning about alternatives</td><td>14</td></tr>
+        <tr><td>Follow-up strategy</td><td>8</td></tr>
+        <tr><td>ICSR accuracy and internal consistency</td><td>10</td></tr>
+        <tr><td>Signal interpretation, duplicates, and the hypothesis rule</td><td>6</td></tr>
+        <tr class="tot"><td>Total</td><td>100</td></tr>
+      </table></div>
+      <div class="fb part" style="margin-top:10px"><div class="hd">Two things are watched throughout</div>
+        <b>Investigative discipline</b> falls when you lead the patient, fish for a summary, or ask questions that
+        cannot advance the case. <b>Case integrity</b> falls when you build the report on something the patient told you
+        that a record would have contradicted — and you never opened the record.</div>
+    </div>
+  </div>
+
+  <!-- ============ 2 · INTERVIEW ============ -->
+  <div class="panel" id="p-interview">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">Patient interview</h2>
+      <p class="muted" style="font-size:13px" id="ivPersona">—</p>
+      <div class="chat" id="chat"></div>
+      <div class="row">
+        <input type="text" id="qIn" placeholder="Ask the patient a question — in your own words" style="flex:1;min-width:230px">
+        <button class="btn" id="askBtn" type="button">Ask</button>
+      </div>
+      <div class="kbd">The patient answers the question you asked and nothing else. If you ask nothing about the dose,
+        you will not learn the dose. Press Enter to send.</div>
+      <div id="qFb"></div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:15px;margin-bottom:6px">Question log</h3>
+      <div class="transcript" id="qlog"><span class="muted">No questions yet.</span></div>
+    </div>
+  </div>
+
+  <!-- ============ 3 · SOURCES ============ -->
+  <div class="panel" id="p-sources">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">Multi-source investigation</h2>
+      <p class="muted" style="font-size:13px">The patient is one source and not the most reliable one. Each enquiry
+        costs a day against the fifteen-day expedited clock, so choose, do not sweep.</p>
+      <div class="src" id="srcBtns"></div>
+      <div id="srcOut"></div>
+    </div>
+  </div>
+
+  <!-- ============ 4 · TIMELINE ============ -->
+  <div class="panel" id="p-timeline">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">Build the timeline</h2>
+      <p class="muted" style="font-size:13px">Tick every event that belongs in this patient's chronology — and leave out
+        the ones that do not. Some of the entries below come from what the patient believes rather than what happened.</p>
+      <div class="tl" id="tlList"></div>
+      <div class="row" style="margin-top:10px"><button class="btn ghost sm" id="tlSave" type="button">Save timeline</button>
+        <span class="muted" style="font-size:12.5px" id="tlMsg"></span></div>
+    </div>
+  </div>
+
+  <!-- ============ 5 · ASSESSMENT ============ -->
+  <div class="panel" id="p-assess">
+    <div class="card">
+      <h3 style="font-size:16px">Suspected adverse drug reaction</h3>
+      <p class="muted" style="font-size:12.5px">In your own clinical words. Minor differences in terminology are accepted.</p>
+      <input type="text" id="aAdr" placeholder="e.g. drug-induced liver injury">
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px">Seriousness</h3>
+      <div class="chips" id="aSerious">
+        <button class="chip" data-v="serious" type="button">Serious</button>
+        <button class="chip" data-v="non-serious" type="button">Non-serious</button>
+      </div>
+      <div id="aCritWrap" style="display:none">
+        <label class="f">Which criterion applies?</label>
+        <div class="chips" id="aCrit">
+          <button class="chip" data-v="death" type="button">Death</button>
+          <button class="chip" data-v="life-threatening" type="button">Life-threatening</button>
+          <button class="chip" data-v="hospitalisation" type="button">Hospitalisation or its prolongation</button>
+          <button class="chip" data-v="disability" type="button">Persistent or significant disability</button>
+          <button class="chip" data-v="congenital" type="button">Congenital anomaly</button>
+          <button class="chip" data-v="medically important" type="button">Other medically important condition</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px">Causality — Naranjo</h3>
+      <div class="naranjo" id="naranjo"></div>
+      <div class="nscore">Naranjo score <b id="nTot">0</b> · <span id="nBand">doubtful</span></div>
+      <label class="f" style="margin-top:12px">WHO-UMC category</label>
+      <div class="chips" id="aWho">
+        <button class="chip" data-v="certain" type="button">Certain</button>
+        <button class="chip" data-v="probable" type="button">Probable</button>
+        <button class="chip" data-v="possible" type="button">Possible</button>
+        <button class="chip" data-v="unlikely" type="button">Unlikely</button>
+        <button class="chip" data-v="unassessable" type="button">Unassessable / unclassifiable</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px">Alternative causes</h3>
+      <p class="muted" style="font-size:12.5px">List every alternative explanation you considered, and say what you did
+        with it. "None" is almost never the right answer.</p>
+      <textarea id="aAlt" placeholder="e.g. paracetamol — dose was 1.5 g/day for three days, far below hepatotoxic; viral hepatitis — serology negative; …"></textarea>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px">Follow-up required</h3>
+      <p class="muted" style="font-size:12.5px">What is still missing, and who will you ask for it? One item per line.</p>
+      <textarea id="aFollow" placeholder="Final outcome and date&#10;Repeat liver biochemistry&#10;Confirmation that no rechallenge is planned"></textarea>
+    </div>
+  </div>
+
+  <!-- ============ 6 · ICSR ============ -->
+  <div class="panel" id="p-icsr">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">Individual Case Safety Report</h2>
+      <p class="muted" style="font-size:13px">Four elements make a report valid: an identifiable patient, an identifiable
+        reporter, a suspect medicine and a suspected reaction. Everything else improves it.</p>
+      <div class="form" id="icsrForm"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn gold" id="valBtn" type="button">Run validation</button>
+        <button class="btn ghost sm" id="fillBtn" type="button">Carry across what I have established</button>
+      </div>
+      <div id="valOut"></div>
+    </div>
+  </div>
+
+  <!-- ============ 7 · DATABASE ============ -->
+  <div class="panel" id="p-db">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">Duplicate check</h2>
+      <p class="muted" style="font-size:13px">Before any pattern can be assessed, the same patient must not be counted
+        twice. Flag any report below that you believe is the SAME patient as your case. Flagging one that is not is an
+        error too — merging destroys real cases.</p>
+      <div class="dbwrap"><table id="dupTable"></table></div>
+      <div class="row" style="margin-top:9px"><button class="btn ghost sm" id="dupSave" type="button">Save duplicate assessment</button>
+        <span class="muted" style="font-size:12.5px" id="dupMsg"></span></div>
+    </div>
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">Historical safety database</h2>
+      <p class="muted" style="font-size:13px" id="dbCount">—</p>
+      <div class="filters">
+        <select id="fDrug"></select><select id="fClass"></select><select id="fEvent"></select>
+        <select id="fSex"><option value="">Any sex</option><option>M</option><option>F</option></select>
+        <select id="fSer"><option value="">Any seriousness</option><option value="Yes">Serious only</option><option value="No">Non-serious only</option></select>
+        <input type="text" id="fText" placeholder="free text">
+        <button class="btn ghost sm" id="fClear" type="button">Clear</button>
+      </div>
+      <div class="muted" style="font-size:12.5px;margin-bottom:7px" id="fStat">—</div>
+      <div class="dbwrap"><table id="dbTable"></table></div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px">Signal investigation</h3>
+      <div class="form">
+        <div class="frow"><span class="fl">Is there a potential signal?</span>
+          <div class="chips" id="sgIs"><button class="chip" data-v="yes" type="button">Yes</button>
+            <button class="chip" data-v="no" type="button">No — this is already known or not supported</button></div></div>
+        <div class="frow"><span class="fl">Which drug or class?</span><input type="text" id="sgDrug"></div>
+        <div class="frow"><span class="fl">Which event?</span><input type="text" id="sgEvent"></div>
+        <div class="frow"><span class="fl">Strength of evidence</span>
+          <div class="chips" id="sgStr"><button class="chip" data-v="weak" type="button">Weak</button>
+            <button class="chip" data-v="moderate" type="button">Moderate</button>
+            <button class="chip" data-v="strong" type="button">Strong</button></div></div>
+        <div class="frow"><span class="fl">Alternative explanations</span><textarea id="sgAlt"></textarea></div>
+        <div class="frow"><span class="fl">Additional information required</span><textarea id="sgMore"></textarea></div>
+      </div>
+      <label class="opt" style="margin-top:11px;align-items:center" id="sgHypWrap">
+        <input type="checkbox" id="sgHyp" style="accent-color:var(--crimson)">
+        <span>I record that a safety signal is a <b>hypothesis requiring evaluation</b>, and not by itself proof that the
+          medicine caused the event.</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- ============ 8 · DECISION ============ -->
+  <div class="panel" id="p-decide">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">You are the Safety Officer</h2>
+      <p class="muted" style="font-size:13px">Choose every action you are recommending, then justify it. The
+        justification is marked, not the buttons.</p>
+      <div class="chips" id="dOpts">
+        <button class="chip" data-v="no-action" type="button">No action</button>
+        <button class="chip" data-v="monitor" type="button">Continue routine surveillance</button>
+        <button class="chip" data-v="follow-up" type="button">Request follow-up information</button>
+        <button class="chip" data-v="increase" type="button">Increase monitoring</button>
+        <button class="chip" data-v="review" type="button">Additional case review</button>
+        <button class="chip" data-v="signal" type="button">Initiate signal investigation</button>
+        <button class="chip" data-v="escalate" type="button">Escalate to the safety committee</button>
+        <button class="chip" data-v="risk" type="button">Consider risk-minimisation measures</button>
+      </div>
+      <label class="f" style="margin-top:12px">Justification</label>
+      <textarea id="dJust" placeholder="Why this, and why not the alternatives?" style="min-height:110px"></textarea>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="submitBtn" type="button">Submit final assessment</button>
+        <span class="muted" style="font-size:12.5px">Submitting closes the investigation and reveals the hidden case.</span>
+      </div>
+      <div id="subFb"></div>
+    </div>
+  </div>
+
+  <!-- ============ 9 · DEBRIEF ============ -->
+  <div class="panel" id="p-debrief">
+    <div id="debrief"><div class="card"><p class="muted">Complete and submit the investigation to see the debrief.</p></div></div>
+  </div>
+
+  <!-- ============ 10 · REPORT ============ -->
+  <div class="panel" id="p-report">
+    <div class="card" id="repEmpty"><p class="muted">Your report writer opens once you submit the investigation.</p></div>
+    <div id="reportWriter" style="display:none"></div>
+  </div>
+
+  <!-- ============ FACULTY ============ -->
+  <div class="panel" id="p-faculty">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">Faculty desk</h2>
+      <p class="muted" style="font-size:13px">Author a new case in the structured format. It is stored on this
+        installation and appears in the case list for every student on this device group.</p>
+      <label class="f">Structured case</label>
+      <textarea id="facSrc" style="min-height:340px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="facSave" type="button">Save case</button>
+        <button class="btn ghost sm" id="facTemplate" type="button">Insert blank template</button>
+        <button class="btn ghost sm" id="facExample" type="button">Load an existing case as a template</button>
+      </div>
+      <div id="facMsg"></div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px">Cases authored here</h3>
+      <div id="facList"><span class="muted">None yet.</span></div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:16px">Student attempts on this device</h3>
+      <div id="facAttempts"><span class="muted">None yet.</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=18"></script>
+<script src="pvx-cases.js?v=1"></script>
+<script src="pvx-signal-data.js?v=1"></script>
+<script src="pvx-engine.js?v=1"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-attendance.js?v=2"></script>
+<script src="alizon-practical-report.js?v=5"></script>
+<script src="alizon-practical-submit.js?v=5"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+var P = window.PVX, DB = window.PVX_SIGNAL_DATA||[], TRUTH = window.PVX_SIGNAL_TRUTH||{};
+var PERS = window.PVX_PERSONAS||{};
+var S = null;                      /* engine state */
+var A = null;                      /* the student's answers */
+var picked = null, tick = null, marked = null;
+
+/* ---------------- who is here ---------------- */
+function isFaculty(){
+  try{ return !!sessionStorage.getItem('alizonFacultyAuth') || !!sessionStorage.getItem('alizonAdminAuth'); }catch(e){ return false; }
+}
+function profile(){ try{ return JSON.parse(localStorage.getItem('alizonProfile')||'{}'); }catch(e){ return {}; } }
+
+/* ---------------- faculty-authored cases ---------------- */
+var FKEY='alizonPvxCases';
+function extraCases(){ try{ return JSON.parse(localStorage.getItem(FKEY)||'[]'); }catch(e){ return []; } }
+function allCases(){ return (window.PVX_CASES||[]).concat(extraCases()); }
+
+/* ---------------- case list ---------------- */
+function renderCases(){
+  var host=$('caseList'); host.innerHTML='';
+  allCases().forEach(function(c){
+    var b=document.createElement('button'); b.type='button'; b.className='cs'+(picked&&picked.id===c.id?' pick':'');
+    var pn = PERS[c.persona]||{name:'Patient'};
+    b.innerHTML='<span class="lv">'+esc(c.difficulty||('Level '+c.level))+'</span>'
+      +'<b>'+esc(c.label||c.id)+'</b><small>'+esc(c.id)+' · '+esc(c.reporter?c.reporter.who:'')+'</small>'
+      +'<span class="pz">Patient type '+esc(c.persona)+' — '+esc(pn.name)+'</span>'
+      +(c.authored?'<span class="pz">faculty case</span>':'');
+    b.addEventListener('click',function(){ picked=c; renderCases();
+      $('startBtn').disabled=false;
+      $('startHint').textContent=pn.note||''; });
+    host.appendChild(b);
+  });
+}
+
+/* ---------------- the op bar ---------------- */
+function mmss(ms){ var s=Math.floor(ms/1000); return ('0'+Math.floor(s/60)).slice(-2)+':'+('0'+(s%60)).slice(-2); }
+function meter(el,bar,v){
+  $(el).textContent=v; var b=$(bar); b.style.width=Math.max(0,Math.min(100,v))+'%';
+  b.className = v>=70?'':(v>=40?'warn':'bad');
+}
+function refresh(){
+  if(!S) return;
+  var comp=P.completeness(S);
+  $('obComp').textContent=comp+'%';
+  var cb=$('obCompB'); cb.style.width=comp+'%'; cb.className = comp>=70?'':(comp>=40?'warn':'bad');
+  meter('obDis','obDisB',S.meters.discipline);
+  meter('obInt','obIntB',S.meters.integrity);
+  $('obDay').textContent='Day '+S.regDay+' / 15';
+  $('obDay').parentNode.className='m'+(S.regDay>=12?' bad':(S.regDay>=8?' warn':''));
+}
+function startClock(){
+  if(tick) clearInterval(tick);
+  tick=setInterval(function(){
+    if(!S) return;
+    var el=$('obClock'); el.textContent=mmss(Date.now()-S.started);
+    el.className='clock'+((Date.now()-S.started)>45*60000?' warn':'');
+  },1000);
+}
+
+/* ---------------- start ---------------- */
+function start(){
+  if(!picked) return;
+  S = P.newState(picked);
+  A = { timeline:{}, naranjo:{}, icsr:{}, followUp:[], signal:{}, decisions:[] };
+  marked = null;
+  $('opbar').style.display='';
+  $('obCase').textContent = picked.id+' · '+picked.label;
+  var pn=PERS[picked.persona]||{};
+  $('ivPersona').innerHTML='<b>'+esc(picked.reporter.who)+'</b> — patient type '+esc(picked.persona)+', '+esc(pn.name||'')+
+    '. Reported '+esc(picked.reporter.date)+'. '+esc(pn.note||'');
+  $('chat').innerHTML=''; bubble('pt', picked.opening);
+  $('qlog').innerHTML='<span class="muted">No questions yet.</span>';
+  $('qFb').innerHTML='';
+  buildSources(); buildTimeline(); buildNaranjo(); buildIcsr(); buildDup(); buildDb();
+  $('debrief').innerHTML='<div class="card"><p class="muted">Complete and submit the investigation to see the debrief.</p></div>';
+  $('repEmpty').style.display=''; $('reportWriter').style.display='none';
+  refresh(); startClock(); switchTab('interview'); window.scrollTo(0,0);
+}
+
+/* ---------------- interview ---------------- */
+function bubble(who, text, q){
+  var d=document.createElement('div'); d.className='bub '+(who==='me'?'me':'pt');
+  d.innerHTML='<div class="who">'+(who==='me'?'You':esc(S?S.C.reporter.who.split(',')[0]:'Patient'))+'</div>'+esc(text);
+  $('chat').appendChild(d); $('chat').scrollTop=$('chat').scrollHeight;
+}
+function ask(){
+  if(!S){ switchTab('brief'); return; }
+  var q=$('qIn').value.trim(); if(!q) return;
+  $('qIn').value='';
+  bubble('me',q);
+  var a=P.answer(S,q); P.record(S,q,a);
+  bubble('pt',a.text);
+  var fb=$('qFb');
+  fb.innerHTML='<div class="fb '+(a.quality==='excellent'?'ok':(a.quality==='leading'||a.quality==='fishing'?'no':'part'))+'">'
+    +'<div class="hd">Question logged as '+esc(a.quality)+(a.slot?' — '+esc((P.SLOT_BY_ID[a.slot]||{}).label||a.slot):'')+'</div>'
+    +(a.gained?'New information established.':'')+(a.note?' '+esc(a.note):'')+'</div>';
+  var log=$('qlog'); if(S.transcript.length===1) log.innerHTML='';
+  var row=document.createElement('div'); row.style.marginBottom='7px';
+  row.innerHTML='<b>'+esc(q)+'</b><span class="qq '+esc(a.quality)+'">'+esc(a.quality)+'</span>';
+  log.appendChild(row); log.scrollTop=log.scrollHeight;
+  refresh();
+}
+
+/* ---------------- sources ---------------- */
+var SRC=[{k:'doctor',t:'Contact the treating doctor',d:'Clinical findings, investigations, differential diagnosis'},
+         {k:'pharmacist',t:'Contact the pharmacist',d:'Dispensing history — what was actually supplied, and when'},
+         {k:'records',t:'Open the medical record',d:'Past history, allergies, previous exposure, attendances'},
+         {k:'labs',t:'View laboratory data',d:'Chronological results — interpret the pattern yourself'}];
+function buildSources(){
+  var h=$('srcBtns'); h.innerHTML=''; $('srcOut').innerHTML='';
+  SRC.forEach(function(s){
+    var b=document.createElement('button'); b.type='button'; b.className='srcb'; b.id='src-'+s.k;
+    b.innerHTML='<b>'+esc(s.t)+'</b><small>'+esc(s.d)+'</small>';
+    b.addEventListener('click',function(){ openSource(s.k); });
+    h.appendChild(b);
+  });
+}
+function labTable(C){
+  var rows=C.labs||[]; if(!rows.length) return '<p class="muted">No laboratory data on file.</p>';
+  var cols=[]; rows.forEach(function(r){ Object.keys(r).forEach(function(k){ if(k!=='note'&&cols.indexOf(k)<0) cols.push(k); }); });
+  var h='<div class="tw"><table><tr>'+cols.map(function(c){return '<th>'+esc(c==='day'?'Point':c==='date'?'Date':c)+'</th>';}).join('')+'<th>Note</th></tr>';
+  rows.forEach(function(r){ h+='<tr>'+cols.map(function(c){return '<td>'+esc(r[c]==null?'—':r[c])+'</td>';}).join('')+'<td>'+esc(r.note||'')+'</td></tr>'; });
+  return h+'</table></div>';
+}
+function openSource(k){
+  if(!S){ switchTab('brief'); return; }
+  var first = !S.sources[k];
+  var got = first ? P.grantSource(S,k) : [];
+  $('src-'+k).classList.add('done');
+  var C=S.C, body;
+  if(k==='labs') body = labTable(C);
+  else body = '<ul style="margin:6px 0 0 17px;font-size:13.5px;line-height:1.75">'
+      + (C[k]||[]).map(function(l){ return '<li>'+esc(l)+'</li>'; }).join('') + '</ul>';
+  var name = SRC.filter(function(s){return s.k===k;})[0].t;
+  var card='<div class="card"><h3 style="font-size:16px;margin-bottom:6px">'+esc(name)+'</h3>'+body
+    + (first? '<div class="fb ok" style="margin-top:10px"><div class="hd">'+got.length+' field'+(got.length===1?'':'s')+' established from this source</div>'
+        +'One day charged to the expedited clock — you are now on day '+S.regDay+' of 15.</div>' : '')
+    + '</div>';
+  $('srcOut').insertAdjacentHTML('afterbegin',card);
+  refresh();
+}
+
+/* ---------------- timeline ---------------- */
+function buildTimeline(){
+  var host=$('tlList'); host.innerHTML=''; $('tlMsg').textContent='';
+  var C=S.C, items=[];
+  C.expect.timeline.filter(function(e){return e.key;}).forEach(function(e,i){ items.push({id:'t'+i, t:e.t, e:e.e}); });
+  (C.expect.distractors||[]).forEach(function(e,i){ items.push({id:'d'+i, t:e.t, e:e.e}); });
+  /* stable shuffle so the correct entries are not all at the top */
+  items.sort(function(a,b){ return (a.id+a.e).localeCompare(b.id+b.e); });
+  items.forEach(function(it){
+    var l=document.createElement('label'); l.className='tli';
+    l.innerHTML='<input type="checkbox" data-k="'+it.id+'"><span><span class="dt">'+esc(it.t)+'</span><br>'+esc(it.e)+'</span>';
+    l.querySelector('input').addEventListener('change',function(){
+      A.timeline[it.id]=this.checked; l.classList.toggle('on',this.checked);
+    });
+    host.appendChild(l);
+  });
+}
+
+/* ---------------- assessment ---------------- */
+var NQ=['Are there previous conclusive reports on this reaction?',
+        'Did the adverse event appear after the suspected drug was given?',
+        'Did the reaction improve when the drug was stopped, or a specific antagonist given?',
+        'Did the reaction reappear when the drug was re-administered?',
+        'Are there alternative causes that could on their own have caused the reaction?',
+        'Did the reaction reappear when a placebo was given?',
+        'Was the drug detected in blood or other fluids at toxic concentrations?',
+        'Was the reaction more severe on a higher dose, or less severe on a lower dose?',
+        'Did the patient have a similar reaction to the same or a similar drug before?',
+        'Was the adverse event confirmed by any objective evidence?'];
+function buildNaranjo(){
+  var h=$('naranjo'); h.innerHTML='';
+  NQ.forEach(function(q,i){
+    var d=document.createElement('div'); d.className='nq';
+    d.innerHTML='<span>'+(i+1)+'. '+esc(q)+'</span><span class="yn">'
+      +['yes','no','unknown'].map(function(v){return '<button type="button" data-v="'+v+'">'+(v==='unknown'?'Do not know':v)+'</button>';}).join('')+'</span>';
+    d.querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click',function(){
+        d.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+        b.classList.add('on'); A.naranjo['q'+(i+1)]=b.getAttribute('data-v'); scoreNaranjo();
+      });
+    });
+    h.appendChild(d);
+  });
+  scoreNaranjo();
+}
+function scoreNaranjo(){
+  var t=P.naranjoTotal(A.naranjo||{});
+  $('nTot').textContent=t; $('nBand').textContent=P.naranjoBand(t);
+}
+function chipGroup(id, multi, onPick){
+  var h=$(id); if(!h) return;
+  h.querySelectorAll('.chip').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(multi) b.classList.toggle('on');
+      else { h.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');}); b.classList.add('on'); }
+      onPick(multi ? [].slice.call(h.querySelectorAll('.chip.on')).map(function(x){return x.getAttribute('data-v');})
+                   : b.getAttribute('data-v'));
+    });
+  });
+}
+
+/* ---------------- ICSR ---------------- */
+var IFIELDS=[['patient','Patient (age, sex, weight)'],['drug','Suspect medicine'],['dose','Dose'],['route','Route'],
+             ['freq','Frequency'],['indication','Indication'],['start','Start date'],['stop','Stop date'],
+             ['event','Adverse event'],['onset','Date of onset'],['seriousness','Seriousness'],['outcome','Outcome'],
+             ['history','Relevant medical history'],['labs','Laboratory findings'],['conmeds','Concomitant medicines'],
+             ['causality','Causality assessment'],['followup','Follow-up required'],['reporter','Reporter']];
+function buildIcsr(){
+  var h=$('icsrForm'); h.innerHTML='';
+  IFIELDS.forEach(function(f){
+    var big = ['history','labs','conmeds','followup','event'].indexOf(f[0])>=0;
+    var d=document.createElement('div'); d.className='frow'; d.id='fr-'+f[0];
+    d.innerHTML='<span class="fl">'+esc(f[1])+'</span>'+(big?'<textarea id="ic-'+f[0]+'"></textarea>':'<input type="text" id="ic-'+f[0]+'">');
+    h.appendChild(d);
+  });
+  $('valOut').innerHTML='';
+}
+function readIcsr(){ var o={}; IFIELDS.forEach(function(f){ var el=$('ic-'+f[0]); o[f[0]]=el?el.value.trim():''; }); return o; }
+function pdate(s){
+  s=String(s||'').trim(); if(!s) return null;
+  var m=s.match(/(\d{1,2})\s+([A-Za-z]{3,})\s+(\d{4})/);
+  if(m){ var d=new Date(m[3]+' '+m[2]+' '+m[1]); if(!isNaN(d)) return d; }
+  m=s.match(/(\d{4})-(\d{2})-(\d{2})/); if(m) return new Date(s);
+  m=s.match(/(\d{1,2})[\/.](\d{1,2})[\/.](\d{4})/); if(m) return new Date(m[3],m[2]-1,m[1]);
+  var d2=new Date(s); return isNaN(d2)?null:d2;
+}
+function validate(){
+  var v=readIcsr(); A.icsr=v;
+  var errs=[], warns=[];
+  var need=[['patient','an identifiable patient'],['reporter','an identifiable reporter'],
+            ['drug','a suspect medicine'],['event','a suspected reaction']];
+  need.forEach(function(n){ if(!v[n[0]]) errs.push('Missing '+n[1]+' — without all four the report is not valid.'); });
+  var ds=pdate(v.start), de=pdate(v.onset), dp=pdate(v.stop);
+  if(ds&&de&&de<ds) errs.push('The reaction is dated before the medicine was started ('+esc(v.onset)+' precedes '+esc(v.start)+'). One of those dates is wrong.');
+  if(ds&&dp&&dp<ds) errs.push('The stop date is before the start date.');
+  if(/fatal|death|died/i.test(v.outcome) && /non.?serious/i.test(v.seriousness)) errs.push('A fatal outcome cannot be recorded as non-serious.');
+  if(/serious/i.test(v.seriousness) && !/non.?serious/i.test(v.seriousness) && !v.followup) warns.push('A serious case with no follow-up plan recorded.');
+  if(!v.causality) warns.push('No causality assessment carried into the report.');
+  if(!v.conmeds) warns.push('No concomitant medicines recorded — including "none" is a finding; leaving it blank is not.');
+  if(v.dose && !/\d/.test(v.dose)) warns.push('The dose has no number in it.');
+  IFIELDS.forEach(function(f){ var el=$('fr-'+f[0]); if(el) el.classList.remove('miss'); });
+  need.forEach(function(n){ if(!v[n[0]]) { var el=$('fr-'+n[0]); if(el) el.classList.add('miss'); } });
+  A.validation=errs;
+  $('valOut').innerHTML='<div class="fb '+(errs.length?'no':(warns.length?'part':'ok'))+'">'
+    +'<div class="hd">'+(errs.length?errs.length+' error'+(errs.length>1?'s':''):(warns.length?'Valid, with '+warns.length+' warning'+(warns.length>1?'s':''):'Report is valid and internally consistent'))+'</div>'
+    +(errs.length?'<ul>'+errs.map(function(e){return '<li>'+e+'</li>';}).join('')+'</ul>':'')
+    +(warns.length?'<ul>'+warns.map(function(e){return '<li>'+e+'</li>';}).join('')+'</ul>':'')+'</div>';
+  if(errs.length) S.meters.integrity=Math.max(0,S.meters.integrity-4);
+  refresh();
+}
+function carryAcross(){
+  var C=S.C, o=S.obtained, T=C.truth;
+  function only(slot, val){ return o[slot] ? val : ''; }
+  var v={
+    patient: only('patient_age', T.patient.age)+(o.patient_sex?', '+T.patient.sex:'')+(o.patient_weight?', '+T.patient.weight:''),
+    drug: o.drug_name ? (S.sources.pharmacist ? T.drug.generic+' ('+T.drug.brand+')' : T.drug.generic) : '',
+    dose: only('drug_dose', T.drug.dose), route: only('drug_route', T.drug.route),
+    freq: only('drug_freq', T.drug.freq), indication: only('drug_indication', T.drug.indication),
+    start: only('drug_start', S.unverified.drug_start ? '(patient recollection — unverified)' : T.drug.start),
+    stop: only('drug_stop', T.drug.stop),
+    event: only('event_desc', T.event.lay), onset: only('event_onset', T.event.onset),
+    outcome: only('event_outcome', T.event.outcome),
+    history: only('pmh', T.history.pmh), labs: o.labs ? 'See laboratory data obtained' : '',
+    conmeds: o.conmeds ? T.conmeds.map(function(m){return m.name+' '+m.dose+' '+m.freq;}).join('; ') : '',
+    reporter: only('reporter', C.reporter.who+' — '+C.reporter.qual)
+  };
+  Object.keys(v).forEach(function(k){ var el=$('ic-'+k); if(el && !el.value && v[k]) el.value=v[k]; });
+  var sc=$('ic-seriousness'); if(sc && !sc.value && A.serious) sc.value = A.serious==='serious' ? ('Serious — '+(A.criterion||'')) : 'Non-serious';
+  var cz=$('ic-causality'); if(cz && !cz.value && Object.keys(A.naranjo||{}).length)
+    cz.value='Naranjo '+P.naranjoTotal(A.naranjo)+' — '+P.naranjoBand(P.naranjoTotal(A.naranjo))+(A.who?'; WHO-UMC '+A.who:'');
+  var fz=$('ic-followup'); if(fz && !fz.value) fz.value=$('aFollow').value;
+  $('valOut').innerHTML='<div class="fb part"><div class="hd">Carried across only what you actually established</div>'
+    +'Fields you never obtained have been left blank on purpose. Filling them in from somewhere else would be inventing data.</div>';
+}
+
+/* ---------------- duplicate check ---------------- */
+function dupCandidates(){
+  var C=S.C, ev=(C.expect.adrText||'').toLowerCase(), dr=(C.truth.drug.generic||'').toLowerCase();
+  var near = DB.filter(function(r){
+    return dr.indexOf(r.drug.toLowerCase().split(/[–-]/)[0])>=0 || r.drug.toLowerCase().indexOf(dr.split(/[–-]/)[0])>=0
+        || ev.indexOf(r.event.toLowerCase().split(' ')[0])>=0;
+  });
+  var rest = DB.filter(function(r){ return near.indexOf(r)<0; }).slice(0,6);
+  return near.concat(rest).slice(0,16);
+}
+function buildDup(){
+  var rows=dupCandidates(), C=S.C;
+  var h='<tr><th>Same patient?</th><th>ID</th><th>Drug</th><th>Event</th><th>Age</th><th>Sex</th><th>Onset latency</th><th>Reported</th><th>Note</th></tr>';
+  h+='<tr style="background:rgba(196,13,22,.07)"><td><b>YOUR CASE</b></td><td>'+esc(C.id)+'</td><td>'+esc(C.truth.drug.generic)
+    +'</td><td>'+esc(C.expect.adrText.split('(')[0])+'</td><td>'+esc(String(C.truth.patient.age).replace(/\D+$/,''))+'</td><td>'
+    +esc(C.truth.patient.sex.charAt(0))+'</td><td>'+esc(C.truth.event.dayOfOnset==null?'—':C.truth.event.dayOfOnset+' days')
+    +'</td><td>'+esc(C.reporter.date)+'</td><td>'+esc(C.reporter.who)+'</td></tr>';
+  rows.forEach(function(r){
+    h+='<tr id="dr-'+esc(r.id)+'"><td><input type="checkbox" data-id="'+esc(r.id)+'" style="accent-color:var(--crimson)"></td><td>'+esc(r.id)+'</td><td>'+esc(r.drug)
+      +'</td><td>'+esc(r.event)+'</td><td>'+esc(r.age)+'</td><td>'+esc(r.sex)+'</td><td>'+esc(r.latency)+' days</td><td>'
+      +esc(r.date)+'</td><td>'+esc(r.note||'')+'</td></tr>';
+  });
+  $('dupTable').innerHTML=h;
+  $('dupTable').querySelectorAll('input[type=checkbox]').forEach(function(cb){
+    cb.addEventListener('change',function(){
+      var tr=$('dr-'+cb.getAttribute('data-id')); if(tr) tr.classList.toggle('flagd',cb.checked);
+    });
+  });
+  $('dupMsg').textContent='';
+}
+function saveDup(){
+  var flagged=[].slice.call($('dupTable').querySelectorAll('input[type=checkbox]:checked')).map(function(c){return c.getAttribute('data-id');});
+  var truth = (TRUTH.duplicatePair||[]).indexOf(S.C.id)>=0
+      ? (TRUTH.duplicatePair||[]).filter(function(x){ return x!==S.C.id; }) : [];
+  var hit = truth.length ? truth.every(function(t){ return flagged.indexOf(t)>=0; }) : flagged.length===0;
+  var wrong = flagged.filter(function(f){ return truth.indexOf(f)<0; }).length;
+  A.signal.dupCorrect=hit; A.signal.dupWrong=wrong; A.signal.dupFlagged=flagged;
+  if(wrong) S.meters.integrity=Math.max(0,S.meters.integrity-6*wrong);
+  $('dupMsg').textContent='Recorded: '+flagged.length+' flagged. This is marked at the debrief, not now.';
+  refresh();
+}
+
+/* ---------------- signal database ---------------- */
+function uniq(f){ var o={},a=[]; DB.forEach(function(r){ if(!o[r[f]]){o[r[f]]=1;a.push(r[f]);} }); return a.sort(); }
+function buildDb(){
+  [['fDrug','drug','Any drug'],['fClass','cls','Any class'],['fEvent','event','Any event']].forEach(function(x){
+    var s=$(x[0]); s.innerHTML='<option value="">'+x[2]+'</option>'+uniq(x[1]).map(function(v){return '<option>'+esc(v)+'</option>';}).join('');
+    s.addEventListener('change',drawDb);
+  });
+  ['fSex','fSer'].forEach(function(id){ $(id).addEventListener('change',drawDb); });
+  $('fText').addEventListener('input',drawDb);
+  $('fClear').addEventListener('click',function(){ ['fDrug','fClass','fEvent','fSex','fSer','fText'].forEach(function(i){$(i).value='';}); drawDb(); });
+  $('dbCount').textContent=DB.length+' historical reports. Filter them. The pattern is not visible in the unfiltered list, and it is not visible one product at a time either.';
+  drawDb();
+}
+function drawDb(){
+  var f={d:$('fDrug').value,c:$('fClass').value,e:$('fEvent').value,s:$('fSex').value,ser:$('fSer').value,t:$('fText').value.toLowerCase()};
+  var rows=DB.filter(function(r){
+    if(f.d&&r.drug!==f.d) return false;
+    if(f.c&&r.cls!==f.c) return false;
+    if(f.e&&r.event!==f.e) return false;
+    if(f.s&&r.sex!==f.s) return false;
+    if(f.ser==='Yes'&&r.serious.indexOf('Yes')!==0) return false;
+    if(f.ser==='No'&&r.serious.indexOf('No')!==0) return false;
+    if(f.t&&(r.id+' '+r.drug+' '+r.cls+' '+r.event+' '+r.country+' '+r.note).toLowerCase().indexOf(f.t)<0) return false;
+    return true;
+  });
+  var ages=rows.map(function(r){return r.age;}), lat=rows.map(function(r){return r.latency;});
+  function med(a){ if(!a.length) return '—'; a=a.slice().sort(function(x,y){return x-y;}); return a[Math.floor(a.length/2)]; }
+  $('fStat').innerHTML='<b>'+rows.length+'</b> of '+DB.length+' reports · median age <b>'+med(ages)
+    +'</b> · median latency <b>'+med(lat)+'</b> days · serious '+rows.filter(function(r){return r.serious.indexOf('Yes')===0;}).length;
+  var h='<tr><th>ID</th><th>Drug</th><th>Class</th><th>Event</th><th>Age</th><th>Sex</th><th>Serious</th><th>Outcome</th><th>Latency</th><th>Dechallenge</th><th>Country</th><th>Reported</th></tr>';
+  rows.slice(0,400).forEach(function(r){
+    h+='<tr><td>'+esc(r.id)+'</td><td>'+esc(r.drug)+'</td><td>'+esc(r.cls)+'</td><td>'+esc(r.event)+'</td><td>'+esc(r.age)
+      +'</td><td>'+esc(r.sex)+'</td><td>'+esc(r.serious)+'</td><td>'+esc(r.outcome)+'</td><td>'+esc(r.latency)+'</td><td>'
+      +esc(r.dechal)+'</td><td>'+esc(r.country)+'</td><td>'+esc(r.date)+'</td></tr>';
+  });
+  $('dbTable').innerHTML=h;
+}
+
+/* ---------------- submit ---------------- */
+function collect(){
+  A.adr=$('aAdr').value.trim();
+  A.alt=$('aAlt').value.trim();
+  A.followUp=$('aFollow').value.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+  A.icsr=readIcsr();
+  A.signal.isSignal = A.sgIs==='yes';
+  A.signal.hypothesis = $('sgHyp').checked;
+  A.signal.drug=$('sgDrug').value.trim(); A.signal.event=$('sgEvent').value.trim();
+  A.signal.alt=$('sgAlt').value.trim(); A.signal.more=$('sgMore').value.trim();
+  A.justification=$('dJust').value.trim();
+}
+function submit(){
+  if(!S){ switchTab('brief'); return; }
+  collect();
+  var need=[];
+  if(!A.adr) need.push('a suspected reaction on the Assessment tab');
+  if(!A.serious) need.push('a seriousness classification');
+  if(Object.keys(A.naranjo).length<6) need.push('at least six of the ten Naranjo items');
+  if(!A.justification || A.justification.split(/\s+/).length<25) need.push('a justification of at least 25 words');
+  if(!A.decisions.length) need.push('at least one recommended action');
+  if(need.length){
+    $('subFb').innerHTML='<div class="fb no"><div class="hd">Not ready to submit</div>Still required: '+esc(need.join('; '))+'.</div>';
+    return;
+  }
+  if(!A.validation) validate();
+  marked = P.mark(S, A);
+  saveAttempt();
+  $('subFb').innerHTML='<div class="fb ok"><div class="hd">Investigation closed</div>The hidden case has been revealed on the Debrief tab.</div>';
+  renderDebrief(); mountWriter(); switchTab('debrief'); window.scrollTo(0,0);
+  if(tick) clearInterval(tick);
+}
+
+/* ---------------- debrief ---------------- */
+function renderDebrief(){
+  var C=S.C, X=C.expect, m=marked, T=C.truth;
+  var mins=Math.round((Date.now()-S.started)/60000);
+  var dataPoints=Object.keys(S.obtained).length;
+  var missedCrit=P.missing(S).length;
+  var srcUsed=Object.keys(S.sources).length;
+  var dupFound=(A.signal.dupFlagged||[]).length;
+
+  var h='<div class="wow"><h2>PV investigation complete</h2><div class="ln">'
+    +'You investigated <b>1</b> patient.<br>'
+    +'You identified <b>'+(textHit(A.adr,X.adr)?1:0)+'</b> suspected adverse drug reaction.<br>'
+    +'You extracted <b>'+dataPoints+'</b> relevant data points.<br>'
+    +'You missed <b>'+missedCrit+'</b> critical field'+(missedCrit===1?'':'s')+'.<br>'
+    +'You opened <b>'+srcUsed+'</b> of 4 external sources.<br>'
+    +'You flagged <b>'+dupFound+'</b> possible duplicate'+(dupFound===1?'':'s')+' in the historical database.<br>'
+    +'You spent <b>'+mins+'</b> minute'+(mins===1?'':'s')+' on the case, and <b>'+S.regDay+'</b> of the 15 regulatory days.'
+    +'</div><div class="fin">PV investigation complete</div></div>';
+
+  h+='<div class="card"><h2 style="font-size:19px">Performance report</h2>'
+    +'<div class="verdict '+(m.pass?'pass':'fail')+'">'+(m.pass?'PASS':'FAIL')+' — '+m.total+' / 100 · '+m.band+'</div>'
+    +'<div class="tw"><table class="rubric"><tr><th>Competency</th><th>Weight</th><th>Score</th></tr>';
+  m.rows.forEach(function(r){ h+='<tr><td>'+esc(r.k)+'</td><td>'+r.w+'</td><td>'+r.p+'%</td></tr>'; });
+  h+='<tr class="tot"><td>Overall</td><td>100</td><td>'+m.total+'%</td></tr></table></div>'
+    +'<div class="repgrid">'
+    +'<div class="repbox"><div class="rv">'+P.completeness(S)+'%</div><div class="rl">Case completeness</div></div>'
+    +'<div class="repbox"><div class="rv">'+m.discipline+'</div><div class="rl">Investigative discipline</div></div>'
+    +'<div class="repbox"><div class="rv">'+m.integrity+'</div><div class="rl">Case integrity</div></div>'
+    +'<div class="repbox"><div class="rv">'+S.qstats.excellent+'</div><div class="rl">Excellent questions</div></div>'
+    +'<div class="repbox"><div class="rv">'+S.qstats.leading+'</div><div class="rl">Leading questions</div></div>'
+    +'</div></div>';
+
+  /* what the patient knew vs what you found vs what the team concluded */
+  h+='<div class="card"><h2 style="font-size:19px">What the patient knew → what you discovered → what the safety team concluded</h2>'
+    +'<div class="reveal">'
+    +'<div class="rv"><h4>What the patient could tell you</h4>'+esc(C.opening)+'<br><br>'
+      +(C.contradiction?'<b>And this, which was wrong:</b> '+esc(C.contradiction.truthIs):'Everything the patient said was accurate — the difficulty was elsewhere.')+'</div>'
+    +'<div class="rv '+(P.completeness(S)>=75?'hit':'mis')+'"><h4>What you discovered</h4>'
+      +Object.keys(S.obtained).length+' fields established, '+P.completeness(S)+'% of the critical checklist.<br><br>'
+      +(missedCrit? '<b>Not established:</b> '+esc(m.missed.join(', ')) : '<b>Nothing critical was missed.</b>')+'</div>'
+    +'<div class="rv hit"><h4>What the safety team concluded</h4>'+esc(X.adrText)+'.<br><br>'
+      +(X.serious?'Serious — '+esc(X.criterion):'Not serious')+'. Naranjo '+X.naranjoScore+' — '+esc(X.causality)+'.<br><br>'
+      +esc(X.decisionText)+'</div>'
+    +'</div></div>';
+
+  /* causality reasoning */
+  h+='<div class="card"><h3 style="font-size:16px">Causality</h3>'
+    +'<p style="font-size:13.5px">You scored <b>'+m.naranjo.score+'</b> — '+esc(m.naranjo.band)
+    +'. The reference key scores <b>'+m.naranjo.expectedScore+'</b> — '+esc(m.naranjo.expected)+'.</p>'
+    +(X.naranjoNote?'<div class="fb part" style="margin-top:9px"><div class="hd">Why the key sits there</div>'+esc(X.naranjoNote)+'</div>':'')
+    +'<div class="fb ok" style="margin-top:9px"><div class="hd">Alternative causes, and what the record does with them</div>'+esc(X.altRefuted)+'</div></div>';
+
+  /* timeline reveal */
+  h+='<div class="card"><h3 style="font-size:16px">The true chronology</h3><div class="tl">';
+  X.timeline.forEach(function(e,i){
+    var key=X.timeline.filter(function(z){return z.key;}).indexOf(e);
+    var got = key>=0 && A.timeline['t'+key];
+    h+='<div class="outcome'+(e.key&&!got?' harm':'')+'"><b>'+esc(e.t)+'</b>'+esc(e.e)
+      +(e.key?(got?' <span class="qq excellent">you had this</span>':' <span class="qq leading">you missed this</span>'):'')+'</div>';
+  });
+  h+='</div>';
+  (X.distractors||[]).forEach(function(dd,i){
+    if(A.timeline['d'+i]) h+='<div class="outcome harm"><b>You included: '+esc(dd.e)+'</b>'+esc(dd.trap)+'</div>';
+  });
+  h+='</div>';
+
+  /* signal */
+  h+='<div class="card"><h3 style="font-size:16px">Signal interpretation</h3>'
+    +'<div class="fb '+((A.signal.isSignal===!!X.signal.isSignal)?'ok':'no')+'"><div class="hd">'
+      +(X.signal.isSignal?'This case does contribute to a signal':'This is not a new signal')+'</div>'+esc(X.signal.note)+'</div>'
+    +'<div class="fb '+(A.signal.dupCorrect?'ok':'no')+'" style="margin-top:9px"><div class="hd">Duplicates</div>'
+      +((TRUTH.duplicatePair||[]).indexOf(C.id)>=0
+         ? esc(TRUTH.duplicateWhy)+' The duplicate was <b>'+esc((TRUTH.duplicatePair||[]).filter(function(x){return x!==C.id;})[0])+'</b>.'
+         : 'There was no duplicate of this case in the database. Flagging one would have been an error.')
+      +(A.signal.dupWrong?' You wrongly flagged '+A.signal.dupWrong+' report'+(A.signal.dupWrong>1?'s':'')+'. '+esc(TRUTH.notDuplicateWhy):'')+'</div>'
+    +'<div class="fb part" style="margin-top:9px"><div class="hd">The rule that matters most</div>'+esc(TRUTH.hypothesisRule)+'</div>'
+    +(X.signal.isSignal?'<div class="fb part" style="margin-top:9px"><div class="hd">Where the pattern was hiding</div>'+esc(TRUTH.classPoint)+'</div>':'')
+    +'</div>';
+
+  /* narrative feedback */
+  h+='<div class="card"><h3 style="font-size:16px">Assessor’s feedback</h3>'
+    +'<p style="font-size:13.5px"><b>Overall: '+esc(m.band)+'.</b></p>';
+  if(m.strengths.length) h+='<div class="fb ok"><div class="hd">Strengths</div><ul>'+m.strengths.map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ul></div>';
+  if(m.gaps.length) h+='<div class="fb no" style="margin-top:9px"><div class="hd">Where it went wrong</div><ul>'+m.gaps.map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ul></div>';
+  if(m.flags.length) h+='<div class="fb part" style="margin-top:9px"><div class="hd">Noted</div><ul>'+m.flags.map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ul></div>';
+  if(m.missed.length) h+='<div class="fb part" style="margin-top:9px"><div class="hd">Critical information you never established</div><ul>'
+      +m.missed.map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ul></div>';
+  h+='<div class="fb part" style="margin-top:9px"><div class="hd">Follow-up the safety team asked for</div><ul>'
+      +(X.followUp||[]).map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ul></div></div>';
+
+  /* the whole hidden case, at last */
+  h+='<div class="card"><h3 style="font-size:16px">The complete hidden case</h3>'+hiddenTable(C)+'</div>';
+  h+='<div class="card"><div class="row"><button class="btn ghost" id="againBtn" type="button">Take another case</button>'
+    +'<button class="btn ghost sm" id="trBtn" type="button">Show my full interview transcript</button></div><div id="trOut"></div></div>';
+
+  $('debrief').innerHTML=h;
+  $('againBtn').addEventListener('click',function(){ picked=null; renderCases(); $('startBtn').disabled=true;
+    $('opbar').style.display='none'; S=null; switchTab('brief'); window.scrollTo(0,0); });
+  $('trBtn').addEventListener('click',function(){
+    $('trOut').innerHTML='<div class="transcript" style="margin-top:10px">'
+      +S.transcript.map(function(t){ return '<div style="margin-bottom:8px"><b>You:</b> '+esc(t.q)
+        +' <span class="qq '+esc(t.quality)+'">'+esc(t.quality)+'</span><br><b>Patient:</b> '+esc(t.a)+'</div>'; }).join('')
+      +'</div>';
+  });
+}
+function textHit(g,list){ g=String(g||'').toLowerCase(); return list.some(function(x){ return g.indexOf(String(x).toLowerCase())>=0; }); }
+function hiddenTable(C){
+  var T=C.truth, r=[];
+  function add(k,v){ if(v!=null&&v!=='') r.push([k,v]); }
+  add('Patient', T.patient.name+', '+T.patient.age+', '+T.patient.sex+', '+T.patient.weight);
+  add('Suspect medicine', T.drug.generic+' ('+T.drug.brand+') '+T.drug.dose+' '+T.drug.route+' '+T.drug.freq);
+  add('Indication', T.drug.indication);
+  add('Treatment dates', T.drug.start+' to '+T.drug.stop);
+  add('Batch', T.drug.batch);
+  add('Reaction', T.event.term);
+  add('Onset', T.event.onset);
+  add('Signs and symptoms', (T.event.symptoms||[]).join('; '));
+  add('Clinical course', T.event.course);
+  add('Outcome', T.event.outcome);
+  add('Seriousness', T.event.serious?('Serious — '+T.event.criterion):'Not serious');
+  add('Concomitant medicines', (T.conmeds||[]).map(function(m){return m.name+' '+m.dose+' '+m.freq+' ('+m.ind+')';}).join('; '));
+  add('Medical history', T.history.pmh);
+  add('Allergies', T.history.allergy);
+  add('Previous exposure', T.history.prevExposure);
+  Object.keys(T.lifestyle||{}).forEach(function(k){ add('Lifestyle — '+k, T.lifestyle[k]); });
+  add('Dechallenge', T.dechallenge.done+' — '+T.dechallenge.improved+'. '+T.dechallenge.time);
+  add('Rechallenge', T.rechallenge.done+' — '+T.rechallenge.why);
+  Object.keys(T.alt||{}).forEach(function(k){ add('Alternative cause — '+k, T.alt[k]); });
+  var h='<div class="tw"><table>';
+  r.forEach(function(x){ h+='<tr><td style="width:210px;font-weight:700">'+esc(x[0])+'</td><td>'+esc(x[1])+'</td></tr>'; });
+  return h+'</table></div>'+labTable(C);
+}
+
+/* ---------------- the submitted report ---------------- */
+var OPTS={module:'Pharmacy AI · Workshop Project — Pharmacovigilance (Modules 2 & 3)',
+          title:'PV-X — AI ADR Detective: virtual patient safety investigation',
+          programme:'Pharmacy AI'};
+function buildAuto(){
+  if(!marked||!S) return '';
+  var C=S.C, X=C.expect, m=marked, L=[];
+  L.push('CASE: '+C.id+' — '+C.label+' ('+(C.difficulty||('Level '+C.level))+', patient type '+C.persona+')');
+  L.push('Time on case: '+Math.round((Date.now()-S.started)/60000)+' min · regulatory clock: day '+S.regDay+' of 15');
+  L.push('');
+  L.push('INTERVIEW: '+S.transcript.length+' questions — '+S.qstats.excellent+' excellent, '+S.qstats.relevant+' relevant, '
+    +S.qstats.poor+' poor, '+S.qstats.irrelevant+' irrelevant, '+S.qstats.leading+' leading, '+S.qstats.fishing+' fishing.');
+  L.push('SOURCES OPENED: '+(Object.keys(S.sources).join(', ')||'none'));
+  L.push('CASE COMPLETENESS: '+P.completeness(S)+'% of the critical checklist.');
+  if(m.missed.length) L.push('NOT ESTABLISHED: '+m.missed.join(', '));
+  L.push('');
+  L.push('MY ASSESSMENT');
+  L.push('  Suspected reaction: '+(A.adr||'—'));
+  L.push('  Seriousness: '+(A.serious||'—')+(A.criterion?' — '+A.criterion:''));
+  L.push('  Naranjo: '+m.naranjo.score+' ('+m.naranjo.band+')'+(A.who?' · WHO-UMC '+A.who:''));
+  L.push('  Alternative causes considered: '+(A.alt||'—'));
+  L.push('  Follow-up requested: '+(A.followUp.length?A.followUp.join('; '):'none'));
+  L.push('  Signal: '+(A.signal.isSignal?'yes':'no')+(A.signal.drug?' — '+A.signal.drug+' / '+A.signal.event:'')
+    +' · duplicates flagged: '+((A.signal.dupFlagged||[]).join(', ')||'none'));
+  L.push('  Recommendation: '+(A.decisions.join(', ')||'—'));
+  L.push('');
+  L.push('THE REFERENCE CASE');
+  L.push('  '+X.adrText);
+  L.push('  '+(X.serious?'Serious — '+X.criterion:'Not serious')+' · Naranjo '+X.naranjoScore+' ('+X.causality+')');
+  L.push('  '+X.decisionText);
+  L.push('');
+  L.push('MARKING');
+  m.rows.forEach(function(r){ L.push('  '+r.k+' ('+r.w+') — '+r.p+'%'); });
+  L.push('  TOTAL — '+m.total+'/100 · '+m.band+' · '+(m.pass?'PASS':'FAIL'));
+  L.push('  Investigative discipline '+m.discipline+' · case integrity '+m.integrity);
+  if(m.strengths.length){ L.push(''); L.push('STRENGTHS'); m.strengths.forEach(function(s){L.push('  · '+s);}); }
+  if(m.gaps.length){ L.push(''); L.push('GAPS'); m.gaps.forEach(function(s){L.push('  · '+s);}); }
+  L.push('');
+  L.push('Simulated case. Synthetic data. Not for clinical use.');
+  return L.join('\n');
+}
+function mountWriter(){
+  $('repEmpty').style.display='none';
+  var host=$('reportWriter'); host.style.display='';
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+    titleField:{label:'Case summary and final safety recommendation',
+      placeholder:'e.g. 88/100 — PV-HEP-001, drug-induced liver injury on amoxicillin–clavulanate, serious (hospitalisation), Naranjo 8 probable, expedited report filed with follow-up requested'},
+    minWords:400,
+    attachments:[{label:'1. Completed ICSR (PDF)'},{label:'2. Causality worksheet (PDF)'},{label:'3. Signal / duplicate analysis (PDF)'}],
+    autoResult:function(){ return buildAuto()||''; },
+    autoPct:function(){ return marked?marked.total:null; },
+    autoResultText:function(){ return marked?((marked.pass?'PASS':'FAIL')+' '+marked.total+'/100'):''; }
+  });
+}
+
+/* ---------------- attempts log (this device) ---------------- */
+var AKEY='alizonPvxAttempts';
+function saveAttempt(){
+  try{
+    var list=JSON.parse(localStorage.getItem(AKEY)||'[]');
+    var p=profile();
+    list.unshift({at:new Date().toISOString(), student:p.name||p.reg||'(not signed in)', reg:p.reg||'',
+      caseId:S.C.id, total:marked.total, band:marked.band, pass:marked.pass,
+      completeness:P.completeness(S), questions:S.transcript.length,
+      leading:S.qstats.leading, sources:Object.keys(S.sources).join('/'), minutes:Math.round((Date.now()-S.started)/60000)});
+    localStorage.setItem(AKEY, JSON.stringify(list.slice(0,200)));
+  }catch(e){}
+}
+function renderAttempts(){
+  var list=[]; try{ list=JSON.parse(localStorage.getItem(AKEY)||'[]'); }catch(e){}
+  if(!list.length){ $('facAttempts').innerHTML='<span class="muted">None yet.</span>'; return; }
+  var h='<div class="tw"><table><tr><th>When</th><th>Student</th><th>Case</th><th>Score</th><th>Completeness</th><th>Questions</th><th>Leading</th><th>Sources</th><th>Minutes</th></tr>';
+  list.forEach(function(a){
+    h+='<tr><td>'+esc(String(a.at).slice(0,16).replace('T',' '))+'</td><td>'+esc(a.student)+'</td><td>'+esc(a.caseId)
+      +'</td><td>'+a.total+' ('+esc(a.band)+')</td><td>'+a.completeness+'%</td><td>'+a.questions+'</td><td>'+a.leading
+      +'</td><td>'+esc(a.sources||'—')+'</td><td>'+a.minutes+'</td></tr>';
+  });
+  $('facAttempts').innerHTML=h+'</table></div>';
+}
+
+/* ---------------- faculty case authoring ---------------- */
+var TEMPLATE=['CASE ID: PV-XXX-010','LABEL: a short title the student sees','OPENING STATEMENT: what the patient says first, in their own words',
+ 'PATIENT: name','AGE: 00 years','SEX: Male','WEIGHT: 00 kg','OCCUPATION: ','PREGNANCY: Not applicable',
+ 'SUSPECTED DRUG: ','BRAND: ','DOSE: ','ROUTE: Oral','FREQUENCY: ','INDICATION: ','START DATE: ','STOP DATE: ','BATCH: ','PRESCRIBER: ',
+ 'ADR: the medical term','ADR LAY DESCRIPTION: how the patient would put it','ADR ONSET: ','SYMPTOMS: one; two; three',
+ 'CLINICAL COURSE: ','OUTCOME: Recovered','SERIOUSNESS: Serious','SERIOUSNESS CRITERION: hospitalisation',
+ 'HOSPITALISATION: ','DECHALLENGE: Yes — stopped on …','DECHALLENGE IMPROVED: Yes','DECHALLENGE TIME: ',
+ 'RECHALLENGE: No','RECHALLENGE WHY: ','CONCOMITANT MEDICATIONS: drug, dose, frequency, indication; drug, dose, frequency, indication',
+ 'MEDICAL HISTORY: ','ALLERGIES: ','PREVIOUS EXPOSURE: ','FAMILY HISTORY: ',
+ 'ALCOHOL: ','SMOKING: ','HERBAL: ','TRAVEL: ','DIET: ',
+ 'LABORATORY DATA: Date | ALT | AST | Bilirubin ;; 13 Aug 2026 | 684 | 520 | 3.1',
+ 'ALTERNATIVE CAUSES: cause — how the record deals with it; cause — how the record deals with it',
+ 'EXPECTED CAUSALITY: probable','EXPECTED NARANJO: q1=yes q2=yes q3=yes q4=unknown q5=no q6=unknown q7=unknown q8=unknown q9=no q10=yes',
+ 'EXPECTED FINAL ASSESSMENT: what the safety team concluded and recommended',
+ 'ACCEPTED ADR TERMS: term; synonym; synonym',
+ 'CRITICAL QUESTIONS: drug_name; drug_dose; drug_start; event_onset; dechallenge; rechallenge; conmeds; prev_exposure',
+ 'INFORMATION THAT SHOULD NOT BE VOLUNTEERED: (the engine never volunteers anything — list here what the patient gets WRONG)',
+ 'PATIENT GETS WRONG: drug_start = I think it was in July',
+ 'THE TRUTH IS: dispensed on 1 August','RESOLVED BY: pharmacist','WHY IT MATTERS: ',
+ 'DOCTOR SAYS: line one ;; line two ;; line three',
+ 'PHARMACIST SAYS: line one ;; line two',
+ 'MEDICAL RECORD SAYS: line one ;; line two',
+ 'TIMELINE: 1 Aug 2026 | drug started ;; 13 Aug 2026 | symptom onset ;; 15 Aug 2026 | drug stopped',
+ 'DISTRACTORS: 14 Jul 2026 | patient thinks it started here | the record says otherwise',
+ 'FOLLOW-UP: item one; item two','IS SIGNAL: no','SIGNAL NOTE: ',
+ 'PATIENT PERSONALITY: B','DIFFICULTY LEVEL: 4'].join('\n');
+
+function parseCase(src){
+  var kv={}, lines=String(src).split('\n');
+  lines.forEach(function(l){
+    var i=l.indexOf(':'); if(i<1) return;
+    var k=l.slice(0,i).trim().toUpperCase(), v=l.slice(i+1).trim();
+    if(k) kv[k]=v;
+  });
+  function g(k,d){ return kv[k]!=null&&kv[k]!==''?kv[k]:(d||''); }
+  function semi(k){ return g(k).split(';').map(function(s){return s.trim();}).filter(Boolean); }
+  function dsemi(k){ return g(k).split(';;').map(function(s){return s.trim();}).filter(Boolean); }
+  if(!g('CASE ID')) throw new Error('CASE ID is required.');
+  if(!g('SUSPECTED DRUG')) throw new Error('SUSPECTED DRUG is required.');
+  if(!g('ADR')) throw new Error('ADR is required.');
+  if(!g('OPENING STATEMENT')) throw new Error('OPENING STATEMENT is required — it is the only thing the student sees at the start.');
+
+  var nar={}; g('EXPECTED NARANJO').split(/\s+/).forEach(function(p){
+    var m=p.match(/^(q\d+)=(yes|no|unknown)$/i); if(m) nar[m[1].toLowerCase()]=m[2].toLowerCase();
+  });
+  for(var i=1;i<=10;i++) if(!nar['q'+i]) nar['q'+i]='unknown';
+
+  var labs=dsemi('LABORATORY DATA'), labRows=[], hdr=null;
+  labs.forEach(function(row,ix){
+    var cells=row.split('|').map(function(s){return s.trim();});
+    if(ix===0 && !/\d/.test(cells[1]||'')) { hdr=cells; return; }
+    var o={}; cells.forEach(function(c,j){ o[(hdr&&hdr[j])||('c'+j)]=c; }); labRows.push(o);
+  });
+
+  var tl=dsemi('TIMELINE').map(function(r){ var c=r.split('|'); return {t:(c[0]||'').trim(), e:(c[1]||'').trim(), key:true}; });
+  var dis=dsemi('DISTRACTORS').map(function(r){ var c=r.split('|'); return {t:(c[0]||'').trim(), e:(c[1]||'').trim(), trap:(c[2]||'').trim()}; });
+
+  var contra=null, wrong=g('PATIENT GETS WRONG');
+  if(wrong){
+    var slots={}; wrong.split(';').forEach(function(p){
+      var m=p.split('='); if(m.length>=2) slots[m[0].trim()]=m.slice(1).join('=').trim();
+    });
+    if(Object.keys(slots).length) contra={slots:slots, truthIs:g('THE TRUTH IS'), resolvedBy:g('RESOLVED BY','pharmacist'), why:g('WHY IT MATTERS')};
+  }
+  var crit=semi('CRITICAL QUESTIONS').filter(function(s){ return !!P.SLOT_BY_ID[s]; });
+  if(!crit.length) crit=['drug_name','drug_dose','drug_start','event_desc','event_onset','event_outcome',
+                         'conmeds','pmh','allergy','prev_exposure','dechallenge','rechallenge','serious_q','reporter'];
+
+  var serious=/^y|serious/i.test(g('SERIOUSNESS','Serious')) && !/non.?serious/i.test(g('SERIOUSNESS'));
+  return {
+    id:g('CASE ID'), authored:true, level:parseInt(g('DIFFICULTY LEVEL','4'),10)||4,
+    persona:(g('PATIENT PERSONALITY','A').trim().charAt(0).toUpperCase()||'A'),
+    label:g('LABEL', g('CASE ID')), difficulty:'Level '+g('DIFFICULTY LEVEL','4')+' — faculty case',
+    reporter:{who:g('REPORTER','Patient, self-reported'), qual:g('REPORTER QUALIFICATION','Consumer / patient'),
+              country:g('COUNTRY','India'), contact:g('REPORTER CONTACT','Pharmacovigilance desk'), date:g('REPORT DATE','')},
+    opening:g('OPENING STATEMENT'),
+    truth:{
+      patient:{id:g('CASE ID')+'-P', name:g('PATIENT','—'), age:g('AGE','—'), sex:g('SEX','—'), weight:g('WEIGHT','—'),
+               pregnancy:g('PREGNANCY','Not applicable'), occupation:g('OCCUPATION','—')},
+      drug:{generic:g('SUSPECTED DRUG'), brand:g('BRAND','—'), dose:g('DOSE','—'), route:g('ROUTE','Oral'),
+            freq:g('FREQUENCY','—'), start:g('START DATE','—'), stop:g('STOP DATE','—'),
+            indication:g('INDICATION','—'), batch:g('BATCH','—'), prescriber:g('PRESCRIBER','—')},
+      event:{lay:g('ADR LAY DESCRIPTION', g('ADR')), term:g('ADR'), onset:g('ADR ONSET','—'), dayOfOnset:null,
+             symptoms:semi('SYMPTOMS'), diagnosis:g('ADR'), course:g('CLINICAL COURSE','—'),
+             outcome:g('OUTCOME','Unknown'), serious:serious, criterion:g('SERIOUSNESS CRITERION','—'),
+             hosp:g('HOSPITALISATION','—')},
+      conmeds:semi('CONCOMITANT MEDICATIONS').map(function(m){
+        var c=m.split(','); return {name:(c[0]||'').trim(), dose:(c[1]||'').trim(), route:'Oral',
+          freq:(c[2]||'').trim(), start:'—', stop:'—', ind:(c[3]||'').trim()}; }),
+      history:{pmh:g('MEDICAL HISTORY','—'), allergy:g('ALLERGIES','No known drug allergy'),
+               prevExposure:g('PREVIOUS EXPOSURE','—'), family:g('FAMILY HISTORY','—')},
+      lifestyle:{alcohol:g('ALCOHOL','—'), smoking:g('SMOKING','—'), herbal:g('HERBAL','None'),
+                 travel:g('TRAVEL','—'), diet:g('DIET','—')},
+      dechallenge:{done:g('DECHALLENGE','Unknown'), improved:g('DECHALLENGE IMPROVED','Unknown'), time:g('DECHALLENGE TIME','—')},
+      rechallenge:{done:g('RECHALLENGE','No'), why:g('RECHALLENGE WHY','Not performed'), result:'Not applicable'},
+      alt:(function(){ var o={}; semi('ALTERNATIVE CAUSES').forEach(function(a,i){
+             var p=a.split('—'); o[(p[0]||('cause'+i)).trim()]=(p[1]||a).trim(); }); return o; })()
+    },
+    labs:labRows,
+    contradiction:contra, say:{},
+    doctor:dsemi('DOCTOR SAYS'), pharmacist:dsemi('PHARMACIST SAYS'), records:dsemi('MEDICAL RECORD SAYS'),
+    expect:{
+      adr:(semi('ACCEPTED ADR TERMS').length?semi('ACCEPTED ADR TERMS'):[g('ADR')]).map(function(s){return s.toLowerCase();}),
+      adrText:g('ADR'), serious:serious,
+      criterion:g('SERIOUSNESS CRITERION','—'),
+      naranjo:nar, naranjoScore:P.naranjoTotal(nar), causality:g('EXPECTED CAUSALITY', P.naranjoBand(P.naranjoTotal(nar))),
+      who:g('EXPECTED CAUSALITY','possible'),
+      alt:Object.keys((function(){ var o={}; semi('ALTERNATIVE CAUSES').forEach(function(a,i){
+            o[(a.split('—')[0]||('cause'+i)).trim().toLowerCase()]=1; }); return o; })()),
+      altRefuted:g('ALTERNATIVE CAUSES','No alternative causes were recorded for this case.'),
+      timeline:tl.length?tl:[{t:g('START DATE','—'),e:'Suspect medicine started',key:true},
+                             {t:g('ADR ONSET','—'),e:'Reaction onset',key:true}],
+      distractors:dis,
+      decision:[], decisionText:g('EXPECTED FINAL ASSESSMENT','—'),
+      followUp:semi('FOLLOW-UP'), critical:crit,
+      signal:{isSignal:/^y/i.test(g('IS SIGNAL','no')), drug:g('SUSPECTED DRUG'), event:g('ADR'),
+              strength:'—', duplicates:[], note:g('SIGNAL NOTE','No signal note was recorded for this case.')}
+    }
+  };
+}
+function facSave(){
+  var msg=$('facMsg');
+  try{
+    var c=parseCase($('facSrc').value);
+    var list=extraCases().filter(function(x){ return x.id!==c.id; });
+    list.push(c);
+    localStorage.setItem(FKEY, JSON.stringify(list));
+    msg.innerHTML='<div class="fb ok" style="margin-top:10px"><div class="hd">Saved — '+esc(c.id)+'</div>'
+      +'It is now in the case list. Critical checklist: '+c.expect.critical.length+' fields · Naranjo key '+c.expect.naranjoScore
+      +' ('+esc(c.expect.causality)+') · '+(c.contradiction?'a planted contradiction is in place.':'no planted contradiction — the case will be easier than the built-in ones.')+'</div>';
+    renderCases(); renderFacList();
+  }catch(e){
+    msg.innerHTML='<div class="fb no" style="margin-top:10px"><div class="hd">Not saved</div>'+esc(e.message)+'</div>';
+  }
+}
+function renderFacList(){
+  var list=extraCases();
+  if(!list.length){ $('facList').innerHTML='<span class="muted">None yet.</span>'; return; }
+  var h='<div class="tw"><table><tr><th>ID</th><th>Label</th><th>Level</th><th>Type</th><th>Checklist</th><th></th></tr>';
+  list.forEach(function(c){
+    h+='<tr><td>'+esc(c.id)+'</td><td>'+esc(c.label)+'</td><td>'+c.level+'</td><td>'+esc(c.persona)+'</td><td>'
+      +c.expect.critical.length+'</td><td><button class="btn ghost sm" data-del="'+esc(c.id)+'" type="button">Remove</button></td></tr>';
+  });
+  $('facList').innerHTML=h+'</table></div>';
+  $('facList').querySelectorAll('button[data-del]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var id=b.getAttribute('data-del');
+      if(!confirm('Remove case '+id+'? Students will no longer see it.')) return;
+      localStorage.setItem(FKEY, JSON.stringify(extraCases().filter(function(x){return x.id!==id;})));
+      renderCases(); renderFacList();
+    });
+  });
+}
+
+/* ---------------- wiring ---------------- */
+function switchTab(p){
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);});
+  [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);});
+}
+[].forEach.call(document.querySelectorAll('.tab'),function(t){
+  t.addEventListener('click',function(){
+    var p=t.getAttribute('data-p');
+    if(p!=='brief'&&p!=='faculty'&&!S){ switchTab('brief'); return; }
+    switchTab(p);
+  });
+});
+$('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark');
+  try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+$('startBtn').addEventListener('click',start);
+$('askBtn').addEventListener('click',ask);
+$('qIn').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); ask(); } });
+$('tlSave').addEventListener('click',function(){
+  var n=Object.keys(A.timeline).filter(function(k){return A.timeline[k];}).length;
+  $('tlMsg').textContent=n+' event'+(n===1?'':'s')+' recorded. Marked at the debrief.';
+});
+chipGroup('aSerious',false,function(v){ A.serious=v; $('aCritWrap').style.display = v==='serious'?'':'none'; if(v!=='serious') A.criterion=null; });
+chipGroup('aCrit',false,function(v){ A.criterion=v; });
+chipGroup('aWho',false,function(v){ A.who=v; });
+chipGroup('sgIs',false,function(v){ A.sgIs=v; });
+chipGroup('sgStr',false,function(v){ A.sgStrength=v; });
+chipGroup('dOpts',true,function(v){ A.decisions=v; });
+$('valBtn').addEventListener('click',validate);
+$('fillBtn').addEventListener('click',carryAcross);
+$('dupSave').addEventListener('click',saveDup);
+$('submitBtn').addEventListener('click',submit);
+$('facSave').addEventListener('click',facSave);
+$('facTemplate').addEventListener('click',function(){ $('facSrc').value=TEMPLATE; });
+$('facExample').addEventListener('click',function(){
+  var c=(window.PVX_CASES||[])[3]||(window.PVX_CASES||[])[0];
+  $('facSrc').value=['CASE ID: '+c.id+'-COPY','LABEL: '+c.label,'OPENING STATEMENT: '+c.opening,
+    'PATIENT: '+c.truth.patient.name,'AGE: '+c.truth.patient.age,'SEX: '+c.truth.patient.sex,
+    'SUSPECTED DRUG: '+c.truth.drug.generic,'DOSE: '+c.truth.drug.dose,'FREQUENCY: '+c.truth.drug.freq,
+    'INDICATION: '+c.truth.drug.indication,'START DATE: '+c.truth.drug.start,'STOP DATE: '+c.truth.drug.stop,
+    'ADR: '+c.truth.event.term,'ADR LAY DESCRIPTION: '+c.truth.event.lay,'ADR ONSET: '+c.truth.event.onset,
+    'SERIOUSNESS: '+(c.truth.event.serious?'Serious':'Non-serious'),'SERIOUSNESS CRITERION: '+c.truth.event.criterion,
+    'PATIENT PERSONALITY: '+c.persona,'DIFFICULTY LEVEL: '+c.level,'',
+    '/* the rest of the template fields follow — click "Insert blank template" to see them all */'].join('\n');
+});
+
+/* faculty visibility */
+if(isFaculty()){ $('facTab').style.display=''; $('facBtn').style.display='';
+  $('facBtn').addEventListener('click',function(){ switchTab('faculty'); });
+  renderFacList(); renderAttempts(); }
+var pr=profile();
+$('whoami').textContent = pr.name ? (pr.name+(pr.reg?' · '+pr.reg:'')) : '';
+
+renderCases();
+})();
+</script>
+<script src="alizon-backbar.js?v=5"></script>
+</body>
+</html>
