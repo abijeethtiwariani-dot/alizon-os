@@ -32,7 +32,7 @@
 {"@context":"https://schema.org","@type":"EducationalOrganization",
  "name":"Alizon School of Medical & Digital Intelligence","alternateName":"ALIZON AOS",
  "url":"https://www.alizon.in/","logo":"https://www.alizon.in/alizon-logo.png",
- "email":"opsmanager.mioc@miak.in",
+ "email":"info@alizongov.com",
  "sameAs":["https://www.alizongov.com/"],
  "address":{"@type":"PostalAddress","addressLocality":"Thiruvananthapuram","addressRegion":"Kerala","addressCountry":"IN"},
  "description":"AI-powered healthcare education — certificate courses in Paramedical AI, Pharmacy AI, Medical AI and Hospital Administration AI with browser-based virtual practicals, AI-scored assessments and online results."}
@@ -2077,7 +2077,7 @@ footer a:hover{text-decoration:underline}
     <a class="pri" href="alizon-academics.html">Academics</a>
     <a href="alizon-exam.html">Examinations &amp; Hall Tickets</a>
     <a href="alizon-results.html">Results</a>
-    <a href="mailto:opsmanager.mioc@miak.in">Contact the Workshops Office</a>
+    <a href="mailto:info@alizongov.com">Contact the Workshops Office</a>
   </div>
 </div>
 
@@ -2182,7 +2182,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
   if(!launch||!panel||!msgs||!chipsB||!form||!field) return;
 
   var DEFAULT_CHIPS = ["Programmes","Eligibility & fees","How to apply","Virtual practicals","Results & hall ticket","Contact"];
-  var EMAIL = "opsmanager.mioc@miak.in";
+  var EMAIL = "info@alizongov.com";
 
   // ---- Intent engine ----
   var INTENTS = [
@@ -2434,7 +2434,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
     {id:'employer',label:'Employer',cards:[
       {t:'Verify a certificate',d:'Confirm a credential is genuine',href:'#azverify-root',ic:'shield'},
       {t:'Verify results',d:'Check a candidate’s results',href:'alizon-results.html',ic:'chart'},
-      {t:'Contact office',d:'Reach the operations desk',href:'mailto:opsmanager.mioc@miak.in',ic:'mail'}
+      {t:'Contact office',d:'Reach the operations desk',href:'mailto:info@alizongov.com',ic:'mail'}
     ]}
   ];
 
@@ -2966,7 +2966,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
       '<div><p class="azverify-rtitle">No record matched</p><p class="azverify-rid">'+(id?'Searched: '+esc(id):'Empty ID')+'</p></div>'+
       '</div>'+
       '<p class="azverify-note">We couldn&#8217;t match this ID in the demo registry. Please re-check the ID (format <strong>ALZ102</strong> or <strong>ALZ-2026-xxxx</strong>), or contact the office and we&#8217;ll confirm manually.</p>'+
-      '<p class="azverify-rlinks"><a href="mailto:opsmanager.mioc@miak.in?subject=Credential%20verification%20query">Contact the office</a><a href="alizon-results.html">Official results portal</a></p>';
+      '<p class="azverify-rlinks"><a href="mailto:info@alizongov.com?subject=Credential%20verification%20query">Contact the office</a><a href="alizon-results.html">Official results portal</a></p>';
   }
 
   function render(html,ok){
@@ -3220,7 +3220,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
         document.getElementById('spotBtn').setAttribute('data-pick', next.id);
       } else band.classList.remove('onb');
     }
-    if(!list.length){ host.innerHTML='<div class="ws-empty">Workshop announcements are coming soon — watch this page, or write to <a href="mailto:opsmanager.mioc@miak.in" style="color:var(--crimson);font-weight:600">the workshops office</a>.</div>'; injectLd(list); return; }
+    if(!list.length){ host.innerHTML='<div class="ws-empty">Workshop announcements are coming soon — watch this page, or write to <a href="mailto:info@alizongov.com" style="color:var(--crimson);font-weight:600">the workshops office</a>.</div>'; injectLd(list); return; }
     host.innerHTML='<div class="ws-grid">'+list.map(function(w){
       var mods=(w.modules||[]);
       return '<article class="ws-card">'
