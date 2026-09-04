@@ -36,10 +36,21 @@
      is treated as cross-programme and opens for everyone. Folder layout cannot
      go stale the way a synced list can, so it backs the list up. */
   var FOLDER_OWNER = { 'hospital-admin': { id:'hospital', name:'Hospital Administration' } };
+
+  /* Deliberately public. These run in collaboration with partner colleges and
+     are open to anyone — no sign-in, no enrolment check. Being on this list is
+     a decision, not an oversight: a page that is public because somebody forgot
+     the gate script looks exactly the same until you read the source.
+
+     A public page still must not write to institutional data. The report writer
+     offers a signed-in ALIZON student the usual "submit to faculty"; everyone
+     else gets the PDF download and nothing reaches the evaluation queue. */
+  var PUBLIC = { 'alizon-os-workshop-pvx.html': 1 };
   function get(k, d){ try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } }
   function sess(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
 
   var file = (location.pathname.split('/').pop() || '').toLowerCase();
+  if (PUBLIC[file]) return;                          /* open to everyone */
   function fileKey(h){
     return String(h || '').split('/').pop().split('?')[0].split('#')[0].toLowerCase();
   }

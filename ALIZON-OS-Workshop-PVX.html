@@ -5,7 +5,11 @@
 <meta name="apple-mobile-web-app-title" content="Alizon AOS">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, follow">
+<!-- Indexable on purpose. Every other app screen on alizon.in is noindex, but a
+     workshop that is open to everyone has to be findable to be open at all.
+     Reverse this line if it conflicts with the alizongov.com brand strategy. -->
+<meta name="robots" content="index, follow">
+<meta name="description" content="PV-X — AI ADR Detective: a free, open pharmacovigilance workshop. Interview a simulated patient, investigate a suspected adverse drug reaction, assess causality, file the ICSR and judge the safety signal. Run by the Alizon School of Medical &amp; Digital Intelligence with Mar Dioscorus College of Pharmacy.">
 <title>ALIZON AOS · PV-X — AI ADR Detective · Pharmacovigilance Virtual Patient</title>
 <script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -132,6 +136,18 @@
   @media print{.tabs,.btn,.no-print,.opbar{display:none!important} body{background:#fff} .panel{display:block!important}}
 
   /* ---- PV-X additions ---- */
+  .lockup{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:14px 0 4px;margin-bottom:4px}
+  .lockup img{display:block;height:52px;width:auto}
+  /* the crest carries its name around a ring — it needs more height than a
+     wordmark before that text is legible */
+  .lockup img.crest{height:70px}
+  .lockup .lx{font-size:20px;color:var(--muted);font-weight:300;line-height:1}
+  .lockup .who{font-size:11.5px;line-height:1.45;color:var(--muted)}
+  .lockup .who b{display:block;color:var(--ink);font-size:13px;font-family:'Source Serif Pro',Georgia,serif}
+  .openbadge{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:800;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--success);background:rgba(30,142,90,.1);border:1px solid rgba(30,142,90,.3);
+    border-radius:100px;padding:5px 13px}
+  @media(max-width:560px){.lockup img{height:40px}.lockup img.crest{height:54px}.lockup{gap:12px}}
   .hero h1{font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
   .hero p{font-size:13.5px;color:var(--muted);max-width:80ch}
   .synth{border-left:3px solid var(--warn);background:rgba(180,83,9,.08);padding:9px 13px;border-radius:0 10px 10px 0;
@@ -194,11 +210,28 @@
 <div class="wrap">
 
   <div class="hero">
+    <div class="lockup">
+      <img src="alizon-logo.png" alt="Alizon School of Medical &amp; Digital Intelligence"
+           onerror="this.style.display='none'">
+      <span class="lx">&times;</span>
+      <img class="crest" src="resources/partners/mar-dioscorus-college-of-pharmacy.png"
+           alt="Mar Dioscorus College of Pharmacy" onerror="this.style.display='none'">
+      <div class="who"><b>Alizon School of Medical &amp; Digital Intelligence</b>
+        in collaboration with <b>Mar Dioscorus College of Pharmacy</b>
+        Malankara Orthodox Church · Thiruvananthapuram, Kerala</div>
+    </div>
     <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">
-      Pharmacy AI · Workshop Project · Pharmacovigilance</div>
+      Open Workshop · Pharmacovigilance · Pharmacy AI</div>
     <h1>PV-X — AI ADR Detective</h1>
     <p><b>Interview. Investigate. Identify. Report.</b> You are not given a case. You are given a patient who has
       noticed something, and everything else you must go and find. Nothing is volunteered that you did not ask for.</p>
+    <div class="row" style="margin:10px 0 4px">
+      <span class="openbadge">● Open to everyone — no sign-in needed</span>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Run jointly by Alizon and Mar Dioscorus College of
+      Pharmacy, this workshop is free and open to any pharmacy student, pharmacist or clinician who wants to practise
+      a real pharmacovigilance investigation. Work a case, download your own report — nothing is submitted anywhere
+      unless you are a signed-in Alizon student.</p>
     <div class="synth"><b>Educational simulation.</b> Every patient, identifier, batch number and laboratory value in this
       workshop is fictional and synthetic. It is for training and assessment only and must never be used as clinical
       decision support or entered into a real safety database.</div>
@@ -465,6 +498,7 @@
   <!-- ============ 10 · REPORT ============ -->
   <div class="panel" id="p-report">
     <div class="card" id="repEmpty"><p class="muted">Your report writer opens once you submit the investigation.</p></div>
+    <div class="card" id="repWho" style="display:none"></div>
     <div id="reportWriter" style="display:none"></div>
   </div>
 
@@ -501,9 +535,16 @@
 <script src="pvx-signal-data.js?v=1"></script>
 <script src="pvx-engine.js?v=1"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="firebase-sync.js"></script>
+<!-- firebase-sync.js is deliberately NOT loaded here.
+     This workshop is public. firebase-sync bootstraps every visitor into the
+     institution's Firestore and pulls the login data with it — the student
+     roster, faculty, HR, results, submissions and attendance — into that
+     browser's localStorage. That is defensible behind a college login screen;
+     it is not something to hand an anonymous visitor. The workshop needs none
+     of it: the cases ship in the page, and nothing here writes to the cloud.
+     Faculty-authored cases still reach staff devices through the portal. -->
 <script src="alizon-attendance.js?v=3"></script>
-<script src="alizon-practical-report.js?v=5"></script>
+<script src="alizon-practical-report.js?v=6"></script>
 <script src="alizon-practical-submit.js?v=6"></script>
 <script>
 (function(){
@@ -1037,6 +1078,20 @@ function hiddenTable(C){
 var OPTS={module:'Pharmacy AI · Workshop Project — Pharmacovigilance (Modules 2 & 3)',
           title:'PV-X — AI ADR Detective: virtual patient safety investigation',
           programme:'Pharmacy AI'};
+var PARTNER='Run by the Alizon School of Medical & Digital Intelligence in collaboration with '
+          +'Mar Dioscorus College of Pharmacy, Malankara Orthodox Church, Thiruvananthapuram.';
+
+/* This workshop is open to everyone, so most people working it are not Alizon
+   students. Only a signed-in student may submit to faculty: alizonSubmissions
+   is one shared Firestore document with a 1 MB ceiling, and public traffic
+   writing into it would push the real students' evaluation queue out of it. */
+function isEnrolledStudent(){
+  try{
+    if(window.AlizonTest && window.AlizonTest.isOn()) return false;
+    var p=JSON.parse(localStorage.getItem('alizonProfile')||'null');
+    return !!(p && p.reg && !p.test);
+  }catch(e){ return false; }
+}
 function buildAuto(){
   if(!marked||!S) return '';
   var C=S.C, X=C.expect, m=marked, L=[];
@@ -1071,11 +1126,20 @@ function buildAuto(){
   if(m.strengths.length){ L.push(''); L.push('STRENGTHS'); m.strengths.forEach(function(s){L.push('  · '+s);}); }
   if(m.gaps.length){ L.push(''); L.push('GAPS'); m.gaps.forEach(function(s){L.push('  · '+s);}); }
   L.push('');
+  L.push(PARTNER);
   L.push('Simulated case. Synthetic data. Not for clinical use.');
   return L.join('\n');
 }
 function mountWriter(){
   $('repEmpty').style.display='none';
+  var who=$('repWho'); who.style.display='';
+  who.innerHTML = isEnrolledStudent()
+    ? '<div class="fb ok"><div class="hd">Signed in as an Alizon student</div>Your report can be submitted to faculty '
+      +'for evaluation, and downloaded as a PDF.</div>'
+    : '<div class="fb part"><div class="hd">Open workshop — your report is yours to keep</div>'
+      +'Fill in your name and institution below and download the PDF. Nothing is sent anywhere: this workshop is open '
+      +'to everyone, so it does not write to the college record. Alizon students who sign in to the portal first get '
+      +'the submit-to-faculty button as well.</div>';
   var host=$('reportWriter'); host.style.display='';
   if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
     container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
@@ -1085,7 +1149,10 @@ function mountWriter(){
     attachments:[{label:'1. Completed ICSR (PDF)'},{label:'2. Causality worksheet (PDF)'},{label:'3. Signal / duplicate analysis (PDF)'}],
     autoResult:function(){ return buildAuto()||''; },
     autoPct:function(){ return marked?marked.total:null; },
-    autoResultText:function(){ return marked?((marked.pass?'PASS':'FAIL')+' '+marked.total+'/100'):''; }
+    autoResultText:function(){ return marked?((marked.pass?'PASS':'FAIL')+' '+marked.total+'/100'):''; },
+    noSubmit:function(){ return !isEnrolledStudent(); },
+    noSubmitNote:'This is an open workshop — download your report to keep it. '
+                +'Submission to faculty is for signed-in Alizon students.'
   });
 }
 
