@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PV-X — AI ADR Detective · Open workshop · Alizon × Mar Dioscorus College of Pharmacy</title>
+<meta name="robots" content="index, follow">
+<meta name="description" content="A free, open pharmacovigilance workshop. Interview a simulated patient, investigate a suspected adverse drug reaction, assess causality, file the ICSR and judge the safety signal. Run by the Alizon School of Medical &amp; Digital Intelligence with Mar Dioscorus College of Pharmacy.">
+<link rel="icon" href="alizon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cardinal:#8c1515;--deep:#6b0f0f;--gold:#9a7b3f;--ink:#2e2d29;--muted:#6e6a63;
+  --line:#ded7d0;--paper:#faf8f6;--ok:#1E8E5A}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);
+  background:#e9e5e0;line-height:1.6;-webkit-font-smoothing:antialiased}
+.serif{font-family:'Source Serif Pro',Georgia,serif}
+
+/* ---- the sheet ---- */
+.sheet{width:210mm;min-height:297mm;background:#fff;margin:18px auto;padding:13mm 14mm 11mm;
+  box-shadow:0 20px 60px -30px rgba(0,0,0,.45);position:relative;display:flex;flex-direction:column}
+@media screen and (max-width:820px){.sheet{width:auto;min-height:0;margin:0;padding:22px 18px;box-shadow:none}}
+
+/* ---- typographic wordmark (no pictorial mark on documents) ---- */
+.wm{font-family:'Source Serif Pro',Georgia,serif;font-weight:700;font-size:20px;letter-spacing:.14em;
+  color:var(--cardinal);line-height:1}
+.wm-rule{border-top:2px solid var(--cardinal);margin:5px 0 4px;width:100%}
+.wm-sub{font-size:8.2px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);line-height:1.5}
+.lockup{display:flex;align-items:flex-end;gap:16px;justify-content:space-between;flex-wrap:wrap}
+.lockup .partner{display:flex;align-items:center;gap:11px;text-align:right}
+.lockup .partner img{height:46px;width:auto;display:block}
+.lockup .partner .t{font-size:8.2px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);line-height:1.6}
+.lockup .partner .t b{display:block;font-family:'Source Serif Pro',Georgia,serif;font-size:11px;
+  letter-spacing:.02em;text-transform:none;color:var(--ink)}
+
+.tagline{margin-top:13px;font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:'Source Serif Pro',Georgia,serif;font-size:37px;font-weight:700;line-height:1.02;
+  letter-spacing:-.015em;margin:6px 0 5px}
+.strap{font-family:'Source Serif Pro',Georgia,serif;font-size:14.5px;color:var(--cardinal);font-weight:600}
+.badge{display:inline-block;margin-top:9px;font-size:9.5px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ok);border:1px solid rgba(30,142,90,.4);background:rgba(30,142,90,.07);
+  border-radius:100px;padding:5px 13px}
+
+.hook{margin:14px 0 0;padding:13px 17px;background:var(--paper);border-left:4px solid var(--cardinal)}
+.hook p{font-family:'Source Serif Pro',Georgia,serif;font-size:15px;line-height:1.45}
+.hook p b{color:var(--cardinal)}
+.hook .sm{font-family:'Inter',sans-serif;font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.55}
+
+h2{font-family:'Source Serif Pro',Georgia,serif;font-size:15.5px;font-weight:600;margin:15px 0 7px;
+  padding-bottom:4px;border-bottom:1px solid var(--line)}
+h2 .n{color:var(--gold);font-size:12px;letter-spacing:.1em;margin-right:8px}
+
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:4px}
+@media screen and (max-width:820px){.flow{grid-template-columns:repeat(2,1fr)}}
+.step{background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:7px 8px}
+.step .i{font-size:8.5px;font-weight:800;color:var(--cardinal);letter-spacing:.08em}
+.step b{display:block;font-size:11px;margin-top:2px;line-height:1.25}
+.step small{display:block;font-size:9px;color:var(--muted);line-height:1.35;margin-top:2px}
+
+.skills{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.skills span{font-size:10.5px;padding:4px 10px;border-radius:100px;background:var(--paper);border:1px solid var(--line)}
+
+.cases{width:100%;border-collapse:collapse;font-size:10.8px;margin-top:3px}
+.cases th{background:var(--cardinal);color:#fff;text-align:left;padding:5px 8px;font-size:9.5px;
+  letter-spacing:.07em;text-transform:uppercase;font-weight:600}
+.cases td{border-bottom:1px solid var(--line);padding:4.5px 8px;vertical-align:top;line-height:1.45}
+.cases tr:nth-child(even) td{background:var(--paper)}
+.cases td.lv{white-space:nowrap;font-weight:600;color:var(--cardinal)}
+
+.facts{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:4px}
+@media screen and (max-width:820px){.facts{grid-template-columns:repeat(2,1fr)}}
+.fact{text-align:center;border:1px solid var(--line);border-radius:8px;padding:9px 6px;background:#fff}
+.fact .v{font-family:'Source Serif Pro',Georgia,serif;font-size:18px;font-weight:700;color:var(--cardinal);line-height:1.1}
+.fact .l{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:4px;line-height:1.4}
+
+.join{margin-top:auto;padding-top:12px}
+.joinbox{display:flex;gap:18px;align-items:center;background:linear-gradient(115deg,var(--cardinal),var(--deep));
+  color:#fff;border-radius:10px;padding:15px 19px;flex-wrap:wrap}
+.joinbox .qr{background:#fff;padding:8px;border-radius:6px;line-height:0;flex:none}
+.joinbox .qr img,.joinbox .qr canvas{display:block;width:96px;height:96px}
+.joinbox .txt{flex:1;min-width:210px}
+.joinbox .txt .k{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f0c9c9}
+.joinbox .txt .u{font-family:'Source Serif Pro',Georgia,serif;font-size:17px;font-weight:700;margin:3px 0 5px;
+  word-break:break-all}
+.joinbox .txt p{font-size:11px;color:#f3e2e2;line-height:1.55}
+
+.foot{margin-top:10px;border-top:1px solid var(--line);padding-top:8px;font-size:8.6px;color:var(--muted);line-height:1.55}
+.foot b{color:var(--ink)}
+.note{margin-top:8px;font-size:9px;color:#8a6a2a;background:#fdf8ee;border-left:3px solid var(--gold);
+  padding:7px 11px;line-height:1.6}
+
+/* ---- screen-only controls, with a print fallback ---- */
+.bar{max-width:210mm;margin:16px auto 0;display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:0 6px}
+.btn{font:inherit;font-size:13px;font-weight:600;padding:9px 17px;border-radius:100px;cursor:pointer;
+  border:1px solid var(--cardinal);background:#fff;color:var(--cardinal)}
+.btn.pri{background:var(--cardinal);color:#fff}
+.btn:hover{filter:brightness(1.06)}
+.bar .hint{font-size:12px;color:var(--muted)}
+.print-only{display:none}
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff}
+  /* one sheet = exactly one A4 page. Fixing the height (rather than letting it
+     grow) is what stops a sheet spilling a few millimetres onto a second sheet
+     and turning a 2-page brochure into a 4-page one. */
+  .sheet{width:210mm;height:297mm;min-height:297mm;max-height:297mm;margin:0;
+    padding:12mm 13mm 9mm;box-shadow:none;overflow:hidden;page-break-after:always;break-after:page}
+  .sheet:last-of-type{page-break-after:auto;break-after:auto}
+  .bar,.screen-only{display:none!important}
+  .print-only{display:block}
+  .joinbox{background:var(--cardinal)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cases th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<div class="bar screen-only">
+  <button class="btn pri" id="btnPrint" type="button">⤓ Save as PDF / print</button>
+  <button class="btn" id="btnShare" type="button">Share on WhatsApp</button>
+  <button class="btn" id="btnCopy" type="button">Copy the link</button>
+  <span class="hint" id="hint">Prints to two A4 sheets.</span>
+</div>
+
+<!-- ================= SHEET 1 ================= -->
+<div class="sheet">
+  <div class="lockup">
+    <div>
+      <div class="wm">ALIZON</div>
+      <div class="wm-rule"></div>
+      <div class="wm-sub">School of Medical &amp; Digital Intelligence</div>
+    </div>
+    <div class="partner">
+      <div class="t">In collaboration with<b>Mar Dioscorus College of Pharmacy</b>Malankara Orthodox Church</div>
+      <img src="resources/partners/mar-dioscorus-college-of-pharmacy.png" alt="Mar Dioscorus College of Pharmacy">
+    </div>
+  </div>
+
+  <div class="tagline">Open Workshop · Pharmacovigilance</div>
+  <h1>PV-X<br><span style="font-size:26px">AI ADR Detective</span></h1>
+  <div class="strap">Interview. Investigate. Identify. Report.</div>
+  <span class="badge">● Free · open to everyone · no account needed</span>
+
+  <div class="hook">
+    <p>You are not given a case.<br><b>You are given a patient who has noticed something</b> — and nothing else.</p>
+    <div class="sm">They answer only what you actually ask. Ask nothing about the dose, and you will not learn the
+      dose. Everything else you must go and find: the treating doctor, the dispensing record, the medical notes, the
+      laboratory. Then decide what the reaction was, whether it is serious, whether the medicine caused it, and what
+      the safety team should do about it.</div>
+  </div>
+
+  <h2><span class="n">01</span>What you will do</h2>
+  <div class="flow">
+    <div class="step"><div class="i">STAGE 1</div><b>Interview</b><small>Question a simulated patient who volunteers nothing.</small></div>
+    <div class="step"><div class="i">STAGE 2</div><b>Investigate</b><small>Doctor, pharmacist, medical record, laboratory.</small></div>
+    <div class="step"><div class="i">STAGE 3</div><b>Assess</b><small>Timeline, seriousness, Naranjo causality.</small></div>
+    <div class="step"><div class="i">STAGE 4</div><b>Report</b><small>Complete the ICSR and pass validation.</small></div>
+    <div class="step"><div class="i">STAGE 5</div><b>Decide</b><small>Duplicates, signal, safety recommendation.</small></div>
+  </div>
+
+  <h2><span class="n">02</span>What you will practise</h2>
+  <div class="skills">
+    <span>Patient interviewing</span><span>Medication history</span><span>ADR identification</span>
+    <span>Seriousness criteria</span><span>Naranjo causality</span><span>WHO-UMC categories</span>
+    <span>ICSR completion</span><span>Internal consistency checks</span><span>Duplicate detection</span>
+    <span>Signal assessment</span><span>Follow-up strategy</span><span>Safety decision-making</span>
+  </div>
+
+  <h2><span class="n">03</span>Seven patients, seven kinds of difficulty</h2>
+  <table class="cases">
+    <tr><th>Level</th><th>What makes it hard</th><th>Who you will be talking to</th></tr>
+    <tr><td class="lv">Level 1</td><td>A clear single suspect — learn the shape of a case</td><td>A patient who remembers everything</td></tr>
+    <tr><td class="lv">Level 2</td><td>Two candidate medicines, and only one is guilty</td><td>Someone with no clinical vocabulary at all</td></tr>
+    <tr><td class="lv">Level 3</td><td>Half the information is missing</td><td>A mother reporting for her child</td></tr>
+    <tr><td class="lv">Level 4</td><td>A serious case, and the patient misremembers a date</td><td>An older patient who cannot name the medicine</td></tr>
+    <tr><td class="lv">Level 5</td><td>A special situation with no adverse event — yet</td><td>Someone frightened and talking a great deal</td></tr>
+    <tr><td class="lv">Level 6</td><td>Four plausible alternative causes, all defensible</td><td>A patient confidently wrong about his dose</td></tr>
+    <tr><td class="lv">Level 7</td><td>The case alone cannot settle it — the database must</td><td>A poor historian who answers in fragments</td></tr>
+  </table>
+
+  <div class="note">Every patient, identifier, batch number and laboratory value is fictional and synthetic. The
+    workshop is for training and assessment only, and must never be used as clinical decision support.</div>
+
+  <div class="foot">
+    <b>Alizon School of Medical &amp; Digital Intelligence</b> · Thiruvananthapuram, Kerala &nbsp;·&nbsp;
+    in collaboration with <b>Mar Dioscorus College of Pharmacy</b>, Malankara Orthodox Church
+  </div>
+</div>
+
+<!-- ================= SHEET 2 ================= -->
+<div class="sheet">
+  <div class="lockup">
+    <div>
+      <div class="wm">ALIZON</div>
+      <div class="wm-rule"></div>
+      <div class="wm-sub">School of Medical &amp; Digital Intelligence</div>
+    </div>
+    <div class="partner">
+      <div class="t">Open Workshop<b>PV-X — AI ADR Detective</b>Pharmacovigilance</div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:20px"><span class="n">04</span>The practicalities</h2>
+  <div class="facts">
+    <div class="fact"><div class="v">7</div><div class="l">Cases,<br>levels 1–7</div></div>
+    <div class="fact"><div class="v">40–70</div><div class="l">Minutes<br>per case</div></div>
+    <div class="fact"><div class="v">Free</div><div class="l">No fee,<br>no account</div></div>
+    <div class="fact"><div class="v">Any</div><div class="l">Phone, tablet<br>or laptop</div></div>
+    <div class="fact"><div class="v">PDF</div><div class="l">Your own<br>report to keep</div></div>
+  </div>
+
+  <h2><span class="n">05</span>Who it is for</h2>
+  <p style="font-size:11.5px;line-height:1.65;color:var(--muted)">Pharmacy students at any stage, practising
+    pharmacists, nurses, and clinicians who want to work a real pharmacovigilance investigation rather than read
+    about one. No prior experience of adverse drug reaction reporting is assumed — Level 1 teaches the shape of a
+    case from the beginning. Anyone already confident can start at Level 4 or above.</p>
+
+  <h2><span class="n">06</span>How to start</h2>
+  <div class="joinbox">
+    <div class="qr" id="qr"><div class="print-only" style="width:96px;height:96px;border:1px dashed #ccc"></div></div>
+    <div class="txt">
+      <div class="k">Open it on any browser</div>
+      <div class="u">alizon.in/ALIZON-OS-Workshop-PVX</div>
+      <p>Scan the code or type the address. Give your name, roll number and phone at the door — that is the whole
+        sign-in — and choose a case. Nothing you do inside the workshop is submitted anywhere unless you are a
+        signed-in Alizon student.</p>
+    </div>
+  </div>
+
+  <h2><span class="n">07</span>Questions students ask</h2>
+  <table class="cases">
+    <tr><th style="width:38%">Question</th><th>Answer</th></tr>
+    <tr><td>Do I need an account?</td><td>No. Your name, roll number and phone at the start, and nothing else.</td></tr>
+    <tr><td>Does it cost anything?</td><td>No. It is free and stays free.</td></tr>
+    <tr><td>Can I stop and come back?</td><td>Finish a case in one sitting — about an hour. Your sign-in is remembered, so the next case starts straight away.</td></tr>
+    <tr><td>What do I get at the end?</td><td>A marked performance report across ten competencies, with the hidden case revealed and specific feedback on what you missed. You download it as a PDF and keep it.</td></tr>
+    <tr><td>Is it marked?</td><td>Yes, out of 100. Alizon students can submit their report to faculty; everyone else keeps theirs.</td></tr>
+    <tr><td>Do I need to be an Alizon student?</td><td>No. The workshop is open to everyone.</td></tr>
+    <tr><td>Will it work on my phone?</td><td>Yes. A larger screen is easier for the database work in the later cases.</td></tr>
+  </table>
+
+  <div class="join">
+    <div class="foot" style="border-top:2px solid var(--cardinal);padding-top:11px">
+      <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;justify-content:space-between">
+        <div style="flex:1;min-width:190px">
+          <b style="font-family:'Source Serif Pro',Georgia,serif;font-size:12px">Jointly organised by</b><br>
+          Alizon School of Medical &amp; Digital Intelligence, Thiruvananthapuram<br>
+          Mar Dioscorus College of Pharmacy, Malankara Orthodox Church
+        </div>
+        <div style="flex:1;min-width:190px">
+          <b style="font-family:'Source Serif Pro',Georgia,serif;font-size:12px">Workshops office</b><br>
+          opsmanager.mioc@miak.in<br>
+          alizon.in/alizon-workshops
+        </div>
+      </div>
+      <div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--line)">
+        Simulated cases. Synthetic data. For training and assessment only — not clinical decision support.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  var URL_ = 'https://www.alizon.in/ALIZON-OS-Workshop-PVX';
+  /* the QR is generated on screen and printed with the sheet; if the library
+     fails to load the box simply stays empty rather than breaking the layout */
+  try{
+    if(window.QRCode){
+      var box=document.getElementById('qr'); box.innerHTML='';
+      new QRCode(box,{text:URL_,width:96,height:96,correctLevel:QRCode.CorrectLevel.M});
+    }
+  }catch(e){}
+
+  var msg='PV-X — AI ADR Detective: a free, open pharmacovigilance workshop from Alizon and '
+        + 'Mar Dioscorus College of Pharmacy.\n\nYou are not given a case — you are given a patient who has noticed '
+        + 'something, and everything else you have to go and find. Seven cases, about an hour each, free, no account '
+        + 'needed, and you keep your own marked report.\n\n' + URL_;
+
+  document.getElementById('btnPrint').addEventListener('click',function(){ window.print(); });
+  document.getElementById('btnShare').addEventListener('click',function(){
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank','noopener');
+  });
+  document.getElementById('btnCopy').addEventListener('click',function(){
+    var done=function(){ var h=document.getElementById('hint');
+      var t=h.textContent; h.textContent='Link copied.'; setTimeout(function(){ h.textContent=t; },1800); };
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(URL_).then(done,function(){}); }
+    else { var ta=document.createElement('textarea'); ta.value=URL_; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){} ta.remove(); }
+  });
+})();
+</script>
+</body>
+</html>

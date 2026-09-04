@@ -3429,6 +3429,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
           'ICSR completion','Duplicate detection','Signal assessment'],
     facts:[['Cases','7, difficulty 1–7'],['Time','40–70 minutes each'],['Cost','Free'],
            ['To start','Name, roll no. and phone'],['You keep','Your own PDF report']],
+    brochure:'pvx-brochure',
     partner:{ name:'Mar Dioscorus College of Pharmacy',
               sub:'Malankara Orthodox Church · Thiruvananthapuram, Kerala',
               logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
@@ -3448,6 +3449,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
         + '<div class="does">'+w.does.map(function(d){ return '<span>'+esc(d)+'</span>'; }).join('')+'</div>'
         + '<div class="act">'
           + '<a class="btn pri" href="'+esc(w.href)+'">'+esc(w.cta)+' &rarr;</a>'
+          + (w.brochure?'<a class="btn" href="'+esc(w.brochure)+'">Brochure</a>':'')
           + '<span class="note">Opens straight away — sign in with your name, roll number and phone. Nothing you do inside is submitted anywhere unless you are a signed-in Alizon student.</span>'
         + '</div>'
       + '</div>'
