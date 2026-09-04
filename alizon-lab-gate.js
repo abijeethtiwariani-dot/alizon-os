@@ -45,15 +45,27 @@
      A public page still must not write to institutional data. The report writer
      offers a signed-in ALIZON student the usual "submit to faculty"; everyone
      else gets the PDF download and nothing reaches the evaluation queue. */
-  var PUBLIC = { 'alizon-os-workshop-pvx.html': 1 };
+  var PUBLIC = { 'alizon-os-workshop-pvx': 1 };
   function get(k, d){ try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } }
   function sess(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
 
-  var file = (location.pathname.split('/').pop() || '').toLowerCase();
-  if (PUBLIC[file]) return;                          /* open to everyone */
+  /* Compare pages WITHOUT the .html extension, on both sides.
+
+     This is not a tidiness choice. Vercel serves the site with clean URLs, so
+     /ALIZON-OS-Module3-CDSS.html is redirected to /ALIZON-OS-Module3-CDSS and
+     the live pathname never carries an extension — while every href in
+     alizonPrograms does. Comparing the two forms directly meant no programme
+     ever claimed any lab on the live site: `owners` came back empty, the gate
+     took its "cross-programme lab" exit, and the enrolment lock silently did
+     nothing in production. It only ever appeared to work when tested from a
+     local file server, where the .html survives. Strip it on both sides and
+     the comparison holds under either URL style. */
   function fileKey(h){
-    return String(h || '').split('/').pop().split('?')[0].split('#')[0].toLowerCase();
+    return String(h || '').split('/').pop().split('?')[0].split('#')[0]
+             .toLowerCase().replace(/\.html?$/, '');
   }
+  var file = fileKey(location.pathname.split('/').pop());
+  if (PUBLIC[file]) return;                          /* open to everyone */
 
   /* ---- who is this? ---------------------------------------------------- */
   /* An admin session is set by the admin portal after a password check. It is
