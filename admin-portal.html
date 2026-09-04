@@ -1054,6 +1054,19 @@ h1,h2,h3{color:#111!important}
     <h2>Workshops &amp; Registrations</h2>
     <div class="ahint">Publish workshops to the public <b>alizon.in/alizon-workshops</b> page. Build the syllabus by dragging modules from any course. Approve registrations to unlock each delegate's temporary ID card.</div>
 
+    <div class="cblock"><div class="ct">PV-X open workshop — participants</div>
+      <div class="ahint" style="margin-bottom:10px">Everyone who has signed in to the public
+        <b>PV-X — AI ADR Detective</b> workshop, run jointly with Mar Dioscorus College of Pharmacy. They register with
+        name, roll number and phone before the cases open. Each registration is stored as its own record, so
+        simultaneous sign-ins cannot overwrite one another.</div>
+      <div class="arow4" style="grid-template-columns:auto auto 1fr;gap:10px;align-items:center">
+        <button class="abtn" type="button" id="pvxLoad">Load participants</button>
+        <button class="abtn ghost" type="button" id="pvxCsv" disabled>Download CSV</button>
+        <span class="hint" id="pvxCount">Not loaded.</span>
+      </div>
+      <div id="pvxList" style="margin-top:10px"></div>
+    </div>
+
     <div class="cblock"><div class="ct">Publish a workshop</div>
       <div class="arow4" style="grid-template-columns:2fr 1fr 1fr;gap:10px">
         <div><label class="hint" style="display:block;margin-bottom:4px">Title</label><input type="text" id="ws-title" placeholder="e.g. AI in Healthcare — One-day Masterclass"></div>
@@ -4618,6 +4631,78 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   var nav=document.querySelector('.anavv a[data-sec="adm-labs"]');
   if(nav) nav.addEventListener('click',function(){ setTimeout(boot,40); });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+})();
+</script>
+
+<script>
+/* ===== PV-X open-workshop participants =========================
+   The public workshop writes each sign-in as its own `pvxreg_*` document in
+   the shared `sync` collection — the same per-document shape alizon-backup.js
+   uses, and deliberately NOT the single-array shape alizonWorkshopRegs uses,
+   which loses concurrent registrations and has a 1 MB ceiling.
+
+   Read-only here. Nothing in the portal edits or deletes a participant. */
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var ROWS=[];
+  function esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+  function db(){ try{ return firebase.firestore(); }catch(e){ return null; } }
+
+  function load(){
+    var d=db();
+    if(!d){ $('pvxCount').textContent='Cloud not connected on this device yet — reload and try again.'; return; }
+    $('pvxLoad').disabled=true; $('pvxCount').textContent='Loading…';
+    d.collection('sync').where('pvxreg','==',1).get().then(function(qs){
+      ROWS=[];
+      qs.forEach(function(doc){
+        var x=doc.data()||{}, v={};
+        try{ v=JSON.parse(x.value||'{}'); }catch(e){}
+        ROWS.push({ id:doc.id, name:v.name||x.name||'', roll:v.roll||x.roll||'',
+                    phone:v.phone||'', institution:v.institution||x.institution||'',
+                    email:v.email||'', at:v.at||x.at||'' });
+      });
+      ROWS.sort(function(a,b){ return String(b.at).localeCompare(String(a.at)); });
+      render();
+    }).catch(function(e){
+      $('pvxLoad').disabled=false;
+      $('pvxCount').textContent='Could not read the participant list ('+((e&&e.code)||'error')+').';
+    });
+  }
+  function render(){
+    $('pvxLoad').disabled=false;
+    $('pvxCsv').disabled=!ROWS.length;
+    $('pvxCount').innerHTML='<b>'+ROWS.length+'</b> participant'+(ROWS.length===1?'':'s')
+      +(ROWS.length?' · newest first':'');
+    if(!ROWS.length){ $('pvxList').innerHTML='<div class="ahint">Nobody has signed in to the open workshop yet.</div>'; return; }
+    var h='<div style="overflow-x:auto"><table class="atbl" style="width:100%">'
+        +'<tr><th>When</th><th>Name</th><th>Roll no.</th><th>Phone</th><th>Institution</th><th>Email</th></tr>';
+    ROWS.forEach(function(r){
+      h+='<tr><td style="white-space:nowrap">'+esc(String(r.at).slice(0,16).replace('T',' '))+'</td>'
+        +'<td>'+esc(r.name)+'</td><td>'+esc(r.roll)+'</td><td style="white-space:nowrap">'+esc(r.phone)+'</td>'
+        +'<td>'+esc(r.institution)+'</td><td>'+esc(r.email)+'</td></tr>';
+    });
+    $('pvxList').innerHTML=h+'</table></div>';
+  }
+  function csv(){
+    var q=function(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; };
+    var lines=[['Registered at','Name','Roll number','Phone','Institution','Email'].map(q).join(',')];
+    ROWS.forEach(function(r){ lines.push([r.at,r.name,r.roll,r.phone,r.institution,r.email].map(q).join(',')); });
+    var blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='pvx-participants-'+new Date().toISOString().slice(0,10)+'.csv';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },400);
+  }
+  function wire(){
+    var l=$('pvxLoad'); if(l && !l._w){ l._w=1; l.addEventListener('click',load); }
+    var c=$('pvxCsv');  if(c && !c._w){ c._w=1; c.addEventListener('click',csv); }
+  }
+  var nav=document.querySelector('.anavv a[data-sec="adm-workshops"]');
+  if(nav) nav.addEventListener('click',function(){ setTimeout(wire,40); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
 })();
 </script>
 </body>

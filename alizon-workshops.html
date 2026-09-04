@@ -1878,7 +1878,8 @@ footer a:hover{text-decoration:underline}
       <div class="ey">Open to Everyone</div>
       <h2 class="serif">Start right now — no registration</h2>
       <p>Built with our partner colleges and free for anyone to work through: pharmacy students,
-         practising pharmacists and clinicians alike. Nothing to book, nothing to sign, no account needed.</p>
+         practising pharmacists and clinicians alike. Nothing to book and no account to create — give your name,
+         roll number and phone at the door and start.</p>
     </div>
     <div class="ow-grid" id="owHost"></div>
   </div>
@@ -3427,7 +3428,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
     does:['Patient interviewing','Medication history','ADR identification','Seriousness','Naranjo causality',
           'ICSR completion','Duplicate detection','Signal assessment'],
     facts:[['Cases','7, difficulty 1–7'],['Time','40–70 minutes each'],['Cost','Free'],
-           ['Sign-in','Not required'],['You keep','Your own PDF report']],
+           ['To start','Name, roll no. and phone'],['You keep','Your own PDF report']],
     partner:{ name:'Mar Dioscorus College of Pharmacy',
               sub:'Malankara Orthodox Church · Thiruvananthapuram, Kerala',
               logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
@@ -3440,14 +3441,14 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
   function card(w){
     return '<article class="ow">'
       + '<div>'
-        + '<span class="tag">● Open to everyone — no sign-in</span>'
+        + '<span class="tag">● Open to everyone — free, no account needed</span>'
         + '<h3 class="serif">'+esc(w.title)+'</h3>'
         + '<div class="ey" style="margin-top:8px">'+esc(w.kicker)+'</div>'
         + '<p class="lead">'+w.lead+'</p>'
         + '<div class="does">'+w.does.map(function(d){ return '<span>'+esc(d)+'</span>'; }).join('')+'</div>'
         + '<div class="act">'
           + '<a class="btn pri" href="'+esc(w.href)+'">'+esc(w.cta)+' &rarr;</a>'
-          + '<span class="note">Opens straight away. Nothing is submitted anywhere unless you are a signed-in Alizon student.</span>'
+          + '<span class="note">Opens straight away — sign in with your name, roll number and phone. Nothing you do inside is submitted anywhere unless you are a signed-in Alizon student.</span>'
         + '</div>'
       + '</div>'
       + '<aside class="ow-side">'

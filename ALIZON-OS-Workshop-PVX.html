@@ -148,6 +148,20 @@
     text-transform:uppercase;color:var(--success);background:rgba(30,142,90,.1);border:1px solid rgba(30,142,90,.3);
     border-radius:100px;padding:5px 13px}
   @media(max-width:560px){.lockup img{height:40px}.lockup img.crest{height:54px}.lockup{gap:12px}}
+  .entry{max-width:560px}
+  .entry .fg{margin-bottom:13px}
+  .entry label{display:block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:5px}
+  .entry label .req{color:var(--crimson)}
+  .entry input{width:100%}
+  .entry .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){.entry .two{grid-template-columns:1fr}}
+  .entry .consent{font-size:12px;color:var(--muted);line-height:1.65;background:var(--panel2);
+    border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin:4px 0 13px}
+  .whoami{display:flex;align-items:center;gap:11px;flex-wrap:wrap;background:var(--panel2);
+    border:1px solid var(--line);border-radius:11px;padding:10px 14px;margin-bottom:13px;font-size:13px}
+  .whoami b{font-family:'Source Serif Pro',Georgia,serif;font-size:14.5px}
+  .whoami .sp{margin-left:auto}
   .hero h1{font-size:clamp(22px,3.4vw,31px);margin:7px 0 6px}
   .hero p{font-size:13.5px;color:var(--muted);max-width:80ch}
   .synth{border-left:3px solid var(--warn);background:rgba(180,83,9,.08);padding:9px 13px;border-radius:0 10px 10px 0;
@@ -226,12 +240,13 @@
     <p><b>Interview. Investigate. Identify. Report.</b> You are not given a case. You are given a patient who has
       noticed something, and everything else you must go and find. Nothing is volunteered that you did not ask for.</p>
     <div class="row" style="margin:10px 0 4px">
-      <span class="openbadge">● Open to everyone — no sign-in needed</span>
+      <span class="openbadge">● Open to everyone — free, no account needed</span>
     </div>
     <p style="font-size:13px;color:var(--muted);margin-top:8px">Run jointly by Alizon and Mar Dioscorus College of
       Pharmacy, this workshop is free and open to any pharmacy student, pharmacist or clinician who wants to practise
-      a real pharmacovigilance investigation. Work a case, download your own report — nothing is submitted anywhere
-      unless you are a signed-in Alizon student.</p>
+      a real pharmacovigilance investigation. Sign in below with your name, roll number and phone — no account to
+      create and nothing to pay — then work a case and download your own report. Nothing you do inside the workshop
+      is submitted anywhere unless you are a signed-in Alizon student.</p>
     <div class="synth"><b>Educational simulation.</b> Every patient, identifier, batch number and laboratory value in this
       workshop is fictional and synthetic. It is for training and assessment only and must never be used as clinical
       decision support or entered into a real safety database.</div>
@@ -274,14 +289,43 @@
     <div id="expBrief" data-exp="pvx"></div>
 
     <div class="card">
-      <h2 style="font-size:19px;margin-bottom:5px">Choose your case</h2>
-      <p class="muted" style="font-size:13px">Seven patients, seven different kinds of difficulty. Each one has a complete
-        hidden record. You will see none of it until the debrief — only what the patient tells you, and what you can get
-        out of the doctor, the pharmacist, the medical record and the laboratory.</p>
-      <div class="cases" id="caseList"></div>
-      <div class="row" style="margin-top:6px">
-        <button class="btn" id="startBtn" type="button" disabled>Take the case</button>
-        <span class="muted" style="font-size:12.5px" id="startHint">Select a case above.</span>
+      <h2 style="font-size:19px;margin-bottom:5px" id="pickHead">Sign in to start</h2>
+      <p class="muted" style="font-size:13px" id="pickSub">Tell us who you are, and the workshop opens. Seven patients,
+        seven different kinds of difficulty — each with a complete hidden record you will not see until the debrief.</p>
+        <div id="entryGate" style="display:none">
+        <div class="entry">
+          <div class="fg"><label>Full name <span class="req">*</span></label>
+            <input type="text" id="egName" autocomplete="name" placeholder="As it should appear on your report"></div>
+          <div class="two">
+            <div class="fg"><label>Roll / register number <span class="req">*</span></label>
+              <input type="text" id="egRoll" autocomplete="off" placeholder="e.g. 21PH045"></div>
+            <div class="fg"><label>Phone <span class="req">*</span></label>
+              <input type="text" id="egPhone" autocomplete="tel" inputmode="tel" placeholder="10-digit mobile"></div>
+          </div>
+          <div class="two">
+            <div class="fg"><label>College / institution</label>
+              <input type="text" id="egInst" autocomplete="organization" placeholder="Optional"></div>
+            <div class="fg"><label>Email</label>
+              <input type="text" id="egEmail" autocomplete="email" placeholder="Optional"></div>
+          </div>
+          <div class="consent">Your name, roll number and phone are recorded so the workshop can be credited to you
+            and your report carries your name. They are shared with <b>Alizon</b> and <b>Mar Dioscorus College of
+            Pharmacy</b> as the joint organisers, and with nobody else. Nothing you do inside the workshop —
+            your answers, your marks, your report — is sent anywhere.</div>
+          <div class="row">
+            <button class="btn" id="egGo" type="button">Sign in and start &rarr;</button>
+            <span class="muted" style="font-size:12.5px" id="egMsg"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="casePick" style="display:none">
+        <div class="whoami" id="whoBox"></div>
+        <div class="cases" id="caseList"></div>
+        <div class="row" style="margin-top:6px">
+          <button class="btn" id="startBtn" type="button" disabled>Take the case</button>
+          <span class="muted" style="font-size:12.5px" id="startHint">Select a case above.</span>
+        </div>
       </div>
     </div>
 
@@ -531,6 +575,7 @@
 
 <script src="alizon-experiment-brief.js?v=2"></script>
 <script src="alizon-experiment-data.js?v=18"></script>
+<script src="alizon-pvx-register.js?v=1"></script>
 <script src="pvx-cases.js?v=1"></script>
 <script src="pvx-signal-data.js?v=1"></script>
 <script src="pvx-engine.js?v=1"></script>
@@ -567,6 +612,58 @@ function profile(){ try{ return JSON.parse(localStorage.getItem('alizonProfile')
 var FKEY='alizonPvxCases';
 function extraCases(){ try{ return JSON.parse(localStorage.getItem(FKEY)||'[]'); }catch(e){ return []; } }
 function allCases(){ return (window.PVX_CASES||[]).concat(extraCases()); }
+
+/* ---------------- who is doing the workshop ---------------- */
+/* Public visitors sign in with name, roll number and phone before the cases
+   appear. A signed-in Alizon student is already identified and is never asked
+   again — their profile IS the registration. */
+function participant(){
+  try{
+    var p=JSON.parse(localStorage.getItem('alizonProfile')||'null');
+    if(p && p.reg && !p.test) return { name:p.name||'', roll:p.reg, phone:'', institution:'Alizon School of Medical & Digital Intelligence', student:true };
+  }catch(e){}
+  var r = window.AlizonPvxRegister ? AlizonPvxRegister.get() : null;
+  return r ? { name:r.name, roll:r.roll, phone:r.phone, institution:r.institution||'', student:false } : null;
+}
+function showGate(){
+  var me=participant();
+  var gate=$('entryGate'), pick=$('casePick');
+  if(me){
+    gate.style.display='none'; pick.style.display='';
+    $('pickHead').textContent='Choose your case';
+    $('pickSub').textContent='Seven patients, seven different kinds of difficulty. Each one has a complete hidden '
+      +'record. You will see none of it until the debrief — only what the patient tells you, and what you can get out '
+      +'of the doctor, the pharmacist, the medical record and the laboratory.';
+    $('whoBox').innerHTML='<span>Signed in as</span> <b>'+esc(me.name||'—')+'</b>'
+      +'<span class="muted">'+esc(me.roll||'')+(me.institution?' · '+esc(me.institution):'')+'</span>'
+      +(me.student?'<span class="qq excellent">Alizon student</span>':'')
+      +'<span class="sp"></span>'
+      +(me.student?'':'<button class="btn ghost sm" id="egOut" type="button">Not you?</button>');
+    var out=$('egOut');
+    if(out) out.addEventListener('click',function(){
+      if(!confirm('Sign out of the workshop? Your details on this device will be cleared.')) return;
+      AlizonPvxRegister.clear(); showGate();
+    });
+    renderCases();
+  } else {
+    gate.style.display=''; pick.style.display='none';
+  }
+}
+function submitGate(){
+  var d={ name:$('egName').value, roll:$('egRoll').value, phone:$('egPhone').value,
+          institution:$('egInst').value, email:$('egEmail').value };
+  var err=AlizonPvxRegister.validate(d);
+  var msg=$('egMsg');
+  if(err){ msg.innerHTML='<span style="color:var(--danger)">'+esc(err)+'</span>'; return; }
+  var btn=$('egGo'); btn.disabled=true; btn.textContent='Signing in…';
+  msg.textContent='';
+  AlizonPvxRegister.save(d).then(function(res){
+    btn.disabled=false; btn.textContent='Sign in and start →';
+    if(!res.ok){ msg.innerHTML='<span style="color:var(--danger)">'+esc(res.error||'Could not sign you in.')+'</span>'; return; }
+    /* a failed cloud write must never stop somebody doing the workshop */
+    showGate(); window.scrollTo(0,0);
+  });
+}
 
 /* ---------------- case list ---------------- */
 function renderCases(){
@@ -1154,6 +1251,13 @@ function mountWriter(){
     noSubmitNote:'This is an open workshop — download your report to keep it. '
                 +'Submission to faculty is for signed-in Alizon students.'
   });
+  var me=participant();
+  if(me){
+    var f=function(id,v){ var el=host.querySelector('#'+id); if(el && !el.value && v) el.value=v; };
+    f('apr-name', me.name);
+    f('apr-class', me.roll);
+    f('apr-batch', me.institution);
+  }
 }
 
 /* ---------------- attempts log (this device) ---------------- */
@@ -1388,7 +1492,11 @@ if(isFaculty()){ $('facTab').style.display=''; $('facBtn').style.display='';
 var pr=profile();
 $('whoami').textContent = pr.name ? (pr.name+(pr.reg?' · '+pr.reg:'')) : '';
 
-renderCases();
+$('egGo').addEventListener('click',submitGate);
+['egName','egRoll','egPhone','egInst','egEmail'].forEach(function(id){
+  $(id).addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); submitGate(); } });
+});
+showGate();
 })();
 </script>
 <script src="alizon-backbar.js?v=5"></script>
