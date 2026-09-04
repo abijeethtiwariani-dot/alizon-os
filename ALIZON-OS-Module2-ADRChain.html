@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON AOS · Module 2 · From Bedside to Uppsala — the ADR reporting chain</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#fff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A;--danger:#C4262E;--warn:#B45309;--teal:#0E6F76;--purple:#6D28D9;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;--teal:#4bc2c9;--purple:#a78bfa;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(13px,2.6vw,26px) 80px}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(15px,2.4vw,22px);box-shadow:var(--card-shadow);margin-bottom:15px}
+  .muted{color:var(--muted)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:10px 20px;color:#fff;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .btn:hover{filter:brightness(1.07)} .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
+  .btn.ok{background:linear-gradient(120deg,#0f6b45,var(--success))}
+  .btn.sm{font-size:12.5px;padding:8px 15px}
+  .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  textarea{min-height:70px;resize:vertical;line-height:1.55}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:9px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
+  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .22s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:420px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:15px}
+  .guide h2{font-size:18px;margin-bottom:6px} .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.72} .guide p{font-size:13.5px}
+
+  .opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#1a2340,#243156);color:#fff;border-radius:14px;
+    padding:11px 16px;display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:14px;box-shadow:0 12px 32px -22px rgba(0,0,0,.8)}
+  .opbar .ttl{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px}
+  .opbar .m{display:flex;flex-direction:column;gap:2px;min-width:92px}
+  .opbar .m .k{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;opacity:.62}
+  .opbar .m .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+  .opbar .m.bad .v{color:#ff8a8a} .opbar .m.good .v{color:#7de3b0} .opbar .m.warn .v{color:#f3c46b}
+  .meter{height:5px;border-radius:100px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:2px}
+  .meter i{display:block;height:100%;background:#7de3b0;transition:width .4s}
+  .meter i.warn{background:#f3c46b} .meter i.bad{background:#ff8a8a}
+  .opbar .sp{margin-left:auto}
+  .clock{background:rgba(0,0,0,.32);border-radius:100px;padding:6px 15px;font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+  .clock.warn{background:rgba(196,38,46,.5);animation:pul 1.1s infinite}
+  @keyframes pul{50%{opacity:.55}}
+
+  .task{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:15px 17px;box-shadow:var(--card-shadow);margin-bottom:14px}
+  .task .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .task h3{font-size:17px;margin:7px 0 4px}
+  .task .q{font-size:14px;font-weight:600;line-height:1.55;margin:8px 0 4px}
+  .opts{display:grid;gap:7px;margin-top:9px}
+  .opt{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font:inherit;font-size:13.5px;text-align:left;color:var(--ink);
+    background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;line-height:1.5}
+  .opt:hover{border-color:var(--gold)}
+  .opt .lt{flex:none;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--pill);border:1px solid var(--line);font-size:10.5px;font-weight:800;color:var(--muted)}
+  .opt.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)} .opt.pick .lt{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .opt.right{border-color:var(--success);background:rgba(30,142,90,.07)} .opt.right .lt{background:var(--success);border-color:var(--success);color:#fff}
+  .opt.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)} .opt.wrong .lt{background:var(--danger);border-color:var(--danger);color:#fff}
+  .fb{border-radius:11px;padding:12px 15px;margin-top:12px;font-size:13.5px;line-height:1.65;border:1px solid}
+  .fb.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.34)}
+  .fb.part{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.34)}
+  .fb.no{background:rgba(196,38,46,.08);border-color:rgba(196,38,46,.32)}
+  .fb .hd{font-weight:800;font-size:12.5px;margin-bottom:5px}
+  .fb.ok .hd{color:var(--success)} .fb.part .hd{color:var(--warn)} .fb.no .hd{color:var(--danger)}
+  .fb ul{margin:6px 0 0 17px}
+
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:11px;margin:8px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:15px;font-weight:700;padding:13px 17px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .outcome{border:1px solid var(--line);border-left:4px solid var(--success);border-radius:11px;padding:12px 15px;margin-bottom:9px;background:var(--panel2);font-size:13.5px;line-height:1.6}
+  .outcome.harm{border-left-color:var(--danger)}
+  .outcome b{display:block;margin-bottom:3px}
+  .bar{height:8px;border-radius:100px;background:var(--pill);overflow:hidden;min-width:70px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))} .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
+
+  .chat{max-height:330px;overflow-y:auto;padding:4px 2px;margin-bottom:11px}
+  .bub{max-width:84%;padding:11px 14px;border-radius:14px;font-size:13.5px;line-height:1.6;margin-bottom:9px}
+  .bub.pt{background:var(--pill);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .bub.me{background:rgba(14,111,118,.12);border:1px solid rgba(14,111,118,.32);margin-left:auto;border-bottom-right-radius:4px}
+  .bub .who{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  .asks{display:grid;gap:7px}
+  .ask{cursor:pointer;font:inherit;font-size:13px;text-align:left;color:var(--ink);background:var(--panel2);
+    border:1.5px solid var(--line);border-radius:10px;padding:9px 13px;line-height:1.5}
+  .ask:hover{border-color:var(--gold)} .ask.used{opacity:.4;pointer-events:none}
+  .naranjo{display:grid;gap:6px;margin-top:9px}
+  .nq{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--panel2);
+    border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px}
+  .nq .yn{display:flex;gap:5px}
+  .nq .yn button{cursor:pointer;font:inherit;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:100px;
+    background:var(--panel);border:1.5px solid var(--line);color:var(--ink);min-width:46px}
+  .nq .yn button.on{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .nscore{display:flex;gap:12px;align-items:center;margin-top:10px;padding:10px 13px;background:var(--gold-soft);
+    border:1px solid rgba(161,98,7,.3);border-radius:10px;font-size:13.5px}
+  .nscore b{font-size:20px;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .form{display:grid;gap:11px;margin-top:9px}
+  .frow{display:grid;grid-template-columns:170px 1fr;gap:11px;align-items:start}
+  @media(max-width:620px){.frow{grid-template-columns:1fr}}
+  .frow .fl{font-size:11.5px;font-weight:700;color:var(--muted);padding-top:9px}
+  .frow.miss input,.frow.miss textarea{border-color:var(--danger)}
+
+  @media print{.tabs,.btn,.no-print,.opbar{display:none!important} body{background:#fff} .panel{display:block!important}}
+
+  /* ---- reporting-chain additions ---- */
+  .rail{display:flex;gap:0;align-items:stretch;margin:14px 0 4px;overflow-x:auto;padding-bottom:4px}
+  .rl{flex:1;min-width:132px;position:relative;padding:11px 13px 11px 24px;background:var(--panel2);
+    border:1px solid var(--line);border-right:0;font-size:12px;line-height:1.4}
+  .rl:first-child{border-radius:11px 0 0 11px;padding-left:14px}
+  .rl:last-child{border-right:1px solid var(--line);border-radius:0 11px 11px 0}
+  .rl:not(:first-child):before{content:'';position:absolute;left:-1px;top:0;border-left:12px solid var(--bg);
+    border-top:22px solid transparent;border-bottom:22px solid transparent;height:100%}
+  .rl .st{font-size:9.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  .rl b{display:block;font-family:'Source Serif Pro',Georgia,serif;font-size:13.5px;margin-top:2px}
+  .rl.on{background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent;color:#fff}
+  .rl.on .st{color:rgba(255,255,255,.72)}
+  .rl.done{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.3)}
+  .rl.done .st{color:var(--success)}
+  .quote{border-left:3px solid var(--gold);background:var(--gold-soft);padding:12px 15px;border-radius:0 11px 11px 0;
+    margin:11px 0;font-size:14px;line-height:1.7;font-style:italic}
+  .quote b{font-style:normal;display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:5px}
+  .paper{background:#fff;color:#1a1516;border:1px solid #ddd6cf;border-radius:8px;padding:16px 18px;margin:11px 0;
+    box-shadow:0 12px 30px -24px rgba(0,0,0,.55)}
+  html.dark .paper{background:#f7f5f1}
+  .paper .ph{border-bottom:2px solid var(--crimson);padding-bottom:7px;margin-bottom:11px}
+  .paper .ph b{font-family:'Source Serif Pro',Georgia,serif;font-size:15px;color:var(--crimson)}
+  .paper .ph span{display:block;font-size:10.5px;color:#6e6a63;margin-top:2px}
+  .paper table{width:100%;border-collapse:collapse;font-size:12px;min-width:0}
+  .paper td{border:1px solid #ddd6cf;padding:6px 9px;vertical-align:top;background:transparent!important}
+  .paper td.k{width:38%;font-weight:600;color:#4a453f;background:#faf8f6!important}
+  .paper td.blank{color:#b9312b;font-style:italic}
+  .codebox{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:9px;margin:10px 0}
+  .code{cursor:pointer;font:inherit;text-align:left;background:var(--panel2);border:1.5px solid var(--line);
+    border-radius:11px;padding:11px 13px;color:var(--ink);line-height:1.45}
+  .code:hover{border-color:var(--gold)}
+  .code.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)}
+  .code.right{border-color:var(--success);background:rgba(30,142,90,.08)}
+  .code.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)}
+  .code b{display:block;font-size:13.5px}
+  .code small{color:var(--muted);font-size:11px;display:block;margin-top:3px}
+  .code .lvl{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+    padding:2px 8px;border-radius:100px;background:var(--pill);border:1px solid var(--line);color:var(--muted);margin-top:6px}
+  .grade{display:flex;align-items:center;gap:13px;flex-wrap:wrap;background:var(--panel2);border:1px solid var(--line);
+    border-radius:12px;padding:12px 15px;margin:11px 0}
+  .grade .num{font-family:'Source Serif Pro',Georgia,serif;font-size:30px;font-weight:700;color:var(--gold)}
+  .grade .lb{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:11px 0}
+  @media(max-width:720px){.split{grid-template-columns:1fr}}
+  .world{border:1px solid var(--line);border-radius:13px;padding:14px 16px;background:var(--panel2)}
+  .world.good{border-left:4px solid var(--success)}
+  .world.bad{border-left:4px solid var(--danger)}
+  .world h4{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .world .big{font-family:'Source Serif Pro',Georgia,serif;font-size:26px;font-weight:700}
+  .world.good .big{color:var(--success)} .world.bad .big{color:var(--danger)}
+  .world p{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:7px}
+  .hops{display:grid;gap:9px;margin:11px 0}
+  .hop{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;background:var(--panel2);
+    border:1px solid var(--line);border-radius:11px;padding:11px 14px;font-size:13px;line-height:1.6}
+  .hop .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--crimson);
+    color:#fff;font-size:12px;font-weight:800;flex:none}
+  .hop b{display:block;font-family:'Source Serif Pro',Georgia,serif;font-size:14px}
+  .hop small{color:var(--muted);font-size:11.5px}
+  .synth{border-left:3px solid var(--warn);background:rgba(180,83,9,.08);padding:9px 13px;border-radius:0 10px 10px 0;
+    margin:10px 0;font-size:12.5px;color:var(--warn);line-height:1.6}
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-test-mode.js?v=1"></script>
+<script src="alizon-lab-gate.js?v=6"></script>
+<div class="wrap">
+
+  <div class="hero">
+    <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">
+      Pharmacy AI · Module 2 · Unit 4 · Practical 3</div>
+    <h1>From Bedside to Uppsala</h1>
+    <p class="muted" style="font-size:13.5px;max-width:80ch">One suspected reaction, noticed by one nurse in one district
+      hospital. You will carry it the whole way — to the hospital's ADR Monitoring Centre, on to the National
+      Coordination Centre at the Indian Pharmacopoeia Commission, and into VigiBase at the Uppsala Monitoring Centre in
+      Sweden, where the world's safety data lives. Every decision you make survives to the next stage. Some of them
+      decide whether the report was worth making at all.</p>
+    <div class="synth"><b>Educational simulation.</b> The patient, the hospital and every identifier are fictional.
+      The organisations, forms, dictionaries and databases are real and are described as they actually work, but no
+      data here comes from or goes to any real safety system.</div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn ghost sm" id="themeBtn" type="button">Light / dark</button>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-p="brief">1 · Brief</button>
+    <button class="tab" data-p="bedside">2 · Bedside</button>
+    <button class="tab" data-p="amc">3 · AMC</button>
+    <button class="tab" data-p="ncc">4 · NCC-PvPI</button>
+    <button class="tab" data-p="umc">5 · Uppsala</button>
+    <button class="tab" data-p="loop">6 · Feedback</button>
+    <button class="tab" data-p="debrief">7 · Debrief</button>
+    <button class="tab" data-p="report">8 · Report</button>
+  </div>
+
+  <div class="opbar" id="opbar" style="display:none">
+    <div class="ttl">ADR/2027/KL/0416</div>
+    <div class="m"><span class="k">Report validity</span><span class="v" id="obVal">100</span>
+      <span class="meter"><i id="obValB" style="width:100%"></i></span></div>
+    <div class="m"><span class="k">Signal value</span><span class="v" id="obSig">100</span>
+      <span class="meter"><i id="obSigB" style="width:100%"></i></span></div>
+    <div class="m"><span class="k">Completeness</span><span class="v" id="obGrade">0.00</span></div>
+    <div class="m"><span class="k">In the chain</span><span class="v" id="obDay">Day 0</span></div>
+    <div class="sp"></div>
+    <div class="clock" id="obClock">00:00</div>
+  </div>
+
+  <div class="rail" id="rail"></div>
+
+  <!-- ============ 1 · BRIEF ============ -->
+  <div class="panel on" id="p-brief">
+    <div id="expBrief" data-exp="adrchain"></div>
+
+    <div class="card">
+      <h2 style="font-size:19px;margin-bottom:6px">The four desks you will sit at</h2>
+      <div class="hops">
+        <div class="hop"><span class="n">1</span><span><b>The bedside — Government District Hospital, Kerala</b>
+          <small>A DOTS centre nurse notices something and tells the pharmacist. Nothing has been written down yet.
+          Whether this becomes a report at all is decided here.</small></span></div>
+        <div class="hop"><span class="n">2</span><span><b>The AMC — the hospital's ADR Monitoring Centre</b>
+          <small>One of the ADR Monitoring Centres enrolled under the Pharmacovigilance Programme of India. The
+          Suspected Adverse Drug Reaction Reporting Form is completed here, and the follow-up is chased here.</small></span></div>
+        <div class="hop"><span class="n">3</span><span><b>NCC-PvPI — Indian Pharmacopoeia Commission, Ghaziabad</b>
+          <small>The National Coordination Centre. The case is quality-reviewed, coded into MedDRA and WHODrug,
+          de-duplicated against the national database, and transmitted onward in E2B format.</small></span></div>
+        <div class="hop"><span class="n">4</span><span><b>UMC — Uppsala Monitoring Centre, Sweden</b>
+          <small>The WHO Collaborating Centre that runs VigiBase, the global database of individual case safety
+          reports. Your case is now one row among tens of millions, and it either joins a pattern or it does not.</small></span></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="startBtn" type="button">Take the report</button>
+        <span class="muted" style="font-size:12.5px">About 35–50 minutes.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:16px;margin-bottom:6px">How you are marked</h3>
+      <div class="tw"><table class="rubric">
+        <tr><th>Competency</th><th>Marks</th></tr>
+        <tr><td>Recognising a reportable reaction and acting on it</td><td>10</td></tr>
+        <tr><td>Securing the four minimum elements of a valid case</td><td>15</td></tr>
+        <tr><td>Completing the reporting form accurately</td><td>10</td></tr>
+        <tr><td>Seriousness and causality at the AMC</td><td>10</td></tr>
+        <tr><td>Identifying what follow-up the case needs</td><td>10</td></tr>
+        <tr><td>MedDRA and WHODrug coding</td><td>20</td></tr>
+        <tr><td>Duplicate handling and onward transmission</td><td>10</td></tr>
+        <tr><td>Reading the global data — signal, not proof</td><td>10</td></tr>
+        <tr><td>Closing the loop back to the reporter</td><td>5</td></tr>
+        <tr class="tot"><td>Total</td><td>100</td></tr>
+      </table></div>
+      <div class="fb part" style="margin-top:10px"><div class="hd">Two things are watched the whole way</div>
+        <b>Report validity</b> falls when the case loses something that makes it a case at all — one of the four
+        minimum elements, or an internal contradiction a reviewer would reject it for. <b>Signal value</b> falls when
+        the case survives but arrives useless: coded to a term nobody will ever search, missing the fields that let
+        anyone judge it, or merged into somebody else's case. A report can be perfectly valid and completely
+        worthless, and that is the harder failure to see.</div>
+    </div>
+  </div>
+
+  <!-- ============ 2 · BEDSIDE ============ -->
+  <div class="panel" id="p-bedside">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">Ward 4 · DOTS centre · Tuesday, 09:40</h2>
+      <p class="muted" style="font-size:13px">Staff Nurse Reshma stops you in the corridor. She is not sure this is
+        anything.</p>
+      <div class="quote"><b>Staff Nurse Reshma</b>“Bed 12 — the TB patient, Mr Vijayan. He says his eyes have gone dim
+        for the last two weeks and the colours look washed out. He keeps asking me to read the labels for him. I told
+        him it is probably his sugar. Should I write it somewhere, or is it nothing?”</div>
+      <div id="bs1"></div>
+    </div>
+    <div class="card" id="bsCard2" style="display:none">
+      <h3 style="font-size:16px">Go and see the patient</h3>
+      <div id="bs2"></div>
+    </div>
+    <div class="card" id="bsCard3" style="display:none">
+      <h3 style="font-size:16px">The four minimum elements</h3>
+      <p class="muted" style="font-size:12.5px">A report is only a valid case if all four are present. Tick the ones you
+        have actually secured — not the ones you assume.</p>
+      <div id="bs3"></div>
+    </div>
+    <div class="card" id="bsCard4" style="display:none">
+      <h3 style="font-size:16px">How will you send it?</h3>
+      <div id="bs4"></div>
+    </div>
+  </div>
+
+  <!-- ============ 3 · AMC ============ -->
+  <div class="panel" id="p-amc">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">ADR Monitoring Centre · the same hospital · Wednesday</h2>
+      <p class="muted" style="font-size:13px">You are now the Pharmacovigilance Associate. The form in front of you is
+        the Suspected Adverse Drug Reaction Reporting Form used across the Pharmacovigilance Programme of India.</p>
+      <div id="amcForm"></div>
+    </div>
+    <div class="card" id="amcCard2" style="display:none">
+      <h3 style="font-size:16px">Seriousness</h3>
+      <div id="amcSer"></div>
+    </div>
+    <div class="card" id="amcCard3" style="display:none">
+      <h3 style="font-size:16px">Causality — WHO-UMC system</h3>
+      <div id="amcCaus"></div>
+    </div>
+    <div class="card" id="amcCard4" style="display:none">
+      <h3 style="font-size:16px">Follow-up</h3>
+      <p class="muted" style="font-size:12.5px">The case can still be improved. Choose what you will go back for —
+        each enquiry costs a day, and the case cannot wait forever.</p>
+      <div id="amcFu"></div>
+    </div>
+  </div>
+
+  <!-- ============ 4 · NCC ============ -->
+  <div class="panel" id="p-ncc">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">National Coordination Centre · IPC, Ghaziabad</h2>
+      <p class="muted" style="font-size:13px">The case has arrived from your AMC along with several hundred others this
+        week. Before it can go anywhere it has to be turned from words into data.</p>
+      <div id="nccIn"></div>
+    </div>
+    <div class="card" id="nccCard2" style="display:none">
+      <h3 style="font-size:16px">Code the reaction — MedDRA</h3>
+      <p class="muted" style="font-size:12.5px">MedDRA is the regulatory dictionary. What you choose here is what every
+        analyst in the world will search on. The patient's own words are never the code.</p>
+      <div id="nccMed"></div>
+      <div id="nccMedFb"></div>
+    </div>
+    <div class="card" id="nccCard3" style="display:none">
+      <h3 style="font-size:16px">Code the medicine — WHODrug</h3>
+      <div id="nccDrug"></div>
+      <div id="nccDrugFb"></div>
+    </div>
+    <div class="card" id="nccCard4" style="display:none">
+      <h3 style="font-size:16px">Duplicate check against the national database</h3>
+      <div id="nccDup"></div>
+    </div>
+    <div class="card" id="nccCard5" style="display:none">
+      <h3 style="font-size:16px">Completeness, and onward transmission</h3>
+      <div id="nccSend"></div>
+    </div>
+  </div>
+
+  <!-- ============ 5 · UMC ============ -->
+  <div class="panel" id="p-umc">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">Uppsala Monitoring Centre · VigiBase</h2>
+      <div id="umcIn"></div>
+    </div>
+    <div class="card" id="umcCard2" style="display:none">
+      <h3 style="font-size:16px">Does your case join the pattern?</h3>
+      <div id="umcSearch"></div>
+    </div>
+    <div class="card" id="umcCard3" style="display:none">
+      <h3 style="font-size:16px">What does this mean?</h3>
+      <div id="umcSignal"></div>
+    </div>
+  </div>
+
+  <!-- ============ 6 · FEEDBACK ============ -->
+  <div class="panel" id="p-loop">
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:4px">Closing the loop</h2>
+      <div id="loopIn"></div>
+    </div>
+    <div class="card" id="loopCard2" style="display:none">
+      <h3 style="font-size:16px">Write back to the ward</h3>
+      <p class="muted" style="font-size:12.5px">Nurse Reshma reported this. Nothing determines whether she reports the
+        next one more than whether she ever hears what happened to this one.</p>
+      <textarea id="loopNote" placeholder="What you would tell her — what the report became, and what it changed." style="min-height:120px"></textarea>
+      <div class="row" style="margin-top:11px">
+        <button class="btn" id="finishBtn" type="button">Submit the case and finish</button>
+        <span class="muted" style="font-size:12.5px" id="finMsg"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 7 · DEBRIEF ============ -->
+  <div class="panel" id="p-debrief">
+    <div id="debrief"><div class="card"><p class="muted">Carry the report all the way to Uppsala and close the loop to
+      see the debrief.</p></div></div>
+  </div>
+
+  <!-- ============ 8 · REPORT ============ -->
+  <div class="panel" id="p-report">
+    <div class="card" id="repEmpty"><p class="muted">Your report writer opens once you finish the case.</p></div>
+    <div id="reportWriter" style="display:none"></div>
+  </div>
+
+</div>
+
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-experiment-data.js?v=19"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-attendance.js?v=3"></script>
+<script src="alizon-practical-report.js?v=6"></script>
+<script src="alizon-practical-submit.js?v=6"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+/* ================= the case =================
+   Mr Vijayan, 46, six weeks into Category I anti-tuberculosis therapy on a
+   four-drug fixed-dose combination. The reaction is ethambutol optic
+   neuritis. An FDC is used deliberately: it hides which component is the
+   suspect, and that is the single most common coding failure in real
+   anti-TB reports. */
+var C = {
+  id:'ADR/2027/KL/0416',
+  patient:{ name:'Vijayan K.', age:'46 years', sex:'Male', weight:'44 kg',
+            id:'DOTS/TVM/2026/1187', district:'Thiruvananthapuram' },
+  drug:{ brand:'AKT-4 (fixed-dose combination)', components:'Isoniazid 75 mg + Rifampicin 150 mg + Pyrazinamide 400 mg + Ethambutol 275 mg',
+         regimen:'Three tablets once daily', suspect:'Ethambutol hydrochloride',
+         suspectDose:'825 mg daily — about 19 mg/kg at 44 kg',
+         start:'12 January 2027', stop:'Continuing at the time of the report',
+         indication:'Pulmonary tuberculosis, Category I intensive phase' },
+  event:{ lay:'eyes have gone dim for about two weeks and the colours look washed out',
+          onset:'Approximately 10 February 2027 — week 6 of treatment',
+          findings:'Visual acuity 6/24 in both eyes. Ishihara 4 of 17 plates. Fundus normal. '
+                  +'Central scotoma on field testing. Intraocular pressure normal.',
+          term:'Ethambutol optic neuritis (toxic optic neuropathy), retrobulbar',
+          outcome:'Not recovered at the time of reporting' },
+  hidden:{ renal:'Serum creatinine 1.6 mg/dL — mild renal impairment. Ethambutol is renally cleared, so exposure '
+                +'is higher than the milligram dose suggests. Renal function was never checked before starting.',
+           baseline:'No baseline visual acuity or colour vision was recorded before treatment started, although the '
+                   +'programme guidance asks for it.',
+           alt:'Fasting glucose 94 mg/dL — not diabetic. Vitamin B12 normal. No methanol exposure. Intraocular '
+              +'pressure normal, so not glaucoma. No alternative cause survives.',
+           dechal:'Ethambutol was stopped on 20 February and the regimen modified. Colour discrimination improved '
+                 +'over the following eight weeks; acuity recovered to 6/12.' }
+};
+
+/* ---- session state ---- */
+var S=null, tick=null, marked=null;
+function newS(){ return { started:Date.now(), day:0, validity:100, signal:100,
+  bedside:{}, amc:{}, ncc:{}, umc:{}, loop:{}, log:[] }; }
+function log(t){ S.log.push({t:t, at:new Date().toISOString()}); }
+function hit(meter, n, why){
+  S[meter]=Math.max(0,Math.min(100,S[meter]-n));
+  if(why) log((n>0?'−':'+')+Math.abs(n)+' '+meter+': '+why);
+  refresh();
+}
+
+/* ---- the rail ---- */
+var STAGES=[['bedside','The bedside','District hospital'],['amc','AMC','Hospital ADR centre'],
+            ['ncc','NCC-PvPI','IPC Ghaziabad'],['umc','UMC','VigiBase, Uppsala'],['loop','Feedback','Back to the ward']];
+var stageDone={};
+function renderRail(cur){
+  $('rail').innerHTML=STAGES.map(function(s){
+    var cls='rl'+(s[0]===cur?' on':(stageDone[s[0]]?' done':''));
+    return '<div class="'+cls+'"><span class="st">'+esc(s[2])+'</span><b>'+esc(s[1])+'</b></div>';
+  }).join('');
+}
+
+/* ---- op bar ---- */
+function mmss(ms){var s=Math.floor(ms/1000);return ('0'+Math.floor(s/60)).slice(-2)+':'+('0'+(s%60)).slice(-2);}
+function meter(v,b,val){ $(v).textContent=val; var e=$(b); e.style.width=val+'%';
+  e.className = val>=70?'':(val>=40?'warn':'bad'); }
+function grade(){
+  /* a plain-language stand-in for vigiGrade: the fields that let somebody else
+     judge the case, scored 0–1 */
+  var f=[ S.bedside.elements&&S.bedside.elements.length===4, !!S.amc.form,
+          !!S.amc.serious, !!S.amc.caus,
+          (S.amc.followUp||[]).indexOf('renal')>=0, (S.amc.followUp||[]).indexOf('ophthal')>=0,
+          (S.amc.followUp||[]).indexOf('dechal')>=0,
+          S.ncc.medPrimary&&/optic/i.test(S.ncc.medPrimary),
+          S.ncc.drug==='component', !!S.ncc.dupHandled ];
+  return f.filter(Boolean).length/f.length;
+}
+function refresh(){
+  if(!S) return;
+  meter('obVal','obValB',S.validity);
+  meter('obSig','obSigB',S.signal);
+  $('obGrade').textContent=grade().toFixed(2);
+  $('obDay').textContent='Day '+S.day;
+}
+function startClock(){ if(tick) clearInterval(tick);
+  tick=setInterval(function(){ if(S) $('obClock').textContent=mmss(Date.now()-S.started); },1000); }
+
+/* ---- option renderer ---- */
+function opts(hostId, list, onPick, multi){
+  var host=$(hostId); var picked=[];
+  host.innerHTML='<div class="opts">'+list.map(function(o,i){
+    return '<button class="opt" type="button" data-i="'+i+'"><span class="lt">'+String.fromCharCode(65+i)+'</span>'
+      +'<span>'+o.t+(o.s?'<br><span class="muted" style="font-size:12px">'+o.s+'</span>':'')+'</span></button>';
+  }).join('')+'</div><div class="fbwrap"></div>';
+  host.querySelectorAll('.opt').forEach(function(b){
+    b.addEventListener('click',function(){
+      var i=+b.getAttribute('data-i');
+      if(multi){
+        b.classList.toggle('pick');
+        picked = [].slice.call(host.querySelectorAll('.opt.pick')).map(function(x){return +x.getAttribute('data-i');});
+        onPick(picked, host);
+      } else {
+        if(host.dataset.locked) return;
+        host.dataset.locked='1';
+        host.querySelectorAll('.opt').forEach(function(x){ x.style.pointerEvents='none'; });
+        b.classList.add('pick');
+        onPick(i, host, b);
+      }
+    });
+  });
+}
+function fb(host, kind, head, body){
+  host.querySelector('.fbwrap').innerHTML='<div class="fb '+kind+'"><div class="hd">'+head+'</div>'+body+'</div>';
+}
+function nextCard(id){ var el=$(id); if(el){ el.style.display=''; el.scrollIntoView({behavior:'smooth',block:'nearest'}); } }
+
+/* ================= STAGE 1 · BEDSIDE ================= */
+function bedside(){
+  renderRail('bedside');
+  opts('bs1',[
+    {t:'<b>Nothing to report</b> — dim vision in a middle-aged man is almost always refractive or diabetic.',
+     s:'Reassure the nurse and move on.'},
+    {t:'<b>Tell her to note it in the case sheet</b> and mention it at the next ward round.'},
+    {t:'<b>Treat it as a suspected adverse drug reaction now</b> — go and see the patient yourself.',
+     s:'The threshold for reporting is suspicion, not proof.'},
+    {t:'<b>Wait and watch for two more weeks</b> to see whether it settles on its own.'}
+  ], function(i,host){
+    S.bedside.recognised = (i===2);
+    if(i===2){
+      fb(host,'ok','That is the right threshold',
+        'Pharmacovigilance runs on <b>suspicion, not proof</b>. Nobody needs to be sure the medicine caused it — '
+        +'certainty about a rare reaction only ever arrives after enough reports have accumulated, which is exactly '
+        +'what your report contributes to. A patient six weeks into ethambutol with failing colour vision is a '
+        +'textbook suspicion, and it is time-critical: caught early it reverses, missed it does not.');
+    } else {
+      hit('validity', 18, 'the reaction was nearly not reported at all');
+      hit('signal', 10, 'delayed recognition');
+      S.day += (i===3?14:2); refresh();
+      fb(host,'no','This is how reports are lost',
+        'Under-reporting is estimated above 90% for many reactions, and this is the moment it happens — not through '
+        +'laziness but through a reasonable-sounding alternative explanation. Ethambutol optic neuritis is '
+        +'<b>dose- and duration-related and reversible only if the drug is stopped early</b>. Two more weeks of '
+        +'watching is two more weeks of exposure. We will proceed as though you had gone to see him.');
+    }
+    nextCard('bsCard2'); patient();
+  });
+}
+function patient(){
+  $('bs2').innerHTML='<div class="quote"><b>Mr Vijayan, bed 12</b>“It started maybe two weeks back. Everything looks '
+    +'faded, like an old photo. My daughter\'s red dress — I could not tell it from the brown one. I thought it is '
+    +'because of age. No pain, no headache. I have been taking the TB tablets since January without missing.”</div>'
+    +'<p class="muted" style="font-size:12.5px">You examine him and telephone the ophthalmology unit. They see him the '
+    +'same afternoon.</p>'
+    +'<div class="paper"><div class="ph"><b>Ophthalmology note — same day</b><span>Government District Hospital · '
+    +'Department of Ophthalmology</span></div><table><tr><td class="k">Visual acuity</td><td>6/24 both eyes, not '
+    +'improving with pinhole</td></tr><tr><td class="k">Colour vision</td><td>Ishihara 4 of 17 plates — marked '
+    +'red-green defect</td></tr><tr><td class="k">Fundus</td><td>Normal discs, no pallor, no oedema</td></tr>'
+    +'<tr><td class="k">Fields</td><td>Central scotoma, both eyes</td></tr><tr><td class="k">Impression</td>'
+    +'<td>Retrobulbar optic neuritis — drug-induced until proven otherwise. Advise urgent review of ethambutol.</td>'
+    +'</tr></table></div>';
+  nextCard('bsCard3'); minimums();
+}
+function minimums(){
+  var L=[
+    {t:'<b>An identifiable patient</b> — name, hospital number, age and sex recorded.', good:true},
+    {t:'<b>An identifiable reporter</b> — you, named, with your designation and contact.', good:true},
+    {t:'<b>A suspect medicine</b> — the anti-TB tablets he is taking.', good:true},
+    {t:'<b>A suspected reaction</b> — the visual loss.', good:true},
+    {t:'<b>Proof that the drug caused it</b> — a positive rechallenge or a confirmatory test.', good:false},
+    {t:'<b>The patient\'s written consent to report</b>, signed and witnessed.', good:false},
+    {t:'<b>The doctor\'s permission</b> before a pharmacist may report anything.', good:false}
+  ];
+  opts('bs3', L, function(picked, host){
+    var chosen=picked.map(function(i){return L[i];});
+    var got=chosen.filter(function(x){return x.good;}).length;
+    var wrong=chosen.filter(function(x){return !x.good;}).length;
+    if(got===4 && wrong===0){
+      host.dataset.locked='1';
+      /* classList.add('') throws — only mark the correct ones */
+      host.querySelectorAll('.opt').forEach(function(x){ x.style.pointerEvents='none';
+        if(L[+x.getAttribute('data-i')].good) x.classList.add('right'); });
+      S.bedside.elements=['patient','reporter','drug','reaction'];
+      fb(host,'ok','All four, and nothing invented',
+        'Those four make the case valid and <b>nothing else is required</b>. The three you left out are the myths that '
+        +'stop people reporting: proof is not needed, consent to report a reaction is not needed, and a pharmacist or '
+        +'nurse may report directly — the programme is open to every healthcare professional and to patients '
+        +'themselves. Waiting for any of them is how a report becomes a non-report.');
+      nextCard('bsCard4'); route();
+    } else if(wrong>0){
+      fb(host,'part','Two of those are not requirements',
+        'Deselect anything that is not one of the four minimum elements. If you genuinely believe consent or proof is '
+        +'needed, that belief is worth examining — it is the commonest reason a suspected reaction never leaves the ward.');
+    } else {
+      fb(host,'part','Keep going', got+' of the four minimum elements selected.');
+    }
+  }, true);
+}
+function route(){
+  opts('bs4',[
+    {t:'<b>Complete the Suspected ADR Reporting Form</b> and send it to the hospital\'s ADR Monitoring Centre.',
+     s:'The red form used across the Pharmacovigilance Programme of India.'},
+    {t:'<b>Telephone the PvPI helpline</b> on 1800-180-3024 and describe it.',
+     s:'Toll-free, working hours.'},
+    {t:'<b>Report it through the ADR PvPI mobile application.</b>'},
+    {t:'<b>Write to the manufacturer</b> and let them decide whether it is worth reporting.'}
+  ], function(i,host){
+    S.bedside.route=i;
+    if(i===3){
+      hit('validity', 12, 'routed the report to the manufacturer instead of the programme');
+      fb(host,'no','Not the right destination',
+        'A marketing authorisation holder does have its own pharmacovigilance obligations, and a report to them is '
+        +'not wasted. But it does not put the case into the national programme, and you have handed the decision '
+        +'about whether it counts to the party with the least interest in it counting. Report to the AMC. We will '
+        +'carry on as though you had.');
+    } else {
+      var names=['the reporting form to the AMC','the PvPI helpline','the ADR PvPI app'];
+      fb(host,'ok','That reaches the programme',
+        'All three of the first options land in the same place. You chose <b>'+names[i]+'</b>. The form gives the '
+        +'fullest case and is what an AMC prefers; the helpline and the app exist because a report that is slightly '
+        +'thin is infinitely better than a report that never gets made. What matters is that it enters the programme.');
+    }
+    S.day += 1; refresh(); stageDone.bedside=true;
+    setTimeout(function(){ switchTab('amc'); amc(); }, 500);
+  });
+}
+
+/* ================= STAGE 2 · AMC ================= */
+function amc(){
+  renderRail('amc');
+  $('amcForm').innerHTML=
+    '<div class="paper"><div class="ph"><b>Suspected Adverse Drug Reaction Reporting Form</b>'
+    +'<span>Pharmacovigilance Programme of India · ADR Monitoring Centre · Report no. '+esc(C.id)+'</span></div>'
+    +'<table>'
+    +'<tr><td class="k">Patient initials / ID</td><td>'+esc(C.patient.name)+' · '+esc(C.patient.id)+'</td></tr>'
+    +'<tr><td class="k">Age / sex / weight</td><td>'+esc(C.patient.age)+' · '+esc(C.patient.sex)+' · '+esc(C.patient.weight)+'</td></tr>'
+    +'<tr><td class="k">Suspected medicine</td><td>'+esc(C.drug.brand)+'<br><span class="muted">'+esc(C.drug.components)+'</span></td></tr>'
+    +'<tr><td class="k">Dose &amp; route</td><td>'+esc(C.drug.regimen)+', oral</td></tr>'
+    +'<tr><td class="k">Therapy dates</td><td>Started '+esc(C.drug.start)+' · '+esc(C.drug.stop)+'</td></tr>'
+    +'<tr><td class="k">Indication</td><td>'+esc(C.drug.indication)+'</td></tr>'
+    +'<tr><td class="k">Reaction, as described</td><td>'+esc(C.event.lay)+'</td></tr>'
+    +'<tr><td class="k">Date of onset</td><td>'+esc(C.event.onset)+'</td></tr>'
+    +'<tr><td class="k">Relevant findings</td><td>'+esc(C.event.findings)+'</td></tr>'
+    +'<tr><td class="k">Outcome</td><td>'+esc(C.event.outcome)+'</td></tr>'
+    +'<tr><td class="k">Renal function</td><td class="blank">not recorded</td></tr>'
+    +'<tr><td class="k">Baseline vision before treatment</td><td class="blank">not recorded</td></tr>'
+    +'<tr><td class="k">Reporter</td><td>You · Pharmacist · Government District Hospital</td></tr>'
+    +'</table></div>'
+    +'<div class="fb part"><div class="hd">Two boxes are empty, and they are not decoration</div>'
+    +'A reviewer three offices away can only judge what is written down. Hold on to those two blanks — you will be '
+    +'asked what follow-up this case needs.</div>';
+  S.amc.form=true;
+  nextCard('amcCard2'); serious();
+}
+function serious(){
+  opts('amcSer',[
+    {t:'<b>Not serious</b> — he was never admitted for it and he is walking about the ward.'},
+    {t:'<b>Serious — other medically important condition</b>',
+     s:'Untreated it progresses to permanent optic atrophy; it required urgent intervention to prevent that.'},
+    {t:'<b>Serious — hospitalisation</b>', s:'He is an inpatient.'},
+    {t:'<b>Serious — persistent or significant disability</b>', s:'His vision is already impaired.'}
+  ], function(i,host){
+    S.amc.serious=['non','important','hosp','disability'][i];
+    if(i===1){
+      fb(host,'ok','Correct, and for the right reason',
+        'Seriousness is a <b>regulatory category fixed by outcome</b>, not a description of how ill somebody looks. '
+        +'This qualifies as an <i>other medically important condition</i>: without prompt withdrawal it progresses to '
+        +'irreversible optic atrophy, and it needed intervention to prevent that. It is exactly the criterion people '
+        +'forget, because the other five are concrete events and this one is a judgement.');
+    } else if(i===0){
+      hit('validity', 15, 'a serious reaction classified as non-serious');
+      hit('signal', 10, 'serious cases are prioritised — this one will not be');
+      fb(host,'no','This is the costly error',
+        'He is not in danger of dying, so it feels non-serious. But seriousness is decided by outcome, and this one '
+        +'ends in <b>permanent blindness</b> if the drug continues. Classifying it non-serious removes the urgency '
+        +'from every desk it passes and takes it out of the expedited stream.');
+    } else if(i===2){
+      hit('validity', 6, 'seriousness criterion misapplied');
+      fb(host,'part','Serious is right; the criterion is not',
+        'He is an inpatient for <b>tuberculosis</b>, not for the eye. Hospitalisation as a criterion means the '
+        +'reaction caused or prolonged the admission. Reaching for it because the patient happens to be in a bed is '
+        +'one of the commonest miscodings in hospital reporting. The criterion here is <i>other medically important '
+        +'condition</i>.');
+    } else {
+      fb(host,'part','Defensible, but premature',
+        'Persistent or significant disability applies once the impairment is established as lasting. At the moment '
+        +'the case is caught early and may well reverse — that is the whole reason for stopping the drug now. Code it '
+        +'as an <i>other medically important condition</i> and upgrade it on follow-up if the deficit persists.');
+    }
+    nextCard('amcCard3'); causality();
+  });
+}
+function causality(){
+  opts('amcCaus',[
+    {t:'<b>Certain</b>', s:'A definitive relationship with a positive rechallenge.'},
+    {t:'<b>Probable / likely</b>',
+     s:'Reasonable time relationship, unlikely to be attributable to disease or other drugs, a known reaction, and a '
+      +'clinically reasonable response to withdrawal is expected.'},
+    {t:'<b>Possible</b>', s:'Reasonable time relationship, but other causes are not excluded.'},
+    {t:'<b>Unclassifiable</b>', s:'Not enough information.'}
+  ], function(i,host){
+    S.amc.caus=['certain','probable','possible','unclassifiable'][i];
+    if(i===1){
+      fb(host,'ok','Probable is the honest category here',
+        'Six weeks of exposure, a well-described and dose-related reaction, and no surviving alternative — his glucose '
+        +'is normal, B12 is normal, pressures are normal and the fundus is clean. What holds it back from <i>certain</i> '
+        +'is that a rechallenge has not been performed and never will be: deliberately re-exposing an eye to a toxic '
+        +'optic neuropathy would be indefensible. <b>Certain is a category that ethical practice usually forbids you '
+        +'from reaching</b>, and that is not a defect in your case.');
+    } else if(i===0){
+      hit('signal', 8, 'causality over-stated');
+      fb(host,'no','Overstated',
+        'Certain requires a positive rechallenge or an objective confirmatory event. There is none, and there will '
+        +'not be. Overstating causality on a report is not a harmless enthusiasm — it degrades the very database '
+        +'other people rely on to tell strong evidence from weak.');
+    } else if(i===2){
+      hit('signal', 4, 'causality understated');
+      fb(host,'part','Understated',
+        'Possible is for cases where other causes have <b>not</b> been excluded. Here they have been: not diabetic, '
+        +'B12 normal, no methanol, pressures normal, fundus clean. Grading down out of caution feels safe and '
+        +'quietly hides good evidence.');
+    } else {
+      hit('signal', 6, 'a well-documented case called unclassifiable');
+      fb(host,'no','There is plenty of information',
+        'Unclassifiable is for a report that cannot be judged because it is missing essentials. This one has dates, '
+        +'a dose, an examination and an exclusion list. Using it here throws away a usable case.');
+    }
+    nextCard('amcCard4'); followUp();
+  });
+}
+function followUp(){
+  var L=[
+    {k:'renal', t:'<b>Serum creatinine and renal function</b>', good:true,
+     r:'Ethambutol is cleared by the kidney. His creatinine is 1.6 mg/dL, so his true exposure is higher than 19 mg/kg '
+      +'suggests — and nobody checked before starting. This is the single most useful thing you can add.'},
+    {k:'ophthal', t:'<b>The formal ophthalmology report and field charts</b>', good:true,
+     r:'Objective evidence is what separates a report somebody can act on from an anecdote.'},
+    {k:'dechal', t:'<b>What happens after the ethambutol is stopped</b>', good:true,
+     r:'Dechallenge is one of the strongest causality arguments available, and it is the field most often left blank '
+      +'because the reporter files the case and moves on.'},
+    {k:'weight', t:'<b>Confirm his weight and the exact mg/kg dose</b>', good:true,
+     r:'This reaction is dose-related. Without mg/kg the case cannot contribute to any dose-response question.'},
+    {k:'baseline', t:'<b>Whether baseline vision was ever recorded</b>', good:true,
+     r:'It was not. That is a finding about the programme, not just this patient, and it is actionable.'},
+    {k:'family', t:'<b>Family history of eye disease going back three generations</b>', good:false,
+     r:'Not relevant to a dose-related toxic neuropathy, and chasing it costs a day you do not have.'},
+    {k:'diet', t:'<b>A full dietary history for the last year</b>', good:false,
+     r:'B12 is already normal. This adds nothing.'},
+    {k:'brand', t:'<b>Which pharmacy the tablets were dispensed from</b>', good:false,
+     r:'Batch and manufacturer can matter for a quality defect. This is a known pharmacological effect, not a '
+      +'suspected substandard product.'}
+  ];
+  opts('amcFu', L, function(picked, host){
+    var chosen=picked.map(function(i){return L[i];});
+    S.amc.followUp=chosen.map(function(x){return x.k;});
+    var good=chosen.filter(function(x){return x.good;}).length;
+    var bad=chosen.filter(function(x){return !x.good;}).length;
+    host.querySelector('.fbwrap').innerHTML='<div class="fb '+(good>=4&&bad===0?'ok':(good>=3?'part':'no'))+'">'
+      +'<div class="hd">'+good+' useful, '+bad+' that cost you a day each</div>'
+      +'<ul>'+chosen.map(function(x){ return '<li><b>'+(x.good?'✓':'✗')+'</b> '+x.r+'</li>'; }).join('')+'</ul>'
+      +'<div style="margin-top:8px">Chase what changes the assessment. Confirm your selection to send the case on.</div>'
+      +'</div><div class="row" style="margin-top:10px"><button class="btn" id="fuGo" type="button">Send the case to '
+      +'NCC-PvPI &rarr;</button></div>';
+    $('fuGo').addEventListener('click',function(){
+      S.day += chosen.length; refresh();
+      if(bad) hit('validity', bad*3, bad+' unnecessary follow-up enquiries delayed the case');
+      if(chosen.filter(function(x){return x.good;}).length<3) hit('signal', 12, 'the case went on thin');
+      stageDone.amc=true; switchTab('ncc'); ncc();
+    });
+  }, true);
+}
+
+/* ================= STAGE 3 · NCC-PvPI ================= */
+function ncc(){
+  renderRail('ncc');
+  $('nccIn').innerHTML=
+    '<div class="hops">'
+    +'<div class="hop"><span class="n">✓</span><span><b>Received from AMC — Government District Hospital</b>'
+    +'<small>Day '+S.day+' of the chain. Reaction described in the reporter\'s words as “'+esc(C.event.lay)+'”.</small></span></div>'
+    +'</div>'
+    +'<div class="fb part"><div class="hd">Words are not data</div>'
+    +'Everything up to this point has been written in prose. VigiBase cannot be searched in prose, and neither can '
+    +'the national database. Two dictionaries turn this case into something a machine and an analyst on another '
+    +'continent can both find: <b>MedDRA</b> for the reaction and <b>WHODrug</b> for the medicine. What you choose '
+    +'now is what the case <i>is</i>, for the rest of its life.</div>';
+  nextCard('nccCard2'); meddra();
+}
+function meddra(){
+  var L=[
+    {k:'blur', term:'Blurred vision', lvl:'Preferred Term · SOC Eye disorders',
+     s:'A real term, and close to what the patient said.'},
+    {k:'eye',  term:'Eye disorder', lvl:'Preferred Term · SOC Eye disorders',
+     s:'Safe, general, hard to get wrong.'},
+    {k:'optic', term:'Optic neuritis', lvl:'Preferred Term · SOC Eye disorders / Nervous system disorders',
+     s:'What the ophthalmologist diagnosed.'},
+    {k:'toxic', term:'Toxic optic neuropathy', lvl:'Preferred Term · SOC Eye disorders / Nervous system disorders',
+     s:'What the ophthalmologist diagnosed, naming the mechanism.'},
+    {k:'acuity', term:'Visual acuity reduced', lvl:'Preferred Term · SOC Eye disorders',
+     s:'A measured finding — 6/24 both eyes.'},
+    {k:'colour', term:'Colour vision test abnormal', lvl:'Preferred Term · SOC Investigations',
+     s:'A measured finding — Ishihara 4 of 17.'}
+  ];
+  $('nccMed').innerHTML='<p class="muted" style="font-size:12.5px;margin-bottom:8px">Choose the <b>primary</b> term '
+    +'first — the one that says what happened to this patient.</p><div class="codebox" id="medBox">'
+    +L.map(function(o,i){ return '<button class="code" type="button" data-i="'+i+'"><b>'+esc(o.term)+'</b>'
+      +'<small>'+esc(o.s)+'</small><span class="lvl">'+esc(o.lvl)+'</span></button>'; }).join('')+'</div>';
+  var done=false;
+  $('medBox').querySelectorAll('.code').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(done) return; done=true;
+      var o=L[+b.getAttribute('data-i')];
+      S.ncc.medPrimary=o.term; S.ncc.medKey=o.k;
+      $('medBox').querySelectorAll('.code').forEach(function(x){ x.style.pointerEvents='none'; });
+      var right = (o.k==='optic'||o.k==='toxic');
+      b.classList.add(right?'right':'wrong');
+      if(!right){ $('medBox').querySelector('.code[data-i="2"]').classList.add('right'); }
+      if(right){
+        $('nccMedFb').innerHTML='<div class="fb ok"><div class="hd">This is the term that carries the case</div>'
+          +'You coded the <b>diagnosis</b>, not the symptom. That is the rule: if a clinician has reached a diagnosis, '
+          +'the diagnosis is the term, and the symptoms may be added alongside it. A search for ethambutol and optic '
+          +'neuritis anywhere in the world will now return this patient.</div>';
+      } else {
+        hit('signal', 40, 'the reaction was coded to a term nobody searching for this will use');
+        $('nccMedFb').innerHTML='<div class="fb no"><div class="hd">The case will survive, and it will be invisible</div>'
+          +'“'+esc(o.term)+'” is a real MedDRA term and nothing about your report is <i>wrong</i>. That is what makes '
+          +'this the most dangerous error in the whole chain. Blurred vision and eye disorder are enormous, generic '
+          +'buckets that collect everything from spectacle changes to dry eyes. Your case goes into VigiBase, counts '
+          +'as a report, occupies a row — and no analyst looking for drug-induced optic neuropathy will ever see it. '
+          +'<b>A miscoded report is worse than no report, because it looks like data.</b> The correct primary term was '
+          +'<b>Optic neuritis</b> (or <i>Toxic optic neuropathy</i>): code the diagnosis, not the complaint.</div>';
+      }
+      $('nccMedFb').innerHTML += '<p class="muted" style="font-size:12.5px;margin-top:10px">Now add any '
+        +'<b>secondary</b> terms worth carrying — the measured findings.</p><div class="codebox" id="medBox2">'
+        +[L[4],L[5]].map(function(o2,j){ return '<button class="code" type="button" data-j="'+j+'"><b>'+esc(o2.term)
+          +'</b><small>'+esc(o2.s)+'</small></button>'; }).join('')
+        +'</div><div class="row" style="margin-top:10px"><button class="btn" id="medGo" type="button">Confirm coding &rarr;</button></div>';
+      var sec=[];
+      $('medBox2').querySelectorAll('.code').forEach(function(x){
+        x.addEventListener('click',function(){ x.classList.toggle('pick');
+          sec=[].slice.call($('medBox2').querySelectorAll('.code.pick')).map(function(y){return y.textContent;}); });
+      });
+      $('medGo').addEventListener('click',function(){
+        S.ncc.medSecondary=sec;
+        if(sec.length>=1) hit('signal', -5, 'measured findings carried alongside the diagnosis');
+        nextCard('nccCard3'); whodrug();
+      });
+    });
+  });
+}
+function whodrug(){
+  var L=[
+    {k:'brand', term:'AKT-4', s:'Code the brand exactly as the reporter wrote it, and leave it there.',
+     lvl:'Trade name · four active ingredients'},
+    {k:'all', term:'All four components as suspect drugs',
+     s:'Isoniazid, rifampicin, pyrazinamide and ethambutol, each flagged as suspected.',
+     lvl:'Four suspect entries'},
+    {k:'component', term:'Ethambutol hydrochloride as the suspect; the other three as concomitant',
+     s:'Name the component that causes this reaction, and record the rest as taken alongside.',
+     lvl:'One suspect · three concomitant'},
+    {k:'text', term:'Leave it as free text — “TB tablets”', s:'Let the next reviewer sort it out.',
+     lvl:'Uncoded'}
+  ];
+  $('nccDrug').innerHTML='<p class="muted" style="font-size:12.5px;margin-bottom:8px">He is on a fixed-dose '
+    +'combination. Four medicines arrived in one tablet, and only one of them does this.</p>'
+    +'<div class="codebox" id="drugBox">'+L.map(function(o,i){
+      return '<button class="code" type="button" data-i="'+i+'"><b>'+esc(o.term)+'</b><small>'+esc(o.s)
+        +'</small><span class="lvl">'+esc(o.lvl)+'</span></button>'; }).join('')+'</div>';
+  var done=false;
+  $('drugBox').querySelectorAll('.code').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(done) return; done=true;
+      var o=L[+b.getAttribute('data-i')];
+      S.ncc.drug=o.k;
+      $('drugBox').querySelectorAll('.code').forEach(function(x){ x.style.pointerEvents='none'; });
+      b.classList.add(o.k==='component'?'right':'wrong');
+      if(o.k!=='component') $('drugBox').querySelector('.code[data-i="2"]').classList.add('right');
+      var msg;
+      if(o.k==='component'){
+        msg='<div class="fb ok"><div class="hd">You found the culprit inside the tablet</div>'
+          +'Fixed-dose combinations are the hardest thing in this dataset. If the whole FDC is filed as the suspect, '
+          +'the reaction attaches to four medicines at once and the association is diluted four ways — isoniazid, '
+          +'rifampicin and pyrazinamide all acquire a phantom association with optic neuritis they do not deserve, '
+          +'and ethambutol\'s real one is weakened. Naming ethambutol as the suspect and the rest as concomitant is '
+          +'what makes the report analysable, and it is the single biggest quality difference in anti-TB reporting.</div>';
+      } else if(o.k==='all'){
+        hit('signal', 22, 'the reaction was spread across all four components');
+        msg='<div class="fb part"><div class="hd">Defensible, and it still blunts the case</div>'
+          +'When you genuinely cannot tell which component is responsible, flagging all of them is honest. But here '
+          +'you can tell: optic neuritis is a <b>known, dose-related ethambutol effect</b> and is not described for '
+          +'the other three. Spreading it across four drugs gives isoniazid, rifampicin and pyrazinamide an '
+          +'association they did not earn and weakens the one that matters.</div>';
+      } else if(o.k==='brand'){
+        hit('signal', 30, 'a brand name with no active ingredient coded');
+        msg='<div class="fb no"><div class="hd">A brand name does not travel</div>'
+          +'“AKT-4” means something in India and nothing in Uppsala. WHODrug exists precisely to map every local '
+          +'brand back to its active ingredients so a report from Kerala can sit beside one from Peru. Left as a '
+          +'brand, the case cannot be aggregated with any other ethambutol report anywhere.</div>';
+      } else {
+        hit('signal', 35, 'the medicine was never coded at all');
+        hit('validity', 10, 'an uncoded suspect medicine will be queried back');
+        msg='<div class="fb no"><div class="hd">This is where cases die quietly</div>'
+          +'Uncoded free text is not searchable, not aggregatable and not transmissible in a structured message. '
+          +'The case will sit in a query queue until somebody has time to fix it, and reports in query queues have a '
+          +'way of never coming out.</div>';
+      }
+      $('nccDrugFb').innerHTML=msg+'<div class="row" style="margin-top:10px">'
+        +'<button class="btn" id="drugGo" type="button">Run the duplicate check &rarr;</button></div>';
+      $('drugGo').addEventListener('click',function(){ nextCard('nccCard4'); dedup(); });
+    });
+  });
+}
+
+/* ---- duplicate check at national level ---- */
+function dedup(){
+  $('nccDup').innerHTML=
+    '<p class="muted" style="font-size:12.5px">Two records in the national database resemble yours. One of them is '
+    +'the same event; one of them is a different human being. Deciding which is which is the whole job.</p>'
+    +'<div class="tw"><table><tr><th></th><th>Record</th><th>Source</th><th>Patient</th><th>Reaction</th>'
+    +'<th>Onset</th><th>Drug</th></tr>'
+    +'<tr style="background:rgba(196,13,22,.07)"><td><b>YOURS</b></td><td>'+esc(C.id)+'</td><td>AMC, District Hospital</td>'
+    +'<td>46 M, 44 kg, DOTS/TVM/2026/1187</td><td>Optic neuritis</td><td>≈10 Feb 2027</td><td>Ethambutol (FDC)</td></tr>'
+    +'<tr><td><input type="checkbox" id="dupA" style="accent-color:var(--crimson)"></td><td>PvPI/HL/2027/03318</td>'
+    +'<td>Helpline call, 11 Feb</td><td>46 M, DOTS/TVM/2026/1187</td><td>“Vision problem, colours faded”</td>'
+    +'<td>Feb 2027</td><td>“TB tablets”</td></tr>'
+    +'<tr><td><input type="checkbox" id="dupB" style="accent-color:var(--crimson)"></td><td>ADR/2027/KL/0402</td>'
+    +'<td>AMC, Medical College</td><td>52 F, 51 kg, DOTS/TVM/2026/0934</td><td>Optic neuritis</td>'
+    +'<td>28 Jan 2027</td><td>Ethambutol (FDC)</td></tr>'
+    +'</table></div>'
+    +'<div class="opts" style="margin-top:11px">'
+    +'<button class="opt" type="button" data-a="both"><span class="lt">A</span><span>Merge <b>both</b> into my case — '
+    +'same district, same drug, same reaction.</span></button>'
+    +'<button class="opt" type="button" data-a="a"><span class="lt">B</span><span>Merge only <b>PvPI/HL/2027/03318</b>, '
+    +'the helpline call.</span></button>'
+    +'<button class="opt" type="button" data-a="none"><span class="lt">C</span><span>Merge nothing — more reports look '
+    +'like more evidence.</span></button>'
+    +'<button class="opt" type="button" data-a="b"><span class="lt">D</span><span>Merge only <b>ADR/2027/KL/0402</b>, '
+    +'the Medical College case.</span></button></div><div class="fbwrap"></div>';
+  var done=false;
+  $('nccDup').querySelectorAll('.opt').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(done) return; done=true;
+      $('nccDup').querySelectorAll('.opt').forEach(function(x){ x.style.pointerEvents='none'; });
+      b.classList.add('pick');
+      var a=b.getAttribute('data-a'); S.ncc.dup=a; S.ncc.dupHandled=true;
+      var host=$('nccDup'), msg;
+      if(a==='a'){
+        msg='<div class="fb ok"><div class="hd">Exactly right, and for the reason that matters</div>'
+          +'The helpline record carries <b>the same hospital number</b>, the same age and sex and the same event — it '
+          +'is Nurse Reshma\'s phone call on the day it was noticed, and merging it keeps one patient as one case. '
+          +'The Medical College record is a <b>different woman, twelve years older, at a different weight, with an '
+          +'onset a fortnight earlier</b>. Same district and same drug is not the same patient. Merging her would '
+          +'have deleted a real case — and she is one of the reports that makes this a pattern.</div>';
+      } else if(a==='both'){
+        hit('validity', 20, 'a second patient was merged out of existence');
+        hit('signal', 15, 'the cluster lost a genuine case');
+        msg='<div class="fb no"><div class="hd">You have just deleted a patient</div>'
+          +'The helpline call was the same man and merging it was right. ADR/2027/KL/0402 is a <b>52-year-old woman '
+          +'of a different weight from a different hospital with an earlier onset</b>. Over-merging is the mirror '
+          +'image of under-merging and it is worse, because it is invisible: the count goes down, everything looks '
+          +'tidier, and a real report that would have strengthened the ethambutol signal has ceased to exist.</div>';
+      } else if(a==='none'){
+        hit('validity', 12, 'a true duplicate was left in the database');
+        hit('signal', 10, 'the same patient will be counted twice');
+        msg='<div class="fb no"><div class="hd">The same man is now in the database twice</div>'
+          +'More rows are not more evidence. The helpline record is the same patient — the same hospital number, the '
+          +'same age, the same reaction — and leaving it separate means every count, every proportion and every '
+          +'disproportionality figure downstream is computed on a man who has been counted twice. Duplicate detection '
+          +'comes <b>before</b> signal assessment for exactly this reason.</div>';
+      } else {
+        hit('validity', 22, 'a different patient was merged in and the true duplicate left behind');
+        hit('signal', 18, 'both halves of the duplicate decision were wrong');
+        msg='<div class="fb no"><div class="hd">Both halves the wrong way round</div>'
+          +'You merged a <b>different patient</b> — a 52-year-old woman from another hospital — and left the genuine '
+          +'duplicate, your own patient\'s helpline call, sitting separately. The database now has one man twice and '
+          +'one woman not at all.</div>';
+      }
+      host.querySelector('.fbwrap').innerHTML=msg+'<div class="row" style="margin-top:10px">'
+        +'<button class="btn" id="dupGo" type="button">Continue &rarr;</button></div>';
+      $('dupGo').addEventListener('click',function(){ nextCard('nccCard5'); transmit(); });
+    });
+  });
+}
+function transmit(){
+  var g=grade();
+  $('nccSend').innerHTML=
+    '<div class="grade"><div><div class="num">'+g.toFixed(2)+'</div><div class="lb">Completeness</div></div>'
+    +'<div style="flex:1;min-width:220px"><div class="bar"><i class="'+(g>=0.7?'good':(g>=0.45?'':'bad'))
+    +'" style="width:'+Math.round(g*100)+'%"></i></div>'
+    +'<p class="muted" style="font-size:12.5px;margin-top:7px">The Uppsala Monitoring Centre scores every incoming '
+    +'report for completeness — whether it carries the fields somebody would need to judge it: age, sex, dates, dose, '
+    +'indication, outcome, and free text a human can read. A well-documented case counts for far more in signal work '
+    +'than three thin ones.</p></div></div>'
+    +'<div class="hops"><div class="hop"><span class="n">→</span><span><b>Transmitted to VigiBase in E2B format</b>'
+    +'<small>ICH E2B is the international standard message for an individual case safety report. It is what lets a '
+    +'case leave a national system in Ghaziabad and arrive intact in a database in Sweden. India has been a member '
+    +'of the WHO Programme for International Drug Monitoring since 1998; the Programme itself has been running since '
+    +'1968, after thalidomide showed the world what having no such system costs.</small></span></div></div>'
+    +'<div class="row"><button class="btn" id="txGo" type="button">Follow it to Uppsala &rarr;</button></div>';
+  $('txGo').addEventListener('click',function(){ S.day+=2; refresh(); stageDone.ncc=true; switchTab('umc'); umc(); });
+}
+
+/* ================= STAGE 4 · UPPSALA ================= */
+function umc(){
+  renderRail('umc');
+  var codedWell = (S.ncc.medKey==='optic'||S.ncc.medKey==='toxic');
+  $('umcIn').innerHTML=
+    '<div class="hops">'
+    +'<div class="hop"><span class="n">✓</span><span><b>Case received into VigiBase</b><small>Uppsala Monitoring '
+    +'Centre, Sweden — the WHO Collaborating Centre for International Drug Monitoring. VigiBase holds tens of millions '
+    +'of individual case safety reports sent by member countries. Yours is now one of them, arriving on day '+S.day
+    +' of its life.</small></span></div>'
+    +'<div class="hop"><span class="n">✓</span><span><b>Automatic duplicate screening</b><small>'
+    +(S.ncc.dup==='a'
+      ? 'No further duplicates detected. Your national centre had already merged the helpline record, so the case '
+       +'arrives as one patient.'
+      : (S.ncc.dup==='none'
+        ? 'A probable duplicate pair is flagged — your case and the helpline record both arrived. It goes into a '
+         +'review queue, and until somebody resolves it this patient counts twice.'
+        : 'The case arrives as one record. What was merged at national level cannot be un-merged here — VigiBase '
+         +'receives what it is sent.'))
+    +'</small></span></div></div>'
+    +'<div class="fb '+(codedWell?'ok':'part')+'"><div class="hd">The case now exists as: '
+    +esc(S.ncc.medPrimary||'—')+'</div>'
+    +'Whatever else is in the free text, <b>this is the term the case will be found by</b>. Search the global database '
+    +'and see what your patient is standing next to.</div>';
+  nextCard('umcCard2'); vigisearch();
+}
+function vigisearch(){
+  var codedWell = (S.ncc.medKey==='optic'||S.ncc.medKey==='toxic');
+  var comp = (S.ncc.drug==='component');
+  /* what the search returns depends entirely on how the case was coded */
+  var n = codedWell ? (comp?214:57) : 4;
+  var bucket = codedWell ? 'Ethambutol · Optic neuritis' : 'Ethambutol · '+(S.ncc.medPrimary||'—');
+  $('umcSearch').innerHTML=
+    '<p class="muted" style="font-size:12.5px">You run the search an analyst would run: the suspect medicine against '
+    +'the reaction term, across every country that reports.</p>'
+    +'<div class="tw"><table><tr><th>Search</th><th>Reports</th><th>Countries</th><th>Median latency</th>'
+    +'<th>Disproportionality (IC)</th></tr>'
+    +'<tr><td>'+esc(bucket)+'</td><td><b>'+n+'</b></td><td>'+(codedWell?(comp?'31':'12'):'3')+'</td>'
+    +'<td>'+(codedWell?'54 days':'—')+'</td><td>'+(codedWell?'<b style="color:var(--success)">+3.1</b>':'not elevated')
+    +'</td></tr>'
+    +(codedWell?'':'<tr style="opacity:.7"><td>Ethambutol · Blurred vision / Eye disorder (all causes)</td><td>4 812</td>'
+      +'<td>—</td><td>—</td><td>not elevated</td></tr>')
+    +'</table></div>'
+    +'<div class="fb '+(codedWell&&comp?'ok':(codedWell?'part':'no'))+'"><div class="hd">'
+    +(codedWell&&comp ? 'Your patient has joined a pattern'
+      : (codedWell ? 'Found — but standing with only a fraction of his peers'
+        : 'Your patient is in the database and nobody will ever find him'))+'</div>'
+    +(codedWell&&comp
+      ? 'Two hundred and fourteen reports from thirty-one countries, with a consistent latency of about two months '
+       +'and a clearly raised Information Component. The IC is a measure of <b>disproportionate reporting</b> — this '
+       +'reaction turns up with this drug far more often than the database as a whole would predict. Your one case '
+       +'from a district hospital in Kerala is now part of the evidence that says so.'
+      : (codedWell
+        ? 'You coded the reaction correctly, so the case is findable — but you filed the whole fixed-dose combination '
+         +'rather than ethambutol, so it only aggregates with the minority of reports coded the same loose way. Most '
+         +'of the world\'s ethambutol reports are sitting in a bucket your case cannot reach.'
+        : 'The search that would find this reaction returns four reports and no elevated signal. Your patient is in '
+         +'the other row — one of nearly five thousand reports of blurred vision and eye disorder from every cause '
+         +'imaginable. The case is valid. It counts in the national statistics. It contributed nothing, because it '
+         +'cannot be found by anybody looking for what actually happened to him.'))
+    +'</div>'
+    +'<div class="row" style="margin-top:11px"><button class="btn" id="sigGo" type="button">What does this mean? &rarr;</button></div>';
+  $('sigGo').addEventListener('click',function(){ nextCard('umcCard3'); signal(); });
+}
+function signal(){
+  opts('umcSignal',[
+    {t:'<b>The data proves ethambutol causes optic neuritis.</b>',
+     s:'Two hundred reports and a raised IC is proof enough to act on.'},
+    {t:'<b>This is a signal — information suggesting a possible causal association that warrants evaluation.</b>',
+     s:'It justifies investigation, not a conclusion.'},
+    {t:'<b>Nothing has been established.</b> Spontaneous reports are voluntary and biased, so they cannot support anything.'},
+    {t:'<b>Two hundred reports out of millions of patients is a negligible rate</b> and needs no action.'}
+  ], function(i,host){
+    S.umc.signal=i;
+    if(i===1){
+      fb(host,'ok','That is the definition, and the discipline',
+        'A signal is <b>information that suggests a possible causal association and warrants further evaluation</b> — '
+        +'a hypothesis, not a verdict. It is worth adding that ethambutol optic neuritis is already a well-established '
+        +'labelled reaction, so what this database is really being asked is a sharper question: <i>at what dose, in '
+        +'whom, and is it being monitored?</i> Your case answers all three, because you recorded the mg/kg, the renal '
+        +'function and the absence of baseline vision testing.');
+    } else if(i===0){
+      hit('signal', 10, 'a signal was read as proof');
+      fb(host,'no','This is the error the whole discipline is built to avoid',
+        'Disproportionate reporting is not causation. Reporting rates are driven by publicity, by how new a drug is, '
+        +'by litigation, by who is watching — every one of which raises counts without a single extra patient being '
+        +'harmed. A signal earns an investigation. Only the investigation earns the conclusion.');
+    } else if(i===2){
+      hit('signal', 6, 'spontaneous data dismissed wholesale');
+      fb(host,'part','Too far in the other direction',
+        'Every one of those biases is real, which is why nobody computes an incidence from spontaneous reports. But '
+        +'this system is how almost every rare adverse reaction in modern medicine was first found, thalidomide '
+        +'onwards. Refusing to draw a hypothesis from it is not rigour — it is discarding the only instrument that '
+        +'detects the rare.');
+    } else {
+      hit('signal', 8, 'reporting counts confused with incidence');
+      fb(host,'no','You cannot get a rate out of this database',
+        'There is no denominator. Nobody knows how many people took ethambutol, and under-reporting for many '
+        +'reactions runs above 90%, so counts are a floor and never a rate. Reading two hundred reports as a '
+        +'frequency is a category error.');
+    }
+    stageDone.umc=true;
+    setTimeout(function(){ switchTab('loop'); loop(); }, 600);
+  });
+}
+
+/* ================= STAGE 5 · THE LOOP BACK ================= */
+function loop(){
+  renderRail('loop');
+  $('loopIn').innerHTML=
+    '<p class="muted" style="font-size:13px">The chain does not end in Sweden. A safety system that only collects is '
+    +'a system that stops being fed. Here is the way back.</p>'
+    +'<div class="hops">'
+    +'<div class="hop"><span class="n">1</span><span><b>UMC reviews the accumulating evidence</b><small>Cases are '
+    +'screened, prioritised and assessed by clinical reviewers, and what survives is communicated to the national '
+    +'centres of member countries.</small></span></div>'
+    +'<div class="hop"><span class="n">2</span><span><b>NCC-PvPI takes it to the regulator</b><small>The National '
+    +'Coordination Centre analyses Indian data alongside the global picture and puts recommendations to the Central '
+    +'Drugs Standard Control Organisation.</small></span></div>'
+    +'<div class="hop"><span class="n">3</span><span><b>Something changes</b><small>A label is amended, a dosing '
+    +'ceiling is restated, a monitoring requirement is added to programme guidance, or a communication goes out to '
+    +'prescribers. For this reaction the actionable findings are the ones your case documented: dose per kilogram, '
+    +'renal function, and whether anybody checked vision before starting.</small></span></div>'
+    +'<div class="hop"><span class="n">4</span><span><b>It reaches the ward that reported it</b><small>Or it does '
+    +'not, and that is the step that quietly kills reporting cultures. A nurse who reports once and never hears '
+    +'anything learns that reporting is paperwork.</small></span></div>'
+    +'</div>'
+    +'<div class="row"><button class="btn" id="loopGo" type="button">Write back to Nurse Reshma &rarr;</button></div>';
+  $('loopGo').addEventListener('click',function(){ nextCard('loopCard2'); });
+  $('finishBtn').addEventListener('click',finish);
+}
+
+/* ================= marking ================= */
+function finish(){
+  var note=$('loopNote').value.trim();
+  if(note.split(/\s+/).filter(Boolean).length<25){
+    $('finMsg').innerHTML='<span style="color:var(--danger)">Write at least 25 words back to the ward — closing the '
+      +'loop is marked.</span>'; return;
+  }
+  S.loop.note=note;
+  marked=mark();
+  stageDone.loop=true; renderRail('');
+  renderDebrief(); mountWriter();
+  if(tick) clearInterval(tick);
+  switchTab('debrief'); window.scrollTo(0,0);
+}
+function mark(){
+  var r=[], B=S.bedside, A=S.amc, N=S.ncc, U=S.umc;
+  function row(k,w,p){ r.push({k:k,w:w,p:Math.max(0,Math.min(100,Math.round(p)))}); }
+  row('Recognising a reportable reaction', 10, B.recognised?100:25);
+  row('The four minimum elements', 15, (B.elements&&B.elements.length===4)?100:0);
+  row('Completing the reporting form', 10, A.form?100:0);
+  var ser = A.serious==='important'?100:(A.serious==='disability'?65:(A.serious==='hosp'?55:0));
+  var cau = A.caus==='probable'?100:(A.caus==='possible'?60:25);
+  row('Seriousness and causality', 10, (ser+cau)/2);
+  var fu=(A.followUp||[]), goodFu=['renal','ophthal','dechal','weight','baseline'];
+  var fg=fu.filter(function(x){return goodFu.indexOf(x)>=0;}).length;
+  var fb2=fu.filter(function(x){return goodFu.indexOf(x)<0;}).length;
+  row('Follow-up strategy', 10, Math.max(0, fg*20 - fb2*15));
+  var med=(N.medKey==='optic'||N.medKey==='toxic')?100:0;
+  var drg=N.drug==='component'?100:(N.drug==='all'?45:0);
+  row('MedDRA and WHODrug coding', 20, med*0.55+drg*0.45);
+  row('Duplicate handling and transmission', 10, N.dup==='a'?100:(N.dup==='none'?35:0));
+  row('Reading the global data', 10, U.signal===1?100:(U.signal===2?45:15));
+  var words=(S.loop.note||'').split(/\s+/).filter(Boolean).length;
+  var back=/reshma|you|your report|thank/i.test(S.loop.note||'')?1:0;
+  row('Closing the loop', 5, Math.min(100, words*1.4) * (back?1:0.7));
+
+  var tot=0,wt=0; r.forEach(function(x){ tot+=x.p*x.w; wt+=x.w; });
+  var total=Math.round(tot/wt);
+  return { rows:r, total:total, pass:total>=50,
+           band: total>=85?'Excellent':total>=70?'Good':total>=55?'Satisfactory':total>=40?'Weak':'Poor',
+           validity:S.validity, signal:S.signal, grade:grade(),
+           codedWell:(N.medKey==='optic'||N.medKey==='toxic'), comp:N.drug==='component' };
+}
+function renderDebrief(){
+  var m=marked, mins=Math.round((Date.now()-S.started)/60000);
+  var h='<div class="card"><h2 style="font-size:20px">The journey your report made</h2>'
+    +'<div class="repgrid">'
+    +'<div class="repbox"><div class="rv">'+S.day+'</div><div class="rl">Days in the chain</div></div>'
+    +'<div class="repbox"><div class="rv">4</div><div class="rl">Desks it passed</div></div>'
+    +'<div class="repbox"><div class="rv">'+m.grade.toFixed(2)+'</div><div class="rl">Completeness</div></div>'
+    +'<div class="repbox"><div class="rv">'+m.validity+'</div><div class="rl">Report validity</div></div>'
+    +'<div class="repbox"><div class="rv">'+m.signal+'</div><div class="rl">Signal value</div></div>'
+    +'<div class="repbox"><div class="rv">'+mins+'</div><div class="rl">Minutes on task</div></div>'
+    +'</div>'
+    +'<div class="verdict '+(m.pass?'pass':'fail')+'">'+(m.pass?'PASS':'FAIL')+' — '+m.total+' / 100 · '+m.band+'</div>'
+    +'<div class="tw"><table class="rubric"><tr><th>Competency</th><th>Weight</th><th>Score</th></tr>'
+    + m.rows.map(function(x){ return '<tr><td>'+esc(x.k)+'</td><td>'+x.w+'</td><td>'+x.p+'%</td></tr>'; }).join('')
+    +'<tr class="tot"><td>Overall</td><td>100</td><td>'+m.total+'%</td></tr></table></div></div>';
+
+  /* the two worlds */
+  h+='<div class="card"><h3 style="font-size:17px">The same patient, coded two ways</h3>'
+    +'<div class="split">'
+    +'<div class="world '+(m.codedWell&&m.comp?'good':'bad')+'"><h4>What you sent</h4>'
+    +'<div class="big">'+(m.codedWell&&m.comp?'214':(m.codedWell?'57':'4'))+'</div>'
+    +'<p>reports in the bucket your case landed in — <b>'+esc(S.ncc.medPrimary||'—')+'</b>, '
+    +esc(S.ncc.drug==='component'?'ethambutol as suspect':(S.ncc.drug==='all'?'all four components suspect':
+      (S.ncc.drug==='brand'?'brand name only':'uncoded')))+'.</p></div>'
+    +'<div class="world good"><h4>What a clean case would have sent</h4><div class="big">214</div>'
+    +'<p>reports from thirty-one countries — <b>Optic neuritis</b>, with <b>ethambutol</b> named as the suspect and '
+    +'the other three components recorded as concomitant. Information Component +3.1.</p></div>'
+    +'</div>'
+    +'<div class="fb part"><div class="hd">The lesson this practical exists for</div>'
+    +'Everything before the coding desk was about whether the report would <b>exist</b>. Everything at the coding '
+    +'desk was about whether it would be <b>worth anything</b>. Those are different failures and only the first one '
+    +'is visible. A report that never gets made is an absence somebody may notice. A report that is made, filed, '
+    +'counted and coded to the wrong term is a presence that looks like evidence and is not.</div></div>';
+
+  /* the hidden case */
+  h+='<div class="card"><h3 style="font-size:17px">What the record actually held</h3>'
+    +'<div class="tw"><table>'
+    +'<tr><td style="width:210px;font-weight:700">Reaction</td><td>'+esc(C.event.term)+'</td></tr>'
+    +'<tr><td style="font-weight:700">Suspect</td><td>'+esc(C.drug.suspect)+' — '+esc(C.drug.suspectDose)+'</td></tr>'
+    +'<tr><td style="font-weight:700">Renal function</td><td>'+esc(C.hidden.renal)+'</td></tr>'
+    +'<tr><td style="font-weight:700">Baseline testing</td><td>'+esc(C.hidden.baseline)+'</td></tr>'
+    +'<tr><td style="font-weight:700">Alternative causes</td><td>'+esc(C.hidden.alt)+'</td></tr>'
+    +'<tr><td style="font-weight:700">Dechallenge</td><td>'+esc(C.hidden.dechal)+'</td></tr>'
+    +'</table></div>'
+    +'<div class="fb ok" style="margin-top:10px"><div class="hd">And this is why it was worth reporting</div>'
+    +'Caught at six weeks, his colour vision came back and his acuity recovered to 6/12. The two findings your '
+    +'follow-up could have secured — a creatinine of 1.6 and no baseline vision test — are not facts about one '
+    +'patient. They are facts about how the programme is being run in that district, and they are the kind of thing '
+    +'that changes practice.</div></div>';
+
+  h+='<div class="card"><div class="row"><button class="btn ghost" id="againBtn" type="button">Run it again</button>'
+    +'<button class="btn ghost sm" id="logBtn" type="button">Show my decision log</button></div><div id="logOut"></div></div>';
+  $('debrief').innerHTML=h;
+  $('againBtn').addEventListener('click',function(){ location.reload(); });
+  $('logBtn').addEventListener('click',function(){
+    $('logOut').innerHTML='<div class="transcript" style="margin-top:10px;max-height:240px;overflow:auto">'
+      +(S.log.length?S.log.map(function(l){return '<div>'+esc(l.t)+'</div>';}).join('')
+        :'<span class="muted">No penalties recorded — a clean run.</span>')+'</div>';
+  });
+}
+
+/* ================= report ================= */
+var OPTS={module:'Pharmacy AI · Module 2 · Unit 4 — Digital Inventory, ADR &amp; Compliance Systems',
+          title:'From Bedside to Uppsala — recording an ADR through the reporting chain',
+          programme:'Pharmacy AI'};
+function buildAuto(){
+  if(!marked) return '';
+  var m=marked, L=[];
+  L.push('CASE: '+C.id+' — suspected '+C.event.term);
+  L.push('Patient: '+C.patient.age+', '+C.patient.sex+', '+C.patient.weight+' · '+C.drug.indication);
+  L.push('Chain: bedside → AMC → NCC-PvPI (IPC Ghaziabad) → VigiBase (UMC, Uppsala)');
+  L.push('Days in the chain: '+S.day+' · time on task: '+Math.round((Date.now()-S.started)/60000)+' min');
+  L.push('');
+  L.push('MY DECISIONS');
+  L.push('  Recognised as reportable: '+(S.bedside.recognised?'yes':'no'));
+  L.push('  Minimum elements secured: '+((S.bedside.elements||[]).length)+' of 4');
+  L.push('  Seriousness: '+(S.amc.serious||'—')+' · causality (WHO-UMC): '+(S.amc.caus||'—'));
+  L.push('  Follow-up sought: '+((S.amc.followUp||[]).join(', ')||'none'));
+  L.push('  MedDRA primary term: '+(S.ncc.medPrimary||'—'));
+  if((S.ncc.medSecondary||[]).length) L.push('  MedDRA secondary: '+S.ncc.medSecondary.join('; '));
+  L.push('  WHODrug: '+(S.ncc.drug||'—'));
+  L.push('  Duplicate decision: '+(S.ncc.dup||'—'));
+  L.push('  Completeness score: '+m.grade.toFixed(2));
+  L.push('');
+  L.push('OUTCOME IN VIGIBASE');
+  L.push('  '+(m.codedWell&&m.comp
+    ? 'Case joined 214 reports from 31 countries; Information Component +3.1.'
+    : (m.codedWell ? 'Case findable but aggregated with only 57 loosely-coded reports.'
+      : 'Case invisible to anyone searching for this reaction.')));
+  L.push('');
+  L.push('BACK TO THE REPORTER');
+  L.push('  '+(S.loop.note||'—'));
+  L.push('');
+  L.push('MARKING');
+  m.rows.forEach(function(x){ L.push('  '+x.k+' ('+x.w+') — '+x.p+'%'); });
+  L.push('  TOTAL — '+m.total+'/100 · '+m.band+' · '+(m.pass?'PASS':'FAIL'));
+  L.push('  Report validity '+m.validity+' · signal value '+m.signal);
+  if(S.log.length){ L.push(''); L.push('PENALTIES'); S.log.forEach(function(l){ L.push('  · '+l.t); }); }
+  L.push('');
+  L.push('Simulated case. Synthetic data. Not for clinical use.');
+  return L.join('\n');
+}
+function mountWriter(){
+  $('repEmpty').style.display='none';
+  var host=$('reportWriter'); host.style.display='';
+  if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+    container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+    titleField:{label:'Case summary and what the report achieved',
+      placeholder:'e.g. 91/100 — ethambutol optic neuritis, serious (medically important), probable, coded Optic '
+                 +'neuritis with ethambutol as suspect; joined 214 global reports'},
+    minWords:400,
+    attachments:[{label:'1. Completed Suspected ADR Reporting Form (PDF)'},
+                 {label:'2. Coding worksheet — MedDRA and WHODrug (PDF)'},
+                 {label:'3. Feedback note to the reporting ward (PDF)'}],
+    autoResult:function(){ return buildAuto()||''; },
+    autoPct:function(){ return marked?marked.total:null; },
+    autoResultText:function(){ return marked?((marked.pass?'PASS':'FAIL')+' '+marked.total+'/100'):''; }
+  });
+}
+
+/* ================= wiring ================= */
+function switchTab(p){
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);});
+  [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);});
+  window.scrollTo(0,0);
+}
+[].forEach.call(document.querySelectorAll('.tab'),function(t){
+  t.addEventListener('click',function(){
+    var p=t.getAttribute('data-p');
+    if(p!=='brief' && !S){ switchTab('brief'); return; }
+    switchTab(p);
+  });
+});
+$('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark');
+  try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+$('startBtn').addEventListener('click',function(){
+  S=newS(); marked=null; stageDone={};
+  $('opbar').style.display=''; refresh(); startClock();
+  switchTab('bedside'); bedside();
+});
+renderRail('');
+})();
+</script>
+<script src="alizon-backbar.js?v=5"></script>
+</body>
+</html>
