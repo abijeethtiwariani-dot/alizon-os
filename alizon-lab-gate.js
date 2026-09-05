@@ -45,7 +45,13 @@
      A public page still must not write to institutional data. The report writer
      offers a signed-in ALIZON student the usual "submit to faculty"; everyone
      else gets the PDF download and nothing reaches the evaluation queue. */
-  var PUBLIC = { 'alizon-os-workshop-pvx': 1 };
+  var PUBLIC = {
+    'alizon-os-workshop-pvx': 1,
+    /* Opened so the joint practical can be reviewed by Mar Dioscorus staff
+       before the session. Remove this line to put it back behind the
+       student login. */
+    'alizon-os-module2-pv-investigation': 1
+  };
   function get(k, d){ try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } }
   function sess(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
 
