@@ -576,6 +576,7 @@
 <script src="alizon-experiment-brief.js?v=2"></script>
 <script src="alizon-experiment-data.js?v=19"></script>
 <script src="alizon-pvx-register.js?v=1"></script>
+<script src="alizon-certificate.js?v=1"></script>
 <script src="pvx-cases.js?v=1"></script>
 <script src="pvx-signal-data.js?v=1"></script>
 <script src="pvx-engine.js?v=1"></script>
@@ -1047,7 +1048,8 @@ function renderDebrief(){
   var srcUsed=Object.keys(S.sources).length;
   var dupFound=(A.signal.dupFlagged||[]).length;
 
-  var h='<div class="wow"><h2>PV investigation complete</h2><div class="ln">'
+  var h=certificateCard();
+  h+='<div class="wow"><h2>PV investigation complete</h2><div class="ln">'
     +'You investigated <b>1</b> patient.<br>'
     +'You identified <b>'+(textHit(A.adr,X.adr)?1:0)+'</b> suspected adverse drug reaction.<br>'
     +'You extracted <b>'+dataPoints+'</b> relevant data points.<br>'
@@ -1134,6 +1136,7 @@ function renderDebrief(){
     +'<button class="btn ghost sm" id="trBtn" type="button">Show my full interview transcript</button></div><div id="trOut"></div></div>';
 
   $('debrief').innerHTML=h;
+  wireCertificate();
   $('againBtn').addEventListener('click',function(){ picked=null; renderCases(); $('startBtn').disabled=true;
     $('opbar').style.display='none'; S=null; switchTab('brief'); window.scrollTo(0,0); });
   $('trBtn').addEventListener('click',function(){
@@ -1141,6 +1144,49 @@ function renderDebrief(){
       +S.transcript.map(function(t){ return '<div style="margin-bottom:8px"><b>You:</b> '+esc(t.q)
         +' <span class="qq '+esc(t.quality)+'">'+esc(t.quality)+'</span><br><b>Patient:</b> '+esc(t.a)+'</div>'; }).join('')
       +'</div>';
+  });
+}
+/* ---------------- certificate ---------------- */
+function certificateCard(){
+  if(!window.AlizonCertificate || !marked) return '';
+  var t=AlizonCertificate.template();
+  if(!t.enabled) return '';
+  var me=participant();
+  if(marked.total < (t.passMark||50)){
+    return '<div class="card"><div class="fb part"><div class="hd">No certificate for this attempt</div>'
+      +'A certificate is issued at <b>'+esc(t.passMark)+'/100</b> and above. You scored <b>'+marked.total
+      +'</b>. Take another case — the cases are different every time and nothing stops you trying again.</div></div>';
+  }
+  return '<div class="card" id="certCard">'
+    +'<h2 style="font-size:19px;margin-bottom:5px">Your certificate</h2>'
+    +'<p class="muted" style="font-size:13px">You passed at <b>'+marked.total+'/100</b>. '
+    +esc(t.title)+' will be issued in the name below and recorded against a code anyone can check.</p>'
+    +'<div class="whoami" style="margin-top:11px"><span>Issued to</span> <b>'+esc(me&&me.name||'—')+'</b>'
+    +'<span class="muted">'+esc([me&&me.roll,me&&me.institution].filter(Boolean).join(' · '))+'</span></div>'
+    +'<div class="row"><button class="btn" id="certGo" type="button">Issue my certificate</button>'
+    +'<span class="muted" style="font-size:12.5px" id="certMsg">Opens in a new tab — print it or save it as PDF.</span></div>'
+    +'</div>';
+}
+function wireCertificate(){
+  var b=$('certGo'); if(!b) return;
+  b.addEventListener('click',function(){
+    var me=participant();
+    if(!me || !me.name){ $('certMsg').textContent='Sign in again so the certificate carries your name.'; return; }
+    b.disabled=true; b.textContent='Issuing…';
+    AlizonCertificate.issue({
+      name:me.name, reg:me.roll, institution:me.institution,
+      course:OPTS.title, programme:'PVX',
+      score:marked.total, band:marked.band
+    }).then(function(rec){
+      b.disabled=false;
+      if(!rec){ b.textContent='Issue my certificate';
+        $('certMsg').innerHTML='<span style="color:var(--danger)">Certificates are not being issued at the moment.</span>'; return; }
+      b.textContent='Issue it again';
+      $('certMsg').innerHTML='Certificate <b>'+esc(rec.code)+'</b>'
+        + (rec.cloud?' — recorded, and checkable at '+esc(AlizonCertificate.template().verifyUrl)
+                   :' — issued, but it could not be recorded for checking. Keep your copy.');
+      AlizonCertificate.open(rec);
+    });
   });
 }
 function textHit(g,list){ g=String(g||'').toLowerCase(); return list.some(function(x){ return g.indexOf(String(x).toLowerCase())>=0; }); }
@@ -1497,6 +1543,7 @@ $('egGo').addEventListener('click',submitGate);
   $(id).addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); submitGate(); } });
 });
 showGate();
+try{ if(window.AlizonCertificate) AlizonCertificate.refresh(); }catch(e){}
 })();
 </script>
 <script src="alizon-backbar.js?v=5"></script>

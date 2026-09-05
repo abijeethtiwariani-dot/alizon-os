@@ -393,6 +393,7 @@ h1,h2,h3{color:#111!important}
     <a data-sec="adm-resetmarks"><span class="aic">↺</span> Reset Practical Marks</a>
     <a data-sec="adm-labs"><span class="aic">▶</span> Open a Practical</a>
     <a data-sec="adm-exp"><span class="aic">✎</span> Experience Letters <b class="cnt" id="cntExp" style="background:var(--gold)"></b></a>
+    <a data-sec="adm-certs"><span class="aic">✦</span> Certificates</a>
     <a data-sec="adm-exams"><span class="aic"></span> Exams <b class="cnt" id="cntExams" style="background:var(--gold)"></b></a>
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
     <a data-sec="adm-engage"><span class="aic"></span> Alerts &amp; Attendance <b class="cnt" id="cntEngage" style="background:var(--crimson)"></b></a>
@@ -769,6 +770,30 @@ h1,h2,h3{color:#111!important}
     </div>
 
     <div id="labList"></div>
+  </section>
+
+  <section class="apanel asec" id="adm-certs">
+    <h2>✦ Completion Certificates</h2>
+    <div class="ahint">Students who pass an assessed workshop are offered a certificate on the site itself. Everything
+      it says, the logos across the top and who signs it are set here — and the signatory library is the same one the
+      experience letters and notifications use, so a corrected designation fixes every document at once.</div>
+
+    <div class="cblock"><div class="ct">Design the certificate</div>
+      <div id="certDesigner"></div>
+    </div>
+
+    <div class="cblock"><div class="ct">Issued certificates</div>
+      <div class="ahint" style="margin-bottom:10px">Every certificate is stored as its own record, so certificates
+        issued at the same moment cannot overwrite one another. Revoking one leaves it verifiable but marks it
+        REVOKED wherever it is checked or reprinted.</div>
+      <div class="arow4" style="grid-template-columns:auto auto auto 1fr;gap:10px;align-items:center">
+        <button class="abtn" type="button" id="certLoad">Load issued certificates</button>
+        <button class="abtn ghost" type="button" id="certCsv" disabled>Download CSV</button>
+        <input type="text" id="certFind" placeholder="Filter by name, code or roll no." style="min-width:210px">
+        <span class="hint" id="certCount">Not loaded.</span>
+      </div>
+      <div id="certList" style="margin-top:10px"></div>
+    </div>
   </section>
 
   <section class="apanel asec" id="adm-resetmarks">
@@ -2320,7 +2345,7 @@ function renderData(){
   bkRender();
 }
 
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-resetmarks','adm-labs','adm-exp','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-resetmarks','adm-labs','adm-exp','adm-certs','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -4175,6 +4200,7 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
 </script>
 <script src="alizon-test-mode.js?v=1"></script>
 <script src="alizon-experience.js?v=9"></script>
+<script src="alizon-certificate.js?v=1"></script>
 <script>
 /* ============ Admin · Experience letters ============ */
 (function(){
@@ -4703,6 +4729,110 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   var nav=document.querySelector('.anavv a[data-sec="adm-workshops"]');
   if(nav) nav.addEventListener('click',function(){ setTimeout(wire,40); });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
+})();
+</script>
+
+<script>
+/* ===== Certificates =============================================
+   The designer is a drop-in from alizon-certificate.js. This wiring only
+   mounts it and lists what has been issued. Listing is read-only apart
+   from revoke — a certificate is never edited after issue, because the
+   holder already has a copy of what it said. */
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var ROWS=[], mounted=false;
+  function esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+
+  function mount(){
+    if(mounted) return;
+    if(!window.AlizonCertificate){ $('certDesigner').innerHTML='<div class="ahint">alizon-certificate.js did not load.</div>'; return; }
+    AlizonCertificate.designer($('certDesigner'));
+    mounted=true;
+  }
+
+  function load(){
+    if(!window.AlizonCertificate) return;
+    $('certLoad').disabled=true; $('certCount').textContent='Loading…';
+    AlizonCertificate.list().then(function(rows){
+      ROWS=rows||[]; $('certLoad').disabled=false; render();
+    }).catch(function(){
+      $('certLoad').disabled=false; $('certCount').textContent='Could not read the certificate records.';
+    });
+  }
+  function filtered(){
+    var q=String(($('certFind')||{}).value||'').trim().toLowerCase();
+    if(!q) return ROWS;
+    return ROWS.filter(function(r){
+      return (r.name+' '+r.code+' '+(r.reg||'')+' '+(r.institution||'')+' '+(r.course||'')).toLowerCase().indexOf(q)>=0;
+    });
+  }
+  function render(){
+    var rows=filtered();
+    $('certCsv').disabled=!ROWS.length;
+    $('certCount').innerHTML='<b>'+ROWS.length+'</b> issued'
+      + (rows.length!==ROWS.length?' · '+rows.length+' shown':'')
+      + (ROWS.filter(function(r){return r.revoked;}).length?' · '+ROWS.filter(function(r){return r.revoked;}).length+' revoked':'');
+    if(!rows.length){ $('certList').innerHTML='<div class="ahint">'+(ROWS.length?'Nothing matches that filter.':'No certificates issued yet.')+'</div>'; return; }
+    var h='<div style="overflow-x:auto"><table class="atbl" style="width:100%">'
+      +'<tr><th>Issued</th><th>Code</th><th>Name</th><th>Roll no.</th><th>Institution</th><th>Result</th><th></th></tr>';
+    rows.forEach(function(r){
+      h+='<tr'+(r.revoked?' style="opacity:.55"':'')+'>'
+        +'<td style="white-space:nowrap">'+esc(new Date(r.issued||0).toISOString().slice(0,10))+'</td>'
+        +'<td style="white-space:nowrap"><code style="font-size:11px">'+esc(r.code)+'</code></td>'
+        +'<td>'+esc(r.name)+(r.revoked?' <b style="color:var(--crimson)">REVOKED</b>':'')+'</td>'
+        +'<td>'+esc(r.reg||'')+'</td><td>'+esc(r.institution||'')+'</td>'
+        +'<td style="white-space:nowrap">'+(r.score==null?'—':esc(r.score)+'/100')+'</td>'
+        +'<td style="white-space:nowrap">'
+          +'<button class="abtn ghost" type="button" data-view="'+esc(r.code)+'">View</button> '
+          +(r.revoked?'':'<button class="abtn ghost" type="button" data-rev="'+esc(r.code)+'">Revoke</button>')
+        +'</td></tr>';
+    });
+    $('certList').innerHTML=h+'</table></div>';
+    $('certList').querySelectorAll('button[data-view]').forEach(function(b){
+      b.addEventListener('click',function(){
+        var r=ROWS.filter(function(x){return x.code===b.getAttribute('data-view');})[0];
+        if(r) AlizonCertificate.open(r);
+      });
+    });
+    $('certList').querySelectorAll('button[data-rev]').forEach(function(b){
+      b.addEventListener('click',function(){
+        var code=b.getAttribute('data-rev');
+        var why=prompt('Revoking '+code+'.\n\nThe holder keeps their copy, but any check of this code will show it as revoked.\n\nReason (recorded, not printed):');
+        if(why===null) return;
+        b.disabled=true; b.textContent='Revoking…';
+        AlizonCertificate.revoke(code, why).then(function(ok){
+          if(!ok){ b.disabled=false; b.textContent='Revoke'; alert('Could not revoke — check the connection.'); return; }
+          ROWS.forEach(function(r){ if(r.code===code){ r.revoked=true; r.revokeReason=why; } });
+          render();
+        });
+      });
+    });
+  }
+  function csv(){
+    var q=function(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; };
+    var L=[['Issued','Code','Name','Roll number','Institution','Course','Score','Band','Hours','Revoked','Reason'].map(q).join(',')];
+    ROWS.forEach(function(r){
+      L.push([new Date(r.issued||0).toISOString(), r.code, r.name, r.reg, r.institution, r.course,
+              r.score, r.band, r.hours, r.revoked?'yes':'no', r.revokeReason||''].map(q).join(','));
+    });
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([L.join('\n')],{type:'text/csv;charset=utf-8'}));
+    a.download='alizon-certificates-'+new Date().toISOString().slice(0,10)+'.csv';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },400);
+  }
+  function wire(){
+    var l=$('certLoad'); if(l&&!l._w){ l._w=1; l.addEventListener('click',load); }
+    var c=$('certCsv');  if(c&&!c._w){ c._w=1; c.addEventListener('click',csv); }
+    var f=$('certFind'); if(f&&!f._w){ f._w=1; f.addEventListener('input',render); }
+    mount();
+  }
+  var nav=document.querySelector('.anavv a[data-sec="adm-certs"]');
+  if(nav) nav.addEventListener('click',function(){ setTimeout(wire,60); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(wire,80); });
+  else setTimeout(wire,80);
 })();
 </script>
 </body>

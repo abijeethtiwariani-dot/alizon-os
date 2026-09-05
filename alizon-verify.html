@@ -131,6 +131,7 @@
   <div class="tabs">
     <button class="tab on" data-tab="student" type="button">Verify a Student</button>
     <button class="tab" data-tab="employee" type="button">Employee Directory</button>
+    <button class="tab" data-tab="cert" type="button">Verify a Certificate</button>
   </div>
 
   <!-- STUDENT -->
@@ -159,6 +160,22 @@
       </div>
       <div class="err" id="e-err"></div>
       <div class="result" id="e-out"></div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATE -->
+  <div class="panel" id="p-cert">
+    <div class="box">
+      <h2>Verify a certificate</h2>
+      <div class="hint">Enter the code printed at the foot of an Alizon certificate — for example
+        <b>ALZ/2026/PVX/7K3M9Q</b> — to confirm it was issued by us, to whom, and whether it still stands.</div>
+      <div class="row">
+        <div class="fld"><label>Certificate code</label>
+          <input type="text" id="c-code" placeholder="ALZ/2026/PVX/7K3M9Q" autocomplete="off" spellcheck="false"></div>
+        <button class="btn" id="c-go" type="button">Verify</button>
+      </div>
+      <div class="err" id="c-err"></div>
+      <div class="result" id="c-out"></div>
     </div>
   </div>
 
@@ -274,6 +291,78 @@
   /* fill departments once the roster syncs in */
   fillDepts(); var tries=0; var iv=setInterval(function(){ fillDepts(); if(++tries>20) clearInterval(iv); }, 1500);
   window.addEventListener('storage',function(e){ if(e.key==='alizonHR') fillDepts(); });
+})();
+</script>
+<script src="alizon-certificate.js?v=1"></script>
+
+<script>
+/* ===== certificate verification =================================
+   Reads exactly one document — the certificate with that code — so a
+   wrong or invented code reveals nothing about any other. */
+(function(){
+  'use strict';
+  var $=function(id){ return document.getElementById(id); };
+  function esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+  function row(k,v){ return v?('<div class="vi"><span>'+esc(k)+'</span><b>'+esc(v)+'</b></div>'):''; }
+
+  function go(){
+    var el=$('c-code'), out=$('c-out'), err=$('c-err');
+    var code=String(el.value||'').trim().toUpperCase();
+    err.textContent=''; out.innerHTML='';
+    if(!code){ err.textContent='Enter the certificate code.'; el.focus(); return; }
+    if(!window.AlizonCertificate){ err.textContent='The verification service did not load. Please refresh.'; return; }
+    var b=$('c-go'); b.disabled=true; b.textContent='Checking…';
+    AlizonCertificate.verify(code).then(function(rec){
+      b.disabled=false; b.textContent='Verify';
+      if(rec && rec.unreachable){
+        out.innerHTML='<div class="vcard"><div class="vh"><div style="flex:1">'
+          +'<h3 style="margin:0">Could not check just now</h3>'
+          +'<div class="hint" style="margin-top:6px">We could not reach the certificate records, so this is '
+          +'<b>not</b> a statement that the certificate is invalid — nothing was checked. Please try again in a '
+          +'moment, or write to info@alizongov.com quoting <b>'+esc(code)+'</b>.</div></div></div></div>';
+        return;
+      }
+      if(!rec){
+        out.innerHTML='<div class="vcard"><div class="vh"><div style="flex:1">'
+          +'<h3 style="margin:0">No certificate found</h3>'
+          +'<div class="hint" style="margin-top:6px">Nothing has been issued under <b>'+esc(code)+'</b>. '
+          +'Check the code against the printed certificate — the letters I, O, zero and one are never used, '
+          +'so a character that looks like one of those is something else.</div></div></div></div>';
+        return;
+      }
+      var ok=!rec.revoked;
+      out.innerHTML='<div class="vcard"><div class="vh"><div style="flex:1">'
+        +'<h3 style="margin:0">'+(ok?'Genuine certificate':'This certificate has been revoked')+'</h3>'
+        +'<div class="hint" style="margin-top:6px">'
+        +(ok?'Issued by the Alizon School of Medical &amp; Digital Intelligence and currently valid.'
+            :'It was issued by us, but it has since been withdrawn and should not be relied on.')
+        +'</div></div></div>'
+        + row('Issued to', rec.name)
+        + row('Roll / register no.', rec.reg)
+        + row('Institution', rec.institution)
+        + row('For', rec.course)
+        + row('Result', (rec.score==null?'':rec.score+' / 100'+(rec.band?' · '+rec.band:'')))
+        + row('Credit', rec.hours?(rec.hours+' hours'):'')
+        + row('Date of issue', AlizonCertificate.longDate(rec.issued))
+        + row('Certificate code', rec.code)
+        + '</div>';
+    }).catch(function(){
+      b.disabled=false; b.textContent='Verify';
+      err.textContent='Could not reach the certificate records. Please try again.';
+    });
+  }
+  var g=$('c-go'); if(g) g.addEventListener('click',go);
+  var i=$('c-code'); if(i) i.addEventListener('keydown',function(e){ if(e.key==='Enter') go(); });
+  /* deep link: /alizon-verify?cert=ALZ/2026/PVX/7K3M9Q */
+  try{
+    var q=new URLSearchParams(location.search).get('cert');
+    if(q && i){
+      i.value=q;
+      document.querySelector('.tab[data-tab="cert"]').click();
+      setTimeout(go, 400);
+    }
+  }catch(e){}
 })();
 </script>
 <script src="alizon-back.js"></script>
