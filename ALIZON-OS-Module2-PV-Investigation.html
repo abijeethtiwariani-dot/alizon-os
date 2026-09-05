@@ -55,6 +55,8 @@
   .cobrand{display:flex;align-items:center;gap:clamp(10px,2vw,20px);flex-wrap:wrap;background:var(--panel);
     border:1px solid var(--line);border-radius:15px;padding:13px clamp(14px,2.2vw,20px);margin-bottom:14px;box-shadow:var(--card-shadow)}
   .cobrand img{height:34px;width:auto;flex:none}
+  .cobrand img.crest{height:48px}
+  @media(max-width:560px){.cobrand img{height:27px}.cobrand img.crest{height:38px}}
   .cobrand .x{font-size:15px;font-weight:700;color:var(--muted);flex:none}
   .cobrand .prt{display:flex;flex-direction:column;gap:1px;min-width:0}
   .cobrand .prt .nm{font-family:'Source Serif Pro',serif;font-weight:700;font-size:14.5px;line-height:1.25}
@@ -219,19 +221,20 @@
 <link rel="stylesheet" href="alizon-practical-glass.css?v=1">
 </head>
 <body>
-<script src="alizon-lab-gate.js?v=4"></script>
+<script src="alizon-lab-gate.js?v=6"></script>
 <div class="wrap">
 
   <div class="cobrand">
-    <img src="alizon-logo.png" alt="Alizon">
+    <img src="alizon-logo.png" alt="Alizon School of Medical &amp; Digital Intelligence" onerror="this.style.display='none'">
     <div class="prt"><span class="nm">Alizon School of Medical &amp; Digital Intelligence</span><span class="sb">ALIZON AOS · Pharmacy AI</span></div>
     <span class="x">×</span>
+    <img class="crest" src="resources/partners/mar-dioscorus-college-of-pharmacy.png" alt="Mar Dioscorus College of Pharmacy" onerror="this.style.display='none'">
     <div class="prt"><span class="nm">Mar Dioscorus College of Pharmacy</span><span class="sb">Alathara · Thiruvananthapuram · Kerala</span></div>
     <span class="tagj">Joint Practical</span>
   </div>
 
   <div class="hero">
-    <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Pharmacy AI · Module 2 · Unit 4 · Practical 3</div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Pharmacy AI · Module 2 · Unit 4 · Practical 4</div>
     <h1 style="font-size:clamp(1.4rem,3.4vw,2.05rem);margin:7px 0">From ADR to VigiBase</h1>
     <p class="muted" style="font-size:14px;max-width:82ch"><b>Aim —</b> To run a suspected adverse drug reaction as a live investigation — discovering the history question by question,
       working with incomplete data, deciding seriousness and causality on the evidence, building a valid ICSR, and carrying the case from a Kerala

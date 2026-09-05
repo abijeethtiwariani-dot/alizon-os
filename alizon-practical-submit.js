@@ -63,6 +63,16 @@
   }
 
   function pushSubmission(sub){
+    /* The staff test account must be able to work a practical end to end
+       without putting a report into the faculty evaluation queue or marking
+       anybody present. Skip the write and say so — a tester who believes the
+       report was filed and later finds nothing is worse off than one who is
+       told plainly. */
+    if (window.AlizonTest && window.AlizonTest.blocks('a practical submission')) {
+      sub.testOnly = true;
+      try{ if(window.parent&&window.parent!==window) window.parent.postMessage({type:'alizon-submission-test',id:sub.id,module:sub.module},'*'); }catch(e){}
+      return;
+    }
     var subs=J('alizonSubmissions',[]); if(!Array.isArray(subs)) subs=[];
     subs.push(sub);
     try{ localStorage.setItem('alizonSubmissions', JSON.stringify(subs)); }catch(e){}

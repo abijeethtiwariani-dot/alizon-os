@@ -36,13 +36,36 @@
      is treated as cross-programme and opens for everyone. Folder layout cannot
      go stale the way a synced list can, so it backs the list up. */
   var FOLDER_OWNER = { 'hospital-admin': { id:'hospital', name:'Hospital Administration' } };
+
+  /* Deliberately public. These run in collaboration with partner colleges and
+     are open to anyone — no sign-in, no enrolment check. Being on this list is
+     a decision, not an oversight: a page that is public because somebody forgot
+     the gate script looks exactly the same until you read the source.
+
+     A public page still must not write to institutional data. The report writer
+     offers a signed-in ALIZON student the usual "submit to faculty"; everyone
+     else gets the PDF download and nothing reaches the evaluation queue. */
+  var PUBLIC = { 'alizon-os-workshop-pvx': 1 };
   function get(k, d){ try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } }
   function sess(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
 
-  var file = (location.pathname.split('/').pop() || '').toLowerCase();
+  /* Compare pages WITHOUT the .html extension, on both sides.
+
+     This is not a tidiness choice. Vercel serves the site with clean URLs, so
+     /ALIZON-OS-Module3-CDSS.html is redirected to /ALIZON-OS-Module3-CDSS and
+     the live pathname never carries an extension — while every href in
+     alizonPrograms does. Comparing the two forms directly meant no programme
+     ever claimed any lab on the live site: `owners` came back empty, the gate
+     took its "cross-programme lab" exit, and the enrolment lock silently did
+     nothing in production. It only ever appeared to work when tested from a
+     local file server, where the .html survives. Strip it on both sides and
+     the comparison holds under either URL style. */
   function fileKey(h){
-    return String(h || '').split('/').pop().split('?')[0].split('#')[0].toLowerCase();
+    return String(h || '').split('/').pop().split('?')[0].split('#')[0]
+             .toLowerCase().replace(/\.html?$/, '');
   }
+  var file = fileKey(location.pathname.split('/').pop());
+  if (PUBLIC[file]) return;                          /* open to everyone */
 
   /* ---- who is this? ---------------------------------------------------- */
   /* An admin session is set by the admin portal after a password check. It is
@@ -51,8 +74,15 @@
   var isFaculty = !!sess('alizonFacultyAuth');
   var prof      = get('alizonProfile', null);
   var isStudent = !!(prof && (prof.reg || prof.name));
+  /* The staff test account (alizon-test-mode.js) opens every practical in
+     every programme. It is deliberately a localStorage flag, not a session
+     one: staff open labs in new tabs, and sessionStorage does not survive
+     that. Test mode writes nothing to institutional data, so the access it
+     grants is to look, not to alter. */
+  var isTest = false;
+  try { isTest = localStorage.getItem('alizonTestMode') === '1'; } catch (e) {}
 
-  if (isAdmin || isFaculty) return;                 /* staff see everything */
+  if (isAdmin || isFaculty || isTest) return;       /* staff see everything */
   if (!isStudent) return block(
     'Student access only',
     'This practical is available to logged-in Alizon students. Please sign in to the ALIZON AOS portal to continue.');

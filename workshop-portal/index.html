@@ -284,7 +284,7 @@
       +'<button class="btn" id="pp-upbtn">'+(r.photo?'Replace photo':'Upload photo')+'</button>'
       +'<span class="frm-err" id="pp-uperr"></span></div></div>';
     if(r.status==='approved') html+='<div class="pp-sec"><h4>Temporary ID card</h4>'+idCardHtml(r)+'</div>';
-    else if(r.status==='rejected') html+='<div class="pp-sec st-info">This registration was not approved. For queries write to <a href="mailto:opsmanager.mioc@miak.in" style="color:var(--crimson);font-weight:600">the workshops office</a>.</div>';
+    else if(r.status==='rejected') html+='<div class="pp-sec st-info">This registration was not approved. For queries write to <a href="mailto:info@alizongov.com" style="color:var(--crimson);font-weight:600">the workshops office</a>.</div>';
     else html+='<div class="pp-sec st-info">Your temporary ID card will appear here once the workshops office approves your registration — check back soon.</div>';
     html+=modulesHtml(r);
     var mine=myFeedback();

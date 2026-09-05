@@ -32,7 +32,7 @@
 {"@context":"https://schema.org","@type":"EducationalOrganization",
  "name":"Alizon School of Medical & Digital Intelligence","alternateName":"ALIZON AOS",
  "url":"https://www.alizon.in/","logo":"https://www.alizon.in/alizon-logo.png",
- "email":"opsmanager.mioc@miak.in",
+ "email":"info@alizongov.com",
  "sameAs":["https://www.alizongov.com/"],
  "address":{"@type":"PostalAddress","addressLocality":"Thiruvananthapuram","addressRegion":"Kerala","addressCountry":"IN"},
  "description":"AI-powered healthcare education — certificate courses in Paramedical AI, Pharmacy AI, Medical AI and Hospital Administration AI with browser-based virtual practicals, AI-scored assessments and online results."}
@@ -1659,6 +1659,36 @@ section.blk.alt{background:var(--paper)}
 .btn.pri{background:var(--crimson);color:#fff;border-color:transparent}
 .btn.pri:hover{background:var(--crimson-deep);color:#fff}
 .ws-empty{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px;text-align:center;color:var(--muted);font-size:14px}
+/* ===== open workshops — always available, no registration ===== */
+.ow-grid{display:grid;gap:26px}
+.ow{background:#fff;border:1px solid var(--line);border-top:3px solid var(--crimson);
+  display:grid;grid-template-columns:1.35fr .65fr;gap:clamp(24px,3.4vw,48px);padding:clamp(24px,3vw,38px);
+  /* section.blk centres its children; this card is a dense read, not a
+     marketing block, so it sets itself back to the left */
+  text-align:left}
+@media(max-width:900px){.ow{grid-template-columns:1fr}}
+.ow .tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ok);background:rgba(30,142,90,.09);border:1px solid rgba(30,142,90,.28);
+  border-radius:100px;padding:5px 13px}
+.ow h3{font-family:'Source Serif Pro',Georgia,serif;font-size:clamp(1.5rem,2.8vw,2rem);font-weight:600;
+  line-height:1.15;margin-top:14px}
+.ow .lead{font-size:15px;color:var(--muted);line-height:1.7;margin-top:12px}
+.ow .lead b{color:var(--ink);font-weight:600}
+.ow .does{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.ow .does span{font-size:12px;padding:5px 12px;border-radius:100px;background:var(--paper);border:1px solid var(--line)}
+.ow .act{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.ow .act .note{font-size:12.5px;color:var(--muted)}
+.ow-side{border-left:1px solid var(--line);padding-left:clamp(20px,2.4vw,34px)}
+@media(max-width:900px){.ow-side{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:24px}}
+.ow-lock{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.ow-lock img{display:block;height:46px;width:auto}
+.ow-lock img.crest{height:62px}
+.ow-lock .x{color:var(--muted);font-size:18px;font-weight:300}
+.ow-side .who{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:14px}
+.ow-side .who b{display:block;color:var(--ink);font-size:13.5px;font-family:'Source Serif Pro',Georgia,serif;font-weight:600}
+.ow-facts{list-style:none;margin-top:18px;border-top:1px solid var(--line)}
+.ow-facts li{font-size:13px;color:var(--muted);padding:9px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px}
+.ow-facts li b{color:var(--ink);font-weight:600;text-align:right}
 /* ===== full-bleed next-workshop spotlight (Stanford feature band) ===== */
 .spot{background:linear-gradient(115deg,#8c1515 0%,#6b0f0f 62%,#3d0808 100%);color:#fff;display:none}
 .spot.onb{display:block}
@@ -1841,6 +1871,20 @@ footer a:hover{text-decoration:underline}
 </div></div>
 
 <!-- ===== Stanford "Building for Breakthroughs" band → upcoming workshops ===== -->
+<!-- ===== Open workshops: no date, no registration, start now ===== -->
+<section class="blk alt" id="openws">
+  <div class="wrap">
+    <div class="bhead">
+      <div class="ey">Open to Everyone</div>
+      <h2 class="serif">Start right now — no registration</h2>
+      <p>Built with our partner colleges and free for anyone to work through: pharmacy students,
+         practising pharmacists and clinicians alike. Nothing to book and no account to create — give your name,
+         roll number and phone at the door and start.</p>
+    </div>
+    <div class="ow-grid" id="owHost"></div>
+  </div>
+</section>
+
 <section class="blk" id="upcoming">
   <div class="wrap">
     <div class="bhead">
@@ -2033,7 +2077,7 @@ footer a:hover{text-decoration:underline}
     <a class="pri" href="alizon-academics.html">Academics</a>
     <a href="alizon-exam.html">Examinations &amp; Hall Tickets</a>
     <a href="alizon-results.html">Results</a>
-    <a href="mailto:opsmanager.mioc@miak.in">Contact the Workshops Office</a>
+    <a href="mailto:info@alizongov.com">Contact the Workshops Office</a>
   </div>
 </div>
 
@@ -2138,7 +2182,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
   if(!launch||!panel||!msgs||!chipsB||!form||!field) return;
 
   var DEFAULT_CHIPS = ["Programmes","Eligibility & fees","How to apply","Virtual practicals","Results & hall ticket","Contact"];
-  var EMAIL = "opsmanager.mioc@miak.in";
+  var EMAIL = "info@alizongov.com";
 
   // ---- Intent engine ----
   var INTENTS = [
@@ -2390,7 +2434,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
     {id:'employer',label:'Employer',cards:[
       {t:'Verify a certificate',d:'Confirm a credential is genuine',href:'#azverify-root',ic:'shield'},
       {t:'Verify results',d:'Check a candidate’s results',href:'alizon-results.html',ic:'chart'},
-      {t:'Contact office',d:'Reach the operations desk',href:'mailto:opsmanager.mioc@miak.in',ic:'mail'}
+      {t:'Contact office',d:'Reach the operations desk',href:'mailto:info@alizongov.com',ic:'mail'}
     ]}
   ];
 
@@ -2922,7 +2966,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
       '<div><p class="azverify-rtitle">No record matched</p><p class="azverify-rid">'+(id?'Searched: '+esc(id):'Empty ID')+'</p></div>'+
       '</div>'+
       '<p class="azverify-note">We couldn&#8217;t match this ID in the demo registry. Please re-check the ID (format <strong>ALZ102</strong> or <strong>ALZ-2026-xxxx</strong>), or contact the office and we&#8217;ll confirm manually.</p>'+
-      '<p class="azverify-rlinks"><a href="mailto:opsmanager.mioc@miak.in?subject=Credential%20verification%20query">Contact the office</a><a href="alizon-results.html">Official results portal</a></p>';
+      '<p class="azverify-rlinks"><a href="mailto:info@alizongov.com?subject=Credential%20verification%20query">Contact the office</a><a href="alizon-results.html">Official results portal</a></p>';
   }
 
   function render(html,ok){
@@ -3176,7 +3220,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
         document.getElementById('spotBtn').setAttribute('data-pick', next.id);
       } else band.classList.remove('onb');
     }
-    if(!list.length){ host.innerHTML='<div class="ws-empty">Workshop announcements are coming soon — watch this page, or write to <a href="mailto:opsmanager.mioc@miak.in" style="color:var(--crimson);font-weight:600">the workshops office</a>.</div>'; injectLd(list); return; }
+    if(!list.length){ host.innerHTML='<div class="ws-empty">Workshop announcements are coming soon — watch this page, or write to <a href="mailto:info@alizongov.com" style="color:var(--crimson);font-weight:600">the workshops office</a>.</div>'; injectLd(list); return; }
     host.innerHTML='<div class="ws-grid">'+list.map(function(w){
       var mods=(w.modules||[]);
       return '<article class="ws-card">'
@@ -3359,6 +3403,97 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
 <script src="alizon-motion.js"></script>
 <script src="firebase-sync.js"></script>
 <script src="alizon-cms.js"></script>
+<script>
+/* ===== Open workshops =========================================
+   These are not events. They have no date, no seat count and no
+   registration desk — they sit on the site permanently and anyone can
+   start one immediately. They are therefore NOT read from
+   alizonWorkshops, which the workshops office manages as dated,
+   bookable events; a card here would advertise a Register button that
+   leads nowhere.
+
+   To add another open workshop, add an object to OPEN below. */
+(function(){
+  'use strict';
+  var OPEN = [{
+    id:'pvx',
+    title:'PV-X — AI ADR Detective',
+    kicker:'Pharmacovigilance · Virtual patient',
+    href:'ALIZON-OS-Workshop-PVX',
+    lead:'You are not handed a case. You are handed a patient who has noticed something — '
+        +'<b>and nothing else</b>. Interview them in your own words, and they answer only what you actually ask. '
+        +'Then go and find the rest: the treating doctor, the dispensing record, the medical notes, the laboratory. '
+        +'Identify the reaction, judge whether it is serious, score causality, file the report, check the database '
+        +'for duplicates, and decide what the safety team should do.',
+    does:['Patient interviewing','Medication history','ADR identification','Seriousness','Naranjo causality',
+          'ICSR completion','Duplicate detection','Signal assessment'],
+    facts:[['Cases','7, difficulty 1–7'],['Time','40–70 minutes each'],['Cost','Free'],
+           ['To start','Name, roll no. and phone'],['You keep','Your own PDF report']],
+    brochure:'pvx-brochure',
+    partner:{ name:'Mar Dioscorus College of Pharmacy',
+              sub:'Malankara Orthodox Church · Thiruvananthapuram, Kerala',
+              logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
+    cta:'Start the workshop'
+  }];
+
+  function esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+
+  function card(w){
+    return '<article class="ow">'
+      + '<div>'
+        + '<span class="tag">● Open to everyone — free, no account needed</span>'
+        + '<h3 class="serif">'+esc(w.title)+'</h3>'
+        + '<div class="ey" style="margin-top:8px">'+esc(w.kicker)+'</div>'
+        + '<p class="lead">'+w.lead+'</p>'
+        + '<div class="does">'+w.does.map(function(d){ return '<span>'+esc(d)+'</span>'; }).join('')+'</div>'
+        + '<div class="act">'
+          + '<a class="btn pri" href="'+esc(w.href)+'">'+esc(w.cta)+' &rarr;</a>'
+          + (w.brochure?'<a class="btn" href="'+esc(w.brochure)+'">Brochure</a>':'')
+          + '<span class="note">Opens straight away — sign in with your name, roll number and phone. Nothing you do inside is submitted anywhere unless you are a signed-in Alizon student.</span>'
+        + '</div>'
+      + '</div>'
+      + '<aside class="ow-side">'
+        + '<div class="ow-lock">'
+          + '<img src="alizon-logo.png" alt="Alizon" onerror="this.style.display=\'none\'">'
+          + '<span class="x">&times;</span>'
+          + '<img class="crest" src="'+esc(w.partner.logo)+'" alt="'+esc(w.partner.name)+'" onerror="this.style.display=\'none\'">'
+        + '</div>'
+        + '<div class="who"><b>In collaboration with</b>'+esc(w.partner.name)+'<br>'+esc(w.partner.sub)+'</div>'
+        + '<ul class="ow-facts">'+w.facts.map(function(f){
+            return '<li><span>'+esc(f[0])+'</span><b>'+esc(f[1])+'</b></li>'; }).join('')+'</ul>'
+      + '</aside>'
+    + '</article>';
+  }
+
+  function render(){
+    var host=document.getElementById('owHost'); if(!host) return;
+    host.innerHTML = OPEN.map(card).join('');
+    /* SEO: these are Courses, not Events — they have no start date */
+    try{
+      var old=document.getElementById('owLd'); if(old) old.remove();
+      var base=location.origin+location.pathname.replace(/[^/]*$/,'');
+      var ld={"@context":"https://schema.org","@type":"ItemList","itemListElement":OPEN.map(function(w,i){
+        return {"@type":"ListItem","position":i+1,"item":{
+          "@type":"Course","name":w.title,
+          "description":String(w.lead).replace(/<[^>]+>/g,''),
+          "url":base+w.href,
+          "isAccessibleForFree":true,
+          "educationalLevel":"Professional",
+          "teaches":w.does.join(', '),
+          "provider":{"@type":"EducationalOrganization","name":"Alizon School of Medical & Digital Intelligence","url":"https://www.alizon.in/"},
+          "contributor":{"@type":"CollegeOrUniversity","name":w.partner.name},
+          "hasCourseInstance":{"@type":"CourseInstance","courseMode":"online",
+            "courseWorkload":"PT1H","instructor":{"@type":"Organization","name":"Alizon School of Medical & Digital Intelligence"}}
+        }};})};
+      var el=document.createElement('script'); el.type='application/ld+json'; el.id='owLd';
+      el.textContent=JSON.stringify(ld); document.head.appendChild(el);
+    }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',render); else render();
+})();
+</script>
+
 <style id="dark-footer">footer{background:#1A1A1A!important;color:#c9c9c9!important;border-top:1px solid rgba(255,255,255,.12)!important}footer .brand,footer .brand *{color:#fff!important}footer h4{color:#fff!important}footer a{color:#c9c9c9!important}footer a:hover{color:#fff!important}footer .base{color:#9a9a9a!important;border-top:1px solid rgba(255,255,255,.12)!important}</style>
 </body>
 </html>

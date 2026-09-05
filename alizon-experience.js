@@ -66,7 +66,7 @@
   /* ---- signatories ----
      The library is seeded from the single signatory this used to hold, so an
      institution that never opens the panel keeps signing exactly as before. */
-  var DOCS = { experience:'Experience letters', notification:'Admission notifications', pcc:'Police clearance letters' };
+  var DOCS = { experience:'Experience letters', notification:'Admission notifications', pcc:'Police clearance letters', certificate:'Completion certificates' };
   function signers(){
     var s=settings(), list=s.signers;
     if(!Array.isArray(list) || !list.length){

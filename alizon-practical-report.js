@@ -129,14 +129,22 @@
         var reportObj={html:body,name:name,reg:reg,pct:pct,resultText:rt};
 
         var subOpts=opts.submitOpts||{module:opts.module,title:opts.title,programme:opts.programme};
+        /* A public workshop has no faculty to submit to, and letting anonymous
+           visitors write into alizonSubmissions would fill the shared 1 MB
+           Firestore document and take the real students' evaluation queue with
+           it. Those pages pass noSubmit and get the download only. */
+        var noSubmit = false; try{ noSubmit = typeof opts.noSubmit==='function' ? !!opts.noSubmit() : !!opts.noSubmit; }catch(e){}
         host.querySelector('#aprOut').innerHTML='<div class="apr-preview">'+body+'</div>'
           +'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">'
-          +'<button type="button" class="apr-btn" id="aprSubmit">⤴ Submit report to faculty</button>'
+          +(noSubmit?'':'<button type="button" class="apr-btn" id="aprSubmit">⤴ Submit report to faculty</button>')
           +'<button type="button" class="apr-btn" id="aprDownload" style="background:#fff;color:#8c1515;border:1.5px solid #8c1515">⤓ Download PDF</button>'
-          +'<span style="font-size:12px;color:var(--muted,#6e6a63)">Review your report above, then submit and/or download it.</span></div>';
+          +'<span style="font-size:12px;color:var(--muted,#6e6a63)">'
+          +(noSubmit ? esc(opts.noSubmitNote||'Download your report — this page does not submit to faculty.')
+                     : 'Review your report above, then submit and/or download it.')
+          +'</span></div>';
         /* collect any attached PDF files */
         function attFiles(){ var out=[]; (opts.attachments||[]).forEach(function(a,i){ var el=host.querySelector('#apr-att-'+i); if(el&&el.files&&el.files[0]) out.push({label:a.label,file:el.files[0]}); }); return out; }
-        host.querySelector('#aprSubmit').addEventListener('click',function(){
+        if(!noSubmit) host.querySelector('#aprSubmit').addEventListener('click',function(){
           if(!window.AlizonPracticalSubmit){ alert('Submission service not loaded — please refresh and try again.'); return; }
           var files=attFiles(), btn=this;
           if(!files.length){ AlizonPracticalSubmit.submit(subOpts,reportObj); return; }

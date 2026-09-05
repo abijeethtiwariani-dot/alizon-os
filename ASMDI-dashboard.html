@@ -983,8 +983,9 @@
   html:not(.theme-dark) .login-card h1{font-family:'Source Serif Pro',Georgia,serif !important;}
   a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #8c1515 !important;outline-offset:3px;}
 </style>
+  <script src="alizon-test-mode.js?v=1"></script>
   <script src="firebase-sync.js"></script>
-  <script src="alizon-attendance.js?v=2"></script>
+  <script src="alizon-attendance.js?v=3"></script>
   <script src="print-paginate.js"></script>
 <link rel="stylesheet" href="alizon-theme.css">
 </head>
@@ -1350,7 +1351,7 @@
           <div class="segbtns" style="flex-direction:column;align-items:stretch">
             <button class="setbtn2" id="set-askaliz">Ask Aliz — instant help</button>
             <button class="setbtn2" id="set-griev">Raise a grievance</button>
-            <a class="setbtn2" style="text-align:center;text-decoration:none" href="mailto:opsmanager.mioc@miak.in">Email the institute office</a>
+            <a class="setbtn2" style="text-align:center;text-decoration:none" href="mailto:info@alizongov.com">Email the institute office</a>
           </div>
           <div class="setnote">ALIZON AOS · pilot build v1.0<br>Alizon School of Medical &amp; Digital Intelligence</div>
         </div>
@@ -1539,7 +1540,12 @@ document.getElementById('loginForm').addEventListener('submit',e=>{
   const pw=document.getElementById('lg-pw').value||'';
   const errEl=document.getElementById('lgErr');
   const btn=document.querySelector('#loginForm button[type="submit"]')||document.querySelector('#loginForm button');
-  const isMaster = idRaw.toLowerCase()==='admin' && pw==='admin123';
+  /* `admin`/`admin123` and `test`/`test` both open the staff test account —
+     they sign in as a student would, but with every programme unlocked and
+     every institutional write suppressed. See alizon-test-mode.js. */
+  var testKind = null;
+  try{ testKind = window.AlizonTest ? window.AlizonTest.matches(idRaw, pw) : null; }catch(e){}
+  const isMaster = !!testKind;
 
   function setMsg(text,mode){
     if(!errEl)return;
@@ -1568,6 +1574,16 @@ document.getElementById('loginForm').addEventListener('submit',e=>{
   function enterApp(st){
     setMsg('',null); busy(false);
     try{ if(window.alizonAuth) window.alizonAuth.signIn(isMaster?'admin':idRaw, pw, isMaster?'admin':'student'); }catch(x){}
+    if(isMaster && !st){
+      /* Without this the master login wrote no profile at all, so every
+         practical answered "Student access only" — the bug that made the
+         labs untestable. */
+      try{
+        var tp = window.AlizonTest.start(testKind);
+        if(window.__applyProfile) window.__applyProfile(tp);
+        if(window.__renderPractrograms) window.__renderPractrograms();
+      }catch(x){}
+    }
     if(st && st.reg){
       const prof={name:st.name||'',reg:st.reg||'',sem:'',email:st.email||'',dob:st.dob||'',batch:st.batch||'',course:st.course||''};
       try{ localStorage.setItem('alizonProfile',JSON.stringify(prof)); }catch(x){}
@@ -1665,6 +1681,8 @@ const DEFAULT_PROGRAMS=[
     {unit:'Module 2',title:'Digital Pharmacy, EHR & Telepharmacy',desc:'e-Prescriptions, EHR integration and telepharmacy service delivery.',status:'live',href:'ALIZON-OS-Module2-Dispensing.html',practicals:[
       {title:'Practical 1 · Digital Dispensing — FEFO/FIFO & Patient Counselling (Unit 1)',href:'ALIZON-OS-Module2-Dispensing.html'},
       {title:'Practical 2 · Electronic ADR Reporting & Pharmacovigilance (Unit 4)',href:'ALIZON-OS-Module2-ADR.html'},
+      {title:'Practical 3 · From Bedside to Uppsala — the ADR reporting chain (Unit 4)',href:'ALIZON-OS-Module2-ADRChain.html'},
+      {title:'Open Workshop · PV-X — AI ADR Detective (with Mar Dioscorus College of Pharmacy) — Units 3 & 4',href:'ALIZON-OS-Workshop-PVX.html'},
       {title:'Mock Practice · choose your units and question count',href:'ALIZON-OS-Mock-Practice.html?m=2'},
       {title:'Internal Examination · 100 MCQs across Units 1–4',href:'ALIZON-OS-Internal-Exam.html?m=2'}],units:[
       'Unit 1 – Digital Pharmacy & E-Prescription Systems',
@@ -1675,6 +1693,7 @@ const DEFAULT_PROGRAMS=[
       {title:'Practical 1 · CDSS Alert Management Console (Unit 1)',href:'ALIZON-OS-Module3-CDSS.html'},
       {title:'Practical 2 · Selection of Safe & Effective Antimicrobial Therapy (Unit 2)',href:'ALIZON-OS-Module3-Antimicrobial.html'},
       {title:'Practical 3 · Identifying High-Risk Patients & High-Alert Medicines (Unit 3)',href:'ALIZON-OS-Module3-HighRisk.html'},
+      {title:'Open Workshop · PV-X — AI ADR Detective (shared with Module 2)',href:'ALIZON-OS-Workshop-PVX.html'},
       {title:'Mock Practice · choose your units and question count',href:'ALIZON-OS-Mock-Practice.html?m=3'},
       {title:'Internal Examination · 100 MCQs across Units 1–4',href:'ALIZON-OS-Internal-Exam.html?m=3'}],units:[
       'Unit 1 – Clinical Decision Support Systems (CDSS)',
@@ -1840,7 +1859,7 @@ const DEFAULT_PROGRAMS=[
 ];
 /* Bump on every change to DEFAULT_PROGRAMS — loadPrograms() only refreshes a
    browser's cached copy when this string changes. */
-const PROG_VER='2026-08-23-ha-m8';
+const PROG_VER='2026-09-04-adr-chain';
 /* alizonPrograms is cloud-synced, and the pull lands *after* the version-gated
    seed above. A stale cloud copy therefore used to overwrite freshly shipped
    programmes while leaving the new version string in place — after which the
@@ -1955,6 +1974,10 @@ function programmeForStudent(st){
   return null;
 }
 function enrolledProgramId(){
+  /* The staff test account is deliberately unenrolled: returning null here
+     leaves the programme dropdown free, so a tester can walk into any
+     programme's practicals. Real students are unaffected. */
+  try{ if(window.AlizonTest && window.AlizonTest.isOn()) return null; }catch(e){}
   let prof=null; try{ prof=JSON.parse(localStorage.getItem('alizonProfile')||'null'); }catch(e){}
   return programmeForStudent(prof);
 }
