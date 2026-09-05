@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
+<title>ALIZON AOS · Module 2 · From ADR to VigiBase — A Live Pharmacovigilance Investigation</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f2f0ec;--panel:#fff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A;--danger:#C4262E;--warn:#B45309;--teal:#0E6F76;--purple:#6D28D9;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;--teal:#4bc2c9;--purple:#a78bfa;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(13px,2.6vw,26px) 80px}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(15px,2.4vw,22px);box-shadow:var(--card-shadow);margin-bottom:15px}
+  .muted{color:var(--muted)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:10px 20px;color:#fff;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .btn:hover{filter:brightness(1.07)} .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
+  .btn.ok{background:linear-gradient(120deg,#0f6b45,var(--success))}
+  .btn.sm{font-size:12.5px;padding:8px 15px}
+  .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],textarea,select{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  textarea{min-height:74px;resize:vertical;line-height:1.55}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:9px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:9px 18px}
+  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .panel{display:none;animation:fade .22s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:420px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line)} tr:nth-child(even) td{background:var(--panel2)}
+  .rubric td:last-child,.rubric th:last-child{text-align:right} .rubric tr.tot td{font-weight:800;background:var(--crimson);color:#fff}
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:15px}
+  .guide h2{font-size:18px;margin-bottom:6px} .guide ol{margin:8px 0 0 18px;font-size:13px;line-height:1.72} .guide p{font-size:13.5px}
+
+  /* ---- co-brand lockup ---- */
+  .cobrand{display:flex;align-items:center;gap:clamp(10px,2vw,20px);flex-wrap:wrap;background:var(--panel);
+    border:1px solid var(--line);border-radius:15px;padding:13px clamp(14px,2.2vw,20px);margin-bottom:14px;box-shadow:var(--card-shadow)}
+  .cobrand img{height:34px;width:auto;flex:none}
+  .cobrand img.crest{height:48px}
+  @media(max-width:560px){.cobrand img{height:27px}.cobrand img.crest{height:38px}}
+  .cobrand .x{font-size:15px;font-weight:700;color:var(--muted);flex:none}
+  .cobrand .prt{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .cobrand .prt .nm{font-family:'Source Serif Pro',serif;font-weight:700;font-size:14.5px;line-height:1.25}
+  .cobrand .prt .sb{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .cobrand .tagj{margin-left:auto;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--teal);background:rgba(14,111,118,.11);border:1px solid rgba(14,111,118,.3);border-radius:100px;padding:6px 13px;flex:none}
+  @media(max-width:640px){.cobrand .tagj{margin-left:0}}
+
+  /* ---- ops bar ---- */
+  .opbar{position:sticky;top:56px;z-index:25;background:linear-gradient(120deg,#1a2340,#243156);color:#fff;border-radius:14px;
+    padding:11px 16px;display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:14px;box-shadow:0 12px 32px -22px rgba(0,0,0,.8)}
+  .opbar .ttl{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px}
+  .opbar .m{display:flex;flex-direction:column;gap:2px;min-width:88px}
+  .opbar .m .k{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;opacity:.62}
+  .opbar .m .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+  .opbar .sp{margin-left:auto}
+  .clock{background:rgba(0,0,0,.32);border-radius:100px;padding:6px 15px;font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+  .clock.warn{background:rgba(196,38,46,.5);animation:pul 1.1s infinite}
+  @keyframes pul{50%{opacity:.55}}
+
+  /* ---- stage rail ---- */
+  .rail{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px}
+  .rail b{font-size:10.5px;font-weight:800;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+    background:var(--pill);border:1px solid var(--line);color:var(--muted)}
+  .rail b.done{background:var(--success);border-color:var(--success);color:#fff}
+  .rail b.now{background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent;color:#fff;box-shadow:0 0 0 3px rgba(196,13,22,.16)}
+
+  /* ---- stage card ---- */
+  .stg{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:16px 18px;box-shadow:var(--card-shadow);margin-bottom:14px}
+  .stg .step{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 12px;display:inline-block}
+  .stg .step.tealb{background:var(--teal)} .stg .step.goldb{background:var(--gold)}
+  .stg h3{font-size:18px;margin:8px 0 4px}
+  .stg .q{font-size:14px;font-weight:600;line-height:1.55;margin:9px 0 4px}
+  .stg .sub{font-size:13px;color:var(--muted);line-height:1.62;margin-top:3px}
+
+  /* ---- case card (the physical card metaphor) ---- */
+  .ccard{background:linear-gradient(150deg,var(--panel2),var(--panel));border:1.5px solid var(--line);border-left:5px solid var(--crimson);
+    border-radius:13px;padding:15px 17px;margin:11px 0;box-shadow:var(--card-shadow)}
+  .ccard .ct{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--crimson);margin-bottom:8px}
+  .ccard .cr{display:grid;grid-template-columns:150px 1fr;gap:4px 14px;font-size:13.3px;line-height:1.6;padding:3px 0}
+  .ccard .cr span{color:var(--muted);font-weight:600}
+  @media(max-width:600px){.ccard .cr{grid-template-columns:1fr;gap:0}.ccard .cr span{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em}}
+  .ccard.upd{border-left-color:var(--danger);background:rgba(196,38,46,.05)}
+  .ccard.upd .ct{color:var(--danger)}
+  .ccard.env{border-left-color:var(--teal)} .ccard.env .ct{color:var(--teal)}
+
+  /* ---- option buttons ---- */
+  .opts{display:grid;gap:7px;margin-top:10px}
+  .opt{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font:inherit;font-size:13.5px;text-align:left;color:var(--ink);
+    background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;line-height:1.5}
+  .opt:hover{border-color:var(--gold)}
+  .opt .lt{flex:none;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--pill);border:1px solid var(--line);font-size:10.5px;font-weight:800;color:var(--muted)}
+  .opt.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)} .opt.pick .lt{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .opt.right{border-color:var(--success);background:rgba(30,142,90,.07)} .opt.right .lt{background:var(--success);border-color:var(--success);color:#fff}
+  .opt.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)} .opt.wrong .lt{background:var(--danger);border-color:var(--danger);color:#fff}
+  .opt[disabled]{cursor:default}
+
+  /* ---- interview ---- */
+  .asks{display:grid;gap:7px;margin-top:9px}
+  .ask{cursor:pointer;font:inherit;font-size:13.2px;text-align:left;color:var(--ink);background:var(--panel2);
+    border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;line-height:1.5;display:flex;gap:9px;align-items:flex-start}
+  .ask:hover{border-color:var(--gold)} .ask.used{opacity:.45;pointer-events:none}
+  .ask .qi{flex:none;width:19px;height:19px;border-radius:50%;background:var(--pill);border:1px solid var(--line);
+    display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--muted);margin-top:1px}
+  .chat{max-height:340px;overflow-y:auto;padding:4px 2px;margin-bottom:11px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}
+  .chat.empty{display:none}
+  .chat .inner{padding:12px 13px}
+  .bub{max-width:88%;padding:11px 14px;border-radius:14px;font-size:13.4px;line-height:1.6;margin-bottom:9px}
+  .bub.me{background:var(--pill);border:1px solid var(--line);margin-left:auto;border-bottom-right-radius:4px}
+  .bub.pt{background:rgba(14,111,118,.11);border:1px solid rgba(14,111,118,.3);border-bottom-left-radius:4px}
+  .bub .who{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+
+  /* ---- feedback ---- */
+  .fb{border-radius:11px;padding:13px 16px;margin-top:12px;font-size:13.4px;line-height:1.66;border:1px solid}
+  .fb.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.34)}
+  .fb.part{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.34)}
+  .fb.no{background:rgba(196,38,46,.08);border-color:rgba(196,38,46,.32)}
+  .fb .hd{font-weight:800;font-size:12.5px;margin-bottom:5px}
+  .fb.ok .hd{color:var(--success)} .fb.part .hd{color:var(--warn)} .fb.no .hd{color:var(--danger)}
+  .fb ul{margin:7px 0 0 17px} .fb li{margin-bottom:3px}
+  .fb p+p{margin-top:7px}
+
+  /* ---- form rows ---- */
+  .frow{display:grid;grid-template-columns:186px 1fr;gap:11px;align-items:start;margin-bottom:9px}
+  @media(max-width:640px){.frow{grid-template-columns:1fr;gap:4px}}
+  .frow .fl{font-size:11.5px;font-weight:700;color:var(--muted);padding-top:9px}
+  @media(max-width:640px){.frow .fl{padding-top:0;text-transform:uppercase;letter-spacing:.04em}}
+  .frow.miss input,.frow.miss textarea,.frow.miss select{border-color:var(--danger)}
+  .frow .hint{font-size:11.5px;color:var(--muted);margin-top:4px}
+  .known{background:rgba(30,142,90,.09);border:1px solid rgba(30,142,90,.3);border-radius:9px;padding:9px 12px;font-size:13.2px}
+  .unknown{background:rgba(196,38,46,.06);border:1px dashed rgba(196,38,46,.4);border-radius:9px;padding:9px 12px;font-size:13px;color:var(--muted);font-style:italic}
+
+  /* ---- checkbox lists ---- */
+  .cklist{display:grid;gap:6px;margin:10px 0 4px}
+  .cklist label{display:flex;gap:9px;align-items:flex-start;background:var(--panel2);border:1.5px solid var(--line);border-radius:9px;
+    padding:10px 12px;font-size:13.2px;cursor:pointer;line-height:1.52}
+  .cklist label:hover{border-color:var(--gold)}
+  .cklist input{margin-top:2px;accent-color:var(--crimson);flex:none;width:15px;height:15px}
+  .cklist label.right{border-color:var(--success);background:rgba(30,142,90,.07)}
+  .cklist label.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)}
+  .cklist label.missed{border-color:var(--warn);background:rgba(180,83,9,.08)}
+
+  /* ---- station journey ---- */
+  .stations{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:11px;margin:11px 0}
+  .stn{background:var(--panel2);border:1.5px solid var(--line);border-radius:13px;padding:14px 15px;text-align:center}
+  .stn .sn{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .stn .sv{font-family:'Source Serif Pro',serif;font-size:19px;font-weight:700;margin:4px 0 3px}
+  .stn .sd{font-size:12.3px;color:var(--muted);line-height:1.55}
+  .stn.k{border-color:rgba(196,13,22,.35)} .stn.k .sv{color:var(--crimson)}
+  .stn.i{border-color:rgba(161,98,7,.4)} .stn.i .sv{color:var(--gold)}
+  .stn.g{border-color:rgba(14,111,118,.4)} .stn.g .sv{color:var(--teal)}
+  .chain{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+  .chip{font-size:12.4px;font-weight:600;background:var(--panel2);border:1.5px solid var(--line);border-radius:100px;padding:8px 14px;cursor:pointer;font-family:inherit;color:var(--ink)}
+  .chip:hover{border-color:var(--gold)} .chip.used{opacity:.35;pointer-events:none}
+  .slots{display:flex;gap:6px;flex-wrap:wrap;align-items:center;background:var(--panel2);border:1px dashed var(--line);border-radius:12px;padding:12px;min-height:56px;margin:9px 0}
+  .slots .sl{font-size:12.3px;font-weight:700;background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:7px 13px}
+  .slots .sl.ok{background:rgba(30,142,90,.13);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .slots .sl.bad{background:rgba(196,38,46,.1);border-color:rgba(196,38,46,.38);color:var(--danger)}
+  .slots .ar{color:var(--muted);font-size:13px}
+  .slots .ph{color:var(--muted);font-size:12.5px;font-style:italic}
+
+  /* ---- signal wall ---- */
+  .sigt td.hot{background:rgba(196,38,46,.1);font-weight:700}
+  .tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin:10px 0}
+  .tally div{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;font-size:12.8px}
+  .tally b{display:block;font-family:'Source Serif Pro',serif;font-size:21px;color:var(--gold)}
+
+  /* ---- roles ---- */
+  .roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;margin-top:9px}
+  .role{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+  .role b{display:block;font-size:13.2px;color:var(--crimson);margin-bottom:3px}
+  .role span{font-size:12.4px;color:var(--muted);line-height:1.58}
+
+  /* ---- result ---- */
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:11px;margin:8px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .verdict{font-size:15px;font-weight:700;padding:13px 17px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+  .bar{height:8px;border-radius:100px;background:var(--pill);overflow:hidden;min-width:70px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))} .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  .badges{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0 4px}
+  .badge{font-size:12px;font-weight:700;padding:8px 15px;border-radius:100px;background:var(--gold-soft);border:1px solid rgba(161,98,7,.35);color:var(--gold)}
+  .badge.got{background:rgba(30,142,90,.14);border-color:rgba(30,142,90,.4);color:var(--success)}
+  .badge.miss{opacity:.42}
+
+  /* ---- facilitator pack ---- */
+  .fpstep{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:11px;padding:12px 15px;margin-bottom:9px;font-size:13.2px;line-height:1.62}
+  .fpstep b{color:var(--gold)}
+  .cut{border:1.5px dashed var(--line);border-radius:13px;padding:15px 17px;margin-bottom:12px;background:var(--panel)}
+  .cut .cl{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+  .secret{background:rgba(109,40,217,.07);border-color:rgba(109,40,217,.35)}
+  .secret .cl{color:var(--purple)}
+  .keyrow{display:grid;grid-template-columns:1fr;gap:0;font-size:13px;line-height:1.6}
+
+  @media print{.tabs,.btn,.no-print,.opbar,.rail{display:none!important} body{background:#fff} .panel{display:block!important}
+    .cut{page-break-inside:avoid} .card{box-shadow:none;break-inside:avoid}}
+</style>
+<link rel="stylesheet" href="alizon-practical-glass.css?v=1">
+</head>
+<body>
+<script src="alizon-lab-gate.js?v=6"></script>
+<div class="wrap">
+
+  <div class="cobrand">
+    <img src="alizon-logo.png" alt="Alizon School of Medical &amp; Digital Intelligence" onerror="this.style.display='none'">
+    <div class="prt"><span class="nm">Alizon School of Medical &amp; Digital Intelligence</span><span class="sb">ALIZON AOS · Pharmacy AI</span></div>
+    <span class="x">×</span>
+    <img class="crest" src="resources/partners/mar-dioscorus-college-of-pharmacy.png" alt="Mar Dioscorus College of Pharmacy" onerror="this.style.display='none'">
+    <div class="prt"><span class="nm">Mar Dioscorus College of Pharmacy</span><span class="sb">Sreekariyam · Thiruvananthapuram · Kerala</span></div>
+    <span class="tagj">Joint Practical</span>
+  </div>
+
+  <div class="hero">
+    <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">Pharmacy AI · Module 2 · Unit 4 · Practical 4</div>
+    <h1 style="font-size:clamp(1.4rem,3.4vw,2.05rem);margin:7px 0">From ADR to VigiBase</h1>
+    <p class="muted" style="font-size:14px;max-width:82ch"><b>Aim —</b> To run a suspected adverse drug reaction as a live investigation — discovering the history question by question,
+      working with incomplete data, deciding seriousness and causality on the evidence, building a valid ICSR, and carrying the case from a Kerala
+      ADR Monitoring Centre through NCC-PvPI to the UMC and VigiBase, ending in signal detection.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-p="brief">Briefing</button>
+    <button class="tab" data-p="run">The Investigation</button>
+    <button class="tab" data-p="fac">Facilitator Pack</button>
+    <button class="tab" data-p="report">Result &amp; Record</button>
+  </div>
+
+  <!-- ================= BRIEFING ================= -->
+  <section class="panel on" id="p-brief">
+    <div class="guide">
+      <h2>It is 10:15 AM in Kerala</h2>
+      <p>A 42-year-old woman has arrived at the emergency department of a teaching hospital with a rapidly spreading skin rash and facial swelling.
+         She started a new medicine four days ago. <b>You are the pharmacovigilance team.</b> Your job is to work out what happened, document it
+         correctly, and decide whether this case deserves to travel from a Kerala ADR Monitoring Centre all the way to the global database.</p>
+      <p style="margin-top:9px"><b>You will not be given the case.</b> Information is released only when you ask the right question, only when you
+         request the follow-up, and sometimes only when the patient deteriorates. That is deliberate — it is how a real investigation behaves.</p>
+      <ol>
+        <li>Thirteen stages, run in order. Each one unlocks the next; you cannot skip ahead.</li>
+        <li>At Stage 1 you interview a patient who answers <b>only what you actually ask</b>. Questions you never ask are evidence you never get.</li>
+        <li>The ADR form arrives <b>incomplete on purpose</b>. Deciding to seek follow-up is part of the assessment, not a failure.</li>
+        <li>Your seriousness assessment will be tested by an <b>update mid-case</b>. Reassessing is the correct behaviour, not a change of mind.</li>
+        <li>Causality is argued in open court — the category matters less than <b>why</b>.</li>
+        <li>The case ends where real cases end: as a row in a global database, being looked at for a <b>signal</b>.</li>
+      </ol>
+    </div>
+
+    <div class="card"><h2 style="font-size:18px">How to run it</h2>
+      <div class="grid2" style="margin-top:10px">
+        <div class="role"><b>Duration</b><span>90 minutes. The on-screen clock is a guide, not a cut-off — the facilitator may pause it for discussion.</span></div>
+        <div class="role"><b>Team size</b><span>4–5 students working one screen together. One student drives; the others must agree before a decision is submitted.</span></div>
+        <div class="role"><b>Format</b><span>Team simulation with role play. Some stages ask specific team members to argue a position.</span></div>
+        <div class="role"><b>Level</b><span>Pharmacy, medical and pharmacovigilance students. No prior VigiFlow experience assumed.</span></div>
+      </div>
+    </div>
+
+    <div class="card"><h2 style="font-size:18px">Take your roles now</h2>
+      <p class="muted" style="font-size:13px;margin-top:4px">Assign these before you begin. They matter from Stage 2 onwards, and again in the causality court at Stage 7.</p>
+      <div class="roles">
+        <div class="role"><b>Pharmacovigilance Officer</b><span>Leads the interview and owns the report. Decides when the team has enough to submit.</span></div>
+        <div class="role"><b>Doctor</b><span>Speaks to the clinical picture — what the reaction looks like and what else could explain it.</span></div>
+        <div class="role"><b>Pharmacist</b><span>Speaks to the medicine — pharmacology, known reactions, timing, dose and interactions.</span></div>
+        <div class="role"><b>Drug Information Officer</b><span>Holds the product information and the evidence. Argues expectedness in court.</span></div>
+        <div class="role"><b>Patient</b><span>In the interview, answers only what is asked. At Stage 7, gives evidence about the timeline.</span></div>
+      </div>
+    </div>
+
+    <div class="card"><h2 style="font-size:18px">Assessment rubric</h2>
+      <div class="tw"><table class="rubric"><thead><tr><th>Assessment criteria</th><th>Marks</th></tr></thead><tbody>
+        <tr><td>Asking the right patient questions</td><td>10</td></tr>
+        <tr><td>Correct ADR identification</td><td>10</td></tr>
+        <tr><td>ADR form completion</td><td>15</td></tr>
+        <tr><td>Handling missing information</td><td>10</td></tr>
+        <tr><td>Seriousness assessment — including reassessment</td><td>10</td></tr>
+        <tr><td>Causality reasoning</td><td>15</td></tr>
+        <tr><td>ICSR / VigiFlow entry and coding</td><td>15</td></tr>
+        <tr><td>Quality review at NCC-PvPI</td><td>5</td></tr>
+        <tr><td>Signal detection</td><td>10</td></tr>
+        <tr class="tot"><td>Total</td><td>100</td></tr>
+      </tbody></table></div>
+      <p class="muted" style="font-size:12.5px">Pass 50. A bonus <b>+5</b> is awarded by the facilitator to the team giving the clearest answer to the closing question:
+        <i>why is an ADR report valuable even when causality has not been proven?</i></p>
+    </div>
+
+    <div class="card"><h2 style="font-size:18px">Achievement badges</h2>
+      <div class="badges">
+        <span class="badge">🔍 Good Historian</span><span class="badge">📋 Valid ICSR</span><span class="badge">⚖ Causality Reasoned</span>
+        <span class="badge">🔄 Reassessed Correctly</span><span class="badge">🌐 Reached VigiBase</span><span class="badge">📡 Signal Spotted</span>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:8px" id="badgeCrit"></p>
+    </div>
+  </section>
+
+  <!-- ================= THE INVESTIGATION ================= -->
+  <section class="panel" id="p-run">
+    <div class="card" id="setupCard">
+      <h2 style="font-size:18px">Register your team</h2>
+      <div class="grid2" style="margin-top:9px">
+        <div><label class="f">Team name or number</label><input type="text" id="cName" placeholder="e.g. Team 3"></div>
+        <div><label class="f">Institution</label><input type="text" id="cInst" placeholder="e.g. Mar Dioscorus College of Pharmacy"></div>
+        <div><label class="f">Team lead — name</label><input type="text" id="cLead" placeholder="Name of the PV Officer"></div>
+        <div><label class="f">Registration no.</label><input type="text" id="cReg" placeholder="e.g. ALZ102"></div>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:10px">Alizon School of Medical &amp; Digital Intelligence · in collaboration with Mar Dioscorus College of Pharmacy · ADR Monitoring Centre simulation</p>
+      <div class="row" style="margin-top:11px">
+        <button class="btn" id="startBtn">▶ Begin the investigation</button>
+        <button class="btn ghost sm" id="themeBtn">◐ Theme</button>
+      </div>
+    </div>
+    <div id="live" style="display:none">
+      <div class="opbar">
+        <div class="ttl">PV Investigation</div>
+        <div class="m"><span class="k">Stage</span><span class="v" id="mStage">1 / 13</span></div>
+        <div class="m"><span class="k">Score</span><span class="v" id="mScore">0</span></div>
+        <div class="m"><span class="k">Case status</span><span class="v" id="mStatus" style="font-size:12.5px">Open</span></div>
+        <div class="sp"></div>
+        <div class="clock" id="clock">90:00</div>
+      </div>
+      <div class="rail" id="rail"></div>
+      <div id="stage"></div>
+    </div>
+  </section>
+
+  <!-- ================= FACILITATOR PACK ================= -->
+  <section class="panel" id="p-fac">
+    <div class="guide">
+      <h2>Facilitator pack</h2>
+      <p>Everything below is printable. The cards are laid out to be cut out and handed over at the right moment — the practical depends on
+         information arriving in stages, so <b>do not print and distribute the whole pack to students</b>. The secret cards are marked in purple.</p>
+      <div class="row no-print" style="margin-top:11px"><button class="btn sm" id="facPrint">🖨 Print the pack</button></div>
+    </div>
+
+    <div class="card"><h2 style="font-size:18px">Timing plan — 90 minutes</h2>
+      <div class="tw"><table><thead><tr><th style="width:15%">Minutes</th><th style="width:38%">Stage</th><th>What the facilitator does</th></tr></thead><tbody>
+        <tr><td>0–5</td><td>Set-up</td><td>Read the story aloud. Assign roles. Hand out Card 1 only.</td></tr>
+        <tr><td>5–15</td><td>1–2 · ER and interview</td><td>Hold the patient card. Answer only what is actually asked, in the patient's words.</td></tr>
+        <tr><td>15–22</td><td>3 · Is this really an ADR?</td><td>Make each team defend its placement before revealing the direction.</td></tr>
+        <tr><td>22–35</td><td>4–5 · Form and follow-up</td><td>Let them hit the missing data. Hand the AMC follow-up envelope only when a team asks for it.</td></tr>
+        <tr><td>35–45</td><td>6 · Seriousness and the twist</td><td>Let every team commit to an answer, then release the deterioration update.</td></tr>
+        <tr><td>45–58</td><td>7 · Causality court</td><td>Run it as a real hearing. Insist on reasons, not categories.</td></tr>
+        <tr><td>58–70</td><td>8–10 · AMC, VigiFlow, coding</td><td>Watch for teams inventing data they were never given.</td></tr>
+        <tr><td>70–78</td><td>11–12 · Quality check and the journey</td><td>Send at least one query back so the AMC↔NCC loop is felt.</td></tr>
+        <tr><td>78–88</td><td>13 · Signal wall</td><td>Let them find the pattern themselves. Then ask the causation question.</td></tr>
+        <tr><td>88–90</td><td>Close</td><td>60-second journey challenge and the bonus question.</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="card"><h2 style="font-size:18px">Cards to cut out</h2>
+
+      <div class="cut"><div class="cl">Card 1 · hand out at the start</div>
+        <div class="ccard" style="margin:0"><div class="ct">Emergency Department · 10:15</div>
+          <div class="cr"><span>Patient</span><div>Female, 42 years</div></div>
+          <div class="cr"><span>Complaint</span><div>"Red itchy rash all over the body"</div></div>
+          <div class="cr"><span>Also noted</span><div>Facial swelling</div></div>
+          <div class="cr"><span>New medicine</span><div>An antibiotic</div></div>
+          <div class="cr"><span>Started</span><div>4 days ago</div></div>
+        </div>
+        <p class="muted" style="font-size:12.5px;margin-top:9px">Say nothing else. Ask the team: <b>"What do you want to know?"</b> Give them two minutes to write questions down.</p>
+      </div>
+
+      <div class="cut secret"><div class="cl">Secret · patient card — facilitator or the student playing the patient only</div>
+        <p style="font-size:13px;margin-bottom:9px"><b>Reveal each line only when that specific question is asked.</b> If they never ask about breathing or mucosal
+          involvement, never volunteer it — that omission is the point of Stage 6.</p>
+        <div class="keyrow">
+          <div class="ccard env" style="margin:0">
+            <div class="ct">Answers held by the patient</div>
+            <div class="cr"><span>The medicine</span><div>Amoxicillin + clavulanic acid 625 mg, three times a day</div></div>
+            <div class="cr"><span>Indication</span><div>Dental abscess — prescribed by a dentist</div></div>
+            <div class="cr"><span>Started</span><div>Four days ago</div></div>
+            <div class="cr"><span>Onset</span><div>Rash appeared on Day 4, roughly 8 hours after the morning dose</div></div>
+            <div class="cr"><span>Other medicines</span><div>Amlodipine 5 mg once daily, for two years. Nothing else — no OTC, herbal or Ayurvedic products</div></div>
+            <div class="cr"><span>Previous allergy</span><div>None known — she has never reacted to any medicine</div></div>
+            <div class="cr"><span>Previous exposure</span><div>Not known. She cannot recall taking this antibiotic before</div></div>
+            <div class="cr"><span>Dechallenge</span><div>The medicine was stopped this morning. The rash is beginning to improve</div></div>
+            <div class="cr"><span>Rechallenge</span><div>Not performed</div></div>
+            <div class="cr"><span>Treatment given</span><div>An antihistamine was administered</div></div>
+            <div class="cr"><span>Breathing</span><div>"No trouble breathing at the moment." <b>(True at 10:15. It stops being true at Stage 6.)</b></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cut secret"><div class="cl">Secret · AMC follow-up envelope — release only when a team requests follow-up at Stage 5</div>
+        <div class="ccard env" style="margin:0"><div class="ct">AMC Follow-up</div>
+          <div style="font-size:13.2px;line-height:1.75">
+            • Reaction began approximately 8 hours after the morning dose.<br>
+            • Generalised erythematous rash.<br>
+            • Mild facial oedema.<br>
+            • No respiratory distress <i>at the time of this follow-up</i>.<br>
+            • Medicine stopped.<br>
+            • Antihistamine administered.<br>
+            • Symptoms improved over 48 hours.<br>
+            • No rechallenge performed.<br>
+            • Patient did not die. No permanent disability. Not hospitalised <i>at this point</i>.
+          </div>
+        </div>
+        <p class="muted" style="font-size:12.5px;margin-top:9px">Teams that submit at Stage 4 without asking for this lose the follow-up marks. Do not offer it unprompted.</p>
+      </div>
+
+      <div class="cut secret"><div class="cl">Secret · deterioration update — release at Stage 6, only after every team has committed to a seriousness answer</div>
+        <div class="ccard upd" style="margin:0"><div class="ct">Update · 12:20</div>
+          <div style="font-size:13.4px;line-height:1.7">Two hours later the patient develops <b>difficulty breathing</b> and is transferred back to the
+            emergency department. She is given adrenaline and hydrocortisone, and is <b>admitted for overnight observation</b>. She recovers fully by the following morning.</div>
+        </div>
+        <p class="muted" style="font-size:12.5px;margin-top:9px">This is the pivot of the whole practical. A case correctly assessed as non-serious at 10:15 becomes
+          serious at 12:20 — <b>on new facts, not because the first answer was wrong</b>. Say that explicitly; students often think they have been tricked.</p>
+      </div>
+
+      <div class="cut"><div class="cl">Card · signal detection wall, Stage 13 — ten reports from the global database</div>
+        <div class="tw" style="margin:0"><table class="sigt"><thead><tr><th>Case</th><th>Drug</th><th>Reaction</th></tr></thead><tbody>
+          <tr><td>001</td><td>Drug A</td><td>Rash</td></tr>
+          <tr><td>002</td><td>Drug B</td><td>Headache</td></tr>
+          <tr><td>003</td><td>Drug A</td><td>Liver injury</td></tr>
+          <tr><td>004</td><td>Drug C</td><td>Nausea</td></tr>
+          <tr><td>005</td><td>Drug A</td><td>Liver injury</td></tr>
+          <tr><td>006</td><td>Drug A</td><td>Liver injury</td></tr>
+          <tr><td>007</td><td>Drug B</td><td>Rash</td></tr>
+          <tr><td>008</td><td>Drug A</td><td>Liver injury</td></tr>
+          <tr><td>009</td><td>Drug C</td><td>Headache</td></tr>
+          <tr><td>010</td><td>Drug A</td><td>Liver injury</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <div class="card"><h2 style="font-size:18px">Answer key and teaching points</h2>
+      <div class="fpstep"><b>Stage 1–2 · History.</b> Eight questions carry marks. The one most teams miss is <b>breathing, throat tightness or mucosal
+        involvement</b> — and it is the one that decides whether this is an urticarial rash or the start of anaphylaxis. Teams that never ask it will
+        be ambushed by the Stage 6 update, which is exactly the intended lesson.</div>
+      <div class="fpstep"><b>Stage 3 · Classification.</b> Correct direction is <b>suspected ADR</b>. The teaching point is that suspicion is the
+        threshold for reporting, not proof. "Insufficient information" is a defensible instinct but the wrong operational answer — you report and
+        then investigate, never the reverse.</div>
+      <div class="fpstep"><b>Stage 4–5 · Incomplete form.</b> The correct answer is <b>follow up first, but do not delay the report if the four
+        minimum elements are present</b>. Both instincts are right and they are not in conflict: send a valid report now, complete it later.</div>
+      <div class="fpstep"><b>Stage 6 · Seriousness.</b> At 10:15 the honest answer is <b>non-serious</b> — no death, no admission, no disability, not
+        life-threatening. After the update it is <b>serious</b> on two counts: life-threatening, and hospitalisation. Reassessment on new facts is
+        correct practice; do not let students feel they were caught out.</div>
+      <div class="fpstep"><b>Stage 7 · Causality.</b> WHO-UMC <b>Probable</b> is the defensible answer: plausible time relationship, positive
+        dechallenge, a well-documented reaction for beta-lactams, and no adequate alternative cause — but no rechallenge, which is what keeps it
+        below Certain. Accept <b>Possible</b> if argued on the absence of rechallenge and the concomitant amlodipine. Reject any answer given
+        without reasons.</div>
+      <div class="fpstep"><b>Stage 10 · Coding.</b> Code what was reported, not what you infer. "Red itchy patches all over the body" is
+        <b>rash generalised</b> with <b>pruritus</b> — not "allergy", which is a mechanism, and not "anaphylaxis", which had not happened at that
+        point. "Face became swollen" is <b>face oedema</b>; upgrading it to angioedema is an interpretation the reporter did not make.</div>
+      <div class="fpstep"><b>Stage 13 · Signal.</b> The pattern is <b>Drug A with liver injury, five of ten reports</b>. The essential follow-up
+        question is whether that proves Drug A causes liver injury. It does not. Disproportionate reporting generates a <b>hypothesis</b>; it is
+        subject to reporting bias, notoriety bias, confounding by indication, and has no denominator. It earns an evaluation, not a conclusion.</div>
+      <div class="fpstep"><b>Bonus question.</b> Why is an ADR report valuable even when causality has not been proven? Because a single report is
+        rarely conclusive on its own — value comes from <b>aggregation</b>. Certainty about a rare reaction is only ever produced by many uncertain
+        reports accumulating in one database. A reporter who waits for proof contributes nothing to the process that generates proof.</div>
+    </div>
+  </section>
+
+  <!-- ================= RESULT ================= -->
+  <section class="panel" id="p-report">
+    <div class="card"><h2 style="font-size:18px">Case report &amp; team record</h2>
+      <p class="muted" id="repEmpty">Complete the investigation to generate your team's report, then write and submit it below.</p>
+      <div id="repBody" style="display:none"></div>
+    </div>
+    <div class="card no-print" id="reportWriter" style="display:none"></div>
+  </section>
+</div>
+<div id="qrHolder" style="position:fixed;left:-9999px;top:0"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-sync.js"></script>
+<script src="alizon-attendance.js?v=2"></script>
+<script src="alizon-practical-submit.js?v=5"></script>
+<script src="alizon-practical-report.js?v=5"></script>
+<script src="alizon-pdf-open.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(i){return document.getElementById(i);};
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var CLOCK=90*60, PASS=50, NST=13;
+
+  /* ================= CASE DATA ================= */
+  var ASKS=[
+   {t:'drug',   key:true,  q:'Which antibiotic is it, at what dose and how often?',
+    a:'"Amoxicillin with clavulanic acid — 625, three times a day."'},
+   {t:'indic',  key:true,  q:'Why was the antibiotic prescribed?',
+    a:'"For a dental abscess. The dentist gave it to me."'},
+   {t:'onset',  key:true,  q:'Exactly when did the rash appear, and how long after a dose?',
+    a:'"It came out on the fourth day, about eight hours after my morning tablet."'},
+   {t:'conmed', key:true,  q:'What other medicines are you taking — including anything bought over the counter, herbal or Ayurvedic?',
+    a:'"Only amlodipine, 5 mg, one in the morning — for two years now. Nothing else at all."'},
+   {t:'allergy',key:true,  q:'Have you ever reacted to any medicine before?',
+    a:'"Never. I have never had a problem with any tablet in my life."'},
+   {t:'expos',  key:true,  q:'Have you taken this antibiotic at any time in the past?',
+    a:'"I do not remember ever taking this one before. I could not say for certain."'},
+   {t:'dechal', key:true,  q:'Has the antibiotic been stopped, and has anything changed since?',
+    a:'"They stopped it this morning. The rash is a little better already."'},
+   {t:'airway', key:true,  q:'Any tightness in the throat, difficulty breathing, or swelling inside the mouth?',
+    a:'"No trouble breathing at the moment. My face is puffy, but my throat feels fine."'},
+   {t:'tx',     key:true,  q:'Has any treatment been given for the reaction?',
+    a:'"They gave me an injection for the allergy — an antihistamine, they said."'},
+   {t:'n1',     key:false, q:'What did you have for breakfast this morning?',
+    a:'"Just some rice gruel. Why do you ask?"'},
+   {t:'n2',     key:false, q:'Who is your usual family doctor?',
+    a:'"Dr Nair, at the clinic near the temple."'},
+   {t:'n3',     key:false, q:'How did you travel to the hospital today?',
+    a:'"My husband brought me on the scooter."'},
+   {t:'n4',     key:false, q:'What is your occupation?',
+    a:'"I teach at the school in our village."'}
+  ];
+  var NKEY=0; ASKS.forEach(function(a){ if(a.key) NKEY++; });
+
+  /* form fields for Stage 4 — 'need' is the interview tag that unlocks the true answer */
+  var F4=[
+   {k:'pt',   l:'Patient',                need:null,      opts:['— select —','Female, 42 years','Male, 42 years','Not known'], ok:'Female, 42 years'},
+   {k:'drug', l:'Suspect medicine',       need:'drug',    opts:['— select —','Amoxicillin + clavulanic acid 625 mg, three times daily','An antibiotic (name not established)','Not known'], ok:'Amoxicillin + clavulanic acid 625 mg, three times daily'},
+   {k:'ind',  l:'Indication',             need:'indic',   opts:['— select —','Dental abscess','Hypertension','Not known'], ok:'Dental abscess'},
+   {k:'ons',  l:'Onset',                  need:'onset',   opts:['— select —','Day 4 of therapy, about 8 hours after the morning dose','Within an hour of the first dose','Not known'], ok:'Day 4 of therapy, about 8 hours after the morning dose'},
+   {k:'con',  l:'Concomitant medicines',  need:'conmed',  opts:['— select —','Amlodipine 5 mg once daily, unchanged for two years','None','Not known'], ok:'Amlodipine 5 mg once daily, unchanged for two years'},
+   {k:'dec',  l:'Dechallenge',            need:'dechal',  opts:['— select —','Drug stopped; reaction beginning to improve','Drug continued','Not known'], ok:'Drug stopped; reaction beginning to improve'},
+   {k:'out',  l:'Outcome so far',         need:null,      opts:['— select —','Not yet known — the reaction is still evolving','Recovered fully','Fatal'], ok:'Not yet known — the reaction is still evolving'},
+   {k:'rxn',  l:'Describe the reaction',  need:null,      ta:true, ph:'What you actually observed, in clinical terms, with timing'},
+   {k:'rep',  l:'Reporter',               need:null,      txt:true, ph:'Your name and designation'}
+  ];
+
+  var MISSING=[
+   {t:'Batch number and expiry of the dispensed pack', ok:true},
+   {t:'Exact calendar dates therapy started and stopped', ok:true},
+   {t:'Whether the patient has taken a beta-lactam before', ok:true},
+   {t:'The final outcome of the reaction', ok:true},
+   {t:'The patient’s full name and address', ok:false},
+   {t:'The prescriber’s disciplinary record', ok:false},
+   {t:'A blood level of amoxicillin at the time of the rash', ok:false}
+  ];
+
+  var SER=['Death','Life-threatening','Hospitalisation or its prolongation','Persistent or significant disability','Congenital anomaly','Other medically important condition','Non-serious'];
+
+  var EVID=[
+   {t:'Plausible time relationship — the rash appeared during a course of a beta-lactam, about 8 hours after a dose', ok:true},
+   {t:'Positive dechallenge — the reaction began to settle once the drug was withdrawn', ok:true},
+   {t:'The reaction is well documented for beta-lactam antibiotics', ok:true},
+   {t:'No adequate alternative cause was identified on the history', ok:true},
+   {t:'A rechallenge was performed and was positive', ok:false},
+   {t:'The amlodipine was started at the same time as the antibiotic', ok:false},
+   {t:'The patient has a documented previous penicillin allergy', ok:false}
+  ];
+
+  var QUERY=[
+   {t:'Batch number of the suspect product', ok:true},
+   {t:'Exact calendar dates of therapy', ok:true},
+   {t:'Previous exposure to a beta-lactam', ok:true},
+   {t:'Identifiable patient', ok:false},
+   {t:'Identifiable reporter', ok:false},
+   {t:'Suspect drug identified', ok:false},
+   {t:'Reaction described', ok:false},
+   {t:'Dose and frequency', ok:false},
+   {t:'Seriousness assessed', ok:false},
+   {t:'Narrative adequate', ok:false}
+  ];
+
+  var JOURNEY=['Patient','Healthcare professional','ADR report','AMC — Kerala','Follow-up &amp; causality assessment','ICSR in VigiFlow','NCC-PvPI / IPC quality review','UMC / VigiBase','Signal detection'];
+
+  /* ================= STAGE DEFINITIONS ================= */
+  var STAGES=[
+   {n:1, key:'ask', marks:10, title:'The emergency room', tag:'Stage 1 · 10:15',
+    e:'Nine of the thirteen questions carry clinical weight. The one teams most often miss is <b>airway and mucosal involvement</b> — and it is the question that separates an urticarial rash from the beginning of anaphylaxis. Questions about breakfast, transport and the family doctor cost you time and tell you nothing. In a real interview, the information you never asked for is information you simply do not have.'},
+   {n:2, key:'interview', marks:0, title:'The pharmacovigilance interview', tag:'Stage 2 · role play',
+    e:'The patient answered only what you asked. Anything you skipped stays unknown for the rest of this case — and you will meet those gaps again when you fill the form.'},
+   {n:3, key:'classify', marks:10, title:'Is this really an ADR?', tag:'Stage 3 · classification',
+    q:'Where does this case belong right now? Place it, and be ready to defend the placement.',
+    o:['A — Suspected adverse drug reaction','B — Medication error','C — Disease-related symptom','D — Unknown / insufficient information'], c:0,
+    e:'<b>Suspected ADR.</b> There is no evidence of an error in prescribing, dispensing or administration, and no underlying disease that explains a generalised rash appearing on day four of an antibiotic. The instinct to choose <i>insufficient information</i> is understandable and operationally wrong: <b>the threshold for reporting is suspicion, not proof</b>. You report first and investigate afterwards, never the reverse — a system that waits for certainty detects nothing, because certainty about a rare reaction only ever arrives after enough reports have accumulated.'},
+   {n:4, key:'form', marks:15, title:'The ADR form challenge', tag:'Stage 4 · 7 minutes',
+    e:'The form is graded against <b>what you actually established</b>. Where you asked the question, the real answer was expected. Where you did not, <b>&ldquo;Not known&rdquo; was the correct and honest entry</b> — inventing a plausible answer is the more serious error, because a fabricated field is indistinguishable from a verified one once the report leaves your hands.'},
+   {n:5, key:'missing', marks:10, title:'Would you submit this report?', tag:'Stage 5 · the envelope',
+    e:'<b>Follow up — but send the valid report now.</b> The two instincts are not in conflict. A report containing the four minimum elements is valid and should go immediately; the remaining detail follows as a follow-up report. Holding a valid case back until it is complete is how cases are lost, and completeness is never actually reached.'},
+   {n:6, key:'serious', marks:10, title:'Serious or non-serious?', tag:'Stage 6 · and the update',
+    e:'At 10:15 the honest answer was <b>non-serious</b>: no death, no admission, no disability, not life-threatening at that moment. At 12:20 it became <b>serious</b> on two counts — <b>life-threatening</b>, and <b>hospitalisation</b>. Note carefully what happened: your first assessment was not wrong. Seriousness is assessed <b>on the facts available at the time</b> and is revised when the facts change. Reassessment is correct practice, not a correction.'},
+   {n:7, key:'court', marks:15, title:'Causality court', tag:'Stage 7 · the hearing',
+    e:'<b>Probable</b> is the defensible verdict on the WHO-UMC scale: a plausible time relationship, a positive dechallenge, a well-documented reaction for the drug class, and no adequate alternative cause. What keeps it below <b>Certain</b> is the absence of a rechallenge — which was never performed and, after a reaction of this kind, would be unethical to perform. <b>Possible</b> is arguable if you weigh the unconfirmed previous exposure heavily. What is never acceptable is a category asserted without reasons.'},
+   {n:8, key:'valid', marks:5, title:'You are now the AMC', tag:'Stage 8 · Kerala',
+    q:'Check the case against the four minimum elements. What is your verdict?',
+    o:['Valid ICSR — all four minimum elements are present','Follow-up required — at least one minimum element is missing','Invalid — causality has not been established','Invalid — the batch number is missing'], c:0,
+    e:'<b>Valid ICSR.</b> An identifiable patient, an identifiable reporter, a suspect medicine and a suspected reaction are all present. Neither established causality nor a batch number is required for validity — requiring them would suppress reporting. They are desirable, and they are pursued as follow-up.'},
+   {n:9, key:'vigiflow', marks:7, title:'Mock VigiFlow', tag:'Stage 9 · ICSR entry',
+    e:'This is the step students consistently find hardest: <b>turning a clinical story into structured data</b>. Every field you leave for the narrative is a field that cannot be searched, counted or compared across a database of millions. The narrative supports the structured fields; it does not substitute for them.'},
+   {n:10, key:'coding', marks:3, title:'The coding game', tag:'Stage 10 · terminology',
+    e:'<b>Code what was reported, not what you infer.</b> "Allergy" is a mechanism rather than an event; "anaphylaxis" had not occurred at the time of the report; and upgrading "face became swollen" to angioedema is an interpretation the reporter never made. Standardised terms exist so that the same event, described in a hundred different ways by a hundred reporters, can be counted as one thing.'},
+   {n:11, key:'quality', marks:5, title:'NCC-PvPI quality check', tag:'Stage 11 · the query loop',
+    e:'Three fields genuinely warrant a query: the <b>batch number</b>, the <b>exact therapy dates</b>, and <b>previous beta-lactam exposure</b>. The rest are adequately documented. Querying a field that is already complete wastes the AMC’s time and slows the next case; failing to query a real gap leaves the record permanently weaker, because nobody returns to a closed case.'},
+   {n:12, key:'journey', marks:0, title:'The final journey', tag:'Stage 12 · Kerala → India → Global',
+    e:'This is the path every valid Indian ICSR takes. In the classroom you would now physically carry the case file between three stations, with a different student explaining what happens at each.'},
+   {n:13, key:'signal', marks:10, title:'The signal detection wall', tag:'Stage 13 · the database',
+    e:'<b>Drug A with liver injury — five of the ten reports.</b> And no, it does not prove that Drug A causes liver injury. A disproportionate pattern in spontaneous reports generates a <b>hypothesis</b>: it is vulnerable to reporting bias, notoriety bias and confounding by indication, and there is no denominator — you do not know how many people took Drug A. What the pattern has earned is an evaluation, not a conclusion. That evaluation is where pharmacovigilance actually begins.'}
+  ];
+
+  $('badgeCrit').innerHTML='<b>Good Historian</b> — at least eight of the nine useful questions asked. &nbsp;·&nbsp; '
+    +'<b>Valid ICSR</b> — the AMC verdict correct. &nbsp;·&nbsp; <b>Causality Reasoned</b> — full marks in court. &nbsp;·&nbsp; '
+    +'<b>Reassessed Correctly</b> — seriousness revised correctly after the update. &nbsp;·&nbsp; '
+    +'<b>Reached VigiBase</b> — the journey in the right order. &nbsp;·&nbsp; <b>Signal Spotted</b> — pattern and its limits both right.';
+
+  /* ================= STATE ================= */
+  var S=null, tick=null;
+  function mk(){ return {i:0, score:0, asked:{}, askedList:[], f4:{}, sub:{}, ser1:[], ser2:[], t0:Date.now(),
+    left:CLOCK, done:{}, marks:{}, jrn:[], result:null}; }
+
+  function fmt(s){ if(s<0)s=0; var m=Math.floor(s/60), q=s%60; return (m<10?'0':'')+m+':'+(q<10?'0':'')+q; }
+  function award(k,v,max){ v=Math.max(0,Math.min(max,Math.round(v))); S.marks[k]=v; S.score+=v; paint(); }
+  function paint(){
+    $('mScore').textContent=S.score;
+    $('mStage').textContent=Math.min(S.i+1,NST)+' / '+NST;
+    var r=''; for(var j=0;j<NST;j++){ r+='<b class="'+(j<S.i?'done':(j===S.i?'now':''))+'">'+(j+1)+'</b>'; }
+    $('rail').innerHTML=r;
+  }
+  function status(t){ $('mStatus').textContent=t; }
+
+  /* ================= RENDER ================= */
+  function render(){
+    if(S.i>=STAGES.length){ return finish(); }
+    var st=STAGES[S.i], h='';
+    h+='<div class="stg"><span class="step">'+st.tag+'</span><h3>'+esc(st.title)+'</h3>';
+    h+=BUILD[st.key](st);
+    h+='</div>';
+    $('stage').innerHTML=h;
+    if(WIRE[st.key]) WIRE[st.key](st);
+    paint();
+  }
+  function advance(st,html,cls){
+    var h='<div class="fb '+(cls||'ok')+'"><div class="hd">'+(cls==='no'?'Not the answer':(cls==='part'?'Partly right':'Correct'))+'</div>'+html+'<p style="margin-top:8px">'+st.e+'</p></div>'
+      +'<div class="row no-print" style="margin-top:12px"><button class="btn" id="nextBtn">Continue →</button></div>';
+    var w=document.createElement('div'); w.innerHTML=h;
+    $('stage').firstChild.appendChild(w);
+    $('nextBtn').addEventListener('click',function(){ S.i++; window.scrollTo(0,0); render(); });
+  }
+
+  var BUILD={}, WIRE={};
+
+  /* ---- Stage 1: choose questions ---- */
+  BUILD.ask=function(){
+    var h='<div class="ccard"><div class="ct">Card 1 · Emergency Department · 10:15</div>'
+      +'<div class="cr"><span>Patient</span><div>Female, 42 years</div></div>'
+      +'<div class="cr"><span>Complaint</span><div>"Red itchy rash all over the body"</div></div>'
+      +'<div class="cr"><span>Also noted</span><div>Facial swelling</div></div>'
+      +'<div class="cr"><span>New medicine</span><div>An antibiotic</div></div>'
+      +'<div class="cr"><span>Started</span><div>4 days ago</div></div></div>';
+    h+='<div class="q">That is everything you have been told. What do you want to know?</div>'
+      +'<p class="sub">Select every question your team wants to put to the patient. You will only receive answers to the questions you choose — and questions that tell you nothing still cost you time.</p>'
+      +'<div class="cklist" id="askList">'+ASKS.map(function(a,k){
+        return '<label><input type="checkbox" data-a="'+k+'"><span>'+esc(a.q)+'</span></label>';}).join('')+'</div>'
+      +'<div class="row no-print"><button class="btn" id="askGo">Put these questions to the patient</button></div>';
+    return h;
+  };
+  WIRE.ask=function(st){
+    $('askGo').addEventListener('click',function(){
+      var picks=[], nk=0, nn=0;
+      [].forEach.call(document.querySelectorAll('#askList input[data-a]'),function(c){
+        if(c.checked){ var a=ASKS[+c.getAttribute('data-a')]; picks.push(a); if(a.key)nk++; else nn++; }});
+      if(!picks.length){ alert('Select at least one question.'); return; }
+      picks.forEach(function(a){ S.asked[a.t]=true; S.askedList.push(a); });
+      var raw=(nk/NKEY)*st.marks - nn*0.5;
+      award('ask',raw,st.marks);
+      [].forEach.call(document.querySelectorAll('#askList label'),function(l,k){
+        var a=ASKS[k], c=l.querySelector('input');
+        if(a.key&&c.checked) l.className='right'; else if(!a.key&&c.checked) l.className='wrong';
+        else if(a.key&&!c.checked) l.className='missed';
+        c.disabled=true; });
+      $('askGo').disabled=true;
+      var msg='<p>You asked <b>'+nk+' of '+NKEY+'</b> questions that carry weight'+(nn?', and <b>'+nn+'</b> that do not':'')+'. '
+        +'<b>'+S.marks.ask+' / '+st.marks+'</b>.</p>';
+      if(!S.asked.airway) msg+='<p><b>You did not ask about the airway.</b> Remember that.</p>';
+      advance(st,msg, nk>=NKEY-1&&!nn ? 'ok' : (nk>=5?'part':'no'));
+    });
+  };
+
+  /* ---- Stage 2: interview ---- */
+  BUILD.interview=function(){
+    if(!S.askedList.length) return '<p class="sub">You asked nothing. The patient is waiting.</p>';
+    return '<p class="sub">One student plays the patient and reads each answer aloud. Click a question to hear it.</p>'
+      +'<div class="chat empty" id="chat"><div class="inner" id="chatIn"></div></div>'
+      +'<div class="asks" id="ivList">'+S.askedList.map(function(a,k){
+        return '<button type="button" class="ask" data-i="'+k+'"><span class="qi">'+(k+1)+'</span><span>'+esc(a.q)+'</span></button>';}).join('')+'</div>'
+      +'<div class="row no-print" style="margin-top:11px"><button class="btn" id="ivGo" disabled>Close the interview →</button></div>';
+  };
+  WIRE.interview=function(st){
+    if(!S.askedList.length){ advance(st,'<p>No questions were asked, so no history exists.</p>','no'); return; }
+    var left=S.askedList.length;
+    [].forEach.call(document.querySelectorAll('#ivList .ask'),function(b){
+      b.addEventListener('click',function(){
+        var a=S.askedList[+b.getAttribute('data-i')];
+        b.classList.add('used');
+        $('chat').classList.remove('empty');
+        $('chatIn').innerHTML+='<div class="bub me"><div class="who">You</div>'+esc(a.q)+'</div>'
+          +'<div class="bub pt"><div class="who">Patient</div>'+esc(a.a)+'</div>';
+        $('chat').scrollTop=$('chat').scrollHeight;
+        if(--left<=0) $('ivGo').disabled=false;
+      });
+    });
+    $('ivGo').addEventListener('click',function(){ advance(st,'<p>The history is now on the record — and only this much of it.</p>','ok'); });
+  };
+
+  /* ---- generic single choice ---- */
+  BUILD.classify=BUILD.valid=function(st){
+    return '<div class="q">'+st.q+'</div><div class="opts" id="oW">'
+      +st.o.map(function(o,k){return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+'ABCD'[k]+'</span><span>'+esc(o)+'</span></button>';}).join('')+'</div>';
+  };
+  WIRE.classify=WIRE.valid=function(st){
+    [].forEach.call(document.querySelectorAll('#oW .opt'),function(b){
+      b.addEventListener('click',function(){
+        var k=+b.getAttribute('data-k'), right=(k===st.c);
+        [].forEach.call(document.querySelectorAll('#oW .opt'),function(x,j){
+          x.disabled=true; if(j===st.c)x.classList.add('right'); else if(j===k)x.classList.add('wrong'); });
+        award(st.key, right?st.marks:0, st.marks);
+        advance(st,'<p><b>'+(right?st.marks:0)+' / '+st.marks+'</b></p>', right?'ok':'no');
+      });
+    });
+  };
+
+  /* ---- Stage 4: the ADR form ---- */
+  BUILD.form=function(){
+    var h='<p class="sub">You have received an ADR report to complete. Enter only what your team actually established at interview — where you did not establish something, say so.</p>';
+    h+='<div id="f4">'+F4.map(function(f){
+      var inp;
+      if(f.ta) inp='<textarea data-f="'+f.k+'" placeholder="'+esc(f.ph)+'"></textarea>';
+      else if(f.txt) inp='<input type="text" data-f="'+f.k+'" placeholder="'+esc(f.ph)+'">';
+      else inp='<select data-f="'+f.k+'">'+f.opts.map(function(o){return '<option>'+esc(o)+'</option>';}).join('')+'</select>';
+      return '<div class="frow" data-row="'+f.k+'"><span class="fl">'+esc(f.l)+'</span><div>'+inp+'</div></div>';
+    }).join('')+'</div>'
+    +'<div class="row no-print" style="margin-top:8px"><button class="btn" id="f4Go">Complete the form</button></div>';
+    return h;
+  };
+  WIRE.form=function(st){
+    $('f4Go').addEventListener('click',function(){
+      var got=0, tot=0, notes=[];
+      F4.forEach(function(f){
+        var el=document.querySelector('[data-f="'+f.k+'"]'), v=el?String(el.value||'').trim():'';
+        S.f4[f.k]=v;
+        if(f.ta){ tot++; if(v.length>=40){got++;} else notes.push('The reaction description is too thin to assess.'); return; }
+        if(f.txt){ tot++; if(v.length>=2){got++;} else notes.push('No reporter was named — that alone would invalidate the report.'); return; }
+        tot++;
+        var want = (f.need && !S.asked[f.need]) ? 'Not known' : f.ok;
+        if(v===want) got++;
+        else if(f.need && !S.asked[f.need] && v===f.ok)
+          notes.push('You entered a value for <b>'+esc(f.l).toLowerCase()+'</b> that you never established — you did not ask that question.');
+        else if(v==='— select —') notes.push('<b>'+esc(f.l)+'</b> was left unanswered.');
+        else notes.push('<b>'+esc(f.l)+'</b> does not match what the interview established.');
+      });
+      var v=(got/tot)*st.marks; award('form',v,st.marks);
+      [].forEach.call(document.querySelectorAll('#f4 [data-f]'),function(e){ e.disabled=true; });
+      $('f4Go').disabled=true;
+      var msg='<p><b>'+S.marks.form+' / '+st.marks+'</b> — '+got+' of '+tot+' fields correct.</p>';
+      if(notes.length) msg+='<ul>'+notes.slice(0,5).map(function(n){return '<li>'+n+'</li>';}).join('')+'</ul>';
+      advance(st,msg, got===tot?'ok':(got>=tot*0.6?'part':'no'));
+    });
+  };
+
+  /* ---- Stage 5: submit decision + envelope ---- */
+  BUILD.missing=function(){
+    return '<div class="q">You have a report that is not complete. Would you submit it?</div>'
+      +'<div class="opts" id="oW">'
+      +['A — Yes, submit it exactly as it stands and close the case',
+        'B — No, hold it until every field has been completed',
+        'C — Send the valid report now, and pursue the missing detail as a follow-up'].map(function(o,k){
+        return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+'ABC'[k]+'</span><span>'+esc(o)+'</span></button>';}).join('')
+      +'</div><div id="envWrap"></div>';
+  };
+  WIRE.missing=function(st){
+    [].forEach.call(document.querySelectorAll('#oW .opt'),function(b){
+      b.addEventListener('click',function(){
+        var k=+b.getAttribute('data-k'), right=(k===2);
+        [].forEach.call(document.querySelectorAll('#oW .opt'),function(x,j){
+          x.disabled=true; if(j===2)x.classList.add('right'); else if(j===k)x.classList.add('wrong'); });
+        S.sub.decision=k;
+        var half=right?5:(k===1?2:0);
+        $('envWrap').innerHTML='<div class="ccard env"><div class="ct">AMC Follow-up · envelope opened</div>'
+          +'<div style="font-size:13.2px;line-height:1.75">'
+          +'• Reaction began approximately 8 hours after the morning dose.<br>'
+          +'• Generalised erythematous rash.<br>• Mild facial oedema.<br>'
+          +'• No respiratory distress at the time of this follow-up.<br>• Medicine stopped.<br>'
+          +'• Antihistamine administered.<br>• Symptoms improved over 48 hours.<br>'
+          +'• No rechallenge performed.<br>• Patient did not die. No permanent disability. Not hospitalised at this point.</div></div>'
+          +'<div class="q">Which of these does the case still need? Select every gap that genuinely remains.</div>'
+          +'<div class="cklist" id="msList">'+MISSING.map(function(m,j){
+            return '<label><input type="checkbox" data-m="'+j+'"><span>'+esc(m.t)+'</span></label>';}).join('')+'</div>'
+          +'<div class="row no-print"><button class="btn" id="msGo">Confirm the follow-up request</button></div>';
+        $('msGo').addEventListener('click',function(){
+          var g=0,n=0;
+          [].forEach.call(document.querySelectorAll('#msList input[data-m]'),function(c){
+            var m=MISSING[+c.getAttribute('data-m')];
+            if(c.checked&&m.ok)g++; if(c.checked&&!m.ok)n++; });
+          var nOk=0; MISSING.forEach(function(m){if(m.ok)nOk++;});
+          var v=half+Math.max(0,(g/nOk)*5-n*0.7);
+          award('missing',v,st.marks);
+          [].forEach.call(document.querySelectorAll('#msList label'),function(l,j){
+            var m=MISSING[j], c=l.querySelector('input');
+            if(m.ok&&c.checked)l.className='right'; else if(!m.ok&&c.checked)l.className='wrong';
+            else if(m.ok&&!c.checked)l.className='missed'; c.disabled=true; });
+          $('msGo').disabled=true;
+          advance(st,'<p><b>'+S.marks.missing+' / '+st.marks+'</b> — you identified '+g+' of '+nOk+' real gaps'+(n?', and '+n+' that were not gaps at all':'')+'.</p>', right&&g===nOk&&!n?'ok':'part');
+        });
+      });
+    });
+  };
+
+  /* ---- Stage 6: seriousness + twist ---- */
+  BUILD.serious=function(){
+    return '<div class="q">On the facts you have at 10:15, is this serious? Select every category that applies.</div>'
+      +'<div class="cklist" id="s1">'+SER.map(function(s,k){
+        return '<label><input type="checkbox" data-s="'+k+'"><span>'+esc(s)+'</span></label>';}).join('')+'</div>'
+      +'<div class="row no-print"><button class="btn" id="s1Go">Commit this assessment</button></div><div id="twistWrap"></div>';
+  };
+  function serSel(id){ var out=[]; [].forEach.call(document.querySelectorAll('#'+id+' input[data-s]'),function(c){ if(c.checked)out.push(+c.getAttribute('data-s')); }); return out; }
+  function lockSer(id,want){
+    [].forEach.call(document.querySelectorAll('#'+id+' label'),function(l,k){
+      var c=l.querySelector('input'), w=want.indexOf(k)>=0;
+      if(w&&c.checked)l.className='right'; else if(!w&&c.checked)l.className='wrong'; else if(w&&!c.checked)l.className='missed';
+      c.disabled=true; });
+  }
+  function serScore(pick,want,pts){
+    var hit=0,miss=0; want.forEach(function(w){ if(pick.indexOf(w)>=0)hit++; });
+    pick.forEach(function(p){ if(want.indexOf(p)<0)miss++; });
+    return Math.max(0,(hit/want.length)*pts - miss*(pts/2));
+  }
+  WIRE.serious=function(st){
+    $('s1Go').addEventListener('click',function(){
+      var pick=serSel('s1'), want=[6]; S.ser1=pick;
+      lockSer('s1',want); $('s1Go').disabled=true;
+      var p1=serScore(pick,want,5);
+      $('twistWrap').innerHTML='<div class="ccard upd"><div class="ct">Update · 12:20 — two hours later</div>'
+        +'<div style="font-size:13.4px;line-height:1.7">The patient develops <b>difficulty breathing</b> and is transferred back to the emergency department. '
+        +'She is given adrenaline and hydrocortisone, and is <b>admitted for overnight observation</b>. She recovers fully by the following morning.</div></div>'
+        +'<div class="q">Does your seriousness assessment change? Select every category that now applies.</div>'
+        +'<div class="cklist" id="s2">'+SER.map(function(s,k){
+          return '<label><input type="checkbox" data-s="'+k+'"><span>'+esc(s)+'</span></label>';}).join('')+'</div>'
+        +'<div class="row no-print"><button class="btn" id="s2Go">Reassess</button></div>';
+      $('s2Go').addEventListener('click',function(){
+        var pick2=serSel('s2'), want2=[1,2]; S.ser2=pick2;
+        lockSer('s2',want2); $('s2Go').disabled=true;
+        var p2=serScore(pick2,want2,5);
+        S.reassessed=(p2>=4.5);
+        award('serious',p1+p2,st.marks);
+        advance(st,'<p>Initial assessment <b>'+Math.round(p1)+' / 5</b> · after the update <b>'+Math.round(p2)+' / 5</b>. Total <b>'+S.marks.serious+' / '+st.marks+'</b>.</p>',
+          (p1+p2)>=9?'ok':((p1+p2)>=5?'part':'no'));
+      });
+    });
+  };
+
+  /* ---- Stage 7: causality court ---- */
+  BUILD.court=function(){
+    return '<p class="sub">The Drug Information Officer opens for the prosecution: <i>the medicine caused the reaction</i>. The Doctor answers for the defence: <i>there may be another explanation</i>. The committee decides.</p>'
+      +'<div class="q">First, the evidence. Which of these are <b>true of this case</b> and <b>support the medicine as the cause</b>?</div>'
+      +'<div class="cklist" id="evList">'+EVID.map(function(e,k){
+        return '<label><input type="checkbox" data-e="'+k+'"><span>'+esc(e.t)+'</span></label>';}).join('')+'</div>'
+      +'<div class="row no-print"><button class="btn" id="evGo">Submit the evidence</button></div><div id="verWrap"></div>';
+  };
+  WIRE.court=function(st){
+    $('evGo').addEventListener('click',function(){
+      var g=0,n=0,nOk=0; EVID.forEach(function(e){if(e.ok)nOk++;});
+      [].forEach.call(document.querySelectorAll('#evList input[data-e]'),function(c){
+        var e=EVID[+c.getAttribute('data-e')]; if(c.checked&&e.ok)g++; if(c.checked&&!e.ok)n++; });
+      [].forEach.call(document.querySelectorAll('#evList label'),function(l,k){
+        var e=EVID[k], c=l.querySelector('input');
+        if(e.ok&&c.checked)l.className='right'; else if(!e.ok&&c.checked)l.className='wrong';
+        else if(e.ok&&!c.checked)l.className='missed'; c.disabled=true; });
+      $('evGo').disabled=true;
+      var pe=Math.max(0,(g/nOk)*7-n*1.5);
+      $('verWrap').innerHTML='<div class="q">The committee now returns its verdict on the WHO-UMC scale.</div>'
+        +'<div class="opts" id="vW">'
+        +['Certain','Probable / Likely','Possible','Unlikely'].map(function(o,k){
+          return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+'ABCD'[k]+'</span><span>'+esc(o)+'</span></button>';}).join('')+'</div>';
+      [].forEach.call(document.querySelectorAll('#vW .opt'),function(b){
+        b.addEventListener('click',function(){
+          var k=+b.getAttribute('data-k');
+          var pv = k===1?8:(k===2?4:0);
+          [].forEach.call(document.querySelectorAll('#vW .opt'),function(x,j){
+            x.disabled=true; if(j===1)x.classList.add('right'); else if(j===k)x.classList.add('wrong'); });
+          award('court',pe+pv,st.marks);
+          S.courtFull=(pe>=6.5&&pv===8);
+          advance(st,'<p>Evidence <b>'+Math.round(pe)+' / 7</b> · verdict <b>'+pv+' / 8</b>. Total <b>'+S.marks.court+' / '+st.marks+'</b>.</p>',
+            (pe+pv)>=13?'ok':((pe+pv)>=7?'part':'no'));
+        });
+      });
+    });
+  };
+
+  /* ---- Stage 9: mock VigiFlow ---- */
+  var VF=[
+   {k:'age', l:'Age', sel:['— select —','42 years','24 years','Not known'], ok:'42 years'},
+   {k:'sex', l:'Sex', sel:['— select —','Female','Male','Not known'], ok:'Female'},
+   {k:'gen', l:'Generic name', sel:['— select —','Amoxicillin + clavulanic acid','Amoxicillin only','Amlodipine'], ok:'Amoxicillin + clavulanic acid'},
+   {k:'str', l:'Strength / dose', sel:['— select —','625 mg','5 mg','Not known'], ok:'625 mg'},
+   {k:'rt',  l:'Route', sel:['— select —','Oral','Intravenous','Topical'], ok:'Oral'},
+   {k:'fq',  l:'Frequency', sel:['— select —','Three times daily','Once daily','As required'], ok:'Three times daily'},
+   {k:'ind', l:'Indication', sel:['— select —','Dental abscess','Hypertension','Not known'], ok:'Dental abscess'},
+   {k:'ons', l:'Onset', sel:['— select —','Day 4 of therapy','Day 1 of therapy','Not known'], ok:'Day 4 of therapy'},
+   {k:'out', l:'Outcome', sel:['— select —','Recovered','Fatal','Not recovered'], ok:'Recovered'},
+   {k:'ser', l:'Seriousness', sel:['— select —','Serious','Non-serious'], ok:'Serious'},
+   {k:'qual',l:'Reporter qualification', sel:['— select —','Pharmacist','Lawyer','Not known'], ok:'Pharmacist'},
+   {k:'cty', l:'Country', sel:['— select —','India','Sweden','Not known'], ok:'India'}
+  ];
+  BUILD.vigiflow=function(){
+    return '<p class="sub">The case is now entered as an ICSR. Turn the clinical story into structured data — then write the narrative that holds it together.</p>'
+      +'<div id="vf">'+VF.map(function(f){
+        return '<div class="frow"><span class="fl">'+esc(f.l)+'</span><div><select data-v="'+f.k+'">'
+          +f.sel.map(function(o){return '<option>'+esc(o)+'</option>';}).join('')+'</select></div></div>';}).join('')
+      +'<div class="frow"><span class="fl">Case narrative</span><div><textarea data-v="narr" placeholder="A concise chronological account: who, what medicine, what happened, when, what was done, and how it ended."></textarea><div class="hint">At least 200 characters. Write it as a colleague in another country would need to read it.</div></div></div>'
+      +'</div><div class="row no-print" style="margin-top:8px"><button class="btn" id="vfGo">Save the ICSR</button></div>';
+  };
+  WIRE.vigiflow=function(st){
+    $('vfGo').addEventListener('click',function(){
+      var g=0;
+      VF.forEach(function(f){ var el=document.querySelector('[data-v="'+f.k+'"]'); var v=el?el.value:'';
+        S.sub['vf_'+f.k]=v; if(v===f.ok)g++; });
+      var nt=document.querySelector('[data-v="narr"]'), narr=nt?nt.value.trim():'';
+      S.sub.narr=narr;
+      var nOK=narr.length>=200;
+      var v=(g/VF.length)*5 + (nOK?2:(narr.length>=90?1:0));
+      award('vigiflow',v,st.marks);
+      [].forEach.call(document.querySelectorAll('#vf [data-v]'),function(e){ e.disabled=true; });
+      $('vfGo').disabled=true;
+      var msg='<p>Structured fields <b>'+g+' / '+VF.length+'</b>. Narrative '+(nOK?'<b>adequate</b>':'<b>too brief</b>')+'. Total <b>'+S.marks.vigiflow+' / '+st.marks+'</b>.</p>';
+      if(!nOK) msg+='<p>A narrative that cannot stand on its own forces every future assessor back to the original reporter — who, months later, will not remember.</p>';
+      advance(st,msg, (g===VF.length&&nOK)?'ok':(g>=VF.length*0.6?'part':'no'));
+    });
+  };
+
+  /* ---- Stage 10: coding ---- */
+  var CODE=[
+   {said:'"Patient developed red itchy patches all over the body."',
+    o:['Allergy','Rash generalised + Pruritus','Skin problem','Anaphylactic reaction'], c:1},
+   {said:'"Face became swollen."',
+    o:['Angioedema','Face oedema','Oedema peripheral','Facial deformity'], c:1}
+  ];
+  BUILD.coding=function(){
+    return '<p class="sub">The reporter wrote in ordinary words. The database needs standardised medical concepts. Choose the term that represents what was actually reported.</p>'
+      +CODE.map(function(c,i){
+        return '<div class="ccard" style="border-left-color:var(--gold)"><div class="ct" style="color:var(--gold)">Reporter’s words</div>'
+          +'<div style="font-size:14px">'+esc(c.said)+'</div></div>'
+          +'<div class="opts" id="cd'+i+'">'+c.o.map(function(o,k){
+            return '<button type="button" class="opt" data-c="'+i+'" data-k="'+k+'"><span class="lt">'+'ABCD'[k]+'</span><span>'+esc(o)+'</span></button>';}).join('')+'</div>';
+      }).join('')
+      +'<div class="row no-print" style="margin-top:11px"><button class="btn" id="cdGo" disabled>Submit the coding</button></div>';
+  };
+  WIRE.coding=function(st){
+    var picks={};
+    [].forEach.call(document.querySelectorAll('.opt[data-c]'),function(b){
+      b.addEventListener('click',function(){
+        var i=b.getAttribute('data-c'), k=+b.getAttribute('data-k');
+        picks[i]=k;
+        [].forEach.call(document.querySelectorAll('#cd'+i+' .opt'),function(x){ x.classList.remove('pick'); });
+        b.classList.add('pick');
+        if(Object.keys(picks).length===CODE.length) $('cdGo').disabled=false;
+      });
+    });
+    $('cdGo').addEventListener('click',function(){
+      var g=0;
+      CODE.forEach(function(c,i){
+        if(picks[i]===c.c) g++;
+        [].forEach.call(document.querySelectorAll('#cd'+i+' .opt'),function(x,j){
+          x.disabled=true; if(j===c.c)x.classList.add('right'); else if(j===picks[i])x.classList.add('wrong'); });
+      });
+      award('coding',(g/CODE.length)*st.marks,st.marks);
+      $('cdGo').disabled=true;
+      advance(st,'<p><b>'+S.marks.coding+' / '+st.marks+'</b> — '+g+' of '+CODE.length+' coded correctly.</p>', g===CODE.length?'ok':(g?'part':'no'));
+    });
+  };
+
+  /* ---- Stage 11: NCC-PvPI quality check ---- */
+  BUILD.quality=function(){
+    return '<p class="sub">One student now becomes the <b>NCC-PvPI reviewer</b>. The ICSR has arrived from the Kerala AMC. Work the checklist.</p>'
+      +'<div class="q">Which items would you send a query back to the AMC about? Tick only the genuine gaps.</div>'
+      +'<div class="cklist" id="qlList">'+QUERY.map(function(q,k){
+        return '<label><input type="checkbox" data-q="'+k+'"><span>'+esc(q.t)+'</span></label>';}).join('')+'</div>'
+      +'<div class="row no-print"><button class="btn" id="qlGo">Stamp the review</button></div>';
+  };
+  WIRE.quality=function(st){
+    $('qlGo').addEventListener('click',function(){
+      var g=0,n=0,nOk=0; QUERY.forEach(function(q){if(q.ok)nOk++;});
+      [].forEach.call(document.querySelectorAll('#qlList input[data-q]'),function(c){
+        var q=QUERY[+c.getAttribute('data-q')]; if(c.checked&&q.ok)g++; if(c.checked&&!q.ok)n++; });
+      [].forEach.call(document.querySelectorAll('#qlList label'),function(l,k){
+        var q=QUERY[k], c=l.querySelector('input');
+        if(q.ok&&c.checked)l.className='right'; else if(!q.ok&&c.checked)l.className='wrong';
+        else if(q.ok&&!c.checked)l.className='missed'; c.disabled=true; });
+      $('qlGo').disabled=true;
+      var v=Math.max(0,(g/nOk)*st.marks - n*1);
+      award('quality',v,st.marks);
+      var stamp = g===nOk&&!n ? 'QUERY SENT TO AMC — and it names exactly the right three fields.'
+                : (g?'QUERY SENT TO AMC — but the query is not clean.':'PASSED WITHOUT QUERY — and three real gaps went with it.');
+      advance(st,'<p><b>'+stamp+'</b></p><p>'+S.marks.quality+' / '+st.marks+' — '+g+' of '+nOk+' real gaps found'+(n?', '+n+' false query'+(n>1?'ies':''):'')+'.</p>',
+        (g===nOk&&!n)?'ok':(g?'part':'no'));
+    });
+  };
+
+  /* ---- Stage 12: the journey ---- */
+  BUILD.journey=function(){
+    var shuf=JOURNEY.map(function(t,i){return {t:t,i:i};});
+    for(var j=shuf.length-1;j>0;j--){ var r=Math.floor(Math.random()*(j+1)); var tmp=shuf[j]; shuf[j]=shuf[r]; shuf[r]=tmp; }
+    S._shuf=shuf;
+    return '<div class="stations">'
+      +'<div class="stn k"><div class="sn">Station 1</div><div class="sv">KERALA</div><div class="sd">"We identify, document, follow up and assess the suspected ADR."</div></div>'
+      +'<div class="stn i"><div class="sn">Station 2</div><div class="sv">INDIA</div><div class="sd">"We review the quality and validity of the ICSR."</div></div>'
+      +'<div class="stn g"><div class="sn">Station 3</div><div class="sv">GLOBAL</div><div class="sd">"The valid report contributes to the global pharmacovigilance database."</div></div>'
+      +'</div>'
+      +'<div class="q">Your case has passed quality review. Build its journey in order — click the steps from first to last.</div>'
+      +'<div class="slots" id="jslots"><span class="ph">Click the steps below, in order…</span></div>'
+      +'<div class="chain" id="jchain">'+shuf.map(function(s,k){
+        return '<button type="button" class="chip" data-j="'+k+'">'+s.t+'</button>';}).join('')+'</div>'
+      +'<div class="row no-print"><button class="btn" id="jGo" disabled>Confirm the journey</button>'
+      +'<button class="btn ghost sm" id="jReset">Start again</button></div>';
+  };
+  WIRE.journey=function(st){
+    function redraw(){
+      var el=$('jslots');
+      if(!S.jrn.length){ el.innerHTML='<span class="ph">Click the steps below, in order…</span>'; return; }
+      el.innerHTML=S.jrn.map(function(x,k){
+        return (k?'<span class="ar">→</span>':'')+'<span class="sl" data-s="'+k+'">'+JOURNEY[x]+'</span>';}).join('');
+    }
+    function wire(){
+      [].forEach.call(document.querySelectorAll('#jchain .chip'),function(b){
+        b.addEventListener('click',function(){
+          if(b.classList.contains('used'))return;
+          b.classList.add('used');
+          S.jrn.push(S._shuf[+b.getAttribute('data-j')].i);
+          redraw();
+          $('jGo').disabled = S.jrn.length!==JOURNEY.length;
+        });
+      });
+    }
+    wire();
+    $('jReset').addEventListener('click',function(){
+      S.jrn=[]; redraw(); $('jGo').disabled=true;
+      [].forEach.call(document.querySelectorAll('#jchain .chip'),function(b){ b.classList.remove('used'); });
+    });
+    $('jGo').addEventListener('click',function(){
+      var right=true;
+      S.jrn.forEach(function(x,k){ if(x!==k) right=false; });
+      S.journeyOk=right;
+      [].forEach.call(document.querySelectorAll('#jslots .sl'),function(el,k){
+        el.className='sl '+(S.jrn[k]===k?'ok':'bad'); });
+      $('jGo').disabled=true; $('jReset').disabled=true;
+      [].forEach.call(document.querySelectorAll('#jchain .chip'),function(b){ b.classList.add('used'); });
+      advance(st, right?'<p>Every step in the right place. That is the path your case has actually taken.</p>'
+                      :'<p>The order is not right. The correct chain is: <b>'+JOURNEY.join(' → ')+'</b>.</p>',
+        right?'ok':'part');
+    });
+  };
+
+  /* ---- Stage 13: signal wall ---- */
+  var WALL=[['001','Drug A','Rash',0],['002','Drug B','Headache',0],['003','Drug A','Liver injury',1],
+            ['004','Drug C','Nausea',0],['005','Drug A','Liver injury',1],['006','Drug A','Liver injury',1],
+            ['007','Drug B','Rash',0],['008','Drug A','Liver injury',1],['009','Drug C','Headache',0],
+            ['010','Drug A','Liver injury',1]];
+  BUILD.signal=function(){
+    return '<p class="sub">Your case is now one row among millions. You are the signal detection team. These ten reports are sitting in the database in front of you.</p>'
+      +'<div class="tw"><table class="sigt"><thead><tr><th>Case</th><th>Drug</th><th>Reaction</th></tr></thead><tbody>'
+      +WALL.map(function(w){return '<tr><td>'+w[0]+'</td><td>'+w[1]+'</td><td>'+w[2]+'</td></tr>';}).join('')
+      +'</tbody></table></div>'
+      +'<div class="q">Do you see anything worth investigating?</div>'
+      +'<div class="opts" id="sgW">'
+      +['Drug A with liver injury','Drug B with headache','Drug C with nausea','Nothing here is worth a second look'].map(function(o,k){
+        return '<button type="button" class="opt" data-k="'+k+'"><span class="lt">'+'ABCD'[k]+'</span><span>'+esc(o)+'</span></button>';}).join('')
+      +'</div><div id="sg2"></div>';
+  };
+  WIRE.signal=function(st){
+    [].forEach.call(document.querySelectorAll('#sgW .opt'),function(b){
+      b.addEventListener('click',function(){
+        var k=+b.getAttribute('data-k'), right=(k===0);
+        [].forEach.call(document.querySelectorAll('#sgW .opt'),function(x,j){
+          x.disabled=true; if(j===0)x.classList.add('right'); else if(j===k)x.classList.add('wrong'); });
+        var p1=right?5:0;
+        [].forEach.call(document.querySelectorAll('#stage .sigt tbody tr'),function(tr,j){
+          if(WALL[j][3]){ tr.children[1].className='hot'; tr.children[2].className='hot'; } });
+        $('sg2').innerHTML='<div class="tally"><div><b>5 / 10</b>Reports naming Drug A with liver injury</div>'
+          +'<div><b>6</b>Total reports for Drug A</div><div><b>0</b>Liver injury reports for any other drug</div></div>'
+          +'<div class="q">Does this mean Drug A causes liver injury?</div>'
+          +'<div class="opts" id="sg2W">'
+          +['Yes — five reports is conclusive evidence of causation',
+            'No — it is a hypothesis that warrants further evaluation, not a conclusion',
+            'No — spontaneous reports can never be used for anything',
+            'Only if the manufacturer agrees'].map(function(o,j){
+            return '<button type="button" class="opt" data-k="'+j+'"><span class="lt">'+'ABCD'[j]+'</span><span>'+esc(o)+'</span></button>';}).join('')+'</div>';
+        [].forEach.call(document.querySelectorAll('#sg2W .opt'),function(b2){
+          b2.addEventListener('click',function(){
+            var k2=+b2.getAttribute('data-k'), r2=(k2===1);
+            [].forEach.call(document.querySelectorAll('#sg2W .opt'),function(x,j){
+              x.disabled=true; if(j===1)x.classList.add('right'); else if(j===k2)x.classList.add('wrong'); });
+            var p2=r2?5:0;
+            S.signalOk=(right&&r2);
+            award('signal',p1+p2,st.marks);
+            advance(st,'<p>Pattern <b>'+p1+' / 5</b> · its limits <b>'+p2+' / 5</b>. Total <b>'+S.marks.signal+' / '+st.marks+'</b>.</p>',
+              (p1+p2)===10?'ok':((p1+p2)?'part':'no'));
+          });
+        });
+      });
+    });
+  };
+
+  /* ================= FINISH ================= */
+  var LBL={ask:'Asking the right patient questions',classify:'Correct ADR identification',form:'ADR form completion',
+    missing:'Handling missing information',serious:'Seriousness assessment',court:'Causality reasoning',
+    valid:'Valid ICSR at the AMC',vigiflow:'VigiFlow ICSR entry',coding:'Terminology coding',
+    quality:'Quality review at NCC-PvPI',signal:'Signal detection'};
+  var MAXM={ask:10,classify:10,form:15,missing:10,serious:10,court:15,valid:5,vigiflow:7,coding:3,quality:5,signal:10};
+
+  function finish(){
+    if(tick){ clearInterval(tick); tick=null; }
+    var total=0; for(var k in MAXM){ total+=(S.marks[k]||0); }
+    var used=CLOCK-S.left;
+    S.result={total:total,pct:Math.round(total),pass:total>=PASS,mins:Math.round(used/60)};
+    status(S.result.pass?'Reported':'Incomplete');
+    var badges=[
+      {n:'🔍 Good Historian', got:(S.marks.ask||0)>=9},
+      {n:'📋 Valid ICSR', got:(S.marks.valid||0)===5},
+      {n:'⚖ Causality Reasoned', got:!!S.courtFull},
+      {n:'🔄 Reassessed Correctly', got:!!S.reassessed},
+      {n:'🌐 Reached VigiBase', got:!!S.journeyOk},
+      {n:'📡 Signal Spotted', got:!!S.signalOk}
+    ];
+    S.badges=badges;
+    var h='<div class="stg"><span class="step tealb">Case closed</span><h3>The case has reached VigiBase</h3>'
+      +'<p class="sub">Your report left a Kerala ADR Monitoring Centre, passed quality review at the NCC-PvPI, and is now one row in the global database — where it will be counted alongside every other report of its kind.</p>'
+      +'<div class="verdict '+(S.result.pass?'pass':'fail')+'">'+(S.result.pass?'PASS':'BELOW THE PASS MARK')+' — '+total+' / 100</div>'
+      +'<div class="badges">'+badges.map(function(b){return '<span class="badge '+(b.got?'got':'miss')+'">'+b.n+'</span>';}).join('')+'</div>'
+      +'<div class="tw" style="margin-top:13px"><table class="rubric"><thead><tr><th>Assessment criteria</th><th>Awarded</th><th>Marks</th></tr></thead><tbody>';
+    for(var kk in MAXM){
+      h+='<tr><td>'+LBL[kk]+'</td><td>'+(S.marks[kk]||0)+'</td><td>'+MAXM[kk]+'</td></tr>';
+    }
+    h+='<tr class="tot"><td>Total</td><td>'+total+'</td><td>100</td></tr></tbody></table></div>'
+      +'<div class="fb part" style="margin-top:14px"><div class="hd">The closing question — worth a bonus +5 from your facilitator</div>'
+      +'<p><b>Why is an ADR report valuable even when causality has not been proven?</b></p>'
+      +'<p>Take 60 seconds as a team. Then, in one breath, trace the journey: patient → healthcare professional → ADR report → AMC → follow-up and assessment → ICSR in VigiFlow → NCC-PvPI → quality review → UMC → VigiBase → signal detection.</p></div>'
+      +'<div class="row no-print" style="margin-top:13px"><button class="btn" id="toRep">Open the team record →</button>'
+      +'<button class="btn ghost sm" id="againBtn">Run it again</button></div></div>';
+    $('stage').innerHTML=h;
+    paint();
+    buildReport();
+    $('toRep').addEventListener('click',function(){ switchTab('report'); window.scrollTo(0,0); });
+    $('againBtn').addEventListener('click',function(){
+      if(!confirm('Start the investigation again from Stage 1? This clears the current run.')) return;
+      $('live').style.display='none'; $('setupCard').style.display=''; S=null;
+    });
+  }
+
+  function buildAuto(){
+    if(!S||!S.result) return '';
+    var L=[];
+    L.push('FROM ADR TO VIGIBASE — LIVE PHARMACOVIGILANCE INVESTIGATION');
+    L.push('Alizon School of Medical & Digital Intelligence in collaboration with Mar Dioscorus College of Pharmacy');
+    L.push('');
+    L.push('Team: '+($('cName').value||'—')+'   Institution: '+($('cInst').value||'—'));
+    L.push('Team lead: '+($('cLead').value||'—')+'   Registration: '+($('cReg').value||'—'));
+    L.push('Elapsed: '+S.result.mins+' minutes of 90');
+    L.push('');
+    L.push('RESULT: '+(S.result.pass?'PASS':'FAIL')+' — '+S.result.total+'/100');
+    L.push('');
+    L.push('MARKS BY CRITERION');
+    for(var k in MAXM){ L.push('  '+LBL[k]+': '+(S.marks[k]||0)+'/'+MAXM[k]); }
+    L.push('');
+    L.push('HISTORY TAKEN');
+    L.push('  Useful questions asked: '+S.askedList.filter(function(a){return a.key;}).length+' of '+NKEY);
+    var skipped=ASKS.filter(function(a){return a.key&&!S.asked[a.t];});
+    if(skipped.length) L.push('  Never asked: '+skipped.map(function(a){return a.t;}).join(', '));
+    L.push('');
+    L.push('CASE AS ENTERED');
+    L.push('  Suspect medicine: '+(S.sub.vf_gen||'—')+' '+(S.sub.vf_str||'')+' '+(S.sub.vf_fq||''));
+    L.push('  Indication: '+(S.sub.vf_ind||'—'));
+    L.push('  Onset: '+(S.sub.vf_ons||'—'));
+    L.push('  Seriousness: '+(S.sub.vf_ser||'—'));
+    L.push('  Outcome: '+(S.sub.vf_out||'—'));
+    L.push('');
+    L.push('NARRATIVE AS SUBMITTED');
+    L.push('  '+(S.sub.narr||'(none written)'));
+    L.push('');
+    L.push('BADGES');
+    L.push('  '+S.badges.filter(function(b){return b.got;}).map(function(b){return b.n;}).join(', ')||'  none');
+    return L.join('\n');
+  }
+
+  function buildReport(){
+    $('repEmpty').style.display='none';
+    var b=$('repBody'); b.style.display='';
+    var r=S.result;
+    b.innerHTML='<div class="repgrid">'
+      +'<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">Score / 100</div></div>'
+      +'<div class="repbox"><div class="rv">'+(r.pass?'PASS':'FAIL')+'</div><div class="rl">Verdict</div></div>'
+      +'<div class="repbox"><div class="rv">'+r.mins+'</div><div class="rl">Minutes used</div></div>'
+      +'<div class="repbox"><div class="rv">'+S.badges.filter(function(x){return x.got;}).length+' / 6</div><div class="rl">Badges</div></div>'
+      +'</div>'
+      +'<div class="badges">'+S.badges.map(function(x){return '<span class="badge '+(x.got?'got':'miss')+'">'+x.n+'</span>';}).join('')+'</div>'
+      +'<div class="tw" style="margin-top:14px"><table class="rubric"><thead><tr><th>Criterion</th><th>Awarded</th><th>Marks</th></tr></thead><tbody>'
+      +Object.keys(MAXM).map(function(k){
+        var v=S.marks[k]||0, pct=Math.round(v/MAXM[k]*100);
+        return '<tr><td>'+LBL[k]+'<div class="bar" style="margin-top:5px"><i class="'+(pct>=80?'good':(pct>=50?'':'bad'))+'" style="width:'+pct+'%"></i></div></td><td>'+v+'</td><td>'+MAXM[k]+'</td></tr>';
+      }).join('')
+      +'<tr class="tot"><td>Total</td><td>'+r.total+'</td><td>100</td></tr></tbody></table></div>';
+    mountWriter();
+  }
+
+  var OPTS={module:'Module 2 · Unit 4 — Digital Inventory, ADR & Compliance Systems',
+            title:'From ADR to VigiBase — Live Pharmacovigilance Investigation',programme:'Pharmacy AI'};
+  function mountWriter(){
+    var host=$('reportWriter'); host.style.display='';
+    if(window.AlizonPracticalReport) AlizonPracticalReport.mount({
+      container:'#reportWriter', module:OPTS.module, title:OPTS.title, programme:OPTS.programme, submitOpts:OPTS,
+      titleField:{label:'Case summary, causality and outcome', placeholder:'e.g. 88/100 — amoxicillin-clavulanate rash with facial oedema, serious after deterioration, WHO-UMC probable, valid ICSR forwarded to NCC-PvPI'},
+      minWords:400,
+      attachments:[{label:'1. Completed ADR Report Form (PDF)'},
+                   {label:'2. Mock VigiFlow ICSR Printout (PDF)'},
+                   {label:'3. Signal Detection Worksheet (PDF)'}],
+      autoResult:function(){ return buildAuto()||''; },
+      autoPct:function(){ return S&&S.result?S.result.pct:null; },
+      autoResultText:function(){ return S&&S.result?((S.result.pass?'PASS':'FAIL')+' '+S.result.total+'/100'):''; }
+    });
+  }
+
+  /* ================= BOOT ================= */
+  function start(){
+    if(!($('cName').value||'').trim()){ alert('Enter a team name or number first.'); $('cName').focus(); return; }
+    S=mk();
+    $('setupCard').style.display='none';
+    $('live').style.display='';
+    status('Open');
+    render();
+    if(tick) clearInterval(tick);
+    tick=setInterval(function(){
+      if(!S){ clearInterval(tick); tick=null; return; }
+      S.left--;
+      var c=$('clock'); c.textContent=fmt(S.left);
+      c.className='clock'+(S.left<=300?' warn':'');
+      if(S.left<=0){ clearInterval(tick); tick=null; c.textContent='00:00'; }
+    },1000);
+  }
+
+  function switchTab(p){
+    [].forEach.call(document.querySelectorAll('.tab'),function(t){t.classList.toggle('on',t.getAttribute('data-p')===p);});
+    [].forEach.call(document.querySelectorAll('.panel'),function(s){s.classList.toggle('on',s.id==='p-'+p);});
+  }
+  [].forEach.call(document.querySelectorAll('.tab'),function(t){ t.addEventListener('click',function(){ switchTab(t.getAttribute('data-p')); }); });
+  $('themeBtn').addEventListener('click',function(){ var d=document.documentElement.classList.toggle('dark');
+    try{localStorage.setItem('pracTheme',d?'dark':'light');}catch(e){} });
+  $('facPrint').addEventListener('click',function(){ window.print(); });
+  $('startBtn').addEventListener('click',start);
+})();
+</script>
+<script src="alizon-backbar.js?v=5"></script>
+</body>
+</html>
