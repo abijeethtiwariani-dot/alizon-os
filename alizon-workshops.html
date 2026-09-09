@@ -3434,6 +3434,28 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
               sub:'Malankara Orthodox Church · Sreekariyam, Thiruvananthapuram, Kerala',
               logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
     cta:'Start the workshop'
+  },{
+    id:'pvvigibase',
+    title:'From ADR to VigiBase',
+    kicker:'Pharmacovigilance · Team investigation',
+    href:'ALIZON-OS-Module2-PV-Investigation',
+    lead:'A 42-year-old woman arrives at a Kerala emergency department with a spreading rash and facial '
+        +'swelling, four days into a new medicine. <b>You are the pharmacovigilance team.</b> The patient answers '
+        +'only what you actually ask, the report form arrives incomplete on purpose, and information is released '
+        +'in stages — as it is in a real investigation. Take the history, classify seriousness, argue causality in '
+        +'open court, build a valid ICSR, carry it from the ADR Monitoring Centre to the Uppsala Monitoring Centre, '
+        +'and finish by judging what a pattern in the global database is actually worth.',
+    does:['Patient interviewing','Working with missing data','Seriousness criteria','WHO-UMC causality',
+          'The four minimum elements','ICSR entry in VigiFlow','Standardised coding','Quality review','Signal detection'],
+    facts:[['Format','Theory 2 h, then practicals 3 h'],['Total','5 hours'],['Teams','4–5 students'],
+           ['Stages','13, unlocked in order'],['Marks','100, pass at 50']],
+    brochure:'pv-practicals-brochure',
+    partner:{ name:'Mar Dioscorus College of Pharmacy',
+              sub:'Malankara Orthodox Church · Sreekariyam, Thiruvananthapuram, Kerala',
+              logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
+    note:'Opens straight away. Work it as a team of four or five on one screen — register the team name and '
+        +'your team lead, then take a role each before Stage 1.',
+    cta:'Open the workshop'
   }];
 
   function esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){
@@ -3450,7 +3472,7 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
         + '<div class="act">'
           + '<a class="btn pri" href="'+esc(w.href)+'">'+esc(w.cta)+' &rarr;</a>'
           + (w.brochure?'<a class="btn" href="'+esc(w.brochure)+'">Brochure</a>':'')
-          + '<span class="note">Opens straight away — sign in with your name, roll number and phone. Nothing you do inside is submitted anywhere unless you are a signed-in Alizon student.</span>'
+          + '<span class="note">'+esc(w.note||'Opens straight away — sign in with your name, roll number and phone. Nothing you do inside is submitted anywhere unless you are a signed-in Alizon student.')+'</span>'
         + '</div>'
       + '</div>'
       + '<aside class="ow-side">'
