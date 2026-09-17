@@ -83,6 +83,7 @@
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.alizon.in/"}, {"@type": "ListItem", "position": 2, "name": "Syllabus", "item": "https://www.alizon.in/alizon-syllabus"}]}
 </script>
+  <link rel="stylesheet" href="alizon-shell.css?v=1">
 </head>
 <body>
 <style>
@@ -116,21 +117,59 @@
 @media(max-width:1024px){.azhdr-util .util-r{display:none}}
 @media(max-width:860px){.azhdr-nav .navlinks2{display:none}.azhdr-tick{display:none}}
 </style>
+<!-- ALIZON:SHELL:BEGIN shell="school" -->
 <header id="azsitehdr">
-  <div class="azhdr-util"><div class="in">
-    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON AOS<small>Medical &amp; Digital Intelligence</small></span></a>
-    <div class="util-r"><span class="lbl">Information for:</span>
-      <a href="ASMDI-dashboard.html">Students</a><a href="alizon-faculty-portal.html">Faculty &amp; Staff Login</a><a href="alizon-results.html">Results</a><a href="alizon-verify.html">Verify</a><a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
+  <div class="azhdr-util">
+    <div class="in">
+      <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON AOS<small>Medical &amp; Digital Intelligence</small></span></a>
+      <div class="util-r">
+        <span class="lbl">Information for:</span>
+        <a href="ASMDI-dashboard.html">Students</a>
+        <a href="alizon-faculty-portal.html">Faculty &amp; Staff Login</a>
+        <a href="alizon-results.html">Results</a>
+        <a href="alizon-verify.html">Verify</a>
+        <a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
+      </div>
+      <button id="azburger" aria-label="Open menu" aria-expanded="false" aria-controls="azmobilemenu"><span></span><span></span><span></span></button>
     </div>
-  </div></div>
-  <div class="azhdr-nav"><nav class="in">
-    <div class="navlinks2"><a href="index.html#programmes">Programmes</a><a href="index.html#practicals">Practicals</a><a href="alizon-academics.html">Academics</a><a href="alizon-workshops.html">Workshops</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-career.html">Career</a><a href="alizon-testimonials.html">Testimonials</a></div>
-    <a class="cta" href="ASMDI-dashboard.html">Enter Portal ↗</a>
-  </nav></div>
-  <div class="azhdr-tick" aria-label="Latest updates"><span class="tk-tag"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5a2 2 0 1 1 4 0 7 7 0 0 1 4 6v3a4 4 0 0 0 2 3H4a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg> Latest</span><div class="tk-track">AIDP Batch 7 practical activities are now live — log in to your student profile<span class="sep">•</span>Module 2 Digital Dispensing OSCE published<span class="sep">•</span>Examination hall tickets available in the portal<span class="sep">•</span>Jul 24, 2026</div></div>
+  </div>
+  <div class="azhdr-nav">
+    <nav class="in">
+      <div class="navlinks2">
+        <a href="index.html#programmes">Programmes</a>
+        <a href="index.html#practicals">Practicals</a>
+        <a href="alizon-academics.html">Academics</a>
+        <a href="alizon-workshops.html">Workshops</a>
+        <a href="alizon-exam.html">Examinations</a>
+        <a href="alizon-results.html">Results</a>
+        <a href="alizon-career.html">Career</a>
+        <a href="alizon-testimonials.html">Testimonials</a>
+      </div>
+      <a class="btn primary sm cta" href="ASMDI-dashboard.html">Enter Portal ↗</a>
+    </nav>
+  </div>
+  <div class="azhdr-tick" aria-label="Latest updates">
+    <span class="tk-tag"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5a2 2 0 1 1 4 0 7 7 0 0 1 4 6v3a4 4 0 0 0 2 3H4a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/></svg> Latest</span>
+    <div class="tk-track">
+      AIDP Batch 7 practical activities are now live — log in to your student profile
+      <span class="sep">•</span> Module 2 Digital Dispensing OSCE published
+      <span class="sep">•</span> Examination hall tickets available in the portal
+      <span class="sep">•</span> Jul 24, 2026
+    </div>
+  </div>
 </header>
-
-
+<div id="azmobilemenu" role="navigation" aria-label="Mobile">
+  <a href="index.html#programmes">Programmes</a>
+  <a href="index.html#practicals">Practicals</a>
+  <a href="alizon-academics.html">Academics</a>
+  <a href="alizon-workshops.html">Workshops</a>
+  <a href="alizon-exam.html">Examinations</a>
+  <a href="alizon-results.html">Results</a>
+  <a href="alizon-career.html">Career</a>
+  <a href="alizon-testimonials.html">Testimonials</a>
+  <a class="azmm-cta" href="ASMDI-dashboard.html">Enter Portal ↗</a>
+</div>
+<!-- ALIZON:SHELL:END -->
 <div class="strip"><div class="wrap">
   <div class="ey">Curriculum Catalogue</div>
   <h1 class="serif">Course Syllabus</h1>
@@ -333,5 +372,6 @@
 </script>
 <script src="alizon-back.js"></script>
 <style id="dark-footer">footer{background:#1A1A1A!important;color:#c9c9c9!important;border-top:1px solid rgba(255,255,255,.12)!important}footer .brand,footer .brand *{color:#fff!important}footer h4{color:#fff!important}footer a{color:#c9c9c9!important}footer a:hover{color:#fff!important}footer .base{color:#9a9a9a!important;border-top:1px solid rgba(255,255,255,.12)!important}</style>
+  <script src="alizon-shell.js?v=1" defer></script>
 </body>
 </html>

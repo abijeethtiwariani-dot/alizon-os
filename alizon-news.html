@@ -1657,6 +1657,7 @@ footer .base{ border-top:1px solid rgba(0,0,0,.10) !important; color:#8a887f !im
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.alizon.in/"}, {"@type": "ListItem", "position": 2, "name": "Campus News", "item": "https://www.alizon.in/alizon-news"}]}
 </script>
+  <link rel="stylesheet" href="alizon-shell.css?v=1">
 </head>
 <body>
 <a class="az-skip" href="#top">Skip to content</a>
@@ -1700,6 +1701,7 @@ footer .base{ border-top:1px solid rgba(0,0,0,.10) !important; color:#8a887f !im
     #azmobilemenu{top:116px}
   }
 </style>
+<!-- ALIZON:SHELL:BEGIN shell="school" -->
 <header id="azsitehdr">
   <div class="azhdr-util">
     <div class="in">
@@ -1724,7 +1726,8 @@ footer .base{ border-top:1px solid rgba(0,0,0,.10) !important; color:#8a887f !im
         <a href="alizon-workshops.html">Workshops</a>
         <a href="alizon-exam.html">Examinations</a>
         <a href="alizon-results.html">Results</a>
-        <a href="alizon-career.html">Career</a><a href="alizon-testimonials.html">Testimonials</a>
+        <a href="alizon-career.html">Career</a>
+        <a href="alizon-testimonials.html">Testimonials</a>
       </div>
       <a class="btn primary sm cta" href="ASMDI-dashboard.html">Enter Portal ↗</a>
     </nav>
@@ -1740,20 +1743,17 @@ footer .base{ border-top:1px solid rgba(0,0,0,.10) !important; color:#8a887f !im
   </div>
 </header>
 <div id="azmobilemenu" role="navigation" aria-label="Mobile">
-  <a href="#programmes">Programmes</a>
+  <a href="index.html#programmes">Programmes</a>
+  <a href="index.html#practicals">Practicals</a>
   <a href="alizon-academics.html">Academics</a>
   <a href="alizon-workshops.html">Workshops</a>
-  <a href="alizon-testimonials.html">Testimonials</a>
-  <a href="#practicals">Practicals</a>
-  <a href="#aliz">Aliz</a>
-  <a href="#azfinder-root">Find programme</a>
-  <a href="#azest-root">Eligibility &amp; fees</a>
-  <a href="#assessment">Assessment</a>
+  <a href="alizon-exam.html">Examinations</a>
   <a href="alizon-results.html">Results</a>
-  <a href="alizon-exam.html">Exams &amp; hall ticket</a>
-  <a class="azmm-cta" href="ASMDI-dashboard.html">Enter the Portal ↗</a>
+  <a href="alizon-career.html">Career</a>
+  <a href="alizon-testimonials.html">Testimonials</a>
+  <a class="azmm-cta" href="ASMDI-dashboard.html">Enter Portal ↗</a>
 </div>
-
+<!-- ALIZON:SHELL:END -->
 <main id="top">
   <!-- HERO -->
   <section class="hero">
@@ -1789,20 +1789,22 @@ window.addEventListener("storage",function(e){if(e.key==="alizonNews")render(1);
 </script>
 </main>
 
+<!-- ALIZON:FOOTER:BEGIN shell="school" -->
 <footer>
   <div class="in">
     <div>
-      <a class="brand" href="#top"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON AOS<small>Medical &amp; Digital Intelligence</small></span></a>
+      <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON AOS<small>Medical &amp; Digital Intelligence</small></span></a>
       <p style="max-width:260px;margin-top:16px;font-weight:300;font-size:13.5px;line-height:1.6">A living campus for the next generation of clinicians and technologists.</p>
     </div>
     <div class="cols">
-      <div><h4>Programmes</h4><a href="#programmes">Paramedical AI</a><a href="#programmes">Pharmacy AI</a><a href="#programmes">Medical AI</a><a href="#programmes">Hospital Admin AI</a></div>
+      <div><h4>Programmes</h4><a href="index.html#programmes">Paramedical AI</a><a href="index.html#programmes">Pharmacy AI</a><a href="index.html#programmes">Medical AI</a><a href="index.html#programmes">Hospital Admin AI</a></div>
       <div><h4>Platform</h4><a href="ASMDI-dashboard.html">ALIZON AOS Portal</a><a href="alizon-staff-portal.html">Staff Sign-in</a><a href="alizon-faculty-portal.html">Faculty Sign-in</a><a href="admin-portal.html">Admin Portal</a><a href="alizon-exam.html">Examinations</a></div>
-      <div><h4>Institute</h4><a href="alizon-academics.html">Academics</a><a href="https://alizongov.com/" target="_blank" rel="noopener">alizongov.com ↗</a><a href="#assessment">Assessment</a><a href="#top">About</a></div>
+      <div><h4>Institute</h4><a href="alizon-academics.html">Academics</a><a href="https://alizongov.com/" target="_blank" rel="noopener">alizongov.com ↗</a><a href="index.html#assessment">Assessment</a><a href="index.html">About</a></div>
     </div>
   </div>
   <div class="base"><span>© 2026 Alizon School of Medical &amp; Digital Intelligence.</span><span>Privacy · Terms · Secure Institutional Gateway</span></div>
 </footer>
+<!-- ALIZON:FOOTER:END -->
 
 <script>
 /* crimson→gold particle wave (brand) */
@@ -2837,24 +2839,12 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
 })();
 
 </script>
-<script>
-/* mobile menu */
-(function(){
-  var b=document.getElementById('azburger'), m=document.getElementById('azmobilemenu');
-  if(!b||!m) return;
-  function set(open){ b.classList.toggle('open',open); m.classList.toggle('open',open);
-    b.setAttribute('aria-expanded',open?'true':'false'); b.setAttribute('aria-label',open?'Close menu':'Open menu'); }
-  b.addEventListener('click',function(){ set(!m.classList.contains('open')); });
-  m.addEventListener('click',function(e){ if(e.target.tagName==='A') set(false); });
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&m.classList.contains('open')){ set(false); b.focus(); } });
-  addEventListener('resize',function(){ if(innerWidth>860) set(false); },{passive:true});
-})();
-</script>
 <script src="vendor/gsap.min.js"></script>
 <script src="vendor/ScrollTrigger.min.js"></script>
 <script src="alizon-motion.js"></script>
 <script src="firebase-sync.js"></script>
 <script src="alizon-cms.js"></script>
 <style id="dark-footer">footer{background:#1A1A1A!important;color:#c9c9c9!important;border-top:1px solid rgba(255,255,255,.12)!important}footer .brand,footer .brand *{color:#fff!important}footer h4{color:#fff!important}footer a{color:#c9c9c9!important}footer a:hover{color:#fff!important}footer .base{color:#9a9a9a!important;border-top:1px solid rgba(255,255,255,.12)!important}</style>
+  <script src="alizon-shell.js?v=1" defer></script>
 </body>
 </html>

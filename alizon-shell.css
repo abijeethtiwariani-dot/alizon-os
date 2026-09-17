@@ -1,0 +1,57 @@
+/* ==========================================================================
+   alizon-shell.css — burger button + mobile menu for the shared site shell.
+
+   Extracted from the inline <style> block that previously lived in 10 pages
+   only. Loading this sitewide is what makes the mobile menu work on the
+   pages whose burger button used to do nothing.
+
+   Generated markup lives between the ALIZON:SHELL markers — see
+   partials/shell.json and tools-build-shell.js.
+   ========================================================================== */
+
+#azburger{
+  display:none;width:44px;height:44px;border-radius:12px;
+  border:1px solid rgba(0,0,0,.12);background:#fff;cursor:pointer;
+  flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0;
+}
+#azburger span{display:block;width:18px;height:2px;border-radius:2px;background:#2e2d29;transition:.25s}
+#azburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#azburger.open span:nth-child(2){opacity:0}
+#azburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+#azmobilemenu{
+  display:none;position:fixed;top:64px;left:0;right:0;z-index:49;background:#fff;
+  border-bottom:1px solid rgba(0,0,0,.10);box-shadow:0 24px 50px rgba(20,18,16,.14);
+  padding:10px 16px 18px;flex-direction:column;
+}
+#azmobilemenu.open{display:flex;animation:azmm .22s ease-out}
+@keyframes azmm{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){#azmobilemenu.open{animation:none}}
+
+#azmobilemenu a{
+  display:flex;align-items:center;min-height:48px;padding:0 10px;font-size:15.5px;
+  color:#2e2d29;border-bottom:1px solid rgba(0,0,0,.06);font-weight:500;
+}
+#azmobilemenu a:hover{color:#8c1515}
+#azmobilemenu a.azmm-cta{
+  margin-top:12px;justify-content:center;border:none;border-radius:100px;
+  background:linear-gradient(120deg,#8c1515,#6b0f0f);color:#fff;font-weight:600;min-height:50px;
+}
+
+/* the burger only ever shows once the desktop nav has collapsed */
+.azhdr-util #azburger{display:none}
+@media(max-width:1024px){ .azhdr-util .util-r{display:none} }
+@media(max-width:860px){
+  #azburger{display:flex}
+  .azhdr-nav .navlinks2{display:none}
+  .azhdr-tick{display:none}
+  /* the util bar is crimson at this width, so the button goes transparent —
+     otherwise the white bars sit on the white button and vanish */
+  .azhdr-util #azburger{display:inline-flex;margin-left:auto;background:transparent;border-color:rgba(255,255,255,.4)}
+  .azhdr-util #azburger span{background:#fff}
+  #azmobilemenu{top:116px}
+}
+@media(max-width:480px){
+  .brand small{display:none}
+  .azhdr-nav nav .in{padding:10px 16px}
+}

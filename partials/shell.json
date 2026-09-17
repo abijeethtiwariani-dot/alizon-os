@@ -1,0 +1,115 @@
+{
+  "_comment": [
+    "Single source of truth for the site shell (header, mobile menu, footer).",
+    "Edit this file, then run:  node tools-build-shell.js",
+    "Never hand-edit the markup between ALIZON:SHELL / ALIZON:FOOTER markers in a page."
+  ],
+
+  "util": {
+    "label": "Information for:",
+    "links": [
+      { "label": "Students",               "href": "ASMDI-dashboard.html" },
+      { "label": "Faculty & Staff Login",  "href": "alizon-faculty-portal.html" },
+      { "label": "Results",                "href": "alizon-results.html" },
+      { "label": "Verify",                 "href": "alizon-verify.html" },
+      { "label": "Official Site ↗",        "href": "https://alizongov.com", "external": true }
+    ]
+  },
+
+  "ticker": {
+    "tag": "Latest",
+    "items": [
+      "AIDP Batch 7 practical activities are now live — log in to your student profile",
+      "Module 2 Digital Dispensing OSCE published",
+      "Examination hall tickets available in the portal",
+      "Jul 24, 2026"
+    ]
+  },
+
+  "shells": {
+    "school": {
+      "brand": { "title": "ALIZON AOS", "tagline": "Medical & Digital Intelligence", "href": "index.html" },
+      "ctaClass": "btn primary sm cta",
+      "nav": [
+        { "key": "programmes",   "label": "Programmes",   "href": "index.html#programmes" },
+        { "key": "practicals",   "label": "Practicals",   "href": "index.html#practicals" },
+        { "key": "academics",    "label": "Academics",    "href": "alizon-academics.html" },
+        { "key": "workshops",    "label": "Workshops",    "href": "alizon-workshops.html" },
+        { "key": "exam",         "label": "Examinations", "href": "alizon-exam.html" },
+        { "key": "results",      "label": "Results",      "href": "alizon-results.html" },
+        { "key": "career",       "label": "Career",       "href": "alizon-career.html" },
+        { "key": "testimonials", "label": "Testimonials", "href": "alizon-testimonials.html" }
+      ],
+      "cta": { "label": "Enter Portal ↗", "href": "ASMDI-dashboard.html" },
+      "footer": {
+        "layout": "school",
+        "blurb": "A living campus for the next generation of clinicians and technologists.",
+        "cols": [
+          { "title": "Programmes", "links": [
+            { "label": "Paramedical AI",      "href": "index.html#programmes" },
+            { "label": "Pharmacy AI",         "href": "index.html#programmes" },
+            { "label": "Medical AI",          "href": "index.html#programmes" },
+            { "label": "Hospital Admin AI",   "href": "index.html#programmes" }
+          ]},
+          { "title": "Platform", "links": [
+            { "label": "ALIZON AOS Portal",   "href": "ASMDI-dashboard.html" },
+            { "label": "Staff Sign-in",       "href": "alizon-staff-portal.html" },
+            { "label": "Faculty Sign-in",     "href": "alizon-faculty-portal.html" },
+            { "label": "Admin Portal",        "href": "admin-portal.html" },
+            { "label": "Examinations",        "href": "alizon-exam.html" }
+          ]},
+          { "title": "Institute", "links": [
+            { "label": "Academics",           "href": "alizon-academics.html" },
+            { "label": "alizongov.com ↗",     "href": "https://alizongov.com/", "external": true },
+            { "label": "Assessment",          "href": "index.html#assessment" },
+            { "label": "About",               "href": "index.html" }
+          ]}
+        ],
+        "baseLeft": "© 2026 Alizon School of Medical & Digital Intelligence.",
+        "baseRight": "Privacy · Terms · Secure Institutional Gateway"
+      }
+    },
+
+    "aos": {
+      "brand": { "title": "ALIZON AOS", "tagline": "Practical Learning Platform", "href": "index.html" },
+      "ctaClass": "btn btn-primary",
+      "ctaStyle": "padding:9px 20px;font-size:.95rem",
+      "nav": [
+        { "key": "overview",     "label": "Overview",     "href": "alizon-os.html" },
+        { "key": "practicals",   "label": "Practicals",   "href": "os-practicals.html" },
+        { "key": "library",      "label": "Library",      "href": "alizon-library.html" },
+        { "key": "exam",         "label": "Examinations", "href": "alizon-exam.html" },
+        { "key": "results",      "label": "Results",      "href": "alizon-results.html" },
+        { "key": "workshops",    "label": "Workshops",    "href": "alizon-workshops.html" },
+        { "key": "certificates", "label": "Certificates", "href": "alizon-verify.html" },
+        { "key": "career",       "label": "Career",       "href": "alizon-career.html" },
+        { "key": "institution",  "label": "Institution",  "href": "index.html" }
+      ],
+      "cta": { "label": "Enter Portal ↗", "href": "ASMDI-dashboard.html" },
+      "footer": {
+        "layout": "aos",
+        "blurb": "The practical-learning platform of Alizon School of Medical & Digital Intelligence, Kerala.",
+        "cols": [
+          { "title": "Platform", "links": [
+            { "label": "Practicals",        "href": "os-practicals.html" },
+            { "label": "Examinations",      "href": "alizon-exam.html" },
+            { "label": "Results",           "href": "alizon-results.html" },
+            { "label": "Workshops",         "href": "alizon-workshops.html" }
+          ]},
+          { "title": "Students", "links": [
+            { "label": "ALIZON AOS Portal", "href": "ASMDI-dashboard.html" },
+            { "label": "Certificates",      "href": "alizon-verify.html" },
+            { "label": "Verify",            "href": "alizon-verify.html" }
+          ]},
+          { "title": "Institution", "links": [
+            { "label": "Official Website ↗","href": "https://alizongov.com", "external": true },
+            { "label": "Home",              "href": "index.html" },
+            { "label": "Academics",         "href": "alizon-academics.html" }
+          ]}
+        ],
+        "baseLeft": "© 2026 Alizon School of Medical & Digital Intelligence",
+        "baseRight": "alizongov.com · alizon.in"
+      }
+    }
+  }
+}
