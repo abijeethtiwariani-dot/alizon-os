@@ -48,6 +48,7 @@
   var PUBLIC = {
     'alizon-os-workshop-pvx': 1,
     'alizon-os-workshop-pv-foundations': 1,
+    'alizon-os-pv-software': 1,
     /* Opened so the joint practical can be reviewed by Mar Dioscorus staff
        before the session. Remove this line to put it back behind the
        student login. */
