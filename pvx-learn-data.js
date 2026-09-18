@@ -1224,13 +1224,17 @@ var FINAL = {
       teach:'The new medicine is a sulfonylurea, started 24 August. Note also the over-the-counter ibuprofen, which nobody mentioned and which nobody prescribed — an NSAID on top of an ACE inhibitor in a 67-year-old diabetic.'},
     lab:{title:'Laboratory and point-of-care results',
       body:['Capillary blood glucose 52 mg/dL (2.9 mmol/L), taken at 11:40 on 15 September during an episode.',
-            'HbA1c 6.1% (was 8.4% in July 2026).',
-            'Creatinine 1.6 mg/dL. eGFR 38 mL/min/1.73m² — was eGFR 52 in March 2026.',
+            'HbA1c 7.9% on 15 September (was 8.4% in July 2026, before glimepiride was started).',
+            'Creatinine 1.5 mg/dL. eGFR 38 mL/min/1.73m² — was eGFR 52 in March 2026.',
             'Potassium 5.3 mmol/L. Sodium 138 mmol/L. Haemoglobin 12.1 g/dL.'],
       grants:['lab_value','renal'],
       teach:'Three findings, and each one changes the case. The glucose of 52 mg/dL during an episode makes the diagnosis. '
-           +'The HbA1c falling from 8.4% to 6.1% shows the patient is now over-treated, not under-treated. And the eGFR has '
-           +'dropped from 52 to 38, which makes both the glimepiride accumulate AND takes metformin below its safe threshold.'},
+           +'The HbA1c looks almost unchanged at 7.9%, and that is a trap rather than reassurance: it was taken three '
+           +'weeks after the drug was started, and HbA1c lags by roughly 8 to 12 weeks, so it still mostly describes the '
+           +'period BEFORE this prescription. It cannot tell you what her glucose is doing today. A capillary reading of '
+           +'52 mg/dL taken during an actual episode outranks it completely. And the eGFR has '
+           +'dropped from 52 to 38, which both lets the glimepiride accumulate and takes metformin into the range where '
+           +'its dose has to be reduced and reviewed \u2014 not stopped outright, which happens below 30.'},
     patient:{title:'Telephone interview with the patient',
       body:['"It comes on before lunch, mostly. I go sweaty and my hands shake, and everything feels far away."',
             '"It has happened maybe six or seven times. Twice I had to sit down on the floor."',
@@ -1280,10 +1284,12 @@ var FINAL = {
                   'Morning dose taken before eating',
                   'Enalapril, which potentiates the hypoglycaemic effect',
                   'Over-the-counter ibuprofen, which with the enalapril is very likely contributing to the renal decline that caused the accumulation'],
-    alsoWrong:['Metformin is now contraindicated at eGFR 38 — well, it needs dose reduction below 45 and is '
-              +'contraindicated below 30, so it requires review urgently.',
+    alsoWrong:['Metformin has not been reviewed against the new eGFR. At 38 it is not contraindicated \u2014 that is '
+              +'below 30 \u2014 but below 45 the dose should be reduced and the patient reviewed, and nobody has done it.',
               'The ibuprofen plus enalapril combination is driving the renal decline and nobody has flagged it.',
-              'The HbA1c of 6.1% in a 67-year-old on a sulfonylurea is too tight a target and is itself a safety problem.'],
+              'Nobody has set an appropriate HbA1c target for a 67-year-old with falling renal function on a sulfonylurea. '
+              +'Most guidance would relax it rather than chase the number, and if this prescription simply continues, the '
+              +'HbA1c three months from now will look like a success while she goes on having hypoglycaemic episodes.'],
     actions:['Stop the glimepiride, or reduce it substantially, and discuss with the prescriber today.',
              'Stop the over-the-counter ibuprofen and explain why.',
              'Review metformin dose against the current eGFR.',
