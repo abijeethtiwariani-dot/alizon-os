@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="theme-color" content="#8c1515">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Indexable on purpose, as for PV-X: a workshop that is open to everyone
+     has to be findable to be open at all. -->
+<meta name="robots" content="index, follow">
+<meta name="description" content="PV Foundations — a free, open, beginner-friendly pharmacovigilance workshop for pharmacy students. Learn the drug, read the case, check interactions and patient factors, decide whether it is an ADR, assess seriousness and causality, code the reaction and build the ICSR. Every step is taught as you do it. Run by the Alizon School of Medical &amp; Digital Intelligence with Mar Dioscorus College of Pharmacy.">
+<title>ALIZON AOS · PV Foundations — Learn Pharmacovigilance by Doing It</title>
+<script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  /* The palette and component vocabulary are deliberately the same as
+     ALIZON-OS-Workshop-PVX.html. A student who does PV Foundations and then
+     moves up to PV-X should not have to learn a second interface. */
+  :root{--bg:#f2f0ec;--panel:#fff;--panel2:#f7f5f1;--pill:#efece7;--ink:#1c1a1f;--muted:#6b6570;--line:rgba(24,18,26,.12);
+    --crimson:#C40D16;--crimson-deep:#9E0C13;--gold:#A16207;--gold-soft:rgba(161,98,7,.14);
+    --success:#1E8E5A;--danger:#C4262E;--warn:#B45309;--teal:#0E6F76;--purple:#6D28D9;
+    --card-shadow:0 14px 40px -28px rgba(20,10,12,.5);}
+  html.dark{--bg:#070810;--panel:#12131c;--panel2:#0e0f18;--pill:#1a1c28;--ink:#f5f4f6;--muted:#9a9db2;--line:rgba(255,255,255,.1);
+    --crimson:#e2434b;--crimson-deep:#C40D16;--gold:#D9A441;--success:#38d08a;--danger:#f0666d;--warn:#e0a44a;--teal:#4bc2c9;--purple:#a78bfa;
+    --card-shadow:0 18px 46px -30px rgba(0,0,0,.8);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:1180px;margin:0 auto;padding:22px clamp(13px,2.6vw,26px) 96px}
+  h1,h2,h3{font-family:'Source Serif Pro',Georgia,serif}
+  h1{font-size:clamp(1.55rem,4.3vw,2.3rem);line-height:1.13}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(15px,2.4vw,22px);box-shadow:var(--card-shadow);margin-bottom:15px}
+  .muted{color:var(--muted)}
+  .btn{cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;border:none;border-radius:100px;padding:10px 20px;color:#fff;
+    background:linear-gradient(120deg,var(--crimson-deep),var(--crimson))}
+  .btn:hover{filter:brightness(1.07)} .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .btn.ghost{background:var(--pill);color:var(--ink);border:1px solid var(--line)}
+  .btn.gold{background:linear-gradient(120deg,#7c4c06,var(--gold))}
+  .btn.ok{background:linear-gradient(120deg,#0f6b45,var(--success))}
+  .btn.teal{background:linear-gradient(120deg,#0a5459,var(--teal))}
+  .btn.sm{font-size:12.5px;padding:8px 15px}
+  .btn.xs{font-size:11.5px;padding:6px 12px}
+  .row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  label.f{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],textarea,select{width:100%;font-family:inherit;font-size:13.5px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  textarea{min-height:60px;resize:vertical;line-height:1.55}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:13px}
+  a{color:var(--crimson);text-decoration:none;font-weight:600} a:hover{text-decoration:underline}
+
+  .tabs{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0 16px;position:sticky;top:0;z-index:30;padding:9px 0;background:var(--bg)}
+  .tab{cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:8px 15px;position:relative}
+  .tab.on{color:#fff;background:linear-gradient(120deg,var(--crimson-deep),var(--crimson));border-color:transparent}
+  .tab .dn{position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:var(--success);display:none}
+  .tab.done .dn{display:block}
+  .panel{display:none;animation:fade .22s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:8px 0}
+  table{border-collapse:collapse;width:100%;min-width:420px;font-size:12.5px}
+  th{background:var(--crimson);color:#fff;font-weight:600;text-align:left;padding:8px 10px;font-size:11px}
+  td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top} tr:nth-child(even) td{background:var(--panel2)}
+
+  .guide{background:var(--gold-soft);border:1px solid rgba(161,98,7,.28);border-radius:14px;padding:16px 18px;margin-bottom:15px}
+  .guide h2{font-size:18px;margin-bottom:6px} .guide ol,.guide ul{margin:8px 0 0 18px;font-size:13px;line-height:1.72} .guide p{font-size:13.5px}
+  .synth{background:rgba(196,38,46,.07);border:1px solid rgba(196,38,46,.26);border-radius:12px;padding:11px 14px;font-size:12.5px;line-height:1.6;margin-top:11px}
+  .openbadge{font-size:11.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#fff;
+    background:linear-gradient(120deg,#0f6b45,var(--success));border-radius:100px;padding:6px 15px}
+
+  /* ---- the operations bar ---- */
+  .opbar{position:sticky;top:53px;z-index:25;background:linear-gradient(120deg,#1a2340,#243156);color:#fff;border-radius:14px;
+    padding:11px 16px;display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:14px;box-shadow:0 12px 32px -22px rgba(0,0,0,.8)}
+  .opbar .ttl{font-family:'Source Serif Pro',serif;font-weight:700;font-size:15px}
+  .opbar .m{display:flex;flex-direction:column;gap:2px;min-width:86px}
+  .opbar .m .k{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;opacity:.62}
+  .opbar .m .v{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+  .meter{height:5px;border-radius:100px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:2px}
+  .meter i{display:block;height:100%;background:#7de3b0;transition:width .4s}
+  .meter i.warn{background:#f3c46b} .meter i.bad{background:#ff8a8a}
+  .opbar .sp{margin-left:auto}
+  .modechip{background:rgba(0,0,0,.3);border-radius:100px;padding:5px 14px;font-weight:700;font-size:12px}
+
+  /* ---- teaching / question blocks ---- */
+  .task{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:15px 17px;box-shadow:var(--card-shadow);margin-bottom:14px}
+  .task .step{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:3px 11px;display:inline-block}
+  .task h3{font-size:17px;margin:7px 0 4px}
+  .task .q{font-size:14.5px;font-weight:600;line-height:1.55;margin:10px 0 4px}
+  .opts{display:grid;gap:7px;margin-top:9px}
+  .opt{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font:inherit;font-size:13.5px;text-align:left;color:var(--ink);
+    background:var(--panel2);border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;line-height:1.5;width:100%}
+  .opt:hover{border-color:var(--gold)}
+  .opt .lt{flex:none;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--pill);border:1px solid var(--line);font-size:10.5px;font-weight:800;color:var(--muted)}
+  .opt.pick{border-color:var(--crimson);background:rgba(196,13,22,.05)} .opt.pick .lt{background:var(--crimson);border-color:var(--crimson);color:#fff}
+  .opt.right{border-color:var(--success);background:rgba(30,142,90,.07)} .opt.right .lt{background:var(--success);border-color:var(--success);color:#fff}
+  .opt.wrong{border-color:var(--danger);background:rgba(196,38,46,.06)} .opt.wrong .lt{background:var(--danger);border-color:var(--danger);color:#fff}
+  .opt.missed{border-color:var(--warn);background:rgba(180,83,9,.06)} .opt.missed .lt{background:var(--warn);border-color:var(--warn);color:#fff}
+  .opt .ob{flex:1}
+  .opt .of{display:block;font-size:12.5px;font-weight:500;color:var(--muted);margin-top:5px;line-height:1.55}
+  .opt[disabled]{cursor:default}
+
+  .fb{border-radius:11px;padding:12px 15px;margin-top:12px;font-size:13.5px;line-height:1.65;border:1px solid}
+  .fb.ok{background:rgba(30,142,90,.1);border-color:rgba(30,142,90,.34)}
+  .fb.part{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.34)}
+  .fb.no{background:rgba(196,38,46,.08);border-color:rgba(196,38,46,.32)}
+  .fb.info{background:rgba(14,111,118,.09);border-color:rgba(14,111,118,.3)}
+  .fb .hd{font-weight:800;font-size:12.5px;margin-bottom:5px}
+  .fb.ok .hd{color:var(--success)} .fb.part .hd{color:var(--warn)} .fb.no .hd{color:var(--danger)} .fb.info .hd{color:var(--teal)}
+  .fb ul{margin:6px 0 0 17px} .fb li{margin-bottom:4px}
+  .teach{background:var(--gold-soft);border:1px solid rgba(161,98,7,.3);border-radius:11px;padding:12px 15px;margin-top:11px;font-size:13.5px;line-height:1.68}
+  .teach .hd{font-weight:800;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+
+  /* ---- drug card ---- */
+  .dcard{border:1px solid var(--line);border-radius:14px;background:var(--panel2);padding:0;overflow:hidden;margin-bottom:13px}
+  .dcard .dh{background:linear-gradient(120deg,#1a2340,#243156);color:#fff;padding:13px 17px}
+  .dcard .dh .gn{font-family:'Source Serif Pro',serif;font-size:19px;font-weight:700}
+  .dcard .dh .cl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;opacity:.74;margin-top:2px}
+  .dcard .db{padding:15px 17px}
+  .dsec{margin-bottom:14px} .dsec:last-child{margin-bottom:0}
+  .dsec .sh{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+  .dsec p,.dsec li{font-size:13.5px;line-height:1.62} .dsec ul{margin-left:17px}
+  .dsec li{margin-bottom:4px}
+  .dsec li b{font-weight:700}
+  .dsec li .nt{color:var(--muted);font-size:12.5px}
+  .pillrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+  .ipill{cursor:pointer;font:inherit;font-size:12px;font-weight:600;background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:6px 13px;color:var(--ink)}
+  .ipill:hover{border-color:var(--gold);color:var(--gold)}
+  .dontknow{background:rgba(109,40,217,.08);border:1px solid rgba(109,40,217,.3);border-radius:11px;padding:12px 15px;font-size:13.5px;line-height:1.68;margin-top:11px}
+  .dontknow .hd{font-weight:800;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--purple);margin-bottom:5px}
+
+  /* ---- traffic lights ---- */
+  .rag{border-radius:13px;padding:14px 17px;margin:11px 0;border:1.5px solid;font-size:13.5px;line-height:1.62}
+  .rag .rh{display:flex;gap:10px;align-items:center;font-weight:800;font-size:15px;margin-bottom:4px}
+  .rag .dot{font-size:19px;line-height:1}
+  .rag.green{background:rgba(30,142,90,.09);border-color:rgba(30,142,90,.38)} .rag.green .rh{color:var(--success)}
+  .rag.amber{background:rgba(180,83,9,.1);border-color:rgba(180,83,9,.4)} .rag.amber .rh{color:var(--warn)}
+  .rag.red{background:rgba(196,38,46,.09);border-color:rgba(196,38,46,.4)} .rag.red .rh{color:var(--danger)}
+  .flow{display:grid;gap:0;margin:11px 0}
+  .flow .fr{border-left:3px solid var(--gold);padding:9px 0 9px 15px;position:relative;font-size:13.5px;line-height:1.6}
+  .flow .fr .fk{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:2px}
+  .flow .fr:not(:last-child){padding-bottom:14px}
+
+  /* ---- investigation desk drawer ---- */
+  .deskbtn{position:fixed;right:17px;bottom:17px;z-index:60;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;
+    color:#fff;background:linear-gradient(120deg,#0a5459,var(--teal));border-radius:100px;padding:13px 21px;box-shadow:0 14px 36px -14px rgba(0,0,0,.6)}
+  .deskbtn:hover{filter:brightness(1.09)}
+  .deskwrap{position:fixed;inset:0;z-index:70;display:none}
+  .deskwrap.on{display:block}
+  .deskwrap .sc{position:absolute;inset:0;background:rgba(6,7,14,.56);backdrop-filter:blur(2px)}
+  .desk{position:absolute;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--bg);border-left:1px solid var(--line);
+    box-shadow:-20px 0 60px -30px rgba(0,0,0,.7);overflow-y:auto;padding:19px clamp(14px,2.4vw,22px) 40px}
+  .desk .dkh{display:flex;align-items:flex-start;gap:12px;margin-bottom:13px}
+  .desk .dkh h2{font-size:20px;flex:1}
+  .desk .x{cursor:pointer;border:1px solid var(--line);background:var(--pill);color:var(--ink);border-radius:50%;width:30px;height:30px;font-size:16px;font-weight:700;flex:none}
+  .dktabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px}
+  .dktab{cursor:pointer;font:inherit;font-size:12px;font-weight:600;background:var(--pill);border:1px solid var(--line);border-radius:100px;padding:7px 13px;color:var(--ink)}
+  .dktab.on{background:linear-gradient(120deg,#0a5459,var(--teal));color:#fff;border-color:transparent}
+  .dkpane{display:none} .dkpane.on{display:block}
+
+  /* ---- entry gate ---- */
+  .entry{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:12px}
+  .entry .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+  .entry .fg{margin-bottom:12px}
+  .entry .fg label{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+  .entry .req{color:var(--danger)}
+  .whoami{background:var(--panel2);border:1px solid var(--line);border-radius:100px;padding:7px 15px;display:inline-flex;gap:9px;align-items:center;font-size:12.5px;flex-wrap:wrap}
+  .whoami span{color:var(--muted)}
+
+  /* ---- mode picker ---- */
+  .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin-top:12px}
+  .mode{cursor:pointer;text-align:left;font:inherit;background:var(--panel2);border:2px solid var(--line);border-radius:14px;padding:15px 16px;color:var(--ink)}
+  .mode:hover{border-color:var(--gold)}
+  .mode.on{border-color:var(--crimson);background:rgba(196,13,22,.05)}
+  .mode .mn{font-family:'Source Serif Pro',serif;font-size:17px;font-weight:700}
+  .mode .mt{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--gold);margin:2px 0 7px}
+  .mode .mb{font-size:12.5px;line-height:1.6;color:var(--muted)}
+
+  /* ---- case narrative with taggable spans ---- */
+  .narr{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:16px 18px;font-size:15px;line-height:2.05;margin:11px 0}
+  .sp{border-radius:6px;padding:2px 5px;cursor:pointer;border:1.5px dashed var(--line);background:var(--panel);transition:.15s}
+  .sp:hover{border-color:var(--gold);background:var(--gold-soft)}
+  .sp.tagged{border-style:solid;border-color:var(--success);background:rgba(30,142,90,.13);cursor:default}
+  .sp.wrongtag{border-style:solid;border-color:var(--danger);background:rgba(196,38,46,.1)}
+  .sp .tg{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--success);margin-left:5px}
+  .sp.wrongtag .tg{color:var(--danger)}
+  .tagbank{display:flex;gap:7px;flex-wrap:wrap;margin:11px 0}
+  .tagb{cursor:pointer;font:inherit;font-size:12px;font-weight:700;background:var(--pill);border:1.5px solid var(--line);border-radius:100px;padding:7px 14px;color:var(--ink)}
+  .tagb:hover{border-color:var(--gold)} .tagb.sel{background:var(--crimson);color:#fff;border-color:transparent}
+  .tagb.used{opacity:.36;pointer-events:none}
+
+  /* ---- guided causality ---- */
+  .gq{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:13px 16px;margin-bottom:10px}
+  .gq .gt{font-size:14px;font-weight:600;line-height:1.55;margin-bottom:9px}
+  .gq .gn{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+  .yn{display:flex;gap:7px;flex-wrap:wrap}
+  .ynb{cursor:pointer;font:inherit;font-size:12.5px;font-weight:700;background:var(--panel);border:1.5px solid var(--line);border-radius:100px;padding:8px 17px;color:var(--ink)}
+  .ynb:hover{border-color:var(--gold)}
+  .ynb.on{background:var(--crimson);color:#fff;border-color:transparent}
+  .gsay{font-size:12.5px;line-height:1.6;color:var(--muted);margin-top:8px;padding-left:11px;border-left:2px solid var(--gold)}
+
+  /* ---- naranjo ---- */
+  .nrow{border:1px solid var(--line);border-radius:11px;background:var(--panel2);padding:11px 14px;margin-bottom:8px}
+  .nrow .nq{font-size:13.5px;font-weight:600;line-height:1.5;margin-bottom:4px}
+  .nrow .nh{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:8px}
+  .nrow .np{font-size:11.5px;font-weight:800;color:var(--gold);margin-left:8px;white-space:nowrap}
+
+  /* ---- ICSR form ---- */
+  .fgrp{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:13px 15px;margin-bottom:11px}
+  .fgrp .gh{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+  .ff{margin-bottom:10px} .ff:last-child{margin-bottom:0}
+  .ff label{font-size:12px;font-weight:600;display:block;margin-bottom:4px}
+  .ff .mn{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--crimson);border-radius:100px;padding:2px 8px;margin-left:6px}
+  .ff .wy{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:4px}
+  .ff input,.ff textarea{font-size:13px;padding:8px 11px}
+
+  /* ---- report ---- */
+  .repgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:11px;margin:8px 0 14px}
+  .repbox{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .repbox .rv{font-size:26px;font-weight:800;font-family:'Source Serif Pro',serif;color:var(--gold)}
+  .repbox .rl{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .bar{height:8px;border-radius:100px;background:var(--pill);overflow:hidden;min-width:70px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#7c4c06,var(--gold))}
+  .bar i.good{background:linear-gradient(90deg,#0f6b45,var(--success))} .bar i.bad{background:linear-gradient(90deg,#8d1c22,var(--danger))}
+  .verdict{font-size:15px;font-weight:700;padding:13px 17px;border-radius:12px;margin:10px 0}
+  .verdict.pass{background:rgba(30,142,90,.12);color:var(--success);border:1px solid rgba(30,142,90,.3)}
+  .verdict.fail{background:rgba(196,38,46,.1);color:var(--danger);border:1px solid rgba(196,38,46,.3)}
+
+  .tl{display:grid;gap:0;margin-top:9px}
+  .tl .tr{display:grid;grid-template-columns:78px 1fr;gap:13px;padding:11px 0;border-top:1px solid var(--line)}
+  .tl .tr:first-child{border-top:none}
+  .tl .tt{font-size:12px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+  .tl .ts{font-size:13.5px;font-weight:600}
+  .tl .to{font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:2px}
+
+  .crest{height:34px;width:auto;object-fit:contain}
+  .partner{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:11px}
+  .partner .lx{color:var(--muted);font-size:14px}
+  .partner .who{font-size:12px;line-height:1.5;color:var(--muted)}
+  .lg{height:34px;width:auto;object-fit:contain}
+
+  @media print{
+    .tabs,.opbar,.deskbtn,.deskwrap,.btn{display:none!important}
+    .panel{display:block!important} body{background:#fff}
+  }
+  @media(max-width:600px){
+    .opbar{top:49px;gap:11px;padding:9px 12px} .opbar .m{min-width:72px}
+    .narr{font-size:14px;line-height:1.95}
+  }
+</style>
+<script src="alizon-test-mode.js?v=1"></script>
+<script src="alizon-lab-gate.js?v=7"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= MASTHEAD ================= -->
+  <div class="card">
+    <div class="partner">
+      <img class="lg" src="alizon-lockup.png" alt="Alizon School of Medical &amp; Digital Intelligence"
+           onerror="this.onerror=null;this.src='alizon-logo.png'">
+      <span class="lx">&times;</span>
+      <img class="crest" src="resources/partners/mar-dioscorus-college-of-pharmacy.png"
+           alt="Mar Dioscorus College of Pharmacy" onerror="this.style.display='none'">
+      <div class="who"><b>Alizon School of Medical &amp; Digital Intelligence</b>
+        in collaboration with <b>Mar Dioscorus College of Pharmacy</b><br>
+        Malankara Orthodox Church · Sreekariyam, Thiruvananthapuram, Kerala</div>
+    </div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">
+      Open Workshop · Pharmacovigilance · Beginner to competent</div>
+    <h1>PV Foundations — learn it by doing it</h1>
+    <p style="margin-top:8px"><b>You are not expected to know any of this yet.</b> This workshop assumes you have not
+      studied pharmacology, have never seen a MedDRA term, and could not define causality assessment. It teaches you
+      each of those things at the moment you need it, and then asks you to use it on a patient.</p>
+    <div class="row" style="margin:11px 0 4px">
+      <span class="openbadge">● Open to everyone — free, no account needed</span>
+    </div>
+    <p class="muted" style="font-size:13px;margin-top:9px">The question this workshop asks is never
+      <i>“do you know the answer?”</i> It is <b>“here is a patient, here is the information available — what would you
+      check next?”</b> That is what a pharmacovigilance professional actually does, and you can start doing it today,
+      before you have the knowledge, because the reference desk is open the whole way through.</p>
+    <div class="synth"><b>Educational simulation.</b> Every patient, identifier, batch number and laboratory value here
+      is fictional and synthetic. The drug information is textbook-level teaching material, and the coding section is a
+      structural stand-in for MedDRA, not a licensed MedDRA extract. Nothing in this workshop is clinical decision
+      support and none of it may be entered into a real safety database.</div>
+    <div class="row" style="margin-top:11px">
+      <button class="btn ghost sm" id="themeBtn" type="button">Light / dark</button>
+      <a class="btn ghost sm" href="ALIZON-OS-Workshop-PVX" style="color:var(--ink)">PV-X — the challenge workshop →</a>
+      <span class="muted" style="font-size:12px" id="whoami"></span>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="opbar" id="opbar" style="display:none">
+    <div class="ttl">PV Foundations</div>
+    <div class="m"><span class="k">Progress</span><span class="v" id="obProg">0%</span>
+      <span class="meter"><i id="obProgB" style="width:0"></i></span></div>
+    <div class="m"><span class="k">Answers</span><span class="v" id="obAns">—</span></div>
+    <div class="m"><span class="k">Reasoning</span><span class="v" id="obWhy">—</span></div>
+    <div class="m"><span class="k">Hints used</span><span class="v" id="obHint">0</span></div>
+    <div class="sp"></div>
+    <div class="modechip" id="obMode">Beginner</div>
+  </div>
+
+  <div id="panels"></div>
+</div>
+
+<button class="deskbtn" id="deskBtn" type="button" style="display:none">⌕ Investigation desk</button>
+<div class="deskwrap" id="deskWrap">
+  <div class="sc" id="deskSc"></div>
+  <div class="desk" aria-label="PV Investigation Desk">
+    <div class="dkh">
+      <div style="flex:1">
+        <h2>PV Investigation Desk</h2>
+        <p class="muted" style="font-size:12.5px">Open at every station, in every mode. Looking things up is the skill —
+          it is not cheating, and using it is scored in your report.</p>
+      </div>
+      <button class="x" id="deskX" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="dktabs" id="dkTabs"></div>
+    <div id="dkPanes"></div>
+  </div>
+</div>
+
+<script src="alizon-experiment-brief.js?v=2"></script>
+<script src="alizon-pvx-register.js?v=1"></script>
+<script src="alizon-certificate.js?v=1"></script>
+<script src="pvx-learn-data.js?v=1"></script>
+<script src="pvx-learn-engine.js?v=1"></script>
+<script src="alizon-practical-report.js?v=6"></script>
+<script src="alizon-practical-submit.js?v=6"></script>
+<script>
+/* =====================================================================
+   PV Foundations — the workshop shell.
+
+   The engine (pvx-learn-engine.js) decides everything that can be marked.
+   This file only draws it. Keeping that line clean is what makes the
+   engine testable outside a browser, which is how the causality and
+   Naranjo arithmetic in it were actually verified.
+
+   One interface rule runs through the whole page, and it is the reason
+   the workshop exists: a first wrong answer is never marked wrong. The
+   options stay live, a hint appears, and nothing is scored until the
+   student has had another go. Everything below is arranged to make that
+   possible — which is why options are re-rendered rather than locked on
+   submit.
+   ===================================================================== */
+(function(){
+'use strict';
+
+var D = window.PVXLearnData, L = window.PVXLearn;
+if(!D || !L){ document.getElementById('panels').innerHTML =
+  '<div class="card"><div class="fb no"><div class="hd">Workshop failed to load</div>'
+  +'The teaching data or the tutor engine did not load. Refresh the page; if it persists, the files '
+  +'<code>pvx-learn-data.js</code> and <code>pvx-learn-engine.js</code> are not being served.</div></div>'; return; }
+
+/* ---------- tiny helpers ---------- */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function el(tag, cls, html){ var e=document.createElement(tag); if(cls) e.className=cls;
+  if(html!=null) e.innerHTML=html; return e; }
+function on(node, sel, ev, fn){
+  node.addEventListener(ev, function(e){
+    var t = e.target.closest ? e.target.closest(sel) : null;
+    if(t && node.contains(t)) fn(e, t);
+  });
+}
+var LTR = 'ABCDEFGH';
+
+/* ---------- state ---------- */
+var st = L.newState('beginner');
+var STATIONS = [
+ {k:'start',   n:'Start',                 t:'0'},
+ {k:'basics',  n:'PV basics',             t:'1'},
+ {k:'read',    n:'Read a case',           t:'2'},
+ {k:'drug',    n:'Drug desk',             t:'3'},
+ {k:'inter',   n:'Interactions',          t:'4'},
+ {k:'adr',     n:'Is it an ADR?',         t:'5'},
+ {k:'serious', n:'Serious &amp; severe',  t:'6'},
+ {k:'causal',  n:'Causality',             t:'7'},
+ {k:'code',    n:'Coding',                t:'8'},
+ {k:'icsr',    n:'Build the ICSR',        t:'9'},
+ {k:'follow',  n:'Follow-up',             t:'10'},
+ {k:'signal',  n:'Signals',               t:'11'},
+ {k:'final',   n:'Team challenge',        t:'12'},
+ {k:'report',  n:'Report',                t:'13'}
+];
+var cur = 'start';
+
+/* ---------- participant ---------- */
+function participant(){
+  try{
+    if(window.AlizonPvxRegister){ var p=AlizonPvxRegister.get(); if(p&&p.name) return p; }
+  }catch(e){}
+  try{
+    var s=JSON.parse(localStorage.getItem('alizonStudent'));
+    if(s&&s.name) return {name:s.name, roll:s.reg||s.roll||'', institution:s.institution||'ALIZON', phone:s.phone||''};
+  }catch(e){}
+  return null;
+}
+function signedIn(){ return !!participant(); }
+
+/* ================================================================== *
+ * the tab strip                                                       *
+ * ================================================================== */
+function drawTabs(){
+  var pr = L.progress(st), h='';
+  STATIONS.forEach(function(s){
+    var p = pr[s.k], done = p && p.pct>=100;
+    h += '<button class="tab'+(cur===s.k?' on':'')+(done?' done':'')+'" data-p="'+s.k+'">'
+       + s.t+' · '+s.n+'<span class="dn"></span></button>';
+  });
+  $('tabs').innerHTML = h;
+}
+function go(k){
+  cur = k;
+  drawTabs();
+  var host = $('panels');
+  host.innerHTML = '';
+  var fn = RENDER[k];
+  if(fn) host.appendChild(fn());
+  window.scrollTo({top:0, behavior:'smooth'});
+  drawBar();
+}
+document.addEventListener('click', function(e){
+  var t = e.target.closest && e.target.closest('.tab[data-p]');
+  if(t) go(t.getAttribute('data-p'));
+});
+
+/* ================================================================== *
+ * the operations bar                                                  *
+ * ================================================================== */
+function drawBar(){
+  drawWhoami();
+  if(!signedIn()){ $('opbar').style.display='none'; $('deskBtn').style.display='none'; return; }
+  $('opbar').style.display='flex';
+  $('deskBtn').style.display='block';
+  var pr = L.progress(st), tot=0, n=0;
+  Object.keys(pr).forEach(function(k){ tot += pr[k].pct; n++; });
+  var pct = n?Math.round(tot/n):0;
+  $('obProg').textContent = pct+'%';
+  var b=$('obProgB'); b.style.width = pct+'%';
+  b.className = pct>=70?'':(pct>=35?'warn':'bad');
+
+  var m = L.mark(st);
+  $('obAns').textContent = m.answers.settled ? m.answers.pct+'%' : '—';
+  $('obWhy').textContent = m.reasoning.of && Object.keys(st.why).length ? m.reasoning.pct+'%' : '—';
+  $('obHint').textContent = st.hintsUsed;
+  $('obMode').textContent = L.modeOf(st).name;
+}
+
+/* ================================================================== *
+ * the shared question renderer                                        *
+ *                                                                     *
+ * Used by stations 1, 5, 6 and 10. It is one function because the      *
+ * first-attempt protection has to behave identically everywhere — a    *
+ * station where a wrong answer suddenly counted would destroy the      *
+ * trust the whole design depends on.                                   *
+ * ================================================================== */
+function qBlock(it, idx, total){
+  var box = el('div','task');
+  box.setAttribute('data-q', it.id);
+  render();
+
+  function render(){
+    var rec = st.ans[it.id];
+    var m = L.modeOf(st);
+    var h = '<span class="step">Question '+(idx+1)+' of '+total+'</span>';
+    if(it.multi) h += ' <span class="step" style="background:var(--teal)">Select all that apply</span>';
+    h += '<div class="q">'+esc(it.stem)+'</div>';
+
+    /* In beginner mode the concept is explained BEFORE the question, which
+       is the whole difference between teaching and testing. */
+    if(m.explainFirst && !(rec&&rec.settled) && it.teach){
+      h += '<div class="teach"><div class="hd">Before you answer</div>'+esc(it.teach)+'</div>';
+    }
+
+    h += '<div class="opts" data-opts>';
+    var picked = (rec && !rec.settled) ? rec.picks : (rec?rec.picks:[]);
+    it.opts.forEach(function(o,i){
+      var cls='opt', mark=LTR[i];
+      if(rec && rec.settled){
+        if(o.ok && picked.indexOf(i)>=0) cls+=' right';
+        else if(o.ok) cls+=' missed';
+        else if(picked.indexOf(i)>=0) cls+=' wrong';
+      } else if(picked.indexOf(i)>=0) cls+=' pick';
+      h += '<button class="'+cls+'" data-i="'+i+'"'+(rec&&rec.settled?' disabled':'')+'>'
+        +  '<span class="lt">'+mark+'</span><span class="ob">'+esc(o.t);
+      if(rec && rec.settled) h += '<span class="of">'+esc(o.fb)+'</span>';
+      h += '</span></button>';
+    });
+    h += '</div>';
+    h += '<div data-zone></div>';
+    box.innerHTML = h;
+    wire();
+    if(rec && rec.settled) settledZone(rec);
+    else openZone();
+  }
+
+  function zone(){ return box.querySelector('[data-zone]'); }
+
+  function openZone(){
+    var m = L.modeOf(st);
+    var rec = st.ans[it.id];
+    var h = '<div class="row" style="margin-top:12px">'
+      + '<button class="btn sm" data-act="submit">Submit answer</button>';
+    if(m.hints) h += '<button class="btn ghost sm" data-act="hint">Hint</button>';
+    h += '<button class="btn ghost sm" data-act="reveal">Show me the answer</button>'
+      +  '<span class="muted" style="font-size:12px" data-count></span></div>'
+      +  '<div data-msg></div>';
+    zone().innerHTML = h;
+    if(st.hintOn[it.id]) showHint(it.hint);
+    if(rec && rec.attempts===1 && !rec.settled) showRetry();
+    count();
+  }
+  function count(){
+    var c = box.querySelector('[data-count]'); if(!c) return;
+    var n = box.querySelectorAll('.opt.pick').length;
+    c.textContent = n ? (n+' selected') : (it.multi?'Select every option that applies':'Select one');
+  }
+  function showHint(txt){
+    var mz = box.querySelector('[data-msg]'); if(!mz) return;
+    if(box.querySelector('[data-hintbox]')) return;
+    var d = el('div','fb info');
+    d.setAttribute('data-hintbox','1');
+    d.innerHTML = '<div class="hd">Hint</div>'+esc(txt);
+    mz.appendChild(d);
+  }
+  function showRetry(){
+    var rec = st.ans[it.id];
+    var mz = box.querySelector('[data-msg]'); if(!mz) return;
+    var d = el('div','fb part');
+    d.innerHTML = '<div class="hd">Not marked yet — have another go</div>'
+      + 'That combination is not right, but <b>nothing has been scored</b>. Read the hint, change your selection and '
+      + 'submit again.'
+      + (rec && rec.nudge ? '<br><br><b>'+esc(rec.nudge)+'</b>' : '');
+    mz.appendChild(d);
+  }
+
+  function settledZone(rec){
+    var h = '';
+    if(rec.revealed){
+      h += '<div class="fb part"><div class="hd">Answer revealed — 0 marks for this question</div>'
+        +  'Nothing wrong with looking. Read the explanations on each option above, then the concept below.</div>';
+    } else if(rec.first){
+      h += '<div class="fb ok"><div class="hd">Correct, first time — '+rec.score+' / '+it.max+'</div>'
+        +  'Full marks.</div>';
+    } else if(rec.score>0){
+      h += '<div class="fb part"><div class="hd">Correct on the second attempt — '+rec.score+' / '+it.max+'</div>'
+        +  'Partial credit. Recovering from a wrong answer after a hint is a real skill, and worth more than nothing '
+        +  'and less than getting it right first time.</div>';
+    } else {
+      h += '<div class="fb no"><div class="hd">Not correct — 0 / '+it.max+'</div>'
+        +  'The right options are marked in green above, and every option now explains itself. Read the wrong ones '
+        +  'too — knowing why a plausible answer fails is most of the learning.</div>';
+    }
+    if(it.teach) h += '<div class="teach"><div class="hd">The concept</div>'+esc(it.teach)+'</div>';
+    zone().innerHTML = h;
+    if(it.why) whyStep();
+  }
+
+  /* ---- the "Why did you choose this?" step ---- */
+  function whyStep(){
+    var done = st.why[it.id];
+    var w = it.why;
+    var d = el('div','task');
+    d.style.margin = '13px 0 0';
+    d.style.borderColor = 'rgba(109,40,217,.34)';
+    d.style.background = 'rgba(109,40,217,.05)';
+    function draw(){
+      var h = '<span class="step" style="background:var(--purple)">Why?</span>'
+        + '<div class="q">'+esc(w.stem)+'</div>'
+        + '<p class="muted" style="font-size:12.5px">Select every reason that genuinely applies. This is scored '
+        + 'separately from your answer — getting the right answer for the wrong reason is exactly what this step is '
+        + 'here to find.</p><div class="opts" data-wopts>';
+      var picks = done?done.picks:[];
+      w.opts.forEach(function(o,i){
+        var cls='opt';
+        if(done){
+          if(o.ok && picks.indexOf(i)>=0) cls+=' right';
+          else if(o.ok) cls+=' missed';
+          else if(picks.indexOf(i)>=0) cls+=' wrong';
+        } else if(picks.indexOf(i)>=0) cls+=' pick';
+        h += '<button class="'+cls+'" data-wi="'+i+'"'+(done?' disabled':'')+'>'
+          +  '<span class="lt">'+LTR[i]+'</span><span class="ob">'+esc(o.t);
+        if(done) h += '<span class="of">'+(o.ok?'A sound reason.':'Not a sound reason for this conclusion.')+'</span>';
+        h += '</span></button>';
+      });
+      h += '</div>';
+      if(!done) h += '<div class="row" style="margin-top:11px"><button class="btn sm" data-act="wsub">Submit reasoning</button></div>';
+      else {
+        var r = L.submitWhy(st, it.id, done.picks);  /* recompute for the text, no side effect on score */
+        var cls = r.verdict==='complete'?'ok':(r.verdict==='mixed'||r.verdict==='unsound'?'no':'part');
+        h += '<div class="fb '+cls+'"><div class="hd">Reasoning — '+done.score+' / '+done.max+'</div>'+esc(r.note)+'</div>';
+      }
+      d.innerHTML = h;
+      var sel = done?done.picks.slice():[];
+      on(d,'[data-wi]','click',function(e,t){
+        if(done) return;
+        var i = +t.getAttribute('data-wi');
+        var at = sel.indexOf(i);
+        if(at>=0) sel.splice(at,1); else sel.push(i);
+        t.classList.toggle('pick', sel.indexOf(i)>=0);
+      });
+      on(d,'[data-act=wsub]','click',function(){
+        if(!sel.length){ return; }
+        L.submitWhy(st, it.id, sel);
+        done = st.why[it.id];
+        draw(); drawBar(); drawTabs();
+      });
+    }
+    draw();
+    zone().appendChild(d);
+  }
+
+  function wire(){
+    var sel = [];
+    var rec = st.ans[it.id];
+    if(rec && !rec.settled) sel = rec.picks.slice();
+
+    on(box,'[data-i]','click',function(e,t){
+      if(st.ans[it.id] && st.ans[it.id].settled) return;
+      var i = +t.getAttribute('data-i');
+      if(it.multi){
+        var at = sel.indexOf(i);
+        if(at>=0) sel.splice(at,1); else sel.push(i);
+      } else sel = [i];
+      box.querySelectorAll('.opt').forEach(function(o){
+        o.classList.toggle('pick', sel.indexOf(+o.getAttribute('data-i'))>=0);
+      });
+      count();
+    });
+    on(box,'[data-act=submit]','click',function(){
+      if(!sel.length) return;
+      var r = L.submit(st, it.id, sel);
+      if(r.settled){ render(); }
+      else {
+        st.ans[it.id].nudge = r.nudge;
+        var mz = box.querySelector('[data-msg]');
+        if(mz) mz.innerHTML='';
+        if(r.hint) showHint(r.hint);
+        showRetry();
+      }
+      drawBar(); drawTabs();
+    });
+    on(box,'[data-act=hint]','click',function(){
+      var r = L.hint(st, it.id);
+      var mz = box.querySelector('[data-msg]');
+      if(r.denied){
+        if(mz && !box.querySelector('[data-denied]')){
+          var d=el('div','fb part'); d.setAttribute('data-denied','1');
+          d.innerHTML='<div class="hd">No hint available</div>'+esc(r.why);
+          mz.appendChild(d);
+        }
+      } else showHint(r.hint);
+      drawBar();
+    });
+    on(box,'[data-act=reveal]','click',function(){
+      L.reveal(st, it.id);
+      render(); drawBar(); drawTabs();
+    });
+  }
+  return box;
+}
+
+function quizPanel(stage, head, lead, after){
+  var p = el('div');
+  var its = L.items(stage);
+  var c = el('div','card');
+  c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">'+head+'</h2>'
+    + '<p class="muted" style="font-size:13.5px">'+lead+'</p>';
+  p.appendChild(c);
+  its.forEach(function(it,i){ p.appendChild(qBlock(it,i,its.length)); });
+  if(after) p.appendChild(after());
+  p.appendChild(nextBar(stage));
+  return p;
+}
+
+function nextBar(stage){
+  var i = 0; STATIONS.forEach(function(s,k){ if(s.k===stage) i=k; });
+  var nx = STATIONS[i+1];
+  var b = el('div','card');
+  b.style.textAlign='center';
+  b.innerHTML = nx
+    ? '<button class="btn" data-go="'+nx.k+'">Next: '+nx.t+' · '+nx.n+' →</button>'
+    : '';
+  on(b,'[data-go]','click',function(e,t){ go(t.getAttribute('data-go')); });
+  return b;
+}
+
+/* ================================================================== *
+ * STATION 0 · start — sign in, pick a mode, see the plan             *
+ * ================================================================== */
+function pStart(){
+  var p = el('div');
+
+  /* -- sign in -- */
+  var me = participant();
+  var c = el('div','card');
+  if(me){
+    c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">You are signed in</h2>'
+      + '<div class="whoami" style="margin-top:9px"><span>Working as</span> <b>'+esc(me.name)+'</b>'
+      + '<span>'+esc([me.roll,me.institution].filter(Boolean).join(' · '))+'</span></div>'
+      + '<p class="muted" style="font-size:12.5px;margin-top:10px">Nothing you do in this workshop is submitted '
+      + 'anywhere unless you are a signed-in Alizon student. Your report is yours to download.</p>';
+  } else {
+    c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">Sign in to start</h2>'
+      + '<p class="muted" style="font-size:13px">Your name, roll number and phone — no account to create and nothing '
+      + 'to pay. It is only so your report and certificate carry your name.</p>'
+      + '<div class="entry">'
+      + '<div class="fg"><label>Full name <span class="req">*</span></label>'
+      + '<input type="text" id="egName" autocomplete="name" placeholder="As it should appear on your report"></div>'
+      + '<div class="two">'
+      + '<div class="fg"><label>Roll / register number <span class="req">*</span></label>'
+      + '<input type="text" id="egRoll" placeholder="Your college register number"></div>'
+      + '<div class="fg"><label>Phone <span class="req">*</span></label>'
+      + '<input type="text" id="egPhone" inputmode="tel" placeholder="10-digit mobile"></div></div>'
+      + '<div class="fg"><label>College or institution</label>'
+      + '<input type="text" id="egInst" placeholder="e.g. Mar Dioscorus College of Pharmacy"></div>'
+      + '<div class="row"><button class="btn" id="egGo" type="button">Start the workshop</button>'
+      + '<span class="muted" style="font-size:12.5px" id="egMsg"></span></div></div>';
+  }
+  p.appendChild(c);
+
+  if(!me){
+    on(c,'#egGo','click',function(){
+      var d = {name:($('egName').value||'').trim(), roll:($('egRoll').value||'').trim(),
+               phone:($('egPhone').value||'').trim(), institution:($('egInst').value||'').trim()};
+      if(!d.name || !d.roll || !d.phone){
+        $('egMsg').innerHTML = '<span style="color:var(--danger)">Name, roll number and phone are all needed.</span>';
+        return;
+      }
+      /* Let the shared register be the authority on what it will accept, and
+         show what it says. It validates more strictly than this form does, and
+         silently dropping its complaint leaves the student stuck on this screen
+         with no idea why nothing happened. */
+      if(window.AlizonPvxRegister && AlizonPvxRegister.validate){
+        var vErr = AlizonPvxRegister.validate(d);
+        if(vErr){
+          $('egMsg').innerHTML = '<span style="color:var(--danger)">'+esc(vErr)+'</span>';
+          return;
+        }
+      }
+      try{
+        if(window.AlizonPvxRegister) AlizonPvxRegister.save(d);
+        else localStorage.setItem('alizonPvxDelegate', JSON.stringify(d));
+      }catch(e){}
+      if(!participant()){
+        $('egMsg').innerHTML = '<span style="color:var(--danger)">Your details could not be saved. If this '
+          + 'browser is blocking site storage (private browsing, or blocked cookies), the workshop cannot keep '
+          + 'your progress \u2014 try a normal window.</span>';
+        return;
+      }
+      go('start');
+    });
+  }
+
+  /* -- mode -- */
+  var mc = el('div','card');
+  var mh = '<h2 style="font-size:19px;margin-bottom:5px">Choose how much help you want</h2>'
+    + '<p class="muted" style="font-size:13px">You can change this at any time, and changing it does not lose your '
+    + 'work. If this is your first pharmacovigilance session, take Beginner — there is no advantage in struggling.</p>'
+    + '<div class="modes">';
+  ['beginner','intermediate','challenge'].forEach(function(k){
+    var m = D.MODES[k];
+    mh += '<button class="mode'+(st.mode===k?' on':'')+'" data-mode="'+k+'">'
+       +  '<div class="mn">'+esc(m.name)+'</div><div class="mt">'+esc(m.tag)+'</div>'
+       +  '<div class="mb">'+esc(m.blurb)+'</div></button>';
+  });
+  mh += '</div>';
+  mc.innerHTML = mh;
+  on(mc,'[data-mode]','click',function(e,t){
+    L.setMode(st, t.getAttribute('data-mode'));
+    go('start');
+  });
+  p.appendChild(mc);
+
+  /* -- the workflow, as a diagram in words -- */
+  var wc = el('div','card');
+  wc.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">The workflow you are about to learn</h2>'
+    + '<p class="muted" style="font-size:13px">Twelve steps, in this order. Every real safety case goes through them, '
+    + 'and you will do each one on a patient before you are asked to define it.</p>'
+    + '<div class="flow">'
+    + fr('Patient case','Somebody noticed something. That is all you start with.')
+    + fr('Understand the drug','Look it up. What is it, what is it for, what does it do wrong?')
+    + fr('Identify the event','What actually happened, in the patient’s own words.')
+    + fr('Check possible causes','What else could explain this? The step beginners skip.')
+    + fr('Check drug–drug and drug–disease issues','The medicine may be fine. The medicine in THIS patient may not be.')
+    + fr('Decide whether it is an ADR','And "I need more information" is a legitimate answer.')
+    + fr('Assess seriousness and severity','Two different questions, in two different fields.')
+    + fr('Causality','How confident can you be that the drug did it?')
+    + fr('Code the reaction','Turn the patient’s words into a standardised term.')
+    + fr('Create the ICSR','The report itself, with the four minimum elements.')
+    + fr('Quality check','Would this report be any use to the person who receives it?')
+    + fr('Follow-up','What do you still have to chase, and by when?')
+    + '</div>';
+  p.appendChild(wc);
+
+  /* -- the four-hour plan -- */
+  var tc = el('div','card');
+  var th = '<h2 style="font-size:19px;margin-bottom:5px">The four-hour session</h2>'
+    + '<p class="muted" style="font-size:13px">If you are running this as a taught workshop, this is the shape of it. '
+    + 'Working alone, ignore the clock and take the stations in order.</p><div class="tl">';
+  D.TIMETABLE.forEach(function(r){
+    th += '<div class="tr"><div class="tt">'+esc(r.t)+'</div><div><div class="ts">'+esc(r.s)+'</div>'
+       +  '<div class="to">'+esc(r.o)+'</div></div></div>';
+  });
+  th += '</div><div class="row" style="margin-top:14px"><button class="btn" data-go="basics">Begin at Station 1 →</button></div>';
+  tc.innerHTML = th;
+  on(tc,'[data-go]','click',function(e,t){ go(t.getAttribute('data-go')); });
+  p.appendChild(tc);
+  return p;
+}
+function fr(k, v){
+  return '<div class="fr"><span class="fk">'+esc(k)+'</span>'+esc(v)+'</div>';
+}
+
+/* ================================================================== *
+ * STATION 2 · read a case                                            *
+ *                                                                     *
+ * The extraction trainer. Rather than asking "identify the ADR", the  *
+ * student is given a plain narrative and has to label the seven       *
+ * elements a report is built from. It teaches the shape of a case      *
+ * before any terminology arrives.                                     *
+ * ================================================================== */
+function pRead(){
+  var p = el('div');
+  var RC = D.READ_CASE;
+
+  var c = el('div','card');
+  c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">How to read a medication safety case</h2>'
+    + '<p style="font-size:13.5px">Nobody hands you a form with the boxes filled in. You get a story, usually a short '
+    + 'and incomplete one, and you have to pull seven things out of it. Here is the story.</p>'
+    + '<div class="teach"><div class="hd">The seven elements</div>'
+    + '<b>Patient → Drug → Indication → Time → Event → Action → Outcome.</b> Learn that sequence. It is the order a '
+    + 'report is built in, the order you should ask questions in, and the order the rest of this workshop follows.</div>';
+  p.appendChild(c);
+
+  var box = el('div','card');
+  draw();
+  p.appendChild(box);
+  p.appendChild(nextBar('read'));
+
+  var sel = null;      /* the label currently picked up from the bank */
+  var badTags = 0;     /* tags whose phrase is not in the narrative — a content bug */
+  function complete(){
+    var n = 0;
+    Object.keys(st.tags).forEach(function(k){ if(st.tags[k]===true) n++; });
+    return !badTags && n >= RC.tags.length;
+  }
+
+  function draw(){
+    var tagged = Object.keys(st.tags).length;
+    var h = '<h2 style="font-size:18px;margin-bottom:4px">Tag the narrative</h2>'
+      + '<p class="muted" style="font-size:13px">Pick a label, then click the part of the story it describes. '
+      + 'Get it wrong and nothing is lost — you will be told what that phrase actually is.</p>'
+      + '<div class="tagbank" data-bank>';
+    RC.tags.forEach(function(t){
+      var used = st.tags[t.k]===true;
+      h += '<button class="tagb'+(used?' used':'')+(sel===t.k?' sel':'')+'" data-tag="'+t.k+'">'
+        +  esc(t.label)+'</button>';
+    });
+    h += '</div><div class="narr" data-narr>'+narrative()+'</div>';
+
+    if(badTags){
+      h += '<div class="fb no"><div class="hd">Content problem in this station</div>'
+        +  badTags+' of the '+RC.tags.length+' labelled phrases could not be found in the narrative, so this '
+        +  'exercise cannot be completed. Please report it — it is our error, not yours.</div>';
+    }
+    h += '<div class="row"><span class="muted" style="font-size:12.5px">'+tagged+' of '+(RC.tags.length-badTags)
+      +  ' elements tagged</span>';
+    if(tagged<RC.tags.length) h += '<button class="btn ghost sm" data-act="rtell">Show me all seven</button>';
+    h += '</div><div data-rz></div>';
+    box.innerHTML = h;
+
+    if(complete()) done();
+    wire();
+  }
+
+  function narrative(){
+    /* Build the sentence by splicing the tagged spans into the raw text.
+       Done by index rather than by string replacement so a phrase that
+       appears twice cannot be tagged in the wrong place. */
+    var txt = RC.text, out = '', pos = 0;
+    var low = txt.toLowerCase();
+    var spans = RC.tags.map(function(t){
+      /* Case-insensitive, because a tag phrase that starts a sentence in the
+         narrative is capitalised there and usually not in the tag. A
+         case-sensitive lookup drops that span silently and leaves the station
+         impossible to finish, which is exactly the kind of failure nobody
+         notices until a student is stuck in front of you. */
+      var at = low.indexOf(t.txt.toLowerCase());
+      return {k:t.k, label:t.label, at:at, len:t.txt.length,
+              txt: at>=0 ? txt.substr(at, t.txt.length) : t.txt};
+    }).filter(function(s){ return s.at>=0; }).sort(function(a,b){ return a.at-b.at; });
+
+    /* If a tag really is absent from the narrative it is a content bug, not a
+       student error. Say so rather than quietly offering an unwinnable task. */
+    if(spans.length !== RC.tags.length) badTags = RC.tags.length - spans.length;
+
+    spans.forEach(function(s){
+      if(s.at>pos) out += esc(txt.slice(pos, s.at));
+      var state = st.tags[s.k];
+      var cls = 'sp' + (state===true?' tagged':'') + (state==='wrong'?' wrongtag':'');
+      out += '<span class="'+cls+'" data-span="'+s.k+'">'+esc(s.txt);
+      if(state===true) out += '<span class="tg">'+esc(s.label)+'</span>';
+      out += '</span>';
+      pos = s.at + s.len;
+    });
+    if(pos<txt.length) out += esc(txt.slice(pos));
+    return out;
+  }
+
+  function wire(){
+    on(box,'[data-tag]','click',function(e,t){
+      sel = t.getAttribute('data-tag');
+      box.querySelectorAll('[data-tag]').forEach(function(b){
+        b.classList.toggle('sel', b.getAttribute('data-tag')===sel);
+      });
+    });
+    on(box,'[data-span]','click',function(e,t){
+      var k = t.getAttribute('data-span');
+      if(st.tags[k]===true) return;
+      if(!sel){ flash('Pick a label from the row above first, then click the phrase it belongs to.'); return; }
+      var want = RC.tags.filter(function(x){ return x.k===k; })[0];
+      if(sel===k){
+        st.tags[k] = true;
+        sel = null;
+        draw();
+        /* draw() renders the completion debrief into [data-rz] once the last
+           element is tagged. Saying "correct" here would overwrite it, so on
+           the final tag the debrief wins. */
+        if(!complete()) say('ok','Correct — '+want.label, want.why);
+      } else {
+        var wrongLabel = RC.tags.filter(function(x){ return x.k===sel; })[0];
+        say('part','Not '+wrongLabel.label,
+          'That phrase is the <b>'+esc(want.label)+'</b>: '+esc(want.why)
+          +'<br><br>Nothing has been lost — try the <b>'+esc(wrongLabel.label)+'</b> label somewhere else.');
+      }
+      drawBar(); drawTabs();
+    });
+    on(box,'[data-act=rtell]','click',function(){
+      RC.tags.forEach(function(t){ if(st.tags[t.k]!==true) st.tags[t.k]='shown'; });
+      var h='<div class="fb part"><div class="hd">All seven, shown</div><ul>';
+      RC.tags.forEach(function(t){
+        h += '<li><b>'+esc(t.label)+':</b> &ldquo;'+esc(t.txt)+'&rdquo; — '+esc(t.why)+'</li>';
+      });
+      h += '</ul></div>';
+      box.querySelector('[data-rz]').innerHTML = h;
+      drawBar(); drawTabs();
+    });
+  }
+  function say(cls, hd, body){
+    var z = box.querySelector('[data-rz]');
+    z.innerHTML = '<div class="fb '+cls+'"><div class="hd">'+esc(hd)+'</div>'+body+'</div>';
+  }
+  function flash(msg){ say('info','Pick a label first', esc(msg)); }
+
+  function done(){
+    var h = '<div class="fb ok"><div class="hd">All seven elements extracted</div>'
+      + 'That is the shape of every safety case you will ever read. Now look at what the story did <b>not</b> tell '
+      + 'you — this is the part that separates a report from a good report.</div>'
+      + '<div class="card" style="margin-top:13px;box-shadow:none"><h3 style="font-size:16px;margin-bottom:6px">'
+      + 'What is still missing</h3><ul style="margin-left:17px;font-size:13.5px;line-height:1.7">';
+    D.READ_CASE.missing.forEach(function(m){
+      h += '<li><b>'+esc(m.q)+'</b><br><span class="muted" style="font-size:12.5px">'+esc(m.why)+'</span></li>';
+    });
+    h += '</ul></div>';
+    box.querySelector('[data-rz]').innerHTML = h;
+  }
+  return p;
+}
+
+/* ================================================================== *
+ * STATION 3 · drug desk                                              *
+ *                                                                     *
+ * The drug card comes BEFORE any question about a reaction to that    *
+ * drug. "I don't know this drug" is a first-class button, not a        *
+ * confession.                                                         *
+ * ================================================================== */
+function drugCardHtml(d, opts){
+  opts = opts||{};
+  var h = '<div class="dcard"><div class="dh"><div class="gn">'+esc(d.generic)+'</div>'
+    + '<div class="cl">'+esc(d.cls)+'</div></div><div class="db">';
+
+  h += sec('What is it?', '<p>'+esc(d.what)+'</p>'
+    + '<p class="muted" style="font-size:12.5px;margin-top:4px">Examples of brands: '+esc(d.brandish)+'</p>');
+  h += sec('Why is it used?', ul(d.why));
+  h += sec('How does it work?', '<p>'+esc(d.how)+'</p>'
+    + '<p class="muted" style="font-size:12.5px;margin-top:5px"><b>In technical terms:</b> '+esc(d.howTech)+'</p>');
+
+  h += sec('Common adverse effects', d.common.map(function(x){
+    return '<li><b>'+esc(x.e)+'</b>'+(x.n?' <span class="nt">— '+esc(x.n)+'</span>':'')+'</li>';
+  }).join(''), true);
+
+  h += sec('Important adverse effects', d.serious.map(function(x){
+    return '<li><b style="color:var(--danger)">'+esc(x.e)+'</b>'+(x.n?' <span class="nt">— '+esc(x.n)+'</span>':'')+'</li>';
+  }).join(''), true);
+
+  h += sec('Typical time to onset', '<p>'+esc(d.onset)+'</p>');
+
+  h += sec('Contraindications', d.contra.map(function(x){
+    return '<li><b>'+esc(x.c)+'</b>'+(x.n?' <span class="nt">— '+esc(x.n)+'</span>':'')+'</li>';
+  }).join(''), true);
+
+  if(d.cautions && d.cautions.length) h += sec('Cautions and patient factors', d.cautions.map(function(x){
+    return '<li><b>'+esc(x.c)+'</b>'+(x.n?' <span class="nt">— '+esc(x.n)+'</span>':'')+'</li>';
+  }).join(''), true);
+
+  if(d.inter && d.inter.length){
+    var ph = '<p class="muted" style="font-size:12.5px">Click any of these to run it through the interaction checker.</p>'
+      + '<div class="pillrow">';
+    d.inter.forEach(function(k){
+      ph += '<button class="ipill" data-ipair="'+esc(d.key)+'|'+esc(k)+'">'+esc(pretty(k))+'</button>';
+    });
+    ph += '</div>';
+    h += sec('Important interactions', ph);
+  }
+
+  h += sec('What to monitor and ask about', ul(d.monitor), false);
+  h += sec('What to tell the patient', '<p>'+esc(d.counsel)+'</p>');
+
+  if(!opts.noTeach){
+    h += '<div class="dontknow" data-dk style="display:none"><div class="hd">I don’t know this drug</div>'
+      + esc(d.teach)+'</div>'
+      + '<div class="row" style="margin-top:11px"><button class="btn ghost sm" data-act="dk">I don’t know this drug — explain it</button></div>';
+  }
+  h += '</div></div>';
+  return h;
+
+  function sec(t, body, isList){
+    return '<div class="dsec"><div class="sh">'+esc(t)+'</div>'
+      + (isList?'<ul>'+body+'</ul>':body)+'</div>';
+  }
+  function ul(a){ return '<ul>'+a.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>'; }
+}
+function pretty(k){
+  var map = {
+    'ace-inhibitor':'An ACE inhibitor', 'beta-blocker':'A beta-blocker', 'other-nsaid':'Another NSAID',
+    'aspirin-low-dose':'Low-dose aspirin', 'oral-contraceptive':'The contraceptive pill',
+    'vitamin-k-foods':'Green leafy vegetables', 'contrast-media':'Contrast dye for a scan',
+    'antacid-calcium-iron':'Antacids, calcium or iron', 'nsaid-seizure':'An NSAID (seizure risk)',
+    'potassium-supplement':'Potassium supplements', 'atorvastatin-inducer':'A statin',
+    'verapamil-diltiazem':'Verapamil or diltiazem', 'ssri':'An SSRI antidepressant',
+    'antipsychotic':'An antipsychotic', 'corticosteroid':'A corticosteroid', 'fibrate':'A fibrate',
+    'grapefruit':'Grapefruit juice', 'insulin':'Insulin', 'levodopa':'Levodopa', 'valproate':'Valproate',
+    'theophylline':'Theophylline', 'tizanidine':'Tizanidine', 'alcohol':'Alcohol',
+    'diuretic':'A diuretic', 'methotrexate':'Methotrexate', 'allopurinol':'Allopurinol',
+    'clarithromycin':'Clarithromycin', 'fluconazole':'Fluconazole', 'metronidazole':'Metronidazole',
+    'amiodarone':'Amiodarone', 'lithium':'Lithium', 'tramadol':'Tramadol', 'salbutamol':'Salbutamol'
+  };
+  if(map[k]) return map[k];
+  var d = D.DRUGS[k];
+  if(d) return d.generic;
+  return k.replace(/-/g,' ').replace(/\b\w/g,function(c){ return c.toUpperCase(); });
+}
+
+function pDrug(){
+  var p = el('div');
+  var c = el('div','card');
+  c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">Drug and ADR intelligence</h2>'
+    + '<p style="font-size:13.5px">Before anybody asks you to spot a reaction to a medicine, you should know what '
+    + 'the medicine is. So: read the card first. There is no question at this station and nothing to get wrong — '
+    + 'this is the habit being taught, not the knowledge.</p>'
+    + '<div class="teach"><div class="hd">Why this station exists</div>'
+    + 'Assessing a reaction without looking the drug up is guessing. Your report records how many cards you opened, '
+    + 'because using the reference is the professional behaviour, and refusing to is the error.</div>'
+    + '<div class="pillrow" style="margin-top:12px" data-dl></div>';
+  var dl = '';
+  Object.keys(D.DRUGS).forEach(function(k){
+    dl += '<button class="ipill" data-drug="'+esc(k)+'">'+esc(D.DRUGS[k].generic)+'</button>';
+  });
+  c.querySelector('[data-dl]').innerHTML = dl;
+  p.appendChild(c);
+
+  var host = el('div');
+  p.appendChild(host);
+  p.appendChild(nextBar('drug'));
+
+  on(c,'[data-drug]','click',function(e,t){
+    show(t.getAttribute('data-drug'));
+  });
+
+  function show(k){
+    var d = L.drugCard(st, k);
+    if(!d) return;
+    var box = el('div','card');
+    box.innerHTML = drugCardHtml(d);
+    host.innerHTML = '';
+    host.appendChild(box);
+    on(box,'[data-act=dk]','click',function(e,t){
+      box.querySelector('[data-dk]').style.display='block';
+      t.style.display='none';
+    });
+    on(box,'[data-ipair]','click',function(e,t){
+      var pr = t.getAttribute('data-ipair').split('|');
+      var r = L.findInteraction(pr[0], pr[1], st);
+      var z = el('div');
+      z.innerHTML = ragHtml(r, pretty(pr[0]), pretty(pr[1]));
+      host.appendChild(z);
+      z.scrollIntoView({behavior:'smooth', block:'center'});
+      drawBar(); drawTabs();
+    });
+    box.scrollIntoView({behavior:'smooth', block:'start'});
+    drawBar(); drawTabs();
+  }
+  /* open one by default so the station is never an empty screen */
+  show('amoxicillin');
+  return p;
+}
+
+/* ================================================================== *
+ * STATION 4 · interactions and patient factors                       *
+ * ================================================================== */
+function ragHtml(r, aName, bName){
+  if(!r.found){
+    return '<div class="rag green"><div class="rh"><span class="dot">🟢</span>'
+      + 'No entry for this pair</div>'
+      + '<p><b>'+esc(aName)+' + '+esc(bName)+'</b></p>'
+      + '<div class="fb part" style="margin-top:10px"><div class="hd">Read this carefully</div>'+esc(r.caution)+'</div></div>';
+  }
+  var x = r.pair, rag = r.rag;
+  var h = '<div class="rag '+x.rag+'"><div class="rh"><span class="dot">'+rag.dot+'</span>'+esc(rag.label)+'</div>'
+    + '<p style="font-weight:700;font-size:14.5px;margin-bottom:8px">'+esc(aName)+' + '+esc(bName)+'</p>'
+    + '<div class="flow">'
+    + fr('Mechanism', x.mech)
+    + fr('Effect', x.effect)
+    + fr('Possible clinical consequence', x.conseq)
+    + '</div>'
+    + '<div class="dsec"><div class="sh">What should the pharmacist do?</div><ul>'
+    + x.action.map(function(a){ return '<li>'+esc(a)+'</li>'; }).join('')
+    + '</ul></div>'
+    + '<p class="muted" style="font-size:12.5px;margin-top:7px"><b>In technical terms:</b> '+esc(x.mechTech)+'</p>'
+    + '<div class="teach"><div class="hd">Worth remembering</div>'+esc(x.pearl)+'</div>'
+    + '</div>';
+  return h;
+}
+
+function pInter(){
+  var p = el('div');
+
+  var c = el('div','card');
+  c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">Interactions, contraindications and patient factors</h2>'
+    + '<p style="font-size:13.5px">You are not expected to know interactions from memory. Nobody does. What you are '
+    + 'expected to do is <b>check</b> — and then say what should happen as a result, which is the part a computer '
+    + 'cannot do for you.</p>'
+    + '<div class="teach"><div class="hd">How to read any interaction</div>'
+    + '<b>Drug A + Drug B → mechanism → effect → possible consequence → what the pharmacist does.</b> Five steps, '
+    + 'every time. The last one is the only one that matters to the patient.</div>';
+  p.appendChild(c);
+
+  /* ---- drug-drug checker ---- */
+  var ic = el('div','card');
+  var keys = Object.keys(D.DRUGS);
+  var partners = {};
+  D.INTERACTIONS.forEach(function(x){ partners[x.b]=1; partners[x.a]=1; });
+  var plist = Object.keys(partners).sort(function(a,b){ return pretty(a).localeCompare(pretty(b)); });
+
+  ic.innerHTML = '<h2 style="font-size:18px;margin-bottom:4px">Drug–drug interaction checker</h2>'
+    + '<p class="muted" style="font-size:13px">Pick two and check them. Try a pair you would expect to be safe as '
+    + 'well as one you would not — a checker that only ever says "danger" teaches you to ignore it.</p>'
+    + '<div class="grid2" style="margin-top:11px">'
+    + '<div><label class="f">Medicine one</label><select id="iA">'
+    + keys.map(function(k){ return '<option value="'+esc(k)+'">'+esc(D.DRUGS[k].generic)+'</option>'; }).join('')
+    + '</select></div>'
+    + '<div><label class="f">Medicine two, or a patient exposure</label><select id="iB">'
+    + plist.map(function(k){ return '<option value="'+esc(k)+'">'+esc(pretty(k))+'</option>'; }).join('')
+    + '</select></div></div>'
+    + '<div class="row" style="margin-top:11px"><button class="btn" data-act="chk">Check interactions</button>'
+    + '<span class="muted" style="font-size:12px">Traffic lights: 🟢 nothing to do · 🟡 something must change · 🔴 speak to the prescriber</span></div>'
+    + '<div data-iz></div>';
+  p.appendChild(ic);
+
+  on(ic,'[data-act=chk]','click',function(){
+    var a = $('iA').value, b = $('iB').value;
+    if(a===b){
+      ic.querySelector('[data-iz]').innerHTML =
+        '<div class="fb info"><div class="hd">Same medicine twice</div>Pick two different ones. Although — a patient '
+        + 'genuinely taking the same drug twice under two different brand names is a real and dangerous error, and '
+        + 'worth knowing about.</div>';
+      return;
+    }
+    var r = L.findInteraction(a, b, st);
+    ic.querySelector('[data-iz]').innerHTML = ragHtml(r, D.DRUGS[a]?D.DRUGS[a].generic:pretty(a), pretty(b));
+    drawBar(); drawTabs();
+  });
+
+  /* ---- drug-disease / patient factors ---- */
+  var dc = el('div','card');
+  var ddDrugs = {};
+  D.DRUG_DISEASE.forEach(function(x){ ddDrugs[x.drug]=1; });
+  var ddk = Object.keys(ddDrugs);
+  dc.innerHTML = '<h2 style="font-size:18px;margin-bottom:4px">Check patient factors</h2>'
+    + '<p style="font-size:13.5px">This is the one pharmacy students find most useful, and it is the one least often '
+    + 'taught. Nothing about the prescription looks wrong. The danger is in the drug <b>plus this particular '
+    + 'patient</b>.</p>'
+    + '<div class="teach"><div class="hd">The real question</div>'
+    + 'Never assess a medicine on its own. Assess <b>drug + patient + disease + other drugs</b>. A beta-blocker is a '
+    + 'good medicine; a beta-blocker in an asthmatic can kill them, and the prescription looks identical either way.</div>'
+    + '<div style="margin-top:12px"><label class="f">Choose a medicine</label><select id="dA">'
+    + ddk.map(function(k){ return '<option value="'+esc(k)+'">'+esc(D.DRUGS[k]?D.DRUGS[k].generic:pretty(k))+'</option>'; }).join('')
+    + '</select></div>'
+    + '<div class="row" style="margin-top:11px"><button class="btn teal" data-act="pf">Check patient factors</button></div>'
+    + '<div data-dz></div>';
+  p.appendChild(dc);
+
+  on(dc,'[data-act=pf]','click',function(){
+    var k = $('dA').value;
+    var list = L.findDiseaseRisk(k, '', st);
+    var h = '';
+    if(!list.length){
+      h = '<div class="fb info"><div class="hd">No patient-factor entries for this medicine</div>'
+        + 'In the workshop database. That is not the same as "no patient factors" — every medicine has them.</div>';
+    } else {
+      h = '<div class="fb info"><div class="hd">'+list.length+' patient factor'+(list.length>1?'s':'')
+        + ' recorded for '+esc(D.DRUGS[k]?D.DRUGS[k].generic:pretty(k))+'</div>'
+        + 'For each one, the system asks the question a pharmacist should ask before dispensing.</div>';
+      list.forEach(function(x){
+        h += '<div class="rag '+x.rag+'"><div class="rh"><span class="dot">'
+          +  (D.RAG[x.rag]?D.RAG[x.rag].dot:'')+'</span>'+esc(x.cond)+'</div>'
+          +  '<p style="font-weight:700;font-size:14px;margin:4px 0 9px">'+esc(x.q)+'</p>'
+          +  '<div class="flow">'
+          +  fr('Mechanism', x.mech)
+          +  fr('Effect', x.effect)
+          +  fr('Possible clinical consequence', x.conseq)
+          +  '</div>'
+          +  '<div class="dsec"><div class="sh">What should the pharmacist do?</div><ul>'
+          +  x.action.map(function(a){ return '<li>'+esc(a)+'</li>'; }).join('')+'</ul></div>'
+          +  '<p class="muted" style="font-size:12.5px;margin-top:7px"><b>In technical terms:</b> '+esc(x.mechTech)+'</p>'
+          +  '<div class="teach"><div class="hd">Worth remembering</div>'+esc(x.pearl)+'</div></div>';
+      });
+    }
+    dc.querySelector('[data-dz]').innerHTML = h;
+    drawBar(); drawTabs();
+  });
+
+  p.appendChild(nextBar('inter'));
+  return p;
+}
+
+/* ================================================================== *
+ * STATION 5 · is it an ADR?                                          *
+ *                                                                     *
+ * The comparison set comes first, and it is NOT marked. The student   *
+ * picks a case, gets a hint rather than a verdict, and only then sees *
+ * the reasoning. Marking this would teach them to guess; discussing   *
+ * it teaches them to reason.                                          *
+ * ================================================================== */
+function pAdr(){
+  var p = el('div');
+
+  var c = el('div','card');
+  c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">ADR identification and case validation</h2>'
+    + '<p style="font-size:13.5px">Three patients. All three took a medicine and all three then had a symptom. '
+    + 'That does not make all three adverse drug reactions.</p>'
+    + '<div class="teach"><div class="hd">The question is not what you think</div>'
+    + 'You are not being asked which one is "the ADR". You are being asked <b>which case requires further '
+    + 'investigation</b> — which is a different question, and the one a safety officer actually faces. Sometimes the '
+    + 'correct answer is that you cannot tell yet.</div>';
+  p.appendChild(c);
+
+  var box = el('div','card');
+  var picked = null, revealed = false;
+  draw();
+  p.appendChild(box);
+
+  function draw(){
+    var h = '<h2 style="font-size:18px;margin-bottom:9px">Which case requires further investigation?</h2>'
+      + '<div class="grid3">';
+    D.COMPARE.forEach(function(k){
+      var sel = picked===k.id;
+      h += '<button class="mode'+(sel?' on':'')+'" data-cmp="'+k.id+'" style="display:block">'
+        +  '<div class="mn">'+esc(k.title)+'</div>'
+        +  '<div class="mt">'+esc(k.drug)+'</div>'
+        +  '<div class="mb">'+esc(k.text)+'</div>'
+        +  '<div style="margin-top:9px;font-size:12px"><b>Event:</b> '+esc(k.event)
+        +  '<br><b>Timing:</b> '+esc(k.timing)+'</div>'
+        +  '</button>';
+    });
+    h += '</div><div class="row" style="margin-top:12px">';
+    if(!revealed){
+      h += '<button class="btn" data-act="cthink"'+(picked?'':' disabled')+'>Think it through</button>';
+      h += '<button class="btn ghost sm" data-act="chint">Give me a hint</button>';
+    }
+    h += '</div><div data-cz></div>';
+    box.innerHTML = h;
+
+    on(box,'[data-cmp]','click',function(e,t){
+      if(revealed) return;
+      picked = t.getAttribute('data-cmp');
+      draw();
+    });
+    on(box,'[data-act=chint]','click',function(){
+      box.querySelector('[data-cz]').innerHTML =
+        '<div class="fb info"><div class="hd">Hint</div>'
+        + 'Think about the <b>timing</b> between the medicine and the event — and then, for each case, ask what '
+        + '<b>else</b> was going on at the same time. One case has a clear time relationship and nothing competing. '
+        + 'One has a time relationship and three competing explanations. One has almost nothing going for it at all.'
+        + '<br><br>Then ask a second question: for which patient does <b>getting the answer right actually matter</b>?</div>';
+    });
+    on(box,'[data-act=cthink]','click',function(){
+      revealed = true;
+      draw();
+      show();
+    });
+    if(revealed) show();
+  }
+
+  function show(){
+    var sel = D.COMPARE.filter(function(x){ return x.id===picked; })[0];
+    var h = '';
+    if(sel){
+      var good = sel.verdict==='high' || sel.verdict==='confounded';
+      h += '<div class="fb '+(good?'ok':'part')+'"><div class="hd">You chose '+esc(sel.title)+'</div>'
+        +  esc(sel.why)+'</div>';
+      if(sel.verdict==='low'){
+        h += '<div class="fb part"><div class="hd">Defensible, but not the strongest choice</div>'
+          +  'Case A is the weakest candidate — mild, non-serious, long uneventful prior exposure, and no recurrence '
+          +  'on further doses. Read the other two and see why they have a better claim on your time.</div>';
+      }
+    }
+    h += '<div style="margin-top:13px">';
+    D.COMPARE.forEach(function(k){
+      var cls = k.verdict==='high'?'ok':(k.verdict==='confounded'?'info':'part');
+      h += '<div class="fb '+cls+'" style="margin-top:11px"><div class="hd">'+esc(k.title)+' — '
+        +  (k.verdict==='high'?'Investigate this one'
+           :k.verdict==='confounded'?'Cannot be assessed without more information'
+           :'Record it, but it does not demand investigation')+'</div>'
+        +  esc(k.why)+'<div class="teach" style="margin-top:9px"><div class="hd">What this case teaches</div>'
+        +  esc(k.teach)+'</div></div>';
+    });
+    h += '</div>';
+    h += '<div class="fb info" style="margin-top:13px"><div class="hd">Both B and C are right answers, for different reasons</div>'
+      +  '<b>Case B</b> is the one to investigate: a plausible reaction, a clear time course, and an answer that will '
+      +  'follow the patient for life. <b>Case C</b> is the one you cannot assess — and recognising that is just as '
+      +  'important. A student who confidently assigns causality to Case C has learned the wrong lesson from this '
+      +  'station; one who says "I need more information" has learned the right one.</div>';
+    box.querySelector('[data-cz]').innerHTML = h;
+  }
+
+  /* then the marked questions */
+  var its = L.items('adr');
+  var qh = el('div','card');
+  qh.innerHTML = '<h2 style="font-size:18px;margin-bottom:4px">Now the reasoning behind it</h2>'
+    + '<p class="muted" style="font-size:13px">These are marked. Remember that in Beginner and Intermediate mode a '
+    + 'first wrong answer is not counted — you get a hint and another attempt.</p>';
+  p.appendChild(qh);
+  its.forEach(function(it,i){ p.appendChild(qBlock(it,i,its.length)); });
+  p.appendChild(nextBar('adr'));
+  return p;
+}
+
+/* ================================================================== *
+ * STATION 6 · seriousness and severity                               *
+ * ================================================================== */
+function pSerious(){
+  var p = el('div');
+  var c = el('div','card');
+  var ch = '<h2 style="font-size:19px;margin-bottom:5px">Seriousness and severity</h2>'
+    + '<p style="font-size:13.5px">These two words are not interchangeable, and confusing them is the single most '
+    + 'common mistake in this subject. Read the six criteria before you answer anything.</p>'
+    + '<div class="teach"><div class="hd">The distinction, once</div>'
+    + '<b>Severity</b> is how intense the reaction was — mild, moderate, severe. A clinical description.<br>'
+    + '<b>Seriousness</b> is a regulatory classification, decided against a fixed list of six outcomes. It sets the '
+    + 'reporting timeline.<br><br>A migraine can be <i>severe</i> and not <i>serious</i>. A symptomless dangerously '
+    + 'low potassium is <i>serious</i> and not <i>severe</i>.</div>'
+    + '<h3 style="font-size:16px;margin:14px 0 7px">The six seriousness criteria</h3><div class="tw"><table>'
+    + '<tr><th style="width:34%">Criterion</th><th>What it actually means</th></tr>';
+  L.SERIOUS_CRITERIA.forEach(function(x){
+    ch += '<tr><td><b>'+esc(x.label)+'</b></td><td>'+esc(x.ex)+'</td></tr>';
+  });
+  ch += '</table></div>'
+    + '<p class="muted" style="font-size:12.5px;margin-top:8px">If any one of these six applies, the case is serious '
+    + 'and is reported on an expedited timeline — normally 15 calendar days. If none applies, it is not serious, '
+    + 'however unpleasant it was.</p>';
+  c.innerHTML = ch;
+  p.appendChild(c);
+
+  var its = L.items('serious');
+  its.forEach(function(it,i){ p.appendChild(qBlock(it,i,its.length)); });
+  p.appendChild(nextBar('serious'));
+  return p;
+}
+
+/* ================================================================== *
+ * STATION 7 · causality                                              *
+ *                                                                     *
+ * Three layers, strictly in this order:                               *
+ *   1. four plain questions, no jargon at all                         *
+ *   2. the verdict in words, then the WHO-UMC name for it             *
+ *   3. only then Naranjo                                              *
+ * The point is that the student should discover they were already      *
+ * doing causality assessment before being told what it is called.     *
+ * ================================================================== */
+function pCausal(){
+  var p = el('div');
+
+  var c = el('div','card');
+  c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">Causality — did the drug actually do it?</h2>'
+    + '<p style="font-size:13.5px">No tables yet. Four plain questions about the case you read at Station 2 — the '
+    + '22-year-old with the rash on day two of amoxicillin, which stopped when the drug was stopped.</p>'
+    + '<div class="teach"><div class="hd">You already know how to do this</div>'
+    + 'Answer the four questions honestly, including "not sure" where that is the truth. The system will then tell '
+    + 'you what you have just concluded, and afterwards what the formal scales call it. The terminology comes last on '
+    + 'purpose.</div>';
+  p.appendChild(c);
+
+  /* ---- layer 1: the guided assistant ---- */
+  var ans = (st.causal && st.causal.ans) ? st.causal.ans : {};
+  var gc = el('div','card');
+  drawGuide();
+  p.appendChild(gc);
+
+  function drawGuide(){
+    var h = '<h2 style="font-size:18px;margin-bottom:9px">Causality assistant</h2>';
+    L.GUIDE_Q.forEach(function(g,i){
+      h += '<div class="gq"><div class="gn">Question '+(i+1)+'</div>'
+        +  '<div class="gt">'+esc(g.q)+'</div><div class="yn">'
+        +  ['yes','no','unsure'].map(function(v){
+             return '<button class="ynb'+(ans[g.k]===v?' on':'')+'" data-gk="'+g.k+'" data-gv="'+v+'">'
+               + (v==='unsure'?'Not sure / not recorded':v.charAt(0).toUpperCase()+v.slice(1))+'</button>';
+           }).join('')
+        +  '</div>';
+      if(ans[g.k]) h += '<div class="gsay">'+esc(g[ans[g.k]]||'')+'</div>';
+      h += '</div>';
+    });
+    var all = L.GUIDE_Q.every(function(g){ return ans[g.k]; });
+    h += '<div class="row" style="margin-top:11px">'
+      +  '<button class="btn" data-act="gsub"'+(all?'':' disabled')+'>What have I concluded?</button>'
+      +  (all?'':'<span class="muted" style="font-size:12.5px">Answer all four to continue.</span>')
+      +  '</div><div data-gz></div>';
+    gc.innerHTML = h;
+
+    on(gc,'[data-gk]','click',function(e,t){
+      ans[t.getAttribute('data-gk')] = t.getAttribute('data-gv');
+      drawGuide();
+    });
+    on(gc,'[data-act=gsub]','click',function(){
+      var r = L.causality(ans);
+      st.causal = {ans:ans, who:r.who, verdict:r.verdict};
+      var h2 = '<div class="fb ok"><div class="hd">Your conclusion</div>'
+        + '<p style="font-size:15px;font-weight:700">'+esc(r.verdict)+'</p></div>'
+        + '<div class="teach"><div class="hd">What you just did</div>'+esc(r.teach)+'</div>'
+        + '<div class="fb part"><div class="hd">The ceiling on this case</div>'+esc(r.ceiling)+'</div>'
+        + '<div class="fb info"><div class="hd">And the formal name for it</div>'
+        + 'In the WHO-UMC system your conclusion is <b>'+esc(r.whoDef.name)+'</b>. That category requires:'
+        + '<ul>'+r.whoDef.need.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>'
+        + '<p style="margin-top:7px">'+esc(r.whoDef.note)+'</p></div>';
+      gc.querySelector('[data-gz]').innerHTML = h2;
+      drawWho();
+      drawBar(); drawTabs();
+    });
+    if(st.causal && st.causal.who){
+      var r = L.causality(ans);
+      gc.querySelector('[data-gz]').innerHTML = '<div class="fb ok"><div class="hd">Your conclusion</div>'
+        + '<p style="font-size:15px;font-weight:700">'+esc(r.verdict)+'</p></div>'
+        + '<div class="teach"><div class="hd">What you just did</div>'+esc(r.teach)+'</div>'
+        + '<div class="fb part"><div class="hd">The ceiling on this case</div>'+esc(r.ceiling)+'</div>';
+    }
+  }
+
+  /* ---- layer 2: the WHO-UMC categories in full ---- */
+  var wc = el('div','card');
+  p.appendChild(wc);
+  drawWho();
+  function drawWho(){
+    var h = '<h2 style="font-size:18px;margin-bottom:4px">The WHO-UMC categories</h2>'
+      + '<p class="muted" style="font-size:13px">All six, so you can see where your case sits. Pick the one you '
+      + 'would assign — it is recorded in your report and checked against your Naranjo score.</p>'
+      + '<div class="opts" style="margin-top:10px">';
+    Object.keys(L.WHO_UMC).forEach(function(k,i){
+      var w = L.WHO_UMC[k];
+      var sel = st.whoPick===k;
+      h += '<button class="opt'+(sel?' pick':'')+'" data-who="'+k+'">'
+        +  '<span class="lt">'+LTR[i]+'</span><span class="ob"><b>'+esc(w.name)+'</b>'
+        +  '<span class="of">'+esc(w.need.join(' · '))+'<br><i>'+esc(w.note)+'</i></span></span></button>';
+    });
+    h += '</div>';
+    if(st.whoPick && st.causal && st.causal.who){
+      var agree = st.whoPick===st.causal.who;
+      h += '<div class="fb '+(agree?'ok':'part')+'" style="margin-top:11px"><div class="hd">'
+        + (agree?'That matches the guided assessment':'That differs from the guided assessment')+'</div>'
+        + (agree
+           ? 'Your own reasoning and the guided assistant reached the same category. That is what a well-reasoned '
+             +'case looks like.'
+           : 'The guided assistant put this case at <b>'+esc(L.WHO_UMC[st.causal.who].name)+'</b> and you chose <b>'
+             +esc(L.WHO_UMC[st.whoPick].name)+'</b>. Neither is automatically wrong — but work out which of the four '
+             +'guiding answers is driving the difference, because that is where your reasoning and the framework '
+             +'disagree.')
+        + '</div>';
+    }
+    wc.innerHTML = h;
+    on(wc,'[data-who]','click',function(e,t){
+      st.whoPick = t.getAttribute('data-who');
+      drawWho(); drawBar(); drawTabs();
+    });
+  }
+
+  /* ---- layer 3: Naranjo ---- */
+  var nc = el('div','card');
+  var nAns = (st.naranjo && st.naranjo.raw) ? st.naranjo.raw : {};
+  p.appendChild(nc);
+  drawNar();
+  function drawNar(){
+    var r = L.naranjo(nAns);
+    var h = '<h2 style="font-size:18px;margin-bottom:4px">The Naranjo scale</h2>'
+      + '<p style="font-size:13.5px">Now the formal version. Ten questions, each worth points. It exists so that two '
+      + 'different assessors reach the same answer on the same case — that is all it is for.</p>'
+      + '<div class="fb info"><div class="hd">Read this before you start</div>'
+      + 'Two of these items are <b>reversed</b>: question 5 (alternative causes) loses a point for "yes" and gains '
+      + 'two for "no", and question 6 works the same way. And "unknown" is a legitimate answer that scores zero — '
+      + 'most real cases have several.</div>';
+
+    r.rows.forEach(function(row){
+      h += '<div class="nrow"><div class="nq">'+row.n+'. '+esc(row.q)
+        +  '<span class="np">'+(row.a?(row.pts>0?'+':'')+row.pts:'')+'</span></div>'
+        +  '<div class="nh">'+esc(row.help)+'</div><div class="yn">'
+        +  [['yes','Yes'],['no','No'],['unknown','Unknown / not done']].map(function(v){
+             return '<button class="ynb'+(nAns['q'+row.n]===v[0]?' on':'')+'" data-nq="'+row.n+'" data-nv="'+v[0]+'">'
+               + v[1]+' <span class="muted" style="font-weight:600">('
+               + (v[0]==='yes'?(row.w[0]>0?'+':'')+row.w[0] : v[0]==='no'?(row.w[1]>0?'+':'')+row.w[1] : row.w[2])
+               + ')</span></button>';
+           }).join('')
+        +  '</div></div>';
+    });
+
+    h += '<div class="repgrid" style="margin-top:13px">'
+      +  '<div class="repbox"><div class="rv">'+r.total+'</div><div class="rl">Naranjo score</div></div>'
+      +  '<div class="repbox"><div class="rv" style="font-size:19px">'+esc(r.band)+'</div><div class="rl">Category</div></div>'
+      +  '<div class="repbox"><div class="rv">'+r.answered+' / 10</div><div class="rl">Answered</div></div>'
+      +  '</div>'
+      +  '<div class="tw"><table><tr><th>Score</th><th>Category</th></tr>'
+      +  r.bands.map(function(b){
+           return '<tr'+(b[1]===r.band?' style="outline:2px solid var(--gold)"':'')+'><td><b>'+b[0]+'</b></td><td>'+b[1]+'</td></tr>';
+         }).join('')
+      +  '</table></div>';
+    if(r.complete){
+      h += '<div class="fb ok"><div class="hd">Complete — Naranjo '+r.total+', '+esc(r.band)+'</div>'
+        +  esc(r.caveat)+'</div>';
+      if(st.causal && st.causal.who){
+        var g = L.WHO_UMC[st.causal.who].name;
+        var lines = (r.band.toLowerCase()==='probable' && st.causal.who==='probable')
+          || (r.band.toLowerCase()==='possible' && st.causal.who==='possible');
+        h += '<div class="fb '+(lines?'ok':'part')+'"><div class="hd">Naranjo vs your guided assessment</div>'
+          +  'Naranjo says <b>'+esc(r.band)+'</b>; the four guiding questions put it at <b>'+esc(g)+'</b>. '
+          +  (lines ? 'They agree, which is the usual result when a case has been properly worked.'
+                    : 'They do not quite line up. That happens, and it is worth a minute’s thought: Naranjo '
+                     +'rewards objective evidence and dose-response, which a straightforward rash case does not have, '
+                     +'while the WHO-UMC categories lean more on the time course and the dechallenge.')
+          +  '</div>';
+      }
+    } else {
+      h += '<div class="fb part"><div class="hd">'+(10-r.answered)+' still to answer</div>'
+        +  'Leaving an item blank is not the same as answering "unknown". Answer every one, using "unknown" where '
+        +  'that is the truth.</div>';
+    }
+    nc.innerHTML = h;
+    on(nc,'[data-nq]','click',function(e,t){
+      nAns['q'+t.getAttribute('data-nq')] = t.getAttribute('data-nv');
+      var res = L.naranjo(nAns);
+      res.raw = nAns;
+      st.naranjo = res;
+      drawNar(); drawBar(); drawTabs();
+    });
+  }
+
+  p.appendChild(nextBar('causal'));
+  return p;
+}
+
+/* ================================================================== *
+ * STATION 8 · coding                                                 *
+ * ================================================================== */
+function pCode(){
+  var p = el('div');
+  var c = el('div','card');
+  c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">Coding the reaction</h2>'
+    + '<p style="font-size:13.5px">Nobody is going to ask you what the preferred term is. You look it up — and the '
+    + 'skill being taught is knowing that the patient’s words and the coded term are <b>not the same thing</b>, '
+    + 'and that both belong in the report.</p>'
+    + '<div class="flow">'
+    + fr('The patient’s words', '"Swelling around both ankles." What they actually said. Never discard this.')
+    + fr('The reported term', 'What you write in the narrative field, verbatim, before coding anything.')
+    + fr('The standardised term', 'Peripheral oedema. What makes the case findable alongside similar ones.')
+    + fr('The system organ class', 'Where it sits in the hierarchy, which is how the database groups it.')
+    + '</div>'
+    + '<div class="synth"><b>About the terminology here.</b> MedDRA is maintained by the MSSO under licence from ICH '
+    + 'and cannot be embedded in a public web page. What this station models is the <b>structure</b> of coding — lay '
+    + 'phrase, verbatim term, a preferred-term-style label and a system organ class — because the structure is the '
+    + 'lesson. The terms shown are illustrative teaching approximations. Anyone coding a real case must use a current '
+    + 'licensed MedDRA browser.</div>';
+  p.appendChild(c);
+
+  var sc = el('div','card');
+  sc.innerHTML = '<h2 style="font-size:18px;margin-bottom:4px">Term search</h2>'
+    + '<p class="muted" style="font-size:13px">Type what the patient said, in their words. Try "swelling around both '
+    + 'ankles", "yellow eyes", "my sugar dropped", "neck twisted", "blisters and mouth ulcers".</p>'
+    + '<div class="row" style="margin-top:10px"><div style="flex:1;min-width:220px">'
+    + '<input type="text" id="tq" placeholder="What did the patient actually say?"></div>'
+    + '<button class="btn" data-act="tsearch">Search</button></div>'
+    + '<div data-tz></div>';
+  p.appendChild(sc);
+
+  function search(){
+    var q = $('tq').value;
+    var res = L.searchTerms(q, st);
+    var z = sc.querySelector('[data-tz]');
+    if(!res.length){
+      z.innerHTML = '<div class="fb part"><div class="hd">Nothing matched</div>'
+        + 'The workshop dictionary is small on purpose. Try plainer words — the search is looking for the kind of '
+        + 'phrase a patient would use, not a diagnosis.</div>';
+      drawBar(); drawTabs(); return;
+    }
+    var h = '<div class="fb info"><div class="hd">'+res.length+' possible term'+(res.length>1?'s':'')+'</div>'
+      + 'Ranked by how closely the wording matches. The top one is usually right — but read the note on it, because '
+      + 'the choice of term changes what the database can find.</div>';
+    res.forEach(function(r,i){
+      var T = r.term;
+      h += '<div class="rag '+(i===0?'green':'amber')+'" style="margin-top:11px">'
+        +  '<div class="rh"><span class="dot">'+(i===0?'★':'☆')+'</span>'+esc(T.pt)+'</div>'
+        +  '<div class="flow">'
+        +  fr('The patient’s words', r.via)
+        +  fr('Reported term (verbatim)', T.verbatim)
+        +  fr('Standardised term', T.pt)
+        +  fr('System organ class', T.soc)
+        +  '</div>'
+        +  '<div class="dsec"><div class="sh">Related terms you might have chosen instead</div>'
+        +  '<p>'+esc(T.sibling.join(' · '))+'</p></div>'
+        +  '<div class="teach"><div class="hd">Why the choice matters</div>'+esc(T.note)+'</div></div>';
+    });
+    z.innerHTML = h;
+    drawBar(); drawTabs();
+  }
+  on(sc,'[data-act=tsearch]','click',search);
+  sc.addEventListener('keydown',function(e){ if(e.key==='Enter' && e.target.id==='tq') search(); });
+
+  p.appendChild(nextBar('code'));
+  return p;
+}
+
+/* ================================================================== *
+ * STATION 9 · build the ICSR                                         *
+ *                                                                     *
+ * Prefilled with the Station 2 case so the student is editing a real  *
+ * case rather than inventing one — except for the fields the exercise *
+ * is about, which are left empty on purpose.                          *
+ * ================================================================== */
+function pIcsr(){
+  var p = el('div');
+  var c = el('div','card');
+  c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">Create the Individual Case Safety Report</h2>'
+    + '<p style="font-size:13.5px">This is the report itself. Fill in what you know about the Station 2 case — the '
+    + '22-year-old with the rash on day two of amoxicillin — and the quality checker will tell you two separate '
+    + 'things: whether it is <b>valid</b>, and whether it is <b>any use</b>.</p>'
+    + '<div class="teach"><div class="hd">The four minimum elements</div>'
+    + 'Marked <b>MINIMUM</b> below. <b>Patient · Reporter · Product · Event.</b> Without all four this is not a '
+    + 'report at all — it is an enquiry, and it cannot be processed. Everything else affects how useful it is, not '
+    + 'whether it exists.</div>'
+    + '<div class="row" style="margin-top:12px">'
+    + '<button class="btn ghost sm" data-act="prefill">Prefill what the Station 2 story told us</button>'
+    + '<span class="muted" style="font-size:12px">Then fill in the rest yourself — the gaps are the exercise.</span></div>';
+  p.appendChild(c);
+
+  var f = {};
+  var form = el('div','card');
+  var zone = el('div');
+  draw();
+  p.appendChild(form);
+  p.appendChild(zone);
+  p.appendChild(nextBar('icsr'));
+
+  on(c,'[data-act=prefill]','click',function(){
+    /* Only what the narrative actually said. The deliberately missing
+       fields stay missing, because finding them is the lesson. */
+    f.pt_id='S.R. (initials)'; f.pt_age='22 years'; f.pt_sex='Female';
+    f.drug='Amoxicillin'; f.dose='500 mg'; f.route='Oral'; f.freq='Three times daily';
+    f.indication='Throat infection';
+    f.event='Widespread itchy rash';
+    f.action='Drug withdrawn';
+    f.outcome='Recovered';
+    f.dechal='Rash settled over 4 days after stopping';
+    draw();
+  });
+
+  function draw(){
+    var groups = {};
+    L.icsrFields().forEach(function(x){ (groups[x.g]=groups[x.g]||[]).push(x); });
+    var h = '<h2 style="font-size:18px;margin-bottom:9px">Suspected adverse drug reaction report</h2>';
+    Object.keys(groups).forEach(function(g){
+      h += '<div class="fgrp"><div class="gh">'+esc(g)+'</div>';
+      groups[g].forEach(function(x){
+        var big = ['event','conmeds','history','labs','dechal','coded'].indexOf(x.k)>=0;
+        h += '<div class="ff"><label>'+esc(x.label)
+          +  (x.min?'<span class="mn">Minimum</span>':'')+'</label>'
+          +  (big
+              ? '<textarea data-f="'+x.k+'" placeholder="—">'+esc(f[x.k]||'')+'</textarea>'
+              : '<input type="text" data-f="'+x.k+'" value="'+esc(f[x.k]||'')+'" placeholder="—">')
+          +  '<div class="wy">'+esc(x.why)+'</div></div>';
+      });
+      h += '</div>';
+    });
+    h += '<div class="row" style="margin-top:12px"><button class="btn" data-act="qc">Run the quality check</button>'
+      +  '<span class="muted" style="font-size:12px">Nothing is submitted anywhere. This is your own report.</span></div>';
+    form.innerHTML = h;
+
+    on(form,'[data-f]','input',function(e,t){ f[t.getAttribute('data-f')] = t.value; });
+    on(form,'[data-act=qc]','click',check);
+  }
+
+  function check(){
+    var r = L.validateIcsr(f);
+    st.icsr = r;
+    var h = '<div class="card"><h2 style="font-size:18px;margin-bottom:4px">Quality check</h2>'
+      + '<div class="verdict '+(r.valid?'pass':'fail')+'">'+esc(r.verdict)+'</div>'
+      + '<div class="repgrid">'
+      + '<div class="repbox"><div class="rv">'+(r.valid?'Valid':'Invalid')+'</div><div class="rl">Minimum elements</div></div>'
+      + '<div class="repbox"><div class="rv">'+r.quality.score+'%</div><div class="rl">Quality</div></div>'
+      + '<div class="repbox"><div class="rv" style="font-size:18px">'+esc(r.quality.grade)+'</div><div class="rl">Grade</div></div>'
+      + '<div class="repbox"><div class="rv">'+r.filled+' / '+r.of+'</div><div class="rl">Fields completed</div></div>'
+      + '</div>';
+
+    if(r.minimum.missing.length){
+      h += '<div class="fb no"><div class="hd">Missing minimum elements — this is not yet a report</div><ul>'
+        +  r.minimum.missing.map(function(m){ return '<li><b>'+esc(m.label)+'</b> — '+esc(m.why)+'</li>'; }).join('')
+        +  '</ul></div>';
+    } else {
+      h += '<div class="fb ok"><div class="hd">All four minimum elements present</div>'
+        +  'Patient, reporter, product, event. This can be processed. Now the separate question: is it any use?</div>';
+    }
+
+    if(r.flags.length){
+      h += '<div class="fb part"><div class="hd">'+r.flags.length+' quality finding'
+        +  (r.flags.length>1?'s':'')+' a reviewer would write on this form</div><ul>'
+        +  r.flags.map(function(x){
+             return '<li><b>'+(x.sev==='high'?'Important':'Worth fixing')+':</b> '+esc(x.t)+'</li>';
+           }).join('')+'</ul></div>';
+    } else if(r.valid){
+      h += '<div class="fb ok"><div class="hd">No quality findings</div>'
+        +  'Nothing a reviewer would send back. That is unusual and worth being pleased about.</div>';
+    }
+
+    if(r.quality.missing.length){
+      h += '<div class="fb info"><div class="hd">Fields that would make this report stronger</div><ul>'
+        +  r.quality.missing.slice(0,10).map(function(m){
+             return '<li><b>'+esc(m.label)+'</b> — '+esc(m.why)+'</li>';
+           }).join('')+'</ul></div>';
+    }
+
+    h += '<div class="teach"><div class="hd">The thing to take away</div>'
+      +  'Validity and usefulness are two different tests, and a report can pass one and fail the other badly. Most '
+      +  'reports in the world’s safety databases are valid and hard to assess, because the fields that carry the '
+      +  'reasoning — onset date, dechallenge, outcome, concomitant medicines — are the ones people leave blank. '
+      +  'Filling those four in is the single biggest contribution you can make to the quality of the data.</div>'
+      +  '</div>';
+    zone.innerHTML = h;
+    zone.scrollIntoView({behavior:'smooth', block:'start'});
+    drawBar(); drawTabs();
+  }
+  return p;
+}
+
+/* ================================================================== *
+ * STATION 11 · signals                                               *
+ *                                                                     *
+ * Comes after the student has handled individual cases, never before. *
+ * The dataset is built so that sorting by count gives the wrong        *
+ * answer, which is the entire teaching point.                         *
+ * ================================================================== */
+function pSignal(){
+  var p = el('div');
+  var S = D.SIGNAL_SET;
+
+  var c = el('div','card');
+  c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">From one case to a signal</h2>'
+    + '<p style="font-size:13.5px">Everything so far has been one patient at a time. This is what happens when the '
+    + 'reports start to accumulate — and it is the reason all of that form-filling was worth doing.</p>'
+    + '<div class="flow">'
+    + S.chain.map(function(x,i){ return fr('Step '+(i+1), x); }).join('')
+    + '</div>';
+  p.appendChild(c);
+
+  var box = el('div','card');
+  var picks = [], done = false;
+  draw();
+  p.appendChild(box);
+  p.appendChild(nextBar('signal'));
+
+  function draw(){
+    var h = '<h2 style="font-size:18px;margin-bottom:4px">'+esc(S.drug)+' — reports received so far</h2>'
+      + '<p class="muted" style="font-size:13px">'+esc(S.exposure)+'</p>'
+      + '<div class="tw" style="margin-top:11px"><table>'
+      + '<tr><th>Reaction</th><th style="text-align:right">Cases</th><th>Already in the label?</th><th>Serious?</th></tr>';
+    S.rows.forEach(function(r,i){
+      h += '<tr><td><b>'+esc(r.adr)+'</b></td><td style="text-align:right;font-variant-numeric:tabular-nums"><b>'
+        +  r.n+'</b></td><td>'+(r.labelled?'Yes':'<b style="color:var(--danger)">No</b>')+'</td>'
+        +  '<td>'+(r.serious?'<b style="color:var(--danger)">Yes</b>':'No')+'</td></tr>';
+    });
+    h += '</table></div>'
+      +  '<p class="q" style="margin-top:13px">Is there anything here that deserves further investigation?</p>'
+      +  '<p class="muted" style="font-size:12.5px">Select the row or rows you would take further.</p>'
+      +  '<div class="opts" style="margin-top:9px">';
+    S.rows.forEach(function(r,i){
+      var cls='opt';
+      if(done){
+        if(r.verdict==='yes' && picks.indexOf(i)>=0) cls+=' right';
+        else if(r.verdict==='yes') cls+=' missed';
+        else if(picks.indexOf(i)>=0) cls+=' wrong';
+      } else if(picks.indexOf(i)>=0) cls+=' pick';
+      h += '<button class="'+cls+'" data-sr="'+i+'"'+(done?' disabled':'')+'>'
+        +  '<span class="lt">'+LTR[i]+'</span><span class="ob"><b>'+esc(r.adr)+'</b> — '+r.n+' cases'
+        +  '<span class="of">'+esc(r.expected)+(done?'<br><br>'+esc(r.why):'')+'</span></span></button>';
+    });
+    h += '</div>';
+    if(!done) h += '<div class="row" style="margin-top:11px"><button class="btn" data-act="ssub"'
+      + (picks.length?'':' disabled')+'>Submit</button></div>';
+    h += '<div data-sz></div>';
+    box.innerHTML = h;
+
+    on(box,'[data-sr]','click',function(e,t){
+      if(done) return;
+      var i = +t.getAttribute('data-sr');
+      var at = picks.indexOf(i);
+      if(at>=0) picks.splice(at,1); else picks.push(i);
+      draw();
+    });
+    on(box,'[data-act=ssub]','click',function(){
+      var r = L.gradeSignal(st, picks);
+      done = true;
+      draw();
+      var h2 = '<div class="fb '+(r.ok?'ok':'part')+'"><div class="hd">'
+        + (r.ok?'Correct — '+r.score+' / '+r.max:'Not quite — '+r.score+' / '+r.max)+'</div>'
+        + (r.ok
+           ? 'You isolated the signal. Liver injury: serious, not in the label, and not described for this drug '
+             +'class. Eight cases of that matter far more than fifteen of something expected and harmless.'
+           : 'Read the explanations on each row above.')
+        + '</div>';
+      if(r.trap) h2 += '<div class="fb no"><div class="hd">The trap</div>'+esc(r.trap)+'</div>';
+      h2 += '<div class="teach"><div class="hd">What decides a signal</div>'+esc(r.lesson)+'</div>'
+        +  '<div class="fb info"><div class="hd">The formal definition</div>'+esc(r.definition)+'</div>'
+        +  '<div class="fb info"><div class="hd">And what you do NOT need</div>'
+        +  'No statistics. Disproportionality measures — the reporting odds ratio, the information component — are '
+        +  'how a database of millions of reports is screened automatically. They find candidates. A human being '
+        +  'still has to read the individual cases and decide, and that decision uses exactly the four things you '
+        +  'just used.</div>';
+      box.querySelector('[data-sz]').innerHTML = h2;
+      drawBar(); drawTabs();
+    });
+  }
+  return p;
+}
+
+/* ================================================================== *
+ * STATION 12 · the final team challenge                              *
+ *                                                                     *
+ * Deliberately incomplete. Step 1 is not "what is the diagnosis", it  *
+ * is "what is missing" — because that is what a safety officer        *
+ * actually does first with a referral like this.                      *
+ * ================================================================== */
+function pFinal(){
+  var p = el('div');
+  var F = D.FINAL;
+
+  var c = el('div','card');
+  c.innerHTML = '<h2 style="font-size:19px;margin-bottom:5px">Final challenge — the incomplete case</h2>'
+    + '<p style="font-size:13.5px">A phone call came in. This is everything it contained. Work it as a team of four '
+    + 'or five on one screen if you can — talk it through out loud before you touch anything.</p>'
+    + '<div class="teach"><div class="hd">Do not start by guessing the diagnosis</div>'
+    + 'Start by working out <b>what you have not been told</b>. That is step one of a real investigation, and it is '
+    + 'the step this station scores most heavily.</div>'
+    + '<div class="tw" style="margin-top:12px"><table>'
+    + '<tr><th style="width:32%">Field</th><th>What the call gave us</th></tr>'
+    + [['Patient',F.handover.patient],['Condition',F.handover.condition],['Medicines',F.handover.meds],
+       ['New medicine',F.handover.newDrug],['Complaint',F.handover.complaint],
+       ['Laboratory',F.handover.labs],['Past history',F.handover.pmh],['Reporter',F.handover.reporter]]
+      .map(function(r){ return '<tr><td><b>'+esc(r[0])+'</b></td><td>'+esc(r[1])+'</td></tr>'; }).join('')
+    + '</table></div>'
+    + '<p class="muted" style="font-size:12.5px;margin-top:8px">'+esc(F.handover.note)+'</p>';
+  p.appendChild(c);
+
+  /* ---- step 1: what is missing ---- */
+  var mc = el('div','card');
+  var mpick = [], mdone = false;
+  drawMissing();
+  p.appendChild(mc);
+
+  function drawMissing(){
+    var h = '<h2 style="font-size:18px;margin-bottom:4px">Step 1 — what information is missing?</h2>'
+      + '<p class="muted" style="font-size:13px">Select everything you would need before you could assess this case. '
+      + 'Weighted: the items that change the assessment are worth more than the ones that tidy the form.</p>'
+      + '<div class="opts" style="margin-top:10px">';
+    F.missing.forEach(function(m,i){
+      var cls='opt';
+      if(mdone){
+        cls += mpick.indexOf(m.k)>=0 ? ' right' : ' missed';
+      } else if(mpick.indexOf(m.k)>=0) cls+=' pick';
+      h += '<button class="'+cls+'" data-mk="'+esc(m.k)+'"'+(mdone?' disabled':'')+'>'
+        +  '<span class="lt">'+(m.weight)+'</span><span class="ob">'+esc(m.label)
+        +  (mdone?'<span class="of">'+esc(m.why)+'</span>':'')+'</span></button>';
+    });
+    h += '</div>';
+    if(!mdone) h += '<div class="row" style="margin-top:11px">'
+      + '<button class="btn" data-act="msub"'+(mpick.length?'':' disabled')+'>Submit my gap analysis</button>'
+      + '<span class="muted" style="font-size:12px">The number on the left is what each one is worth.</span></div>';
+    h += '<div data-mz></div>';
+    mc.innerHTML = h;
+
+    on(mc,'[data-mk]','click',function(e,t){
+      if(mdone) return;
+      var k = t.getAttribute('data-mk');
+      var at = mpick.indexOf(k);
+      if(at>=0) mpick.splice(at,1); else mpick.push(k);
+      drawMissing();
+    });
+    on(mc,'[data-act=msub]','click',function(){
+      var r = L.gradeMissing(st, mpick);
+      mdone = true;
+      drawMissing();
+      mc.querySelector('[data-mz]').innerHTML =
+        '<div class="fb '+(r.pct>=80?'ok':r.pct>=55?'part':'no')+'"><div class="hd">Gap analysis — '
+        + r.pct+'% by weight, '+r.score+' / '+r.max+' marks</div>'+esc(r.verdict)+'</div>'
+        + '<div class="teach"><div class="hd">Now go and get it</div>'
+        + 'Everything you correctly identified is obtainable. Open the sources below — each one answers only what it '
+        + 'would really know, exactly as in a real investigation. The dispensing record cannot tell you how the '
+        + 'patient feels, and the patient cannot tell you her eGFR.</div>';
+      drawBar(); drawTabs();
+    });
+  }
+
+  /* ---- step 2: investigate ---- */
+  var ic = el('div','card');
+  var ih = '<h2 style="font-size:18px;margin-bottom:4px">Step 2 — investigate</h2>'
+    + '<p class="muted" style="font-size:13px">Five sources. Open them in whatever order you like, but think about '
+    + 'which one you would ring first in real life — that choice is the professional judgement being practised.</p>'
+    + '<div class="pillrow" style="margin-top:11px">';
+  Object.keys(F.reveal).forEach(function(k){
+    ih += '<button class="ipill" data-src="'+esc(k)+'">'+esc(F.reveal[k].title)+'</button>';
+  });
+  ih += '</div><div data-iz></div>';
+  ic.innerHTML = ih;
+  p.appendChild(ic);
+
+  on(ic,'[data-src]','click',function(e,t){
+    var k = t.getAttribute('data-src');
+    var s = L.openSource(st, k);
+    if(!s) return;
+    var z = ic.querySelector('[data-iz]');
+    if(z.querySelector('[data-srcbox="'+k+'"]')) return;
+    var d = el('div','rag amber');
+    d.setAttribute('data-srcbox', k);
+    d.style.marginTop='12px';
+    d.innerHTML = '<div class="rh"><span class="dot">▸</span>'+esc(s.title)+'</div>'
+      + '<ul style="margin:6px 0 0 17px;font-size:13.5px;line-height:1.7">'
+      + s.body.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>'
+      + '<div class="teach"><div class="hd">What this tells you</div>'+esc(s.teach)+'</div>';
+    z.appendChild(d);
+    d.scrollIntoView({behavior:'smooth', block:'center'});
+    drawBar(); drawTabs();
+  });
+
+  /* ---- step 3: the nine decisions ---- */
+  var qc = el('div','card');
+  var STEPS = [
+   ['What should you investigate?','Which source would you ring first, and why? There is no marked answer here — but a team that rings the pharmacy first will get further faster than one that starts with the patient, because you cannot interview anybody usefully about a drug you cannot name.'],
+   ['Are there potential interactions?','Run every pair you now know about through the Station 4 checker. There are at least three worth finding, and one of them is a medicine nobody prescribed.'],
+   ['Could the disease itself explain the event?','Diabetes, hypertension, age. Use the patient-factor checker. And note what the prescriber already ruled out for you.'],
+   ['Is this potentially an ADR?','You now have a drug, a time relationship, an objective measurement and an alternative explanation that has been excluded.'],
+   ['How serious is it?','Go through all six criteria, not just hospitalisation. She was never admitted.'],
+   ['What is the causality?','Use the Station 7 assistant on this case rather than the Station 2 one.'],
+   ['How should the case be coded?','The reported complaint was "dizziness". Search that at Station 8, then search what you actually found. They are different terms and they lead to different places.'],
+   ['Create the ICSR','Build it at Station 9 with what you now have.'],
+   ['What should happen to this patient today?','The report is not the intervention. What are you going to do about her?']
+  ];
+  var qhh = '<h2 style="font-size:18px;margin-bottom:4px">Step 3 — take it to a decision</h2>'
+    + '<p class="muted" style="font-size:13px">Work these through as a team. Then open the debrief and see how close '
+    + 'you got.</p><div class="flow" style="margin-top:11px">';
+  STEPS.forEach(function(s,i){ qhh += fr('Step '+(i+2)+' · '+s[0], s[1]); });
+  qhh += '</div><div class="row" style="margin-top:13px">'
+    + '<button class="btn gold" data-act="deb">Open the debrief</button>'
+    + '<span class="muted" style="font-size:12px">Do not open this until your team has an answer to all nine.</span>'
+    + '</div><div data-dz></div>';
+  qc.innerHTML = qhh;
+  p.appendChild(qc);
+
+  on(qc,'[data-act=deb]','click',function(){
+    var T = F.truth;
+    var h = '<div class="fb ok" style="margin-top:13px"><div class="hd">Debrief — what the case actually was</div>'
+      + '<div class="flow">'
+      + fr('Suspect drug', T.drug)
+      + fr('The event', T.event)
+      + fr('Verbatim term', '"'+T.verbatim+'"')
+      + fr('Coded term', T.coded)
+      + fr('Serious?', 'Yes — '+T.criterion)
+      + fr('Severity', T.severity)
+      + fr('Causality', T.causality)
+      + fr('Naranjo', T.naranjoNote)
+      + '</div></div>'
+      + '<div class="fb part"><div class="hd">What made it happen</div><ul>'
+      + T.contributors.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul></div>'
+      + '<div class="fb no"><div class="hd">And three other things wrong with this prescription that nobody asked about</div><ul>'
+      + T.alsoWrong.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul></div>'
+      + '<div class="fb info"><div class="hd">What should happen to this patient</div><ul>'
+      + T.actions.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul></div>'
+      + '<div class="teach"><div class="hd">The lesson of the whole workshop</div>'+esc(T.lesson)+'</div>';
+    qc.querySelector('[data-dz]').innerHTML = h;
+    qc.querySelector('[data-dz]').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  p.appendChild(nextBar('final'));
+  return p;
+}
+
+/* ================================================================== *
+ * STATION 13 · the report                                            *
+ * ================================================================== */
+function pReport(){
+  var p = el('div');
+  var m = L.mark(st);
+  var me = participant();
+
+  var c = el('div','card');
+  var pass = m.total>=50;
+  var h = '<h2 style="font-size:20px;margin-bottom:5px">Your performance report</h2>'
+    + (me?'<div class="whoami" style="margin:9px 0"><span>Prepared for</span> <b>'+esc(me.name)+'</b>'
+         +'<span>'+esc([me.roll,me.institution].filter(Boolean).join(' · '))+'</span></div>':'')
+    + '<div class="verdict '+(pass?'pass':'fail')+'">'+m.total+' / 100 &nbsp;·&nbsp; '+esc(m.band)
+    + ' &nbsp;·&nbsp; '+esc(m.mode)+' mode</div>'
+    + '<div class="repgrid">'
+    + '<div class="repbox"><div class="rv">'+m.answers.pct+'%</div><div class="rl">Answers</div></div>'
+    + '<div class="repbox"><div class="rv">'+(Object.keys(st.why).length?m.reasoning.pct+'%':'—')+'</div><div class="rl">Reasoning</div></div>'
+    + '<div class="repbox"><div class="rv">'+m.practicalPct+'%</div><div class="rl">Practical stations</div></div>'
+    + '<div class="repbox"><div class="rv">'+m.hints+'</div><div class="rl">Hints used</div></div>'
+    + '<div class="repbox"><div class="rv">'+m.minutes+'</div><div class="rl">Minutes</div></div>'
+    + '</div>';
+
+  if(m.gap){
+    var gcls = /ahead of your reasoning/.test(m.gap) ? 'no' : (/aligned/.test(m.gap)?'ok':'part');
+    h += '<div class="fb '+gcls+'"><div class="hd">Answers against reasoning</div>'+esc(m.gap)+'</div>';
+  }
+
+  h += '<div class="teach"><div class="hd">Why there are two scores and not one</div>'
+    + 'A student who reaches the right conclusion for the wrong reason looks identical to one who understands it, '
+    + 'right up until the next case is slightly different. So the answer and the reason behind it are marked '
+    + 'separately here. If your reasoning score is well below your answer score, that is the most useful sentence in '
+    + 'this report.</div>';
+  c.innerHTML = h;
+  p.appendChild(c);
+
+  /* question-by-question */
+  var qc = el('div','card');
+  var qh = '<h2 style="font-size:18px;margin-bottom:7px">Question by question</h2><div class="tw"><table>'
+    + '<tr><th>Station</th><th>Question</th><th>Answer</th><th>Reasoning</th></tr>';
+  L.ITEMS.forEach(function(it){
+    var r = st.ans[it.id], w = st.why[it.id];
+    var sName = '';
+    L.STAGES.forEach(function(s){ if(s.k===it.stage) sName=s.name; });
+    var aTxt = !r||!r.settled ? '<span class="muted">not attempted</span>'
+      : r.revealed ? '<span style="color:var(--warn)">revealed · 0/'+it.max+'</span>'
+      : r.first ? '<span style="color:var(--success)">first time · '+r.score+'/'+it.max+'</span>'
+      : r.score>0 ? '<span style="color:var(--warn)">second try · '+r.score+'/'+it.max+'</span>'
+      : '<span style="color:var(--danger)">missed · 0/'+it.max+'</span>';
+    var wTxt = !it.why ? '<span class="muted">—</span>'
+      : !w ? '<span class="muted">not attempted</span>'
+      : (w.bad>0 ? '<span style="color:var(--danger)">' : w.score>=w.max?'<span style="color:var(--success)">':'<span style="color:var(--warn)">')
+        + w.score+'/'+w.max+(w.bad>0?' · unsound reason given':'')+'</span>';
+    qh += '<tr><td>'+esc(sName)+'</td><td>'+esc(it.stem.slice(0,96))+(it.stem.length>96?'…':'')+'</td>'
+       +  '<td>'+aTxt+'</td><td>'+wTxt+'</td></tr>';
+  });
+  qh += '</table></div>';
+  qc.innerHTML = qh;
+  p.appendChild(qc);
+
+  /* practical stations */
+  var pc = el('div','card');
+  var ph = '<h2 style="font-size:18px;margin-bottom:7px">Practical stations</h2><div class="tw"><table>'
+    + '<tr><th>Station</th><th style="width:96px">Score</th><th style="width:110px"></th><th>Comment</th></tr>';
+  m.practical.forEach(function(x){
+    var cls = x.pct>=70?'good':(x.pct>=40?'':'bad');
+    ph += '<tr><td><b>'+esc(x.name)+'</b></td><td style="font-variant-numeric:tabular-nums">'+x.got+' / '+x.max+'</td>'
+       +  '<td><span class="bar"><i class="'+cls+'" style="width:'+x.pct+'%"></i></span></td>'
+       +  '<td>'+esc(x.note)+'</td></tr>';
+  });
+  ph += '</table></div>';
+  pc.innerHTML = ph;
+  p.appendChild(pc);
+
+  /* advice + next steps */
+  var ac = el('div','card');
+  ac.innerHTML = '<h2 style="font-size:18px;margin-bottom:7px">What to do next</h2>'
+    + '<ul style="margin-left:17px;font-size:13.5px;line-height:1.75">'
+    + m.advice.map(function(a){ return '<li>'+esc(a)+'</li>'; }).join('')+'</ul>'
+    + '<div class="teach" style="margin-top:12px"><div class="hd">The progression</div>'
+    + '<b>Beginner</b> teaches you the workflow. <b>Intermediate</b> takes the explanations away. '
+    + '<b>Challenge</b> gives you the case and the databases and nothing else. After that, '
+    + '<a href="ALIZON-OS-Workshop-PVX">PV-X</a> gives you a patient who answers only what you actually ask, and '
+    + 'nothing is volunteered at all. That is the real thing.</div>'
+    + '<div class="row" style="margin-top:13px">'
+    + '<button class="btn ghost sm" onclick="window.print()">Print / save as PDF</button>'
+    + '<a class="btn sm" href="ALIZON-OS-Workshop-PVX" style="color:#fff">Go to PV-X →</a>'
+    + '</div>';
+  p.appendChild(ac);
+
+  /* certificate, if the site is issuing them */
+  p.appendChild(certCard(m));
+  return p;
+}
+
+function certCard(m){
+  var box = el('div');
+  if(!window.AlizonCertificate) return box;
+  var t;
+  try{ t = AlizonCertificate.template(); }catch(e){ return box; }
+  if(!t || !t.enabled) return box;
+  var pass = t.passMark||50;
+  var me = participant();
+  if(m.total < pass){
+    box.innerHTML = '<div class="card"><div class="fb part"><div class="hd">No certificate for this attempt</div>'
+      + 'A certificate is issued at <b>'+esc(pass)+'/100</b> and above; you scored <b>'+m.total+'</b>. '
+      + 'Nothing stops you working the stations again — and in Beginner mode there is no penalty for doing so.</div></div>';
+    return box;
+  }
+  box.innerHTML = '<div class="card"><h2 style="font-size:19px;margin-bottom:5px">Your certificate</h2>'
+    + '<p class="muted" style="font-size:13px">You passed at <b>'+m.total+'/100</b>. '+esc(t.title)
+    + ' will be issued in the name below, against a code anyone can check.</p>'
+    + '<div class="whoami" style="margin-top:11px"><span>Issued to</span> <b>'+esc(me&&me.name||'—')+'</b>'
+    + '<span>'+esc([me&&me.roll,me&&me.institution].filter(Boolean).join(' · '))+'</span></div>'
+    + '<div class="row" style="margin-top:11px"><button class="btn" data-act="cert">Issue my certificate</button>'
+    + '<span class="muted" style="font-size:12.5px" data-cmsg>Opens in a new tab — print it or save it as PDF.</span></div></div>';
+  on(box,'[data-act=cert]','click',function(e,b){
+    var msg = box.querySelector('[data-cmsg]');
+    if(!me || !me.name){ msg.textContent='Sign in again so the certificate carries your name.'; return; }
+    b.disabled = true; b.textContent='Issuing…';
+    AlizonCertificate.issue({
+      name:me.name, reg:me.roll, institution:me.institution,
+      course:'PV Foundations — Pharmacovigilance for Beginners',
+      programme:'PVF', score:m.total, band:m.band
+    }).then(function(rec){
+      b.disabled = false;
+      if(!rec){ b.textContent='Issue my certificate';
+        msg.innerHTML='<span style="color:var(--danger)">Certificates are not being issued at the moment.</span>'; return; }
+      b.textContent='Issue it again';
+      msg.innerHTML = 'Certificate <b>'+esc(rec.code)+'</b>'
+        + (rec.cloud ? ' — recorded, and checkable at '+esc(t.verifyUrl)
+                     : ' — issued, but it could not be recorded for checking. Keep your copy.');
+      AlizonCertificate.open(rec);
+    }).catch(function(){
+      b.disabled=false; b.textContent='Issue my certificate';
+      msg.innerHTML='<span style="color:var(--danger)">Certificate service did not respond.</span>';
+    });
+  });
+  return box;
+}
+
+/* ================================================================== *
+ * the investigation desk drawer                                       *
+ *                                                                     *
+ * Open at every station and in every mode, including Challenge. That  *
+ * is deliberate: looking things up is never the thing being tested.   *
+ * ================================================================== */
+var DESK = [
+ {k:'drugdb',  n:'Drug database'},
+ {k:'inter',   n:'Interaction checker'},
+ {k:'factors', n:'Patient factors'},
+ {k:'terms',   n:'Term / coding search'},
+ {k:'serious', n:'Seriousness criteria'},
+ {k:'causal',  n:'Causality references'},
+ {k:'icsr',    n:'ICSR field guide'},
+ {k:'report',  n:'How to report in India'}
+];
+var deskCur = 'drugdb';
+
+function drawDesk(){
+  $('dkTabs').innerHTML = DESK.map(function(d){
+    return '<button class="dktab'+(deskCur===d.k?' on':'')+'" data-dk="'+d.k+'">'+esc(d.n)+'</button>';
+  }).join('');
+  var host = $('dkPanes');
+  host.innerHTML = '';
+  var pane = el('div','dkpane on');
+  pane.appendChild(DESKFN[deskCur]());
+  host.appendChild(pane);
+}
+on(document,'[data-dk]','click',function(e,t){
+  deskCur = t.getAttribute('data-dk');
+  drawDesk();
+});
+/* Opening and closing the drawer.
+
+   The role="dialog" attribute is set only while the drawer is open, and that
+   is load-bearing rather than decorative. alizon-backbar.js binds Escape to
+   navigate back, guarded by `document.querySelector('.ov, [role=dialog]')`.
+   With the attribute set statically, Escape would never work as "back" on this
+   page; with it never set, Escape closes the drawer AND leaves the workshop,
+   losing the student's progress.
+
+   Removal is deferred by a tick so that the back-bar's own handler — which may
+   run before or after this one, depending on script order — still sees the
+   dialog during the same keypress and stays out of the way. */
+/* alizon-backbar.js pins Back and Dashboard at z-index 2147483000, which sits
+   over the drawer. Out-stacking that would be a silly arms race, and leaving
+   them clickable above a modal is wrong anyway — one stray click on "Back"
+   loses the student's whole attempt. So hide them while the drawer is open. */
+function backBar(show){
+  var b = document.getElementById('alizonBackBar');
+  if(b) b.style.display = show ? '' : 'none';
+}
+function deskOpen(){
+  var w = $('deskWrap');
+  w.classList.add('on');
+  w.setAttribute('role','dialog');
+  w.setAttribute('aria-modal','true');
+  backBar(false);
+  drawDesk();
+  var x = $('deskX'); if(x) x.focus();
+}
+function deskClose(){
+  var w = $('deskWrap');
+  if(!w.classList.contains('on')) return false;
+  w.classList.remove('on');
+  backBar(true);
+  setTimeout(function(){
+    if(!w.classList.contains('on')){ w.removeAttribute('role'); w.removeAttribute('aria-modal'); }
+  }, 0);
+  var b = $('deskBtn'); if(b) b.focus();
+  return true;
+}
+$('deskBtn').addEventListener('click', deskOpen);
+$('deskX').addEventListener('click', deskClose);
+$('deskSc').addEventListener('click', deskClose);
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape') return;
+  if(deskClose()) e.stopImmediatePropagation();
+});
+
+var DESKFN = {
+ drugdb:function(){
+   var d = el('div');
+   var h = '<p class="muted" style="font-size:12.5px;margin-bottom:10px">Every drug card, at every station. '
+     + 'Opening one is recorded in your report as good practice, never as cheating.</p><div class="pillrow">';
+   Object.keys(D.DRUGS).forEach(function(k){
+     h += '<button class="ipill" data-ddrug="'+esc(k)+'">'+esc(D.DRUGS[k].generic)+'</button>';
+   });
+   h += '</div><div data-ddz></div>';
+   d.innerHTML = h;
+   on(d,'[data-ddrug]','click',function(e,t){
+     var k = t.getAttribute('data-ddrug');
+     var card = L.drugCard(st, k);
+     var z = d.querySelector('[data-ddz]');
+     z.innerHTML = drugCardHtml(card);
+     on(z,'[data-act=dk]','click',function(ev,b){
+       z.querySelector('[data-dk]').style.display='block'; b.style.display='none';
+     });
+     on(z,'[data-ipair]','click',function(ev,b){
+       var pr = b.getAttribute('data-ipair').split('|');
+       var r = L.findInteraction(pr[0], pr[1], st);
+       var add = el('div');
+       add.innerHTML = ragHtml(r, pretty(pr[0]), pretty(pr[1]));
+       z.appendChild(add);
+       add.scrollIntoView({behavior:'smooth', block:'center'});
+       drawBar(); drawTabs();
+     });
+     drawBar(); drawTabs();
+   });
+   return d;
+ },
+
+ inter:function(){
+   var d = el('div');
+   var keys = Object.keys(D.DRUGS);
+   var partners = {};
+   D.INTERACTIONS.forEach(function(x){ partners[x.a]=1; partners[x.b]=1; });
+   var plist = Object.keys(partners).sort(function(a,b){ return pretty(a).localeCompare(pretty(b)); });
+   d.innerHTML = '<label class="f">Medicine one</label><select data-ia>'
+     + keys.map(function(k){ return '<option value="'+esc(k)+'">'+esc(D.DRUGS[k].generic)+'</option>'; }).join('')
+     + '</select><div style="height:10px"></div>'
+     + '<label class="f">Medicine two, or a patient exposure</label><select data-ib>'
+     + plist.map(function(k){ return '<option value="'+esc(k)+'">'+esc(pretty(k))+'</option>'; }).join('')
+     + '</select>'
+     + '<div class="row" style="margin-top:11px"><button class="btn sm" data-act="dchk">Check interactions</button></div>'
+     + '<div data-dcz></div>';
+   on(d,'[data-act=dchk]','click',function(){
+     var a = d.querySelector('[data-ia]').value, b = d.querySelector('[data-ib]').value;
+     var r = L.findInteraction(a, b, st);
+     d.querySelector('[data-dcz]').innerHTML = ragHtml(r, D.DRUGS[a]?D.DRUGS[a].generic:pretty(a), pretty(b));
+     drawBar(); drawTabs();
+   });
+   return d;
+ },
+
+ factors:function(){
+   var d = el('div');
+   var h = '<p class="muted" style="font-size:12.5px;margin-bottom:10px">Drug + patient + disease. Every entry '
+     + 'begins with the question a pharmacist should ask before dispensing.</p>';
+   D.DRUG_DISEASE.forEach(function(x){
+     h += '<div class="rag '+x.rag+'" style="margin-top:10px"><div class="rh"><span class="dot">'
+       +  (D.RAG[x.rag]?D.RAG[x.rag].dot:'')+'</span>'
+       +  esc(D.DRUGS[x.drug]?D.DRUGS[x.drug].generic:pretty(x.drug))+' + '+esc(x.cond)+'</div>'
+       +  '<p style="font-weight:700;font-size:13.5px;margin:3px 0 8px">'+esc(x.q)+'</p>'
+       +  '<div class="flow">'+fr('Mechanism',x.mech)+fr('Consequence',x.conseq)+'</div>'
+       +  '<div class="dsec"><div class="sh">What to do</div><ul>'
+       +  x.action.map(function(a){ return '<li>'+esc(a)+'</li>'; }).join('')+'</ul></div>'
+       +  '<div class="teach"><div class="hd">Worth remembering</div>'+esc(x.pearl)+'</div></div>';
+   });
+   d.innerHTML = h;
+   return d;
+ },
+
+ terms:function(){
+   var d = el('div');
+   var EG = ['swelling around both ankles','yellow eyes','my sugar dropped','neck twisted',
+             'blisters and mouth ulcers','black tarry stools','dry cough that will not go',
+             'pins and needles in my feet','swollen lips'];
+   d.innerHTML = '<p class="muted" style="font-size:12.5px;margin-bottom:10px">Type what the patient said, in their '
+     + 'own words. This is a structural teaching stand-in for MedDRA, not a licensed extract \u2014 see Station 8 '
+     + 'for what that means and why it matters.</p>'
+     + '<input type="text" data-tq placeholder="e.g. swelling around both ankles">'
+     + '<div class="row" style="margin-top:10px"><button class="btn sm" data-act="dts">Search</button></div>'
+     + '<p class="muted" style="font-size:11.5px;margin:11px 0 5px">Or try one of these:</p>'
+     + '<div class="pillrow">'
+     + EG.map(function(x){ return '<button class="ipill" data-eg="'+esc(x)+'">'+esc(x)+'</button>'; }).join('')
+     + '</div><div data-dtz></div>';
+   function run(){
+     var res = L.searchTerms(d.querySelector('[data-tq]').value, st);
+     var z = d.querySelector('[data-dtz]');
+     if(!res.length){ z.innerHTML='<div class="fb part"><div class="hd">Nothing matched</div>Try plainer words.</div>';
+       drawBar(); drawTabs(); return; }
+     z.innerHTML = res.map(function(r,i){
+       var T = r.term;
+       return '<div class="rag '+(i===0?'green':'amber')+'" style="margin-top:10px">'
+         + '<div class="rh"><span class="dot">'+(i===0?'★':'☆')+'</span>'+esc(T.pt)+'</div>'
+         + '<div class="flow">'+fr('Verbatim',T.verbatim)+fr('Standardised term',T.pt)+fr('System organ class',T.soc)+'</div>'
+         + '<div class="dsec"><div class="sh">Related terms</div><p>'+esc(T.sibling.join(' · '))+'</p></div>'
+         + '<div class="teach"><div class="hd">Why it matters</div>'+esc(T.note)+'</div></div>';
+     }).join('');
+     drawBar(); drawTabs();
+   }
+   on(d,'[data-act=dts]','click',run);
+   on(d,'[data-eg]','click',function(e,t){
+     d.querySelector('[data-tq]').value = t.getAttribute('data-eg');
+     run();
+   });
+   d.addEventListener('keydown',function(e){ if(e.key==='Enter') run(); });
+   return d;
+ },
+
+ serious:function(){
+   var d = el('div');
+   d.innerHTML = '<div class="teach"><div class="hd">Seriousness is not severity</div>'
+     + '<b>Severity</b> = how intense (mild / moderate / severe). <b>Seriousness</b> = a fixed list of six outcomes, '
+     + 'and it sets the reporting timeline. A severe migraine is not serious. A symptomless critical potassium '
+     + 'is.</div><div class="tw" style="margin-top:11px"><table>'
+     + '<tr><th style="width:36%">Criterion</th><th>What it means</th></tr>'
+     + L.SERIOUS_CRITERIA.map(function(x){
+         return '<tr><td><b>'+esc(x.label)+'</b></td><td>'+esc(x.ex)+'</td></tr>';
+       }).join('')
+     + '</table></div>'
+     + '<div class="fb info" style="margin-top:11px"><div class="hd">Timelines</div>'
+     + 'A serious case is expedited — normally <b>15 calendar days</b> from first receipt of the minimum '
+     + 'information, for a marketing authorisation holder. The clock starts when the report arrives, not when the '
+     + 'investigation finishes, so you submit what you have and follow up afterwards.</div>';
+   return d;
+ },
+
+ causal:function(){
+   var d = el('div');
+   var h = '<div class="teach"><div class="hd">The four questions behind every scale</div>'
+     + 'Time relationship · dechallenge · alternative causes · known reaction. Every formal system is a more '
+     + 'detailed version of those four.</div>'
+     + '<h3 style="font-size:16px;margin:13px 0 7px">WHO-UMC categories</h3>';
+   Object.keys(L.WHO_UMC).forEach(function(k){
+     var w = L.WHO_UMC[k];
+     h += '<div class="fgrp"><div class="gh">'+esc(w.name)+'</div><ul style="margin-left:17px;font-size:12.5px;line-height:1.6">'
+       +  w.need.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>'
+       +  '<p class="muted" style="font-size:12px;margin-top:6px">'+esc(w.note)+'</p></div>';
+   });
+   h += '<h3 style="font-size:16px;margin:13px 0 7px">Naranjo items and weights</h3><div class="tw"><table>'
+     + '<tr><th>#</th><th>Item</th><th>Yes</th><th>No</th><th>Unk</th></tr>'
+     + L.NARANJO.map(function(x,i){
+         return '<tr><td>'+(i+1)+'</td><td>'+esc(x.q)+'</td><td>'+(x.w[0]>0?'+':'')+x.w[0]+'</td>'
+           + '<td>'+(x.w[1]>0?'+':'')+x.w[1]+'</td><td>'+x.w[2]+'</td></tr>';
+       }).join('')
+     + '</table></div>'
+     + '<p class="muted" style="font-size:12px;margin-top:7px">≥9 Definite · 5–8 Probable · 1–4 Possible · '
+     + '≤0 Doubtful. Items 5 and 6 are reversed.</p>';
+   d.innerHTML = h;
+   return d;
+ },
+
+ icsr:function(){
+   var d = el('div');
+   var groups = {};
+   L.icsrFields().forEach(function(x){ (groups[x.g]=groups[x.g]||[]).push(x); });
+   var h = '<div class="teach"><div class="hd">The four minimum elements</div>'
+     + '<b>Patient · Reporter · Product · Event.</b> Without all four it is not a report. None of them is about '
+     + 'proving the drug did it.</div>';
+   Object.keys(groups).forEach(function(g){
+     h += '<div class="fgrp"><div class="gh">'+esc(g)+'</div>';
+     groups[g].forEach(function(x){
+       h += '<div class="ff"><label>'+esc(x.label)+(x.min?'<span class="mn">Minimum</span>':'')+'</label>'
+         +  '<div class="wy">'+esc(x.why)+'</div></div>';
+     });
+     h += '</div>';
+   });
+   d.innerHTML = h;
+   return d;
+ },
+
+ report:function(){
+   var d = el('div');
+   d.innerHTML = '<div class="teach"><div class="hd">Who can report</div>'
+     + 'Any healthcare professional — doctor, dentist, pharmacist, nurse — and also students and interns, patients '
+     + 'and consumers directly, and marketing authorisation holders, for whom it is a legal duty.</div>'
+     + '<div class="flow" style="margin-top:11px">'
+     + fr('1 · Notice it', 'A suspected reaction. Suspicion is the threshold — you never need proof.')
+     + fr('2 · Record it', 'The Suspected ADR Reporting Form. Patient, reporter, product, event as the minimum.')
+     + fr('3 · Send it', 'To your ADR Monitoring Centre, or directly to the National Coordination Centre — the Indian '
+         +'Pharmacopoeia Commission, Ghaziabad. There is a toll-free consumer helpline as well.')
+     + fr('4 · It is entered', 'Into VigiFlow, the WHO case management system used by the national programme.')
+     + fr('5 · It goes global', 'On to VigiBase at the Uppsala Monitoring Centre, the WHO Collaborating Centre, which '
+         +'holds tens of millions of reports from more than 150 countries.')
+     + fr('6 · It gets screened', 'Alongside every similar report worldwide, for patterns no single hospital could see.')
+     + fr('7 · Something changes', 'A label change, a restriction, a communication to healthcare professionals, or a '
+         +'withdrawal. Every one of those began with somebody filling in a form.')
+     + '</div>'
+     + '<div class="fb info" style="margin-top:11px"><div class="hd">Why your one report matters</div>'
+     + 'Spontaneous reporting captures well under 10% of reactions — often nearer 5%. At that rate, each report you '
+     + 'send stands in for many that were never sent. It is not a formality.</div>';
+   return d;
+ }
+};
+
+/* ================================================================== *
+ * wiring                                                              *
+ * ================================================================== */
+var RENDER = {
+  start:pStart,
+  basics:function(){ return quizPanel('basics',
+    'PV basics — what is pharmacovigilance?',
+    'Five questions. In Beginner mode the concept is explained before each one, and a first wrong answer is never '
+    + 'marked wrong — you get a hint and another attempt.'); },
+  read:pRead, drug:pDrug, inter:pInter, adr:pAdr, serious:pSerious,
+  causal:pCausal, code:pCode, icsr:pIcsr,
+  follow:function(){ return quizPanel('follow',
+    'Follow-up and quality check',
+    'A report is rarely finished when it is submitted. These questions are about what you chase, in what order, and '
+    + 'inside what timeline.'); },
+  signal:pSignal, final:pFinal, report:pReport
+};
+
+/* theme toggle, matching the rest of the site */
+$('themeBtn').addEventListener('click',function(){
+  var dark = document.documentElement.classList.toggle('dark');
+  try{ localStorage.setItem('pracTheme', dark?'dark':'light'); }catch(e){}
+});
+
+/* who am I, in the masthead. Called from drawBar() as well as at startup,
+   because signing in re-renders the page without reloading it. */
+function drawWhoami(){
+  var me = participant();
+  $('whoami').textContent = me ? (me.name + (me.roll?' \u00b7 '+me.roll:'')) : '';
+}
+drawWhoami();
+
+go('start');
+})();
+</script>
+<script src="alizon-backbar.js?v=5"></script>
+</body>
+</html>

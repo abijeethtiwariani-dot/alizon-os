@@ -3416,6 +3416,30 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
 (function(){
   'use strict';
   var OPEN = [{
+    id:'pvfoundations',
+    title:'PV Foundations',
+    kicker:'Pharmacovigilance · Beginner to competent',
+    href:'ALIZON-OS-Workshop-PV-Foundations',
+    lead:'<b>Start here if you have not done pharmacovigilance before.</b> This workshop assumes you have not '
+        +'studied pharmacology, have never seen a MedDRA term and could not define causality assessment \u2014 and it '
+        +'teaches you each of those at the moment you need it. Read a real drug card before you judge a reaction to '
+        +'that drug. Run an interaction check and a patient-factor check and say what the pharmacist should do. '
+        +'Decide whether an event is even an ADR, and learn that "I need more information" is a professional answer. '
+        +'Then seriousness, causality, coding, the ICSR and the follow-up. A first wrong answer is never marked '
+        +'wrong \u2014 you get a hint and another attempt.',
+    does:['Reading a safety case','Drug and ADR intelligence','Drug\u2013drug interactions','Drug\u2013disease and patient factors',
+          'ADR identification','Alternative causes','Seriousness vs severity','WHO-UMC and Naranjo causality',
+          'Reaction coding','ICSR construction','Quality check and follow-up','Signal concepts'],
+    facts:[['Stations','13, taken in order'],['Format','4 hours taught, or work it alone'],['Modes','Beginner, Intermediate, Challenge'],
+           ['Cost','Free'],['To start','Name, roll no. and phone'],['You keep','Your own performance report']],
+    partner:{ name:'Mar Dioscorus College of Pharmacy',
+              sub:'Malankara Orthodox Church \u00b7 Sreekariyam, Thiruvananthapuram, Kerala',
+              logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
+    note:'Built for B.Pharm and Pharm.D students, interns and anyone returning to the subject. Your report scores '
+        +'your answers and your reasoning separately, because getting the right answer for the wrong reason is the '
+        +'thing worth catching. Finish this and PV-X below will make sense.',
+    cta:'Start the workshop'
+  },{
     id:'pvx',
     title:'PV-X — AI ADR Detective',
     kicker:'Pharmacovigilance · Virtual patient',
@@ -3433,6 +3457,9 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
     partner:{ name:'Mar Dioscorus College of Pharmacy',
               sub:'Malankara Orthodox Church · Sreekariyam, Thiruvananthapuram, Kerala',
               logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
+    note:'This one assumes you already know what an ADR is, what makes a case serious and roughly how causality is '
+        +'assessed. If any of that is new, take PV Foundations above first \u2014 it teaches exactly this workflow '
+        +'with the explanations switched on.',
     cta:'Start the workshop'
   },{
     id:'pvvigibase',
