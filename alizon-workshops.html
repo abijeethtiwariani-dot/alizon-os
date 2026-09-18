@@ -1686,6 +1686,8 @@ section.blk.alt{background:var(--paper)}
 .ow-lock .x{color:var(--muted);font-size:18px;font-weight:300}
 .ow-side .who{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:14px}
 .ow-side .who b{display:block;color:var(--ink);font-size:13.5px;font-family:'Source Serif Pro',Georgia,serif;font-weight:600}
+.ow-side .who .pn{display:block;color:var(--ink);font-weight:600;margin-top:9px}
+.ow-side .who .pn:first-of-type{margin-top:5px}
 .ow-facts{list-style:none;margin-top:18px;border-top:1px solid var(--line)}
 .ow-facts li{font-size:13px;color:var(--muted);padding:9px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px}
 .ow-facts li b{color:var(--ink);font-weight:600;text-align:right}
@@ -3438,9 +3440,17 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
           'Reaction coding','ICSR construction','Quality check and follow-up','Signal concepts'],
     facts:[['Stations','13, taken in order'],['Format','4 hours taught, or work it alone'],['Modes','Beginner, Intermediate, Challenge'],
            ['Cost','Free'],['To start','Name, roll no. and phone'],['You keep','Your own performance report']],
-    partner:{ name:'Mar Dioscorus College of Pharmacy',
-              sub:'Malankara Orthodox Church \u00b7 Sreekariyam, Thiruvananthapuram, Kerala',
-              logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
+    /* Two collaborating organisations. `partners` is the current shape; the
+       renderer still accepts a single `partner` so an older card object can
+       be pasted back without editing. No logo or address is given for the
+       research centre because we do not have either \u2014 the renderer omits
+       what is missing rather than showing a broken crest. */
+    partners:[{ name:'Mar Dioscorus College of Pharmacy',
+                sub:'Malankara Orthodox Church \u00b7 Sreekariyam, Thiruvananthapuram, Kerala',
+                logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png',
+                type:'CollegeOrUniversity' },
+              { name:'International Organisation for Preventive Health & Medical Research Centre',
+                type:'ResearchOrganization' }],
     note:'Built for B.Pharm and Pharm.D students, interns and anyone returning to the subject. Your report scores '
         +'your answers and your reasoning separately, because getting the right answer for the wrong reason is the '
         +'thing worth catching.',
@@ -3449,6 +3459,14 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
 
   function esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){
     return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+
+  /* A card may carry `partners` (a list) or the older single `partner`.
+     Everything downstream goes through here so the lockup, the credit line
+     and the structured data can never disagree about who collaborated. */
+  function partnersOf(w){
+    if (Array.isArray(w.partners)) return w.partners;
+    return w.partner ? [w.partner] : [];
+  }
 
   function card(w){
     return '<article class="ow">'
@@ -3467,10 +3485,17 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
       + '<aside class="ow-side">'
         + '<div class="ow-lock">'
           + '<img src="alizon-logo.png" alt="Alizon" onerror="this.style.display=\'none\'">'
-          + '<span class="x">&times;</span>'
-          + '<img class="crest" src="'+esc(w.partner.logo)+'" alt="'+esc(w.partner.name)+'" onerror="this.style.display=\'none\'">'
+          + partnersOf(w).filter(function(pt){ return pt.logo; }).map(function(pt){
+              return '<span class="x">&times;</span>'
+                + '<img class="crest" src="'+esc(pt.logo)+'" alt="'+esc(pt.name)+'" onerror="this.style.display=\'none\'">';
+            }).join('')
         + '</div>'
-        + '<div class="who"><b>In collaboration with</b>'+esc(w.partner.name)+'<br>'+esc(w.partner.sub)+'</div>'
+        + '<div class="who"><b>In collaboration with</b>'
+          + partnersOf(w).map(function(pt){
+              return '<span class="pn">'+esc(pt.name)+'</span>'
+                + (pt.sub ? esc(pt.sub) : '');
+            }).join('')
+        + '</div>'
         + '<ul class="ow-facts">'+w.facts.map(function(f){
             return '<li><span>'+esc(f[0])+'</span><b>'+esc(f[1])+'</b></li>'; }).join('')+'</ul>'
       + '</aside>'
@@ -3493,7 +3518,8 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
           "educationalLevel":"Professional",
           "teaches":w.does.join(', '),
           "provider":{"@type":"EducationalOrganization","name":"Alizon School of Medical & Digital Intelligence","url":"https://www.alizon.in/"},
-          "contributor":{"@type":"CollegeOrUniversity","name":w.partner.name},
+          "contributor":partnersOf(w).map(function(pt){
+            return {"@type":pt.type||"Organization","name":pt.name}; }),
           "hasCourseInstance":{"@type":"CourseInstance","courseMode":"online",
             "courseWorkload":"PT1H","instructor":{"@type":"Organization","name":"Alizon School of Medical & Digital Intelligence"}}
         }};})};
