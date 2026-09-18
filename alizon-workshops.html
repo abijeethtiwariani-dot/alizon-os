@@ -3424,6 +3424,35 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
 (function(){
   'use strict';
   var OPEN = [{
+    id:'pvlab',
+    title:'PV Lab',
+    kicker:'Pharmacovigilance \u00b7 Case processing software',
+    href:'ALIZON-OS-PV-Software',
+    lead:'<b>A working pharmacovigilance department, in your browser.</b> Not a lesson about case processing \u2014 '
+        +'the software itself. Take a safety report from the telephone call through intake, the four minimum '
+        +'elements, triage, duplicate detection, drug and reaction coding, seriousness, expectedness, causality, '
+        +'follow-up, the narrative, medical review, quality control, a simulated ICSR submission and closure \u2014 '
+        +'then watch it appear in analytics and feed signal detection. Six roles with real separation of duties: '
+        +'the person who enters a case cannot approve it, and the system tells you why when it refuses. Every '
+        +'action lands in an audit trail that nobody can edit.',
+    does:['Case intake and validity','Triage and prioritisation','Duplicate detection','Drug coding',
+          'Reaction coding (LLT\u2013PT\u2013HLT\u2013SOC)','Seriousness and expectedness','Causality assessment',
+          'Follow-up management','Narrative generation','Medical review','Quality control','ICSR simulation',
+          'Signal management','Literature monitoring','Analytics','Audit trail'],
+    facts:[['Roles','6, with real separation of duties'],['Training cases','10, each with a hidden answer key'],
+           ['Workflow','11 enforced states'],['Cost','Free'],['Sign-in','None \u2014 pick a role'],
+           ['Your data','Stays in your browser']],
+    partners:[{ name:'Mar Dioscorus College of Pharmacy',
+                sub:'Malankara Orthodox Church \u00b7 Sreekariyam, Thiruvananthapuram, Kerala',
+                logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png',
+                type:'CollegeOrUniversity' },
+              { name:'International Organisation for Preventive Health & Medical Research Centre',
+                type:'ResearchOrganization' }],
+    note:'An educational simulation. Every patient, product, batch and laboratory value is fictional, the '
+        +'terminology is a synthetic MedDRA-shaped dictionary rather than MedDRA itself, and nothing is connected '
+        +'to any regulatory system. Cases are scored against a hidden answer key when you close them.',
+    cta:'Open PV Lab'
+  },{
     id:'pvfoundations',
     title:'PV Foundations',
     kicker:'Pharmacovigilance · Beginner to competent',
