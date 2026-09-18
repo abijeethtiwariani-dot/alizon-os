@@ -8,7 +8,7 @@
 <!-- Indexable on purpose, as for PV-X: a workshop that is open to everyone
      has to be findable to be open at all. -->
 <meta name="robots" content="index, follow">
-<meta name="description" content="PV Foundations — a free, open, beginner-friendly pharmacovigilance workshop for pharmacy students. Learn the drug, read the case, check interactions and patient factors, decide whether it is an ADR, assess seriousness and causality, code the reaction and build the ICSR. Every step is taught as you do it. Run by the Alizon School of Medical &amp; Digital Intelligence with Mar Dioscorus College of Pharmacy.">
+<meta name="description" content="PV Foundations — a free, open, beginner-friendly pharmacovigilance workshop for pharmacy students. Learn the drug, read the case, check interactions and patient factors, decide whether it is an ADR, assess seriousness and causality, code the reaction and build the ICSR. Every step is taught as you do it. Run by the Alizon School of Medical &amp; Digital Intelligence with Mar Dioscorus College of Pharmacy and the International Organisation for Preventive Health &amp; Medical Research Centre.">
 <title>ALIZON AOS · PV Foundations — Learn Pharmacovigilance by Doing It</title>
 <script>try{if((localStorage.getItem('pracTheme')||'light')!=='light')document.documentElement.classList.add('dark');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -262,9 +262,14 @@
       <span class="lx">&times;</span>
       <img class="crest" src="resources/partners/mar-dioscorus-college-of-pharmacy.png"
            alt="Mar Dioscorus College of Pharmacy" onerror="this.style.display='none'">
-      <div class="who"><b>Alizon School of Medical &amp; Digital Intelligence</b>
-        in collaboration with <b>Mar Dioscorus College of Pharmacy</b><br>
-        Malankara Orthodox Church · Sreekariyam, Thiruvananthapuram, Kerala</div>
+      <!-- Two collaborating organisations. Only Mar Dioscorus has a crest in
+           resources/partners, so the research centre is credited in text
+           rather than with a placeholder image. -->
+      <div class="who"><b>Alizon School of Medical &amp; Digital Intelligence</b>,
+        in collaboration with<br>
+        <b>Mar Dioscorus College of Pharmacy</b> — Malankara Orthodox Church ·
+        Sreekariyam, Thiruvananthapuram, Kerala<br>
+        and the <b>International Organisation for Preventive Health &amp; Medical Research Centre</b></div>
     </div>
     <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)">
       Open Workshop · Pharmacovigilance · Beginner to competent</div>
@@ -325,6 +330,7 @@
 <script src="alizon-experiment-brief.js?v=2"></script>
 <script src="alizon-pvx-register.js?v=1"></script>
 <script src="alizon-certificate.js?v=1"></script>
+<script src="pvx-experience-certificate.js?v=1"></script>
 <script src="pvx-learn-data.js?v=1"></script>
 <script src="pvx-learn-engine.js?v=1"></script>
 <script src="alizon-practical-report.js?v=6"></script>
@@ -2098,9 +2104,68 @@ function pReport(){
     + '</div>';
   p.appendChild(ac);
 
-  /* certificate, if the site is issuing them */
+  /* Two documents, and they certify different things. The completion
+     certificate says the workshop was PASSED and is gated on the mark. The
+     training record says it was WORKED and is gated on the work — a
+     participant who did every station and scored below the pass mark has
+     still done the training, and saying otherwise would be false. */
   p.appendChild(certCard(m));
+  p.appendChild(trainingCard(m));
   return p;
+}
+
+function trainingCard(m){
+  var box = el('div');
+  if(!window.PVXExperience) return box;
+  var me = participant();
+  var el2 = PVXExperience.eligible(m, st);
+
+  if(!el2.ok){
+    box.innerHTML = '<div class="card"><h2 style="font-size:19px;margin-bottom:5px">'
+      + 'Practical training record</h2>'
+      + '<p class="muted" style="font-size:13px">A separate document from the certificate above. It records '
+      + 'the hands-on training you actually did \u2014 which stations, for how long, at which level \u2014 rather '
+      + 'than whether you passed.</p>'
+      + '<div class="fb part" style="margin-top:11px"><div class="hd">Not yet</div>'+esc(el2.why)+'</div></div>';
+    return box;
+  }
+
+  box.innerHTML = '<div class="card"><h2 style="font-size:19px;margin-bottom:5px">Practical training record</h2>'
+    + '<p class="muted" style="font-size:13px">A separate document from the certificate above. This one records '
+    + 'the hands-on training you did \u2014 <b>'+el2.stations+' of '+el2.of+' stations</b>, <b>'+m.minutes
+    + ' minute'+(m.minutes===1?'':'s')+'</b> at the simulator, at <b>'+esc(m.mode)+'</b> level \u2014 and lists the '
+    + 'competencies you practised. It is issued on the work, not the mark.</p>'
+    + '<div class="whoami" style="margin-top:11px"><span>Issued to</span> <b>'+esc(me&&me.name||'\u2014')+'</b>'
+    + '<span>'+esc([me&&me.roll,me&&me.institution].filter(Boolean).join(' \u00b7 '))+'</span></div>'
+    + '<div class="fb info" style="margin-top:11px"><div class="hd">What it says on its face</div>'
+    + 'That this was <b>simulation-based training</b> with fictional patients, and that it is not a record of '
+    + 'employment, internship or supervised clinical practice. That wording is deliberate \u2014 anyone you show it '
+    + 'to should be able to tell exactly what it certifies.</div>'
+    + '<div class="row" style="margin-top:12px"><button class="btn gold" data-act="trg">Download my training record</button>'
+    + '<span class="muted" style="font-size:12.5px" data-tmsg>Opens in a new tab \u2014 print it or save it as PDF.</span></div></div>';
+
+  on(box,'[data-act=trg]','click',function(e,b){
+    var msg = box.querySelector('[data-tmsg]');
+    if(!me || !me.name){ msg.textContent = 'Sign in again so the record carries your name.'; return; }
+    b.disabled = true; b.textContent = 'Preparing\u2026';
+    PVXExperience.issue({
+      participant:me, mark:m, stations:el2.stations, of:el2.of
+    }).then(function(built){
+      b.disabled = false; b.textContent = 'Download it again';
+      if(!built){ msg.innerHTML = '<span style="color:var(--danger)">The record could not be produced.</span>'; return; }
+      var how = PVXExperience.open(built.html);
+      msg.innerHTML = how==='blocked'
+        ? '<span style="color:var(--danger)">Your browser blocked the new tab. Allow pop-ups and try again.</span>'
+        : (built.rec.code
+            ? 'Reference <b>'+esc(built.rec.code)+'</b>'+(built.cloud?' \u2014 recorded, and checkable.':' \u2014 issued, but it could not be recorded for checking. Keep your copy.')
+            : 'Issued. It carries no reference because the issuing service was unavailable.')
+          + (how==='downloaded' ? ' Saved as a file, because the new tab was blocked.' : '');
+    }).catch(function(){
+      b.disabled = false; b.textContent = 'Download my training record';
+      msg.innerHTML = '<span style="color:var(--danger)">The record could not be produced. Try again.</span>';
+    });
+  });
+  return box;
 }
 
 function certCard(m){
