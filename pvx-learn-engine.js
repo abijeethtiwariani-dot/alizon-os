@@ -1075,10 +1075,10 @@ function mark(st){
   if(!nInt && !nDis) advice.push('You ran no interaction or patient-factor checks. In a real case those two checks find most of what is findable.');
   if(!st.icsr || !st.icsr.valid) advice.push('Learn the four minimum elements by heart: patient, reporter, product, event. A report missing one cannot be processed.');
   if(st.signal && st.signal.max && !st.signal.ok) advice.push('Re-read the signal station. The biggest number is not the signal — seriousness, expectedness and plausibility decide it.');
-  if(missed+revealed >= 3) advice.push('Several questions were missed or revealed. Repeat the workshop in Beginner mode before moving to PV-X.');
+  if(missed+revealed >= 3) advice.push('Several questions were missed or revealed. Work the stations again in Beginner mode before moving up.');
   if(whyPct && whyPct<55) advice.push('Reasoning scored below 55%. The concepts are what transfer to the next case; the answers do not.');
-  if(st.mode!=='challenge' && weighted>=75) advice.push('You are ready for Challenge mode, and after that for PV-X, where nothing is given to you at all.');
-  if(!advice.length) advice.push('A clean run. The next step up is Challenge mode, and then PV-X.');
+  if(st.mode!=='challenge' && weighted>=75) advice.push('You are ready for Challenge mode, where you get the case and the reference desk and nothing else.');
+  if(!advice.length) advice.push('A clean run. The next step up is Challenge mode, on a case you have not seen.');
 
   return {
     mode:m.name, modeKey:st.mode, weight:m.weight,

@@ -15,11 +15,10 @@
   
   
   
-  <!-- The open workshops. Both carry robots "index, follow" deliberately: a
+  <!-- The open workshop. It carries robots "index, follow" deliberately: a
        workshop that is open to everyone has to be findable to be open at all.
-       Neither had been added here, so neither was discoverable. -->
+       Only the workshop actually offered on alizon-workshops belongs here. -->
   <url><loc>https://www.alizon.in/ALIZON-OS-Workshop-PV-Foundations</loc><lastmod>2026-09-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.alizon.in/ALIZON-OS-Workshop-PVX</loc><lastmod>2026-09-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
   <url><loc>https://www.alizon.in/alizon-course?course=Paramedical%20AI</loc><lastmod>2026-07-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.alizon.in/alizon-course?course=Pharmacy%20AI</loc><lastmod>2026-07-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>

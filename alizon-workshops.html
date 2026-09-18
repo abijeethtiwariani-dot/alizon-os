@@ -3412,7 +3412,13 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
    bookable events; a card here would advertise a Register button that
    leads nowhere.
 
-   To add another open workshop, add an object to OPEN below. */
+   To add another open workshop, add an object to OPEN below.
+
+   Only PV Foundations is offered here at present. The other open workshops
+   (PV-X, and the ADR-to-VigiBase team practical) were removed from this list
+   deliberately; their pages are still in the repository and still reachable
+   by direct link, so restoring one means putting its object back, not
+   rebuilding it. */
 (function(){
   'use strict';
   var OPEN = [{
@@ -3437,52 +3443,8 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(
               logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
     note:'Built for B.Pharm and Pharm.D students, interns and anyone returning to the subject. Your report scores '
         +'your answers and your reasoning separately, because getting the right answer for the wrong reason is the '
-        +'thing worth catching. Finish this and PV-X below will make sense.',
+        +'thing worth catching.',
     cta:'Start the workshop'
-  },{
-    id:'pvx',
-    title:'PV-X — AI ADR Detective',
-    kicker:'Pharmacovigilance · Virtual patient',
-    href:'ALIZON-OS-Workshop-PVX',
-    lead:'You are not handed a case. You are handed a patient who has noticed something — '
-        +'<b>and nothing else</b>. Interview them in your own words, and they answer only what you actually ask. '
-        +'Then go and find the rest: the treating doctor, the dispensing record, the medical notes, the laboratory. '
-        +'Identify the reaction, judge whether it is serious, score causality, file the report, check the database '
-        +'for duplicates, and decide what the safety team should do.',
-    does:['Patient interviewing','Medication history','ADR identification','Seriousness','Naranjo causality',
-          'ICSR completion','Duplicate detection','Signal assessment'],
-    facts:[['Cases','7, difficulty 1–7'],['Time','40–70 minutes each'],['Cost','Free'],
-           ['To start','Name, roll no. and phone'],['You keep','Your own PDF report']],
-    brochure:'pvx-brochure',
-    partner:{ name:'Mar Dioscorus College of Pharmacy',
-              sub:'Malankara Orthodox Church · Sreekariyam, Thiruvananthapuram, Kerala',
-              logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
-    note:'This one assumes you already know what an ADR is, what makes a case serious and roughly how causality is '
-        +'assessed. If any of that is new, take PV Foundations above first \u2014 it teaches exactly this workflow '
-        +'with the explanations switched on.',
-    cta:'Start the workshop'
-  },{
-    id:'pvvigibase',
-    title:'From ADR to VigiBase',
-    kicker:'Pharmacovigilance · Team investigation',
-    href:'ALIZON-OS-Module2-PV-Investigation',
-    lead:'A 42-year-old woman arrives at a Kerala emergency department with a spreading rash and facial '
-        +'swelling, four days into a new medicine. <b>You are the pharmacovigilance team.</b> The patient answers '
-        +'only what you actually ask, the report form arrives incomplete on purpose, and information is released '
-        +'in stages — as it is in a real investigation. Take the history, classify seriousness, argue causality in '
-        +'open court, build a valid ICSR, carry it from the ADR Monitoring Centre to the Uppsala Monitoring Centre, '
-        +'and finish by judging what a pattern in the global database is actually worth.',
-    does:['Patient interviewing','Working with missing data','Seriousness criteria','WHO-UMC causality',
-          'The four minimum elements','ICSR entry in VigiFlow','Standardised coding','Quality review','Signal detection'],
-    facts:[['Format','Theory 2 h, then practicals 3 h'],['Total','5 hours'],['Teams','4–5 students'],
-           ['Stages','13, unlocked in order'],['Marks','100, pass at 50']],
-    brochure:'pv-practicals-brochure',
-    partner:{ name:'Mar Dioscorus College of Pharmacy',
-              sub:'Malankara Orthodox Church · Sreekariyam, Thiruvananthapuram, Kerala',
-              logo:'resources/partners/mar-dioscorus-college-of-pharmacy.png' },
-    note:'Opens straight away. Work it as a team of four or five on one screen — register the team name and '
-        +'your team lead, then take a role each before Stage 1.',
-    cta:'Open the workshop'
   }];
 
   function esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){
