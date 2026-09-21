@@ -21,6 +21,12 @@
   <url><loc>https://www.alizon.in/ALIZON-OS-Workshop-PV-Foundations</loc><lastmod>2026-09-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.alizon.in/ALIZON-OS-PV-Software</loc><lastmod>2026-09-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
+  <!-- MEDCITY Testprep. The overview and the batch catalogue are public and
+       are meant to be found; medcity-my-batches is a candidate's own page and
+       carries robots "noindex", so it is deliberately absent. -->
+  <url><loc>https://www.alizon.in/medcity-testprep</loc><lastmod>2026-09-21</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.alizon.in/medcity-batches</loc><lastmod>2026-09-21</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+
   <url><loc>https://www.alizon.in/alizon-course?course=Paramedical%20AI</loc><lastmod>2026-07-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.alizon.in/alizon-course?course=Pharmacy%20AI</loc><lastmod>2026-07-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.alizon.in/alizon-course?course=Medical%20AI</loc><lastmod>2026-07-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- pwa:alizon -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#8c1515">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
+<!-- /pwa:alizon -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Batches — MEDCITY Testprep | ALIZON AOS</title>
+<meta name="description" content="Your MEDCITY Testprep batches — schedule, mock test dates, materials and how far through each batch is.">
+<!-- A personal page. Nothing here is useful to a search engine, and the
+     page name should not be indexed against a candidate's device. -->
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="medcity.css?v=1">
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="azsitehdr">
+  <div class="azhdr-util"><div class="in">
+    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON&nbsp;AOS<small>Medical &amp; Digital Intelligence</small></span></a>
+    <div class="util-r"><span class="lbl">Information for:</span>
+      <a href="ASMDI-dashboard.html">Students</a><a href="alizon-faculty-portal.html">Faculty &amp; Staff Login</a><a href="alizon-results.html">Results</a><a href="alizon-verify.html">Verify</a><a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
+    </div>
+  </div></div>
+  <div class="azhdr-nav"><nav class="in">
+    <div class="navlinks2">
+      <a href="medcity-testprep.html">Overview</a><a href="medcity-batches.html">Batches</a><a href="medcity-my-batches.html" class="on">My Batches</a><a href="alizon-workshops.html">Workshops</a><a href="os-practicals.html">Practicals</a><a href="alizon-results.html">Results</a>
+    </div>
+    <a class="cta" href="medcity-batches.html">Find a batch ↗</a>
+  </nav></div>
+</header>
+
+<!-- ===== HEAD ===== -->
+<div class="mc-head">
+  <div class="wrap">
+    <span class="eyebrow">MEDCITY Testprep</span>
+    <h1>My Batches</h1>
+    <p id="headLead">Everything you have enrolled in — schedule, mock dates, materials, and how far through each batch is.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div id="who"></div>
+    <div class="mine" id="mine"></div>
+    <div id="empty"></div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON AOS<small>Practical Learning Platform</small></span></a>
+        <p style="max-width:34ch">MEDCITY Testprep is the competitive-exam coaching arm of Alizon School of Medical &amp; Digital Intelligence, Kerala.</p>
+      </div>
+      <div><h4>Testprep</h4><a href="medcity-testprep.html">Overview</a><a href="medcity-batches.html">All batches</a><a href="medcity-my-batches.html">My Batches</a></div>
+      <div><h4>Platform</h4><a href="os-practicals.html">Practicals</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a></div>
+      <div><h4>Institution</h4><a href="https://alizongov.com" target="_blank" rel="noopener">Official Website ↗</a><a href="index.html">Home</a><a href="alizon-academics.html">Academics</a><a href="alizon-verify.html">Verify a certificate</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Alizon School of Medical &amp; Digital Intelligence</span><span>alizongov.com · alizon.in</span></div>
+  </div>
+</footer>
+
+<script src="medcity-data.js?v=1"></script>
+<script src="medcity-enrol.js?v=1"></script>
+<script src="medcity-ui.js?v=1"></script>
+<script>
+(function(){
+  'use strict';
+  var D = window.MedcityData, U = window.MedcityUI, esc = U.esc;
+  var elWho = document.getElementById('who'), elMine = document.getElementById('mine'),
+      elEmpty = document.getElementById('empty'), elLead = document.getElementById('headLead');
+
+  function initials(name){
+    var p = String(name||'').trim().split(/\s+/).filter(Boolean);
+    if (!p.length) return '?';
+    return (p[0][0] + (p.length > 1 ? p[p.length-1][0] : '')).toUpperCase();
+  }
+
+  /* ---- a line that says the most useful true thing about where the
+          batch stands right now ---- */
+  function standing(b, e){
+    if (e.status === 'waitlist'){
+      return { cls:'chip-waitlist', text:'On the waitlist' };
+    }
+    var n = D.daysUntil(b.starts);
+    if (n == null) return { cls:'chip-open', text:'Enrolled' };
+    if (n > 1)  return { cls:'chip-open', text:'Starts in ' + n + ' days' };
+    if (n === 1) return { cls:'chip-open', text:'Starts tomorrow' };
+    if (n === 0) return { cls:'chip-filling', text:'Starts today' };
+    var end = D.daysUntil(b.ends);
+    if (end != null && end < 0) return { cls:'chip-closed', text:'Finished' };
+    return { cls:'chip-filling', text:'In progress' };
+  }
+
+  function nextUp(b){
+    var m = D.nextMock(b);
+    if (!m) return '';
+    var d = D.parseDate(m.on), n = D.daysUntil(m.on);
+    var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var when = n === 0 ? 'Today' : n === 1 ? 'Tomorrow' : 'In ' + n + ' days';
+    var detail = [m.kind === 'full' ? 'Full length' : 'Sectional',
+                  m.questions ? m.questions + ' questions' : '',
+                  m.minutes ? m.minutes + ' minutes' : ''].filter(Boolean).join(' · ');
+    return '<div class="nextup">' +
+      '<div class="d"><b>' + d.getDate() + '</b><span>' + MON[d.getMonth()] + '</span></div>' +
+      '<div class="t"><b>' + esc(m.name) + '</b><span>' + esc(when + (detail ? ' · ' + detail : '')) + '</span></div>' +
+    '</div>';
+  }
+
+  function progressBlock(b){
+    var p = D.progress(b);
+    if (p == null) return '';
+    var label = p === 0 ? 'Not started yet' : p === 100 ? 'Finished' : p + '% through';
+    return '<div class="prog"><div class="lbl"><span>' + esc(label) + '</span>' +
+      '<span>' + esc(D.fmtRange(b.starts, b.ends)) + '</span></div>' +
+      '<div class="bar"><i style="width:' + p + '%"></i></div></div>';
+  }
+
+  function details(b){
+    var parts = '';
+
+    if (b.syllabus && b.syllabus.length){
+      parts += '<div><b style="font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)">The plan</b>' +
+        '<div style="display:grid;gap:12px;margin-top:10px">' +
+        b.syllabus.map(function(s){
+          return '<div class="phase"><b>' + esc(s.title) + '</b>' +
+                 (s.detail ? '<p>' + esc(s.detail) + '</p>' : '') + '</div>';
+        }).join('') + '</div></div>';
+    }
+
+    if (b.mocks && b.mocks.length){
+      parts += '<div><b style="font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)">Mock tests</b>' +
+        '<ul class="mocklist" style="margin-top:10px">' +
+        b.mocks.map(function(m){
+          var n = D.daysUntil(m.on), past = (n != null && n < 0);
+          return '<li' + (past ? ' class="done"' : '') + '>' +
+            '<span class="dt">' + esc(D.fmtDate(m.on) || 'TBC') + '</span>' +
+            '<span class="nm">' + esc(m.name) + '</span></li>';
+        }).join('') + '</ul></div>';
+    }
+
+    if (b.materials && b.materials.length){
+      parts += '<div><b style="font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)">Materials</b>' +
+        '<ul class="meta" style="margin-top:10px">' +
+        b.materials.map(function(m){
+          var label = esc(m.name);
+          /* A material with no link yet is listed, not hidden — the
+             candidate should know it is coming. */
+          var body = m.href
+            ? '<a href="' + esc(m.href) + '" style="color:var(--crimson);font-weight:600">' + label + ' →</a>'
+            : label + ' <span style="color:var(--muted)">— not published yet</span>';
+          return '<li>' + U.icon('doc') + '<span>' + body + '</span></li>';
+        }).join('') + '</ul></div>';
+    }
+
+    if (!parts) return '';
+    return '<details class="more"><summary>Batch detail</summary><div class="inner">' + parts + '</div></details>';
+  }
+
+  /* ---- a batch that has since been taken out of the catalogue. The
+          enrolment is real and the office still holds it, so it is shown
+          honestly rather than quietly dropped. ---- */
+  function orphanCard(e){
+    return '<article class="batch" style="border-left-color:#b9b4ac">' +
+      '<div class="b-top"><span class="chip chip-closed">No longer listed</span></div>' +
+      '<div class="b-body"><h3>' + esc(e.batchName || e.batchId) + '</h3>' +
+      '<p class="tagline">This batch is no longer in the catalogue. Your enrolment is still on record with the office — call them if you need it confirmed.</p></div>' +
+      '<div class="b-foot"><div class="price" style="font-size:1rem">Enrolled ' + esc(D.fmtDate(String(e.at||'').slice(0,10)) || '') + '</div>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-leave="' + esc(e.batchId) + '">Remove</button></div>' +
+    '</article>';
+  }
+
+  function card(b, e){
+    var st = standing(b, e);
+    var h = '<article class="batch" id="batch-' + esc(b.id) + '">';
+    h += '<div class="b-top">' + U.trackChip(b) +
+         '<span class="chip ' + st.cls + '">' + esc(st.text) + '</span></div>';
+    h += '<div class="b-body">';
+    h += '<h3>' + esc(b.name) + '</h3>';
+    if (b.tagline) h += '<p class="tagline">' + esc(b.tagline) + '</p>';
+    h += U.metaList(b);
+    h += progressBlock(b);
+    h += nextUp(b);
+    if (e.status === 'waitlist'){
+      h += '<div class="notice" style="margin-top:16px">' + U.icon('info') +
+           '<span>You are on the waitlist. The office works through it in order and will call you if a seat opens.</span></div>';
+    }
+    h += details(b);
+    h += '</div>';
+    h += '<div class="b-foot">' +
+      '<div class="price">' + esc(D.fee(b)) + (b.feeNote ? '<small>' + esc(b.feeNote) + '</small>' : '') + '</div>' +
+      '<a class="btn btn-ghost btn-sm" href="medcity-batches.html?batch=' + encodeURIComponent(b.id) + '">In the catalogue</a>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-leave="' + esc(b.id) + '" style="margin-left:0">Leave batch</button>' +
+    '</div></article>';
+    return h;
+  }
+
+  function draw(){
+    var who = MedcityEnrol.candidate();
+    var list = MedcityEnrol.list();
+
+    /* ---- nobody has introduced themselves on this device ---- */
+    if (!who){
+      elWho.innerHTML = '';
+      elMine.innerHTML = '';
+      elLead.textContent = 'Your batches live in this browser, so tell us who you are and they will be waiting here.';
+      elEmpty.innerHTML = '<div class="empty">' +
+        '<h3>No candidate on this device yet</h3>' +
+        '<p>MEDCITY Testprep has no portal login. Enter your details once and every batch you enrol in will show up here — schedule, mock dates and all.</p>' +
+        '<div style="display:flex;gap:11px;justify-content:center;flex-wrap:wrap">' +
+          '<button type="button" class="btn btn-primary btn-sm" id="startBtn">Enter my details</button>' +
+          '<a class="btn btn-ghost btn-sm" href="medcity-batches.html">Browse the batches</a>' +
+        '</div></div>';
+      var sb = document.getElementById('startBtn');
+      if (sb) sb.addEventListener('click', function(){ U.askIdentity().then(draw); });
+      return;
+    }
+
+    /* ---- who bar ---- */
+    var sub = [who.roll, who.institution].filter(Boolean).join(' · ');
+    elWho.innerHTML = '<div class="who-bar">' +
+      '<div class="av" aria-hidden="true">' + esc(initials(who.name)) + '</div>' +
+      '<div class="nm"><b>' + esc(who.name) + '</b><span>' + esc(sub || who.phone || '') + '</span></div>' +
+      '<div class="acts">' +
+        '<button type="button" class="btn btn-ghost btn-sm" id="editBtn">Edit details</button>' +
+        '<button type="button" class="btn btn-ghost btn-sm" id="outBtn">Not you?</button>' +
+      '</div></div>';
+    document.getElementById('editBtn').addEventListener('click', function(){
+      U.askIdentity({ force:true, lead:'Update what the office has for you. Changing these does not affect batches you have already joined.' }).then(draw);
+    });
+    document.getElementById('outBtn').addEventListener('click', function(){
+      if (!confirm('Forget your details and your batch list on this device?\n\nEnrolments already sent to the office are not cancelled — this only clears this browser.')) return;
+      MedcityEnrol.signOut();
+      U.toast('Cleared from this device.');
+      draw();
+    });
+
+    /* ---- enrolled in nothing ---- */
+    if (!list.length){
+      elMine.innerHTML = '';
+      elLead.textContent = 'Everything you enrol in will appear here.';
+      elEmpty.innerHTML = '<div class="empty"><h3>You have not joined a batch yet</h3>' +
+        '<p>Pick one from the catalogue and it will show up here straight away, with its schedule and mock dates.</p>' +
+        '<a class="btn btn-primary btn-sm" href="medcity-batches.html">Browse the batches</a></div>';
+      return;
+    }
+
+    /* ---- the batches ---- */
+    elEmpty.innerHTML = '';
+    elLead.textContent = 'Everything you have enrolled in — schedule, mock dates, materials, and how far through each batch is.';
+
+    var live = [], gone = [];
+    list.forEach(function(e){
+      var b = D.batch(e.batchId);
+      if (b) live.push({ b:b, e:e }); else gone.push(e);
+    });
+
+    /* Soonest-starting first, so what needs attention is at the top;
+       finished batches sink. */
+    live.sort(function(x, y){
+      var fx = (D.daysUntil(x.b.ends) != null && D.daysUntil(x.b.ends) < 0) ? 1 : 0;
+      var fy = (D.daysUntil(y.b.ends) != null && D.daysUntil(y.b.ends) < 0) ? 1 : 0;
+      if (fx !== fy) return fx - fy;
+      return String(x.b.starts || '9999-99-99').localeCompare(String(y.b.starts || '9999-99-99'));
+    });
+
+    elMine.innerHTML =
+      live.map(function(x){ return card(x.b, x.e); }).join('') +
+      gone.map(orphanCard).join('');
+  }
+
+  /* Leaving is delegated once, so redraws never need rebinding. */
+  document.addEventListener('click', function(ev){
+    var btn = ev.target.closest && ev.target.closest('[data-leave]');
+    if (!btn) return;
+    ev.preventDefault();
+    var id = btn.getAttribute('data-leave');
+    var b = D.batch(id);
+    var name = b ? b.name : ((MedcityEnrol.get(id)||{}).batchName || 'this batch');
+    if (!confirm('Leave ' + name + '?\n\nYour seat is released and the office is told. You can enrol again while the batch is still open.')) return;
+    btn.disabled = true;
+    MedcityEnrol.leave(id).then(function(){
+      U.toast('You have left ' + name + '.');
+      draw();
+    });
+  });
+
+  draw();
+  MedcityEnrol.onChange(draw);
+})();
+</script>
+<script src="alizon-back.js"></script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- pwa:alizon -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#8c1515">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Alizon AOS">
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});}).catch(function(){});if(window.caches&&caches.keys)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});}).catch(function(){});})}</script>
+<!-- /pwa:alizon -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Batches — MEDCITY Testprep | ALIZON AOS</title>
+<meta name="description" content="Every MEDCITY Testprep batch — GPAT, Drug Inspector and NORCET coaching on ALIZON AOS. Filter by exam, mode and availability, and hold your seat online.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.alizon.in/medcity-batches">
+<meta property="og:site_name" content="Alizon School of Medical &amp; Digital Intelligence">
+<meta property="og:title" content="Batches — MEDCITY Testprep">
+<meta property="og:description" content="Every MEDCITY Testprep batch. Filter by exam, mode and availability, and hold your seat online.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.alizon.in/medcity-batches">
+<meta property="og:image" content="https://www.alizon.in/alizon-logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Batches — MEDCITY Testprep">
+<meta name="twitter:description" content="Every MEDCITY Testprep batch. Filter by exam, mode and availability.">
+<link rel="icon" href="alizon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="medcity.css?v=1">
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="azsitehdr">
+  <div class="azhdr-util"><div class="in">
+    <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON&nbsp;AOS<small>Medical &amp; Digital Intelligence</small></span></a>
+    <div class="util-r"><span class="lbl">Information for:</span>
+      <a href="ASMDI-dashboard.html">Students</a><a href="alizon-faculty-portal.html">Faculty &amp; Staff Login</a><a href="alizon-results.html">Results</a><a href="alizon-verify.html">Verify</a><a href="https://alizongov.com" target="_blank" rel="noopener">Official Site ↗</a>
+    </div>
+  </div></div>
+  <div class="azhdr-nav"><nav class="in">
+    <div class="navlinks2">
+      <a href="medcity-testprep.html">Overview</a><a href="medcity-batches.html" class="on">Batches</a><a href="medcity-my-batches.html">My Batches</a><a href="alizon-workshops.html">Workshops</a><a href="os-practicals.html">Practicals</a><a href="alizon-results.html">Results</a>
+    </div>
+    <a class="cta" href="medcity-my-batches.html">My Batches ↗</a>
+  </nav></div>
+</header>
+
+<!-- ===== HEAD ===== -->
+<div class="mc-head">
+  <div class="wrap">
+    <span class="eyebrow">MEDCITY Testprep</span>
+    <h1 id="pgTitle">Batches</h1>
+    <p id="pgLead">Every batch we are running, with its schedule, fee and what is left of its seats. Enrolling holds your place — the office confirms it and arranges payment separately.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+
+    <div class="filters">
+      <div class="f">
+        <label for="fTrack">Exam</label>
+        <select id="fTrack"><option value="">All exams</option></select>
+      </div>
+      <div class="f">
+        <label for="fMode">Mode</label>
+        <select id="fMode">
+          <option value="">Any mode</option>
+          <option value="online">Online</option>
+          <option value="offline">At the centre</option>
+          <option value="hybrid">Hybrid</option>
+        </select>
+      </div>
+      <div class="f">
+        <label for="fAvail">Availability</label>
+        <select id="fAvail">
+          <option value="open">Enrolling now</option>
+          <option value="">Show everything</option>
+          <option value="mine">Only my batches</option>
+        </select>
+      </div>
+      <div class="f" style="flex:1.4">
+        <label for="fQ">Search</label>
+        <input id="fQ" type="search" placeholder="Batch name, faculty, centre…" autocomplete="off">
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm" id="fClear" style="margin-bottom:1px">Clear</button>
+    </div>
+
+    <p class="result-count" id="count"></p>
+    <div class="batch-grid" id="grid"></div>
+    <div id="none"></div>
+
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><img src="alizon-logo.png" alt="Alizon"><span>ALIZON AOS<small>Practical Learning Platform</small></span></a>
+        <p style="max-width:34ch">MEDCITY Testprep is the competitive-exam coaching arm of Alizon School of Medical &amp; Digital Intelligence, Kerala.</p>
+      </div>
+      <div><h4>Testprep</h4><a href="medcity-testprep.html">Overview</a><a href="medcity-batches.html">All batches</a><a href="medcity-my-batches.html">My Batches</a></div>
+      <div><h4>Platform</h4><a href="os-practicals.html">Practicals</a><a href="alizon-exam.html">Examinations</a><a href="alizon-results.html">Results</a><a href="alizon-workshops.html">Workshops</a></div>
+      <div><h4>Institution</h4><a href="https://alizongov.com" target="_blank" rel="noopener">Official Website ↗</a><a href="index.html">Home</a><a href="alizon-academics.html">Academics</a><a href="alizon-verify.html">Verify a certificate</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Alizon School of Medical &amp; Digital Intelligence</span><span>alizongov.com · alizon.in</span></div>
+  </div>
+</footer>
+
+<script src="medcity-data.js?v=1"></script>
+<script src="medcity-enrol.js?v=1"></script>
+<script src="medcity-ui.js?v=1"></script>
+<script>
+(function(){
+  'use strict';
+  var D = window.MedcityData, U = window.MedcityUI, esc = U.esc;
+  var elTrack = document.getElementById('fTrack'), elMode = document.getElementById('fMode'),
+      elAvail = document.getElementById('fAvail'), elQ = document.getElementById('fQ'),
+      grid = document.getElementById('grid'), none = document.getElementById('none'),
+      count = document.getElementById('count');
+
+  /* ---- the track filter is built from the catalogue, so a new track
+          appears here the moment it is published ---- */
+  D.tracks().forEach(function(t){
+    var o = document.createElement('option');
+    o.value = t.id; o.textContent = t.name + (t.full ? ' — ' + t.full : '');
+    elTrack.appendChild(o);
+  });
+
+  /* ---- the URL is the source of truth for the filters, so a filtered
+          view can be linked to and the back button behaves ---- */
+  function readURL(){
+    var p;
+    try { p = new URLSearchParams(location.search); } catch(e){ p = null; }
+    var g = function(k, d){ return (p && p.get(k) != null) ? p.get(k) : d; };
+    elTrack.value = g('track','');
+    elMode.value  = g('mode','');
+    elAvail.value = g('avail','open');
+    elQ.value     = g('q','');
+    /* a track that no longer exists must not silently filter everything out */
+    if (elTrack.value && !D.track(elTrack.value)) elTrack.value = '';
+  }
+
+  function writeURL(){
+    var p = new URLSearchParams();
+    if (elTrack.value) p.set('track', elTrack.value);
+    if (elMode.value)  p.set('mode',  elMode.value);
+    if (elAvail.value !== 'open') p.set('avail', elAvail.value);
+    if (elQ.value.trim()) p.set('q', elQ.value.trim());
+    var qs = p.toString();
+    try { history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '')); } catch(e){}
+  }
+
+  function haystack(b){
+    var t = D.track(b.track);
+    return [b.name, b.tagline, b.centre, (b.faculty||[]).join(' '),
+            t ? t.name : '', t ? t.full : '', (b.highlights||[]).join(' ')]
+           .join(' ').toLowerCase();
+  }
+
+  function matches(b){
+    if (elTrack.value && b.track !== elTrack.value) return false;
+    if (elMode.value && (b.mode||'online') !== elMode.value) return false;
+    if (elAvail.value === 'open' && !D.isOpen(b)) return false;
+    if (elAvail.value === 'mine' && !MedcityEnrol.has(b.id)) return false;
+    var q = elQ.value.trim().toLowerCase();
+    if (q && haystack(b).indexOf(q) < 0) return false;
+    return true;
+  }
+
+  function draw(){
+    var all = D.batches();
+    var list = all.filter(matches);
+
+    /* Soonest start first; batches with no start date fall to the end
+       rather than sorting as the year 0. */
+    list.sort(function(a,b){
+      return String(a.starts || '9999-99-99').localeCompare(String(b.starts || '9999-99-99'));
+    });
+
+    /* ---- title reflects the track filter, so a linked view reads right ---- */
+    var t = elTrack.value ? D.track(elTrack.value) : null;
+    document.getElementById('pgTitle').textContent = t ? (t.name + ' batches') : 'Batches';
+    if (t && t.blurb) document.getElementById('pgLead').textContent = t.blurb;
+    document.title = (t ? t.name + ' batches' : 'Batches') + ' — MEDCITY Testprep | ALIZON AOS';
+
+    grid.innerHTML = list.map(function(b){ return U.batchCard(b); }).join('');
+
+    if (!all.length){
+      count.textContent = '';
+      none.innerHTML = '<div class="empty"><h3>No batches published yet</h3>' +
+        '<p>The catalogue is empty. Batches appear here as soon as the office publishes them.</p>' +
+        '<a class="btn btn-ghost btn-sm" href="medcity-testprep.html">About MEDCITY Testprep</a></div>';
+      return;
+    }
+
+    if (!list.length){
+      count.textContent = '';
+      var mine = elAvail.value === 'mine';
+      none.innerHTML = '<div class="empty"><h3>' +
+        (mine ? 'You have not joined any batch yet' : 'Nothing matches those filters') + '</h3>' +
+        '<p>' + (mine
+          ? 'Batches you enrol in show up here and on your My Batches page.'
+          : 'Try widening the search — or set availability to “Show everything” to include batches that have already started.') +
+        '</p><button type="button" class="btn btn-ghost btn-sm" id="clearInline">Clear the filters</button></div>';
+      var ci = document.getElementById('clearInline');
+      if (ci) ci.addEventListener('click', clear);
+      return;
+    }
+
+    none.innerHTML = '';
+    var openN = list.filter(D.isOpen).length;
+    count.innerHTML = '<b>' + list.length + '</b> ' + (list.length === 1 ? 'batch' : 'batches') +
+      (list.length !== all.length ? ' of ' + all.length : '') +
+      (openN && openN !== list.length ? ' · <b>' + openN + '</b> enrolling' : '');
+  }
+
+  function apply(){ writeURL(); draw(); }
+  function clear(){
+    elTrack.value = ''; elMode.value = ''; elAvail.value = 'open'; elQ.value = '';
+    apply();
+  }
+
+  [elTrack, elMode, elAvail].forEach(function(el){ el.addEventListener('change', apply); });
+  elQ.addEventListener('input', apply);
+  document.getElementById('fClear').addEventListener('click', clear);
+
+  readURL();
+  draw();
+  U.bindEnrolButtons(document);
+  MedcityEnrol.onChange(draw);
+
+  /* Deep link straight to a batch: ?batch=<id> scrolls to it. */
+  try {
+    var want = new URLSearchParams(location.search).get('batch');
+    if (want){
+      var card = document.getElementById('batch-' + want);
+      if (card) card.scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+  } catch(e){}
+})();
+</script>
+<script src="alizon-back.js"></script>
+</body>
+</html>
