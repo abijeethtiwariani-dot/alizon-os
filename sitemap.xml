@@ -21,6 +21,11 @@
   <url><loc>https://www.alizon.in/ALIZON-OS-Workshop-PV-Foundations</loc><lastmod>2026-09-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.alizon.in/ALIZON-OS-PV-Software</loc><lastmod>2026-09-18</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
+
+  <!-- A free public tool rather than a course page: no sign-in, nothing
+       stored, and useful to anyone who lands on it. Indexed deliberately. -->
+  <url><loc>https://www.alizon.in/ALIZON-OS-Shield</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
   <url><loc>https://www.alizon.in/alizon-course?course=Paramedical%20AI</loc><lastmod>2026-07-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.alizon.in/alizon-course?course=Pharmacy%20AI</loc><lastmod>2026-07-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.alizon.in/alizon-course?course=Medical%20AI</loc><lastmod>2026-07-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
