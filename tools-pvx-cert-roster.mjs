@@ -20,7 +20,7 @@ const roster = {
   subtitle: old.subtitle || 'Pharmacovigilance through virtual-patient simulation',
   date: old.date || '9 September 2026',
   hours: old.hours || 8,
-  issued: old.issued || '8 October 2026',   // date printed on the experience letter
+  issued: old.issued || '25 September 2026',   // date printed on the experience letter
   institution: old.institution || 'Mar Dioscorus College of Pharmacy',
   people
 };
