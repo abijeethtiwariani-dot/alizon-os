@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PV-X workshop certificates · Alizon × Mar Dioscorus College of Pharmacy × IPMR</title>
+<meta name="description" content="Download your certificate for the PV-X — AI ADR Detective hands-on pharmacovigilance workshop, run by the Alizon School of Medical &amp; Digital Intelligence with Mar Dioscorus College of Pharmacy.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="alizon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Public page: deliberately NO firebase-sync and NO lab gate. Everything it
+     needs is the static roster below — nothing is read from or written to Firestore. -->
+<script src="pvx-certificate-roster.js"></script>
+<script src="pvx-certificate-art.js"></script>
+<style>
+:root{--ac:#8c1515;--ink:#2e2d29;--mut:#6e6a63;--line:#ded7d0;--bg:#f4f1ed}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:28px 16px 60px}
+.brand{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap}
+.brand img{height:58px;width:auto}
+.brand .x{color:var(--mut);font-size:20px}
+h1{font-family:"Source Serif Pro",Georgia,serif;text-align:center;font-size:30px;margin:18px 0 4px;color:var(--ac)}
+.intro{text-align:center;color:var(--mut);max-width:600px;margin:0 auto}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:24px}
+label.l{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+input[type=search]{width:100%;font:inherit;font-size:17px;padding:12px 14px;border:1px solid #c9c1b8;border-radius:10px;background:#fff;color:var(--ink)}
+input[type=search]:focus{outline:2px solid var(--ac);outline-offset:1px}
+.hint{font-size:13px;color:var(--mut);margin-top:8px}
+.res{list-style:none;margin:12px 0 0;padding:0}
+.res button{width:100%;text-align:left;font:inherit;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:12px 14px;margin-top:8px;border:1px solid var(--line);border-radius:10px;background:#faf8f6;color:var(--ink);cursor:pointer}
+.res button:hover,.res button:focus{border-color:var(--ac);background:#fff}
+.res b{font-weight:600}
+.res span{font-size:13px;color:var(--ac);font-weight:600;white-space:nowrap}
+.btn{font:inherit;font-size:14px;font-weight:600;cursor:pointer;border:0;border-radius:100px;padding:11px 20px;background:var(--ac);color:#fff}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid #c9c1b8}
+.btn[disabled]{opacity:.6;cursor:wait}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ok{background:#eaf6ef;border:1px solid #a9d8bd;color:#14532d;border-radius:10px;padding:12px 14px}
+.bad{background:#fdecec;border:1px solid #f0b4b4;color:#7f1d1d;border-radius:10px;padding:12px 14px}
+footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:30px}
+footer a{color:var(--ac)}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <img src="alizon-logo.png" alt="Alizon">
+    <span class="x">×</span>
+    <img src="resources/partners/mar-dioscorus-college-of-pharmacy.png" alt="Mar Dioscorus College of Pharmacy">
+    <span class="x">×</span>
+    <img src="resources/partners/ipmr-logo.png" alt="International Organisation for Preventive Health and Medical Research Centre">
+  </div>
+  <h1>Workshop certificates</h1>
+  <p class="intro" id="intro"></p>
+
+  <div class="card" id="verifyBox" hidden></div>
+
+  <div class="card">
+    <label class="l" for="q">Search your name</label>
+    <input type="search" id="q" autocomplete="off" placeholder="Type at least 3 letters, e.g. Sabna">
+    <div class="hint" id="hint">Type your name as you wrote it on the attendance sheet. Initials can be left out.</div>
+    <ul class="res" id="res"></ul>
+  </div>
+
+  <div class="card" id="pick" hidden>
+    <label class="l" style="margin:0">Your documents</label><div id="pickName" style="font-weight:600"></div>
+    <div id="docs"></div>
+    <div class="hint">Spelling wrong, or your name is missing? Write to <a href="mailto:info@alizongov.com">info@alizongov.com</a>. Your code stays the same after a correction.</div>
+  </div>
+
+  <footer>Alizon School of Medical &amp; Digital Intelligence · in collaboration with Mar Dioscorus College of Pharmacy, Thiruvananthapuram,
+    and the International Organisation for Preventive Health and Medical Research Centre (IPMR)<br>
+    <a href="ALIZON-OS-Workshop-PVX">Open the PV-X workshop</a></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+'use strict';
+var R = window.PVX_ROSTER || { people:[] };
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function norm(s){ return String(s||'').toUpperCase().replace(/[^A-Z]+/g,' ').trim(); }
+function short(code){ return String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+
+$('intro').innerHTML = 'For everyone who attended the <b>'+R.hours+'-hour hands-on workshop</b> <i>'+esc(R.workshop)+'</i>'
+  + (R.date ? ' on '+esc(R.date) : '') + '. Find your name and download your certificate and experience letter. No sign-in needed.';
+
+/* ---- search: every typed word must start a word of the name, so "amina s" finds Amina Salim and Amina T S ---- */
+var people = R.people.map(function(p){ return { p:p, words:norm(p.name).split(' ') }; });
+function find(q){
+  var t = norm(q).split(' ').filter(Boolean);
+  if (t.join('').length < 3) return null;
+  return people.filter(function(x){
+    return t.every(function(w){ return x.words.some(function(n){ return n.indexOf(w)===0; }); })
+        || (t.length===1 && norm(x.p.name).replace(/ /g,'').indexOf(t[0])>=0);
+  }).map(function(x){ return x.p; });
+}
+$('q').addEventListener('input', function(){
+  var hits = find(this.value), ul = $('res'), hint = $('hint');
+  ul.innerHTML = '';
+  if (hits === null){ hint.textContent = 'Type at least 3 letters of your name.'; return; }
+  if (!hits.length){ hint.innerHTML = 'No name matches. Try your first name only, or write to <a href="mailto:info@alizongov.com">info@alizongov.com</a>.'; return; }
+  if (hits.length > 8){ hint.textContent = hits.length+' names match. Type more of your name.'; return; }
+  hint.textContent = hits.length===1 ? 'Found you.' : hits.length+' names match. Pick yours.';
+  hits.forEach(function(p){
+    var li = document.createElement('li'), b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = '<b>'+esc(p.name)+'</b><span>View certificate →</span>';
+    b.onclick = function(){ show(p); };
+    li.appendChild(b); ul.appendChild(li);
+  });
+});
+
+var current = null;
+function show(p){
+  current = p;
+  $('pick').hidden = false;
+  $('pickName').textContent = p.name;
+  setDocs(p);
+  $('pick').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+var setDocs = PVXCert.panel($('docs'));
+
+
+/* ---- verification: ?code=XXXX, from the QR on a printed certificate ---- */
+var qc = new URLSearchParams(location.search).get('code');
+if (qc){
+  var box = $('verifyBox'), hit = R.people.filter(function(p){ return short(p.code)===short(qc) || short(p.code).slice(-6)===short(qc); })[0];
+  box.hidden = false;
+  box.innerHTML = hit
+    ? '<div class="ok"><b>Genuine certificate.</b> '+esc(hit.code)+' was issued to <b>'+esc(hit.name)+'</b> for the '
+      + R.hours+'-hour hands-on workshop '+esc(R.workshop)+(R.date?' ('+esc(R.date)+')':'')+'.</div>'
+    : '<div class="bad"><b>No certificate has this code:</b> '+esc(qc)+'. Check it was typed exactly as printed.</div>';
+}
+})();
+</script>
+</body>
+</html>

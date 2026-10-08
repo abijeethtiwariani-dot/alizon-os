@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificate desk · PV-X</title>
+<!-- Staff-only. Unlisted on purpose: linked from nowhere, kept out of the
+     sitemap and NOT named in robots.txt (that would publish the address).
+     The random suffix in the filename is what keeps it private, so do not
+     rename it to something guessable. Reads only the static roster. -->
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="alizon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="pvx-certificate-roster.js"></script>
+<script src="pvx-certificate-art.js"></script>
+<style>
+:root{--ac:#8c1515;--ink:#2e2d29;--mut:#6e6a63;--line:#ded7d0;--bg:#f4f1ed}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:28px 16px 60px}
+.brand{display:flex;align-items:center;justify-content:center;gap:16px}
+.brand img{height:46px;width:auto}
+h1{font-family:"Source Serif Pro",Georgia,serif;text-align:center;font-size:28px;margin:14px 0 2px;color:var(--ac)}
+.intro{text-align:center;color:var(--mut);max-width:600px;margin:0 auto}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:22px}
+label.l{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:0 0 6px}
+input[type=text]{width:100%;font:inherit;font-size:17px;padding:12px 14px;border:1px solid #c9c1b8;border-radius:10px;background:#fff;color:var(--ink)}
+input[type=text]:focus{outline:2px solid var(--ac);outline-offset:1px}
+.f{margin-bottom:14px}
+.hint{font-size:13px;color:var(--mut);margin-top:6px}
+.btn{font:inherit;font-size:14px;font-weight:600;cursor:pointer;border:0;border-radius:100px;padding:11px 20px;background:var(--ac);color:#fff}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid #c9c1b8}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tag{display:inline-block;font-size:12.5px;font-weight:600;border-radius:100px;padding:3px 10px}
+.tag.on{background:#eaf6ef;color:#14532d}
+.tag.off{background:#f1ede8;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <img src="alizon-logo.png" alt="Alizon">
+    <img src="resources/partners/mar-dioscorus-college-of-pharmacy.png" alt="Mar Dioscorus College of Pharmacy">
+    <img src="resources/partners/ipmr-logo.png" alt="IPMR">
+  </div>
+  <h1>Certificate desk</h1>
+  <p class="intro">For staff. Type a name to make the PV-X workshop certificate and experience letter for anyone.</p>
+
+  <div class="card">
+    <div class="f">
+      <label class="l" for="nm">Name on the certificate</label>
+      <input type="text" id="nm" autocomplete="off" placeholder="e.g. Anjali R Nair">
+      <div class="hint" id="st"></div>
+    </div>
+    <div class="f">
+      <label class="l" for="inst">Line under the name</label>
+      <input type="text" id="inst" autocomplete="off">
+      <div class="hint">Usually the college. Change it for a student from another institution.</div>
+    </div>
+    <div id="docs"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+'use strict';
+var R = window.PVX_ROSTER, $ = function(id){ return document.getElementById(id); };
+var DEF = R.institution+', Thiruvananthapuram';
+$('inst').value = DEF;
+
+/* A name already on the attendance list keeps its own code and QR, so the
+   same student never ends up with two different certificates. */
+function current(){
+  var name = $('nm').value.trim().replace(/\s+/g,' ');
+  if (!name) return null;
+  var hit = PVXCert.find(name);
+  return { name: hit ? hit.name : name, code: hit ? hit.code : '', institution: $('inst').value.trim() || DEF };
+}
+var t;
+function draw(){
+  var p = current();
+  $('st').innerHTML = !p ? ''
+    : p.code ? '<span class="tag on">On the attendance list</span> It carries this student’s code '+p.code+' and QR.'
+             : '<span class="tag off">Not on the list</span> Both documents will be made without a code or QR.';
+  setDocs(p);
+}
+var setDocs = PVXCert.panel($('docs'));
+['nm','inst'].forEach(function(id){ $(id).addEventListener('input', function(){ clearTimeout(t); t = setTimeout(draw, 150); }); });
+draw();
+})();
+</script>
+</body>
+</html>
