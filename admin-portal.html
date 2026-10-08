@@ -394,6 +394,7 @@ h1,h2,h3{color:#111!important}
     <a data-sec="adm-labs"><span class="aic">▶</span> Open a Practical</a>
     <a data-sec="adm-exp"><span class="aic">✎</span> Experience Letters <b class="cnt" id="cntExp" style="background:var(--gold)"></b></a>
     <a data-sec="adm-certs"><span class="aic">✦</span> Certificates</a>
+    <a data-sec="adm-ccerts"><span class="aic">🎓</span> Course Certificates</a>
     <a data-sec="adm-exams"><span class="aic"></span> Exams <b class="cnt" id="cntExams" style="background:var(--gold)"></b></a>
     <a data-sec="adm-schedule"><span class="aic"></span> Schedules</a>
     <a data-sec="adm-engage"><span class="aic"></span> Alerts &amp; Attendance <b class="cnt" id="cntEngage" style="background:var(--crimson)"></b></a>
@@ -793,6 +794,79 @@ h1,h2,h3{color:#111!important}
         <span class="hint" id="certCount">Not loaded.</span>
       </div>
       <div id="certList" style="margin-top:10px"></div>
+    </div>
+  </section>
+
+  <section class="apanel asec" id="adm-ccerts">
+    <h2>🎓 Course Certificates</h2>
+    <div class="ahint">Give certificates and experience letters to registered students. Pick a course: its students fill
+      in from the roster by themselves. Untick anyone who should not get one, set the wording, and publish. Students then
+      find their name at <a href="alizon-certificates" target="_blank" rel="noopener">alizon.in/alizon-certificates</a>
+      and download both documents. Only the name, the line under it and a certificate code are published — never a
+      registration number or phone.</div>
+
+    <div class="cblock"><div class="ct">Published</div>
+      <div id="ccList"><div class="ahint">Loading…</div></div>
+      <div style="margin-top:10px"><button class="abtn" type="button" id="ccNew">+ Certificates for a course</button></div>
+    </div>
+
+    <div class="cblock" id="ccEdit" hidden>
+      <div class="ct" id="ccEditTitle">New certificates</div>
+
+      <div class="ahint" style="margin-bottom:6px"><b>1. Who gets one</b></div>
+      <div class="arow4" style="grid-template-columns:2fr 1fr 1fr 1fr">
+        <div><label class="pklbl">Course (from the student roster)</label><select id="ccCourse"></select></div>
+        <div><label class="pklbl">Batch</label><select id="ccBatch"></select></div>
+        <div><label class="pklbl">Names printed as</label>
+          <select id="ccCase"><option value="title">Sabna Habeeb</option><option value="as">As typed in the roster</option></select></div>
+        <div><label class="pklbl">Line under the name</label>
+          <select id="ccLine"><option value="batch">Batch</option><option value="college">College</option><option value="none">Nothing</option></select></div>
+      </div>
+      <label class="cd-chk" style="display:flex;gap:8px;align-items:center;font-size:13px;margin:4px 0 8px">
+        <input type="checkbox" id="ccActive" checked> Leave out students marked dropped, rejected, inactive or discontinued</label>
+      <div class="arow4" style="grid-template-columns:1fr auto auto;align-items:center">
+        <input type="text" id="ccFind" placeholder="Filter the list below by name">
+        <button class="abtn ghost" type="button" id="ccAll">Tick all</button>
+        <button class="abtn ghost" type="button" id="ccNone">Untick all</button>
+      </div>
+      <div class="ahint" id="ccCount" style="margin:6px 0"></div>
+      <div id="ccPeople" style="max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:10px"></div>
+
+      <div class="ahint" style="margin:18px 0 6px"><b>2. What it says</b> — <code>{hours}</code> in a line becomes the number of hours.</div>
+      <div class="arow4" style="grid-template-columns:1fr 1fr">
+        <div><label class="pklbl">Title</label><input type="text" id="ccTitle" list="ccTitleList"></div>
+        <div><label class="pklbl">Line before the course</label><input type="text" id="ccMid"></div>
+      </div>
+      <datalist id="ccTitleList"><option value="Certificate of Completion"><option value="Certificate of Participation"><option value="Certificate of Training"></datalist>
+      <div class="arow4" style="grid-template-columns:2fr 1fr">
+        <div><label class="pklbl">Course name, as printed</label><input type="text" id="ccName"></div>
+        <div><label class="pklbl">Second line (optional)</label><input type="text" id="ccSub" placeholder="e.g. Modules 1–8"></div>
+      </div>
+      <div class="arow4" style="grid-template-columns:repeat(4,1fr)">
+        <div><label class="pklbl">Hours</label><input type="number" id="ccHours" min="0" step="1" placeholder="leave blank to omit"></div>
+        <div><label class="pklbl">Mode</label><input type="text" id="ccMode" list="ccModeList"></div>
+        <div><label class="pklbl">Date on the certificate</label><input type="text" id="ccDate" placeholder="e.g. 25 September 2026"></div>
+        <div><label class="pklbl">Date on the letter</label><input type="text" id="ccIssued" placeholder="e.g. 25 September 2026"></div>
+      </div>
+      <datalist id="ccModeList"><option value="Hands-on"><option value="Online"><option value="Classroom"><option value="Hybrid"></datalist>
+      <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px;margin:6px 0 10px">
+        <span style="color:var(--muted)">Also credit:</span>
+        <label><input type="checkbox" class="ccPartner" value="mardioscorus"> Mar Dioscorus College of Pharmacy</label>
+        <label><input type="checkbox" class="ccPartner" value="ipmr"> IPMR</label>
+      </div>
+      <label style="display:flex;gap:8px;align-items:center;font-size:13px;margin-bottom:6px">
+        <input type="checkbox" id="ccLetter" checked> Give an experience letter as well</label>
+      <div id="ccSkillsWrap"><label class="pklbl">The letter lists what they gained experience in — one per line</label>
+        <textarea id="ccSkills" rows="6" style="width:100%"></textarea></div>
+
+      <div class="ahint" style="margin:18px 0 6px"><b>3. Check and publish</b></div>
+      <div class="arow4" style="grid-template-columns:1fr auto auto;align-items:center">
+        <span class="ahint" id="ccPrevWho" style="margin:0"></span>
+        <button class="abtn ghost" type="button" id="ccCancel">Cancel</button>
+        <button class="abtn" type="button" id="ccPublish">Publish</button>
+      </div>
+      <div class="ahint" id="ccMsg" style="margin:6px 0 0"></div>
+      <div id="ccPreview"></div>
     </div>
   </section>
 
@@ -2345,7 +2419,7 @@ function renderData(){
   bkRender();
 }
 
-const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-resetmarks','adm-labs','adm-exp','adm-certs','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
+const SECS=['sec-courses','adm-students','adm-staff','adm-access','adm-fees','adm-results','adm-eval','adm-resetmarks','adm-labs','adm-exp','adm-certs','adm-ccerts','adm-exams','adm-griev','adm-faculty','adm-schedule','adm-engage','adm-links','adm-announce','adm-content','adm-news','adm-workshops','adm-media','adm-data','adm-activity'];
 function showSec(id){
   if(!SECS.includes(id)) id='sec-courses';
   SECS.forEach(s=>{ const el=document.getElementById(s); if(el)el.classList.toggle('on',s===id); });
@@ -4835,5 +4909,244 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
   else setTimeout(wire,80);
 })();
 </script>
+<script src="alizon-doc-art.js?v=1"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ===== Course Certificates ======================================
+   Certificates and experience letters for registered students, found by
+   name on the public page alizon-certificates.html.
+
+   Two Firestore docs per published course, both in `sync` but NOT in
+   firebase-sync's KEYS, so nothing else reads or overwrites them:
+     ccpub_<id>  PUBLIC. {ccpub:1, on, course, count, value: JSON{id, S, people:[{n,l,c}]}}
+                 name, the line under it and the code — nothing else. The
+                 registration number is never published: it is the
+                 students' default password.
+     ccmap_<id>  ADMIN ONLY. {value: JSON{S, filter, codes:{key:code}, excluded:[key]}}
+                 Keeps each student's code across republishing, so a
+                 certificate already downloaded stays valid after a fix.
+   Unpublishing sets on:false; the codes are kept for when it comes back. */
+(function(){
+  'use strict';
+  var $=function(id){return document.getElementById(id);};
+  var A=window.AlizonDocArt;
+  var PUBLIC='https://www.alizon.in/alizon-certificates';
+  var INACTIVE=/drop|reject|inactive|discontinu|cancel|withdraw|suspend/i;
+  var ED=null;          /* the set being edited: {id, codes, excluded:Set} */
+  var setPrev=null, wired=false;
+  function esc(x){ return String(x==null?'':x).replace(/[&<>"]/g,function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+  function db(){ try{ return firebase.firestore(); }catch(e){ return null; } }
+  function signedIn(){ try{ return !!firebase.auth().currentUser; }catch(e){ return false; } }
+  function students(){ try{ return loadStudents(); }catch(e){ return []; } }
+  function programs(){ try{ return PROGRAMS||[]; }catch(e){ return []; } }
+  function progFor(course){
+    var c=String(course||'').trim().toLowerCase();
+    return programs().filter(function(p){ return String(p.course||'').trim().toLowerCase()===c || String(p.name||'').trim().toLowerCase()===c; })[0]||null;
+  }
+  var ABBR={ pharmacy:'PHA', hospital:'HA', medical:'MED', paramedical:'PMD', stockmarket:'SMK' };
+  function newCode(course, used){
+    var p=progFor(course), ab=(p&&ABBR[p.id])||'CRS', c;
+    do{ c='ALZ/'+new Date().getFullYear()+'/'+ab+'/'+AlizonCertificate.randomCode(6); }while(used[c]);
+    used[c]=1; return c;
+  }
+  function keyOf(s){ return String(s.reg||'').trim().toUpperCase() || ('NAME:'+String(s.name||'').trim().toUpperCase()); }
+  /* "SABNA HABEEB" → "Sabna Habeeb"; initials stay capitals: "P J" */
+  function titleCase(n){
+    return String(n||'').trim().replace(/\s+/g,' ').toLowerCase().replace(/(^|[\s.'-])([a-z])/g,function(m,a,b){ return a+b.toUpperCase(); });
+  }
+
+  /* ---------- the published list ---------- */
+  function loadList(){
+    var box=$('ccList');
+    if(!db()||!signedIn()){ box.innerHTML='<div class="ahint">Not connected to the cloud yet — wait a moment and open this section again.</div>'; return; }
+    box.innerHTML='<div class="ahint">Loading…</div>';
+    db().collection('sync').where('ccpub','==',1).get().then(function(qs){
+      var rows=[];
+      qs.forEach(function(d){ var x=d.data()||{}; rows.push({ id:d.id.replace(/^ccpub_/,''), on:!!x.on, course:x.course||'', count:x.count||0,
+        at:x.updatedAt&&x.updatedAt.toDate?x.updatedAt.toDate():null }); });
+      if(!rows.length){ box.innerHTML='<div class="ahint">Nothing published yet.</div>'; return; }
+      rows.sort(function(a,b){ return (b.at||0)-(a.at||0); });
+      var h='<div style="overflow-x:auto"><table class="atbl" style="width:100%"><tr><th>Course</th><th>Students</th><th>Status</th><th>Updated</th><th></th></tr>';
+      rows.forEach(function(r){
+        h+='<tr><td>'+esc(r.course)+'</td><td>'+r.count+'</td>'
+          +'<td>'+(r.on?'<b style="color:var(--success)">Live</b>':'<span style="color:var(--muted)">Off</span>')+'</td>'
+          +'<td style="white-space:nowrap">'+(r.at?esc(r.at.toISOString().slice(0,10)):'—')+'</td>'
+          +'<td style="white-space:nowrap"><button class="abtn ghost" type="button" data-ed="'+esc(r.id)+'">Edit</button> '
+          +'<button class="abtn ghost" type="button" data-on="'+esc(r.id)+'" data-v="'+(r.on?0:1)+'">'+(r.on?'Unpublish':'Publish again')+'</button></td></tr>';
+      });
+      box.innerHTML=h+'</table></div>';
+      box.querySelectorAll('[data-ed]').forEach(function(b){ b.onclick=function(){ edit(b.getAttribute('data-ed')); }; });
+      box.querySelectorAll('[data-on]').forEach(function(b){ b.onclick=function(){
+        var on=b.getAttribute('data-v')==='1';
+        if(!on && !confirm('Take these certificates off the public page? Students will no longer find them. You can publish them again later with the same codes.')) return;
+        b.disabled=true;
+        db().collection('sync').doc('ccpub_'+b.getAttribute('data-on')).set({on:on},{merge:true}).then(loadList)
+          .catch(function(){ b.disabled=false; alert('Could not change it. Check the connection and try again.'); });
+      }; });
+    }).catch(function(){ box.innerHTML='<div class="ahint">Could not read the published certificates.</div>'; });
+  }
+
+  /* ---------- the editor ---------- */
+  function courses(){
+    var m={}; students().forEach(function(s){ var c=String(s.course||'').trim(); if(c) m[c]=(m[c]||0)+1; });
+    return Object.keys(m).sort().map(function(c){ return [c,m[c]]; });
+  }
+  function fillCourses(sel){
+    var cs=courses(), o=cs.map(function(x){ return '<option value="'+esc(x[0])+'">'+esc(x[0])+' ('+x[1]+')</option>'; }).join('');
+    $('ccCourse').innerHTML=o||'<option value="">No students in the roster yet</option>';
+    if(sel) $('ccCourse').value=sel;
+  }
+  function fillBatches(sel){
+    var c=$('ccCourse').value, m={};
+    students().forEach(function(s){ if(String(s.course||'').trim()===c){ var b=String(s.batch||'').trim()||'(no batch)'; m[b]=(m[b]||0)+1; } });
+    $('ccBatch').innerHTML='<option value="">All batches</option>'+Object.keys(m).sort().map(function(b){
+      return '<option value="'+esc(b)+'">'+esc(b)+' ('+m[b]+')</option>'; }).join('');
+    $('ccBatch').value=sel||'';
+  }
+  function pool(){
+    var c=$('ccCourse').value, b=$('ccBatch').value, act=$('ccActive').checked, seen={};
+    return students().filter(function(s){
+      if(String(s.course||'').trim()!==c) return false;
+      if(b && (String(s.batch||'').trim()||'(no batch)')!==b) return false;
+      if(act && INACTIVE.test(String(s.status||''))) return false;
+      if(!String(s.name||'').trim()) return false;
+      var k=keyOf(s); if(seen[k]) return false; seen[k]=1; return true;
+    }).sort(function(x,y){ return String(x.name).localeCompare(String(y.name)); });
+  }
+  function lineOf(s){
+    var w=$('ccLine').value;
+    return w==='batch' ? String(s.batch||'').trim() : w==='college' ? String(s.college||'').trim() : '';
+  }
+  function nameOf(s){ return $('ccCase').value==='title' ? titleCase(s.name) : String(s.name||'').trim().replace(/\s+/g,' '); }
+  function settings(){
+    return {
+      title:$('ccTitle').value.trim()||'Certificate of Completion',
+      midline:$('ccMid').value.trim(),
+      course:$('ccName').value.trim()||$('ccCourse').value,
+      subtitle:$('ccSub').value.trim(),
+      hours:$('ccHours').value?String(parseInt($('ccHours').value,10)):'',
+      mode:$('ccMode').value.trim(),
+      date:$('ccDate').value.trim(),
+      issued:$('ccIssued').value.trim(),
+      partners:[].slice.call(document.querySelectorAll('.ccPartner')).filter(function(x){return x.checked;}).map(function(x){return x.value;}),
+      letter:$('ccLetter').checked,
+      skills:$('ccSkills').value.split('\n').map(function(x){return x.trim();}).filter(Boolean),
+      verifyBase:PUBLIC
+    };
+  }
+  function drawPeople(){
+    var list=pool(), q=$('ccFind').value.trim().toLowerCase(), n=0;
+    var h='<table class="atbl" style="width:100%;margin:0"><tr><th style="width:34px"></th><th>Name as printed</th><th>Under the name</th><th>Status</th></tr>';
+    list.forEach(function(s){
+      var k=keyOf(s), on=!ED.excluded.has(k); if(on) n++;
+      if(q && String(s.name).toLowerCase().indexOf(q)<0) return;
+      h+='<tr><td><input type="checkbox" data-k="'+esc(k)+'"'+(on?' checked':'')+'></td>'
+        +'<td>'+esc(nameOf(s))+'</td><td>'+esc(lineOf(s))+'</td><td>'+esc(s.status||'')+'</td></tr>';
+    });
+    $('ccPeople').innerHTML=list.length?h+'</table>':'<div class="ahint" style="padding:12px">No students match.</div>';
+    $('ccCount').innerHTML='<b>'+n+'</b> of '+list.length+' students will get a certificate.';
+    $('ccPeople').querySelectorAll('input[data-k]').forEach(function(cb){ cb.onchange=function(){
+      var k=cb.getAttribute('data-k'); if(cb.checked) ED.excluded.delete(k); else ED.excluded.add(k); drawPeople(); preview(); }; });
+  }
+  function chosen(){ return pool().filter(function(s){ return !ED.excluded.has(keyOf(s)); }); }
+  function preview(){
+    if(!setPrev) setPrev=A.panel($('ccPreview'));
+    var s=chosen()[0], S=settings();
+    $('ccSkillsWrap').style.display=S.letter?'':'none';
+    $('ccPrevWho').textContent=s?'Preview for '+nameOf(s)+' — every student gets the same, with their own name and code.':'Tick at least one student to see a preview.';
+    setPrev(s?{ name:nameOf(s), line:lineOf(s), code:ED.codes[keyOf(s)]||'ALZ/'+new Date().getFullYear()+'/XXX/PREVIEW' }:null, S);
+  }
+  function defaultsFor(course){
+    var p=progFor(course);
+    $('ccTitle').value='Certificate of Completion';
+    $('ccMid').value='has successfully completed the {hours}-hour hands-on training in';
+    $('ccName').value=course||'';
+    $('ccSub').value=''; $('ccHours').value=''; $('ccMode').value='Hands-on';
+    $('ccDate').value=''; $('ccIssued').value='';
+    document.querySelectorAll('.ccPartner').forEach(function(x){ x.checked=false; });
+    $('ccLetter').checked=true;
+    $('ccSkills').value=p&&p.modules ? p.modules.map(function(m){ return m.title; }).filter(Boolean).join('\n') : '';
+  }
+  function open(title){
+    $('ccEdit').hidden=false; $('ccEditTitle').textContent=title; $('ccMsg').textContent='';
+    drawPeople(); preview(); $('ccEdit').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function startNew(){
+    if(!courses().length){ alert('The student roster has not loaded yet, or has no students with a course.'); return; }
+    ED={ id:'cc'+Date.now().toString(36), codes:{}, excluded:new Set() };
+    fillCourses(); fillBatches(); $('ccLine').value='batch'; $('ccCase').value='title'; $('ccActive').checked=true; $('ccFind').value='';
+    defaultsFor($('ccCourse').value);
+    open('New certificates');
+  }
+  function edit(id){
+    db().collection('sync').doc('ccmap_'+id).get().then(function(d){
+      var v={}; try{ v=JSON.parse((d.data()||{}).value||'{}'); }catch(e){}
+      var f=v.filter||{}, S=v.S||{};
+      ED={ id:id, codes:v.codes||{}, excluded:new Set(v.excluded||[]) };
+      fillCourses(f.course); fillBatches(f.batch);
+      $('ccLine').value=f.line||'batch'; $('ccCase').value=f.case||'title'; $('ccActive').checked=f.active!==false; $('ccFind').value='';
+      $('ccTitle').value=S.title||''; $('ccMid').value=S.midline||''; $('ccName').value=S.course||'';
+      $('ccSub').value=S.subtitle||''; $('ccHours').value=S.hours||''; $('ccMode').value=S.mode||'';
+      $('ccDate').value=S.date||''; $('ccIssued').value=S.issued||'';
+      document.querySelectorAll('.ccPartner').forEach(function(x){ x.checked=(S.partners||[]).indexOf(x.value)>=0; });
+      $('ccLetter').checked=S.letter!==false; $('ccSkills').value=(S.skills||[]).join('\n');
+      open('Edit: '+(S.course||id));
+    }).catch(function(){ alert('Could not open it. Check the connection and try again.'); });
+  }
+  function publish(){
+    var S=settings(), list=chosen(), msg=$('ccMsg');
+    if(!list.length){ msg.textContent='Tick at least one student.'; return; }
+    if(!S.course){ msg.textContent='Type the course name.'; return; }
+    if(/\{hours\}/.test(S.midline) && !S.hours && !confirm('No hours are set, so the hours will be left out of the wording. Publish anyway?')) return;
+    if(!db()||!signedIn()){ msg.textContent='Not connected to the cloud. Wait a moment and try again.'; return; }
+    var used={}; Object.keys(ED.codes).forEach(function(k){ used[ED.codes[k]]=1; });
+    var people=list.map(function(s){
+      var k=keyOf(s); if(!ED.codes[k]) ED.codes[k]=newCode($('ccCourse').value, used);
+      var o={ n:nameOf(s), c:ED.codes[k] }, l=lineOf(s); if(l) o.l=l; return o;
+    });
+    var pub=JSON.stringify({ id:ED.id, S:S, people:people });
+    if(pub.length>900000){ msg.textContent='Too many students for one list — publish one batch at a time.'; return; }
+    var priv={ S:S, codes:ED.codes, excluded:Array.from(ED.excluded),
+      filter:{ course:$('ccCourse').value, batch:$('ccBatch').value, line:$('ccLine').value, case:$('ccCase').value, active:$('ccActive').checked } };
+    $('ccPublish').disabled=true; msg.textContent='Publishing…';
+    var ts=firebase.firestore.FieldValue.serverTimestamp();
+    /* the private map first: if the second write fails, the codes are already safe */
+    db().collection('sync').doc('ccmap_'+ED.id).set({ ccmap:1, value:JSON.stringify(priv), updatedAt:ts })
+      .then(function(){ return db().collection('sync').doc('ccpub_'+ED.id).set({ ccpub:1, on:true, course:S.course, count:people.length, value:pub, updatedAt:ts }); })
+      .then(function(){
+        msg.innerHTML='<b style="color:var(--success)">Published.</b> '+people.length+' students can now find their name at '
+          +'<a href="alizon-certificates" target="_blank" rel="noopener">alizon.in/alizon-certificates</a>.';
+        try{ if(typeof logAct==='function') logAct('Published course certificates: '+S.course+' ('+people.length+' students)'); }catch(e){}
+        loadList();
+      })
+      .catch(function(){ msg.textContent='Could not publish. Check the connection and try again — nothing has been lost.'; })
+      .then(function(){ $('ccPublish').disabled=false; });
+  }
+
+  function wire(){
+    if(!wired){
+      wired=true;
+      $('ccNew').onclick=startNew;
+      $('ccCancel').onclick=function(){ $('ccEdit').hidden=true; ED=null; };
+      $('ccPublish').onclick=publish;
+      $('ccCourse').onchange=function(){ fillBatches(); defaultsFor($('ccCourse').value); ED.excluded=new Set(); drawPeople(); preview(); };
+      ['ccBatch','ccActive','ccLine','ccCase'].forEach(function(id){ $(id).addEventListener('change',function(){ drawPeople(); preview(); }); });
+      $('ccFind').addEventListener('input',drawPeople);
+      $('ccAll').onclick=function(){ pool().forEach(function(s){ ED.excluded.delete(keyOf(s)); }); drawPeople(); preview(); };
+      $('ccNone').onclick=function(){ pool().forEach(function(s){ ED.excluded.add(keyOf(s)); }); drawPeople(); preview(); };
+      var t; ['ccTitle','ccMid','ccName','ccSub','ccHours','ccMode','ccDate','ccIssued','ccSkills'].forEach(function(id){
+        $(id).addEventListener('input',function(){ clearTimeout(t); t=setTimeout(preview,200); }); });
+      document.querySelectorAll('.ccPartner').forEach(function(x){ x.addEventListener('change',preview); });
+      $('ccLetter').addEventListener('change',preview);
+    }
+    loadList();
+  }
+  var nav=document.querySelector('.anavv a[data-sec="adm-ccerts"]');
+  if(nav) nav.addEventListener('click',function(){ setTimeout(wire,60); });
+  document.addEventListener('DOMContentLoaded',function(){ if(localStorage.getItem('admSec')==='adm-ccerts') setTimeout(wire,1500); });
+})();
+</script>
+
 </body>
 </html>

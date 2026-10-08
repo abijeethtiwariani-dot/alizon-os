@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificates · Alizon School of Medical &amp; Digital Intelligence</title>
+<meta name="description" content="Find your name and download your course certificate and experience letter from the Alizon School of Medical &amp; Digital Intelligence.">
+<link rel="canonical" href="https://www.alizon.in/alizon-certificates">
+<link rel="icon" href="alizon-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Public page. Deliberately NO firebase-sync.js: that would pull the student
+     roster and the rest of the institution's data onto a stranger's device.
+     It reads only the published certificate lists (sync docs with ccpub:1),
+     which hold a name, a course line and a code per student — never a
+     registration number (it is the students' default password) or a phone. -->
+<script src="alizon-doc-art.js"></script>
+<style>
+:root{--ac:#8c1515;--ink:#2e2d29;--mut:#6e6a63;--line:#ded7d0;--bg:#f4f1ed}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:28px 16px 60px}
+.brand{text-align:center}
+.brand img{height:58px;width:auto}
+h1{font-family:"Source Serif Pro",Georgia,serif;text-align:center;font-size:30px;margin:14px 0 4px;color:var(--ac)}
+.intro{text-align:center;color:var(--mut);max-width:600px;margin:0 auto}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:24px}
+label.l{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+input[type=search]{width:100%;font:inherit;font-size:17px;padding:12px 14px;border:1px solid #c9c1b8;border-radius:10px;background:#fff;color:var(--ink)}
+input[type=search]:focus{outline:2px solid var(--ac);outline-offset:1px}
+input[type=search][disabled]{background:#f4f1ed}
+.hint{font-size:13px;color:var(--mut);margin-top:8px}
+.res{list-style:none;margin:12px 0 0;padding:0}
+.res button{width:100%;text-align:left;font:inherit;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:12px 14px;margin-top:8px;border:1px solid var(--line);border-radius:10px;background:#faf8f6;color:var(--ink);cursor:pointer}
+.res button:hover,.res button:focus{border-color:var(--ac);background:#fff}
+.res b{font-weight:600;display:block}
+.res small{color:var(--mut);font-size:12.5px}
+.res span.go{font-size:13px;color:var(--ac);font-weight:600;white-space:nowrap}
+.ok{background:#eaf6ef;border:1px solid #a9d8bd;color:#14532d;border-radius:10px;padding:12px 14px}
+.bad{background:#fdecec;border:1px solid #f0b4b4;color:#7f1d1d;border-radius:10px;padding:12px 14px}
+.warn{background:#fff8e6;border:1px solid #f0d58c;color:#6b4e00;border-radius:10px;padding:12px 14px}
+footer{text-align:center;font-size:12.5px;color:var(--mut);margin-top:30px}
+footer a{color:var(--ac)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><img src="alizon-logo.png" alt="Alizon"></div>
+  <h1>Certificates</h1>
+  <p class="intro">Search your name to see and download your course certificate and experience letter. No sign-in needed.</p>
+
+  <div class="card" id="verifyBox" hidden></div>
+
+  <div class="card">
+    <label class="l" for="q">Search your name</label>
+    <input type="search" id="q" autocomplete="off" placeholder="Loading…" disabled>
+    <div class="hint" id="hint">Loading the certificate lists…</div>
+    <ul class="res" id="res"></ul>
+  </div>
+
+  <div class="card" id="pick" hidden>
+    <label class="l" style="margin:0">Your documents</label>
+    <div id="pickName" style="font-weight:600"></div>
+    <div id="pickCourse" class="hint" style="margin-top:0"></div>
+    <div id="docs"></div>
+    <div class="hint">Spelling wrong, or your name is missing? Write to <a href="mailto:info@alizongov.com">info@alizongov.com</a>. Your code stays the same after a correction.</div>
+  </div>
+
+  <footer>Alizon School of Medical &amp; Digital Intelligence · Thiruvananthapuram, Kerala<br>
+    <a href="./">alizon.in</a></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+'use strict';
+var A = window.AlizonDocArt, esc = A.esc, short = A.short;
+var $ = function(id){ return document.getElementById(id); };
+var BASE = 'https://www.alizon.in/alizon-certificates';
+function norm(s){ return String(s||'').toUpperCase().replace(/[^A-Z]+/g,' ').trim(); }
+
+/* ---- read the published lists: one Firestore read, nothing written ---- */
+var SDK='https://www.gstatic.com/firebasejs/10.12.5/';
+var CFG={ apiKey:"AIzaSyBH3mnYAwaFHJ_jo0mQ0Ohw4WxyYdZBe90", authDomain:"alizon-os-7a17d.firebaseapp.com",
+  projectId:"alizon-os-7a17d", storageBucket:"alizon-os-7a17d.firebasestorage.app",
+  messagingSenderId:"728863144429", appId:"1:728863144429:web:8939b7d234754cb0534fe4" };
+function loadScript(f){ return new Promise(function(ok,no){ var s=document.createElement('script'); s.src=SDK+f; s.onload=ok; s.onerror=no; document.head.appendChild(s); }); }
+function fetchSets(){
+  return loadScript('firebase-app-compat.js')
+    .then(function(){ return Promise.all([loadScript('firebase-auth-compat.js'), loadScript('firebase-firestore-compat.js')]); })
+    .then(function(){
+      if(!firebase.apps.length) firebase.initializeApp(CFG);
+      if(firebase.auth().currentUser) return;
+      return firebase.auth().signInWithEmailAndPassword('device-reader@bootstrap.alizonos.app','alizonBootstrap2026');
+    })
+    .then(function(){ return firebase.firestore().collection('sync').where('ccpub','==',1).get(); })
+    .then(function(qs){
+      var sets=[];
+      qs.forEach(function(doc){
+        var x=doc.data()||{}, v=null;
+        if(!x.on) return;                                   /* unpublished from the admin portal */
+        try{ v=JSON.parse(x.value||'null'); }catch(e){}
+        if(v && v.S && Array.isArray(v.people)) sets.push(v);
+      });
+      return sets;
+    });
+}
+
+/* every published person, each carrying the settings of their own course */
+var ALL = [];
+function settingsOf(set){
+  var S = JSON.parse(JSON.stringify(set.S));
+  S.verifyBase = BASE;
+  return S;
+}
+
+/* ---- search: every typed word must start a word of the name ---- */
+function find(q){
+  var t = norm(q).split(' ').filter(Boolean);
+  if (t.join('').length < 3) return null;
+  return ALL.filter(function(x){
+    return t.every(function(w){ return x.words.some(function(n){ return n.indexOf(w)===0; }); })
+        || (t.length===1 && norm(x.p.name).replace(/ /g,'').indexOf(t[0])>=0);
+  });
+}
+$('q').addEventListener('input', function(){
+  var hits = find(this.value), ul = $('res'), hint = $('hint');
+  ul.innerHTML = '';
+  if (hits === null){ hint.textContent = 'Type at least 3 letters of your name.'; return; }
+  if (!hits.length){ hint.innerHTML = 'No name matches. Try your first name only, or write to <a href="mailto:info@alizongov.com">info@alizongov.com</a>.'; return; }
+  if (hits.length > 10){ hint.textContent = hits.length+' names match. Type more of your name.'; return; }
+  hint.textContent = hits.length===1 ? 'Found you.' : hits.length+' matches. Pick yours.';
+  hits.forEach(function(x){
+    var li = document.createElement('li'), b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = '<div><b>'+esc(x.p.name)+'</b><small>'+esc(x.S.course)+(x.p.line?' · '+esc(x.p.line):'')+'</small></div>'
+      + '<span class="go">View →</span>';
+    b.onclick = function(){ show(x); };
+    li.appendChild(b); ul.appendChild(li);
+  });
+});
+
+var setDocs = A.panel($('docs'));
+function show(x){
+  $('pick').hidden = false;
+  $('pickName').textContent = x.p.name;
+  $('pickCourse').textContent = x.S.course;
+  setDocs(x.p, x.S);
+  $('pick').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+/* ---- verification: ?code=XXXXXX, from the QR on a certificate or letter ---- */
+function verify(qc){
+  var box = $('verifyBox'), k = short(qc);
+  var hit = ALL.filter(function(x){ return short(x.p.code)===k || (k.length===6 && short(x.p.code).slice(-6)===k); })[0];
+  box.hidden = false;
+  box.innerHTML = hit
+    ? '<div class="ok"><b>Genuine.</b> '+esc(hit.p.code)+' was issued to <b>'+esc(hit.p.name)+'</b> for '
+      + esc(hit.S.course)+(hit.S.date?' ('+esc(hit.S.date)+')':'')+'.</div>'
+    : '<div class="bad"><b>No certificate has this code:</b> '+esc(qc)+'. Check it was typed exactly as printed.</div>';
+}
+
+fetchSets().then(function(sets){
+  sets.forEach(function(set){
+    var S = settingsOf(set);
+    set.people.forEach(function(p){
+      ALL.push({ p:{ name:p.n, line:p.l||'', code:p.c }, S:S, words:norm(p.n).split(' ') });
+    });
+  });
+  var q = $('q'); q.disabled = false; q.placeholder = 'Type at least 3 letters, e.g. your first name';
+  $('hint').textContent = ALL.length ? 'Type your name as it is in your admission record. Initials can be left out.'
+                                     : 'No certificates have been published yet.';
+  var qc = new URLSearchParams(location.search).get('code');
+  if (qc) verify(qc);
+  q.focus();
+}).catch(function(){
+  $('hint').innerHTML = '<span class="warn" style="display:block">The certificate lists could not be loaded. Check your internet connection and reload the page.</span>';
+  var qc = new URLSearchParams(location.search).get('code');
+  if (qc){ $('verifyBox').hidden=false; $('verifyBox').innerHTML='<div class="warn"><b>Could not check this code right now.</b> This does not mean it is invalid — please try again shortly.</div>'; }
+});
+})();
+</script>
+</body>
+</html>
