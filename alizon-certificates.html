@@ -160,6 +160,8 @@ function verify(qc){
     ? '<div class="ok"><b>Genuine.</b> '+esc(hit.p.code)+' was issued to <b>'+esc(hit.p.name)+'</b> for '
       + esc(hit.S.course)+(hit.S.date?' ('+esc(hit.S.date)+')':'')+'.</div>'
     : '<div class="bad"><b>No certificate has this code:</b> '+esc(qc)+'. Check it was typed exactly as printed.</div>';
+  /* the personal link the admin sends is this same ?code= — so open their documents straight away */
+  if (hit) show(hit);
 }
 
 fetchSets().then(function(sets){

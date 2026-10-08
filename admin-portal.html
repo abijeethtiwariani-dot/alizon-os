@@ -810,6 +810,28 @@ h1,h2,h3{color:#111!important}
       <div style="margin-top:10px"><button class="abtn" type="button" id="ccNew">+ Certificates for a course</button></div>
     </div>
 
+    <div class="cblock" id="ccShare" hidden>
+      <div class="ct" id="ccShareTitle">Send the link</div>
+      <div class="ahint" style="margin-bottom:8px">Share the page with everyone at once — a class WhatsApp group, for example.</div>
+      <div class="arow4" style="grid-template-columns:1fr auto auto auto;align-items:center">
+        <input type="text" id="ccShareLink" readonly>
+        <button class="abtn ghost" type="button" id="ccCopy">Copy link</button>
+        <a class="abtn ghost" id="ccWa" target="_blank" rel="noopener" style="text-decoration:none">WhatsApp</a>
+        <a class="abtn ghost" id="ccMail" style="text-decoration:none">Email</a>
+      </div>
+      <label class="pklbl" style="margin-top:10px">Message</label>
+      <textarea id="ccShareMsg" rows="4" style="width:100%"></textarea>
+
+      <div class="ahint" style="margin:16px 0 8px">Or send each student a personal link that opens their own certificate
+        straight away. WhatsApp opens with the message ready; you press send. Nothing is sent by itself.</div>
+      <div class="arow4" style="grid-template-columns:1fr auto;align-items:center">
+        <input type="text" id="ccSendFind" placeholder="Filter by name">
+        <span class="ahint" id="ccSendCount" style="margin:0"></span>
+      </div>
+      <div id="ccSendList" style="max-height:360px;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:6px"></div>
+      <div style="margin-top:10px"><button class="abtn ghost" type="button" id="ccShareClose">Close</button></div>
+    </div>
+
     <div class="cblock" id="ccEdit" hidden>
       <div class="ct" id="ccEditTitle">New certificates</div>
 
@@ -4972,11 +4994,13 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
         h+='<tr><td>'+esc(r.course)+'</td><td>'+r.count+'</td>'
           +'<td>'+(r.on?'<b style="color:var(--success)">Live</b>':'<span style="color:var(--muted)">Off</span>')+'</td>'
           +'<td style="white-space:nowrap">'+(r.at?esc(r.at.toISOString().slice(0,10)):'—')+'</td>'
-          +'<td style="white-space:nowrap"><button class="abtn ghost" type="button" data-ed="'+esc(r.id)+'">Edit</button> '
+          +'<td style="white-space:nowrap"><button class="abtn" type="button" data-sh="'+esc(r.id)+'"'+(r.on?'':' disabled title="Publish it first"')+'>Send link</button> '
+          +'<button class="abtn ghost" type="button" data-ed="'+esc(r.id)+'">Edit</button> '
           +'<button class="abtn ghost" type="button" data-on="'+esc(r.id)+'" data-v="'+(r.on?0:1)+'">'+(r.on?'Unpublish':'Publish again')+'</button></td></tr>';
       });
       box.innerHTML=h+'</table></div>';
       box.querySelectorAll('[data-ed]').forEach(function(b){ b.onclick=function(){ edit(b.getAttribute('data-ed')); }; });
+      box.querySelectorAll('[data-sh]').forEach(function(b){ b.onclick=function(){ share(b.getAttribute('data-sh')); }; });
       box.querySelectorAll('[data-on]').forEach(function(b){ b.onclick=function(){
         var on=b.getAttribute('data-v')==='1';
         if(!on && !confirm('Take these certificates off the public page? Students will no longer find them. You can publish them again later with the same codes.')) return;
@@ -5116,7 +5140,9 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       .then(function(){ return db().collection('sync').doc('ccpub_'+ED.id).set({ ccpub:1, on:true, course:S.course, count:people.length, value:pub, updatedAt:ts }); })
       .then(function(){
         msg.innerHTML='<b style="color:var(--success)">Published.</b> '+people.length+' students can now find their name at '
-          +'<a href="alizon-certificates" target="_blank" rel="noopener">alizon.in/alizon-certificates</a>.';
+          +'<a href="alizon-certificates" target="_blank" rel="noopener">alizon.in/alizon-certificates</a>. '
+          +'<button class="abtn" type="button" id="ccSendNow">Send the link</button>';
+        var pid=ED.id; $('ccSendNow').onclick=function(){ share(pid); };
         try{ if(typeof logAct==='function') logAct('Published course certificates: '+S.course+' ('+people.length+' students)'); }catch(e){}
         loadList();
       })
@@ -5124,10 +5150,78 @@ showSec((function(){ try{ return localStorage.getItem('admSec')||'sec-courses'; 
       .then(function(){ $('ccPublish').disabled=false; });
   }
 
+  /* ---------- sending the link ----------
+     Everything here only prepares a message: WhatsApp and the mail app open
+     with it filled in and the admin presses send. Nothing is sent by the site. */
+  var SH=null;
+  function waPhone(p){
+    var d=String(p||'').replace(/\D/g,'');
+    if(d.length===11 && d[0]==='0') d=d.slice(1);
+    if(d.length===10) d='91'+d;                       /* Indian number without the country code */
+    if(d.length===12 && d.slice(0,2)==='91') return /^[6-9]/.test(d[2]) ? d : '';   /* mobiles only: a landline has no WhatsApp */
+    return d.length>=11 && d.length<=15 ? d : '';
+  }
+  function personal(code){ return PUBLIC+'?code='+A.short(code).slice(-6); }
+  function shareLinks(){
+    var msg=$('ccShareMsg').value;
+    $('ccWa').href='https://wa.me/?text='+encodeURIComponent(msg);
+    $('ccMail').href='mailto:?subject='+encodeURIComponent('Your certificate — '+SH.course)+'&body='+encodeURIComponent(msg);
+  }
+  function drawSend(){
+    var q=$('ccSendFind').value.trim().toLowerCase(), n=0, h='<table class="atbl" style="width:100%;margin:0"><tr><th>Name</th><th>Phone</th><th></th></tr>';
+    SH.rows.forEach(function(r){
+      if(q && r.name.toLowerCase().indexOf(q)<0) return;
+      var text='Dear '+r.name+', your certificate'+(SH.letter?' and experience letter':'')+' for '+SH.course
+        +' '+(SH.letter?'are':'is')+' ready. Open this link to view and download:\n'+personal(r.code)+'\n\n— Alizon School of Medical & Digital Intelligence';
+      var ph=waPhone(r.phone);
+      h+='<tr><td>'+esc(r.name)+'</td><td style="white-space:nowrap">'+esc(r.phone||'—')+'</td><td style="white-space:nowrap">'
+        +(ph?'<a class="abtn" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/'+ph+'?text='+encodeURIComponent(text)+'" data-sent="'+esc(r.code)+'">WhatsApp</a> ':'')
+        +(r.email?'<a class="abtn ghost" style="text-decoration:none" href="mailto:'+encodeURIComponent(r.email)+'?subject='+encodeURIComponent('Your certificate — '+SH.course)+'&body='+encodeURIComponent(text)+'">Email</a> ':'')
+        +'<button class="abtn ghost" type="button" data-cp="'+esc(text)+'">Copy message</button>'
+        +(SH.sent[r.code]?' <span style="color:var(--success);font-size:12px">✓ opened</span>':'')+'</td></tr>';
+      n++;
+    });
+    $('ccSendList').innerHTML=h+'</table>';
+    $('ccSendCount').textContent=SH.rows.length+' students'+(q?' · '+n+' shown':'')+' · '+SH.rows.filter(function(r){return waPhone(r.phone);}).length+' with a WhatsApp number';
+    $('ccSendList').querySelectorAll('[data-sent]').forEach(function(a){ a.addEventListener('click',function(){
+      SH.sent[a.getAttribute('data-sent')]=1; setTimeout(drawSend,300); }); });
+    $('ccSendList').querySelectorAll('[data-cp]').forEach(function(b){ b.onclick=function(){
+      copy(b.getAttribute('data-cp'), b, 'Copy message'); }; });
+  }
+  function copy(text, btn, label){
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function(){
+      btn.textContent='Copied ✓'; setTimeout(function(){ btn.textContent=label; },1500);
+    }).catch(function(){ window.prompt('Copy this:', text); });
+  }
+  function share(id){
+    Promise.all([db().collection('sync').doc('ccpub_'+id).get(), db().collection('sync').doc('ccmap_'+id).get()]).then(function(ds){
+      var pub={}, map={}; try{ pub=JSON.parse((ds[0].data()||{}).value||'{}'); }catch(e){} try{ map=JSON.parse((ds[1].data()||{}).value||'{}'); }catch(e){}
+      var S=pub.S||{}, live={}; (pub.people||[]).forEach(function(p){ live[p.c]=p.n; });
+      var byKey={}; students().forEach(function(s){ byKey[keyOf(s)]=s; });
+      var rows=[]; Object.keys(map.codes||{}).forEach(function(k){
+        var c=map.codes[k]; if(!live[c]) return;               /* only people actually on the published list */
+        var s=byKey[k]||{}; rows.push({ name:live[c], code:c, phone:s.phone||'', email:s.email||'' });
+      });
+      rows.sort(function(a,b){ return a.name.localeCompare(b.name); });
+      SH={ id:id, course:S.course||'', letter:S.letter!==false, rows:rows, sent:{} };
+      $('ccShare').hidden=false; $('ccShareTitle').textContent='Send the link — '+SH.course;
+      $('ccShareLink').value=PUBLIC;
+      $('ccShareMsg').value='Certificates'+(SH.letter?' and experience letters':'')+' for '+SH.course+' are ready.\n'
+        +'Search your name and download yours here:\n'+PUBLIC+'\n\n— Alizon School of Medical & Digital Intelligence';
+      $('ccSendFind').value='';
+      shareLinks(); drawSend();
+      $('ccShare').scrollIntoView({behavior:'smooth',block:'start'});
+    }).catch(function(){ alert('Could not load the list. Check the connection and try again.'); });
+  }
+
   function wire(){
     if(!wired){
       wired=true;
       $('ccNew').onclick=startNew;
+      $('ccCopy').onclick=function(){ copy($('ccShareLink').value, $('ccCopy'), 'Copy link'); };
+      $('ccShareMsg').addEventListener('input',shareLinks);
+      $('ccSendFind').addEventListener('input',drawSend);
+      $('ccShareClose').onclick=function(){ $('ccShare').hidden=true; SH=null; };
       $('ccCancel').onclick=function(){ $('ccEdit').hidden=true; ED=null; };
       $('ccPublish').onclick=publish;
       $('ccCourse').onchange=function(){ fillBatches(); defaultsFor($('ccCourse').value); ED.excluded=new Set(); drawPeople(); preview(); };
