@@ -18,7 +18,7 @@ const people = names.map(n => byName.get(key(n)) || { name: n, code: code() });
 const roster = {
   workshop: old.workshop || 'PV-X — AI ADR Detective',
   subtitle: old.subtitle || 'Pharmacovigilance through virtual-patient simulation',
-  date: old.date || '9 September 2026',
+  date: old.date || '25 September 2026',
   hours: old.hours || 8,
   issued: old.issued || '25 September 2026',   // date printed on the experience letter
   institution: old.institution || 'Mar Dioscorus College of Pharmacy',

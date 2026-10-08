@@ -3,7 +3,7 @@
 window.PVX_ROSTER = {
  "workshop": "PV-X — AI ADR Detective",
  "subtitle": "Pharmacovigilance through virtual-patient simulation",
- "date": "9 September 2026",
+ "date": "25 September 2026",
  "hours": 8,
  "issued": "25 September 2026",
  "institution": "Mar Dioscorus College of Pharmacy",
